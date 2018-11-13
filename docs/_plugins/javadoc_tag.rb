@@ -23,34 +23,37 @@
 #     * Prefixing the reference with a double bang ("!!") displays the FQCN instead of the simple name
 #       * E.g. {% jdoc core !!net.sourceforge.pmd.properties.PropertyDescriptor %} -> [`net.sourceforge.pmd.properties.PropertyDescriptor`](...),
 #
-# * Using context:
-#   * A context block may be used to shorten references
-#     * {% jdoc %} tags and such may be surrounded by a {% jdoc_context %} ... {% endjdoc_context %} block
-#     * You can open it like so:
-#       * {% jdoc_context core @.properties %}
-#         * The first word is the artifact id, the second is the name of e.g. a package or type
-#           * The "@" symbol *in the second word* is expanded to "net.sourceforge.pmd" regardless of the enclosing context
-#         * So inside the block, the context will be set to "pmd-core net.sourceforge.pmd.properties"
-#         * Then the symbol "@" in a jdoc tag will be expanded to "core net.sourceforge.pmd.properties"
-#         * E.g. the reference {% jdoc @.PropertyDescriptor %} is expanded to the same as {% jdoc core net.sourceforge.pmd.properties.PropertyDescriptor %}
-#         * Again, you may use "!!" to show the FQCN, like {% jdoc !!@.PropertyDescriptor %}
-#     * If a jdoc link occurs outside of a context block, then "@" in a javadoc tag means "core net.sourceforge.pmd", eg
-#       {% jdoc @.properties.PropertyDescriptor %} works anywhere.
-#     * The artifact can be overridden from the context, eg with the default context "core net.sourceforge.pmd"
-#       {% jdoc java @.lang.java.JavaLanguageModule %} will be linked correctly to pmd-java, and @ will be expanded to
-#       "net.sourceforge.pmd"
-#     * The special package name "<<" may be used to go up once in the package tree. E.g. if the context is
-#       "core @.properties", then {% jdoc @.<<.rule.Rule %} is first expanded to {% jdoc core net.sourceforge.pmd.properties.<<.Rule %},
-#       then reduced to {% jdoc core net.sourceforge.pmd.Rule %}. "<<" behaves the same as ".." in file system paths.
+# * Using context handles
+#   * FQCNs are tedious to write and read so you can define shortcuts to a package or type name relevant
+#     to what you're documenting to save some keystrokes.
+#   * I call these shortcuts "context handles", they consist of an artifact id and a package or type name
+#   * The "jdoc_handle" tag is used to declare a handle. E.g.
+#     {% jdoc_handle @{coreast} core @.lang.ast %}
+#     {% jdoc_handle @{jast} java @.lang.java.ast}
+#     * The first argument is the handle as it will be referenced. It must have the form @{handle_name}
+#     * The second argument is the artifact id of the package.
+#     * The third argument is the package name, within which "@" is expanded to "net.sourceforge.pmd". Other handles
+#       may not be used within it.
+#   * After a handle is declared, it's used with the @{name} syntax, eg
+#     {% jdoc @{jast}.ASTType %}, or {% jdoc @{coreast}.Node %}
+#     The artifact id of the handle used for the type reference is used implicitly,
+#     and the handle reference is expanded to the package name.
+#   * "@" not followed by braces (not a handle) is expanded to "net.sourceforge.pmd", so
+#     {% jdoc core !!@.properties.PropertyDescriptor %} is the same as {% jdoc core !!net.sourceforge.pmd.properties.PropertyDescriptor %}
+#     Note that using "@" doesn't provide an implicit artifact id.
+#   * Handles can be used in method arguments but their artifact id is ignored. E.g.
+#     {% jdoc @.lang.java.ast.JavaNode.#(@{coreast}.Node) %} is invalid because neither
+#     * the artifact id was on the jdoc tag, nor did
+#     * the reference to JavaNode use a context handle that would have provided
+#       an implicit artifact id
 #
 # * To reference a method or field: {% jdoc @.Rule#addRuleChainVisit(java.lang.Class) %}
 #   * The suffix # is followed by the name of the method or field
 #   * The (erased) types of method arguments must be fully qualified. This is the same
 #     convention as in javadoc {@link} tags, so you can use you're IDE's javadoc auto-
-#     complete and copy-paste. The "@" can still be used to reference the context package
-#     to shorten FQCNs.
+#     complete and copy-paste. "@" and context handles can still be used to shorten FQCNs.
 #
-# * To reference a package: {% jdoc_package @.properties %}, or {% jdoc-package @ %}, context works the same
+# * To reference a package: eg {% jdoc_package @{foo}.properties %}, {% jdoc-package @ %}
 #
 # * Bang options:
 #   * Rendering may be customized by prefixing the reference to the linked member or type with some options.
@@ -81,7 +84,6 @@
 #
 # * DO NOT:
 #   - Include spaces between dots, or anywhere except between the artifact reference and the page reference
-#   - Forget to use an artifact id whenever opening a jdoc_context block
 #   - Use double or single quotes around the arguments
 #   - Use the "#" suffix to reference a nested type, instead, use a dot "." and reference it like a normal type name
 #
@@ -97,7 +99,7 @@ class JavadocTag < Liquid::Tag
 
     options_str = ""
 
-    if %r/^"?(\w+\s+)?((?:!\w+)*!?!)?(@(?:\.?+(?:<<|\w+))*)(#.*)?"?$/ =~ doc_ref.strip
+    if %r/^"?(\w+\s+)?((?:!\w+)*!?!)?(@(?:\{\w+\})?(?:\.?\w+)*)(#.*)?"?$/ =~ doc_ref.strip
 
       @artifact_name = $1 && ("pmd-" + $1.strip) # is nil if not mentioned
       options_str = $2 || ""
@@ -130,6 +132,8 @@ class JavadocTag < Liquid::Tag
   end
 
   def get_visible_name
+
+    fqcn_regex =
 
 
     # method or field
@@ -166,29 +170,11 @@ class JavadocTag < Liquid::Tag
     end
   end
 
-  def escape_path(fqcn, ctx)
-
-    fqcn = fqcn.gsub("@", ctx.last)
-
-    while fqcn.include? ".<<"
-      fqcn = fqcn.gsub(/\.\w+\.<</, "") # move up in the package tree
-    end
-
-    fqcn
-  end
-
   def render(rendering_context)
 
-
-
-    if @type_fqcn.include?("@") # Expand using the context
-
-      doc_ctx = JDocContextBlock.get_jdoc_context(rendering_context)
-
-      @artifact_name = @artifact_name || doc_ctx.first # if the artifact was mentioned in the tag, it takes precedence
-      @type_fqcn = escape_path(@type_fqcn, doc_ctx)
-      @member_suffix = escape_path(@member_suffix, doc_ctx)
-    end
+    doc_ctx, @type_fqcn = JDocContextDeclaration::escape_path(@type_fqcn, rendering_context)
+    @artifact_name = @artifact_name || doc_ctx.first # if the artifact was mentioned in the tag, it takes precedence
+    _, @member_suffix = JDocContextDeclaration::escape_path(@member_suffix, rendering_context)
 
     visible_name = get_visible_name
 
@@ -225,75 +211,118 @@ class JavadocTag < Liquid::Tag
 end
 
 
-# Block used to set the javadoc context
+# Tag used to declare a javadoc handle to shorten javadoc references.
 #
 # Usage:
+# {% jdoc_handle @{coreast} core @.lang.ast %}
+# {% jdoc_handle @{jast} java @.lang.java.ast}
 #
-# {% jdoc_context java @.lang.java.ast}
+# * The first argument is the handle as it will be referenced. It must have the form @{handle_name}
+# * The second argument is the artifact id of the package.
+# * The third argument is the package name, within which "@" means net.sourceforge.pmd. Other handles
+#   may not be used within it.
 #
-#   Links here in here use the context "java net.sourceforge.pmd.lang.java.ast" as context
+# After those tags have been declared, the handle is used with the @{name} syntax, eg {% jdoc @{jast}.ASTType %}
 #
-# {% endjdoc_context %}
-#
-# Context is reset to the previous value
-#
-# If no arg is provided to the opening tag, context is reset to the default
-#
-#
-class JDocContextBlock < Liquid::Block
+class JDocContextDeclaration < Liquid::Tag
 
-  DEFAULT_JDOC_CONTEXT = "core net.sourceforge.pmd"
-  JDOC_CONTEXT_VARNAME = "javadoc_context"
+  DEFAULT_JDOC_CONTEXT = ["pmd-core", "net.sourceforge.pmd"]
+  JDOC_CONTEXT_NAMESPACE = "jdoc_context"
 
 
   def initialize(tag_name, arg, tokens)
     super
 
-    @this_context = JDocContextBlock.build_ctx(arg || DEFAULT_JDOC_CONTEXT).join(" ") #just a syntax check
+    all_args = arg.split(" ")
 
-    @body = tokens
+    @ctx_name = JDocContextDeclaration::get_handle_name(all_args.shift)
+
+    @this_context = JDocContextDeclaration::validate_ctx(all_args || DEFAULT_JDOC_CONTEXT)
+
   end
 
-  def render(context)
+  def render(ctx)
 
-    ctx_sfg = context[JDOC_CONTEXT_VARNAME] || DEFAULT_JDOC_CONTEXT
+    unless ctx[JDOC_CONTEXT_NAMESPACE]
+      ctx[JDOC_CONTEXT_NAMESPACE] = {} #empty map
+    end
 
-    context[JDOC_CONTEXT_VARNAME] = @this_context
+    ctx[JDOC_CONTEXT_NAMESPACE][@ctx_name] = @this_context
 
-    contents = @body.render(context)
-
-    context[JDOC_CONTEXT_VARNAME] = ctx_sfg
-
-    contents
+    ""
   end
 
 
-  def self.build_ctx(ctx_str)
-    # Allows to use @ as shortcut when assigning javadoc_context
-    ctx_str = ctx_str.to_s.sub("@", "net.sourceforge.pmd").gsub("\"", "")
-    res = ctx_str.split(" ")
+  def self.validate_ctx(ctx_arr)
 
-    if res.length != 2
+    unless ctx_arr && ctx_arr.compact.length == 2
       fail "Invalid javadoc context format, you must specify artifact + package prefix in exactly two words"
     end
 
-    unless res[0].strip.start_with?("pmd-")
-      res[0] = "pmd-#{res[0].strip}"
+    # Allows to use @ as shortcut when assigning javadoc_context
+    ctx_arr[1].sub!("@", "net.sourceforge.pmd").gsub!("\"", "")
+
+
+    unless ctx_arr[0].strip.start_with?("pmd-")
+      ctx_arr[0] = "pmd-#{ctx_arr[0].strip}"
     end
 
-    res
+    ctx_arr
   end
 
-  def self.get_jdoc_context(context)
-    build_ctx(context[JDOC_CONTEXT_VARNAME] || DEFAULT_JDOC_CONTEXT)
+
+  # gets the expansion of a full handle, given as @{name}
+  def self.get_context(at_prefixed_name, ctx)
+
+    name = get_handle_name(at_prefixed_name)
+
+    unless ctx[JDOC_CONTEXT_NAMESPACE] && ctx[JDOC_CONTEXT_NAMESPACE][name]
+      fail "Undeclared javadoc context handle #{at_prefixed_name}"
+    end
+
+    ctx[JDOC_CONTEXT_NAMESPACE][name] # return the variable
+  end
+
+  def self.get_handle_name(at_prefixed_name)
+    if /@\{(\w+)\}/ =~ at_prefixed_name
+      $1
+    else
+      fail "Invalid format for javadoc context handle, expected @{name}, was #{at_prefixed_name}"
+    end
+  end
+
+
+  def self.escape_path(fqcn, rendering_ctx)
+
+    unless fqcn
+      return [DEFAULT_JDOC_CONTEXT, nil]
+    end
+
+    doc_ctx = DEFAULT_JDOC_CONTEXT
+
+    fqcn = fqcn.gsub(/@(\{(\w+)\})?/) do |h|
+      if $1
+        doc_ctx = get_context(h, rendering_ctx)
+      else
+        doc_ctx = DEFAULT_JDOC_CONTEXT
+      end
+      doc_ctx[1]
+    end
+
+    # return the last found context
+    # For the type fqcn there's only one so it's ok
+    # For argument types there may be several but they're ignored so it's ok
+    [doc_ctx, fqcn]
   end
 
 end
+
 
 Liquid::Template.register_tag('jdoc_context', JDocContextBlock)
 Liquid::Template.register_tag('jdoc', JavadocTag)
 Liquid::Template.register_tag('jdoc_package', JavadocTag)
 Liquid::Template.register_tag('jdoc_old', JavadocTag)
+Liquid::Template.register_tag('jdoc_handle', JDocContextDeclaration)
 
 
 
