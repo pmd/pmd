@@ -32,10 +32,13 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1372](https://github.com/pmd/pmd/issues/1372): \[java] false positive for UselessQualifiedThis
 
 ### API Changes
-{% assign javadoc_context = "core @.lang.ast.xpath" %}
+
+{% jdoc_context "core @.lang.ast.xpath" %}
 
 * The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package @ %})
   are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc @.Attribute %} remains public API.
+
+{% endjdoc_context %}
 
 ### External Contributions
 

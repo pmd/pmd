@@ -6,7 +6,9 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 
