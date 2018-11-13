@@ -1,7 +1,7 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.10.0
+    version: 6.9.0
     previous_version: 6.9.0
     date: ??-????-2018
     release_type: minor

@@ -8,6 +8,7 @@ permalink: pmd_userdocs_extending_defining_properties.html
 author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---
 
+{% jdoc_context core @.properties %}
 
 ## Defining properties
 
@@ -52,9 +53,9 @@ Note that RegexProperty doesn't have a multivalued variant, since the delimiters
 
 The procedure to define a property is quite straightforward:
 * Create a property descriptor of the type you want, using its builder;
-* Call `definePropertyDescriptor(<your descriptor>)` in the rule's noarg constructor.
+* Call {% jdoc !args!@.PropertySource#definePropertyDescriptor(@.PropertyDescriptor) %}` in the rule's noarg constructor.
 
-You can then retrieve the value of the property at any time using `getProperty(<your descriptor>)`.
+You can then retrieve the value of the property at any time using {% jdoc !args!@.PropertySource#getProperty(@.PropertyDescriptor) %}.
 
 #### Creating a descriptor
 
@@ -171,3 +172,5 @@ Multivalued properties are also allowed and their `type` attribute has the form 
 ```
 
 Notice that in the example above, `@Image = $reportedIdentifiers` doesn't test `@Image` for equality with the whole sequence `('foo', 'bar')`, it tests whether the sequence *contains* `@Image`. That is, the above rule will report all variables named `foo` or `bar`. All other XPath 2.0 [functions operating on sequences](https://www.w3.org/TR/xpath-functions/#sequence-functions) are supported.
+
+{% endjdoc_context %}

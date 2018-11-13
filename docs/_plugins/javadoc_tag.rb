@@ -39,6 +39,9 @@
 #     * The artifact can be overridden from the context, eg with the default context "core net.sourceforge.pmd"
 #       {% jdoc java @.lang.java.JavaLanguageModule %} will be linked correctly to pmd-java, and @ will be expanded to
 #       "net.sourceforge.pmd"
+#     * The special package name "<<" may be used to go up once in the package tree. E.g. if the context is
+#       "core @.properties", then {% jdoc @.<<.rule.Rule %} is first expanded to {% jdoc core net.sourceforge.pmd.properties.<<.Rule %},
+#       then reduced to {% jdoc core net.sourceforge.pmd.Rule %}. "<<" behaves the same as ".." in file system paths.
 #
 # * To reference a method or field: {% jdoc @.Rule#addRuleChainVisit(java.lang.Class) %}
 #   * The suffix # is followed by the name of the method or field
@@ -94,7 +97,7 @@ class JavadocTag < Liquid::Tag
 
     options_str = ""
 
-    if %r/^"?(\w+\s+)?((?:!\w+)*!?!)?(@(?:\.\w+)*)(#.*)?"?$/ =~ doc_ref.strip
+    if %r/^"?(\w+\s+)?((?:!\w+)*!?!)?(@(?:\.?+(?:<<|\w+))*)(#.*)?"?$/ =~ doc_ref.strip
 
       @artifact_name = $1 && ("pmd-" + $1.strip) # is nil if not mentioned
       options_str = $2 || ""
@@ -137,12 +140,8 @@ class JavadocTag < Liquid::Tag
 
       if @display_options.include?(ARGS_OPTION) && $2 && !$2.empty? # is method
 
-        p $3
-
 
         args = ($3 || "").split(",").map {|a| a.gsub(/\w+\./, "").strip} # map to simple names
-
-        p args
 
         suffix = "#{suffix}(#{args.join(", ")})"
       end
@@ -167,6 +166,17 @@ class JavadocTag < Liquid::Tag
     end
   end
 
+  def escape_path(fqcn, ctx)
+
+    fqcn = fqcn.gsub("@", ctx.last)
+
+    while fqcn.include? ".<<"
+      fqcn = fqcn.gsub(/\.\w+\.<</, "") # move up in the package tree
+    end
+
+    fqcn
+  end
+
   def render(rendering_context)
 
 
@@ -176,8 +186,8 @@ class JavadocTag < Liquid::Tag
       doc_ctx = JDocContextBlock.get_jdoc_context(rendering_context)
 
       @artifact_name = @artifact_name || doc_ctx.first # if the artifact was mentioned in the tag, it takes precedence
-      @type_fqcn = @type_fqcn.sub("@", doc_ctx.last)
-      @member_suffix = @member_suffix.gsub("@", doc_ctx.last)
+      @type_fqcn = escape_path(@type_fqcn, doc_ctx)
+      @member_suffix = escape_path(@member_suffix, doc_ctx)
     end
 
     visible_name = get_visible_name
