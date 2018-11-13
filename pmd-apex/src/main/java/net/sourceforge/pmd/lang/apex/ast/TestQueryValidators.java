@@ -34,6 +34,7 @@ import apex.jorje.semantic.symbol.resolver.SymbolResolver;
  *
  * @author jspagnola
  */
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass") // this class provides utility classes
 public final class TestQueryValidators {
 
     private TestQueryValidators() {

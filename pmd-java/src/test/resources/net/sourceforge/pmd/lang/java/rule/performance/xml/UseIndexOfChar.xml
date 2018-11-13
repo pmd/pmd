@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello";
+  if (x.indexOf("o") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using single quotes, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello";
+  if (x.indexOf('o') == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+indexOf multi-character literal, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello";
+  if (x.indexOf("ello") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using indexOf(singleCharString, int)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello world";
+  if (x.indexOf("e", 5) == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using lastIndexOf(singleCharString)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello world";
+  if (x.lastIndexOf("e", 5) == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+complicated expressions are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello world";
+  if (x.indexOf("e" + "o") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+all escaped characters
+     ]]></description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String x) {
+  if (x.indexOf("\n") == -1) {}
+  if (x.indexOf("\t") == -1) {}
+  if (x.indexOf("\b") == -1) {}
+  if (x.indexOf("\r") == -1) {}
+  if (x.indexOf("\f") == -1) {}
+  if (x.indexOf("\\") == -1) {}
+  if (x.indexOf("\'") == -1) {}
+  if (x.indexOf("\"") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+a single octal character
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String x) {
+  if (x.indexOf("\12") == -1) {}
+  if (x.indexOf("\123") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+octal character in longer string
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String x) {
+  if (x.indexOf("\1234") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>UseIndexOfChar: null pointer with lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtestcase;
+
+import java.util.function.Consumer;
+
+/**
+ * Created by RWorsnop on 7/8/2014.
+ */
+public class FooTest {
+    public static void main(String[] args) {
+        new String("s");
+        Consumer<String> c = s -> {};
+    }
+}
+        ]]></code>
+        <source-type>java 1.8</source-type>
+    </test-code>
+    <test-code>
+        <description>#1211 PMD is failing with NPE for rule UseIndexOfChar while analyzing Jdk 8 Lambda expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        Optional<Service> optionalResult = null;
+        services.stream()
+            .filter(s -> s.getLastSeen() > 0)
+            .findFirst();
+    }
+}
+        ]]></code>
+        <source-type>java 1.8</source-type>
+    </test-code>
+
+    <test-code>
+        <description>NPE with var used in try-with-resources</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.FileInputStream;
+
+public class LocalVariableTypeInferenceTryWithResources {
+
+    public void aMethod() throws Exception {
+        String filename = "file.txt";
+        try (var in = new FileInputStream(filename)) {
+        }
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+</test-data>

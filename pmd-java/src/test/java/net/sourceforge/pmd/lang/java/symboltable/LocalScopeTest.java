@@ -119,12 +119,8 @@ public class LocalScopeTest extends STBBaseTst {
     public static final String TEST3 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  int x = 2;"
             + PMD.EOL + "  x++;" + PMD.EOL + " }" + PMD.EOL + "}";
 
-    public static final String TEST4 = "public class Foo {" + PMD.EOL + " void foo(String x, String z) { int y; }"
+    public static final String TEST4 = "public class Foo {" + PMD.EOL + " void foo(String x, String z) { { int x; } }"
             + PMD.EOL + "}";
 
     public static final String TEST5 = "public class Foo {" + PMD.EOL + " void foo(String x);" + PMD.EOL + "}";
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(LocalScopeTest.class);
-    }
 }

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>param</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String a[]) { // a should trigger it.
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>none</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+       int bugleDeWump = -1;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>local</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    public static void main(String args[]) {
+       int ab = -1; 
+       // Should trigger ShortVariable rule.
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>for</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+       for (int i = 0; i < 10; i++) { } // Should NOT!! trigger.
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int qx; // Should cause a problem.
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch(Exception e) is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+     try {} catch (Exception e) {}
+    }
+}
+     ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>ShortVariable false positive with for-each loops</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i : ints) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ShortVariable within for-each loops</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for (Integer i : ints) {
+            String s = "a";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1361 ShortVariable configuration - 7 characters</description>
+        <rule-property name="minimum">7</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class ShortVariable {
+    public void bar() {
+        String thisIsOk = "";
+        String foobar = ""; // too short
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1361 ShortVariable configuration - 1 characters</description>
+        <rule-property name="minimum">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ShortVariable {
+    public void bar() {
+        String thisIsOk = "";
+        String foo = ""; // that's ok, too, now
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#720 Whitelist lambda parameters</description>
+        <rule-property name="minimum">1</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class ShortVariable {
+    public void bar() {
+        String thisIsOk = a -> foo();
+        String foo = (a, b) -> foo();
+        String bar = (String a, Boolean b) -> foo();
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

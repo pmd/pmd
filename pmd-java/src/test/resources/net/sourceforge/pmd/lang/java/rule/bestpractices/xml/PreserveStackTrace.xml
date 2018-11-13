@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+1, Exception thrown without preserving stack
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2, Exception thrown, stack preserved
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(e);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3, Exception thrown, stack preserved
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(e, e.getMessage());
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw e.fillInStackTrace();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+6, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+7, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(Bar.foo(e),e);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+8, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw (Error)e;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+9, Excetion is cast, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw (Error)e.fillInStackTrace();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+10, Throwing new Exception, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e10){
+            Exception e1 = new Exception(e10);
+            throw e1;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+11, Throwing new Exception, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            Exception e1 = (Exception)e.fillInStackTrace();
+            throw e1;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+12, Catch and throw RuntimeException
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class B {
+    public void bla() {
+        try {
+            ;
+        } catch (IllegalStateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+13, Catch and throw RuntimeException, fail
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class B {
+    public void bla() {
+        try {
+            ;
+        } catch (IllegalStateException e) {
+            throw new RuntimeException();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+14, Nested with same name catch and throw, fail on inner
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class B {
+    public void bla() {
+        try {
+            try {
+                ;
+            } catch (IllegalStateException ex) {
+                throw new RuntimeException("Oh no!");
+            }
+        } catch (IllegalStateException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+	<test-code>
+        <description><![CDATA[
+15, IllegalStateException can take a cause exception in the constructor, too.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+			;
+        } catch (Exception excep) {
+			throw new IllegalStateException();
+	}
+
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+16, False -, No violations reported by PreserveStackTrace Rule
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+			;
+        } catch (Exception notUsed) {
+			RuntimeException ex = new RuntimeException();
+			throw ex;
+		}
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+17, PreserveStackTrace Rule should exclude this as initCause is used.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+			;
+        } catch (Exception e) {
+			IllegalStateException ex = new IllegalStateException();
+			ex.initCause(e);
+			throw ex;
+		}
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+18, side effects on rules
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar1() {
+        try {
+			;
+        } catch (Exception notUsed) {
+			RuntimeException ex = new RuntimeException();
+			throw ex;
+		}
+    }
+
+    public void bar2() {
+        try {
+			;
+        } catch (Exception e) {
+			IllegalStateException ex = new IllegalStateException();
+			ex.initCause(e);
+			throw ex;
+		}
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+19, False positive
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private static boolean isInstanceOf(final MBeanServer mbs,
+                                        final ObjectName name,
+                                        final String className) {
+        PrivilegedExceptionAction<Boolean> act =
+            new PrivilegedExceptionAction<Boolean>() {
+                public Boolean run() throws InstanceNotFoundException {
+                    return mbs.isInstanceOf(name, className);
+                }
+            };
+        try {
+            return AccessController.doPrivileged(act);
+        } catch (Exception e) {
+            logger.fine("isInstanceOf", "failed: " + e);
+            logger.debug("isInstanceOf", e);
+            return false;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+20, False positive
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+ private CodeException[] getCodeExceptions() {
+    int             size  = exception_vec.size();
+    CodeException[] c_exc = new CodeException[size];
+
+    try {
+      for(int i=0; i < size; i++) {
+        CodeExceptionGen c = (CodeExceptionGen)exception_vec.get(i);
+        c_exc[i] = c.getCodeException(cp);
+      }
+    } catch(ArrayIndexOutOfBoundsException e) {}
+
+    return c_exc;
+  }
+}
+     ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+21, Java 7's multi-catch, NOK
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class MultiCatch {
+
+  public static void main(String[] args) {
+    try {
+      Class.forName("org.example.Foo").newInstance();
+    } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
+      throw new UnsupportedOperationException(args[0]);
+    }
+  }
+
+}
+     ]]></code>
+        <source-type>java 1.7</source-type>
+    </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+22, Java 7's multi-catch, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class MultiCatch {
+
+  public static void main(String[] args) {
+    try {
+      Class.forName("org.example.Foo").newInstance();
+    } catch (InstantiationException | ClassNotFoundException | IllegalAccessException eMultiCatch) {
+      throw new UnsupportedOperationException(eMultiCatch);
+    }
+  }
+
+}
+     ]]></code>
+        <source-type>java 1.7</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#943 PreserveStackTrace false positive if a StringBuffer exists</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Stuff {
+    @SuppressWarnings("unused")
+    public void doStuff() throws SomeException {
+        try {
+            doMoreStuff();
+        } catch (Exception e) {
+            StringBuffer irrelevantSB = new StringBuffer("Irrelevant").append(" string").append(" buffer");
+            SomeException someException = new SomeException(e);
+            throw someException;
+        }
+    }
+
+    private void doMoreStuff() {
+        // Stuff happens
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1087 PreserveStackTrace (still) ignores initCause()</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        try {
+            // do something
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            NoSuchElementException noSuchElementException = new NoSuchElementException(
+                    "Cannot return next element, because there is none!");
+            noSuchElementException.initCause(arrayIndexOutOfBoundsException);
+            throw noSuchElementException;
+        }
+
+        try {
+            // do something
+        } catch (ArrayOutOfBoundsException e) {
+            throw (IllegalStateException)new IllegalStateException().initCause(e);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1087 PreserveStackTrace (still) ignores initCause() - negative test case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public void foo() {
+        try {
+            // do something
+        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+            NoSuchElementException noSuchElementException = new NoSuchElementException(
+                    "Cannot return next element, because there is none!");
+            noSuchElementException.initCause(new RuntimeException("some other unrelated exception"));
+            throw noSuchElementException;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#794 False positive on PreserveStackTrace with anonymous inner</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Bug {
+    void test() throws IOException {
+        try {
+            // do something
+        } catch (final IOException e) {
+            throw new IOException("b") {
+                {
+                    initCause(e);
+                }
+            };
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#422 False positive when using builder pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Bug {
+    void test() throws IOException {
+        try {
+            // do something
+        } catch (final IOException e) {
+            throw uncheckedException(ErrorCodeCommon.DIRECTORY_NOT_FOUND)
+                    .withField("dirname", dirname)
+                    .causedBy(e)
+                    .build();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+    <description>#543 False negative with String concatenation</description>
+    <expected-problems>3</expected-problems>
+    <code><![CDATA[
+public class Foo {
+    public void foo(String a) throws Exception {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(java.io.FileNotFoundException e) {
+            throw new Exception("file not found:" + e.toString());
+        } catch(java.io.IOException e) {
+            throw new Exception("I/O error:" + e);
+        } catch(Exception e) {
+            throw new Exception("something bad:" + (e));
+        }
+    }
+}
+    ]]></code>
+</test-code>
+</test-data>

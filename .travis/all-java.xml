@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All Java Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every java rule in PMD which is used for the regression tests with pmdtester</description>
+
+    <rule ref="category/java/bestpractices.xml" />
+    <rule ref="category/java/codestyle.xml" />
+    <rule ref="category/java/design.xml" />
+    <rule ref="category/java/documentation.xml" />
+    <rule ref="category/java/errorprone.xml" />
+    <rule ref="category/java/multithreading.xml" />
+    <rule ref="category/java/performance.xml" />
+    <rule ref="category/java/security.xml" />
+
+</ruleset>

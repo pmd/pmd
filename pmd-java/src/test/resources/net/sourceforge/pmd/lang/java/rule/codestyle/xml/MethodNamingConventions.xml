@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>method names should start with lowercase character</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void Bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>method names should not contain underscores</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The instance method name 'bar_foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+ void bar_foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1288 MethodNamingConventions for native should be deactivated</description>
+        <rule-property name="checkNativeMethods">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected final native void __surfunc__(float[] data);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1288 MethodNamingConventions for native should be deactivated - prevent false negative</description>
+        <rule-property name="checkNativeMethods">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The native method name '__surfunc__' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    protected final native void __surfunc__(float[] data);
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1343 MethodNamingConventions for overridden methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MethodNamingConventions implements SomeInterface {
+    @Override
+    public void _foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static method pattern</description>
+        <rule-property name="staticPattern">st_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The static method name 'foo' doesn't match 'st_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                static void foo() {
+                }
+
+
+                static void st_whatever() {
+                }
+
+
+                // not reported
+                void bar() {
+                }
+
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Native method pattern</description>
+        <rule-property name="nativePattern">nt_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The native method name 'foo' doesn't match 'nt_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                native void foo() {
+                }
+
+
+                native void nt_whatever() {
+                }
+
+
+                // not reported
+                void bar() {
+                }
+
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>JUnit 3 test detection</description>
+        <rule-property name="junit3TestPattern">test_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 3 test method name 'testGetBestTeam' doesn't match 'test_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.Assert;
+            import junit.framework.TestCase;
+
+
+            public class TournamentTest extends TestCase {
+                Tournament tournament;
+
+
+                public void testGetBestTeam() {
+                }
+
+                // this is ok tho
+                public void test_getBestTeam() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>JUnit 4 test detection</description>
+        <rule-property name="junit4TestPattern">[a-z][A-Za-z]*Test</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>12,16</expected-linenumbers>
+        <expected-messages>
+            <message>The JUnit 4 test method name 'testGetBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+            <message>The JUnit 4 test method name 'getBestTeam' doesn't match '[a-z][A-Za-z]*Test'</message>
+        </expected-messages>
+        <code><![CDATA[
+            import junit.framework.Assert;
+            import junit.framework.TestCase;
+
+            import org.junit.Test;
+
+
+            public class TournamentTest extends TestCase {
+                Tournament tournament;
+
+
+                @Test // note that this is also a junit 3 test, but the junit4 rule applies
+                public void testGetBestTeam() {
+                }
+
+                @Test // this is just a junit 4 test
+                public void getBestTeam() {
+                }
+
+                // this is ok
+                @Test
+                public void getBestTeamTest() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Instance method custom convention</description>
+        <rule-property name="methodPattern">m_[a-z][A-Za-z]*</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The instance method name 'fooBar' doesn't match 'm_[a-z][A-Za-z]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+
+                public void fooBar() {
+                }
+
+                public void m_fooBar() {
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+</test-data>

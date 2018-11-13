@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Simple POM file</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>xml-pom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>x.y.z</groupId>
+            <artifactId>z</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</project>
+     ]]></code>
+        <source-type>pom</source-type>
+    </test-code>
+    <test-code>
+        <description>Simple POM file with violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>xml-pom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>x.y.z</groupId>
+            <artifactId>z</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+     ]]></code>
+        <source-type>pom</source-type>
+    </test-code>
+    <test-code>
+        <description>#715 [xml] ProjectVersionAsDependencyVersion false positive: Valid usage child modules</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>20</expected-linenumbers>
+        <code><![CDATA[
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>a-child</artifactId>
+
+    <parent>
+        <groupId>net.sourceforge.pmd</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>a-different-child</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>unrelated.group</groupId>
+            <artifactId>unrelated-artifact</artifactId>
+            <version>${project.version}</version> <!-- here is the violation -->
+        </dependency>
+    </dependencies>
+</project>
+        ]]></code>
+    </test-code>
+</test-data>

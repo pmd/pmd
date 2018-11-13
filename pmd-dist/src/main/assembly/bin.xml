@@ -52,10 +52,6 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0644</fileMode>
             <useProjectArtifact>false</useProjectArtifact>
-            <!-- exclude the apex (transitive) dependencies - we use the shaded version instead -->
-            <excludes>
-                <exclude>apex:*</exclude>
-            </excludes>
         </dependencySet>
     </dependencySets>
 </assembly>

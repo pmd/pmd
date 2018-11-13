@@ -11,12 +11,15 @@ import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * @author daniels
  */
+@Deprecated
+@InternalApi
 public class DocumentNavigator extends DefaultNavigator {
 
     private static final Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
@@ -48,7 +51,7 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public String getElementName(Object node) {
-        return node.toString();
+        return ((Node) node).getXPathNodeName();
     }
 
     @Override
@@ -135,11 +138,7 @@ public class DocumentNavigator extends DefaultNavigator {
 
     @Override
     public Iterator<Attribute> getAttributeAxisIterator(Object arg0) {
-        if (arg0 instanceof AttributeNode) {
-            return ((AttributeNode) arg0).getAttributeIterator();
-        } else {
-            return new AttributeAxisIterator((Node) arg0);
-        }
+        return ((Node) arg0).getXPathAttributesIterator();
     }
 
     /**

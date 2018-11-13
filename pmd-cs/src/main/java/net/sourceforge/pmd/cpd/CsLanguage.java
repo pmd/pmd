@@ -20,6 +20,7 @@ public class CsLanguage extends AbstractLanguage {
         setProperties(properties);
     }
 
+    @Override
     public final void setProperties(Properties properties) {
         CsTokenizer tokenizer = (CsTokenizer) getTokenizer();
         tokenizer.setProperties(properties);

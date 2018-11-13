@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -25,12 +26,12 @@ public class SwiftTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-        return IOUtils.toString(SwiftTokenizer.class.getResourceAsStream(FILENAME));
+        return IOUtils.toString(SwiftTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
     }
 
     @Test
     public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 3811;
+        this.expectedTokenCount = 4239;
         super.tokenizeTest();
     }
 }

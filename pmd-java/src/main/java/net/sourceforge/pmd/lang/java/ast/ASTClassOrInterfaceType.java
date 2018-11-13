@@ -5,8 +5,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
+
+/**
+ * Represents a class or interface type, possibly parameterised with type arguments.
+ *
+ * <pre>
+ *
+ * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@linkplain ASTTypeArguments TypeArguments}? ( "." &lt;IDENTIFIER&gt;  {@linkplain ASTTypeArguments TypeArguments}? )*
+ *
+ * </pre>
+ *
+ */
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     public ASTClassOrInterfaceType(int id) {
         super(id);
@@ -16,9 +27,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -33,14 +42,12 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
      */
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);
-        List<ASTClassOrInterfaceDeclaration> classes = root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
-        for (ASTClassOrInterfaceDeclaration c : classes) {
+        for (ASTClassOrInterfaceDeclaration c : root.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class, true)) {
             if (c.hasImageEqualTo(getImage())) {
                 return true;
             }
         }
-        List<ASTEnumDeclaration> enums = root.findDescendantsOfType(ASTEnumDeclaration.class);
-        for (ASTEnumDeclaration e : enums) {
+        for (ASTEnumDeclaration e : root.findDescendantsOfType(ASTEnumDeclaration.class, true)) {
             if (e.hasImageEqualTo(getImage())) {
                 return true;
             }
@@ -49,6 +56,22 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
     }
 
     public boolean isAnonymousClass() {
-        return jjtGetParent().hasDescendantOfType(ASTClassOrInterfaceBody.class);
+        return jjtGetParent().getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
+    }
+
+    public boolean isArray() {
+        Node p = jjtGetParent();
+        if (p instanceof ASTReferenceType) {
+            return ((ASTReferenceType) p).isArray();
+        }
+        return false;
+    }
+
+    public int getArrayDepth() {
+        Node p = jjtGetParent();
+        if (p instanceof ASTReferenceType) {
+            return ((ASTReferenceType) p).getArrayDepth();
+        }
+        return 0;
     }
 }

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import apex.jorje.semantic.ast.statement.ForEachStatement;
+import apex.jorje.semantic.ast.statement.foreachstatement.ForEachStatement;
 
 public class ASTForEachStatement extends AbstractApexNode<ForEachStatement> {
 
@@ -12,6 +12,7 @@ public class ASTForEachStatement extends AbstractApexNode<ForEachStatement> {
         super(forEachStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.benchmark;
 
+@Deprecated
 class BenchmarkResult implements Comparable<BenchmarkResult> {
 
     public final Benchmark type;
@@ -37,10 +38,9 @@ class BenchmarkResult implements Comparable<BenchmarkResult> {
 
     @Override
     public int compareTo(BenchmarkResult benchmarkResult) {
-        int cmp = type.index - benchmarkResult.type.index;
+        int cmp = Integer.compare(type.index, benchmarkResult.type.index);
         if (cmp == 0) {
-            long delta = this.time - benchmarkResult.time;
-            cmp = delta > 0 ? 1 : (delta < 0 ? -1 : 0);
+            cmp = Long.compare(this.time, benchmarkResult.time);
         }
         return cmp;
     }

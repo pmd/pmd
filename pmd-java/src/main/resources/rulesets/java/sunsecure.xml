@@ -3,55 +3,13 @@
 <ruleset name="Security Code Guidelines"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 These rules check the security guidelines from Sun, published at http://java.sun.com/security/seccodeguide.html#gcg
   </description>
 
-  <rule name="MethodReturnsInternalArray"
-        since="2.2"
-        message="Returning ''{0}'' may expose an internal array."
-        class="net.sourceforge.pmd.lang.java.rule.sunsecure.MethodReturnsInternalArrayRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sunsecure.html#methodreturnsinternalarray">
-    <description>
-Exposing internal arrays to the caller violates object encapsulation since elements can be 
-removed or replaced outside of the object that owns it. It is safer to return a copy of the array.
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-public class SecureSystem {
-    UserData [] ud;
-    public UserData [] getUserData() {
-        // Don't return directly the internal array, return a copy
-        return ud;
-    }
-}
-]]>
-    </example>
-  </rule>
-
-  <rule name="ArrayIsStoredDirectly"
-        since="2.2"
-        message="The user-supplied array ''{0}'' is stored directly."
-        class="net.sourceforge.pmd.lang.java.rule.sunsecure.ArrayIsStoredDirectlyRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sunsecure.html#arrayisstoreddirectly">
-    <description>
-Constructors and methods receiving arrays should clone objects and store the copy.
-This prevents future changes from the user from affecting the original array.
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-public class Foo {
-    private String [] x;
-        public void foo (String [] param) {
-        // Don't do this, make a copy of the array at least
-        this.x=param;
-    }
-}
-]]>
-    </example>
-  </rule>
+    <!-- Rules, that have been moved into a category -->
+    <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" deprecated="true" />
 
 </ruleset>

@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -22,15 +21,13 @@ import net.sourceforge.pmd.util.IOUtil;
  */
 public class VfTokenizer implements Tokenizer {
 
+    @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(VfLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler();
-        Reader reader = null;
 
-        try {
-            reader = new StringReader(buffer.toString());
-            reader = IOUtil.skipBOM(reader);
+        try (Reader reader = IOUtil.skipBOM(new StringReader(buffer.toString()))) {
             TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
                     .getTokenManager(sourceCode.getFileName(), reader);
             Token currentToken = (Token) tokenMgr.getNextToken();
@@ -40,8 +37,8 @@ public class VfTokenizer implements Tokenizer {
                         currentToken.beginLine));
                 currentToken = (Token) tokenMgr.getNextToken();
             }
-        } finally {
-            IOUtils.closeQuietly(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         tokenEntries.add(TokenEntry.getEOF());
     }

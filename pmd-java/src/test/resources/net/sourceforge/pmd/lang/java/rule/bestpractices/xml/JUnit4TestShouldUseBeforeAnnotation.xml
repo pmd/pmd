@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Contains setUp
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void setUp() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Contains @setUp
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Before
+    public void setUp() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Renamed setup
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Before
+    public void configure() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1400 False positive with JUnit4TestShouldUseBeforeAnnotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Before("@ResetEsSetup")
+    public void setUp() {
+        esSetup.execute(EsSetup.deleteAll());
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1446 False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.BeforeMethod;
+
+public class Foo {
+    @BeforeMethod
+    public void setUp(Method m) {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeEach' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.BeforeEach;
+
+public class Foo {
+    @BeforeEach
+    public void setUp() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseBeforeAnnotation when JUnit5's 'BeforeAll' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.BeforeAll;
+
+public class Foo {
+    @BeforeAll
+    public void setUp() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

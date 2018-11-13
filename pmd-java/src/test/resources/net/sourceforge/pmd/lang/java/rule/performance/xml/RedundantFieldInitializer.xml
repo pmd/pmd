@@ -1,0 +1,1422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description>multiple declarations</description>
+		<expected-problems>5</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    char a1 = 0, a2 = 0; // 2 Bad
+    char a3 = 0, a4; // Bad
+    char a5, a6 = 0; // Bad
+    char a7 = computed(), a8 = 0, a9; // Bad
+
+    static char computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>references</description>
+		<expected-problems>7</expected-problems>
+		<code><![CDATA[
+import java.util.Date;
+
+public class Foo {
+    Object o0;
+    Object o = null; // Bad
+    static Object sto = null; // Bad
+
+    String str0;
+    String str = null; // Bad
+    static String ststr = null; // Bad
+
+    private String sameLine = null, sameLine1 = null; // 2 Bad
+    private String sameLine2, sameLine3 = null; // Bad
+
+    Date d = new Date(null);
+
+    static Object computed() {
+	return null;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>arrays of primitives</description>
+		<expected-problems>7</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    boolean[] ba0;
+    boolean[] ba = null; // Bad
+    boolean[] ba1 = new boolean[] { false };
+    boolean[] ba2 = computed();
+
+    byte[] bya0;
+    byte[] bya = null; // Bad
+    byte[] bya1 = new byte[] { 0 };
+
+    short[] sa0;
+    short[] sa = null; // Bad
+    short[] sa1 = new short[] { 0 };
+
+    char[] ca0;
+    char[] ca = null; // Bad
+    char[] ca1 = new char[] { 0 };
+
+    int[] ia0;
+    int[] ia = null; // Bad
+    int[] ia1 = new int[] { 0 };
+
+    float[] fa0;
+    float[] fa = null; // Bad
+    float[] fa1 = new float[] { 0 };
+
+    double[] da0;
+    double[] da = null; // Bad
+    double[] da1 = new double[] { 0 };
+
+    static boolean[] computed() {
+	return null;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>arrays of objects</description>
+		<expected-problems>2</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    Object[] oa0;
+    Object[] oa = null; // Bad
+    Object[] oa1 = computed();
+
+    Object[][] oaa0;
+    Object[][] oaa = null; // Bad
+    Object[][] ooa1 = new Object[1][];
+    Object[][] ooa2 = new Object[][] { { null } };
+
+    static Object[] computed() {
+	return null;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>mixed arrays</description>
+		<expected-problems>5</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    int i1, iam1[];
+    int i2 = 0, iam2[]; // Bad
+    int i3, iam3[] = null; // Bad
+    int i4 = 0, iam4[] = null; // 2 Bad
+    int i5 = 0, iam5[] = computed(); // Bad
+
+    static int[] computed() {
+	return null;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>nested class</description>
+		<expected-problems>4</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    private static class NestedClass {
+	boolean b0;
+	boolean b = false; // Bad
+	static boolean stb0;
+	static boolean stb = false; // Bad
+	Boolean stB = false;
+	static Boolean B = false;
+
+	double[] da0;
+	double[] da = null; // Bad
+	double[] da1 = new double[] { 0 };
+	double[] da2 = computed();
+
+	Object[][] oaa0;
+	Object[][] oaa = null; // Bad
+	Object[][] ooa1 = new Object[1][];
+	Object[][] ooa2 = new Object[][] { { null } };
+
+	private double[] computed() {
+	    double[] d = null;
+	    return d;
+	}
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>boolean</description>
+		<expected-problems>2</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final boolean a1 = false;
+    final boolean a2 = true;
+    final boolean a3 = computed();
+
+    final Boolean b1 = false;
+    final Boolean b2 = true;
+    final Boolean b3 = computed();
+
+    final static boolean c1 = false;
+    final static boolean c2 = true;
+    final static boolean c3 = computed();
+
+    final static Boolean d1 = false;
+    final static Boolean d2 = true;
+    final static Boolean d3 = computed();
+
+    boolean e1;
+    boolean e2 = false; // Bad
+    boolean e3 = true;
+    boolean e4 = computed();
+
+    Boolean f1;
+    Boolean f2 = false;
+    Boolean f3 = true;
+    Boolean f4 = computed();
+
+    static boolean g1;
+    static boolean g2 = false; // Bad
+    static boolean g3 = true;
+    static boolean g4 = computed();
+
+    static Boolean h1;
+    static Boolean h2 = false;
+    static Boolean h3 = true;
+    static Boolean h4 = computed();
+
+    static boolean computed() {
+	return false;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>byte</description>
+		<expected-problems>14</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final byte a1 = 0;
+    final byte a2 = 1;
+    final byte a3 = (byte) 0L;
+    final byte a4 = (byte) 2L;
+    final byte a5 = 00;
+    final byte a6 = 0123;
+    final byte a7 = (byte) 00L;
+    final byte a8 = (byte) 0123L;
+    final byte a9 = 0x0;
+    final byte a10 = 0x1;
+    final byte a11 = (byte) 0x0L;
+    final byte a12 = (byte) 0x1L;
+    final byte a13 = '\u0000';
+    final byte a14 = 'a';
+    final byte a15 = computed();
+
+    final Byte b1 = 0;
+    final Byte b2 = 1;
+    final Byte b3 = (byte) 0L;
+    final Byte b4 = (byte) 2L;
+    final Byte b5 = 00;
+    final Byte b6 = 0123;
+    final Byte b7 = (byte) 00L;
+    final Byte b8 = (byte) 0123L;
+    final Byte b9 = 0x0;
+    final Byte b10 = 0x1;
+    final Byte b11 = (byte) 0x0L;
+    final Byte b12 = (byte) 0x1L;
+    final Byte b13 = '\u0000';
+    final Byte b14 = 'a';
+    final Byte b15 = computed();
+
+    static final byte c1 = 0;
+    static final byte c2 = 1;
+    static final byte c3 = (byte) 0L;
+    static final byte c4 = (byte) 2L;
+    static final byte c5 = 00;
+    static final byte c6 = 0123;
+    static final byte c7 = (byte) 00L;
+    static final byte c8 = (byte) 0123L;
+    static final byte c9 = 0x0;
+    static final byte c10 = 0x1;
+    static final byte c11 = (byte) 0x0L;
+    static final byte c12 = (byte) 0x1L;
+    static final byte c13 = '\u0000';
+    static final byte c14 = 'a';
+    static final byte c15 = computed();
+
+    static final Byte d1 = 0;
+    static final Byte d2 = 1;
+    static final Byte d3 = (byte) 0L;
+    static final Byte d4 = (byte) 2L;
+    static final Byte d5 = 00;
+    static final Byte d6 = 0123;
+    static final Byte d7 = (byte) 00L;
+    static final Byte d8 = (byte) 0123L;
+    static final Byte d9 = 0x0;
+    static final Byte d10 = 0x1;
+    static final Byte d11 = (byte) 0x0L;
+    static final Byte d12 = (byte) 0x1L;
+    static final Byte d13 = '\u0000';
+    static final Byte d14 = 'a';
+    static final Byte d15 = computed();
+
+    byte e1 = 0; // Bad
+    byte e2 = 1;
+    byte e3 = (byte) 0L; // Bad
+    byte e4 = (byte) 2L;
+    byte e5 = 00; // Bad
+    byte e6 = 0123;
+    byte e7 = (byte) 00L; // Bad
+    byte e8 = (byte) 0123L;
+    byte e9 = 0x0; // Bad
+    byte e10 = 0x1;
+    byte e11 = (byte) 0x0L; // Bad
+    byte e12 = (byte) 0x1L;
+    byte e13 = '\u0000'; // Bad
+    byte e14 = 'a';
+    byte e15 = computed();
+
+    Byte f1 = 0;
+    Byte f2 = 1;
+    Byte f3 = (byte) 0L;
+    Byte f4 = (byte) 2L;
+    Byte f5 = 00;
+    Byte f6 = 0123;
+    Byte f7 = (byte) 00L;
+    Byte f8 = (byte) 0123L;
+    Byte f9 = 0x0;
+    Byte f10 = 0x1;
+    Byte f11 = (byte) 0x0L;
+    Byte f12 = (byte) 0x1L;
+    Byte f13 = '\u0000';
+    Byte f14 = 'a';
+    Byte f15 = computed();
+
+    static byte g1 = 0; // Bad
+    static byte g2 = 1;
+    static byte g3 = (byte) 0L; // Bad
+    static byte g4 = (byte) 2L;
+    static byte g5 = 00; // Bad
+    static byte g6 = 0123;
+    static byte g7 = (byte) 00L; // Bad
+    static byte g8 = (byte) 0123L;
+    static byte g9 = 0x0; // Bad
+    static byte g10 = 0x1;
+    static byte g11 = (byte) 0x0L; // Bad
+    static byte g12 = (byte) 0x1L;
+    static byte g13 = '\u0000'; // Bad
+    static byte g14 = 'a';
+    static byte g15 = computed();
+
+    static Byte h1 = 0;
+    static Byte h2 = 1;
+    static Byte h3 = (byte) 0L;
+    static Byte h4 = (byte) 2L;
+    static Byte h5 = 00;
+    static Byte h6 = 0123;
+    static Byte h7 = (byte) 00L;
+    static Byte h8 = (byte) 0123L;
+    static Byte h9 = 0x0;
+    static Byte h10 = 0x1;
+    static Byte h11 = (byte) 0x0L;
+    static Byte h12 = (byte) 0x1L;
+    static Byte h13 = '\u0000';
+    static Byte h14 = 'a';
+    static Byte h15 = computed();
+
+    static byte computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>char</description>
+		<expected-problems>14</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final char a1 = 0;
+    final char a2 = 1;
+    final char a3 = (char) 0L;
+    final char a4 = (char) 2L;
+    final char a5 = 00;
+    final char a6 = 0123;
+    final char a7 = (char) 00L;
+    final char a8 = (char) 0123L;
+    final char a9 = 0x0;
+    final char a10 = 0x1;
+    final char a11 = (char) 0x0L;
+    final char a12 = (char) 0x1L;
+    final char a13 = '\u0000';
+    final char a14 = 'a';
+    final char a15 = computed();
+
+    final Character b1 = 0;
+    final Character b2 = 1;
+    final Character b3 = (char) 0L;
+    final Character b4 = (char) 2L;
+    final Character b5 = 00;
+    final Character b6 = 0123;
+    final Character b7 = (char) 00L;
+    final Character b8 = (char) 0123L;
+    final Character b9 = 0x0;
+    final Character b10 = 0x1;
+    final Character b11 = (char) 0x0L;
+    final Character b12 = (char) 0x1L;
+    final Character b13 = '\u0000';
+    final Character b14 = 'a';
+    final Character b15 = computed();
+
+    static final char c1 = 0;
+    static final char c2 = 1;
+    static final char c3 = (char) 0L;
+    static final char c4 = (char) 2L;
+    static final char c5 = 00;
+    static final char c6 = 0123;
+    static final char c7 = (char) 00L;
+    static final char c8 = (char) 0123L;
+    static final char c9 = 0x0;
+    static final char c10 = 0x1;
+    static final char c11 = (char) 0x0L;
+    static final char c12 = (char) 0x1L;
+    static final char c13 = '\u0000';
+    static final char c14 = 'a';
+    static final char c15 = computed();
+
+    static final Character d1 = 0;
+    static final Character d2 = 1;
+    static final Character d3 = (char) 0L;
+    static final Character d4 = (char) 2L;
+    static final Character d5 = 00;
+    static final Character d6 = 0123;
+    static final Character d7 = (char) 00L;
+    static final Character d8 = (char) 0123L;
+    static final Character d9 = 0x0;
+    static final Character d10 = 0x1;
+    static final Character d11 = (char) 0x0L;
+    static final Character d12 = (char) 0x1L;
+    static final Character d13 = '\u0000';
+    static final Character d14 = 'a';
+    static final Character d15 = computed();
+
+    char e1 = 0; // Bad
+    char e2 = 1;
+    char e3 = (char) 0L; // Bad
+    char e4 = (char) 2L;
+    char e5 = 00; // Bad
+    char e6 = 0123;
+    char e7 = (char) 00L; // Bad
+    char e8 = (char) 0123L;
+    char e9 = 0x0; // Bad
+    char e10 = 0x1;
+    char e11 = (char) 0x0L; // Bad
+    char e12 = (char) 0x1L;
+    char e13 = '\u0000'; // Bad
+    char e14 = 'a';
+    char e15 = computed();
+
+    Character f1 = 0;
+    Character f2 = 1;
+    Character f3 = (char) 0L;
+    Character f4 = (char) 2L;
+    Character f5 = 00;
+    Character f6 = 0123;
+    Character f7 = (char) 00L;
+    Character f8 = (char) 0123L;
+    Character f9 = 0x0;
+    Character f10 = 0x1;
+    Character f11 = (char) 0x0L;
+    Character f12 = (char) 0x1L;
+    Character f13 = '\u0000';
+    Character f14 = 'a';
+    Character f15 = computed();
+
+    static char g1 = 0; // Bad
+    static char g2 = 1;
+    static char g3 = (char) 0L; // Bad
+    static char g4 = (char) 2L;
+    static char g5 = 00; // Bad
+    static char g6 = 0123;
+    static char g7 = (char) 00L; // Bad
+    static char g8 = (char) 0123L;
+    static char g9 = 0x0; // Bad
+    static char g10 = 0x1;
+    static char g11 = (char) 0x0L; // Bad
+    static char g12 = (char) 0x1L;
+    static char g13 = '\u0000'; // Bad
+    static char g14 = 'a';
+    static char g15 = computed();
+
+    static Character h1 = 0;
+    static Character h2 = 1;
+    static Character h3 = (char) 0L;
+    static Character h4 = (char) 2L;
+    static Character h5 = 00;
+    static Character h6 = 0123;
+    static Character h7 = (char) 00L;
+    static Character h8 = (char) 0123L;
+    static Character h9 = 0x0;
+    static Character h10 = 0x1;
+    static Character h11 = (char) 0x0L;
+    static Character h12 = (char) 0x1L;
+    static Character h13 = '\u0000';
+    static Character h14 = 'a';
+    static Character h15 = computed();
+
+    static char computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>short</description>
+		<expected-problems>14</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final short a1 = 0;
+    final short a2 = 1;
+    final short a3 = (short) 0L;
+    final short a4 = (short) 2L;
+    final short a5 = 00;
+    final short a6 = 0123;
+    final short a7 = (short) 00L;
+    final short a8 = (short) 0123L;
+    final short a9 = 0x0;
+    final short a10 = 0x1;
+    final short a11 = (short) 0x0L;
+    final short a12 = (short) 0x1L;
+    final short a13 = '\u0000';
+    final short a14 = 'a';
+    final short a15 = computed();
+
+    final Short b1 = 0;
+    final Short b2 = 1;
+    final Short b3 = (short) 0L;
+    final Short b4 = (short) 2L;
+    final Short b5 = 00;
+    final Short b6 = 0123;
+    final Short b7 = (short) 00L;
+    final Short b8 = (short) 0123L;
+    final Short b9 = 0x0;
+    final Short b10 = 0x1;
+    final Short b11 = (short) 0x0L;
+    final Short b12 = (short) 0x1L;
+    final Short b13 = '\u0000';
+    final Short b14 = 'a';
+    final Short b15 = computed();
+
+    static final short c1 = 0;
+    static final short c2 = 1;
+    static final short c3 = (short) 0L;
+    static final short c4 = (short) 2L;
+    static final short c5 = 00;
+    static final short c6 = 0123;
+    static final short c7 = (short) 00L;
+    static final short c8 = (short) 0123L;
+    static final short c9 = 0x0;
+    static final short c10 = 0x1;
+    static final short c11 = (short) 0x0L;
+    static final short c12 = (short) 0x1L;
+    static final short c13 = '\u0000';
+    static final short c14 = 'a';
+    static final short c15 = computed();
+
+    static final Short d1 = 0;
+    static final Short d2 = 1;
+    static final Short d3 = (short) 0L;
+    static final Short d4 = (short) 2L;
+    static final Short d5 = 00;
+    static final Short d6 = 0123;
+    static final Short d7 = (short) 00L;
+    static final Short d8 = (short) 0123L;
+    static final Short d9 = 0x0;
+    static final Short d10 = 0x1;
+    static final Short d11 = (short) 0x0L;
+    static final Short d12 = (short) 0x1L;
+    static final Short d13 = '\u0000';
+    static final Short d14 = 'a';
+    static final Short d15 = computed();
+
+    short e1 = 0; // Bad
+    short e2 = 1;
+    short e3 = (short) 0L; // Bad
+    short e4 = (short) 2L;
+    short e5 = 00; // Bad
+    short e6 = 0123;
+    short e7 = (short) 00L; // Bad
+    short e8 = (short) 0123L;
+    short e9 = 0x0; // Bad
+    short e10 = 0x1;
+    short e11 = (short) 0x0L; // Bad
+    short e12 = (short) 0x1L;
+    short e13 = '\u0000'; // Bad
+    short e14 = 'a';
+    short e15 = computed();
+
+    Short f1 = 0;
+    Short f2 = 1;
+    Short f3 = (short) 0L;
+    Short f4 = (short) 2L;
+    Short f5 = 00;
+    Short f6 = 0123;
+    Short f7 = (short) 00L;
+    Short f8 = (short) 0123L;
+    Short f9 = 0x0;
+    Short f10 = 0x1;
+    Short f11 = (short) 0x0L;
+    Short f12 = (short) 0x1L;
+    Short f13 = '\u0000';
+    Short f14 = 'a';
+    Short f15 = computed();
+
+    static short g1 = 0; // Bad
+    static short g2 = 1;
+    static short g3 = (short) 0L; // Bad
+    static short g4 = (short) 2L;
+    static short g5 = 00; // Bad
+    static short g6 = 0123;
+    static short g7 = (short) 00L; // Bad
+    static short g8 = (short) 0123L;
+    static short g9 = 0x0; // Bad
+    static short g10 = 0x1;
+    static short g11 = (short) 0x0L; // Bad
+    static short g12 = (short) 0x1L;
+    static short g13 = '\u0000'; // Bad
+    static short g14 = 'a';
+    static short g15 = computed();
+
+    static Short h1 = 0;
+    static Short h2 = 1;
+    static Short h3 = (short) 0L;
+    static Short h4 = (short) 2L;
+    static Short h5 = 00;
+    static Short h6 = 0123;
+    static Short h7 = (short) 00L;
+    static Short h8 = (short) 0123L;
+    static Short h9 = 0x0;
+    static Short h10 = 0x1;
+    static Short h11 = (short) 0x0L;
+    static Short h12 = (short) 0x1L;
+    static Short h13 = '\u0000';
+    static Short h14 = 'a';
+    static Short h15 = computed();
+
+    static short computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>int</description>
+		<expected-problems>14</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final int a1 = 0;
+    final int a2 = 1;
+    final int a3 = (int) 0L;
+    final int a4 = (int) 2L;
+    final int a5 = 00;
+    final int a6 = 0123;
+    final int a7 = (int) 00L;
+    final int a8 = (int) 0123L;
+    final int a9 = 0x0;
+    final int a10 = 0x1;
+    final int a11 = (int) 0x0L;
+    final int a12 = (int) 0x1L;
+    final int a13 = '\u0000';
+    final int a14 = 'a';
+    final int a15 = computed();
+
+    final Integer b1 = 0;
+    final Integer b2 = 1;
+    final Integer b3 = (int) 0L;
+    final Integer b4 = (int) 2L;
+    final Integer b5 = 00;
+    final Integer b6 = 0123;
+    final Integer b7 = (int) 00L;
+    final Integer b8 = (int) 0123L;
+    final Integer b9 = 0x0;
+    final Integer b10 = 0x1;
+    final Integer b11 = (int) 0x0L;
+    final Integer b12 = (int) 0x1L;
+    final Integer b13 = '\u0000';
+    final Integer b14 = 'a';
+    final Integer b15 = computed();
+
+    static final int c1 = 0;
+    static final int c2 = 1;
+    static final int c3 = (int) 0L;
+    static final int c4 = (int) 2L;
+    static final int c5 = 00;
+    static final int c6 = 0123;
+    static final int c7 = (int) 00L;
+    static final int c8 = (int) 0123L;
+    static final int c9 = 0x0;
+    static final int c10 = 0x1;
+    static final int c11 = (int) 0x0L;
+    static final int c12 = (int) 0x1L;
+    static final int c13 = '\u0000';
+    static final int c14 = 'a';
+    static final int c15 = computed();
+
+    static final Integer d1 = 0;
+    static final Integer d2 = 1;
+    static final Integer d3 = (int) 0L;
+    static final Integer d4 = (int) 2L;
+    static final Integer d5 = 00;
+    static final Integer d6 = 0123;
+    static final Integer d7 = (int) 00L;
+    static final Integer d8 = (int) 0123L;
+    static final Integer d9 = 0x0;
+    static final Integer d10 = 0x1;
+    static final Integer d11 = (int) 0x0L;
+    static final Integer d12 = (int) 0x1L;
+    static final Integer d13 = '\u0000';
+    static final Integer d14 = 'a';
+    static final Integer d15 = computed();
+
+    int e1 = 0; // Bad
+    int e2 = 1;
+    int e3 = (int) 0L; // Bad
+    int e4 = (int) 2L;
+    int e5 = 00; // Bad
+    int e6 = 0123;
+    int e7 = (int) 00L; // Bad
+    int e8 = (int) 0123L;
+    int e9 = 0x0; // Bad
+    int e10 = 0x1;
+    int e11 = (int) 0x0L; // Bad
+    int e12 = (int) 0x1L;
+    int e13 = '\u0000'; // Bad
+    int e14 = 'a';
+    int e15 = computed();
+
+    Integer f1 = 0;
+    Integer f2 = 1;
+    Integer f3 = (int) 0L;
+    Integer f4 = (int) 2L;
+    Integer f5 = 00;
+    Integer f6 = 0123;
+    Integer f7 = (int) 00L;
+    Integer f8 = (int) 0123L;
+    Integer f9 = 0x0;
+    Integer f10 = 0x1;
+    Integer f11 = (int) 0x0L;
+    Integer f12 = (int) 0x1L;
+    Integer f13 = '\u0000';
+    Integer f14 = 'a';
+    Integer f15 = computed();
+
+    static int g1 = 0; // Bad
+    static int g2 = 1;
+    static int g3 = (int) 0L; // Bad
+    static int g4 = (int) 2L;
+    static int g5 = 00; // Bad
+    static int g6 = 0123;
+    static int g7 = (int) 00L; // Bad
+    static int g8 = (int) 0123L;
+    static int g9 = 0x0; // Bad
+    static int g10 = 0x1;
+    static int g11 = (int) 0x0L; // Bad
+    static int g12 = (int) 0x1L;
+    static int g13 = '\u0000'; // Bad
+    static int g14 = 'a';
+    static int g15 = computed();
+
+    static Integer h1 = 0;
+    static Integer h2 = 1;
+    static Integer h3 = (int) 0L;
+    static Integer h4 = (int) 2L;
+    static Integer h5 = 00;
+    static Integer h6 = 0123;
+    static Integer h7 = (int) 00L;
+    static Integer h8 = (int) 0123L;
+    static Integer h9 = 0x0;
+    static Integer h10 = 0x1;
+    static Integer h11 = (int) 0x0L;
+    static Integer h12 = (int) 0x1L;
+    static Integer h13 = '\u0000';
+    static Integer h14 = 'a';
+    static Integer h15 = computed();
+
+    static int computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>long</description>
+		<expected-problems>14</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final long a1 = 0;
+    final long a2 = 1;
+    final long a3 = (long) 0L;
+    final long a4 = (long) 2L;
+    final long a5 = 00;
+    final long a6 = 0123;
+    final long a7 = (long) 00L;
+    final long a8 = (long) 0123L;
+    final long a9 = 0x0;
+    final long a10 = 0x1;
+    final long a11 = (long) 0x0L;
+    final long a12 = (long) 0x1L;
+    final long a13 = '\u0000';
+    final long a14 = 'a';
+    final long a15 = computed();
+
+    final Long b1 = 0L;
+    final Long b2 = 2L;
+    final Long b3 = 00L;
+    final Long b4 = 0123L;
+    final Long b5 = 0x0L;
+    final Long b6 = 0x1L;
+    final Long b7 = (long) '\u0000';
+    final Long b8 = (long) 'a';
+    final Long b9 = computed();
+
+    static final long c1 = 0;
+    static final long c2 = 1;
+    static final long c3 = (long) 0L;
+    static final long c4 = (long) 2L;
+    static final long c5 = 00;
+    static final long c6 = 0123;
+    static final long c7 = (long) 00L;
+    static final long c8 = (long) 0123L;
+    static final long c9 = 0x0;
+    static final long c10 = 0x1;
+    static final long c11 = (long) 0x0L;
+    static final long c12 = (long) 0x1L;
+    static final long c13 = '\u0000';
+    static final long c14 = 'a';
+    static final long c15 = computed();
+
+    static final Long d1 = 0L;
+    static final Long d2 = 2L;
+    static final Long d3 = 00L;
+    static final Long d4 = 0123L;
+    static final Long d5 = 0x0L;
+    static final Long d6 = 0x1L;
+    static final Long d7 = (long) '\u0000';
+    static final Long d8 = (long) 'a';
+    static final Long d9 = computed();
+
+    long e1 = 0; // Bad
+    long e2 = 1;
+    long e3 = (long) 0L; // Bad
+    long e4 = (long) 2L;
+    long e5 = 00; // Bad
+    long e6 = 0123;
+    long e7 = (long) 00L; // Bad
+    long e8 = (long) 0123L;
+    long e9 = 0x0; // Bad
+    long e10 = 0x1;
+    long e11 = (long) 0x0L; // Bad
+    long e12 = (long) 0x1L;
+    long e13 = '\u0000'; // Bad
+    long e14 = 'a';
+    long e15 = computed();
+
+    Long f1 = 0L;
+    Long f2 = 2L;
+    Long f3 = 00L;
+    Long f4 = 0123L;
+    Long f5 = 0x0L;
+    Long f6 = 0x1L;
+    Long f7 = (long) '\u0000';
+    Long f8 = (long) 'a';
+    Long f9 = computed();
+
+    static long g1 = 0; // Bad
+    static long g2 = 1;
+    static long g3 = (long) 0L; // Bad
+    static long g4 = (long) 2L;
+    static long g5 = 00; // Bad
+    static long g6 = 0123;
+    static long g7 = (long) 00L; // Bad
+    static long g8 = (long) 0123L;
+    static long g9 = 0x0; // Bad
+    static long g10 = 0x1;
+    static long g11 = (long) 0x0L; // Bad
+    static long g12 = (long) 0x1L;
+    static long g13 = '\u0000'; // Bad
+    static long g14 = 'a';
+    static long g15 = computed();
+
+    static Long h1 = 0L;
+    static Long h2 = 2L;
+    static Long h3 = 00L;
+    static Long h4 = 0123L;
+    static Long h5 = 0x0L;
+    static Long h6 = 0x1L;
+    static Long h7 = (long) '\u0000';
+    static Long h8 = (long) 'a';
+    static Long h9 = computed();
+
+    static long computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>float</description>
+		<expected-problems>22</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final float a1 = 0;
+    final float a2 = 1;
+    final float a3 = (float) 0L;
+    final float a4 = (float) 2L;
+    final float a5 = 00;
+    final float a6 = 0123;
+    final float a7 = (float) 00L;
+    final float a8 = (float) 0123L;
+    final float a9 = 0x0;
+    final float a10 = 0x1;
+    final float a11 = (float) 0x0L;
+    final float a12 = (float) 0x1L;
+    final float a13 = '\u0000';
+    final float a14 = 'a';
+    final float a15 = computed();
+    final float a16 = 0.0f;
+    final float a17 = 2.0f;
+    final float a18 = 6.022137e+23f;
+    final float a19 = 0x0.0p0f;
+    final float a20 = 0x1.2p3f;
+    final float a21 = (float) 0.0d;
+    final float a22 = (float) 2.0d;
+    final float a23 = (float) 6.022137e+23d;
+    final float a24 = (float) 0x0.0p0d;
+    final float a25 = (float) 0x1.2p3d;
+
+    final Float b1 = (float) 0L;
+    final Float b2 = (float) 2L;
+    final Float b3 = (float) 00L;
+    final Float b4 = (float) 0123L;
+    final Float b5 = (float) 0x0L;
+    final Float b6 = (float) 0x1L;
+    final Float b7 = (float) '\u0000';
+    final Float b8 = (float) 'a';
+    final Float b9 = computed();
+    final Float b10 = 0.0f;
+    final Float b11 = 2.0f;
+    final Float b12 = 6.022137e+23f;
+    final Float b13 = 0x0.0p0f;
+    final Float b14 = 0x1.2p3f;
+    final Float b15 = (float) 0.0d;
+    final Float b16 = (float) 2.0d;
+    final Float b17 = (float) 6.022137e+23d;
+    final Float b18 = (float) 0x0.0p0d;
+    final Float b19 = (float) 0x1.2p3d;
+
+    static final float c1 = 0;
+    static final float c2 = 1;
+    static final float c3 = (float) 0L;
+    static final float c4 = (float) 2L;
+    static final float c5 = 00;
+    static final float c6 = 0123;
+    static final float c7 = (float) 00L;
+    static final float c8 = (float) 0123L;
+    static final float c9 = 0x0;
+    static final float c10 = 0x1;
+    static final float c11 = (float) 0x0L;
+    static final float c12 = (float) 0x1L;
+    static final float c13 = '\u0000';
+    static final float c14 = 'a';
+    static final float c15 = computed();
+    static final float c16 = 0.0f;
+    static final float c17 = 2.0f;
+    static final float c18 = 6.022137e+23f;
+    static final float c19 = 0x0.0p0f;
+    static final float c20 = 0x1.2p3f;
+    static final float c21 = (float) 0.0d;
+    static final float c22 = (float) 2.0d;
+    static final float c23 = (float) 6.022137e+23d;
+    static final float c24 = (float) 0x0.0p0d;
+    static final float c25 = (float) 0x1.2p3d;
+
+    static final Float d1 = (float) 0L;
+    static final Float d2 = (float) 2L;
+    static final Float d3 = (float) 00L;
+    static final Float d4 = (float) 0123L;
+    static final Float d5 = (float) 0x0L;
+    static final Float d6 = (float) 0x1L;
+    static final Float d7 = (float) '\u0000';
+    static final Float d8 = (float) 'a';
+    static final Float d9 = computed();
+    static final Float d10 = 0.0f;
+    static final Float d11 = 2.0f;
+    static final Float d12 = 6.022137e+23f;
+    static final Float d13 = 0x0.0p0f;
+    static final Float d14 = 0x1.2p3f;
+    static final Float d15 = (float) 0.0d;
+    static final Float d16 = (float) 2.0d;
+    static final Float d17 = (float) 6.022137e+23d;
+    static final Float d18 = (float) 0x0.0p0d;
+    static final Float d19 = (float) 0x1.2p3d;
+
+    float e1 = 0; // Bad
+    float e2 = 1;
+    float e3 = (float) 0L; // Bad
+    float e4 = (float) 2L;
+    float e5 = 00; // Bad
+    float e6 = 0123;
+    float e7 = (float) 00L; // Bad
+    float e8 = (float) 0123L;
+    float e9 = 0x0; // Bad
+    float e10 = 0x1;
+    float e11 = (float) 0x0L; // Bad
+    float e12 = (float) 0x1L;
+    float e13 = '\u0000'; // Bad
+    float e14 = 'a';
+    float e15 = computed();
+    float e16 = 0.0f; // Bad
+    float e17 = 2.0f;
+    float e18 = 6.022137e+23f;
+    float e19 = 0x0.0p0f; // Bad
+    float e20 = 0x1.2p3f;
+    float e21 = (float) 0.0d; // Bad
+    float e22 = (float) 2.0d;
+    float e23 = (float) 6.022137e+23d;
+    float e24 = (float) 0x0.0p0d; // Bad
+    float e25 = (float) 0x1.2p3d;
+
+    Float f1 = (float) 0L;
+    Float f2 = (float) 2L;
+    Float f3 = (float) 00L;
+    Float f4 = (float) 0123L;
+    Float f5 = (float) 0x0L;
+    Float f6 = (float) 0x1L;
+    Float f7 = (float) '\u0000';
+    Float f8 = (float) 'a';
+    Float f9 = computed();
+    Float f10 = 0.0f;
+    Float f11 = 2.0f;
+    Float f12 = 6.022137e+23f;
+    Float f13 = 0x0.0p0f;
+    Float f14 = 0x1.2p3f;
+    Float f15 = (float) 0.0d;
+    Float f16 = (float) 2.0d;
+    Float f17 = (float) 6.022137e+23d;
+    Float f18 = (float) 0x0.0p0d;
+    Float f19 = (float) 0x1.2p3d;
+
+    static float g1 = 0; // Bad
+    static float g2 = 1;
+    static float g3 = (float) 0L; // Bad
+    static float g4 = (float) 2L;
+    static float g5 = 00; // Bad
+    static float g6 = 0123;
+    static float g7 = (float) 00L; // Bad
+    static float g8 = (float) 0123L;
+    static float g9 = 0x0; // Bad
+    static float g10 = 0x1;
+    static float g11 = (float) 0x0L; // Bad
+    static float g12 = (float) 0x1L;
+    static float g13 = '\u0000'; // Bad
+    static float g14 = 'a';
+    static float g15 = computed();
+    static float g16 = 0.0f; // Bad
+    static float g17 = 2.0f;
+    static float g18 = 6.022137e+23f;
+    static float g19 = 0x0.0p0f; // Bad
+    static float g20 = 0x1.2p3f;
+    static float g21 = (float) 0.0d; // Bad
+    static float g22 = (float) 2.0d;
+    static float g23 = (float) 6.022137e+23d;
+    static float g24 = (float) 0x0.0p0d; // Bad
+    static float g25 = (float) 0x1.2p3d;
+
+    static Float h1 = (float) 0L;
+    static Float h2 = (float) 2L;
+    static Float h3 = (float) 00L;
+    static Float h4 = (float) 0123L;
+    static Float h5 = (float) 0x0L;
+    static Float h6 = (float) 0x1L;
+    static Float h7 = (float) '\u0000';
+    static Float h8 = (float) 'a';
+    static Float h9 = computed();
+    static Float h10 = 0.0f;
+    static Float h11 = 2.0f;
+    static Float h12 = 6.022137e+23f;
+    static Float h13 = 0x0.0p0f;
+    static Float h14 = 0x1.2p3f;
+    static Float h15 = (float) 0.0d;
+    static Float h16 = (float) 2.0d;
+    static Float h17 = (float) 6.022137e+23d;
+    static Float h18 = (float) 0x0.0p0d;
+    static Float h19 = (float) 0x1.2p3d;
+
+    static float computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>double</description>
+		<expected-problems>22</expected-problems>
+		<code><![CDATA[
+public class Foo {
+    final double a1 = 0;
+    final double a2 = 1;
+    final double a3 = (double) 0L;
+    final double a4 = (double) 2L;
+    final double a5 = 00;
+    final double a6 = 0123;
+    final double a7 = (double) 00L;
+    final double a8 = (double) 0123L;
+    final double a9 = 0x0;
+    final double a10 = 0x1;
+    final double a11 = (double) 0x0L;
+    final double a12 = (double) 0x1L;
+    final double a13 = '\u0000';
+    final double a14 = 'a';
+    final double a15 = computed();
+    final double a16 = 0.0f;
+    final double a17 = 2.0f;
+    final double a18 = 6.022137e+23f;
+    final double a19 = 0x0.0p0f;
+    final double a20 = 0x1.2p3f;
+    final double a21 = (double) 0.0d;
+    final double a22 = (double) 2.0d;
+    final double a23 = (double) 6.022137e+23d;
+    final double a24 = (double) 0x0.0p0d;
+    final double a25 = (double) 0x1.2p3d;
+
+    final Double b1 = (double) 0L;
+    final Double b2 = (double) 2L;
+    final Double b3 = (double) 00L;
+    final Double b4 = (double) 0123L;
+    final Double b5 = (double) 0x0L;
+    final Double b6 = (double) 0x1L;
+    final Double b7 = (double) '\u0000';
+    final Double b8 = (double) 'a';
+    final Double b9 = computed();
+    final Double b10 = (double) 0.0f;
+    final Double b11 = (double) 2.0f;
+    final Double b12 = (double) 6.022137e+23f;
+    final Double b13 = (double) 0x0.0p0f;
+    final Double b14 = (double) 0x1.2p3f;
+    final Double b15 = (double) 0.0d;
+    final Double b16 = (double) 2.0d;
+    final Double b17 = (double) 6.022137e+23d;
+    final Double b18 = (double) 0x0.0p0d;
+    final Double b19 = (double) 0x1.2p3d;
+
+    static final double c1 = 0;
+    static final double c2 = 1;
+    static final double c3 = (double) 0L;
+    static final double c4 = (double) 2L;
+    static final double c5 = 00;
+    static final double c6 = 0123;
+    static final double c7 = (double) 00L;
+    static final double c8 = (double) 0123L;
+    static final double c9 = 0x0;
+    static final double c10 = 0x1;
+    static final double c11 = (double) 0x0L;
+    static final double c12 = (double) 0x1L;
+    static final double c13 = '\u0000';
+    static final double c14 = 'a';
+    static final double c15 = computed();
+    static final double c16 = 0.0f;
+    static final double c17 = 2.0f;
+    static final double c18 = 6.022137e+23f;
+    static final double c19 = 0x0.0p0f;
+    static final double c20 = 0x1.2p3f;
+    static final double c21 = (double) 0.0d;
+    static final double c22 = (double) 2.0d;
+    static final double c23 = (double) 6.022137e+23d;
+    static final double c24 = (double) 0x0.0p0d;
+    static final double c25 = (double) 0x1.2p3d;
+
+    static final Double d1 = (double) 0L;
+    static final Double d2 = (double) 2L;
+    static final Double d3 = (double) 00L;
+    static final Double d4 = (double) 0123L;
+    static final Double d5 = (double) 0x0L;
+    static final Double d6 = (double) 0x1L;
+    static final Double d7 = (double) '\u0000';
+    static final Double d8 = (double) 'a';
+    static final Double d9 = computed();
+    static final Double d10 = (double) 0.0f;
+    static final Double d11 = (double) 2.0f;
+    static final Double d12 = (double) 6.022137e+23f;
+    static final Double d13 = (double) 0x0.0p0f;
+    static final Double d14 = (double) 0x1.2p3f;
+    static final Double d15 = (double) 0.0d;
+    static final Double d16 = (double) 2.0d;
+    static final Double d17 = (double) 6.022137e+23d;
+    static final Double d18 = (double) 0x0.0p0d;
+    static final Double d19 = (double) 0x1.2p3d;
+
+    double e1 = 0; // Bad
+    double e2 = 1;
+    double e3 = (double) 0L; // Bad
+    double e4 = (double) 2L;
+    double e5 = 00; // Bad
+    double e6 = 0123;
+    double e7 = (double) 00L; // Bad
+    double e8 = (double) 0123L;
+    double e9 = 0x0; // Bad
+    double e10 = 0x1;
+    double e11 = (double) 0x0L; // Bad
+    double e12 = (double) 0x1L;
+    double e13 = '\u0000'; // Bad
+    double e14 = 'a';
+    double e15 = computed();
+    double e16 = 0.0f; // Bad
+    double e17 = 2.0f;
+    double e18 = 6.022137e+23f;
+    double e19 = 0x0.0p0f; // Bad
+    double e20 = 0x1.2p3f;
+    double e21 = (double) 0.0d; // Bad
+    double e22 = (double) 2.0d;
+    double e23 = (double) 6.022137e+23d;
+    double e24 = (double) 0x0.0p0d; // Bad
+    double e25 = (double) 0x1.2p3d;
+
+    Double f1 = (double) 0L;
+    Double f2 = (double) 2L;
+    Double f3 = (double) 00L;
+    Double f4 = (double) 0123L;
+    Double f5 = (double) 0x0L;
+    Double f6 = (double) 0x1L;
+    Double f7 = (double) '\u0000';
+    Double f8 = (double) 'a';
+    Double f9 = computed();
+    Double f10 = (double) 0.0f;
+    Double f11 = (double) 2.0f;
+    Double f12 = (double) 6.022137e+23f;
+    Double f13 = (double) 0x0.0p0f;
+    Double f14 = (double) 0x1.2p3f;
+    Double f15 = (double) 0.0d;
+    Double f16 = (double) 2.0d;
+    Double f17 = (double) 6.022137e+23d;
+    Double f18 = (double) 0x0.0p0d;
+    Double f19 = (double) 0x1.2p3d;
+
+    static double g1 = 0; // Bad
+    static double g2 = 1;
+    static double g3 = (double) 0L; // Bad
+    static double g4 = (double) 2L;
+    static double g5 = 00; // Bad
+    static double g6 = 0123;
+    static double g7 = (double) 00L; // Bad
+    static double g8 = (double) 0123L;
+    static double g9 = 0x0; // Bad
+    static double g10 = 0x1;
+    static double g11 = (double) 0x0L; // Bad
+    static double g12 = (double) 0x1L;
+    static double g13 = '\u0000'; // Bad
+    static double g14 = 'a';
+    static double g15 = computed();
+    static double g16 = 0.0f; // Bad
+    static double g17 = 2.0f;
+    static double g18 = 6.022137e+23f;
+    static double g19 = 0x0.0p0f; // Bad
+    static double g20 = 0x1.2p3f;
+    static double g21 = (double) 0.0d; // Bad
+    static double g22 = (double) 2.0d;
+    static double g23 = (double) 6.022137e+23d;
+    static double g24 = (double) 0x0.0p0d; // Bad
+    static double g25 = (double) 0x1.2p3d;
+
+    static Double h1 = (double) 0L;
+    static Double h2 = (double) 2L;
+    static Double h3 = (double) 00L;
+    static Double h4 = (double) 0123L;
+    static Double h5 = (double) 0x0L;
+    static Double h6 = (double) 0x1L;
+    static Double h7 = (double) '\u0000';
+    static Double h8 = (double) 'a';
+    static Double h9 = computed();
+    static Double h10 = (double) 0.0f;
+    static Double h11 = (double) 2.0f;
+    static Double h12 = (double) 6.022137e+23f;
+    static Double h13 = (double) 0x0.0p0f;
+    static Double h14 = (double) 0x1.2p3f;
+    static Double h15 = (double) 0.0d;
+    static Double h16 = (double) 2.0d;
+    static Double h17 = (double) 6.022137e+23d;
+    static Double h18 = (double) 0x0.0p0d;
+    static Double h19 = (double) 0x1.2p3d;
+
+    static double computed() {
+	return 0;
+    }
+}
+     ]]></code>
+	</test-code>
+
+    <test-code>
+        <description>#1298 Member variable int type with value 0xff000000 causes processing error</description>
+        <expected-problems>0</expected-problems>
+        <code>
+public class LinePoint {
+    private int mColor = 0xFF000000;
+}
+        </code>
+    </test-code>
+    <test-code>
+        <description>Java7 binary literals and underscores</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>12,13,14,15,16</expected-linenumbers>
+        <code>
+public class Bar {
+    private int x = 0b0101;
+    private int y = 0B0101;
+    private long xl = 0b0101l;
+    private long yl = 0B0101L;
+
+    private int a = 12_34;
+    private int b = 0xff_00_00_00;
+    private long c = 0b11010010_01101001_10010100_10010010;
+
+    // now problem cases
+    private int iszero1 = 0b0;
+    private int iszero2 = 0B0;
+    private long iszero3 = 0b0l;
+    private long iszero4 = 0B0L;
+    private int iszero5 = 0b0_______0;
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>#1418 RedundantFieldInitializer false positive with large long value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeClass {
+    private long someNumber = 0x100000000000L;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1443 RedundantFieldInitializer: False positive for small floats</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class SomeClass {
+    private float someNumber = 0.1f;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#215 - False positive for annotation fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface SomeAnnotation {
+    int CONSTANT = 0;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>java7 numeric literals</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,21,31,47</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+  int i1 = 0b00011110;
+  int i2 = 0B00011110;
+  int i3 = 0xA;
+  int i4 = 0x1___A_F;
+  int i5 = 0b1;
+  int i6 = 0b1___1_0;
+  int i7 = 0;
+  int i8 = 02;
+  int i9 = 0_123;
+  int i10 = 1;
+  int i11 = 1___3;
+  int i12 = 1_43_43598_7;
+
+  long l1 = 0b00011110L;
+  long l2 = 0B00011110l;
+  long l3 = 0xAL;
+  long l4 = 0x1___A_FL;
+  long l5 = 0b1L;
+  long l6 = 0b1___1_0L;
+  long l7 = 0l;
+  long l8 = 02L;
+  long l9 = 0_123l;
+  long l10 = 1l;
+  long l11 = 1___3l;
+  long l12 = 1_43_43598_7L;
+  long l13 = 1_43_43598_7;
+  
+  float f1 = .1f;
+  float f2 = 1.f;
+  float f3 = 0f;
+  float f4 = 1e0F;
+  float f5 = 1e0f;
+  float f6 = 12.345F;
+  float f7 = .5____2_1f;
+  float f8 = 1__42__3.f;
+  float f9 = 0__2_4__324f;
+  float f10 = 1_34e0F;
+  float f11 = 1__1_2e0f;
+  float f12 = 2_1___2.3__4_5F;
+  float f13 = 1_34e0__4__3f;
+  float f14 = 1__1_2e00__000_4f;
+  float f15 = 2_1___2.3__4_5e00______0_5F;
+  
+  double d1 = .1d;
+  double d2 = 1.D;
+  double d3 = 0d;
+  double d4 = 1e0D;
+  double d5 = 1e0d;
+  double d6 = 12.345D;
+  double d7 = .5____2_1d;
+  double d8 = 1__42__3.D;
+  double d9 = 0__2_4__324d;
+  double d10 = 1_34e0d;
+  double d11 = 1__1_2e0d;
+  double d12 = 2_1___2.3__4_5D;
+  double d13 = 1_34e0__4__3d;
+  double d14 = 1__1_2e00__000_4d;
+  double d15 = 2_1___2.3__4_5e00______0_5D;
+  double d16 = 0.12___34;
+  
+  float hf1 = 0x.1___AFp1;
+  float hf2 = 0x.1___AFp0__0__0f;
+  float hf3 = 0x2__3_34.4___AFP00_00f;
+  
+  double hd1 = 0x.1___AFp1;
+  double hd2 = 0x.1___AFp0__0__0d;
+  double hd3 = 0x2__3_34.4___AFP00_00d;
+  
+  int doc1 = 1234_5678;
+  long doc2 = 1_2_3_4__5_6_7_8L;
+  int doc3 = 0b0001_0010_0100_1000;
+  double doc4 = 3.141_592_653_589_793d;
+  double doc5 = 0x1.ffff_ffff_ffff_fP1_023;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1298 [java] RedundantFieldInitializer - NumberFormatException with Long</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class RedundantFieldInitializerTest {
+    private long hexLongMinusOne = 0xffffffffffffffffL;
+    private int hexIntMinusOne = 0xffffffff;
+}
+        ]]></code>
+    </test-code>
+</test-data>

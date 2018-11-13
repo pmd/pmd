@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+ok, implements Cloneable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Cloneable {
+ void clone() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, doesn't implement Cloneable
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void clone() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, not Object.clone since method has a param
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void clone(int x) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, doesn't implement Cloneable but only throw CloneNotSupportedException
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ final Object clone() { throw new CloneNotSupportedException(); }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, inner class implements Cloneable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ class Foo implements Cloneable {
+  void clone() {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, implements interface in same package which extends Cloneable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+public class FooX extends MyInterface {
+ void clone() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, implements interface imported implicitly which extends Cloneable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.*;
+public class FooX extends MyInterface {
+ void clone() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, implements interface which extends Cloneable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooX extends net.sourceforge.pmd.lang.java.rule.errorprone.MyInterface {
+ void clone() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, extends superclass AND implements cloneable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends Bar implements Cloneable{
+ void clone() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1698550, nr 1
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public final Object clone() throws CloneNotSupportedException {
+throw new CloneNotSupportedException();
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1698550, nr 2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+public Object clone() throws CloneNotSupportedException {
+throw new CloneNotSupportedException();
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 681, extending a class which implements Clonable.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyAbstractClass implements Cloneable{
+}
+public class MyClonableClass extends MyAbstractClass{
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1765613, NullPointerException on enum
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    BAR("bar");
+
+    private String bar;
+
+    public String getBar() {
+        return bar;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1534 [java] CloneMethodMustImplementCloneable: ClassCastException with Annotation (java8)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable - part 1: interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+  interface TestInterface extends Cloneable {
+    TestInterface clone();
+  }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1532 [java] CloneMethodMustImplementCloneable: Implemented Interface extends Cloneable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+  interface TestInterface extends Cloneable {
+    TestInterface clone();
+  }
+
+  class CloneableClass implements TestInterface {
+    @Override // creates a warning though CloneableClass is actually implementing Cloneable
+    public CloneableClass clone() {
+      // clone implementation
+    }
+  }
+        ]]></code>
+    </test-code>
+</test-data>

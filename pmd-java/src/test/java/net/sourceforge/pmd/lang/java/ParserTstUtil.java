@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
 public class ParserTstUtil {
@@ -65,6 +67,9 @@ public class ParserTstUtil {
         }
     }
 
+    // TODO provide a configurable api to choose which visitors to invoke
+    // it makes no sense
+
     public static <E> Set<E> getNodes(Class<E> clazz, String javaCode) {
         return getNodes(LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion(), clazz, javaCode);
     }
@@ -89,10 +94,9 @@ public class ParserTstUtil {
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(),
                 new Class[] { JavaParserVisitor.class }, coll);
         jpv.visit(cu, null);
-        SymbolFacade sf = new SymbolFacade();
-        sf.initializeWith(cu);
-        DataFlowFacade dff = new DataFlowFacade();
-        dff.initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
+        new QualifiedNameResolver().initializeWith(ParserTstUtil.class.getClassLoader(), cu);
+        new SymbolFacade().initializeWith(cu);
+        new DataFlowFacade().initializeWith(languageVersionHandler.getDataFlowHandler(), cu);
 
         return (List<E>) coll.getCollection();
     }
@@ -146,6 +150,16 @@ public class ParserTstUtil {
     }
 
     /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava9(String code) {
+        return parseJava(getLanguageVersionHandler("9"), code);
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava10(String code) {
+        return parseJava(getLanguageVersionHandler("10"), code);
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava13(Class<?> source) {
         return parseJava13(getSourceFromClass(source));
     }
@@ -168,6 +182,16 @@ public class ParserTstUtil {
     /** @see #parseJava(LanguageVersionHandler, String)  */
     public static ASTCompilationUnit parseJava18(Class<?> source) {
         return parseJava18(getSourceFromClass(source));
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava9(Class<?> source) {
+        return parseJava9(getSourceFromClass(source));
+    }
+
+    /** @see #parseJava(LanguageVersionHandler, String)  */
+    public static ASTCompilationUnit parseJava10(Class<?> source) {
+        return parseJava10(getSourceFromClass(source));
     }
 
     /** @see #parseJava(LanguageVersionHandler, String) */
@@ -201,6 +225,7 @@ public class ParserTstUtil {
     public static ASTCompilationUnit parseJava(LanguageVersionHandler languageVersionHandler, String code) {
         ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
                 .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new StringReader(code));
+        languageVersionHandler.getQualifiedNameResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
         languageVersionHandler.getSymbolFacade().start(rootNode);
         return rootNode;
     }
@@ -214,10 +239,23 @@ public class ParserTstUtil {
         }
         String source;
         try {
-            source = IOUtils.toString(is);
+            source = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return source;
+    }
+
+    public static ASTCompilationUnit parseAndTypeResolveJava(String javaVersion, String sourceCode) {
+        LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler(javaVersion);
+        ASTCompilationUnit rootNode = (ASTCompilationUnit) languageVersionHandler
+                .getParser(languageVersionHandler.getDefaultParserOptions())
+                    .parse(null, new StringReader(sourceCode));
+        languageVersionHandler.getQualifiedNameResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
+        languageVersionHandler.getSymbolFacade().start(rootNode);
+        languageVersionHandler.getDataFlowFacade().start(rootNode);
+        languageVersionHandler.getTypeResolutionFacade(ParserTstUtil.class.getClassLoader()).start(rootNode);
+        languageVersionHandler.getMultifileFacade().start(rootNode);
+        return rootNode;
     }
 }

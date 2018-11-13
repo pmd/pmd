@@ -12,6 +12,7 @@ public class ASTNestedStoreExpression extends AbstractApexNode<NestedStoreExpres
         super(node);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

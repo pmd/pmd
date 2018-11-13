@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -42,9 +43,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         return "xml";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void start() throws IOException {
         String encoding = getProperty(ENCODING);
@@ -63,9 +61,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         writer.write(buf.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
@@ -118,9 +113,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void end() throws IOException {
         Writer writer = getWriter();
@@ -181,7 +173,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         buffer.append("<pmd xmlns=\"http://pmd.sourceforge.net/report/2.0.0\"").append(PMD.EOL)
             .append("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"").append(PMD.EOL)
             .append("    xsi:schemaLocation=\"http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd\"").append(PMD.EOL)
-            .append("    version=\"").append(PMD.VERSION).append('"');
+            .append("    version=\"").append(PMDVersion.VERSION).append('"');
     }
 
     private void createTimestampAttr(StringBuilder buffer) {

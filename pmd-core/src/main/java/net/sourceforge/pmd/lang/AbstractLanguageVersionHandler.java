@@ -51,14 +51,21 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
     }
 
     @Override
-    public VisitorStarter getMetricsVisitorFacade() {
+    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return VisitorStarter.DUMMY;
     }
 
     @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
+    public VisitorStarter getMultifileFacade() {
         return VisitorStarter.DUMMY;
     }
+
+
+    @Override
+    public VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader) {
+        return VisitorStarter.DUMMY;
+    }
+
 
     @Override
     public DFAGraphRule getDFAGraphRule() {

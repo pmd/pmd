@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<ruleset name="Security"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag potential security flaws.
+    </description>
+
+    <rule name="VfCsrf"
+          since="5.6.0"
+          message="Avoid calling VF action upon page load"
+          class="net.sourceforge.pmd.lang.vf.rule.security.VfCsrfRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vf_security.html#vfcsrf">
+        <description>
+Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
+]]>
+        </example>
+    </rule>
+
+    <rule name="VfUnescapeEl"
+          since="5.6.0"
+          message="Avoid unescaped user controlled content in EL"
+          class="net.sourceforge.pmd.lang.vf.rule.security.VfUnescapeElRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vf_security.html#vfunescapeel">
+        <description>
+Avoid unescaped user controlled content in EL as it results in XSS.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<apex:outputText value="Potential XSS is {! here }" escape="false" />
+]]>
+        </example>
+    </rule>
+
+</ruleset>

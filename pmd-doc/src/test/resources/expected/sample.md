@@ -6,6 +6,7 @@ folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../rulesets/ruledoctest/sample.xml
 keywords: Sample, OverrideBothEqualsAndHashcode, JumbledIncrementer, DeprecatedSample, RenamedRule, MovedRule
+language: Java
 ---
 ## DeprecatedSample
 
@@ -17,13 +18,14 @@ keywords: Sample, OverrideBothEqualsAndHashcode, JumbledIncrementer, DeprecatedS
 
 Just some description of a deprecated rule.
 
-```
+**This rule is defined by the following XPath expression:**
+``` xpath
 //ForStatement
 ```
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/DeprecatedSample" />
+<rule ref="category/java/sample.xml/DeprecatedSample" />
 ```
 
 ## JumbledIncrementer
@@ -34,7 +36,8 @@ Just some description of a deprecated rule.
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
-```
+**This rule is defined by the following XPath expression:**
+``` xpath
 //ForStatement
  [
   ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
@@ -59,20 +62,29 @@ public class JumbledIncrementerRule1 {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|sampleAdditionalProperty|the value|This is a additional property for tests|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|no|
+|sampleMultiStringProperty|Value1 \| Value2|Test property with multiple strings|yes. Delimiter is '\|'.|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|no|
+|sampleRegexProperty1|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|no|
+|sampleRegexProperty2|\[a-z\]\*|The property is of type regex|no|
+|sampleRegexProperty3|\\s+|The property is of type regex|no|
+|sampleRegexProperty4|\_dd\_|The property is of type regex|no|
+|sampleRegexProperty5|\[0-9\]{1,3}|The property is of type regex|no|
+|sampleRegexProperty6|\\b|The property is of type regex|no|
+|sampleRegexProperty7|\\n|The property is of type regex|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/JumbledIncrementer" />
+<rule ref="category/java/sample.xml/JumbledIncrementer" />
 ```
 
 ## MovedRule
 
 <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
 
-The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_basic.html#jumbledincrementer)
+The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_sample2.html#jumbledincrementer)
 
 **Since:** PMD 1.0
 
@@ -80,7 +92,8 @@ The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pm
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
-```
+**This rule is defined by the following XPath expression:**
+``` xpath
 //ForStatement
   [
     ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
@@ -105,7 +118,7 @@ public class JumbledIncrementerRule1 {
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/MovedRule" />
+<rule ref="category/java/sample.xml/MovedRule" />
 ```
 
 ## OverrideBothEqualsAndHashcode
@@ -120,7 +133,13 @@ Override both `public boolean Object.equals(Object other)`, and `public int Obje
 Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
 delegating to your superclass.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/net/sourceforge/pmd/lang/java/rule/basic/OverrideBothEqualsAndHashcodeRule.java)
+Second paragraph.
+
+    Code sample
+
+Third paragraph.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule](https://github.com/pmd/pmd/blob/master/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashcodeRule.java)
 
 **Example(s):**
 
@@ -149,7 +168,7 @@ public class Foo {      // perfect, both methods provided
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/OverrideBothEqualsAndHashcode" />
+<rule ref="category/java/sample.xml/OverrideBothEqualsAndHashcode" />
 ```
 
 ## RenamedRule
@@ -164,7 +183,8 @@ This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincremente
 
 Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 
-```
+**This rule is defined by the following XPath expression:**
+``` xpath
 //ForStatement
  [
   ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
@@ -189,11 +209,20 @@ public class JumbledIncrementerRule1 {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|sampleAdditionalProperty|the value|This is a additional property for tests|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|sampleAdditionalProperty|the value|This is a additional property for tests|no|
+|sampleMultiStringProperty|Value1 \| Value2|Test property with multiple strings|yes. Delimiter is '\|'.|
+|sampleDeprecatedProperty|test|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This is a sample deprecated property for tests|no|
+|sampleRegexProperty1|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|The property is of type regex|no|
+|sampleRegexProperty2|\[a-z\]\*|The property is of type regex|no|
+|sampleRegexProperty3|\\s+|The property is of type regex|no|
+|sampleRegexProperty4|\_dd\_|The property is of type regex|no|
+|sampleRegexProperty5|\[0-9\]{1,3}|The property is of type regex|no|
+|sampleRegexProperty6|\\b|The property is of type regex|no|
+|sampleRegexProperty7|\\n|The property is of type regex|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/java/sample.xml/RenamedRule" />
+<rule ref="category/java/sample.xml/RenamedRule" />
 ```

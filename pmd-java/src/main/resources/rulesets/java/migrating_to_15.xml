@@ -3,18 +3,15 @@
 <ruleset name="Migration15"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 Contains rules for migrating to JDK 1.5
   </description>
 
-  <rule ref="rulesets/java/migrating.xml/AvoidEnumAsIdentifier"/>
-  <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/ShortInstantiation"/>
-  <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>
+    <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" deprecated="true" />
+    <rule ref="category/java/performance.xml/ByteInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/IntegerInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/LongInstantiation" deprecated="true" />
+    <rule ref="category/java/performance.xml/ShortInstantiation" deprecated="true" />
 
 </ruleset>
-
-
-

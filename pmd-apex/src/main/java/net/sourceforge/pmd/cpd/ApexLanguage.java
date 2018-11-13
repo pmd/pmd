@@ -17,6 +17,7 @@ public class ApexLanguage extends AbstractLanguage {
         setProperties(properties);
     }
 
+    @Override
     public final void setProperties(Properties properties) {
         ApexTokenizer tokenizer = (ApexTokenizer) getTokenizer();
         tokenizer.setProperties(properties);

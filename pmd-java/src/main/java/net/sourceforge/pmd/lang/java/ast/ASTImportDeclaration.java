@@ -5,6 +5,25 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an import declaration in a Java file.
+ *
+ * <pre>
+ *
+ * ImportDeclaration ::= "import" "static"? {@linkplain ASTName Name} ( "." "*" )? ";"
+ *
+ * </pre>
+ *
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS 7.5</a>
+ *
+ */
+// TODO should this really be a type node?
+// E.g. for on-demand imports, what's the type of this node? There's no type name, just a package name
+// for on-demand static imports?
+// for static imports of a field? the type of the field or the type of the enclosing type?
+// for static imports of a method?
+// I don't think we can work out a spec without surprising corner cases, and #1207 will abstract
+// things away anyway, so I think we should make it a regular node
 public class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     private boolean isImportOnDemand;
@@ -19,18 +38,47 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+
+    /**
+     * @deprecated Will be made private with 7.0.0
+     */
+    @Deprecated
     public void setImportOnDemand() {
         isImportOnDemand = true;
     }
 
+
+    // @formatter:off
+    /**
+     * Returns true if this is an import-on-demand declaration,
+     * aka "wildcard import".
+     *
+     * <ul>
+     *     <li>If this is a static import, then the imported names are those
+     *     of the accessible static members of the named type;
+     *     <li>Otherwise, the imported names are the names of the accessible types
+     *     of the named type or named package.
+     * </ul>
+     */
+    // @formatter:on
     public boolean isImportOnDemand() {
         return isImportOnDemand;
     }
 
+
+    /**
+     * @deprecated Will be made private with 7.0.0
+     */
+    @Deprecated
     public void setStatic() {
         isStatic = true;
     }
 
+
+    /**
+     * Returns true if this is a static import. If this import is not on-demand,
+     * {@link #getImportedSimpleName()} returns the name of the imported member.
+     */
     public boolean isStatic() {
         return isStatic;
     }
@@ -41,10 +89,35 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return (ASTName) jjtGetChild(0);
     }
 
+
+    /**
+     * Returns the full name of the import. For on-demand imports, this is the name without
+     * the final dot and asterisk.
+     */
     public String getImportedName() {
-        return ((ASTName) jjtGetChild(0)).getImage();
+        return jjtGetChild(0).getImage();
     }
 
+
+    /**
+     * Returns the simple name of the type or method imported by this declaration.
+     * For on-demand imports, returns {@code null}.
+     */
+    public String getImportedSimpleName() {
+        if (isImportOnDemand) {
+            return null;
+        }
+
+        String importName = getImportedName();
+        return importName.substring(importName.lastIndexOf('.') + 1);
+    }
+
+
+    /**
+     * Returns the "package" prefix of the imported name. For type imports, including on-demand
+     * imports, this is really the package name of the imported type(s). For static imports,
+     * this is actually the qualified name of the enclosing type, including the type name.
+     */
     public String getPackageName() {
         String importName = getImportedName();
         if (isImportOnDemand) {
@@ -57,9 +130,6 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return importName.substring(0, lastDot);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -69,6 +139,15 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         this.pkg = packge;
     }
 
+
+    /**
+     * Returns the {@link Package} instance representing the package of the
+     * type or method imported by this declaration. This may be null if the
+     * auxclasspath is not correctly set, as this method depends on correct
+     * type resolution.
+     */
+    // TODO deprecate? This is only used in a test. I don't think it's really
+    // useful and it gives work to ClassTypeResolver.
     public Package getPackage() {
         return this.pkg;
     }

@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -76,6 +78,7 @@ public class ApexParserTest {
 
         // BlockStatement - the whole method body
         Node blockStatement = method1.jjtGetChild(1);
+        assertTrue(((ASTBlockStatement) blockStatement).hasCurlyBrace());
         assertPosition(blockStatement, 2, 27, 5, 5);
 
         // the expression ("System.out...")
@@ -111,7 +114,7 @@ public class ApexParserTest {
 
         for (File file : fList) {
             if (file.isFile() && file.getName().endsWith(".cls")) {
-                String sourceCode = FileUtils.readFileToString(file);
+                String sourceCode = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
                 ApexNode<Compilation> rootNode = parse(sourceCode);
                 Assert.assertNotNull(rootNode);
             }
@@ -125,12 +128,13 @@ public class ApexParserTest {
      */
     @Test
     public void stackOverflowDuringClassParsing() throws Exception {
-        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"));
+        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
+                StandardCharsets.UTF_8);
         ApexNode<Compilation> rootNode = parse(source);
         Assert.assertNotNull(rootNode);
 
         int count = visitPosition(rootNode, 0);
-        Assert.assertEquals(489, count);
+        Assert.assertEquals(427, count);
     }
 
     private int visitPosition(Node node, int count) {

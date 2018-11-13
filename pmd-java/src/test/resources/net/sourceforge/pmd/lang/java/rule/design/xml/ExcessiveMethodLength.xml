@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+short
+     ]]></description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+    }
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="long"><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    } // 11 lines - violation
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+long, normal range
+     ]]></description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="long"/>
+    </test-code>
+    <test-code>
+        <description>long, minimum with longer range</description>
+        <rule-property name="minimum">20</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="long"/>
+    </test-code>
+    <test-code>
+        <description>not quite long</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    } // 9 lines - Not a violation
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>Consider constructors, refs #825</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo(String args[]) {
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

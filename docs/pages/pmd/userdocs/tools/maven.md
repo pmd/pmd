@@ -1,5 +1,6 @@
 ---
 title: Maven PMD Plugin
+tags: [userdocs, tools]
 permalink: /pmd_userdocs_tools_maven.html
 last_updated: August 2017
 author: >
@@ -112,6 +113,20 @@ writing a ruleset can be found [here](pmd_userdocs_understanding_rulesets.html).
 Note that if you include other rulesets in your own rulesets, you have to be sure that the plugin
 will be able to resolve those other ruleset references.
 
+#### Enabling Incremental Analysis
+
+When using the Maven PMD plugin 3.8 or later along with PMD 5.6.0 or later, you can enable incremental analysis to
+speed up PMD's execution while retaining the quality of the analysis. You can additionally customize where the cache is stored::
+
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+            <analysisCache>true</analysisCache> <!-- enable incremental analysis -->
+            <analysisCacheLocation>${project.build.directory}/pmd/pmd.cache</analysisCacheLocation> <!-- Optional: points to this location by default -->
+        </configuration>
+    </plugin>
+
 #### Other configurations
 
 The Maven PMD plugin allows you to configure CPD, targetJDK, and the use of XRef to link
@@ -139,7 +154,7 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:
 ``` xml
 <project>
     <properties>
-        <pmdVersion>...choose your version...</version>
+        <pmdVersion>...choose your version...</pmdVersion>
     </properties>
 ...
     <build>

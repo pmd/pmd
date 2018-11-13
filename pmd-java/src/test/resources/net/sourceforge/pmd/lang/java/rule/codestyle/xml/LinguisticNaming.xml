@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>Method Prefix is</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'isValid' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixIs {
+    int isotherm() {
+        return 1;
+    }
+
+    int isValid() { // violation
+        return 1;
+    }
+
+    boolean isSmall() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix Has</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'hasChild' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixHas {
+    int haskell() {
+        return 1;
+    }
+
+    int hasChild() { // violation
+        return 1;
+    }
+
+    boolean hasHorn() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix Have</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'haveChild' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixHave {
+    int havelock() {
+        return 1;
+    }
+
+    int haveChild() { // violation
+        return 1;
+    }
+
+    boolean haveHorn() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix can</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'canFly' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixCan {
+    int cannibal() {
+        return 1;
+    }
+
+    int canFly() { // violation
+        return 1;
+    }
+
+    boolean canWalk() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix will</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'willFly' indicates linguistically it returns a boolean, but it returns 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixWill {
+    int william() {
+        return 1;
+    }
+
+    int willFly() { // violation
+        return 1;
+    }
+
+    boolean willWalk() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix should</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The method 'shouldFly' indicates linguistically it returns a boolean, but it returns 'long'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixShould {
+    int shoulder() {
+        return 1;
+    }
+
+    long shouldFly() { // violation
+        return 1L;
+    }
+
+    boolean shouldWalk() {
+        return true;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Setters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The setter 'setName' should not return any type except void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithSetters {
+    int settlement() {
+        return 1;
+    }
+
+    int setName() { // violation
+        return 1;
+    }
+
+    void setFlag() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Getters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The getter 'getName' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithGetters {
+    void getaways() {
+        // do something
+    }
+
+    void getName() { // violation
+        // do something
+    }
+
+    int getCount() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix to: Transform Method</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'toDataType' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixTo {
+    void tokenize() {
+        // do something
+    }
+
+    void toDataType() { // violation
+        // do something
+    }
+
+    int toMyInteger() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Prefix as: Transform Method with property configuration</description>
+        <rule-property name="transformMethodNames">as</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'asDataType' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixAs {
+    void aspect() {
+        // do something
+    }
+
+    void asDataType() { // violation
+        // do something
+    }
+
+    int asNumber() {
+        return 1;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Contains To: Transformation methods</description>
+        <rule-property name="checkTransformMethods">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'grapeToWine' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixTo {
+    void grapeToWine() { // violation
+        // do something
+    }
+
+    int hopsToBeer() {
+        return 1;
+    }
+
+    void doneTooMuch() { // shouldn't report a violation, since "To" is not followed by uppercase letter
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method Contains As: Transformation methods with configured infix</description>
+        <rule-property name="checkTransformMethods">true</rule-property>
+        <rule-property name="transformMethodNames">as</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The transform method 'grapeAsWine' should not return void linguistically</message>
+        </expected-messages>
+        <code><![CDATA[
+public class MethodTypeAndNameIsInconsistentWithPrefixTo {
+    void grapeAsWine() { // violation
+        // do something
+    }
+
+    int hopsAsBeer() {
+        return 1;
+    }
+
+    void defaultAspectConfig() { // shouldn't report a violation, since "As" is not followed by uppercase letter
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix is</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'isValid' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'isValidLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixIs {
+    int isotherm;
+    int isValid; // violation
+    boolean isTrue;
+
+    void myMethod() {
+        int isothermLocal;
+        int isValidLocal; // violation
+        boolean isTrueLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix has</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'hasMoney' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'hasMoneyLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixHas {
+    int haskell;
+    int hasMoney; // violation
+    boolean hasSalary;
+
+    void myMethod() {
+        int haskellLocal;
+        int hasMoneyLocal; // violation
+        boolean hasSalaryLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix can</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'canFly' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'canFlyLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixCan {
+    int cannibal;
+    int canFly; // violation
+    boolean canWalk;
+
+    void myMethod() {
+        int cannibalLocal;
+        int canFlyLocal; // violation
+        boolean canWalkLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix will</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'willMove' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'willMoveLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixWill {
+    int william;
+    int willMove; // violation
+    boolean willRun;
+
+    void myMethod() {
+        int williamLocal;
+        int willMoveLocal; // violation
+        boolean willRunLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix have</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'haveLegs' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'haveLegsLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixHave {
+    int havexxx;
+    int haveLegs; // violation
+    boolean haveHorns;
+
+    void myMethod() {
+        int havexxxLocal;
+        int haveLegsLocal; // violation
+        boolean haveHornsLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field/Variable Prefix should</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>Linguistics Antipattern - The field 'shouldClimb' indicates linguistically it is a boolean, but it is 'int'</message>
+            <message>Linguistics Antipattern - The variable 'shouldClimbLocal' indicates linguistically it is a boolean, but it is 'int'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class AttributeTypeAndNameIsInconsistentWithPrefixShould {
+    int shoulder;
+    int shouldClimb; // violation
+    boolean shouldEat;
+
+    void myMethod() {
+        int shoulderLocal;
+        int shouldClimbLocal; // violation
+        boolean shouldEatLocal;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple fields/local variables</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,2,4,4</expected-linenumbers>
+        <code><![CDATA[
+public class MultipleLocalVariables {
+    int hasMoney, willMove;
+    void myMethod() {
+        int canFly, shouldClimb;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Boolean fields/methods false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class BooleanFieldsMethodFP {
+    Boolean canFly;
+
+    public Boolean isFull() {
+        return true;
+    }
+
+    public void myMethod() {
+        Boolean hasLegs;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1334 [java] LinguisticNaming should support AtomicBooleans</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class AtomicBooleanFP {
+    private final AtomicBoolean isX = new AtomicBoolean(true);
+    private final AtomicBoolean hasX = new AtomicBoolean(true);
+    private final AtomicBoolean canX = new AtomicBoolean(true);
+    private final AtomicBoolean haveX = new AtomicBoolean(true);
+    private final AtomicBoolean willX = new AtomicBoolean(true);
+    private final AtomicBoolean shouldX = new AtomicBoolean(true);
+
+    public AtomicBoolean isX() {
+        return isX;
+    }
+    public AtomicBoolean hasX() {
+        return hasX;
+    }
+    public AtomicBoolean canX() {
+        return canX;
+    }
+    public AtomicBoolean haveX() {
+        return haveX;
+    }
+    public AtomicBoolean willX() {
+        return willX;
+    }
+    public AtomicBoolean shouldX() {
+        return shouldX;
+    }
+    public void localVariables() {
+        AtomicBoolean isX = new AtomicBoolean(true);
+        AtomicBoolean hasX = new AtomicBoolean(true);
+        AtomicBoolean canX = new AtomicBoolean(true);
+        AtomicBoolean haveX = new AtomicBoolean(true);
+        AtomicBoolean willX = new AtomicBoolean(true);
+        AtomicBoolean shouldX = new AtomicBoolean(true);
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#1334 [java] LinguisticNaming should support AtomicBooleans false negative</description>
+        <expected-problems>18</expected-problems>
+        <code><![CDATA[
+import another.pkg.AtomicBoolean;
+
+public class AtomicBooleanFN {
+    private final AtomicBoolean isX = new AtomicBoolean(true);
+    private final AtomicBoolean hasX = new AtomicBoolean(true);
+    private final AtomicBoolean canX = new AtomicBoolean(true);
+    private final AtomicBoolean haveX = new AtomicBoolean(true);
+    private final AtomicBoolean willX = new AtomicBoolean(true);
+    private final AtomicBoolean shouldX = new AtomicBoolean(true);
+
+    public AtomicBoolean isX() {
+        return isX;
+    }
+    public AtomicBoolean hasX() {
+        return hasX;
+    }
+    public AtomicBoolean canX() {
+        return canX;
+    }
+    public AtomicBoolean haveX() {
+        return haveX;
+    }
+    public AtomicBoolean willX() {
+        return willX;
+    }
+    public AtomicBoolean shouldX() {
+        return shouldX;
+    }
+    public void localVariables() {
+        AtomicBoolean isX = new AtomicBoolean(true);
+        AtomicBoolean hasX = new AtomicBoolean(true);
+        AtomicBoolean canX = new AtomicBoolean(true);
+        AtomicBoolean haveX = new AtomicBoolean(true);
+        AtomicBoolean willX = new AtomicBoolean(true);
+        AtomicBoolean shouldX = new AtomicBoolean(true);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

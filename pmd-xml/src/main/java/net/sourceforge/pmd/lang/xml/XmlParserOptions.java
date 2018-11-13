@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -14,7 +15,6 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.util.StringUtil;
 
 public class XmlParserOptions extends ParserOptions {
 
@@ -43,6 +43,7 @@ public class XmlParserOptions extends ParserOptions {
             "Specifies whether XML parser will attempt to lookup the DTD.", Boolean.FALSE, 10.0f);
 
     public static final EntityResolver SILENT_ENTITY_RESOLVER = new EntityResolver() {
+        @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
             return new InputSource(new ByteArrayInputStream("".getBytes()));
         }
@@ -81,7 +82,7 @@ public class XmlParserOptions extends ParserOptions {
     }
 
     /**
-     * 
+     *
      * @return the configured entity resolver. If {@link #lookupDescriptorDoc}
      *         is false it would normally force the XML parser to use its own
      *         resolver
@@ -181,7 +182,7 @@ public class XmlParserOptions extends ParserOptions {
             return false;
         }
         final XmlParserOptions that = (XmlParserOptions) obj;
-        return StringUtil.isSame(this.suppressMarker, that.suppressMarker, false, false, false)
+        return Objects.equals(this.suppressMarker, that.suppressMarker)
                 && this.coalescing == that.coalescing && this.expandEntityReferences == that.expandEntityReferences
                 && this.ignoringComments == that.ignoringComments
                 && this.ignoringElementContentWhitespace == that.ignoringElementContentWhitespace

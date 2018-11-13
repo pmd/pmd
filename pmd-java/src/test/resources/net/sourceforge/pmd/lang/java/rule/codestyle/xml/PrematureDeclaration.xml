@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+premature declaration before unrelated test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+	public int lengthSumOf(String[] strings) {
+		
+		int sum = 0;	// wasted cycles if strings have problems
+		
+		if (strings == null || strings.length == 0) return 0;
+		
+		for (int i=0; i<strings.length; i++) {
+			sum += strings[i].length();
+		}
+		
+		return sum;
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+optimal var declaration position
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+	public int lengthSumOf(String[] strings) {
+				
+		if (strings == null || strings.length == 0) return 0;
+				
+		int sum = 0;	// optimal placement
+		
+		for (int i=0; i<strings.length; i++) {
+			sum += strings[i].length();
+		}
+		
+		return sum;
+	}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bug #1064 Exception running PrematureDeclaration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+    public int lengthSumOf(String[] strings) {
+
+        if (strings == null || strings.length == 0) return 0;
+
+        @SuppressWarnings("unchecked") Integer sum = 0; // optimal placement
+
+        for (int i=0; i<strings.length; i++) {
+            sum += strings[i].length();
+        }
+
+        return sum;
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1305 variable declaration inside switch causes ClassCastException</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PrematureDeclarationClassCastException {
+    public void bar() {
+        int switchvar = 0;
+        switch (switchvar) {
+            case 1:
+                boolean localvar;
+                break;
+            case 2:
+                localvar = false;
+                if (localvar) {
+                    //
+                }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1396 PrematureDeclaration lambda false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PrematureDeclarationLambda {
+    public int lengthSumOf() {
+        int sum = 0;
+        Runnable r = () -> { return; };
+        r.run();
+        return sum;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>PrematureDeclaration false negative with reference that is a suffix of the variable name</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public int lengthSumOf(String[] foo) {
+
+                    int snafoo = 0;
+
+                    if (foo == null || foo.length == 0)
+                        return 0;
+
+                    for (String aFoo : foo) {
+                        snafoo += aFoo.length();
+                    }
+
+                    return snafoo;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1067 PrematureDeclaration lambda closure false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PrematureDeclarationLambda {
+    public boolean lengthSumOf() {
+        String foo = "";
+        return new ArrayList<String>().stream().anyMatch(bar -> foo.equals(bar));
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>#1108 PrematureDeclaration lambda false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public boolean lengthSumOf() {
+                    String signingInput = Stream.of(a, b)
+                                                .filter(Objects::nonNull)
+                                                .map(String::valueOf)
+                                                .collect(Collectors.joining(EMPTY));
+
+                    return Try.of(() -> sign(signingInput))
+                              .getOrElse(() -> null);
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>PrematureDeclaration should also check inside lambdas</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class PrematureDeclarationLambda {
+                public boolean lengthSumOf() {
+
+                    return Try.of(() -> {
+                        // Inside that lambda *is* a premature declaration of `sum`
+                        int sum = 0;
+
+                        if (strings == null || strings.length == 0)
+                            return 0;
+
+                        for (int i = 0; i < strings.length; i++) {
+                            sum += strings[i].length();
+                        }
+
+                        return sum;
+                    });
+                }
+            }
+            ]]></code>
+    </test-code>
+</test-data>

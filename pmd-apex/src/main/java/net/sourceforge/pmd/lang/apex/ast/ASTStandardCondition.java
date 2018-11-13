@@ -12,6 +12,7 @@ public class ASTStandardCondition extends AbstractApexNode<StandardCondition> {
         super(standardCondition);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

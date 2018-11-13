@@ -16,12 +16,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature.Role;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaSignature.Visibility;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaSignature.Visibility;
 import net.sourceforge.pmd.lang.metrics.SigMask;
 
 /**
@@ -108,7 +108,7 @@ public class SigMaskTest {
     public void testFinalFields() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
         JavaFieldSigMask mask = new JavaFieldSigMask();
-        mask.coverFinal(false);
+        mask.forbidFinal();
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isFinal()) {
@@ -123,7 +123,7 @@ public class SigMaskTest {
     public void testStaticFields() {
         List<ASTFieldDeclaration> nodes = getOrderedNodes(ASTFieldDeclaration.class, TEST_FIELDS);
         JavaFieldSigMask mask = new JavaFieldSigMask();
-        mask.coverStatic(false);
+        mask.forbidStatic();
 
         for (ASTFieldDeclaration node : nodes) {
             if (node.isStatic()) {
@@ -188,7 +188,7 @@ public class SigMaskTest {
                                                                         TEST_OPERATIONS);
 
         JavaOperationSigMask mask = new JavaOperationSigMask();
-        mask.coverAbstract(true);
+        mask.coverAbstract();
 
         mask.restrictVisibilitiesTo(Visibility.PUBLIC);
 
@@ -237,7 +237,7 @@ public class SigMaskTest {
                                                                         TEST_OPERATIONS);
         JavaOperationSigMask mask = new JavaOperationSigMask();
         mask.restrictRolesTo(Role.STATIC);
-        mask.coverAbstract(true);
+        mask.coverAbstract();
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node.isStatic()) {

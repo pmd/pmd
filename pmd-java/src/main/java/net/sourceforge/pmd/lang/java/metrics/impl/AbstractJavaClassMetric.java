@@ -15,8 +15,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaMetric;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSigMask;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSigMask;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
+
 
 /**
  * Base class for class metrics.
@@ -34,6 +35,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
      *
      * @return True if the metric can be computed on this type declaration
      */
+    @Override
     public boolean supports(ASTAnyTypeDeclaration node) {
         return node.getTypeKind() != TypeKind.ANNOTATION && node.getTypeKind() != TypeKind.INTERFACE;
     }
@@ -113,7 +115,7 @@ public abstract class AbstractJavaClassMetric extends AbstractJavaMetric<ASTAnyT
         List<ASTAnyTypeBodyDeclaration> decls = node.getDeclarations();
 
         for (ASTAnyTypeBodyDeclaration decl : decls) {
-            if (tClass.isInstance(decl.jjtGetChild(0))) {
+            if (decl.jjtGetNumChildren() > 0 && tClass.isInstance(decl.jjtGetChild(0))) {
                 result.add(tClass.cast(decl.jjtGetChild(0)));
             }
         }

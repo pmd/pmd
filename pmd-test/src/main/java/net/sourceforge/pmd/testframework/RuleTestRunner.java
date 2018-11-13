@@ -35,14 +35,15 @@ import net.sourceforge.pmd.Rule;
  */
 public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentHashMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
-    private final SimpleAggregatorTst instance;
+    private final RuleTst instance;
 
-    public RuleTestRunner(Class<? extends SimpleAggregatorTst> testClass) throws InitializationError {
+    public RuleTestRunner(Class<? extends RuleTst> testClass) throws InitializationError {
         super(testClass);
         instance = createTestClass();
         instance.setUp();
     }
 
+    @Override
     protected Description describeChild(TestDescriptor testCase) {
         Description description = testDescriptions.get(testCase);
         if (description == null) {
@@ -84,9 +85,9 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
         return tests;
     }
 
-    private SimpleAggregatorTst createTestClass() throws InitializationError {
+    private RuleTst createTestClass() throws InitializationError {
         try {
-            return (SimpleAggregatorTst) getTestClass().getOnlyConstructor().newInstance();
+            return (RuleTst) getTestClass().getOnlyConstructor().newInstance();
         } catch (Exception e) {
             throw new InitializationError(e);
         }
@@ -105,7 +106,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     /**
      * Executes the actual test case. If there are Before, After, or TestRules present,
      * they are executed accordingly.
-     * 
+     *
      * @param testCase the PMD rule test case to be executed
      * @return a single statement which includes any rules, if present.
      */
@@ -116,18 +117,18 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
                 instance.runTest(testCase);
             }
         };
-        statement = withBefores(testCase, statement);
-        statement = withAfters(testCase, statement);
+        statement = withBefores(statement);
+        statement = withAfters(statement);
         statement = withRules(testCase, statement);
         return statement;
     }
 
-    private Statement withBefores(final TestDescriptor testCase, Statement statement) {
+    private Statement withBefores(Statement statement) {
         List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(Before.class);
         return befores.isEmpty() ? statement : new RunBefores(statement, befores, instance);
     }
 
-    private Statement withAfters(final TestDescriptor testCase, Statement statement) {
+    private Statement withAfters(Statement statement) {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, instance);
     }

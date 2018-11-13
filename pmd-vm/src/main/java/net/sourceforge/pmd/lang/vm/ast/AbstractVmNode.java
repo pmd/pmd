@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.vm.ast;
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 
 import java.io.PrintWriter;
@@ -108,10 +108,12 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         return last;
     }
 
+    @Override
     public Object jjtAccept(final VmParserVisitor visitor, final Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
     public Object childrenAccept(final VmParserVisitor visitor, final Object data) {
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
@@ -121,6 +123,12 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
         return data;
     }
 
+
+    @Override
+    public String getXPathNodeName() {
+        return VmParserTreeConstants.jjtNodeName[id];
+    }
+
     /*
      * You can override these two methods in subclasses of SimpleNode to
      * customize the way the node appears when the tree is dumped. If your
@@ -128,9 +136,7 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      * otherwise overriding toString() is probably all you need to do.
      */
 
-    public String toString() {
-        return VmParserTreeConstants.jjtNodeName[id];
-    }
+
 
     /**
      * @param prefix
@@ -143,7 +149,7 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
     /**
      * Override this method if you want to customize how the node dumps out its
      * children.
-     * 
+     *
      * @param prefix
      */
     public void dump(final String prefix, final boolean recurse, final Writer writer) {

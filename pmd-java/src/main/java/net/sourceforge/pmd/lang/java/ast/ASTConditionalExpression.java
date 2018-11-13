@@ -5,9 +5,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
+
+/**
+ * Represents a conditional expression, aka ternary expression. This operation has
+ * a greater precedence as {@linkplain ASTExpression assignment expressions},
+ * and lower as {@link ASTConditionalOrExpression}.
+ *
+ * <p>Note that the children of this node are not necessarily {@link ASTConditionalOrExpression},
+ * rather, they are expressions with an operator precedence greater or equal to ConditionalOrExpression.
+ *
+ * <pre>
+ *
+ * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
+ *
+ * </pre>
+ *
+ */
 public class ASTConditionalExpression extends AbstractJavaTypeNode {
 
-    private boolean isTernary;
 
     public ASTConditionalExpression(int id) {
         super(id);
@@ -17,17 +34,54 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    public void setTernary() {
-        isTernary = true;
-    }
-
-    public boolean isTernary() {
-        return this.isTernary;
-    }
 
     /**
-     * Accept the visitor. *
+     * @deprecated To be removed in 7.0.0
      */
+    @Deprecated
+    public void setTernary() {
+        // noop
+    }
+
+
+    /**
+     * This method always returns true.
+     *
+     * @deprecated To be removed in 7.0.0
+     */
+    @Deprecated
+    public boolean isTernary() {
+        return true;
+    }
+
+
+    /**
+     * Returns the node that represents the guard of this conditional.
+     * That is the expression before the '?'.
+     */
+    public Node getGuardExpressionNode() {
+        return jjtGetChild(0);
+    }
+
+
+    /**
+     * Returns the node that represents the expression that will be evaluated
+     * if the guard evaluates to true.
+     */
+    public ASTExpression getTrueAlternative() {
+        return (ASTExpression) jjtGetChild(1);
+    }
+
+
+    /**
+     * Returns the node that represents the expression that will be evaluated
+     * if the guard evaluates to false.
+     */
+    public Node getFalseAlternative() {
+        return jjtGetChild(2);
+    }
+
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

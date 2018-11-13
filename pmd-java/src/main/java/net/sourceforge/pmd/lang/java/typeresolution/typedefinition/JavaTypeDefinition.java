@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+
 public abstract class JavaTypeDefinition implements TypeDefinition {
     // contains non-generic and raw EXACT types
     private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new HashMap<>();
@@ -37,9 +40,13 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             }
         case UPPER_BOUND:
         case UPPER_WILDCARD:
-            return new JavaTypeDefinitionUpper(type, intersectionTypes);
+            // In theory, if one of the bounds can't be resolved, then the type is useless.
+            // Looking at the implementation of JavaTypeDefinitionUpper, it looks like only the
+            // first bound is used, so we could only check for the first array component.
+            // But isn't that behaviour weird ? Where are the other bounds useful then ?
+            return ArrayUtils.contains(intersectionTypes, null) ? null : new JavaTypeDefinitionUpper(type, intersectionTypes);
         case LOWER_WILDCARD:
-            return new JavaTypeDefinitionLower(intersectionTypes);
+            return ArrayUtils.contains(intersectionTypes, null) ? null : new JavaTypeDefinitionLower(intersectionTypes);
         default:
             throw new IllegalStateException("Unknow type");
         }
@@ -62,7 +69,12 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
             return typeDef;
         }
 
-        final JavaTypeDefinition newDef = new JavaTypeDefinitionSimple(clazz);
+        final JavaTypeDefinition newDef;
+        try {
+            newDef = new JavaTypeDefinitionSimple(clazz);
+        } catch (final NoClassDefFoundError e) {
+            return null; // Can happen if a parent class references a class not in classpath
+        }
 
         CLASS_EXACT_TYPE_DEF_CACHE.put(clazz, newDef);
 
@@ -95,7 +107,6 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     public abstract JavaTypeDefinition resolveTypeDefinition(Type type, Method method,
                                                              List<JavaTypeDefinition> methodTypeArgs);
 
-    public abstract JavaTypeDefinition getComponentType();
 
     public abstract boolean isClassOrInterface();
 
@@ -108,6 +119,60 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     public abstract int getTypeParameterCount();
 
     public abstract boolean isArrayType();
+
+
+    /**
+     * Gets the component type of this type definition if it
+     * is an array type. The component type of an array is
+     * the type is the same type as the array, with one less
+     * dimension, e.g. the component type of {@code int[][][]}
+     * is {@code int[][]}.
+     *
+     * @return The component type of this array type
+     *
+     * @throws IllegalStateException if this definition doesn't identify an array type
+     * @see #getElementType()
+     */
+    public abstract JavaTypeDefinition getComponentType();
+
+
+    /**
+     * Gets the element type of this type definition if it
+     * is an array type. The component type of an array is
+     * the type is the same type as the array, stripped of
+     * all array dimensions, e.g. the element type of
+     * {@code int[][][]} is {@code int}.
+     *
+     * @return The element type of this array type, or this
+     * type definition if {@link #isArrayType()} returns false
+     *
+     * @see #getComponentType()
+     */
+    public abstract JavaTypeDefinition getElementType();
+
+
+    // @formatter:off
+    /**
+     * Returns the type definition of the array type which
+     * has the given number of array dimensions, plus the dimensions
+     * of this type definition. Examples, assuming JavaTypeDefinition
+     * and Class are interchangeable (== is equality, not identity):
+     * <ul>
+     *     <li>{@code int.class.withDimensions(3) == int[][][].class}
+     *     <li>{@code int[].class.withDimensions(1) == int[][].class}
+     *     <li>{@code c.withDimensions(0) == c}
+     *     <li>{@code n > 0 => c.withDimensions(n).getComponentType() == c.withDimensions(n - 1)}
+     * </ul>
+     *
+     * @param numDimensions Number of dimensions added to this type in
+     *                      the resulting array type
+     *
+     * @return A new type definition, or this if numDimensions == 0
+     * @throws IllegalArgumentException if numDimensions &lt; 0
+     */
+    // @formatter:on
+    public abstract JavaTypeDefinition withDimensions(int numDimensions);
+
 
     @Override
     public abstract String toString();
@@ -124,8 +189,10 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
 
     public abstract Set<Class<?>> getErasedSuperTypeSet();
 
+
     /**
-     * @return true if clazz is generic and had not been parameterized
+     * Returns true if this type has type parameters and has not been parameterized,
+     * e.g. {@code List} instead of {@code List<T>}.
      */
     public abstract boolean isRawType();
 
@@ -158,4 +225,6 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
     public abstract JavaTypeDefinition getJavaType(int index);
 
     public abstract int getJavaTypeCount();
+
+    protected abstract String shallowString();
 }

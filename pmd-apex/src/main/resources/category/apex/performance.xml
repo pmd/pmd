@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<ruleset name="Performance"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules that flag suboptimal code.
+    </description>
+
+    <rule name="AvoidDmlStatementsInLoops"
+          since="5.5.0"
+          message="Avoid DML statements inside loops"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidDmlStatementsInLoopsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoiddmlstatementsinloops">
+        <description>
+Avoid DML statements inside loops to avoid hitting the DML governor limit. Instead, try to batch up the data into a list and invoke your DML once on that list of data outside the loop.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Something {
+    public void foo() {  
+        for (Integer i = 0; i < 151; i++) {
+            Account account;
+            // ...
+            insert account;
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidSoqlInLoops"
+          since="5.5.0"
+          message="Avoid Soql queries inside loops"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoqlInLoopsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoqlinloops">
+        <description>
+New objects created within loops should be checked to see if they can created outside them and reused.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        for (Integer i = 0; i < 10; i++) {
+            List<Account> accounts = [SELECT Id FROM Account];
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidSoslInLoops"
+          since="6.0.0"
+          message="Avoid Sosl queries inside loops"
+          class="net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_performance.html#avoidsoslinloops">
+        <description>
+Sosl calls within loops can cause governor limit exceptions.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Something {
+    public static void main( String as[] ) {
+        for (Integer i = 0; i < 10; i++) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
+</ruleset>

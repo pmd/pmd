@@ -5,12 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaOperationSignature;
 
-public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements ASTMethodOrConstructorDeclaration {
+public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;
-    private JavaQualifiedName qualifiedName;
 
     public ASTConstructorDeclaration(int id) {
         super(id);
@@ -20,12 +18,10 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
         super(p, id);
     }
 
-    public ASTFormalParameters getParameters() {
-        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters ? jjtGetChild(0) : jjtGetChild(1));
-    }
 
-    public int getParameterCount() {
-        return getParameters().getParameterCount();
+    @Override
+    public MethodLikeKind getKind() {
+        return MethodLikeKind.CONSTRUCTOR;
     }
 
     /**
@@ -44,16 +40,20 @@ public class ASTConstructorDeclaration extends AbstractJavaAccessNode implements
         this.containsComment = true;
     }
 
-    @Override
-    public JavaQualifiedName getQualifiedName() {
-        if (qualifiedName == null) {
-            qualifiedName = JavaQualifiedName.ofOperation(this);
-        }
-        return qualifiedName;
+    /**
+     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
+     */
+    @Deprecated
+    public ASTFormalParameters getParameters() {
+        return getFormalParameters();
     }
 
-    @Override
-    public JavaOperationSignature getSignature() {
-        return JavaOperationSignature.buildFor(this);
+    public int getParameterCount() {
+        return getFormalParameters().getParameterCount();
+    }
+
+    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTFormalParameters.class);
     }
 }

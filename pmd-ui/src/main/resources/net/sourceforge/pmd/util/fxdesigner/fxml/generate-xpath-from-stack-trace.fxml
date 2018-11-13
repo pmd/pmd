@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="263.0" prefWidth="323.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+    <TitledPane animated="false" collapsible="false" prefWidth="211.0" stylesheets="@../css/designer.css" text="Generate XPath from a stack trace" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <padding>
+                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+            </padding>
+            <Button fx:id="generateButton" layoutX="129.0" layoutY="196.0" mnemonicParsing="false" text="Generate" AnchorPane.bottomAnchor="0.0" />
+            <TextArea fx:id="stackTraceArea" layoutY="-44.0" prefHeight="200.0" prefWidth="200.0" promptText="Paste a stack trace here. Clicking the button will generate an XPath expression that matches the node in which the exception was thrown &#8212;but may match other nodes." AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+        </AnchorPane>
+    </TitledPane>
+</AnchorPane>

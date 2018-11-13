@@ -19,10 +19,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+
+import net.sourceforge.pmd.util.ResourceLoader;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
@@ -119,8 +122,8 @@ public class RuleSetReferenceIdTest {
         RuleSetReferenceId ruleSetReferenceId = new RuleSetReferenceId("  " + rulesetUrl + "  ");
         assertRuleSetReferenceId(true, rulesetUrl, true, null, rulesetUrl, ruleSetReferenceId);
 
-        try (InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());) {
-            String loaded = IOUtils.toString(inputStream, "UTF-8");
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
+            String loaded = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             assertEquals("xyz", loaded);
         }
 
@@ -137,7 +140,7 @@ public class RuleSetReferenceIdTest {
         String completePath = path + "/DummyBasicMockRule";
         String hostpart = "http://localhost:" + wireMockRule.port();
         String basicRuleSet = IOUtils
-                .toString(RuleSetReferenceId.class.getResourceAsStream("/rulesets/dummy/basic.xml"));
+                .toString(RuleSetReferenceId.class.getResourceAsStream("/rulesets/dummy/basic.xml"), StandardCharsets.UTF_8);
 
         stubFor(head(urlEqualTo(completePath)).willReturn(aResponse().withStatus(404)));
         stubFor(head(urlEqualTo(path)).willReturn(aResponse().withStatus(200).withHeader("Content-type", "text/xml")));
@@ -148,8 +151,8 @@ public class RuleSetReferenceIdTest {
         assertRuleSetReferenceId(true, hostpart + path, false, "DummyBasicMockRule", hostpart + completePath,
                 ruleSetReferenceId);
 
-        try (InputStream inputStream = ruleSetReferenceId.getInputStream(RuleSetReferenceIdTest.class.getClassLoader());) {
-            String loaded = IOUtils.toString(inputStream, "UTF-8");
+        try (InputStream inputStream = ruleSetReferenceId.getInputStream(new ResourceLoader())) {
+            String loaded = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             assertEquals(basicRuleSet, loaded);
         }
 

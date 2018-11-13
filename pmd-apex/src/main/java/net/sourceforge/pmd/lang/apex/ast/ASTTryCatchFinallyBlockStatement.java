@@ -12,6 +12,7 @@ public class ASTTryCatchFinallyBlockStatement extends AbstractApexNode<TryCatchF
         super(tryCatchFinallyBlockStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

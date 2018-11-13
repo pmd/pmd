@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="ApexUnitTestClassShouldHaveAsserts"
+          since="5.5.1"
+          message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestClassShouldHaveAssertsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts">
+        <description>
+Apex unit tests should include at least one assertion.  This makes the tests more robust, and using assert
+with messages provide the developer a clearer idea of what the test does.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@isTest
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+   // This is better than having a NullPointerException
+   // System.assertNotEquals(a, null, 'account not found');
+   a.toString();
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ApexUnitTestShouldNotUseSeeAllDataTrue"
+          since="5.5.1"
+          message="Apex unit tests should not use @isTest(seeAllData = true)"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestShouldNotUseSeeAllDataTrueRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue">
+        <description>
+Apex unit tests should not use @isTest(seeAllData=true) because it opens up the existing database data for unexpected modification by tests.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+@isTest(seeAllData = true)
+public class Foo {
+   public static testMethod void testSomething() {
+      Account a = null;
+   // This is better than having a NullPointerException
+   // System.assertNotEquals(a, null, 'account not found');
+   a.toString();
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidGlobalModifier"
+          since="5.5.0"
+          message="Avoid using global modifier"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidGlobalModifierRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidglobalmodifier">
+        <description>
+Global classes should be avoided (especially in managed packages) as they can never be deleted or changed in signature. Always check twice if something needs to be global.
+Many interfaces (e.g. Batch) required global modifiers in the past but don't require this anymore. Don't lock yourself in.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+global class Unchangeable {
+    global UndeletableType unchangable(UndeletableType param) {
+        // ...
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidLogicInTrigger"
+          since="5.5.0"
+          message="Avoid logic in triggers"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidlogicintrigger">
+        <description>
+As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
+Therefore delegate the triggers work to a regular class (often called Trigger handler class).
+
+See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+    for(Account acc : Trigger.new) {
+        if(Trigger.isInsert) {
+            // ...
+        }
+
+        // ...
+
+        if(Trigger.isDelete) {
+            // ...
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+</ruleset>

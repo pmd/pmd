@@ -7,9 +7,12 @@ package net.sourceforge.pmd.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+
 
 /**
  * Multi-valued character property.
@@ -18,27 +21,6 @@ import org.apache.commons.lang3.StringUtils;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Character>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Character>(Character.class) {
-
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
-
-            @Override
-            public CharacterMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new CharacterMultiProperty(nameIn(valuesById),
-                                                  descriptionIn(valuesById),
-                                                  ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, ValueParserConstants.CHARACTER_PARSER),
-                                                  0.0f,
-                                                  delimiter,
-                                                  isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -110,5 +92,34 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
         }
         return chars;
     }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<Character, CharacterMultiPBuilder>(Character.class, ValueParserConstants.CHARACTER_PARSER) {
+            @Override
+            protected CharacterMultiPBuilder newBuilder(String name) {
+                return new CharacterMultiPBuilder(name);
+            }
+        };
+    }
+
+
+    public static CharacterMultiPBuilder named(String name) {
+        return new CharacterMultiPBuilder(name);
+    }
+
+
+    public static final class CharacterMultiPBuilder extends MultiValuePropertyBuilder<Character, CharacterMultiPBuilder> {
+        private CharacterMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public CharacterMultiProperty build() {
+            return new CharacterMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, multiValueDelimiter, isDefinedInXML);
+        }
+    }
+
 
 }

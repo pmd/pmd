@@ -30,7 +30,12 @@ public class JavaUtilLoggingRule extends ExternalResource {
     public JavaUtilLoggingRule(String loggerName) {
         this.logger = Logger.getLogger(loggerName);
         this.stream = new ByteArrayOutputStream();
-        this.customLogHandler = new StreamHandler(stream, logger.getParent().getHandlers()[0].getFormatter());
+
+        Logger currentLogger = logger;
+        while (currentLogger.getHandlers().length == 0) {
+            currentLogger = currentLogger.getParent();
+        }
+        this.customLogHandler = new StreamHandler(stream, currentLogger.getHandlers()[0].getFormatter());
     }
 
     @Override

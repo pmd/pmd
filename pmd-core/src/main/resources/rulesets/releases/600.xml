@@ -3,13 +3,25 @@
 <ruleset name="600"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 This ruleset contains links to rules that are new in PMD v6.0.0
   </description>
 
-    <rule ref="rulesets/java/codesize.xml/NcssCount"/>
-    <rule ref="rulesets/java/migrating.xml/ForLoopCanBeForeach"/>
+    <rule ref="category/java/bestpractices.xml/ForLoopCanBeForeach"/>
+    <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
+    <rule ref="category/java/design.xml/DataClass"/>
+    <rule ref="category/java/design.xml/NcssCount"/>
+    <rule ref="category/java/performance.xml/AvoidFileStream"/>
 
+    <rule ref="category/apex/design.xml/CyclomaticComplexity" />
+    <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap"/>
+    <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" />
+    <rule ref="category/apex/errorprone.xml/EmptyCatchBlock"/>
+    <rule ref="category/apex/errorprone.xml/EmptyIfStmt"/>
+    <rule ref="category/apex/errorprone.xml/EmptyStatementBlock"/>
+    <rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock"/>
+    <rule ref="category/apex/errorprone.xml/EmptyWhileStmt"/>
+    <rule ref="category/apex/performance.xml/AvoidSoslInLoops" />
 </ruleset>
 

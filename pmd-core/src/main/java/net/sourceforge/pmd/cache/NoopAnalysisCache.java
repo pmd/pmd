@@ -16,7 +16,7 @@ import net.sourceforge.pmd.stat.Metric;
  * A NOOP analysis cache. Easier / safer than null-checking. 
  */
 public class NoopAnalysisCache implements AnalysisCache {
-
+    
     @Override
     public void ruleViolationAdded(final RuleViolation ruleViolation) {
         // noop

@@ -8,7 +8,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.PMD;
  * This class is responsible for creating the contentpanel for the Create Rule
  * XML Frame.
  */
+@Deprecated // to be removed with PMD 7.0.0
 public class CreateXMLRulePanel extends JPanel implements ActionListener {
 
     private JTextField rulenameField = new JTextField(30);

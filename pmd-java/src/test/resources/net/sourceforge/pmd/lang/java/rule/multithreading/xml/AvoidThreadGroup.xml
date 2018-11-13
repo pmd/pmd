@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<test-code>
+		<description><![CDATA[
+bad, using new ThreadGroup()
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+ void bar() {
+  ThreadGroup t = new ThreadGroup("my tg");
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+bad, using fully qualified java.lang.ThreadGroup()
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+ void bar() {
+  java.lang.ThreadGroup t = new java.lang.ThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+bad, using Thread.getThreadGroup()
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+ void bar() {
+  ThreadGroup t = Thread.currentThread().getThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+bad, using System.getSecurityManager().getThreadGroup()
+     ]]></description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+ void bar() {
+  ThreadGroup t = System.getSecurityManager().getThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+ThreadGroup() but not java.lang.ThreadGroup
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.multithreading.AvoidThreadGroupTest.ThreadGroup;
+
+public class Foo {
+ void bar() {
+  ThreadGroup t = new ThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description><![CDATA[
+MyThreadGroup() not java.lang.ThreadGroup
+     ]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+import java.lang.ThreadGroup;
+public class Foo {
+
+ public class MyThreadGroup{}
+ 
+ void bar() {
+  MyThreadGroup t = new MyThreadGroup();
+ }
+}
+     ]]></code>
+	</test-code>
+	<test-code>
+		<description>false positive, bug #1018</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+import java.lang.ThreadGroup;
+
+public class Foo {
+	void bar() {
+		java.util.Date date = new java.util.Date();
+		java.sql.Date sqlData = new java.sql.Date();
+		java.math.BigInteger test = new java.math.BigInteger("123");
+		throw new java.io.InvalidClassException();
+	}
+}
+		]]></code>
+	</test-code>
+</test-data>

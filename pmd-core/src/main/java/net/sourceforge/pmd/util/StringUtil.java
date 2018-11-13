@@ -52,7 +52,7 @@ public final class StringUtil {
      * @param prefixes
      *
      * @return boolean
-     * @deprecated {@see StringUtils#startsWithAny(CharSequence, CharSequence...)}
+     * @deprecated {@link StringUtils#startsWithAny(CharSequence, CharSequence...)}
      */
     @Deprecated
     public static boolean startsWithAny(String text, String... prefixes) {
@@ -112,7 +112,7 @@ public final class StringUtil {
      * @param value String
      *
      * @return boolean
-     * @deprecated {@see StringUtils#isNotBlank(CharSequence)}
+     * @deprecated {@link StringUtils#isNotBlank(CharSequence)}
      */
     @Deprecated
     public static boolean isNotEmpty(String value) {
@@ -128,7 +128,7 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
-     * @deprecated {@see StringUtils#isBlank(CharSequence)}
+     * @deprecated {@link StringUtils#isBlank(CharSequence)}
      */
     @Deprecated
     public static boolean isEmpty(String value) {
@@ -142,7 +142,7 @@ public final class StringUtil {
      * @param value String to test
      *
      * @return True if the argument is null or the empty string
-     * @deprecated {@see StringUtils#isEmpty(CharSequence)}
+     * @deprecated {@link StringUtils#isEmpty(CharSequence)}
      */
     @Deprecated
     public static boolean isMissing(String value) {
@@ -179,7 +179,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
-     * @deprecated {@see StringUtils#replace(String, String, String)}
+     * @deprecated {@link StringUtils#replace(String, String, String)}
      */
     @Deprecated
     public static String replaceString(final String original, final String oldString, final String newString) {
@@ -207,7 +207,6 @@ public final class StringUtil {
      * @param supportUTF8 override the default setting, whether special characters should be replaced with entities (
      *                    <code>false</code>) or should be included as is ( <code>true</code>).
      *
-     * @see #appendXmlEscaped(StringBuilder, String)
      */
     public static void appendXmlEscaped(StringBuilder buf, String src, boolean supportUTF8) {
         char c;
@@ -267,7 +266,7 @@ public final class StringUtil {
      * @param newString String
      *
      * @return String
-     * @deprecated {@see StringUtils#replace(String, String, String)} or {@see StringUtils#replaceChars(String, char, char)}
+     * @deprecated {@link StringUtils#replace(String, String, String)} or {@link StringUtils#replaceChars(String, char, char)}
      */
     @Deprecated
     public static String replaceString(final String original, char oldChar, final String newString) {
@@ -300,7 +299,7 @@ public final class StringUtil {
      * @param delimiter char
      *
      * @return String[]
-     * @deprecated {@see StringUtils#split(String, char)}
+     * @deprecated {@link StringUtils#split(String, char)}
      */
     @Deprecated
     public static String[] substringsOf(String source, char delimiter) {
@@ -348,7 +347,7 @@ public final class StringUtil {
      * @param separator char
      *
      * @return String[]
-     * @deprecated {@see StringUtils#split(String, String)}
+     * @deprecated {@link StringUtils#split(String, String)}
      */
     @Deprecated
     public static String[] substringsOf(String str, String separator) {
@@ -371,7 +370,7 @@ public final class StringUtil {
             index = str.indexOf(separator, currPos);
         }
         list.add(str.substring(currPos));
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
 
@@ -382,7 +381,7 @@ public final class StringUtil {
      * @param sb        StringBuffer
      * @param iter      Iterator
      * @param separator String
-     * @deprecated {@see StringUtils#join(Iterator, String)}
+     * @deprecated {@link StringUtils#join(Iterator, String)}
      */
     @Deprecated
     public static void asStringOn(StringBuffer sb, Iterator<?> iter, String separator) {
@@ -407,7 +406,7 @@ public final class StringUtil {
      * @param sb        StringBuilder
      * @param items     Object[]
      * @param separator String
-     * @deprecated {@see StringUtils#join(Iterable, String)}
+     * @deprecated {@link StringUtils#join(Iterable, String)}
      */
     @Deprecated
     public static void asStringOn(StringBuilder sb, Object[] items, String separator) {
@@ -519,7 +518,7 @@ public final class StringUtil {
      * @param length The desired minimum length of the resulting padded String
      *
      * @return The resulting left padded String
-     * @deprecated {@see StringUtils#leftPad(String, int)}
+     * @deprecated {@link StringUtils#leftPad(String, int)}
      */
     @Deprecated
     public static String lpad(String s, int length) {
@@ -604,4 +603,55 @@ public final class StringUtil {
     public static String[] getEmptyStrings() {
         return EMPTY_STRINGS;
     }
+
+
+    /**
+     * Converts the given string to Camel case,
+     * that is, removing all spaces, and capitalising
+     * the first letter of each word except the first.
+     *
+     * <p>If the first word starts with an uppercase
+     * letter, it's kept as is. This method can thus
+     * be used for Pascal case too.
+     *
+     * @param name The string to convert
+     *
+     * @return The string converted to Camel case
+     */
+    public static String toCamelCase(String name) {
+        return toCamelCase(name, false);
+    }
+
+
+    /**
+     * Converts the given string to Camel case,
+     * that is, removing all spaces, and capitalising
+     * the first letter of each word except the first.
+     *
+     * <p>The second parameter can be used to force the
+     * words to be converted to lowercase before capitalising.
+     * This can be useful if eg the first word contains
+     * several uppercase letters.
+     *
+     * @param name           The string to convert
+     * @param forceLowerCase Whether to force removal of all upper
+     *                       case letters except on word start
+     *
+     * @return The string converted to Camel case
+     */
+    public static String toCamelCase(String name, boolean forceLowerCase) {
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for (String word : name.trim().split("\\s++")) {
+            String pretreated = forceLowerCase ? word.toLowerCase(Locale.ROOT) : word;
+            if (isFirst) {
+                sb.append(pretreated);
+                isFirst = false;
+            } else {
+                sb.append(StringUtils.capitalize(pretreated));
+            }
+        }
+        return sb.toString();
+    }
+
 }

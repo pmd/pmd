@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,7 +24,7 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-
+@Deprecated // to be removed with PMD 7.0.0
 public class ParseExceptionHandler extends JDialog implements ActionListener {
     private Exception exc;
     private JButton okBtn;

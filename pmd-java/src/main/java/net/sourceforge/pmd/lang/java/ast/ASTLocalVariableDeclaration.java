@@ -5,9 +5,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
 import net.sourceforge.pmd.Rule;
 
-public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings {
+
+/**
+ * Represents a local variable declaration. This is a {@linkplain ASTBlockStatement block statement},
+ * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
+ * {@linkplain ASTForStatement foreach statements}.
+ *
+ * <p>This statement may define several variables, possibly of different types (see {@link ASTVariableDeclaratorId#getType()}).
+ * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
+ *
+ * <pre>
+ *
+ * LocalVariableDeclaration ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ *
+ * </pre>
+ */
+public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
 
     public ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -17,14 +34,12 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
@@ -37,47 +52,81 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
         return false;
     }
 
+    /**
+     * If true, this local variable declaration represents a declaration,
+     * which makes use of local variable type inference, e.g. java10 "var".
+     * You can receive the inferred type via {@link ASTVariableDeclarator#getType()}.
+     *
+     * @see ASTVariableDeclaratorId#isTypeInferred()
+     */
+    public boolean isTypeInferred() {
+        return getTypeNode() == null;
+    }
+
+    @Override
+    // TODO deprecate
     public boolean isArray() {
-        return checkType() + checkDecl() > 0;
+        return getArrayDepth() > 0;
     }
 
+    @Override
+    // TODO deprecate
     public int getArrayDepth() {
-        return checkType() + checkDecl();
+        return getArrayDimensionOnType() + getArrayDimensionOnDeclaratorId();
     }
 
+    /**
+     * Gets the type node for this variable declaration statement.
+     * With Java10 and local variable type inference, there might be
+     * no type node at all.
+     * @return The type node or <code>null</code>
+     * @see #isTypeInferred()
+     */
     public ASTType getTypeNode() {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTType) {
-                return (ASTType) jjtGetChild(i);
-            }
-        }
-        throw new IllegalStateException("ASTType not found");
+        return getFirstChildOfType(ASTType.class);
     }
 
-    private int checkType() {
-        return getTypeNode().getArrayDepth();
+    private int getArrayDimensionOnType() {
+        ASTType typeNode = getTypeNode();
+        if (typeNode != null) {
+            return typeNode.getArrayDepth();
+        }
+        return 0;
     }
 
     private ASTVariableDeclaratorId getDecl() {
         return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren() - 1).jjtGetChild(0);
     }
 
-    private int checkDecl() {
+    private int getArrayDimensionOnDeclaratorId() {
         return getDecl().getArrayDepth();
     }
 
     /**
-     * Gets the variable name of this field. This method searches the first
+     * Gets the variable name of this declaration. This method searches the first
      * VariableDeclartorId node and returns it's image or <code>null</code> if
      * the child node is not found.
      *
      * @return a String representing the name of the variable
      */
+    // TODO deprecate.
+    // It would be nice to have a way to inform XPath users of the intended replacement
+    // for a deprecated attribute. We may use another annotation for that.
     public String getVariableName() {
         ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         if (decl != null) {
             return decl.getImage();
         }
         return null;
+    }
+
+
+    /**
+     * Returns an iterator over the ids of the variables
+     * declared in this statement.
+     */
+    @Override
+    public Iterator<ASTVariableDeclaratorId> iterator() {
+        return ASTVariableDeclarator.iterateIds(this);
     }
 }

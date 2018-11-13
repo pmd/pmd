@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -85,6 +85,14 @@ public abstract class RuleTst {
         }
     }
 
+    protected void setUp() {
+        // This method is intended to be overridden by subclasses.
+    }
+
+    protected List<Rule> getRules() {
+        return Collections.emptyList();
+    }
+
     /**
      * Find a rule in a certain ruleset by name
      */
@@ -138,9 +146,9 @@ public abstract class RuleTst {
 
                 report = processUsingStringReader(test, rule);
                 res = report.size();
-            } catch (Throwable t) {
-                t.printStackTrace();
-                throw new RuntimeException('"' + test.getDescription() + "\" failed", t);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
             }
             if (test.getNumberOfProblemsExpected() != res) {
                 printReport(test, report);
@@ -163,7 +171,7 @@ public abstract class RuleTst {
      *
      * @param rule The rule to reinitialise
      *
-     * @return The rule once it has be reinitialised
+     * @return The rule once it has been reinitialised
      */
     protected Rule reinitializeRule(Rule rule) {
         return findRule(rule.getRuleSetName(), rule.getName());
@@ -202,12 +210,12 @@ public abstract class RuleTst {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
-        if (report.getViolationTree().size() != expected.size()) {
+        if (report.size() != expected.size()) {
             throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
 
-        Iterator<RuleViolation> it = report.getViolationTree().iterator();
+        Iterator<RuleViolation> it = report.iterator();
         int index = 0;
         while (it.hasNext()) {
             RuleViolation violation = it.next();
@@ -260,6 +268,7 @@ public abstract class RuleTst {
         try {
             PMD p = new PMD();
             p.getConfiguration().setDefaultLanguageVersion(languageVersion);
+            p.getConfiguration().setIgnoreIncrementalAnalysis(true);
             if (isUseAuxClasspath) {
                 // configure the "auxclasspath" option for unit testing
                 p.getConfiguration().prependClasspath(".");
@@ -318,13 +327,12 @@ public abstract class RuleTst {
      */
     public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
         String testXmlFileName = baseDirectory + testsFileName + ".xml";
-        InputStream inputStream = getClass().getResourceAsStream(testXmlFileName);
-        if (inputStream == null) {
-            throw new RuntimeException("Couldn't find " + testXmlFileName);
-        }
 
         Document doc;
-        try {
+        try (InputStream inputStream = getClass().getResourceAsStream(testXmlFileName)) {
+            if (inputStream == null) {
+                throw new RuntimeException("Couldn't find " + testXmlFileName);
+            }
             doc = documentBuilder.parse(inputStream);
         } catch (FactoryConfigurationError fce) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce, fce);
@@ -332,11 +340,36 @@ public abstract class RuleTst {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + ioe, ioe);
         } catch (SAXException se) {
             throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se, se);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
         }
 
         return parseTests(rule, doc);
+    }
+
+    /**
+     * Run a set of tests defined in an XML test-data file for a rule. The file
+     * should be ./xml/RuleName.xml relative to the test-class. The format is
+     * defined in test-data.xsd.
+     */
+    public void runTests(Rule rule) {
+        runTests(extractTestsFromXml(rule));
+    }
+
+    /**
+     * Run a set of tests defined in a XML test-data file. The file should be
+     * ./xml/[testsFileName].xml relative to the test-class. The format is
+     * defined in test-data.xsd.
+     */
+    public void runTests(Rule rule, String testsFileName) {
+        runTests(extractTestsFromXml(rule, testsFileName));
+    }
+
+    /**
+     * Run a set of tests of a certain sourceType.
+     */
+    public void runTests(TestDescriptor[] tests) {
+        for (int i = 0; i < tests.length; i++) {
+            runTest(tests[i]);
+        }
     }
 
     private TestDescriptor[] parseTests(Rule rule, Document doc) {

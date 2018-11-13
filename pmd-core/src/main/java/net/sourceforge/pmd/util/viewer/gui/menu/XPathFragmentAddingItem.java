@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.viewer.gui.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JMenuItem;
 
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
@@ -17,6 +16,7 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModel;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@Deprecated // to be removed with PMD 7.0.0
 public class XPathFragmentAddingItem extends JMenuItem implements ActionListener {
     private ViewerModel model;
     private String fragment;

@@ -4,43 +4,23 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.STRING_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+
+
 /**
- * Defines a datatype that supports multiple String values. Note that all
- * strings must be filtered by the delimiter character.
+ * Defines a datatype that supports multiple String values. Note that all strings must be filtered by the delimiter
+ * character.
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
  */
 public final class StringMultiProperty extends AbstractMultiValueProperty<String> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<String>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<String>(String.class) {
-
-            @Override
-            protected boolean isValueMissing(String value) {
-                return StringUtils.isEmpty(value);
-            }
-
-            @Override
-            public StringMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                char delimiter = delimiterIn(valuesById);
-                return new StringMultiProperty(nameIn(valuesById),
-                                               descriptionIn(valuesById),
-                                               ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, STRING_PARSER),
-                                               0.0f,
-                                               delimiter,
-                                               isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -88,28 +68,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     }
 
 
-    /**
-     * Checks if the values are valid.
-     *
-     * @param defaultValue The default value
-     * @param delim        The delimiter
-     *
-     * @throws IllegalArgumentException if one value contains the delimiter
-     */
-    private static void checkDefaults(List<String> defaultValue, char delim) {
-
-        if (defaultValue == null) {
-            return;
-        }
-
-        for (String aDefaultValue : defaultValue) {
-            if (aDefaultValue.indexOf(delim) >= 0) {
-                throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
-            }
-        }
-    }
-
-
     @Override
     public Class<String> type() {
         return String.class;
@@ -154,5 +112,55 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     @Override
     protected String createFrom(String toParse) {
         return toParse;
+    }
+
+
+    /**
+     * Checks if the values are valid.
+     *
+     * @param defaultValue The default value
+     * @param delim        The delimiter
+     *
+     * @throws IllegalArgumentException if one value contains the delimiter
+     */
+    private static void checkDefaults(List<String> defaultValue, char delim) {
+
+        if (defaultValue == null) {
+            return;
+        }
+
+        for (String aDefaultValue : defaultValue) {
+            if (aDefaultValue.indexOf(delim) >= 0) {
+                throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
+            }
+        }
+    }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
+            @Override
+            protected StringMultiPBuilder newBuilder(String name) {
+                return new StringMultiPBuilder(name);
+            }
+        };
+    }
+
+
+    public static StringMultiPBuilder named(String name) {
+        return new StringMultiPBuilder(name);
+    }
+
+
+    public static final class StringMultiPBuilder extends MultiValuePropertyBuilder<String, StringMultiPBuilder> {
+        private StringMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public StringMultiProperty build() {
+            return new StringMultiProperty(this.name, this.description, this.defaultValues, this.uiOrder, this.multiValueDelimiter, isDefinedInXML);
+        }
     }
 }

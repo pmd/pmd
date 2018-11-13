@@ -9,15 +9,27 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.lang.ast.Node;
 
-public class ASTAnnotation extends AbstractJavaNode {
 
-    private static List<String> unusedRules = Arrays.asList(new String[] { "UnusedPrivateField", "UnusedLocalVariable",
-        "UnusedPrivateMethod", "UnusedFormalParameter", });
+/**
+ * Represents an annotation. This node has three possible children,
+ * that correspond to specific syntactic variants.
+ *
+ * <pre>
+ *
+ * Annotation ::= {@linkplain ASTNormalAnnotation NormalAnnotation}
+ *              | {@linkplain ASTSingleMemberAnnotation SingleMemberAnnotation}
+ *              | {@linkplain ASTMarkerAnnotation MarkerAnnotation}
+ *
+ * </pre>
+ *
+ */
+public class ASTAnnotation extends AbstractJavaTypeNode {
 
-    private static List<String> serialRules = Arrays
-            .asList(new String[] { "BeanMembersShouldSerialize", "MissingSerialVersionUID" });
+    private static final List<String> UNUSED_RULES
+            = Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter");
+
+    private static final List<String> SERIAL_RULES = Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID");
 
     public ASTAnnotation(int id) {
         super(id);
@@ -27,43 +39,66 @@ public class ASTAnnotation extends AbstractJavaNode {
         super(p, id);
     }
 
-    public boolean suppresses(Rule rule) {
-        final String ruleAnno = "\"PMD." + rule.getName() + "\"";
 
-        if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
-            ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
-            return checkAnnototation(n, ruleAnno, rule);
-        } else if (jjtGetChild(0) instanceof ASTNormalAnnotation) {
-            ASTNormalAnnotation n = (ASTNormalAnnotation) jjtGetChild(0);
-            return checkAnnototation(n, ruleAnno, rule);
-        }
-        return false;
+    /**
+     * Returns the name of the annotation as it is used,
+     * eg {@code java.lang.Override} or {@code Override}.
+     */
+    public String getAnnotationName() {
+        return jjtGetChild(0).jjtGetChild(0).getImage();
     }
 
-    private boolean checkAnnototation(Node n, String ruleAnno, Rule rule) {
-        if (n.jjtGetChild(0) instanceof ASTName) {
-            ASTName annName = (ASTName) n.jjtGetChild(0);
+    // @formatter:off
+    /**
+     * Returns true if this annotation suppresses the given rule.
+     * The suppression annotation is {@link SuppressWarnings}.
+     * This method returns true if this annotation is a SuppressWarnings,
+     * and if the set of suppressed warnings ({@link SuppressWarnings#value()})
+     * contains at least one of those:
+     * <ul>
+     *     <li>"PMD" (suppresses all rules);
+     *     <li>"PMD.rulename", where rulename is the name of the given rule;
+     *     <li>"all" (conventional value to suppress all warnings).
+     * </ul>
+     *
+     * <p>Additionnally, the following values suppress a specific set of rules:
+     * <ul>
+     *     <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
+     *     <li>{@code "serial"}: suppresses BeanMembersShouldSerialize and MissingSerialVersionUID;
+     * </ul>
+     *
+     * @param rule The rule for which to check for suppression
+     *
+     * @return True if this annotation suppresses the given rule
+     */
+    // @formatter:on
+    public boolean suppresses(Rule rule) {
 
-            if ("SuppressWarnings".equals(annName.getImage())
-                    || "java.lang.SuppressWarnings".equals(annName.getImage())) {
-                List<ASTLiteral> nodes = n.findDescendantsOfType(ASTLiteral.class);
-                for (ASTLiteral element : nodes) {
-                    if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(ruleAnno)
-                            // Check for standard annotations values
-                            || element.hasImageEqualTo("\"all\"")
-                            || element.hasImageEqualTo("\"serial\"") && serialRules.contains(rule.getName())
-                            || element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName())) {
-                        return true;
-                    }
+        if (jjtGetChild(0) instanceof ASTMarkerAnnotation) {
+            return false;
+        }
+
+        // if (SuppressWarnings.class.equals(getType())) { // typeres is not always on
+        if (isSuppressWarnings()) {
+            for (ASTLiteral element : findDescendantsOfType(ASTLiteral.class)) {
+                if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo("\"PMD." + rule.getName() + "\"")
+                        // Check for standard annotations values
+                        || element.hasImageEqualTo("\"all\"")
+                        || element.hasImageEqualTo("\"serial\"") && SERIAL_RULES.contains(rule.getName())
+                        || element.hasImageEqualTo("\"unused\"") && UNUSED_RULES.contains(rule.getName())) {
+                    return true;
                 }
             }
         }
+
         return false;
     }
 
-    /**
-     * Accept the visitor.
-     */
+
+    private boolean isSuppressWarnings() {
+        return "SuppressWarnings".equals(getAnnotationName()) || "java.lang.SuppressWarnings".equals(getAnnotationName());
+    }
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

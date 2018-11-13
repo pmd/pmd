@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example">
+        <![CDATA[
+          package com
+                     .company
+                             .money;
+
+          import com
+                     .company
+                             .money.Bar;
+          import com.company.Carrot;
+
+          public class Foo extends Bar {
+            int y, z, t;
+            String q;
+
+            {
+              bar();
+              int x;
+              switch
+                (x) {
+              case 1: foo(); break;
+              case 2:
+              case 3: bar();
+                      break;
+              default: break;
+              }
+            }
+
+            public Foo() {
+              this(2);
+            }
+
+            public Foo(int z) {
+
+              Random r = new Random();
+              label: for (int j = -12; i < z; i++) {
+                theNonsense: for (int k = -20; k < 20; k += j) {
+                  if (r.nextInt() == 42) {
+                    System
+                      .out
+                      .println("Bye");
+                    break label;
+                  } else if (k > 12) {
+                    continue theNonsense;
+                  }
+                }
+              }
+
+              super(z);
+            }
+
+            public void foo() {
+              int x = 0;
+              synchronized (x) {
+                x++;
+              }
+
+              do {
+                if (x == 0) {
+                  synchronized (x) {
+                    x++;
+                  }
+                } else if (x == 1) {
+                  x = 0;
+                } else {
+                  System.out.println("Bonjour");
+                  throw new ScaryException("Surprise!");
+                }
+              } while (x != 2);
+            }
+
+            public static void main(String args[]) throws RadioactiveException {
+              String k, l, m;
+
+              bar();
+
+              do {
+                x++;
+              } while (x < 2);
+
+              while (x < 4) {
+                x++;
+              }
+
+              for (int i = 1; x < 6; ) {
+                x += i;
+              }
+
+              {
+                x++;;;;;
+              }
+
+              int p =
+                2 + 4 + 5;
+
+              try {
+                x++;
+              } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+              } catch (ThemAll pokemon) {
+                pokemon.train();
+              } finally {
+                // Do nothing
+              }
+
+              bar();
+              x = (int) bar();
+              /*
+               * This is
+               * a comment
+               */
+              x.foobar();
+            }
+          }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Full example - Standard version</description>
+        <rule-property name="classReportLevel">60</rule-property>
+        <rule-property name="methodReportLevel">10</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a NCSS line count of 65 (Highest = 20).</message>
+            <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
+            <message>The method 'foo()' has a NCSS line count of 14.</message>
+            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Full example - JavaNcss version</description>
+        <rule-property name="classReportLevel">60</rule-property>
+        <rule-property name="methodReportLevel">10</rule-property>
+        <rule-property name="ncssOptions">countImports</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a NCSS line count of 68 (Highest = 20).</message>
+            <message>The constructor 'Foo(int)' has a NCSS line count of 13.</message>
+            <message>The method 'foo()' has a NCSS line count of 14.</message>
+            <message>The method 'main(String)' has a NCSS line count of 20.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Short method</description>
+        <rule-property name="classReportLevel">13</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+     bar();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lots of comments</description>
+        <rule-property name="classReportLevel">13</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     bar();
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     //nothing to see here
+     foo();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <code-fragment id="complicated-method"><![CDATA[
+public class Foo {
+  public static void main(String args[]) {
+    Random r = new Random();
+    label: for (int j = -12; i < z; i++) {
+      theNonsense: for (int k = -20; k < 20; k += j) {
+        if (r.nextInt() == 42) {
+          System.out.println("Bye");
+          break label;
+        } else if (k > 12) {
+          continue theNonsense;
+        }
+      }
+    }
+  }
+}
+     ]]></code-fragment>
+
+    <test-code>
+        <description>Test high class report level</description>
+        <rule-property name="methodReportLevel">10</rule-property>
+        <rule-property name="classReportLevel">999</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="complicated-method"/>
+    </test-code>
+
+    <test-code>
+        <description>Test high method report Level</description>
+        <rule-property name="methodReportLevel">15</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="complicated-method"/>
+    </test-code>
+
+    <test-code>
+        <description>Nullpointer for getQualifiedName</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum EnumWithAnonymousInnerClass {
+    A {
+        @Override
+        public void foo() {
+            super.foo();
+        }
+    },
+    B;
+    
+    public void foo() {
+    }
+    
+    interface Inner {
+        int get();
+    }
+
+    public static final Inner VAL = new Inner() {
+        @Override
+        public int get() {
+            return 1;
+        }
+    };
+}
+        ]]></code>
+    </test-code>
+</test-data>

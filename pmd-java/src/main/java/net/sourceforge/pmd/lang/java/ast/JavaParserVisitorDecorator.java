@@ -14,11 +14,6 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     private JavaParserVisitor visitor;
 
-
-    public JavaParserVisitorDecorator() {
-    }
-
-
     public void setBase(JavaParserControllessVisitor base) {
         visitor = base;
     }
@@ -204,13 +199,21 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     }
 
 
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRUNSIGNEDSHIFT node, Object data) {
         return visitor.visit(node, data);
     }
 
 
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRSIGNEDSHIFT node, Object data) {
         return visitor.visit(node, data);
     }
@@ -704,6 +707,24 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
 
     @Override
     public Object visit(ASTMethodReference node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTModuleDeclaration node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTModuleDirective node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTModuleName node, Object data) {
         return visitor.visit(node, data);
     }
 }

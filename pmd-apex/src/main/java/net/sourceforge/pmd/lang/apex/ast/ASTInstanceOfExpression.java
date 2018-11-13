@@ -12,6 +12,7 @@ public class ASTInstanceOfExpression extends AbstractApexNode<InstanceOfExpressi
         super(instanceOfExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

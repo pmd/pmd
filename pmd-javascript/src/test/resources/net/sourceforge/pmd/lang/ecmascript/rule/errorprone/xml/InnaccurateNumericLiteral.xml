@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Ok integer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Bad integer</description>
+        <expected-problems>1</expected-problems>
+        <code>var x = 999999999999999999999999;</code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Ok float</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1.1234567890123;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Bad float</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+var z = 1.12345678901234567;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Ok float w/ exponent</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var x = 1.12e-4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Bad float w/ exponent</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+var x = 1.12345678901234567e-4;
+     ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#861 [ecmascript] InnaccurateNumericLiteral false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+var hex1 = 0x20;
+var hex2 = 0X20;
+        ]]></code>
+        <source-type>ecmascript 3</source-type>
+    </test-code>
+</test-data>

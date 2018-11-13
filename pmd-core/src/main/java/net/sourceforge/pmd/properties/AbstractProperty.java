@@ -13,12 +13,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+
 /**
  * Abstract class for properties.
  *
  * @param <T> The type of the property's value. This is a list type for multi-valued properties
  *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
@@ -47,14 +49,6 @@ import org.apache.commons.lang3.StringUtils;
         description = checkNotEmpty(theDescription, DESCRIPTION);
         uiOrder = theUIOrder;
         this.isDefinedExternally = isDefinedExternally;
-    }
-
-
-    private static String checkNotEmpty(String arg, PropertyDescriptorField argId) throws IllegalArgumentException {
-        if (StringUtils.isBlank(arg)) {
-            throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
-        }
-        return arg;
     }
 
 
@@ -106,9 +100,9 @@ import org.apache.commons.lang3.StringUtils;
 
     @Override
     public String toString() {
-        return "[PropertyDescriptor: name=" + name() + ","
-            + " type=" + (isMultiValue() ? "List<" + type() + ">" : type()) + ","
-            + " value=" + defaultValue() + "]";
+        return "[PropertyDescriptor: name=" + name() + ','
+               + " type=" + (isMultiValue() ? "List<" + type() + '>' : type()) + ','
+               + " value=" + defaultValue() + ']';
     }
 
 
@@ -127,8 +121,8 @@ import org.apache.commons.lang3.StringUtils;
 
 
     /**
-     * Adds this property's attributes to the map. Subclasses can override this to add more
-     * {@link PropertyDescriptorField}.
+     * Adds this property's attributes to the map. Subclasses can override this to add more {@link
+     * PropertyDescriptorField}.
      *
      * @param attributes The map to fill
      */
@@ -150,6 +144,14 @@ import org.apache.commons.lang3.StringUtils;
     @Override
     public boolean isDefinedExternally() {
         return isDefinedExternally;
+    }
+
+
+    private static String checkNotEmpty(String arg, PropertyDescriptorField argId) throws IllegalArgumentException {
+        if (StringUtils.isBlank(arg)) {
+            throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
+        }
+        return arg;
     }
 
 

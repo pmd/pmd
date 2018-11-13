@@ -1,11 +1,12 @@
 ---
 title: Security
-summary: These rules deal with different security problems that can occur within Apex.
+summary: Rules that flag potential security flaws.
 permalink: pmd_rules_apex_security.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
-editmepath: ../pmd-apex/src/main/resources/rulesets/apex/security.xml
-keywords: Security, ApexSharingViolations, ApexOpenRedirect, ApexInsecureEndpoint, ApexXSSFromURLParam, ApexXSSFromEscapeFalse, ApexBadCrypto, ApexCSRF, ApexSOQLInjection, ApexCRUDViolation, ApexDangerousMethods, ApexSuggestUsingNamedCred
+editmepath: ../pmd-apex/src/main/resources/category/apex/security.xml
+keywords: Security, ApexBadCrypto, ApexCRUDViolation, ApexCSRF, ApexDangerousMethods, ApexInsecureEndpoint, ApexOpenRedirect, ApexSharingViolations, ApexSOQLInjection, ApexSuggestUsingNamedCred, ApexXSSFromEscapeFalse, ApexXSSFromURLParam
+language: Apex
 ---
 ## ApexBadCrypto
 
@@ -31,15 +32,15 @@ public without sharing class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexBadCrypto" />
+<rule ref="category/apex/security.xml/ApexBadCrypto" />
 ```
 
 ## ApexCRUDViolation
@@ -75,15 +76,15 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexCRUDViolation" />
+<rule ref="category/apex/security.xml/ApexCRUDViolation" />
 ```
 
 ## ApexCSRF
@@ -113,15 +114,15 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexCSRF" />
+<rule ref="category/apex/security.xml/ApexCSRF" />
 ```
 
 ## ApexDangerousMethods
@@ -153,15 +154,15 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexDangerousMethods" />
+<rule ref="category/apex/security.xml/ApexDangerousMethods" />
 ```
 
 ## ApexInsecureEndpoint
@@ -188,15 +189,15 @@ public without sharing class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexInsecureEndpoint" />
+<rule ref="category/apex/security.xml/ApexInsecureEndpoint" />
 ```
 
 ## ApexOpenRedirect
@@ -223,15 +224,15 @@ public without sharing class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexOpenRedirect" />
+<rule ref="category/apex/security.xml/ApexOpenRedirect" />
 ```
 
 ## ApexSharingViolations
@@ -255,15 +256,15 @@ public without sharing class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexSharingViolations" />
+<rule ref="category/apex/security.xml/ApexSharingViolations" />
 ```
 
 ## ApexSOQLInjection
@@ -288,15 +289,15 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexSOQLInjection" />
+<rule ref="category/apex/security.xml/ApexSOQLInjection" />
 ```
 
 ## ApexSuggestUsingNamedCred
@@ -335,15 +336,15 @@ public class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexSuggestUsingNamedCred" />
+<rule ref="category/apex/security.xml/ApexSuggestUsingNamedCred" />
 ```
 
 ## ApexXSSFromEscapeFalse
@@ -368,15 +369,15 @@ public without sharing class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexXSSFromEscapeFalse" />
+<rule ref="category/apex/security.xml/ApexXSSFromEscapeFalse" />
 ```
 
 ## ApexXSSFromURLParam
@@ -401,14 +402,14 @@ public without sharing class Foo {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/security.xml/ApexXSSFromURLParam" />
+<rule ref="category/apex/security.xml/ApexXSSFromURLParam" />
 ```
 

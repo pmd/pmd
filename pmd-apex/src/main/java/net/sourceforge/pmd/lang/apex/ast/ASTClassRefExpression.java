@@ -12,6 +12,7 @@ public class ASTClassRefExpression extends AbstractApexNode<ClassRefExpression> 
         super(classRefExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

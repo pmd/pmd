@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.Rule;
 
+
 /**
  * Multi-valued property.
  *
@@ -23,7 +24,7 @@ import net.sourceforge.pmd.Rule;
  * @version 6.0.0
  */
 /* default */ abstract class AbstractMultiValueProperty<V> extends AbstractProperty<List<V>>
-    implements MultiValuePropertyDescriptor<V> {
+        implements MultiValuePropertyDescriptor<V> {
 
 
     /** The default value. */
@@ -118,6 +119,7 @@ import net.sourceforge.pmd.Rule;
      *
      * @return A string representation of the default value.
      */
+    @Override
     protected String defaultAsString() {
         return asDelimitedString(defaultValue(), multiValueDelimiter());
     }

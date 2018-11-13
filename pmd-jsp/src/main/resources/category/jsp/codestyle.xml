@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<ruleset name="Code Style"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce a specific coding style.
+    </description>
+
+    <rule name="DuplicateJspImports"
+          since="3.7"
+          message="Avoid duplicate imports such as ''{0}''"
+          class="net.sourceforge.pmd.lang.jsp.rule.codestyle.DuplicateJspImportsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_jsp_codestyle.html#duplicatejspimports">
+        <description>
+Avoid duplicate import statements inside JSP's.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
+]]>
+        </example>
+    </rule>
+
+</ruleset>

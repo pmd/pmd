@@ -628,4 +628,20 @@ public enum Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1056 [java] Property ignoredAnnotations does not work for SingularField and ImmutableField</description>
+        <rule-property name="ignoredAnnotations">java.lang.Deprecated</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Source {
+    @Deprecated
+    private Object o; //violation!
+
+    Object m() {
+        o = new Object();
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

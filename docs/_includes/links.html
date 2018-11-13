@@ -4,10 +4,12 @@
 {% for entry in site.data.sidebars[sidebar].entries %}
 {% for folder in entry.folders %}
 {% for folderitem in folder.folderitems %}
+{% if folderitem.url %}
 {% if folderitem.url contains "html#" %}
-[{{folderitem.url | remove: "/" }}]: {{folderitem.url | remove: "/"}}
+[{{ folderitem.url | remove: "/" }}]: PageAnchorLink {{folderitem.url | remove: "/"}}
 {% else %}
-[{{folderitem.url | remove: "/"  | remove: ".html"}}]: {{folderitem.url | remove: "/"}}
+[{{ folderitem.url | remove: "/" | remove: ".html" }}]: {{ folderitem.url | remove: "/" }}
+{% endif %}
 {% endif %}
 {% for subfolders in folderitem.subfolders %}
 {% for subfolderitem in subfolders.subfolderitems %}

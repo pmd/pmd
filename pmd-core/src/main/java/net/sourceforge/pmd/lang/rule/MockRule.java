@@ -23,7 +23,7 @@ public class MockRule extends AbstractRule {
     public MockRule() {
         super();
         setLanguage(LanguageRegistry.getLanguage("Dummy"));
-        definePropertyDescriptor(new IntegerProperty("testIntProperty", "testIntProperty", 0, 100, 1, 0));
+        definePropertyDescriptor(IntegerProperty.named("testIntProperty").desc("testIntProperty").range(0, 100).defaultValue(1).uiOrder(0).build());
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
@@ -41,5 +41,6 @@ public class MockRule extends AbstractRule {
 
     @Override
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
+        // the mock rule does nothing. Usually you would start here to analyze the AST.
     }
 }

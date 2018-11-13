@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+throwing various types
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  throw new Throwable();
+  throw new Exception();
+  throw new Error();
+  throw new RuntimeException();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1796928 : The code uses a class that uses the same names that the one this rule is
+				looking for...
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.Throwable;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.Exception;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.Error;
+import net.sourceforge.pmd.lang.java.rule.design.AvoidThrowingRawExceptionTypesTest.RuntimeException;
+
+public class PmdTest {
+
+	public void m() {
+		throw new Throwable();
+		throw new Error();
+		throw new RuntimeException();
+		throw new Exception();
+	}
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1337: False positive "Avoid throwing raw exception types" when exception is not thrown</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PmdTest {
+    private Throwable cause;
+
+    public void setUp() {
+        cause = new Throwable();
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>False negative when importing another exception</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Foo {
+
+    public void bar() {
+        throw new Exception();
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Ok when throwing another exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+
+public class Foo {
+
+    public void bar() {
+        throw new IOException();
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

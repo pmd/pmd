@@ -40,6 +40,56 @@
         <delete file="${target}/net/sourceforge/pmd/lang/objectivec/ast/CharStream.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/objectivec/ast/ParseException.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/objectivec/ast/TokenMgrError.java" />
+
+        <replace file="${target}/net/sourceforge/pmd/lang/objectivec/ast/Token.java">
+            <replacetoken>public class Token implements java.io.Serializable</replacetoken>
+            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
+
+public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
+        </replace>
+
+        <!--Add implementation methods of GenericToken-->
+        <replace file="${target}/net/sourceforge/pmd/lang/objectivec/ast/Token.java">
+            <replacetoken>public Token specialToken;</replacetoken>
+            <replacevalue><![CDATA[public Token specialToken;
+
+  @Override
+  public GenericToken getNext() {
+    return next;
+  }
+
+  @Override
+  public GenericToken getPreviousComment() {
+    return specialToken;
+  }
+
+  @Override
+  public String getImage() {
+    return image;
+  }
+
+    @Override
+  public int getBeginLine() {
+    return beginLine;
+  }
+
+  @Override
+  public int getEndLine() {
+    return endLine;
+  }
+
+  @Override
+  public int getBeginColumn() {
+    return beginColumn;
+  }
+
+  @Override
+  public int getEndColumn() {
+    return endColumn;
+  }
+
+]]></replacevalue>
+        </replace>
     </target>
 
 </project>

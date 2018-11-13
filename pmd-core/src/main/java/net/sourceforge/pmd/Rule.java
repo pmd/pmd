@@ -112,6 +112,7 @@ public interface Rule extends PropertySource {
      *
      * @return the name
      */
+    @Override
     String getName();
 
     /**
@@ -257,53 +258,106 @@ public interface Rule extends PropertySource {
 
     /**
      * Sets whether this Rule uses Data Flow Analysis.
+     * @deprecated Use {@link #setDfa(boolean)} instead.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
+    @Deprecated // To be removed in PMD 7.0.0
     void setUsesDFA();
+
+    /**
+     * Sets whether this Rule uses Data Flow Analysis.
+     */
+    void setDfa(boolean isDfa);
+
+    /**
+     * Gets whether this Rule uses Data Flow Analysis.
+     *
+     * @return <code>true</code> if Data Flow Analysis is used.
+     * @deprecated Use {@link #isDfa()} instead.
+     */
+    @Deprecated // To be removed in PMD 7.0.0
+    boolean usesDFA();
 
     /**
      * Gets whether this Rule uses Data Flow Analysis.
      *
      * @return <code>true</code> if Data Flow Analysis is used.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
-    boolean usesDFA();
+    boolean isDfa();
+
+    /**
+     * Sets whether this Rule uses Type Resolution.
+     * @deprecated Use {@link #setTypeResolution(boolean)} instead.
+     */
+    @Deprecated // To be removed in PMD 7.0.0
+    void setUsesTypeResolution();
 
     /**
      * Sets whether this Rule uses Type Resolution.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
-    void setUsesTypeResolution();
+    void setTypeResolution(boolean usingTypeResolution);
+
+    /**
+     * Gets whether this Rule uses Type Resolution.
+     *
+     * @return <code>true</code> if Type Resolution is used.
+     *
+     * @deprecated Use {@link #isTypeResolution()} instead
+     */
+    @Deprecated // To be removed in PMD 7.0.0
+    boolean usesTypeResolution();
 
     /**
      * Gets whether this Rule uses Type Resolution.
      *
      * @return <code>true</code> if Type Resolution is used.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
-    boolean usesTypeResolution();
+    boolean isTypeResolution();
 
     /**
-     * Sets whether this Rule uses Object-Oriented Metrics.
+     * Sets whether this Rule uses multi-file analysis.
+     * @deprecated use {@link #setMultifile(boolean)} instead.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
-    void setUsesMetrics();
+    @Deprecated // To be removed in PMD 7.0.0
+    void setUsesMultifile();
 
     /**
-     * Gets whether this Rule uses Object-Oriented Metrics.
+     * Sets whether this Rule uses multi-file analysis.
+     */
+    void setMultifile(boolean multifile);
+
+    /**
+     * Gets whether this Rule uses multi-file analysis.
      *
-     * @return <code>true</code> if the Metrics Framework is used.
+     * @return <code>true</code> if the multi file analysis is used.
+     *
+     * @deprecated Use {@link #isMultifile()} instead.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
-    boolean usesMetrics();
+    @Deprecated // To be removed in PMD 7.0.0
+    boolean usesMultifile();
+
+    /**
+     * Gets whether this Rule uses multi-file analysis.
+     *
+     * @return <code>true</code> if the multi file analysis is used.
+     */
+    boolean isMultifile();
+
+    /**
+     * Gets whether this Rule uses the RuleChain.
+     *
+     * @return <code>true</code> if RuleChain is used.
+     *
+     * @deprecated USe {@link #isRuleChain()} instead.
+     */
+    @Deprecated // To be removed in PMD 7.0.0
+    boolean usesRuleChain();
 
     /**
      * Gets whether this Rule uses the RuleChain.
      *
      * @return <code>true</code> if RuleChain is used.
      */
-    // FUTURE Use JavaBean conventions for boolean attributes
-    boolean usesRuleChain();
+    boolean isRuleChain();
 
     /**
      * Gets the collection of AST node names visited by the Rule on the

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.metrics;
 
-import static net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorTest.parseAndVisitForClass;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -14,10 +14,12 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.impl.AbstractJavaOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
@@ -32,12 +34,12 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public class ProjectMemoizerTest {
 
     private MetricKey<ASTAnyTypeDeclaration> classMetricKey = MetricKeyUtil.of(null, new RandomClassMetric());
-    private MetricKey<ASTMethodOrConstructorDeclaration> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
+    private MetricKey<MethodLikeNode> opMetricKey = MetricKeyUtil.of(null, new RandomOperationMetric());
 
 
     @Test
     public void memoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
+        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(MetricsVisitorTestData.class);
 
         List<Integer> expected = visitWith(acu, true);
         List<Integer> real = visitWith(acu, false);
@@ -48,7 +50,8 @@ public class ProjectMemoizerTest {
 
     @Test
     public void forceMemoizationTest() {
-        ASTCompilationUnit acu = parseAndVisitForClass(MetricsVisitorTestData.class);
+
+        ASTCompilationUnit acu = ParserTstUtil.parseJavaDefaultVersion(MetricsVisitorTestData.class);
 
         List<Integer> reference = visitWith(acu, true);
         List<Integer> real = visitWith(acu, true);
@@ -70,7 +73,7 @@ public class ProjectMemoizerTest {
         acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
-                MetricMemoizer<ASTMethodOrConstructorDeclaration> op = toplevel.getOperationMemoizer(node.getQualifiedName());
+                MetricMemoizer<MethodLikeNode> op = toplevel.getOperationMemoizer(node.getQualifiedName());
                 result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
                                                                                   MetricOptions.emptyOptions(), op));
                 return super.visit(node, data);
@@ -96,7 +99,7 @@ public class ProjectMemoizerTest {
 
 
         @Override
-        public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+        public double computeFor(MethodLikeNode node, MetricOptions options) {
             return random.nextInt();
         }
     }

@@ -21,8 +21,11 @@ public class JavadocElement extends AbstractNode {
         return tag;
     }
 
+
+
+
     @Override
-    public String toString() {
+    public String getXPathNodeName() {
         return tag.label + " : " + tag.description;
     }
 }

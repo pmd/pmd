@@ -3,7 +3,7 @@
 <ruleset name="Sample"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 Sample ruleset to test rule doc generation.
   </description>
@@ -12,13 +12,19 @@ Sample ruleset to test rule doc generation.
           language="java"
           since="0.4"
           message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#overridebothequalsandhashcode"
           minimumLanguageVersion="1.5">
       <description>
-Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
-Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
-delegating to your superclass.
+            Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
+            Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
+            delegating to your superclass.
+
+            Second paragraph.
+
+                Code sample
+
+            Third paragraph.
       </description>
       <priority>3</priority>
       <example>
@@ -71,6 +77,15 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
              </value>
          </property>
          <property name="sampleAdditionalProperty" type="String" description="This is a additional property for tests" value="the value" />
+         <property name="sampleMultiStringProperty" type="List[String]" description="Test property with multiple strings" value="Value1|Value2" />
+         <property name="sampleDeprecatedProperty" type="String" description="Deprecated! This is a sample deprecated property for tests" value="test" />
+         <property name="sampleRegexProperty1" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
+         <property name="sampleRegexProperty2" type="Regex" description="The property is of type regex" value="[a-z]*" />
+         <property name="sampleRegexProperty3" type="Regex" description="The property is of type regex" value="\s+" />
+         <property name="sampleRegexProperty4" type="Regex" description="The property is of type regex" value="_dd_" />
+         <property name="sampleRegexProperty5" type="Regex" description="The property is of type regex" value="[0-9]{1,3}" />
+         <property name="sampleRegexProperty6" type="Regex" description="The property is of type regex" value="\b" />
+         <property name="sampleRegexProperty7" type="Regex" description="The property is of type regex" value="\n" />
      </properties>
      <example>
  <![CDATA[
@@ -111,6 +126,6 @@ Just some description of a deprecated rule.
 
 <rule name="RenamedRule" ref="JumbledIncrementer"/>
 
-<rule name="MovedRule" ref="rulesets/java/basic.xml/JumbledIncrementer"/>
+<rule name="MovedRule" ref="rulesets/ruledoctest/sample2.xml/JumbledIncrementer"/>
 
 </ruleset>

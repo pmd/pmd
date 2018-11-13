@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.event.Receiver;
 import net.sf.saxon.om.Axis;
@@ -27,82 +29,54 @@ import net.sf.saxon.value.Value;
  * useful implementations, such as {@link #iterateAxis(byte, NodeTest)} and
  * {@link #isSameNodeInfo(NodeInfo)}.
  */
+@Deprecated
+@InternalApi
 public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getSystemId() {
         throw createUnsupportedOperationException("Source.getSystemId()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setSystemId(String systemId) {
         throw createUnsupportedOperationException("Source.setSystemId(String)");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getStringValue() {
         throw createUnsupportedOperationException("ValueRepresentation.getStringValue()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CharSequence getStringValueCS() {
         throw createUnsupportedOperationException("ValueRepresentation.getStringValueCS()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public SequenceIterator getTypedValue() throws XPathException {
         throw createUnsupportedOperationException("Item.getTypedValue()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getUnderlyingNode() {
         throw createUnsupportedOperationException("VirtualNode.getUnderlyingNode()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getSiblingPosition() {
         throw createUnsupportedOperationException("SiblingCountingNode.getSiblingPosition()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Value atomize() throws XPathException {
         throw createUnsupportedOperationException("NodeInfo.atomize()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compareOrder(NodeInfo other) {
         throw createUnsupportedOperationException("NodeInfo.compareOrder(NodeInfo)");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void copy(Receiver receiver, int whichNamespaces, boolean copyAnnotations, int locationId)
             throws XPathException {
@@ -135,57 +109,36 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void generateId(FastStringBuffer buffer) {
         throw createUnsupportedOperationException("NodeInfo.generateId(FastStringBuffer)");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getAttributeValue(int fingerprint) {
         throw createUnsupportedOperationException("NodeInfo.getAttributeValue(int)");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBaseURI() {
         throw createUnsupportedOperationException("NodeInfo.getBaseURI()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getColumnNumber() {
         throw createUnsupportedOperationException("NodeInfo.getColumnNumber()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Configuration getConfiguration() {
         throw createUnsupportedOperationException("NodeInfo.getConfiguration()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int[] getDeclaredNamespaces(int[] buffer) {
         throw createUnsupportedOperationException("NodeInfo.getDeclaredNamespaces(int[])");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDisplayName() {
         throw createUnsupportedOperationException("NodeInfo.getDisplayName()");
@@ -201,129 +154,81 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DocumentInfo getDocumentRoot() {
         throw createUnsupportedOperationException("NodeInfo.getDocumentRoot()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getFingerprint() {
         throw createUnsupportedOperationException("NodeInfo.getFingerprint()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getLineNumber() {
         throw createUnsupportedOperationException("NodeInfo.getLineNumber()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalPart() {
         throw createUnsupportedOperationException("NodeInfo.getLocalPart()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNameCode() {
         throw createUnsupportedOperationException("NodeInfo.getNameCode()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public NamePool getNamePool() {
         throw createUnsupportedOperationException("NodeInfo.getNamePool()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getNodeKind() {
         throw createUnsupportedOperationException("NodeInfo.getNodeKind()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public NodeInfo getParent() {
         throw createUnsupportedOperationException("NodeInfo.getParent()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getPrefix() {
         throw createUnsupportedOperationException("NodeInfo.getPrefix()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public NodeInfo getRoot() {
         throw createUnsupportedOperationException("NodeInfo.getRoot()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int getTypeAnnotation() {
         throw createUnsupportedOperationException("NodeInfo.getTypeAnnotation()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getURI() {
         throw createUnsupportedOperationException("NodeInfo.getURI()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildNodes() {
         throw createUnsupportedOperationException("NodeInfo.hasChildNodes()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isId() {
         throw createUnsupportedOperationException("NodeInfo.isId()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isIdref() {
         throw createUnsupportedOperationException("NodeInfo.isIdref()");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isNilled() {
         throw createUnsupportedOperationException("NodeInfo.isNilled()");
@@ -340,9 +245,6 @@ public class AbstractNodeInfo implements VirtualNode, SiblingCountingNode {
         return this.equals(other);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public AxisIterator iterateAxis(byte axisNumber) {
         throw createUnsupportedOperationException(

@@ -45,9 +45,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         return "txt";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         classAndMethodName = getProperty(CLASS_AND_METHOD_NAME);

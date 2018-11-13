@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+	<test-code>
+		<description>Non compliant scenario: Hardcoded Id</description>
+		<expected-problems>1</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void method (ID newRecordID) {
+    for (Account current : listOfcounts){
+        if (current.getId == 'a002400000RG1nyAAD') {
+        }
+    }
+    	method('3266sd35435sd6a');
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Compliant scenario, getting ID dynamically</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	public void method (ID newRecordID) {
+    for (Account current : listOfcounts){
+        if (current.getId == newRecordID) {
+
+        }
+    }
+    
+    	otherMethod(newRecordID);
+	}
+}
+		]]></code>
+	</test-code>
+
+	<test-code>
+		<description>Test for random string combinations</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		return 'jatuatzbtazi124';
+	}
+}
+		]]></code>
+	</test-code>
+	
+	<test-code>
+		<description>Test for random string combinations - more than 15, less than 18 digits</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		return 'jatua0tzbtazi1243';
+	}
+}
+		]]></code>
+	</test-code>
+	
+	<test-code>
+		<description>Test for random string combinations - checksum doesn't match</description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+public class Foo {
+	void foo() {
+		return '001A0000006Vm9uIAE';
+	}
+}
+		]]></code>
+	</test-code>
+
+    <test-code>
+        <description>[apex] AvoidHardcodingId false positives #776</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        // this is a false positive, we can't say, whether it's a salesforce id or not
+        @SuppressWarnings('PMD.AvoidHardcodingId')
+        String IMEI__c = '359040082913024';
+
+        // now the 6th character is non-0, definitive not a salesforce id
+        String IMEI2__c = '359041082913024';
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -16,12 +16,14 @@ public abstract class AbstractStatisticalJavaRule extends AbstractJavaRule imple
 
     private final StatisticalRuleHelper helper = new StatisticalRuleHelper(this);
 
+    @Override
     public void addDataPoint(DataPoint point) {
         helper.addDataPoint(point);
     }
 
+    @Override
     public Object[] getViolationParameters(DataPoint point) {
-        return null;
+        return new Object[0];
     }
 
     @Override

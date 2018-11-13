@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDe
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -18,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /* default */ class JavaTypeDefinitionSimple extends JavaTypeDefinition {
@@ -29,6 +34,8 @@ import java.util.Set;
     private final boolean isGeneric;
     private final boolean isRawType;
     private final JavaTypeDefinition enclosingClass;
+
+    private static final Logger LOG = Logger.getLogger(JavaTypeDefinitionSimple.class.getName());
 
     protected JavaTypeDefinitionSimple(Class<?> clazz, JavaTypeDefinition... boundGenerics) {
         super(EXACT);
@@ -79,11 +86,11 @@ import java.util.Set;
     }
 
     private JavaTypeDefinition getGenericType(final String parameterName, Method method,
-                                              List<JavaTypeDefinition> methodTypeArgumens) {
-        if (method != null && methodTypeArgumens != null) {
+                                              List<JavaTypeDefinition> methodTypeArguments) {
+        if (method != null && methodTypeArguments != null) {
             int paramIndex = getGenericTypeIndex(method.getTypeParameters(), parameterName);
             if (paramIndex != -1) {
-                return methodTypeArgumens.get(paramIndex);
+                return methodTypeArguments.get(paramIndex);
             }
         }
 
@@ -93,8 +100,8 @@ import java.util.Set;
     @Override
     public JavaTypeDefinition getGenericType(final String parameterName) {
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null;
-             currTypeDef = currTypeDef.getEnclosingClass()) {
-            
+                currTypeDef = currTypeDef.getEnclosingClass()) {
+
             int paramIndex = getGenericTypeIndex(currTypeDef.getType().getTypeParameters(), parameterName);
             if (paramIndex != -1) {
                 return currTypeDef.getGenericType(paramIndex);
@@ -104,13 +111,16 @@ import java.util.Set;
         // throw because we could not find parameterName
         StringBuilder builder = new StringBuilder("No generic parameter by name ").append(parameterName);
         for (JavaTypeDefinition currTypeDef = this; currTypeDef != null;
-             currTypeDef = currTypeDef.getEnclosingClass()) {
-            
+                currTypeDef = currTypeDef.getEnclosingClass()) {
+
             builder.append("\n on class ");
-            builder.append(clazz.getSimpleName());
+            builder.append(currTypeDef.getType().getSimpleName());
         }
 
-        throw new IllegalArgumentException(builder.toString());
+        LOG.log(Level.FINE, builder.toString());
+        // TODO: throw eventually
+        //throw new IllegalArgumentException(builder.toString());
+        return forClass(Object.class);
     }
 
     @Override
@@ -127,7 +137,7 @@ import java.util.Set;
         for (int i = genericArgs.size(); i <= index; i++) {
             genericArgs.add(null);
         }
-        
+
         /*
          * Set a default to circuit-brake any recursions (ie: raw types with no generic info)
          * Object.class is a right answer in those scenarios
@@ -180,13 +190,25 @@ import java.util.Set;
                 final Type[] wildcardUpperBounds = ((WildcardType) type).getUpperBounds();
                 return forClass(UPPER_WILDCARD, resolveTypeDefinition(wildcardUpperBounds[0], method, methodTypeArgs));
             }
+        } else if (type instanceof GenericArrayType) {
+            JavaTypeDefinition component = resolveTypeDefinition(((GenericArrayType) type).getGenericComponentType(), method, methodTypeArgs);
+            // TODO: retain the generic types of the array component...
+            return forClass(Array.newInstance(component.getType(), 0).getClass());
         }
 
         // TODO : Shall we throw here?
         return forClass(Object.class);
     }
 
+
+    @Override
+    public boolean isArrayType() {
+        return clazz.isArray();
+    }
+
+
     // TODO: are generics okay like this?
+    @Override
     public JavaTypeDefinition getComponentType() {
         Class<?> componentType = getType().getComponentType();
 
@@ -197,14 +219,39 @@ import java.util.Set;
         return forClass(componentType);
     }
 
+
+    private Class<?> getElementTypeRec(Class<?> arrayType) {
+        return arrayType.isArray() ? getElementTypeRec(arrayType.getComponentType()) : arrayType;
+    }
+
+
+    @Override
+    public JavaTypeDefinition getElementType() {
+        return isArrayType() ? forClass(getElementTypeRec(getType())) : this;
+    }
+
+
+    @Override
+    public JavaTypeDefinition withDimensions(int numDimensions) {
+        if (numDimensions < 0) {
+            throw new IllegalArgumentException("Negative array dimension");
+        }
+        return numDimensions == 0
+                ? this
+                : forClass(Array.newInstance(getType(), (int[]) Array.newInstance(int.class, numDimensions)).getClass());
+    }
+
+    @Override
     public boolean isClassOrInterface() {
         return !clazz.isEnum() && !clazz.isPrimitive() && !clazz.isAnnotation() && !clazz.isArray();
     }
 
+    @Override
     public boolean isNullType() {
         return false;
     }
 
+    @Override
     public boolean isPrimitive() {
         return clazz.isPrimitive();
     }
@@ -214,30 +261,51 @@ import java.util.Set;
         return clazz.equals(def.getType()) && getTypeParameterCount() == def.getTypeParameterCount();
     }
 
+    @Override
     public boolean hasSameErasureAs(JavaTypeDefinition def) {
         return clazz == def.getType();
     }
 
+    @Override
     public int getTypeParameterCount() {
         return typeParameterCount;
     }
 
-    public boolean isArrayType() {
-        return clazz.isArray();
-    }
 
     @Override
     public String toString() {
+        final StringBuilder sb = new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
+                .append(", definitionType=").append(getDefinitionType())
+                .append(", genericArgs=[");
+
+        // Forcefully resolve all generic types
+        for (int i = 0; i < genericArgs.size(); i++) {
+            getGenericType(i);
+        }
+
+        for (final JavaTypeDefinition jtd : genericArgs) {
+            sb.append(jtd.shallowString()).append(", ");
+        }
+
+        if (!genericArgs.isEmpty()) {
+            sb.replace(sb.length() - 3, sb.length() - 1, "");   // remove last comma
+        }
+
+        return sb.append("], isGeneric=").append(isGeneric)
+            .append("]\n").toString();
+    }
+
+    @Override
+    public String shallowString() {
         return new StringBuilder("JavaTypeDefinition [clazz=").append(clazz)
                 .append(", definitionType=").append(getDefinitionType())
-                .append(", genericArgs=").append(genericArgs)
                 .append(", isGeneric=").append(isGeneric)
                 .append("]\n").toString();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof JavaTypeDefinitionSimple)) {
+        if (!(obj instanceof JavaTypeDefinitionSimple)) {
             return false;
         }
 
@@ -294,6 +362,7 @@ import java.util.Set;
         return destinationSet;
     }
 
+    @Override
     public Set<Class<?>> getErasedSuperTypeSet() {
         Set<Class<?>> result = new HashSet<>();
         result.add(Object.class);
@@ -313,8 +382,10 @@ import java.util.Set;
         return destinationSet;
     }
 
+
+    @Override
     public JavaTypeDefinition getAsSuper(Class<?> superClazz) {
-        if (clazz == superClazz) { // optimize for same class calls
+        if (Objects.equals(clazz, superClazz)) { // optimize for same class calls
             return this;
         }
 

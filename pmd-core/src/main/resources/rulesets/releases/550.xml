@@ -3,7 +3,7 @@
 <ruleset name="550"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 This ruleset contains links to rules that are new in PMD v5.5.0
   </description>
@@ -20,7 +20,7 @@ This ruleset contains links to rules that are new in PMD v5.5.0
     <rule ref="rulesets/apex/complexity.xml/StdCyclomaticComplexity" />
     <rule ref="rulesets/apex/complexity.xml/TooManyFields" />
     <rule ref="rulesets/apex/complexity.xml/ExcessivePublicCount" />
-    <rule ref="rulesets/apex/complexity.xml/AvoidDmlStatementsInLoops" />
+    <rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" />
     <rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
     <rule ref="rulesets/apex/style.xml/VariableNamingConventions" />
     <rule ref="rulesets/apex/style.xml/MethodNamingConventions" />

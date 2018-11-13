@@ -14,12 +14,18 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class ParserCornersTest {
 
@@ -34,6 +40,33 @@ public class ParserCornersTest {
                 + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
                 + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
                 + "        };\n" + "    }\n" + "}\n");
+    }
+    
+    /**
+     * #888 PMD 6.0.0 can't parse valid <> under 1.8.
+     */
+    @Test
+    public void testDiamondUsageJava8() {
+        parseJava18("public class PMDExceptionTest {\n"
+                + "  private Component makeUI() {\n"
+                + "    String[] model = {\"123456\", \"7890\"};\n"
+                + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
+                + "    comboBox.setEditable(true);\n"
+                + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
+                + "      private Component editorComponent;\n"
+                + "      @Override public Component getEditorComponent() {\n"
+                + "        if (editorComponent == null) {\n"
+                + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
+                + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
+                + "        }\n"
+                + "        return editorComponent;\n"
+                + "      }\n"
+                + "    });\n"
+                + "    JPanel p = new JPanel();\n"
+                + "    p.add(comboBox);\n"
+                + "    return p;\n"
+                + "  }\n"
+                + "}");
     }
 
     @Test
@@ -95,8 +128,8 @@ public class ParserCornersTest {
     }
 
     @Test
-    public void testLambdaBug1470() throws Exception {
-        String code = IOUtils.toString(ParserCornersTest.class.getResourceAsStream("LambdaBug1470.java"), "UTF-8");
+    public void testLambdaBug1470() {
+        String code = readAsString("LambdaBug1470.java");
         parseJava18(code);
     }
 
@@ -130,20 +163,20 @@ public class ParserCornersTest {
     }
 
     @Test
-    public void testBug1429ParseError() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1429.java"));
+    public void testBug1429ParseError() {
+        String c = readAsString("Bug1429.java");
         parseJava18(c);
     }
 
     @Test
-    public void testBug1530ParseError() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("Bug1530.java"));
+    public void testBug1530ParseError() {
+        String c = readAsString("Bug1530.java");
         parseJava18(c);
     }
     
     @Test
-    public void testGitHubBug207() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug207.java"));
+    public void testGitHubBug207() {
+        String c = readAsString("GitHubBug207.java");
         parseJava18(c);
     }
 
@@ -157,8 +190,8 @@ public class ParserCornersTest {
     }
 
     @Test
-    public void testGitHubBug208ParseError() throws Exception {
-        String c = IOUtils.toString(this.getClass().getResourceAsStream("GitHubBug208.java"));
+    public void testGitHubBug208ParseError() {
+        String c = readAsString("GitHubBug208.java");
         parseJava15(c);
     }
     
@@ -220,14 +253,32 @@ public class ParserCornersTest {
         Assert.assertEquals(ASTEmptyStatement.class, cu3.jjtGetChild(4).getClass());
     }
 
+    @Test
+    public void testMethodReferenceConfused() throws Exception {
+        String code = readAsString("MethodReferenceConfused.java");
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10", code);
+        Assert.assertNotNull(compilationUnit);
+        ASTBlock firstBlock = compilationUnit.getFirstDescendantOfType(ASTBlock.class);
+        Map<NameDeclaration, List<NameOccurrence>> declarations = firstBlock.getScope().getDeclarations();
+        boolean foundVariable = false;
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> declaration : declarations.entrySet()) {
+            String varName = declaration.getKey().getImage();
+            if ("someVarNameSameAsMethodReference".equals(varName)) {
+                foundVariable = true;
+                Assert.assertTrue("no usages expected", declaration.getValue().isEmpty());
+            } else if ("someObject".equals(varName)) {
+                Assert.assertEquals("1 usage expected", 1, declaration.getValue().size());
+                Assert.assertEquals(6, declaration.getValue().get(0).getLocation().getBeginLine());
+            }
+        }
+        Assert.assertTrue("Test setup wrong - variable 'someVarNameSameAsMethodReference' not found anymore!", foundVariable);
+    }
+
     private String readAsString(String resource) {
-        InputStream in = ParserCornersTest.class.getResourceAsStream(resource);
-        try {
-            return IOUtils.toString(in);
+        try (InputStream in = ParserCornersTest.class.getResourceAsStream(resource)) {
+            return IOUtils.toString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 

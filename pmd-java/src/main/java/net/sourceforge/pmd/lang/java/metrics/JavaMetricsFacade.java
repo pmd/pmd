@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.metrics;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsFacade;
 import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 
@@ -14,26 +14,14 @@ import net.sourceforge.pmd.lang.metrics.MetricsComputer;
  *
  * @author Clément Fournier
  */
-class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> {
+class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, MethodLikeNode> {
 
-    private final PackageStats topLevelPackageStats = new PackageStats();
     private final JavaProjectMemoizer memoizer = new JavaProjectMemoizer();
 
 
     /** Resets the entire data structure. Used for tests. */
     void reset() {
-        topLevelPackageStats.reset();
         memoizer.reset();
-    }
-
-
-    /**
-     * Gets the top level package stats of this façade.
-     *
-     * @return The top level package stats
-     */
-    PackageStats getTopLevelPackageStats() {
-        return topLevelPackageStats;
     }
 
 
@@ -44,7 +32,7 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, AST
 
 
     @Override
-    protected MetricsComputer<ASTAnyTypeDeclaration, ASTMethodOrConstructorDeclaration> getLanguageSpecificComputer() {
+    protected MetricsComputer<ASTAnyTypeDeclaration, MethodLikeNode> getLanguageSpecificComputer() {
         return JavaMetricsComputer.INSTANCE;
     }
 

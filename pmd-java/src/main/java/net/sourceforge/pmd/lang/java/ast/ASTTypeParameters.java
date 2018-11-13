@@ -5,7 +5,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTTypeParameters extends AbstractJavaNode {
+
+import java.util.Iterator;
+
+
+/**
+ * Represents a list of type parameters.
+ *
+ * <pre>
+ *
+ * TypeParameters ::= "<" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* ">"
+ *
+ * </pre>
+ *
+ *
+ */
+public class ASTTypeParameters extends AbstractJavaNode implements Iterable<ASTTypeParameter> {
     public ASTTypeParameters(int id) {
         super(id);
     }
@@ -14,10 +29,14 @@ public class ASTTypeParameters extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    @Override
+    public Iterator<ASTTypeParameter> iterator() {
+        return new NodeChildrenIterator<>(this, ASTTypeParameter.class);
     }
 }

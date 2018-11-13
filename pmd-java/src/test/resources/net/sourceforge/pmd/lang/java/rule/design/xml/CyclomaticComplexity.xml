@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example">
+        <![CDATA[
+        public class Complicated {
+          public void example() {
+            int x = 0, y = 1, z = 2, t = 2;
+            boolean a = false, b = true, c = false, d = true;
+
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            } else if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            } else if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            } else {
+              switch (x) {
+              case 1:
+                x = 2;
+                break;
+
+              case 2:
+              case 3:
+                x = 2;
+                break;
+
+              default:
+                x = 2;
+                break;
+              }
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Simple method</description>
+        <rule-property name="classReportLevel">1</rule-property>
+        <rule-property name="methodReportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The class 'Foo' has a total cyclomatic complexity of 1 (highest 1).</message>
+            <message>The method 'foo()' has a cyclomatic complexity of 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo() {}
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>testLessComplicatedThanReportLevel</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public void foo() {}
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Complicated method</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'example()' has a cyclomatic complexity of 17.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Complicated method (ignoreBooleanPath)</description>
+        <rule-property name="cycloOptions">ignoreBooleanPaths</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'example()' has a cyclomatic complexity of 10.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Constructor</description>
+        <rule-property name="methodReportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The constructor 'Foo()' has a cyclomatic complexity of 1.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public class Foo {
+              public Foo() {}
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Test class report level</description>
+        <rule-property name="classReportLevel">17</rule-property>
+        <rule-property name="methodReportLevel">999</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Test method report level</description>
+        <rule-property name="classReportLevel">999</rule-property>
+        <rule-property name="methodReportLevel">17</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <code-fragment id="constructor-violation">
+        <![CDATA[
+        public class Test {
+          public Test() {
+            if (a == 1) {
+              if (b == 2) {
+                System.out.println("b");
+              } else if (b == 1) {
+              }
+            } else {
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 1 - reportMethods=true</description>
+        <rule-property name="methodReportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>#984 Cyclomatic complexity should treat constructors like methods: 2 -reportMethods=false</description>
+        <rule-property name="methodReportLevel">999</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+    <test-code reinitializeRule="true">
+        <description>#985 Suppressed methods shouldn't affect avg CyclomaticComplexity</description>
+        <rule-property name="methodReportLevel">2</rule-property>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class Test {
+              @SuppressWarnings("PMD.CyclomaticComplexity")
+              public Test() {
+                if (a == 1) {
+                  if (b == 2) {
+                    System.out.println("b");
+                  } else if (b == 1) {}
+                } else {}
+              }
+            }
+          ]]>
+        </code>
+    </test-code>
+
+    <code-fragment id="fallthroughSwitch">
+        <![CDATA[
+        class Foo {
+          void foo(){}
+          void bar(){}
+          void switchCase() {
+            int x=0;
+            switch (x) {
+            case 1:
+            case 2: foo(); break;
+            default: bar(); break;
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count empty switch labels too</description>
+        <rule-property name="methodReportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'switchCase()' has a cyclomatic complexity of 3.</message>
+        </expected-messages>
+        <code-ref id="fallthroughSwitch"/>
+    </test-code>
+
+    <test-code>
+        <description>IgnoreBooleanPaths Cyclo should not count empty switch labels</description>
+        <rule-property name="cycloOptions">ignoreBooleanPaths</rule-property>
+        <rule-property name="methodReportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'switchCase()' has a cyclomatic complexity of 2.</message>
+        </expected-messages>
+        <code-ref id="fallthroughSwitch"/>
+    </test-code>
+
+    <code-fragment id="manyBooleanOps">
+        <![CDATA[
+        class Foo {
+          void foo(){
+            int x=0, y=1;
+            boolean a, b;
+
+            if (x > 2 || y < 4) {
+              while (x++ < 10 && !(y-- < 0));
+            } else if (a && b || x < 4) {
+              return;
+            }
+          }
+        }
+      ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Standard Cyclo should count boolean paths</description>
+        <rule-property name="methodReportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'foo()' has a cyclomatic complexity of 8.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+    <test-code>
+        <description>IgnoreBooleanPaths Cyclo should not count boolean paths</description>
+        <rule-property name="cycloOptions">ignoreBooleanPaths</rule-property>
+        <rule-property name="methodReportLevel">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'foo()' has a cyclomatic complexity of 4.</message>
+        </expected-messages>
+        <code-ref id="manyBooleanOps"/>
+    </test-code>
+
+    <code-fragment id="many-small-methods">
+        <![CDATA[
+        public class Complicated {
+          int x = 0, y = 1, z = 2, t = 2;
+          boolean a = false, b = true, c = false, d = true;
+
+          public void example1() {
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            }
+          }
+
+          public void example2() {
+            if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            }
+          }
+
+           public void example12() {
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            }
+          }
+
+          public void example22() {
+            if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example3() {
+            if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example32() {
+            if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example4() {
+            switch (x) {
+            case 1:
+              x = 2;
+              break;
+
+            case 2:
+            case 3:
+              x = 2;
+              break;
+
+            default:
+              x = 2;
+              break;
+            }
+          }
+
+           public void example42() {
+            switch (x) {
+            case 1:
+              x = 2;
+              break;
+
+            case 2:
+            case 3:
+              x = 2;
+              break;
+
+            default:
+              x = 2;
+              break;
+            }
+          }
+
+          public void example1() {
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            }
+          }
+
+          public void example2() {
+            if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            }
+          }
+
+           public void example12() {
+            if (a && b || b && d) {
+              if (y == z) {
+                x = 2;
+              } else if (y == t && !d) {
+                x = 2;
+              } else {
+                x = 2;
+              }
+            }
+          }
+
+          public void example22() {
+            if (c && d) {
+              while (z < y) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example3() {
+            if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example32() {
+            if (a && !b) {
+              for (int n = 0; n < t; n++) {
+                x = 2;
+              }
+            }
+          }
+
+          public void example4() {
+            switch (x) {
+            case 1:
+              x = 2;
+              break;
+
+            case 2:
+            case 3:
+              x = 2;
+              break;
+
+            default:
+              x = 2;
+              break;
+            }
+          }
+
+           public void example42() {
+            switch (x) {
+            case 1:
+              x = 2;
+              break;
+
+            case 2:
+            case 3:
+              x = 2;
+              break;
+
+            default:
+              x = 2;
+              break;
+            }
+          }
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <!-- The class should get reported even though none of its methods get reported. -->
+        <description>Test many unreported methods</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The class 'Complicated' has a total cyclomatic complexity of 80 (highest 8).</message>
+        </expected-messages>
+        <code-ref id="many-small-methods"/>
+    </test-code>
+    
+    <test-code>
+        <description>Test property 'reportLevel' changes methodReportLevel</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="constructor-violation"/>
+    </test-code>
+
+    <test-code>
+        <description>Test property 'reportLevel' changes classReportLevel</description>
+        <rule-property name="reportLevel">11</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="many-small-methods"/>
+    </test-code>
+
+</test-data>

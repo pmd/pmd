@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<ruleset name="Error Prone"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+    </description>
+
+    <rule name="EmptyForeachStmt"
+          since="5.1"
+          message="Avoid empty foreach loops"
+          class="net.sourceforge.pmd.lang.vm.rule.errorprone.EmptyForeachStmtRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_errorprone.html#emptyforeachstmt">
+        <description>
+Empty foreach statements should be deleted.
+        </description>
+        <priority>2</priority>
+    </rule>
+
+    <rule name="EmptyIfStmt"
+          since="5.1"
+          message="Avoid empty if statements"
+          class="net.sourceforge.pmd.lang.vm.rule.errorprone.EmptyIfStmtRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_vm_errorprone.html#emptyifstmt">
+        <description>
+Empty if statements should be deleted.
+        </description>
+        <priority>2</priority>
+    </rule>
+
+</ruleset>

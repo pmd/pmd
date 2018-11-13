@@ -14,6 +14,7 @@ public class ASTThrowStatement extends AbstractEcmascriptNode<ThrowStatement> {
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

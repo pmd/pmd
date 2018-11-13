@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
+import net.sourceforge.pmd.properties.builders.MultiNumericPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
+
 
 /**
  * Multi-valued long property.
@@ -17,24 +18,6 @@ import java.util.Map;
  * @version Refactored June 2017 (6.0.0)
  */
 public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> {
-
-    /** Factory. */
-    public static final PropertyDescriptorFactory<List<Long>> FACTORY // @formatter:off
-        = new MultiValuePropertyDescriptorFactory<Long>(Long.class, NUMBER_FIELD_TYPES_BY_KEY) {
-            @Override
-            public LongMultiProperty createWith(Map<PropertyDescriptorField, String> valuesById, boolean isDefinedExternally) {
-                String[] minMax = minMaxFrom(valuesById);
-                char delimiter = delimiterIn(valuesById, DEFAULT_NUMERIC_DELIMITER);
-                List<Long> defaultValues = ValueParserConstants.parsePrimitives(defaultValueIn(valuesById), delimiter, LONG_PARSER);
-                return new LongMultiProperty(nameIn(valuesById),
-                                             descriptionIn(valuesById),
-                                             LONG_PARSER.valueOf(minMax[0]),
-                                             LONG_PARSER.valueOf(minMax[1]),
-                                             defaultValues,
-                                             0f,
-                                             isDefinedExternally);
-            }
-        }; // @formatter:on
 
 
     /**
@@ -47,7 +30,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param defaultValues  Array of defaults
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              Long[] defaultValues, float theUIOrder) {
@@ -72,7 +55,7 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param defaultValues  List of defaults
      * @param theUIOrder     UI order
      *
-     * @throws IllegalArgumentException if min > max or one of the defaults is not between the bounds
+     * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
      */
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              List<Long> defaultValues, float theUIOrder) {
@@ -90,5 +73,37 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     protected Long createFrom(String value) {
         return Long.valueOf(value);
     }
+
+
+    static PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder> extractor() {
+        return new PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric<Long, LongMultiPBuilder>(Long.class, ValueParserConstants.LONG_PARSER) {
+            @Override
+            protected LongMultiPBuilder newBuilder(String name) {
+                return new LongMultiPBuilder(name);
+            }
+        };
+    }
+
+
+    public static LongMultiPBuilder named(String name) {
+        return new LongMultiPBuilder(name);
+    }
+
+
+    public static final class LongMultiPBuilder
+        extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
+
+        protected LongMultiPBuilder(String name) {
+            super(name);
+        }
+
+
+        @Override
+        public LongMultiProperty build() {
+            return new LongMultiProperty(name, description, lowerLimit, upperLimit,
+                defaultValues, uiOrder, isDefinedInXML);
+        }
+    }
+
 
 }

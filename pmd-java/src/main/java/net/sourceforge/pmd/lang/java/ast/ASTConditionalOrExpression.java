@@ -5,6 +5,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a boolean OR-expression. This has a precedence greater than {@link ASTConditionalExpression},
+ * and lower than {@link ASTConditionalAndExpression}.
+ *
+ * <p>Note that the children of this node are not necessarily {@link ASTConditionalAndExpression},
+ * rather, they are expressions with an operator precedence greater or equal to ConditionalAndExpression.
+ *
+ *
+ * <pre>
+ *
+ * ConditionalOrExpression ::=  {@linkplain ASTConditionalAndExpression ConditionalAndExpression} ( "||" {@linkplain ASTConditionalAndExpression ConditionalAndExpression} )+
+ *
+ * </pre>
+ */
 public class ASTConditionalOrExpression extends AbstractJavaTypeNode {
     public ASTConditionalOrExpression(int id) {
         super(id);
@@ -14,9 +28,7 @@ public class ASTConditionalOrExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -9,7 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -49,7 +49,7 @@ public class AcceptanceTest extends STBBaseTst {
         ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
         ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
-        Map<NameDeclaration, List<NameOccurrence>> vars = s.getParent().getDeclarations();
+        Map<NameDeclaration, List<NameOccurrence>> vars = s.getDeclarations();
         assertEquals(1, vars.size());
         NameDeclaration v = vars.keySet().iterator().next();
         assertEquals("e", v.getImage());
@@ -100,11 +100,10 @@ public class AcceptanceTest extends STBBaseTst {
         ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map<NameDeclaration, List<NameOccurrence>> m = s.getDeclarations();
-        for (Iterator<NameDeclaration> i = m.keySet().iterator(); i.hasNext();) {
-            NameDeclaration d = i.next();
-            assertEquals("buz", d.getImage());
-            assertEquals("ArrayList", ((TypedNameDeclaration) d).getTypeImage());
-            List<NameOccurrence> u = m.get(d);
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : m.entrySet()) {
+            assertEquals("buz", entry.getKey().getImage());
+            assertEquals("ArrayList", ((TypedNameDeclaration) entry.getKey()).getTypeImage());
+            List<NameOccurrence> u = entry.getValue();
             assertEquals(1, u.size());
             NameOccurrence o = u.get(0);
             int beginLine = o.getLocation().getBeginLine();
@@ -131,7 +130,8 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testInnerOuterClass() {
         parseCode(TEST_INNER_CLASS);
-        ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTVariableDeclaratorId vdi = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(1) // get inner class
+                .getFirstDescendantOfType(ASTVariableDeclaratorId.class); // get first declaration
         List<NameOccurrence> usages = vdi.getUsages();
         assertEquals(2, usages.size());
         assertEquals(5, usages.get(0).getLocation().getBeginLine());

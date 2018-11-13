@@ -12,6 +12,7 @@ public class ASTSoqlExpression extends AbstractApexNode<SoqlExpression> {
         super(soqlExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

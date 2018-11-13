@@ -1,11 +1,12 @@
 ---
 title: Performance
-summary: The Performance ruleset contains a collection of good practices which should be followed.
+summary: Rules that flag suboptimal code.
 permalink: pmd_rules_apex_performance.html
 folder: pmd/rules/apex
 sidebaractiveurl: /pmd_rules_apex.html
-editmepath: ../pmd-apex/src/main/resources/rulesets/apex/performance.xml
-keywords: Performance, AvoidSoqlInLoops, AvoidDmlStatementsInLoops
+editmepath: ../pmd-apex/src/main/resources/category/apex/performance.xml
+keywords: Performance, AvoidDmlStatementsInLoops, AvoidSoqlInLoops, AvoidSoslInLoops
+language: Apex
 ---
 ## AvoidDmlStatementsInLoops
 
@@ -33,15 +34,15 @@ public class Something {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidDmlStatementsInLoops" />
+<rule ref="category/apex/performance.xml/AvoidDmlStatementsInLoops" />
 ```
 
 ## AvoidSoqlInLoops
@@ -68,14 +69,49 @@ public class Something {
 
 **This rule has the following properties:**
 
-|Name|Default Value|Description|
-|----|-------------|-----------|
-|cc_categories|[Style]|Code Climate Categories|
-|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|
-|cc_block_highlighting|false|Code Climate Block Highlighting|
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
 
 **Use this rule by referencing it:**
 ``` xml
-<rule ref="rulesets/apex/performance.xml/AvoidSoqlInLoops" />
+<rule ref="category/apex/performance.xml/AvoidSoqlInLoops" />
+```
+
+## AvoidSoslInLoops
+
+**Since:** PMD 6.0.0
+
+**Priority:** Medium (3)
+
+Sosl calls within loops can cause governor limit exceptions.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.performance.AvoidSoslInLoopsRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/performance/AvoidSoslInLoopsRule.java)
+
+**Example(s):**
+
+``` java
+public class Something {
+    public static void main( String as[] ) {
+        for (Integer i = 0; i < 10; i++) {
+            List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
+        }
+    }
+}
+```
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|cc_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
+|cc_remediation_points_multiplier|1|Code Climate Remediation Points multiplier|no|
+|cc_block_highlighting|false|Code Climate Block Highlighting|no|
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/apex/performance.xml/AvoidSoslInLoops" />
 ```
 

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="Test Ruleset which is empty" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+  Empty Ruleset which contains no rules.
+  Although it is empty, it should not be marked as deprecated, just because it has no rules (yet).
+  </description>
+
+<!-- Deliberately empty, no rules. -->
+
+</ruleset>

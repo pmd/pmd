@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
@@ -25,6 +24,7 @@ import net.sourceforge.pmd.RuleViolation;
  *
  * @author raik
  */
+@Deprecated // will be removed with PMD 7.0.0 without replacement. See net.sourceforge.pmd.lang.dfa.report.ReportTree for details.
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
@@ -44,9 +44,9 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
      * Writes the buffer to file.
      */
     private void write(String filename, StringBuilder buf) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + FILE_SEPARATOR + filename)));
-        bw.write(buf.toString(), 0, buf.length());
-        IOUtils.closeQuietly(bw);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + FILE_SEPARATOR + filename)))) {
+            bw.write(buf.toString(), 0, buf.length());
+        }
     }
 
     /**

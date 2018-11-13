@@ -12,6 +12,7 @@ public class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpression
         super(newObjectExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

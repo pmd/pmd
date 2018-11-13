@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Contains tearDown
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void tearDown() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Contains @tearDown
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @After
+    public void tearDown() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Renamed tearDown
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @After
+    public void clean() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1446 False positive with JUnit4TestShouldUseBeforeAnnotation when TestNG is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.AfterMethod;
+
+public class Foo {
+    @AfterMethod
+    public void tearDown(Method m) {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterEach' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterEach;
+
+public class Foo {
+    @AfterEach
+    public void tearDown() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positive with JUnit4TestShouldUseAfterAnnotation when JUnit5's 'AfterAll' is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.AfterAll;
+
+public class Foo {
+    @AfterAll
+    public void tearDown() {
+      //...
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

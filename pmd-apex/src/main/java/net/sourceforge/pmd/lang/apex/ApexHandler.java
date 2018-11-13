@@ -13,27 +13,25 @@ import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
-import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsVisitorFacade;
+import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileVisitorFacade;
 import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-
-import net.sf.saxon.sxpath.IndependentContext;
 
 public class ApexHandler extends AbstractLanguageVersionHandler {
 
     @Override
-    public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
-            public void initialize() {
-            }
-
-            public void initialize(IndependentContext context) {
-            }
-        };
+    public VisitorStarter getMultifileFacade() {
+        return rootNode -> new ApexMultifileVisitorFacade().initializeWith((ApexNode<?>) rootNode);
     }
 
+
+    @Override
+    public XPathHandler getXPathHandler() {
+        return new DefaultASTXPathHandler();
+    }
+
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return ApexRuleViolationFactory.INSTANCE;
     }
@@ -43,26 +41,14 @@ public class ApexHandler extends AbstractLanguageVersionHandler {
         return new ApexParserOptions();
     }
 
+    @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new ApexParser(parserOptions);
     }
 
     @Override
     public VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse) {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
-            }
-        };
+        return rootNode -> new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
     }
 
-    @Override
-    public VisitorStarter getMetricsVisitorFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new ApexMetricsVisitorFacade().initializeWith((ApexNode<?>) rootNode);
-            }
-        };
-    }
 }

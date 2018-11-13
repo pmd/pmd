@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.vm.directive.Macro;
 import net.sourceforge.pmd.lang.vm.directive.Parse;
 import net.sourceforge.pmd.lang.vm.directive.Stop;
 
-public class DirectiveMapper {
+public final class DirectiveMapper {
     private DirectiveMapper() { }
 
     private static final Map<String, Directive> DIRECTIVE_MAP = new HashMap<>();

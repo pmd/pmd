@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
-import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
 /**
  * Decorator which counts the complexity of boolean expressions for Cyclo.
@@ -42,6 +41,10 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
     @Override
     public Object visit(ASTForStatement node, Object data) {
         super.visit(node, data);
+
+        if (node.isForeach()) {
+            return data;
+        }
 
         int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
         ((MutableInt) data).add(boolCompFor);
@@ -93,10 +96,9 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
     public Object visit(ASTConditionalExpression node, Object data) {
         super.visit(node, data);
 
-        if (node.isTernary()) {
-            int boolCompTern = NPathComplexityRule.sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-            ((MutableInt) data).add(1 + boolCompTern);
-        }
+        int boolCompTern = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
+        ((MutableInt) data).add(boolCompTern);
+
         return data;
     }
 
@@ -104,11 +106,13 @@ public class CycloPathAwareDecorator extends JavaParserVisitorDecorator {
     @Override
     public Object visit(ASTAssertStatement node, Object data) {
         int base = ((MutableInt) data).getValue();
+        // This is precisely the problem with decorators
+        // The control flow is completely obscured and information is spread out, for no real benefit
         super.visit(node, data);
         boolean isAssertAware = base < ((MutableInt) data).getValue();
 
         if (isAssertAware) {
-            int boolCompAssert = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+            int boolCompAssert = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
             ((MutableInt) data).add(boolCompAssert);
         }
         return data;

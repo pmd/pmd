@@ -1,37 +1,42 @@
 ---
 title: Building PMD from source
+tags: [devdocs]
 permalink: pmd_devdocs_building.html
 author: Tom Copeland, Xavier Le Vourch <xlv@users.sourceforge.net>
 ---
 
+<!-- Gives visibility -->
+{%include note.html content="TODO add IDE specific indications" %}
+
 # Compiling PMD
 
-*   JDK 1.7 or higher
-*   [Apache Maven](http://maven.apache.org) 3 or later.
+*   JDK 10 or higher
+
+{% include note.html content="While Java 10 is required for building, running PMD only requires Java 7 (or Java 8 for Apex and the Designer)." %}
 
 You’ll need to either check out the source code or download the latest source release. Assuming you’ve got the latest source release, unzip it to a directory:
 
 ```
 [tom@hal building]$ ls -l
 total 5716
--rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-5.5.0.zip
-[tom@hal building]$ unzip -q pmd-src-5.5.0.zip
+-rw-rw-r--    1 tom      tom       5837216 Jul 17 13:09 pmd-src-{{site.pmd.version}}.zip
+[tom@hal building]$ unzip -q pmd-src-{{site.pmd.version}}.zip
 [tom@hal building]$
 ```
 
 Now cd down into the `pmd` directory:
 
 ```
-[tom@hal building]$ cd pmd-src-5.5.0
-[tom@hal pmd-src-5.5.0]$ ls -l | grep pom.xml
+[tom@hal building]$ cd pmd-src-{{site.pmd.version}}
+[tom@hal pmd-src-{{site.pmd.version}}]$ ls -l | grep pom.xml
 -rw-rw-r--    1 tom      tom          36482 14\. Nov 17:36 pom.xml
-[tom@hal pmd-src-5.5.0]$
+[tom@hal pmd-src-{{site.pmd.version}}]$
 ```
 
 That’s the project configuration for maven… let’s compile!
 
 ```
-[tom@hal pmd-src-5.5.0]$ mvn clean package
+[tom@hal pmd-src-{{site.pmd.version}}]$ ./mvnw clean verify
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
@@ -71,13 +76,16 @@ That’s the project configuration for maven… let’s compile!
 [INFO] Finished at: 2015-11-14T17:46:06+01:00
 [INFO] Final Memory: 63M/765M
 [INFO] ------------------------------------------------------------------------
-[tom@hal pmd-src-5.5.0]$
+[tom@hal pmd-src-{{site.pmd.version}}]$
 ```
 
-Now the source and binary distribution zip files can be found in the folder <tt>pmd-dist/target</tt>.
+Now the source and binary distribution zip files can be found in the folder `pmd-dist/target`.
 
-Notes:
+**Notes:**
 
-*   The rules that have already been written are specified in the src/main/resources/rulesets/ directories of the specific languages, e.g. `pmd-java/src/main/resources/rulesets`. They’re also in the jar file that’s included with both the source and binary distributions.
+*   The rules that have already been written are specified in the `src/main/resources/rulesets/` directories of
+the specific languages, e.g. `pmd-java/src/main/resources/rulesets`.
+They’re also in the jar file that’s included with both the source and binary distributions.
 
-A paucity of detail, I’m sure you’d agree. If you think this document can be improved, please post [here](http://sourceforge.net/p/pmd/discussion/188192) and let me know how. Thanks!
+A paucity of detail, I’m sure you’d agree. If you think this document can be improved,
+please post [here](http://sourceforge.net/p/pmd/discussion/188192) and let me know how. Thanks!

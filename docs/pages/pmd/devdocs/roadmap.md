@@ -1,12 +1,15 @@
 ---
 title: Roadmap
+tags: [devdocs]
 permalink: pmd_devdocs_roadmap.html
 author: >
     Tom Copeland <tom@infoether.com>, Ryan Gustavson, Romain Pelisse <belaran@gmail.com>,
     Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>, Andreas Dangel <adangel@users.sourceforge.net>
 ---
 
+TODO:
 
+* Update
 * Future direction
 * projects, plans
 * Google Summer of Code

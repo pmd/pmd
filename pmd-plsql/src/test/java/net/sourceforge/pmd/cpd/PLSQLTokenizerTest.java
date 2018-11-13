@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.cpd;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class PLSQLTokenizerTest extends AbstractTokenizerTest {
@@ -25,7 +29,7 @@ public class PLSQLTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-        return IOUtils.toString(PLSQLTokenizer.class.getResourceAsStream(FILENAME));
+        return IOUtils.toString(PLSQLTokenizer.class.getResourceAsStream(FILENAME), StandardCharsets.UTF_8);
     }
 
     @Test
@@ -33,8 +37,20 @@ public class PLSQLTokenizerTest extends AbstractTokenizerTest {
         this.expectedTokenCount = 1422;
         super.tokenizeTest();
     }
-
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(PLSQLTokenizerTest.class);
+    
+    @Test
+    public void testIgnoreBetweenSpecialComments() throws IOException {
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("-- CPD-OFF" + PMD.EOL
+                + "CREATE OR REPLACE" + PMD.EOL
+                + "PACKAGE \"test_schema\".\"BANK_DATA\"" + PMD.EOL
+                + "IS" + PMD.EOL
+                + "pi      CONSTANT NUMBER := 3.1415;" + PMD.EOL
+                + "--CPD-ON" + PMD.EOL
+                + "END;"
+        ));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(3, tokens.size()); // 3 tokens: "END" + ";" + EOF
     }
 }

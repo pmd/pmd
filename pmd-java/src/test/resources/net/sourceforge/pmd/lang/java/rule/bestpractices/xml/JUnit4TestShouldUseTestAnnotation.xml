@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Contains test, no @Test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase{
+    public void testFoo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase{
+    @Test
+    public void testFoo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, renamed test
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase{
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+One test proper, the other incorrect
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase{
+    public void testFoo() {
+    }
+    @Test
+    public void foo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Two tests
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase{
+    public void testOne() {
+    }
+    public void testTwo() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1197 JUnit4TestShouldUseTestAnnotation for private method</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+import static org.junit.Assert.fail;
+
+public class Faa
+{
+    @Test
+    public void test()
+    {
+        testHelper();
+        fail( "Not yet implemented" );
+    }
+
+    private boolean testHelper()  // <- JUnit4TestShouldUseTestAnnotation
+    {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#572 [java] False Alarm of JUnit4TestShouldUseTestAnnotation on Predicates</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Predicate;
+
+public final class Whatever<T> implements Predicate<T> {
+    @Override
+    public boolean test(T t) {
+        return false;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+    // should be annotated
+    public void testBad() { }
+
+    @Test
+    public void testGood() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class named TestCase with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTestCase {
+    public void testBad() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class prefix with Test with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class TestForX {
+    public void testBad() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test class named MyTests with test method not annotated</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTests {
+    public void testBad() { }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#940 False positives with JUnit4TestShouldUseTestAnnotation when JUnit5 is used</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+public class MyTests {
+    @Test
+    public void testRegular() { }
+
+    @RepeatedTest(2)
+    public void testRepeated() { }
+
+    @TestFactory
+    public void testFactory() { }
+
+    @TestTemplate
+    public void testTemplate() { }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Hello", "World"})
+    public void testParameterized(final String value) { }
+}
+        ]]></code>
+    </test-code>
+</test-data>

@@ -17,7 +17,6 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -30,13 +29,27 @@ import org.apache.commons.lang3.StringUtils;
 public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
-
+    
     static {
         registerAsParallelCapable();
     }
 
+    public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
+        super(fileToURL(files), parent);
+    }
+
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(initURLs(classpath), parent);
+    }
+
+    private static URL[] fileToURL(List<File> files) throws IOException {
+
+        List<URL> urlList = new ArrayList<>();
+
+        for (File f : files) {
+            urlList.add(f.toURI().toURL());
+        }
+        return urlList.toArray(new URL[0]);
     }
 
     private static URL[] initURLs(String classpath) throws IOException {
@@ -51,7 +64,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             // Treat as classpath
             addClasspathURLs(urls, classpath);
         }
-        return urls.toArray(new URL[urls.size()]);
+        return urls.toArray(new URL[0]);
     }
 
     private static void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
@@ -64,9 +77,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     private static void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
-        BufferedReader in = null;
-        try {
-            in = new BufferedReader(new InputStreamReader(fileURL.openStream()));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream()))) {
             String line;
             while ((line = in.readLine()) != null) {
                 LOG.log(Level.FINE, "Read classpath entry line: <{0}>", line);
@@ -76,8 +87,6 @@ public class ClasspathClassLoader extends URLClassLoader {
                     urls.add(createURLFromPath(line));
                 }
             }
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 
@@ -86,14 +95,34 @@ public class ClasspathClassLoader extends URLClassLoader {
         return file.getAbsoluteFile().toURI().toURL();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return new StringBuilder(getClass().getSimpleName())
                 .append("[[")
                 .append(StringUtils.join(getURLs(), ":"))
                 .append("] parent: ").append(getParent()).append(']').toString();
+    }
+    
+    @Override
+    protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+        synchronized (getClassLoadingLock(name)) {
+            // First, check if the class has already been loaded
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    // checking local
+                    c = findClass(name);
+                } catch (final ClassNotFoundException | SecurityException e) {
+                    // checking parent
+                    // This call to loadClass may eventually call findClass again, in case the parent doesn't find anything.
+                    c = super.loadClass(name, resolve);
+                }
+            }
+    
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
     }
 }

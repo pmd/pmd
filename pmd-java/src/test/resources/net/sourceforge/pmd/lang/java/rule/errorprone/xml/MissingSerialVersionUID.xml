@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+Happy case
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo implements Serializable {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure using java.io.Serializable
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo implements java.io.Serializable {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+implements Serializable and provides a serialVersionUID
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Serializable {
+public static final long serialVersionUID = 43L;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST5
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements java.io.Serializable {
+public static final long serialVersionUID = 43L;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo implements Bar{
+ void getName();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>abstract case, see #1352</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.Serializable;
+public abstract class Foo implements Serializable {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>inherited abstract case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+public abstract class AbstractMissingSerialVersionUIDTest extends MissingSerialVersionUIDBase {
+    // no serial version UID
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+@SuppressWarnings("serial")
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("serial")
+public class Foo implements Serializable {
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1078 [java] MissingSerialVersionUID rule does not seem to catch inherited classes</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone;
+public class MissingSerialVersionUIDTest extends MissingSerialVersionUIDBase {
+    // ... no serialVersionUID value defined ...
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1350 [java] MissingSerialVersionUID false-positive on interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface IDomainObject<ID extends Serializable & Comparable<? super ID>> extends MutablePrimaryIdentifier<ID>, Serializable {
+}
+        ]]></code>
+    </test-code>
+</test-data>

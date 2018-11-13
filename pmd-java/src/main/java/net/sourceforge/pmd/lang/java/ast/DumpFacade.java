@@ -45,7 +45,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
         writer.print(prefix);
 
         // 2) JJT Name of the Node
-        writer.print(node.toString());
+        writer.print(node.getXPathNodeName());
 
         //
         // If there are any additional details, then:
@@ -122,9 +122,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
                 extras.add("nested");
             }
         } else if (node instanceof ASTConditionalExpression) {
-            if (((ASTConditionalExpression) node).isTernary()) {
-                extras.add("ternary");
-            }
+            extras.add("ternary");
         } else if (node instanceof ASTConstructorDeclaration) {
             extras.add(String.valueOf(((ASTConstructorDeclaration) node).getParameterCount()));
             if (((ASTConstructorDeclaration) node).containsComment()) {
@@ -191,6 +189,12 @@ public class DumpFacade extends JavaParserVisitorAdapter {
         } else if (node instanceof ASTTryStatement) {
             if (((ASTTryStatement) node).hasFinally()) {
                 extras.add("has finally");
+            }
+        } else if (node instanceof ASTModuleDirective) {
+            ASTModuleDirective directive = (ASTModuleDirective) node;
+            extras.add(directive.getType());
+            if (directive.getRequiresModifier() != null) {
+                extras.add(directive.getRequiresModifier());
             }
         }
 

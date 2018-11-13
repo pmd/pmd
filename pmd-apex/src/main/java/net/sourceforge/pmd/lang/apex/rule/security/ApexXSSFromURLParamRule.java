@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 /**
@@ -61,7 +60,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             return data; // stops all the rules
         }
 
-        return visit((ApexNode<?>) node, data);
+        return super.visit(node, data);
     }
 
     @Override

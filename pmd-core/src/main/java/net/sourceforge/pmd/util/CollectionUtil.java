@@ -10,8 +10,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -161,6 +163,26 @@ public final class CollectionUtil {
         return map;
     }
 
+
+    /**
+     * Consumes all the elements of the iterator and
+     * returns a list containing them. The iterator is
+     * then unusable
+     *
+     * @param it An iterator
+     *
+     * @return a list containing the elements remaining
+     * on the iterator
+     */
+    public static <T> List<T> toList(Iterator<T> it) {
+        List<T> list = new ArrayList<>();
+        while (it.hasNext()) {
+            list.add(it.next());
+        }
+        return list;
+    }
+
+
     /**
      * Returns true if the objects are array instances and each of their
      * elements compares via equals as well.
@@ -170,7 +192,7 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
-     * @deprecated {@see Objects#deepEquals(Object, Object)}
+     * @deprecated {@link Objects#deepEquals(Object, Object)}
      */
     @Deprecated
     public static boolean arraysAreEqual(Object value, Object otherValue) {
@@ -192,7 +214,7 @@ public final class CollectionUtil {
      * @param thatArray
      *            Object[]
      * @return boolean
-     * @deprecated {@see Arrays#deepEquals(Object[], Object[])}
+     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
      */
     @Deprecated
     public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
@@ -221,7 +243,7 @@ public final class CollectionUtil {
      * @param otherValue
      *            Object
      * @return boolean
-     * @deprecated {@see Objects#deepEquals(Object, Object)}
+     * @deprecated {@link Objects#deepEquals(Object, Object)}
      */
     @Deprecated
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -271,7 +293,7 @@ public final class CollectionUtil {
      * @param a
      * @param b
      * @return boolean
-     * @deprecated {@see Arrays#deepEquals(Object[], Object[])}
+     * @deprecated {@link Arrays#deepEquals(Object[], Object[])}
      */
     @Deprecated
     public static <T> boolean areSemanticEquals(T[] a, T[] b) {

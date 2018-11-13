@@ -5,7 +5,6 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -48,7 +46,7 @@ public class RuleSetSchemaTest {
 
     @Test
     public void verifyVersion2() throws Exception {
-        String ruleset = generateRuleSet("2.0.0", false);
+        String ruleset = generateRuleSet("2.0.0");
         Document doc = parseWithVersion2(ruleset);
         assertNotNull(doc);
 
@@ -58,40 +56,10 @@ public class RuleSetSchemaTest {
     }
 
     @Test
-    public void verifyVersion3() throws Exception {
-        String ruleset = generateRuleSet("3.0.0", true);
-        Document doc = parseWithVersion3(ruleset);
-        assertNotNull(doc);
-
-        assertTrue(errorHandler.isValid());
-
-        assertEquals("Custom ruleset", ((Attr) doc.getElementsByTagName("ruleset").item(0).getAttributes().getNamedItem("name")).getValue());
-        assertEquals("true", ((Attr) doc.getElementsByTagName("rule").item(0).getAttributes().getNamedItem("metrics")).getValue());
-    }
-
-    @Test
     public void validateOnly() throws Exception {
         Validator validator = PMDRuleSetEntityResolver.getSchemaVersion2().newValidator();
         validator.setErrorHandler(errorHandler);
-        validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("2.0.0", false).getBytes(StandardCharsets.UTF_8))));
-        assertTrue(errorHandler.isValid());
-        errorHandler.reset();
-
-        validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("2.0.0", true).getBytes(StandardCharsets.UTF_8))));
-        assertFalse(errorHandler.isValid()); // metrics attribute is not allowed
-        errorHandler.reset();
-
-        validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("3.0.0", false).getBytes(StandardCharsets.UTF_8))));
-        assertFalse(errorHandler.isValid()); // schema namespace doesn't match, so element ruleset is not known
-        errorHandler.reset();
-
-        validator = PMDRuleSetEntityResolver.getSchemaVersion3().newValidator();
-        validator.setErrorHandler(errorHandler);
-        validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("3.0.0", false).getBytes(StandardCharsets.UTF_8))));
-        assertTrue(errorHandler.isValid());
-        errorHandler.reset();
-
-        validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("3.0.0", true).getBytes(StandardCharsets.UTF_8))));
+        validator.validate(new StreamSource(new ByteArrayInputStream(generateRuleSet("2.0.0").getBytes(StandardCharsets.UTF_8))));
         assertTrue(errorHandler.isValid());
         errorHandler.reset();
     }
@@ -108,25 +76,13 @@ public class RuleSetSchemaTest {
         return doc;
     }
 
-    private Document parseWithVersion3(String ruleset) throws SAXException, ParserConfigurationException, IOException {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        dbf.setFeature("http://apache.org/xml/features/validation/schema", true);
-        DocumentBuilder builder = dbf.newDocumentBuilder();
-        builder.setErrorHandler(errorHandler);
-        builder.setEntityResolver(new PMDRuleSetEntityResolver());
-
-        Document doc = builder.parse(new ByteArrayInputStream(ruleset.getBytes(StandardCharsets.UTF_8)));
-        return doc;
-    }
-
-    private String generateRuleSet(String version, boolean withMetrics) {
+    private String generateRuleSet(String version) {
         String versionUnderscore = version.replaceAll("\\.", "_");
         String ruleset = "<?xml version=\"1.0\"?>" + PMD.EOL
                 + "<ruleset " + PMD.EOL
                 + "    xmlns=\"http://pmd.sourceforge.net/ruleset/" + version + "\"" + PMD.EOL
                 + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + PMD.EOL
-                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version + " http://pmd.sourceforge.net/ruleset_" + versionUnderscore + ".xsd\""
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/" + version + " https://pmd.sourceforge.io/ruleset_" + versionUnderscore + ".xsd\""
                 + "    name=\"Custom ruleset\" >" + PMD.EOL
                 + "  <description>" + PMD.EOL
                 + "  This ruleset checks my code for bad stuff" + PMD.EOL
@@ -134,7 +90,6 @@ public class RuleSetSchemaTest {
                 + "  <rule name=\"DummyBasicMockRule\" language=\"dummy\" since=\"1.0\" message=\"Test Rule 1\"" + PMD.EOL
                 + "        class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL
                 + "        externalInfoUrl=\"${pmd.website.baseurl}/rules/dummy/basic.xml#DummyBasicMockRule\"" + PMD.EOL
-                + (withMetrics ? "        metrics=\"true\"" + PMD.EOL : PMD.EOL)
                 + "  >" + PMD.EOL
                 + "        <description>" + PMD.EOL
                 + "           Just for test" + PMD.EOL
@@ -152,25 +107,18 @@ public class RuleSetSchemaTest {
 
     public static class PMDRuleSetEntityResolver implements EntityResolver {
         private static URL schema2 = RuleSetFactory.class.getResource("/ruleset_2_0_0.xsd");
-        private static URL schema3 = RuleSetFactory.class.getResource("/ruleset_3_0_0.xsd");
         private static SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            if ("http://pmd.sourceforge.net/ruleset_2_0_0.xsd".equals(systemId)) {
+            if ("https://pmd.sourceforge.io/ruleset_2_0_0.xsd".equals(systemId)) {
                 return new InputSource(schema2.toExternalForm());
-            } else if ("http://pmd.sourceforge.net/ruleset_3_0_0.xsd".equals(systemId)) {
-                return new InputSource(schema3.toExternalForm());
             }
             throw new IllegalArgumentException("Unable to resolve entity (publicId=" + publicId + ", systemId=" + systemId + ")");
         }
 
         public static Schema getSchemaVersion2() throws SAXException {
             return schemaFactory.newSchema(schema2);
-        }
-
-        public static Schema getSchemaVersion3() throws SAXException {
-            return schemaFactory.newSchema(schema3);
         }
     }
 

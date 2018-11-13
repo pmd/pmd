@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+
+    <test-code>
+        <description>Positive with list</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(l.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Positive with lower or equal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class Foo {
+          void loop(List<String> lo) {
+            for (int i = 0; i <= lo.size() - 1; i++) {
+              System.out.println(lo.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Usage of index var outside get</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(i + ": " + l.get(i));
+
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Subclass of List</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(ArrayList<String> l) {
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(l.get(i));
+
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Get called on another list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            List<String> l2 = new ArrayList<>(l);
+            for (int i = 0; i < l.size(); i++) {
+              System.out.println(l2.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Backwards iteration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = l.size() - 1; i > 0; i-= 1) {
+              System.out.println(i + ": " + l.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Index var initialized outside for init</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            int i = 0;
+            for (; i < l.size(); i++) {
+              System.out.println(l.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Array positives</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          protected static final char[] filter(char[] chars, char removeChar) {
+            int count = 0;
+            for (int i = 0; i < chars.length; i++) {
+              if (chars[i] == removeChar) {
+                count++;
+              }
+            }
+
+            char[] results = new char[chars.length - count];
+
+            int index = 0;
+            for (int i = 0; i < chars.length; i++) {
+              if (chars[i] != removeChar) {
+                results[index++] = chars[i];
+              }
+            }
+            return results;
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider iterators</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            Iterable<DataFlowNode> path = null;
+            for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+              DataFlowNode inode = i.next();
+              if (inode.getVariableAccess() == null) {
+                continue;
+              }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Index var starts after zero</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class MyClass {
+          void loop(List<String> l) {
+            for (int i = 1; i < filters.size(); i++) {
+              builder.append(' ').append(getOperator()).append(' ');
+              builder.append(filters.get(i));
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Prefix increment should work</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        class AbstractApexNode {
+         Node[] children;
+
+          public Object childrenAccept(ApexParserVisitor visitor, Object data) {
+            if (children != null) {
+              for (int i = 0; i < children.length; ++i) {
+                @SuppressWarnings("unchecked")
+                // we know that the children here are all ApexNodes
+                ApexNode<T> apexNode = (ApexNode<T>) children[i];
+                apexNode.jjtAccept(visitor, data);
+              }
+            }
+            return data;
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Index inside arithmetic expression should whitelist the loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class BenchMarker {
+          private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
+            for (int i = 0; i < args.length; i++) {
+              if (args[i].equals(name)) {
+                return args[i + 1];
+              }
+            }
+            return defaultValue;
+          }
+        }
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Array assignment whitelists the loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class StringPropertyTest {
+          private String newString() {
+            int strLength = randomInt(1, MAX_STRING_LENGTH);
+
+            char[] chars = new char[strLength];
+            for (int i = 0; i < chars.length; i++) {
+              chars[i] = randomCharIn(CHARSET);
+            }
+            return new String(chars);
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Consider iterators only if safe</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            Iterable<DataFlowNode> path = null;
+
+            for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+              DataFlowNode inode = i.next();
+              path.remove(inode); // throws ConcurrentModificationException if it were a foreach
+              if (inode.getVariableAccess() == null) {
+                continue;
+              }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not report iterator loop if we can't find iterator decl</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
+              DataFlowNode inode = i.next();
+              if (inode.getVariableAccess() == null) {
+                continue;
+              }
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+
+	<test-code>
+        <description>Iterating on this object NPE, refs #800</description>
+        <expected-problems>0</expected-problems> <!-- FIXME should be 1 -->
+        <code><![CDATA[
+        import java.util.Iterator;
+
+        class Foo<T> implements Iterable<T> {
+
+            @Override
+            public Iterator<T> iterator() {
+                return null;
+            }
+
+            private void fofo() {
+                for (Iterator<T> it = this.iterator(); it.hasNext();) {
+                    T item = it.next();
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Iterating on multiple iterators should whitelist the loop, refs #784</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+          void loop() {
+            Iterable<E> it;
+            Iterable<E> other;
+            for (Iterator<E> iterator = it.iterator(), otherIterator = other.iterator(); iterator.hasNext();) {
+	            E item = iterator.next();
+	            E otherItem = otherIterator.next();
+	            doStuff();
+            }
+          }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>NPE when for init is there, but not a local var declaration, refs #884</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+        public class ExceptionAsFlowControlRule extends AbstractJavaRule {
+
+            @Override
+            public Object visit(ASTThrowStatement node, Object data) {
+                ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
+                if (parent == null) {
+                    return data;
+                }
+                for (parent = parent.getFirstParentOfType(ASTTryStatement.class); parent != null; parent = parent
+                        .getFirstParentOfType(ASTTryStatement.class)) {
+
+                    List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
+                    // ...
+                }
+                return data;
+            }
+
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE when using instance fields with this</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+
+public class Test {
+    private int[] hashes;
+    public void foo() {
+        List<String> stringList;
+
+        this.hashes = new int[stringList.size()];
+        for (int i = 0; i < stringList.size(); i++) {
+            this.hashes[i] = stringList.get(i).hashCode();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

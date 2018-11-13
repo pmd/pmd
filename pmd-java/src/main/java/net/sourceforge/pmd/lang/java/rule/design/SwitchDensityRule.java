@@ -55,6 +55,7 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
         setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
+    @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         SwitchDensity oldData = null;
 
@@ -79,6 +80,7 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
         return oldData;
     }
 
+    @Override
     public Object visit(ASTStatement statement, Object data) {
         if (data instanceof SwitchDensity) {
             ((SwitchDensity) data).addStatement();
@@ -89,6 +91,7 @@ public class SwitchDensityRule extends AbstractStatisticalJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTSwitchLabel switchLabel, Object data) {
         if (data instanceof SwitchDensity) {
             ((SwitchDensity) data).addSwitchLabel();

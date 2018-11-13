@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+
+<ruleset name="Best Practices"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+Rules which enforce generally accepted best practices.
+    </description>
+
+    <rule name="AvoidWithStatement"
+          message="Avoid using with - it's bad news"
+          language="ecmascript"
+          since="5.0.1"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#avoidwithstatement">
+        <description>Avoid using with - it's bad news</description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//WithStatement
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+with (object) {
+    property = 3; // Might be on object, might be on window: who knows.
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ConsistentReturn"
+          since="5.0"
+          message="A function should not mix 'return' statements with and without a result."
+          class="net.sourceforge.pmd.lang.ecmascript.rule.bestpractices.ConsistentReturnRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#consistentreturn">
+        <description>
+ECMAScript does provide for return types on functions, and therefore there is no solid rule as to their usage.
+However, when a function does use returns they should all have a value, or all with no value.  Mixed return
+usage is likely a bug, or at best poor style.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+// Ok
+function foo() {
+    if (condition1) {
+        return true;
+    }
+    return false;
+}
+
+// Bad
+function bar() {
+    if (condition1) {
+        return;
+    }
+    return false;
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="GlobalVariable"
+          message="Avoid using global variables"
+          language="ecmascript"
+          since="5.0"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#globalvariable">
+        <description>
+This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
+Global variables can lead to side-effects that are hard to debug.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Assignment[Name/@GlobalName = 'true']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+function(arg) {
+    notDeclaredVariable = 1;    // this will create a global variable and trigger the rule
+
+    var someVar = 1;            // this is a local variable, that's ok
+
+    window.otherGlobal = 2;     // this will not trigger the rule, although it is a global variable.
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ScopeForInVariable"
+          language="ecmascript"
+          since="5.0"
+          message="The for-in loop variable ''{0}'' should be explicitly scoped with 'var' to avoid pollution."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#scopeforinvariable">
+        <description>
+A for-in loop in which the variable name is not explicitly scoped to the enclosing scope with the 'var' keyword can
+refer to a variable in an enclosing scope outside the nearest enclosing scope.  This will overwrite the
+existing value of the variable in the outer scope when the body of the for-in is evaluated.  When the for-in loop
+has finished, the variable will contain the last value used in the for-in, and the original value from before
+the for-in loop will be gone.  Since the for-in variable name is most likely intended to be a temporary name, it
+is better to explicitly scope the variable name to the nearest enclosing scope with 'var'.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//ForInLoop[not(child::VariableDeclaration)]/Name[1]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+// Ok
+function foo() {
+    var p = 'clean';
+    function() {
+        var obj = { dirty: 'dirty' };
+        for (var p in obj) { // Use 'var' here.
+            obj[p] = obj[p];
+        }
+        return x;
+    }();
+
+    // 'p' still has value of 'clean'.
+}
+// Bad
+function bar() {
+    var p = 'clean';
+    function() {
+        var obj = { dirty: 'dirty' };
+        for (p in obj) { // Oh no, missing 'var' here!
+            obj[p] = obj[p];
+        }
+        return x;
+    }();
+
+    // 'p' is trashed and has value of 'dirty'!
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseBaseWithParseInt"
+          message="Always provide a base when using parseInt() functions"
+          language="ecmascript"
+          since="5.0.1"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#usebasewithparseint">
+        <description>
+This rule checks for usages of parseInt. While the second parameter is optional and usually defaults
+to 10 (base/radix is 10 for a decimal number), different implementations may behave differently.
+It also improves readability, if the base is given.
+
+See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//FunctionCall/Name[
+     @Image = 'parseInt'
+     and
+     count(../*) < 3
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+parseInt("010");    // unclear, could be interpreted as 10 or 7 (with a base of 7)
+
+parseInt("10", 10); // good
+]]>
+        </example>
+    </rule>
+
+</ruleset>

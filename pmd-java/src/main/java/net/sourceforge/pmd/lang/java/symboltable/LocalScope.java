@@ -24,6 +24,7 @@ public class LocalScope extends AbstractJavaScope {
         return getDeclarations(VariableNameDeclaration.class);
     }
 
+    @Override
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
         JavaNameOccurrence javaOccurrence = (JavaNameOccurrence) occurrence;
         Set<NameDeclaration> declarations = findVariableHere(javaOccurrence);
@@ -40,6 +41,7 @@ public class LocalScope extends AbstractJavaScope {
         return declarations;
     }
 
+    @Override
     public void addDeclaration(NameDeclaration nameDecl) {
         if (!(nameDecl instanceof VariableNameDeclaration || nameDecl instanceof ClassNameDeclaration)) {
             throw new IllegalArgumentException(
@@ -49,6 +51,7 @@ public class LocalScope extends AbstractJavaScope {
         super.addDeclaration(nameDecl);
     }
 
+    @Override
     public Set<NameDeclaration> findVariableHere(JavaNameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return Collections.emptySet();
@@ -61,6 +64,7 @@ public class LocalScope extends AbstractJavaScope {
         return Collections.emptySet();
     }
 
+    @Override
     public String toString() {
         return "LocalScope:" + glomNames(getVariableDeclarations().keySet());
     }

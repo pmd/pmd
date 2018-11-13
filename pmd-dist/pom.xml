@@ -8,12 +8,8 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.10.0-SNAPSHOT</version>
     </parent>
-
-    <properties>
-        <config.basedir>${basedir}/../pmd-core</config.basedir>
-    </properties>
 
     <build>
         <plugins>
@@ -158,6 +154,11 @@
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-scala</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-swift</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -172,6 +173,17 @@
             <version>${project.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -180,7 +192,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.13</version>
+            <version>1.18</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -199,31 +211,7 @@
                 </dependency>
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-apex</artifactId>
-                    <version>${project.version}</version>
-                    <classifier>apex-jorje-shaded</classifier>
-                </dependency>
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-ui</artifactId>
-                    <version>${project.version}</version>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>jdk9-disabled</id>
-            <activation>
-                <jdk>!1.9</jdk>
-            </activation>
-            <dependencies>
-                <!--
-                    https://github.com/scala/scala-dev/issues/139
-                    https://issues.scala-lang.org/browse/SI-9103
-                    https://sourceforge.net/p/pmd/bugs/1314/
-                 -->
-                <dependency>
-                    <groupId>net.sourceforge.pmd</groupId>
-                    <artifactId>pmd-scala</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

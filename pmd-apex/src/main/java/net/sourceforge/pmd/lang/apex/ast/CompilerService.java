@@ -29,9 +29,9 @@ import com.google.common.collect.ImmutableList;
  * Central point for interfacing with the compiler. Based on <a href=
  * "https://github.com/forcedotcom/idecore/blob/master/com.salesforce.ide.apex.core/src/com/salesforce/ide/apex/internal/core/CompilerService.java"
  * > CompilerService</a> but with Eclipse dependencies removed.
- * 
+ *
  * @author nchen
- * 
+ *
  */
 public class CompilerService {
     public static final CompilerService INSTANCE = new CompilerService();
@@ -41,7 +41,7 @@ public class CompilerService {
 
     /**
      * Configure a compiler with the default configurations:
-     * 
+     *
      * @param symbolProvider
      *            EmptySymbolProvider, doesn't provide any symbols that are not
      *            part of source.
@@ -56,7 +56,7 @@ public class CompilerService {
 
     /**
      * Configure a compiler with the following configurations:
-     * 
+     *
      * @param symbolProvider
      *            A way to retrieve symbols, where symbols are names of types.
      * @param accessEvaluator
@@ -84,11 +84,10 @@ public class CompilerService {
         List<SourceFile> sourceFiles = sources.stream().map(s -> SourceFile.builder().setBody(s).build())
                 .collect(Collectors.toList());
         CompilationInput compilationUnit = createCompilationInput(sourceFiles, visitor);
-        return compile(compilationUnit, visitor, compilerStage);
+        return compile(compilationUnit, compilerStage);
     }
 
-    private ApexCompiler compile(CompilationInput compilationInput, AstVisitor<AdditionalPassScope> visitor,
-            CompilerStage compilerStage) {
+    private ApexCompiler compile(CompilationInput compilationInput, CompilerStage compilerStage) {
         ApexCompiler compiler = ApexCompiler.builder().setInput(compilationInput).build();
         compiler.compile(compilerStage);
         callAdditionalPassVisitor(compiler);
@@ -107,7 +106,7 @@ public class CompilerService {
      * don't have all the parts for yet in the offline compiler. Rather than
      * stop all work on that, we bypass it so that we can still do useful things
      * like find all your types, find all your methods, etc.
-     * 
+     *
      */
     @SuppressWarnings("unchecked")
     private void callAdditionalPassVisitor(ApexCompiler compiler) {
@@ -125,6 +124,7 @@ public class CompilerService {
                 operation.invoke(compilerContext, unit);
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 }

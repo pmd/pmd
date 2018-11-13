@@ -6,6 +6,7 @@ package net.sourceforge.pmd.benchmark;
 
 import net.sourceforge.pmd.Rule;
 
+@Deprecated
 public class RuleDuration implements Comparable<RuleDuration> {
 
     public Rule rule;

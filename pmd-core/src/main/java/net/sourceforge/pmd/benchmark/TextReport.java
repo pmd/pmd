@@ -20,25 +20,19 @@ import net.sourceforge.pmd.PMD;
  *
  *
  */
+@Deprecated
 public class TextReport implements BenchmarkReport {
 
     private static final int TIME_COLUMN = 48;
     private static final int NAME_COLUMN_WIDTH = 50;
     private static final int VALUE_COLUMN_WIDTH = 8;
 
-    /**
-     *
-     * @param stressResults the durations from the stress test run
-     * @param out
-     *            PrintStream
-     * @see BenchmarkReport#generate(Set, PrintStream)
-     */
     @Override
-    public void generate(Set<RuleDuration> stressResults, PrintStream out) {
+    public void generate(Set<RuleDuration> stressResults, PrintStream stream) {
 
-        out.println("=========================================================");
-        out.println("Rule\t\t\t\t\t\tTime in ms");
-        out.println("=========================================================");
+        stream.println("=========================================================");
+        stream.println("Rule\t\t\t\t\t\tTime in ms");
+        stream.println("=========================================================");
 
         for (RuleDuration result : stressResults) {
             StringBuilder buffer = new StringBuilder(result.rule.getName());
@@ -46,25 +40,18 @@ public class TextReport implements BenchmarkReport {
                 buffer.append(' ');
             }
             buffer.append(result.time);
-            out.println(out.toString());
+            stream.println(stream.toString());
         }
 
-        out.println("=========================================================");
+        stream.println("=========================================================");
     }
 
     public void report(Map<String, BenchmarkResult> benchmarksByName) {
         generate(benchmarksByName, System.out);
     }
 
-    /**
-     *
-     * @param benchmarksByName
-     * @param out
-     *            PrintStream
-     * @see BenchmarkReport#generate(Map, PrintStream)
-     */
     @Override
-    public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream out) {
+    public void generate(Map<String, BenchmarkResult> benchmarksByName, PrintStream stream) {
 
         List<BenchmarkResult> results = new ArrayList<>(benchmarksByName.values());
 
@@ -153,7 +140,7 @@ public class TextReport implements BenchmarkReport {
             buf.appendLn(buf2.toString());
         }
 
-        out.print(buf.toString());
+        stream.print(buf.toString());
     }
 
     /**

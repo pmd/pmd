@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+assertTrue with null
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertTrue(a==null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertFalse with != null
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertFalse(a != null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assertTrue with x == y
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ public void test1() {
+  assertTrue(a == b);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Not a JUnit test - assertTrue with null
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+  assertTrue(a==null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 4 - assertTrue with null
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+ @Test
+ public void test1() {
+  assertTrue(a==null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 5 - assertTrue with null - @Test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+ @Test
+ public void test1() {
+  assertTrue(a==null);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

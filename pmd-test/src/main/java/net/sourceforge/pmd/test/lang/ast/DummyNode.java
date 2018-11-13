@@ -11,8 +11,15 @@ public class DummyNode extends AbstractNode {
         super(id);
     }
 
+    @Deprecated
     @Override
     public String toString() {
+        return "dummyNode";
+    }
+
+
+    @Override
+    public String getXPathNodeName() {
         return "dummyNode";
     }
 }

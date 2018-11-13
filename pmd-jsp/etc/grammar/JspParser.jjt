@@ -137,6 +137,7 @@ PARSER_END(JspParser)
 	// anything but --%>
 | <#NO_JSP_COMMENT_END: (~["-"] | "-" ~["-"] | "--" ~["%"] | "--%" ~[">"])+ > 
 | <#NO_JSP_TAG_END: ( ~["%"] | ("%" ~[">"]) )+ >
+| <#NO_JSP_TAG_END_EXCEPT_QUOTED: ( ~["%", "\"", "'"] | ("%" ~[">"]) | <QUOTED_STRING> )+ >
 }
 
 
@@ -194,7 +195,7 @@ PARSER_END(JspParser)
 <JspScriptletState> TOKEN :
 {
 	<JSP_SCRIPTLET_END: "%>" > : AfterTagState
-|	<JSP_SCRIPTLET: <NO_JSP_TAG_END> >
+|	<JSP_SCRIPTLET: <NO_JSP_TAG_END_EXCEPT_QUOTED> >
 }
 
 <JspExpressionState> TOKEN :
@@ -206,7 +207,7 @@ PARSER_END(JspParser)
 <JspDeclarationState> TOKEN :
 {
 	<JSP_DECLARATION_END: "%>" > : AfterTagState
-|	<JSP_DECLARATION: <NO_JSP_TAG_END> >
+|	<JSP_DECLARATION: <NO_JSP_TAG_END_EXCEPT_QUOTED> >
 }
 
 <JspCommentState> TOKEN : 
@@ -248,7 +249,7 @@ PARSER_END(JspParser)
 
 <InTagState> TOKEN :
 {
-  <ATTR_NAME: <IDENTIFIER> >
+  <ATTR_NAME: (<IDENTIFIER> | "${" (<QUOTED_STRING> | <TEXT_IN_EL>)* "}") >
 | <TAG_END: ">"            >            : AfterTagState
 | <DECL_END: ("?>" | "!>") >            : AfterTagState
 | <TAG_SLASHEND: "/>" >                 : AfterTagState

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.getNodes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -12,8 +13,7 @@ import java.util.List;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
-import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -32,14 +32,9 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     @Test
     public void testExceptionBlkParam() {
-        ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(3);
-        id.testingOnlySetBeginLine(10);
-        id.setImage("foo");
-        ASTFormalParameter param = new ASTFormalParameter(2);
-        id.jjtSetParent(param);
-        param.jjtSetParent(new ASTTryStatement(1));
-        VariableNameDeclaration decl = new VariableNameDeclaration(id);
-        assertTrue(decl.isExceptionBlockParameter());
+        ASTCompilationUnit acu = getNodes(ASTCompilationUnit.class, EXCEPTION_PARAMETER).iterator().next();
+        ASTVariableDeclaratorId id = acu.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+        assertTrue(new VariableNameDeclaration(id).isExceptionBlockParameter());
     }
 
     @Test
@@ -89,6 +84,9 @@ public class VariableNameDeclarationTest extends STBBaseTst {
                 .getDeclarations().keySet().iterator().next();
         assertEquals("String", ((TypedNameDeclaration) decl).getTypeImage());
     }
+
+
+    private static final String EXCEPTION_PARAMETER = "public class Test { { try {} catch(Exception ie) {} } }";
 
     public static final String TEST1 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  int bar = 42;"
             + PMD.EOL + " }" + PMD.EOL + "}";

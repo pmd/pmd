@@ -11,6 +11,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 
+
 /**
  * Common utilities for implementations of numeric property descriptors.
  *
@@ -32,12 +33,10 @@ public class NumericPropertyModule<T extends Number> {
         if (lowerLimit.doubleValue() > upperLimit.doubleValue()) {
             throw new IllegalArgumentException("Lower limit cannot be greater than the upper limit");
         }
-
-
     }
 
 
-    private void checkNumber(T number) {
+    public void checkNumber(T number) {
         String error = valueErrorFor(number);
         if (error != null) {
             throw new IllegalArgumentException(error);
@@ -61,19 +60,6 @@ public class NumericPropertyModule<T extends Number> {
     }
 
 
-    /**
-     * Returns a string representing the range defined by the two bounds.
-     *
-     * @param low Lower bound
-     * @param up  Upper bound
-     *
-     * @return String
-     */
-    private static String rangeString(Number low, Number up) {
-        return "(" + low + " -> " + up + ")";
-    }
-
-
     public T getLowerLimit() {
         return lowerLimit;
     }
@@ -87,6 +73,19 @@ public class NumericPropertyModule<T extends Number> {
     public void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
         attributes.put(MIN, lowerLimit.toString());
         attributes.put(MAX, upperLimit.toString());
+    }
+
+
+    /**
+     * Returns a string representing the range defined by the two bounds.
+     *
+     * @param low Lower bound
+     * @param up  Upper bound
+     *
+     * @return String
+     */
+    private static String rangeString(Number low, Number up) {
+        return "(" + low + " -> " + up + ")";
     }
 
 

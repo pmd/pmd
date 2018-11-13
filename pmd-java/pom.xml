@@ -7,12 +7,8 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
+        <version>6.10.0-SNAPSHOT</version>
     </parent>
-
-    <properties>
-        <config.basedir>${basedir}/../pmd-core</config.basedir>
-    </properties>
 
     <build>
         <testResources>
@@ -41,6 +37,11 @@
                         <delimiter>${*}</delimiter>
                     </delimiters>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
             </plugin>
 
             <plugin>
@@ -112,10 +113,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.java.dev.javacc</groupId>
             <artifactId>javacc</artifactId>
         </dependency>
@@ -131,6 +128,14 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
@@ -139,6 +144,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
@@ -150,8 +162,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-testutil</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

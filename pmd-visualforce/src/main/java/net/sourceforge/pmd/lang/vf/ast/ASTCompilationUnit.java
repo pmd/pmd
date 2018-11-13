@@ -19,6 +19,7 @@ public class ASTCompilationUnit extends AbstractVFNode implements RootNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(VfParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -12,34 +12,28 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vm.ast.AbstractVmNode;
 import net.sourceforge.pmd.lang.vm.rule.VmRuleViolationFactory;
 
-import net.sf.saxon.sxpath.IndependentContext;
-
 /**
  * Implementation of LanguageVersionHandler for the VM parser.
- * 
+ *
  */
 public class VmHandler extends AbstractLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
-            public void initialize() {
-            }
-
-            public void initialize(final IndependentContext context) {
-            }
-        };
+        return new DefaultASTXPathHandler();
     }
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return VmRuleViolationFactory.INSTANCE;
     }
 
+    @Override
     public Parser getParser(final ParserOptions parserOptions) {
         return new VmParser(parserOptions);
     }
@@ -47,6 +41,7 @@ public class VmHandler extends AbstractLanguageVersionHandler {
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
+            @Override
             public void start(final Node rootNode) {
                 ((AbstractVmNode) rootNode).dump(prefix, recurse, writer);
             }

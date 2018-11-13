@@ -12,6 +12,7 @@ public class ASTPrefixExpression extends AbstractApexNode<PrefixExpression> {
         super(prefixExpression);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

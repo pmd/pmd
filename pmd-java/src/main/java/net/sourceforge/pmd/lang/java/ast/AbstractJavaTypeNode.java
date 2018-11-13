@@ -25,11 +25,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 
     @Override
     public Class<?> getType() {
-        if (typeDefinition != null) {
-            return typeDefinition.getType();
-        }
-
-        return null;
+        return typeDefinition == null ? null : typeDefinition.getType();
     }
 
     @Override

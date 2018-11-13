@@ -9,11 +9,12 @@ import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserDecoratedVisitor;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloAssertAwareDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.impl.visitors.CycloPathAwareDecorator;
@@ -34,9 +35,15 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
 
 
     @Override
-    public double computeFor(ASTMethodOrConstructorDeclaration node, MetricOptions options) {
+    public double computeFor(final MethodLikeNode node, MetricOptions options) {
         Set<MetricOption> opts = options.getOptions();
-        JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(CycloBaseVisitor.INSTANCE);
+        JavaParserDecoratedVisitor visitor = new JavaParserDecoratedVisitor(CycloBaseVisitor.INSTANCE) { // TODO decorators are unmaintainable, change that someday
+            // stops the visit when stumbling on a lambda or class decl
+            @Override
+            public Object visit(JavaNode localNode, Object data) {
+                return localNode.isFindBoundary() && !localNode.equals(node) ? data : super.visit(localNode, data); // TODO generalize that to other metrics
+            }
+        };
 
         if (opts.contains(CycloOption.CONSIDER_ASSERT)) {
             visitor.decorateWith(new CycloAssertAwareDecorator());
@@ -59,7 +66,7 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
      *
      * @return The number of paths through the expression
      */
-    public static int booleanExpressionComplexity(ASTExpression expr) {
+    public static int booleanExpressionComplexity(Node expr) {
         if (expr == null) {
             return 0;
         }
@@ -68,6 +75,10 @@ public final class CycloMetric extends AbstractJavaOperationMetric {
         List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
 
         int complexity = 0;
+
+        if (expr instanceof ASTConditionalOrExpression || expr instanceof ASTConditionalAndExpression) {
+            complexity++;
+        }
 
         for (ASTConditionalOrExpression element : orNodes) {
             complexity += element.jjtGetNumChildren() - 1;

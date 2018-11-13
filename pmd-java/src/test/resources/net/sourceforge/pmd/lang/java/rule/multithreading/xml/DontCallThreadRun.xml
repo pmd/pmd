@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+basic use case - calls to run()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    Thread t = new Thread();
+    t.run();                // use t.start() instead
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+basic use case - call to Thread().run()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+    new Thread().run();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+#565 - inheritance use case - call to Thread().run()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.multithreading.DontCallThreadRunTest.TestThread;
+
+public class Foo {
+  public void bar() {
+    new TestThread().run();
+  }
+}
+     ]]></code>
+    </test-code>
+</test-data>

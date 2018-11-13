@@ -25,6 +25,7 @@ public class CppTokenManager implements TokenManager {
         tokenManager = new CppParserTokenManager(new CppCharStream(source));
     }
 
+    @Override
     public Object getNextToken() {
         return tokenManager.getNextToken();
     }

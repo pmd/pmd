@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
@@ -38,6 +39,11 @@ public final class TypeInferenceResolver {
         List<Bound> newBounds = new ArrayList<>();
         while (!constraints.isEmpty()) {
             List<BoundOrConstraint> reduceResult = constraints.remove(constraints.size() - 1).reduce();
+
+            // If null, the types are incompatible
+            if (reduceResult == null) {
+                return null;
+            }
 
             for (BoundOrConstraint boundOrConstraint : reduceResult) {
                 if (boundOrConstraint instanceof Bound) {
@@ -160,7 +166,7 @@ public final class TypeInferenceResolver {
     }
 
     public static Set<Class<?>> getErasedCandidateSet(List<JavaTypeDefinition> erasedSuperTypeSets) {
-        Set<Class<?>> result = null;
+        Set<Class<?>> result = new HashSet<>();
 
         if (!erasedSuperTypeSets.isEmpty()) {
             result = erasedSuperTypeSets.get(0).getErasedSuperTypeSet();
@@ -179,7 +185,7 @@ public final class TypeInferenceResolver {
         outter:
         for (Class<?> candidate : erasedSet) {
             for (Class<?> erasedSetMember : erasedSet) {
-                if (candidate != erasedSetMember
+                if (!Objects.equals(candidate, erasedSetMember)
                         && MethodTypeResolution.isSubtypeable(candidate, erasedSetMember)) {
                     continue outter; // skip candidate from result set
                 }
@@ -271,7 +277,7 @@ public final class TypeInferenceResolver {
         for (Variable unresolvedVariable : variables) {
             for (Variable dependency : dependencies.get(unresolvedVariable)) {
                 if (!instantiations.containsKey(dependency)
-                        && unresolvedVariable != dependency
+                        && !Objects.equals(unresolvedVariable, dependency)
                         && !boundsHaveAnEqualityBetween(variables, dependency, bounds)) {
                     return false;
                 }
@@ -288,8 +294,8 @@ public final class TypeInferenceResolver {
         for (Bound bound : bounds) {
             for (Variable first : firstList) {
                 if (bound.ruleType == EQUALITY
-                        && ((bound.leftVariable() == first && bound.rightVariable() == second)
-                        || (bound.leftVariable() == second && bound.rightVariable() == first))) {
+                        && (bound.leftVariable() == first && bound.rightVariable() == second
+                        || bound.leftVariable() == second && bound.rightVariable() == first)) {
                     return true;
                 }
             }
@@ -319,63 +325,66 @@ public final class TypeInferenceResolver {
 
         @Override
         public Iterator<List<Variable>> iterator() {
-            return new Iterator<List<Variable>>() {
-                private BitSet nextBitSet = new BitSet(n);
+            return new CombinationsIterator();
+        }
 
-                {
+        private class CombinationsIterator implements Iterator<List<Variable>> {
+            private BitSet nextBitSet = new BitSet(n);
+
+            private CombinationsIterator() {
+                advanceToNextK();
+            }
+
+            private void advanceToNextK() {
+                k++;
+                if (k > n) {
+                    nextBitSet = null;
+                } else {
+                    nextBitSet.clear();
+                    nextBitSet.set(0, k);
+                }
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("remove");
+            }
+
+            @Override
+            public boolean hasNext() {
+                return nextBitSet != null;
+            }
+
+            @Override
+            public List<Variable> next() {
+                BitSet resultBitSet = (BitSet) nextBitSet.clone();
+
+                int b = nextBitSet.previousClearBit(n - 1);
+                int b1 = nextBitSet.previousSetBit(b);
+
+                if (b1 == -1) {
                     advanceToNextK();
+                } else {
+                    nextBitSet.clear(b1);
+                    nextBitSet.set(b1 + 1, b1 + (n - b) + 1);
+                    nextBitSet.clear(b1 + (n - b) + 1, n);
                 }
 
-                @Override
-                public void remove() {
-
-                }
-
-                private void advanceToNextK() {
-                    if (++k > n) {
-                        nextBitSet = null;
-                    } else {
-                        nextBitSet.clear();
-                        nextBitSet.set(0, k);
+                resultList.clear();
+                for (int i = 0; i < n; ++i) {
+                    if (resultBitSet.get(i)) {
+                        resultList.add(permuteThis.get(i));
                     }
                 }
 
-                @Override
-                public boolean hasNext() {
-                    return nextBitSet != null;
-                }
-
-                @Override
-                public List<Variable> next() {
-                    BitSet resultBitSet = (BitSet) nextBitSet.clone();
-
-                    int b = nextBitSet.previousClearBit(n - 1);
-                    int b1 = nextBitSet.previousSetBit(b);
-
-                    if (b1 == -1) {
-                        advanceToNextK();
-                    } else {
-                        nextBitSet.clear(b1);
-                        nextBitSet.set(b1 + 1, b1 + (n - b) + 1);
-                        nextBitSet.clear(b1 + (n - b) + 1, n);
-                    }
-
-                    resultList.clear();
-                    for (int i = 0; i < n; ++i) {
-                        if (resultBitSet.get(i)) {
-                            resultList.add(permuteThis.get(i));
-                        }
-                    }
-
-                    return unmodifyableViewOfResult;
-                }
-            };
+                return unmodifyableViewOfResult;
+            }
         }
     }
 
 
     /**
-     * @return A map of variable -> proper type produced by searching for α = T or T = α bounds
+     * @return A map of variable -&gt; proper type produced by searching for α = T or T = α bounds
      */
     public static Map<Variable, JavaTypeDefinition> getInstantiations(List<Bound> bounds) {
         Map<Variable, JavaTypeDefinition> result = new HashMap<>();

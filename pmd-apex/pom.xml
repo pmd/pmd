@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>pmd-apex</artifactId>
   <name>PMD Apex</name>
@@ -8,12 +7,14 @@
   <parent>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.10.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <config.basedir>${basedir}/../pmd-core</config.basedir>
-    <java.version>1.8</java.version>
+    <java.version>8</java.version>
+    <!-- Workaround for https://youtrack.jetbrains.com/issue/IDEA-188690 -->
+    <maven.compiler.source>1.${java.version}</maven.compiler.source>
+    <maven.compiler.target>1.${java.version}</maven.compiler.target>
   </properties>
 
   <build>
@@ -45,10 +46,8 @@
               <target>
                 <echo>PMD specific tasks: cleaning generated markdown</echo>
                 <delete quiet="true">
-                  <fileset dir="${basedir}/src/site/markdown/rules/"
-                    includes="**/*.md" />
-                  <fileset dir="${basedir}/src/site/markdown/"
-                    includes="mergedruleset.xml" />
+                  <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
+                  <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
                   <fileset dir="${basedir}/src/site/" includes="site.xml" />
                 </delete>
               </target>
@@ -56,43 +55,6 @@
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-                <includes>
-                  <include>apex</include>
-                </includes>
-                <excludes>
-                  <exclude>${project.groupId}</exclude>
-                </excludes>
-              </artifactSet>
-              <relocations>
-                <!-- apex uses an older version of asm, hence we need to shaded it away -->
-                <relocation>
-                  <pattern>org.objectweb.asm</pattern>
-                  <shadedPattern>shaded.org.objectweb.asm</shadedPattern>
-                </relocation>
-                <!-- apex uses an older version of jackson, hence we need to shaded it away -->
-                <relocation>
-                  <pattern>com.fasterxml.jackson</pattern>
-                  <shadedPattern>shaded.com.fasterxml.jackson</shadedPattern>
-                </relocation>
-              </relocations>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>apex-jorje-shaded</shadedClassifierName>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -105,67 +67,42 @@
     </dependency>
 
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pmd-apex-jorje</artifactId>
+      <version>${project.version}</version>
+      <classifier>lib</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>pmd-apex-jorje</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>net.sourceforge.saxon</groupId>
+      <artifactId>saxon</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>net.sourceforge.pmd</groupId>
       <artifactId>pmd-test</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-data</artifactId>
-      <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
-    </dependency>
-
-    <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-ide</artifactId>
-      <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
-    </dependency>
-
-    <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-parser</artifactId>
-      <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
-    </dependency>
-
-    <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-semantic</artifactId>
-      <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
-    </dependency>
-
-    <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-services</artifactId>
-      <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
-    </dependency>
-
-    <dependency>
-      <groupId>apex</groupId>
-      <artifactId>apex-jorje-tools</artifactId>
-      <version>1.0-sfdc-224-SNAPSHOT-3083815933</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>22.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-runtime</artifactId>
-      <version>3.5.2</version>
-    </dependency>
-
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>local-apex-repo</id>
-      <url>file://${basedir}/repo</url>
-    </repository>
-  </repositories>
 
   <profiles>
     <profile>

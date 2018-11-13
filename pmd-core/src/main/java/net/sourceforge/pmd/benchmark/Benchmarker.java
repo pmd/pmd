@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.benchmark;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
@@ -36,10 +36,10 @@ import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 /**
- *
- *
+ * @deprecated use {@link TimeTracker} instead
  */
-public class Benchmarker {
+@Deprecated
+public final class Benchmarker {
 
     private static final Map<String, BenchmarkResult> BENCHMARKS_BY_NAME = new HashMap<>();
 
@@ -144,11 +144,8 @@ public class Benchmarker {
         long start = System.currentTimeMillis();
 
         for (DataSource dataSource : dataSources) {
-            InputStreamReader reader = new InputStreamReader(dataSource.getInputStream());
-            try {
+            try (InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
                 parser.parse(dataSource.getNiceFileName(false, null), reader);
-            } finally {
-                IOUtils.closeQuietly(reader);
             }
         }
 
@@ -191,12 +188,9 @@ public class Benchmarker {
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             for (DataSource dataSource : dataSources) {
-                Reader reader = new InputStreamReader(dataSource.getInputStream());
-                try {
+                try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
                     ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
-                    new SourceCodeProcessor(config).processSourceCode(reader, ruleSets, ctx);
-                } finally {
-                    IOUtils.closeQuietly(reader);
+                    new SourceCodeProcessor(config).processSourceCode(stream, ruleSets, ctx);
                 }
             }
             long end = System.currentTimeMillis();

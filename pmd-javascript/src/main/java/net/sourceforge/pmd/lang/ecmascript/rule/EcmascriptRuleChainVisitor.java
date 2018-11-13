@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
 
+    @Override
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
         // Visit Nodes in DFS order
         Stack<Node> stack = new Stack<>();
@@ -34,6 +35,7 @@ public class EcmascriptRuleChainVisitor extends AbstractRuleChainVisitor {
         }
     }
 
+    @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {
         // Rule better either be a EcmascriptParserVisitor, or a XPathRule
         if (rule instanceof XPathRule) {

@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+ */
+@Deprecated
 public class ASTRSIGNEDSHIFT extends AbstractJavaNode {
     public ASTRSIGNEDSHIFT(int id) {
         super(id);
@@ -17,6 +21,7 @@ public class ASTRSIGNEDSHIFT extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

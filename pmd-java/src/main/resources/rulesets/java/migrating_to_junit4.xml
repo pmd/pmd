@@ -3,18 +3,15 @@
 <ruleset name="MigratingToJUnit4"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 Contains rules for migrating to JUnit 4
   </description>
 
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation"/>
-  <rule ref="rulesets/java/migrating.xml/JUnitUseExpected"/>
+    <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseAfterAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseBeforeAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" deprecated="true" />
+    <rule ref="category/java/bestpractices.xml/JUnitUseExpected" deprecated="true" />
 
 </ruleset>
-
-
-

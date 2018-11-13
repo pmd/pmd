@@ -12,6 +12,7 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -21,9 +22,11 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
  * The XPath query "//VariableDeclarator[contains(getCommentOn(),
  * '//password')]" will find all variables declared that are annotated with the
  * password comment.
- * 
+ *
  * @author Andy Throgmorton
  */
+@InternalApi
+@Deprecated
 public class GetCommentOnFunction implements Function {
 
     public static void registerSelfInSimpleContext() {
@@ -32,6 +35,7 @@ public class GetCommentOnFunction implements Function {
                 new GetCommentOnFunction());
     }
 
+    @Override
     public Object call(Context context, List args) throws FunctionCallException {
         if (!args.isEmpty()) {
             return Boolean.FALSE;

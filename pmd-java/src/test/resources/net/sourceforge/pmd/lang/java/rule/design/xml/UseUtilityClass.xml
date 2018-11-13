@@ -238,4 +238,126 @@ public class AccountFragment extends Fragment {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Lombok NoArgsConstructor - ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+import lombok.AccessLevel;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Foo {
+ public static Foo get() {
+  return null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Lombok NoArgsConstructor static import- ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static lombok.AccessLevel.PRIVATE;
+
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = PRIVATE)
+public class Foo {
+ public static Foo get() {
+  return null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Lombok NoArgsConstructor no import- ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
+public class Foo {
+ public static Foo get() {
+  return null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Lombok NoArgsConstructor with no access level- should be a utility class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class Foo {
+ public static Foo get() {
+  return null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Lombok NoArgsConstructor with wrong access level - should be a utility class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = lombok.AccessLevel.PUBLIC)
+public class Foo {
+ public static Foo get() {
+  return null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Lombok AllArgsConstructor - ok
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Foo {
+ public static Foo get() {
+  return null;
+ }
+}
+     ]]></code>
+    </test-code>
+
+	<test-code>
+        <description><![CDATA[
+#824 False Positive when extending another class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+
+public class FooLocal extends ThreadLocal<Integer> {
+ public static FooLocal get() {
+  return new FooLocal();
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

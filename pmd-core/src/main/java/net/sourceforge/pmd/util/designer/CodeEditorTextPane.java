@@ -8,6 +8,7 @@ import javax.swing.JTextPane;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+@Deprecated // to be removed with PMD 7.0.0
 public class CodeEditorTextPane extends JTextPane implements LineGetter {
 
     private String[] getLines() {

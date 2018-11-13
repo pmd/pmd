@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleViolation;
 
 /**
@@ -26,7 +26,7 @@ import net.sourceforge.pmd.RuleViolation;
 public class FileAnalysisCache extends AbstractAnalysisCache {
 
     private final File cacheFile;
-    
+
     /**
      * Creates a new cache backed by the given file, and attempts to load pre-existing data from it.
      * @param cache The file on which to store analysis cache
@@ -43,25 +43,26 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      * @param cacheFile The file which backs the file analysis cache.
      */
     private void loadFromFile(final File cacheFile) {
-        if (cacheFile.exists()) {
+        if (cacheExists()) {
             try (
                 DataInputStream inputStream = new DataInputStream(
                     new BufferedInputStream(new FileInputStream(cacheFile)));
             ) {
                 final String cacheVersion = inputStream.readUTF();
-                
-                if (PMD.VERSION.equals(cacheVersion)) {
+
+                if (PMDVersion.VERSION.equals(cacheVersion)) {
                     // Cache seems valid, load the rest
-                    
+
                     // Get checksums
                     rulesetChecksum = inputStream.readLong();
-                    classpathChecksum = inputStream.readLong();
-                    
+                    auxClassPathChecksum = inputStream.readLong();
+                    executionClassPathChecksum = inputStream.readLong();
+
                     // Cached results
                     while (inputStream.available() > 0) {
                         final String fileName = inputStream.readUTF();
                         final long checksum = inputStream.readLong();
-                        
+
                         final int countViolations = inputStream.readInt();
                         final List<RuleViolation> violations = new ArrayList<>(countViolations);
                         for (int i = 0; i < countViolations; i++) {
@@ -70,21 +71,33 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
                         fileResultsCache.put(fileName, new AnalysisResult(checksum, violations));
                     }
+
+                    LOG.info("Analysis cache loaded");
                 } else {
                     LOG.info("Analysis cache invalidated, PMD version changed.");
                 }
             } catch (final EOFException e) {
                 LOG.warning("Cache file " + cacheFile.getPath() + " is malformed, will not be used for current analysis");
             } catch (final IOException e) {
-                LOG.severe("Could not load analysis cache to file. " + e.getMessage());
+                LOG.severe("Could not load analysis cache from file. " + e.getMessage());
             }
+        } else if (cacheFile.isDirectory()) {
+            LOG.severe("The configured cache location must be the path to a file, but is a directory.");
         }
     }
 
     @Override
     public void persist() {
+
+        if (cacheFile.isDirectory()) {
+            LOG.severe("Cannot persist the cache, the given path points to a directory.");
+            return;
+        }
+
+        boolean cacheFileShouldBeCreated = !cacheFile.exists();
+
         // Create directories missing along the way
-        if (!cacheFile.exists()) {
+        if (cacheFileShouldBeCreated) {
             final File parentFile = cacheFile.getAbsoluteFile().getParentFile();
             if (parentFile != null && !parentFile.exists()) {
                 parentFile.mkdirs();
@@ -93,26 +106,38 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
 
         try (
             DataOutputStream outputStream = new DataOutputStream(
-                new BufferedOutputStream(new FileOutputStream(cacheFile)));
+                new BufferedOutputStream(new FileOutputStream(cacheFile)))
         ) {
             outputStream.writeUTF(pmdVersion);
-            
+
             outputStream.writeLong(rulesetChecksum);
-            outputStream.writeLong(classpathChecksum);
-            
+            outputStream.writeLong(auxClassPathChecksum);
+            outputStream.writeLong(executionClassPathChecksum);
+
             for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                 final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
                 outputStream.writeUTF(resultEntry.getKey());
                 outputStream.writeLong(resultEntry.getValue().getFileChecksum());
-                
+
                 outputStream.writeInt(violations.size());
                 for (final RuleViolation rv : violations) {
                     CachedRuleViolation.storeToStream(outputStream, rv);
                 }
             }
+            if (cacheFileShouldBeCreated) {
+                LOG.info("Analysis cache created");
+            } else {
+                LOG.info("Analysis cache updated");
+            }
         } catch (final IOException e) {
             LOG.severe("Could not persist analysis cache to file. " + e.getMessage());
         }
+    }
+
+
+    @Override
+    protected boolean cacheExists() {
+        return cacheFile.exists() && cacheFile.isFile() && cacheFile.length() > 0;
     }
 }

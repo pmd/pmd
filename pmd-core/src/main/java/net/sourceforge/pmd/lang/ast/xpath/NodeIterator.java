@@ -7,16 +7,22 @@ package net.sourceforge.pmd.lang.ast.xpath;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
+ * Base class for node iterators used to implement XPath axis
+ * iterators for Jaxen.
+ *
  * @author daniels
  */
+@Deprecated
+@InternalApi
 public abstract class NodeIterator implements Iterator<Node> {
 
     private Node node;
 
-    public NodeIterator(Node contextNode) {
+    protected NodeIterator(Node contextNode) {
         this.node = getFirstNode(contextNode);
     }
 

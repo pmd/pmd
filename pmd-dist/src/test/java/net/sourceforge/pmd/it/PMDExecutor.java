@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.it;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 /**
  * Executes PMD from command line. Deals with the differences, when PMD is run on Windows or on Linux.
@@ -29,24 +30,24 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMDUnix(Path tempDir, String ... arguments) throws Exception {
-        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/run.sh").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd, "pmd");
         pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
         Process process = pb.start();
-        String output = IOUtils.toString(process.getInputStream());
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
 
         int result = process.waitFor();
         return new ExecutionResult(result, output);
     }
 
     private static ExecutionResult runPMDWindows(Path tempDir, String ... arguments) throws Exception {
-        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMD.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
+        String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/pmd.bat").toAbsolutePath().toString();
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.command().addAll(Arrays.asList(arguments));
         pb.redirectErrorStream(true);
         Process process = pb.start();
-        String output = IOUtils.toString(process.getInputStream());
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
 
         int result = process.waitFor();
         return new ExecutionResult(result, output);

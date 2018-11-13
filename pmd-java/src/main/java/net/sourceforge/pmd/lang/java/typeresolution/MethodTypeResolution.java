@@ -13,7 +13,11 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -32,23 +36,30 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
 
+    private static final Logger LOG = Logger.getLogger(MethodTypeResolution.class.getName());
+
     private static final List<Class<?>> PRIMITIVE_SUBTYPE_ORDER;
     private static final List<Class<?>> BOXED_PRIMITIVE_SUBTYPE_ORDER;
+    private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXING_RULES;
 
     static {
-        List<Class<?>> primitiveList = new ArrayList<>();
+        final List<Class<?>> primitiveList = new ArrayList<>();
+
+        @SuppressWarnings("PMD.AvoidUsingShortType") // defining a local variable to suppress warnings only for
+        // the following statement
+        Class<?> shortType = short.class;
 
         primitiveList.add(double.class);
         primitiveList.add(float.class);
         primitiveList.add(long.class);
         primitiveList.add(int.class);
-        primitiveList.add(short.class);
+        primitiveList.add(shortType);
         primitiveList.add(byte.class);
         primitiveList.add(char.class); // this is here for convenience, not really in order
 
         PRIMITIVE_SUBTYPE_ORDER = Collections.unmodifiableList(primitiveList);
 
-        List<Class<?>> boxedList = new ArrayList<>();
+        final List<Class<?>> boxedList = new ArrayList<>();
 
         boxedList.add(Double.class);
         boxedList.add(Float.class);
@@ -59,40 +70,41 @@ public final class MethodTypeResolution {
         boxedList.add(Character.class);
 
         BOXED_PRIMITIVE_SUBTYPE_ORDER = Collections.unmodifiableList(boxedList);
+        
+        final Map<Class<?>, Class<?>> boxingRules = new HashMap<>();
+        
+        boxingRules.put(double.class, Double.class);
+        boxingRules.put(float.class, Float.class);
+        boxingRules.put(long.class, Long.class);
+        boxingRules.put(int.class, Integer.class);
+        boxingRules.put(shortType, Short.class);
+        boxingRules.put(byte.class, Byte.class);
+        boxingRules.put(char.class, Character.class);
+        boxingRules.put(boolean.class, Boolean.class);
+        boxingRules.put(void.class, Void.class);
+        
+        PRIMITIVE_BOXING_RULES = Collections.unmodifiableMap(boxingRules);
     }
 
     public static boolean checkSubtypeability(MethodType method, MethodType subtypeableMethod) {
         List<JavaTypeDefinition> subtypeableParams = subtypeableMethod.getParameterTypes();
         List<JavaTypeDefinition> methodParams = method.getParameterTypes();
 
-
-        if (!method.getMethod().isVarArgs() && !subtypeableMethod.getMethod().isVarArgs()) {
+        // If we come from third-phase, both are varargs, otherwhise, treat all as fixed-arity
+        if (!method.getMethod().isVarArgs() || !subtypeableMethod.getMethod().isVarArgs()) {
             for (int index = 0; index < subtypeableParams.size(); ++index) {
                 if (!isSubtypeable(methodParams.get(index), subtypeableParams.get(index))) {
                     return false;
                 }
             }
-        } else if (method.getMethod().isVarArgs() && subtypeableMethod.getMethod().isVarArgs()) {
-
-            if (methodParams.size() < subtypeableParams.size()) {
-                for (int index = 0; index < subtypeableParams.size(); ++index) {
-                    if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
-                                       subtypeableMethod.getArgTypeIncludingVararg(index))) {
-                        return false;
-                    }
-                }
-            } else {
-                for (int index = 0; index < methodParams.size(); ++index) {
-                    if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
-                                       subtypeableMethod.getArgTypeIncludingVararg(index))) {
-                        return false;
-                    }
+        } else {
+            final int maxSize = Math.max(subtypeableParams.size(), methodParams.size());
+            for (int index = 0; index < maxSize; ++index) {
+                if (!isSubtypeable(method.getArgTypeIncludingVararg(index),
+                                   subtypeableMethod.getArgTypeIncludingVararg(index))) {
+                    return false;
                 }
             }
-
-        } else {
-            throw new IllegalStateException("These methods can only be vararg at the same time:\n"
-                                                    + method.toString() + "\n" + subtypeableMethod.toString());
         }
 
         return true;
@@ -106,16 +118,14 @@ public final class MethodTypeResolution {
                                                            List<MethodType> methodsToSearch, ASTArgumentList argList) {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
+        final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
 
         outter:
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
             MethodType methodType = methodsToSearch.get(methodIndex);
 
-            if (argList == null) {
-                selectedMethods.add(methodType);
-
-                // vararg methods are considered fixed arity here
-            } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
+            // vararg methods are considered fixed arity here, see 3rd phase
+            if (getArity(methodType.getMethod()) == argCount) {
                 if (!methodType.isParameterized()) {
                     // https://docs.oracle.com/javase/specs/jls/se8/html/jls-18.html#jls-18.5.1
                     // ...
@@ -125,7 +135,7 @@ public final class MethodTypeResolution {
                     // reference type, or ii) Fi is a primitive type but ei is not a standalone expression of a
                     // primitive type; then the method is not applicable and there is no need to proceed with inference.
                     Class<?>[] methodParameterTypes = methodType.getMethod().getParameterTypes();
-                    for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                    for (int argIndex = 0; argIndex < argCount; ++argIndex) {
                         if (((ASTExpression) argList.jjtGetChild(argIndex)).isStandAlonePrimitive()) {
                             if (!methodParameterTypes[argIndex].isPrimitive()) {
                                 continue outter; // this method is not applicable
@@ -136,13 +146,19 @@ public final class MethodTypeResolution {
                     }
 
                     methodType = parameterizeInvocation(context, methodType.getMethod(), argList);
+                    
+                    // May be null if the method call is not applicable
+                    if (methodType == null) {
+                        continue;
+                    }
                 }
 
+                // TODO : Is this needed? parameterizeInvocation already performs inference to check applicability...
                 // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
                 // try each arguments if it's subtypeable
-                for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                for (int argIndex = 0; argIndex < argCount; ++argIndex) {
                     if (!isSubtypeable(methodType.getParameterTypes().get(argIndex),
                                        (ASTExpression) argList.jjtGetChild(argIndex))) {
                         methodIsApplicable = false;
@@ -162,7 +178,6 @@ public final class MethodTypeResolution {
         return selectedMethods;
     }
 
-
     public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,
                                                     ASTArgumentList argList) {
 
@@ -173,6 +188,11 @@ public final class MethodTypeResolution {
 
         List<JavaTypeDefinition> resolvedTypeParameters = TypeInferenceResolver
                 .inferTypes(produceInitialConstraints(method, argList, variables), initialBounds, variables);
+
+        // Is the method applicable?
+        if (resolvedTypeParameters == null) {
+            return null;
+        }
 
         return getTypeDefOfMethod(context, method, resolvedTypeParameters);
     }
@@ -189,7 +209,7 @@ public final class MethodTypeResolution {
             int typeParamIndex = -1;
             if (methodParameters[i] instanceof TypeVariable) {
                 typeParamIndex = JavaTypeDefinition
-                        .getGenericTypeIndex(methodTypeParameters, ((TypeVariable) methodParameters[i]).getName());
+                        .getGenericTypeIndex(methodTypeParameters, ((TypeVariable<?>) methodParameters[i]).getName());
             }
 
             if (typeParamIndex != -1) {
@@ -229,7 +249,7 @@ public final class MethodTypeResolution {
                 int boundVarIndex = -1;
                 if (bound instanceof TypeVariable) {
                     boundVarIndex =
-                            JavaTypeDefinition.getGenericTypeIndex(typeVariables, ((TypeVariable) bound).getName());
+                            JavaTypeDefinition.getGenericTypeIndex(typeVariables, ((TypeVariable<?>) bound).getName());
                 }
 
                 if (boundVarIndex != -1) {
@@ -257,6 +277,7 @@ public final class MethodTypeResolution {
     public static List<MethodType> selectMethodsSecondPhase(List<MethodType> methodsToSearch, ASTArgumentList argList) {
         // TODO: check if explicit type arguments are applicable to the type parameter bounds
         List<MethodType> selectedMethods = new ArrayList<>();
+        final int argCount = argList == null ? 0 : argList.jjtGetNumChildren();
 
         for (int methodIndex = 0; methodIndex < methodsToSearch.size(); ++methodIndex) {
             MethodType methodType = methodsToSearch.get(methodIndex);
@@ -264,16 +285,13 @@ public final class MethodTypeResolution {
                 throw new ResolutionFailedException();
             }
 
-            if (argList == null) {
-                selectedMethods.add(methodType);
-
-                // vararg methods are considered fixed arity here
-            } else if (getArity(methodType.getMethod()) == argList.jjtGetNumChildren()) {
+            // vararg methods are considered fixed arity here, see 3rd phase
+            if (getArity(methodType.getMethod()) == argCount) {
                 // check method convertability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
                 // try each arguments if it's method convertible
-                for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                for (int argIndex = 0; argIndex < argCount; ++argIndex) {
                     if (!isMethodConvertible(methodType.getParameterTypes().get(argIndex),
                                              (ASTExpression) argList.jjtGetChild(argIndex))) {
                         methodIsApplicable = false;
@@ -307,35 +325,41 @@ public final class MethodTypeResolution {
                 throw new ResolutionFailedException();
             }
 
-            if (argList == null) {
-                selectedMethods.add(methodType);
-
-                // now we consider varargs as not fixed arity
-            } else { // check subtypeability of each argument to the corresponding parameter
+            // now we consider varargs as not fixed arity
+            // if we reach here and the method is not a vararg, then we didn't find a resolution in earlier phases
+            if (methodType.isVararg()) { // check subtypeability of each argument to the corresponding parameter
                 boolean methodIsApplicable = true;
 
                 List<JavaTypeDefinition> methodParameters = methodType.getParameterTypes();
                 JavaTypeDefinition varargComponentType = methodType.getVarargComponentType();
 
-                // try each arguments if it's method convertible
-                for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
-                    JavaTypeDefinition parameterType = argIndex < methodParameters.size() - 1
-                            ? methodParameters.get(argIndex) : varargComponentType;
-
-                    if (!isMethodConvertible(parameterType, (ASTExpression) argList.jjtGetChild(argIndex))) {
-                        methodIsApplicable = false;
-                        break;
+                if (argList == null) {
+                    // There are no arguments, make sure the method has only a vararg
+                    methodIsApplicable = getArity(methodType.getMethod()) == 1;
+                } else {
+                    // try each arguments if it's method convertible
+                    for (int argIndex = 0; argIndex < argList.jjtGetNumChildren(); ++argIndex) {
+                        JavaTypeDefinition parameterType = argIndex < methodParameters.size() - 1
+                                ? methodParameters.get(argIndex) : varargComponentType;
+    
+                        if (!isMethodConvertible(parameterType, (ASTExpression) argList.jjtGetChild(argIndex))) {
+                            methodIsApplicable = false;
+                            break;
+                        }
+    
+                        // TODO: If k != n, or if k = n and An cannot be converted by method invocation conversion to
+                        // Sn[], then the type which is the erasure (§4.6) of Sn is accessible at the point of invocation.
+    
+                        // TODO: add unchecked conversion in an else if branch
                     }
-
-                    // TODO: If k != n, or if k = n and An cannot be converted by method invocation conversion to
-                    // Sn[], then the type which is the erasure (§4.6) of Sn is accessible at the point of invocation.
-
-                    // TODO: add unchecked conversion in an else if branch
                 }
 
                 if (methodIsApplicable) {
                     selectedMethods.add(methodType);
                 }
+            } else {
+                // TODO: Remove check for vararg here, once we can detect and use return types of method calls
+                LOG.log(Level.FINE, "Method {0} couldn't be resolved", String.valueOf(methodType));
             }
         }
 
@@ -407,14 +431,15 @@ public final class MethodTypeResolution {
                 // the bottom of the section is relevant here, we can't resolve this type
                 // TODO: resolve this
 
-                return null;
+                // we obviously don't know the runtime type. Let's return the first as the most specific
+                return first;
             } else { // second one isn't abstract
                 return second;
             }
         } else if (second.isAbstract()) {
             return first; // first isn't abstract, second one is
         } else {
-            return null; // TODO: once shadowing and overriding methods is done, add exception back
+            return first; // TODO: once shadowing and overriding methods is done, add exception back
             // throw new IllegalStateException("None of the maximally specific methods are abstract.\n"
             //                                        + first.toString() + "\n" + second.toString());
         }
@@ -441,16 +466,28 @@ public final class MethodTypeResolution {
         Class<?> contextClass = context.getType();
 
         // search the class
-        for (Method method : contextClass.getDeclaredMethods()) {
-            if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
-                result.add(getTypeDefOfMethod(context, method, typeArguments));
+        try {
+            for (Method method : contextClass.getDeclaredMethods()) {
+                if (isMethodApplicable(method, methodName, argArity, accessingClass, typeArguments)) {
+                    result.add(getTypeDefOfMethod(context, method, typeArguments));
+                }
             }
+        } catch (final LinkageError ignored) {
+            // TODO : This is an incomplete classpath, report the missing class
         }
 
         // search it's supertype
         if (!contextClass.equals(Object.class)) {
-            result.addAll(getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
-                                               methodName, typeArguments, argArity, accessingClass));
+            List<MethodType> inheritedMethods = getApplicableMethods(context.resolveTypeDefinition(contextClass.getGenericSuperclass()),
+                                               methodName, typeArguments, argArity, accessingClass);
+
+            // but only add the found methods of the supertype, if they have not been overridden
+            // TODO: verify whether this simplified overriding detection is good enough and at the correct place
+            for (MethodType inherited : inheritedMethods) {
+                if (!result.contains(inherited)) {
+                    result.add(inherited);
+                }
+            }
         }
 
         // search it's interfaces
@@ -488,21 +525,16 @@ public final class MethodTypeResolution {
     public static boolean isMethodApplicable(Method method, String methodName, int argArity,
                                              Class<?> accessingClass, List<JavaTypeDefinition> typeArguments) {
 
-        if (method.getName().equals(methodName) // name matches
+        return method.getName().equals(methodName) // name matches
                 // is visible
                 && isMemberVisibleFromClass(method.getDeclaringClass(), method.getModifiers(), accessingClass)
                 // if method is vararg with arity n, then the invocation's arity >= n - 1
-                && (!method.isVarArgs() || (argArity >= getArity(method) - 1))
+                && (!method.isVarArgs() || argArity >= getArity(method) - 1)
                 // if the method isn't vararg, then arity matches
-                && (method.isVarArgs() || (argArity == getArity(method)))
+                && (method.isVarArgs() || argArity == getArity(method))
                 // isn't generic or arity of type arguments matches that of parameters
                 && (!isGeneric(method) || typeArguments.isEmpty()
-                || method.getTypeParameters().length == typeArguments.size())) {
-
-            return true;
-        }
-
-        return false;
+                || method.getTypeParameters().length == typeArguments.size());
     }
 
 
@@ -564,6 +596,10 @@ public final class MethodTypeResolution {
     }
 
     public static boolean isMethodConvertible(JavaTypeDefinition parameter, ASTExpression argument) {
+        if (argument.getTypeDefinition() == null) {
+            LOG.log(Level.FINE, "No type information for node {0}", argument.toString());
+            return true;
+        }
         return isMethodConvertible(parameter, argument.getTypeDefinition());
     }
 
@@ -590,19 +626,17 @@ public final class MethodTypeResolution {
         // covers unboxing
         int indexInBoxed = BOXED_PRIMITIVE_SUBTYPE_ORDER.indexOf(argument.getType());
 
-        if (indexInBoxed != -1 // arg is boxed primitive
+        return indexInBoxed != -1 // arg is boxed primitive
                 && isSubtypeable(parameter,
-                                 JavaTypeDefinition.forClass(PRIMITIVE_SUBTYPE_ORDER.get(indexInBoxed)))) {
-            return true;
-        }
-
+                                 JavaTypeDefinition.forClass(PRIMITIVE_SUBTYPE_ORDER.get(indexInBoxed)));
         // TODO: add raw unchecked conversion part
-
-        return false;
     }
 
-
     public static boolean isSubtypeable(JavaTypeDefinition parameter, ASTExpression argument) {
+        if (argument.getTypeDefinition() == null) {
+            LOG.log(Level.FINE, "No type information for node {0}", argument.toString());
+            return true;
+        }
         return isSubtypeable(parameter, argument.getTypeDefinition());
     }
 
@@ -636,7 +670,10 @@ public final class MethodTypeResolution {
             // right now we only check if generic arguments are the same
             // TODO: add support for wildcard types
             // (future note: can't call subtype as it is recursively, infinite types)
-            return parameter.equals(argSuper);
+            //return parameter.equals(argSuper);
+
+            // TODO: this ignores the check for generic types!!
+            return parameter.getType().equals(argSuper.getType());
         }
 
         int indexOfParameter = PRIMITIVE_SUBTYPE_ORDER.indexOf(parameter.getType());
@@ -658,11 +695,7 @@ public final class MethodTypeResolution {
     }
 
     public static JavaTypeDefinition boxPrimitive(JavaTypeDefinition def) {
-        if (!def.isPrimitive()) {
-            return null;
-        }
-
-        return JavaTypeDefinition.forClass(BOXED_PRIMITIVE_SUBTYPE_ORDER.get(PRIMITIVE_SUBTYPE_ORDER.indexOf(def.getType())));
+        return JavaTypeDefinition.forClass(PRIMITIVE_BOXING_RULES.get(def.getType()));
     }
 
     public static List<JavaTypeDefinition> getMethodExplicitTypeArugments(Node node) {

@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import java.util.Locale;
+
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.KeywordLiteral;
 
 public class ASTKeywordLiteral extends AbstractEcmascriptNode<KeywordLiteral> {
     public ASTKeywordLiteral(KeywordLiteral keywordLiteral) {
         super(keywordLiteral);
-        super.setImage(Token.typeToName(keywordLiteral.getType()).toLowerCase());
+        super.setImage(Token.typeToName(keywordLiteral.getType()).toLowerCase(Locale.ROOT));
     }
 
     /**

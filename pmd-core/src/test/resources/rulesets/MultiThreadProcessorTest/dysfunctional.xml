@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ruleset name="Test Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+  Ruleset used by test MultiThreadProcessorTest
+  </description>
+
+    <rule name="DysfunctionalRule" language="dummy" since="1.0" message="dysfunctional rule" class="net.sourceforge.pmd.processor.MultiThreadProcessorTest$DysfunctionalRule"
+        externalInfoUrl="foo">
+        <description>Dysfunctional</description>
+        <priority>3</priority>
+        <example></example>
+    </rule>
+</ruleset>

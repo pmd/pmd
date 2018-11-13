@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 

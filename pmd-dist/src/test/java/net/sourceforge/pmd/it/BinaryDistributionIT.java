@@ -21,12 +21,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDVersion;
 
 public class BinaryDistributionIT {
 
     private static File getBinaryDistribution() {
-        return new File(".", "target/pmd-bin-" + PMD.VERSION + ".zip");
+        return new File(".", "target/pmd-bin-" + PMDVersion.VERSION + ".zip");
     }
 
     /**
@@ -57,13 +57,13 @@ public class BinaryDistributionIT {
 
     private Set<String> getExpectedFileNames() {
         Set<String> result = new HashSet<>();
-        String basedir = "pmd-bin-" + PMD.VERSION + "/";
+        String basedir = "pmd-bin-" + PMDVersion.VERSION + "/";
         result.add(basedir);
         result.add(basedir + "bin/run.sh");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "bin/cpd.bat");
-        result.add(basedir + "lib/pmd-core-" + PMD.VERSION + ".jar");
-        result.add(basedir + "lib/pmd-java-" + PMD.VERSION + ".jar");
+        result.add(basedir + "lib/pmd-core-" + PMDVersion.VERSION + ".jar");
+        result.add(basedir + "lib/pmd-java-" + PMDVersion.VERSION + ".jar");
         return result;
     }
 
@@ -93,11 +93,11 @@ public class BinaryDistributionIT {
         result = PMDExecutor.runPMD(tempDir, "-h");
         result.assertExecutionResult(1, "apex, ecmascript, java, jsp, plsql, pom, vf, vm, wsdl, xml, xsl");
 
-        result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-basic");
+        result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExecutionResult(4, "JumbledIncrementer.java:8:");
 
-        result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-design");
-        result.assertExecutionResult(0, "");
+        result = PMDExecutor.runPMDRules(tempDir, srcDir, "rulesets/java/quickstart.xml");
+        result.assertExecutionResult(4, "");
     }
 
     @Test
@@ -107,6 +107,7 @@ public class BinaryDistributionIT {
         ExecutionResult result;
 
         result = CpdExecutor.runCpd(tempDir, "-h");
+
         result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);

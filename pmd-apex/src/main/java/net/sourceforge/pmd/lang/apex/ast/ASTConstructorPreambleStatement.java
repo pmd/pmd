@@ -12,6 +12,7 @@ public class ASTConstructorPreambleStatement extends AbstractApexNode<Constructo
         super(constructorPreambleStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

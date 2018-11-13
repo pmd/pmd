@@ -3,82 +3,14 @@
 <ruleset name="JavaBeans"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
   <description>
 The JavaBeans Ruleset catches instances of bean rules not being followed.
   </description>
 
-
-  <rule name="BeanMembersShouldSerialize"
-        since="1.1"
-        message="Found non-transient, non-static member. Please mark as transient or provide accessors."
-        class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_javabeans.html#beanmembersshouldserialize">
-    <description>
-If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
-naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
-    </description>
-    <priority>3</priority>
-    <example>
-<![CDATA[
-private transient int someFoo;  // good, it's transient
-private static int otherFoo;    // also OK
-private int moreFoo;            // OK, has proper accessors, see below
-private int badFoo;             // bad, should be marked transient
-
-private void setMoreFoo(int moreFoo){
-      this.moreFoo = moreFoo;
-}
-
-private int getMoreFoo(){
-      return this.moreFoo;
-}
-
-]]>
-    </example>
-  </rule>
-
-  <rule name="MissingSerialVersionUID"
-        language="java"
-        since="3.0"
-        message="Classes implementing Serializable should set a serialVersionUID"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_javabeans.html#missingserialversionuid">
-      <description>
-Serializable classes should provide a serialVersionUID field.
-      </description>
-      <priority>3</priority>
-      <properties>
-          <property name="xpath">
-              <value>
-    <![CDATA[
-//ClassOrInterfaceDeclaration
- [
-  count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-   /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0
-and
-  count(ImplementsList
-   [ClassOrInterfaceType/@Image='Serializable'
-   or ClassOrInterfaceType/@Image='java.io.Serializable']) =1
-and
-   @Abstract = 'false'
-]
-]]>
-              </value>
-          </property>
-      </properties>
-      <example>
-<![CDATA[
-public class Foo implements java.io.Serializable {
-    String name;
-    // Define serialization id to avoid serialization related bugs
-    // i.e., public static final long serialVersionUID = 4328743;
-}
-]]>
-      </example>
-  </rule>
+    <!-- Rules, that have been moved into a category -->
+    <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" deprecated="true" />
+    <rule ref="category/java/errorprone.xml/MissingSerialVersionUID" deprecated="true" />
 
 </ruleset>

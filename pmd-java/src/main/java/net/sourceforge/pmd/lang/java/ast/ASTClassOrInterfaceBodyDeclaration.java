@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTClassOrInterfaceBodyDeclaration extends AbstractJavaNode implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
+public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
 
     public ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);
@@ -22,6 +22,7 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractJavaNode impleme
         return isAnonymousInnerClass();
     }
 
+    @Override
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
@@ -37,6 +38,7 @@ public class ASTClassOrInterfaceBodyDeclaration extends AbstractJavaNode impleme
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

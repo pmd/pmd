@@ -37,6 +37,16 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         }
     }
 
+    public int getArrayDepth() {
+        ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
+        ASTType typeNode = astVariableDeclaratorId.getTypeNode();
+        if (typeNode != null) {
+            return ((Dimensionable) typeNode.jjtGetParent()).getArrayDepth();
+        } else {
+            return 0;
+        }
+    }
+
     public boolean isVarargs() {
         ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
         ASTFormalParameter parameter = astVariableDeclaratorId.getFirstParentOfType(ASTFormalParameter.class);
@@ -44,18 +54,27 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isExceptionBlockParameter() {
-        return ((ASTVariableDeclaratorId) node).isExceptionBlockParameter();
+        return getDeclaratorId().isExceptionBlockParameter();
     }
 
+    /**
+     * @deprecated use {@link #isTypeInferred()}
+     */
+    @Deprecated
     public boolean isLambdaTypelessParameter() {
-        return getAccessNodeParent() instanceof ASTLambdaExpression;
+        return isTypeInferred();
+    }
+
+    public boolean isTypeInferred() {
+        return getDeclaratorId().isTypeInferred();
     }
 
     public boolean isPrimitiveType() {
-        return !isLambdaTypelessParameter()
+        return !isTypeInferred()
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
+    @Override
     public String getTypeImage() {
         TypeNode typeNode = getTypeNode();
         if (typeNode != null) {
@@ -68,7 +87,7 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
      * Note that an array of primitive types (int[]) is a reference type.
      */
     public boolean isReferenceType() {
-        return !isLambdaTypelessParameter()
+        return !isTypeInferred()
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTReferenceType;
     }
 
@@ -87,12 +106,13 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (isPrimitiveType()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
         }
-        if (!isLambdaTypelessParameter()) {
+        if (!isTypeInferred()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
         }
         return null;
     }
 
+    @Override
     public Class<?> getType() {
         TypeNode typeNode = getTypeNode();
         if (typeNode != null) {

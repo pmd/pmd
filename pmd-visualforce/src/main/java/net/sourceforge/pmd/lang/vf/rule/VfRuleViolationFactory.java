@@ -25,9 +25,10 @@ public final class VfRuleViolationFactory extends AbstractRuleViolationFactory {
         return new ParametricRuleViolation<>(rule, ruleContext, (VfNode) node, message);
     }
 
+    @Override
     protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
             int beginLine, int endLine) {
-        
+
         ParametricRuleViolation<VfNode> rViolation = new ParametricRuleViolation<>(rule, ruleContext, (VfNode) node, message);
         rViolation.setLines(beginLine, endLine);
         return rViolation;

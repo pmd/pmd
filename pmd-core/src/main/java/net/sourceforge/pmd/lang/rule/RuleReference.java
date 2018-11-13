@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
@@ -43,25 +43,59 @@ public class RuleReference extends AbstractDelegateRule {
     private RulePriority priority;
     private RuleSetReference ruleSetReference;
 
-    private static final List<PropertyDescriptor<?>> EMPTY_DESCRIPTORS = Collections.emptyList();
 
+    /**
+     * @deprecated to be removed with PMD 7.0.0. when creating a rule reference, always
+     * provide the rule and the ruleset, see the constructor RuleReference(Rule, RuleSetReference)
+     */
+    @Deprecated
     public RuleReference() {
+        // default constructor
     }
 
+    /**
+     * Create a new reference to the given rule.
+     *
+     * @param theRule the referenced rule
+     * @param theRuleSetReference the rule set, where the rule is defined
+     */
     public RuleReference(Rule theRule, RuleSetReference theRuleSetReference) {
         setRule(theRule);
         ruleSetReference = theRuleSetReference;
+    }
+
+
+    /** copy constructor */
+    private RuleReference(RuleReference ref) {
+
+        this.language = ref.language;
+        this.minimumLanguageVersion = ref.minimumLanguageVersion;
+        this.maximumLanguageVersion = ref.maximumLanguageVersion;
+        this.deprecated = ref.deprecated;
+        this.name = ref.name;
+        this.propertyDescriptors = ref.propertyDescriptors;
+        this.propertyValues = ref.propertyValues == null ? null : new HashMap<>(ref.propertyValues);
+        this.message = ref.message;
+        this.description = ref.description;
+        this.examples = ref.examples == null ? null : new ArrayList<>(ref.examples);
+        this.externalInfoUrl = ref.externalInfoUrl;
+        this.priority = ref.priority;
+        this.ruleSetReference = ref.ruleSetReference;
+
+        this.setRule(ref.getRule().deepCopy());
     }
 
     public Language getOverriddenLanguage() {
         return language;
     }
 
+    // FIXME should we really allow overriding the language of a rule?
+    // I don't see any case where this wouldn't just make the rule fail during execution
     @Override
     public void setLanguage(Language language) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(language, super.getLanguage()) || this.language != null) {
+        if (!Objects.equals(language, super.getLanguage()) || this.language != null) {
             this.language = language;
             super.setLanguage(language);
         }
@@ -75,7 +109,7 @@ public class RuleReference extends AbstractDelegateRule {
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
+        if (!Objects.equals(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
             this.minimumLanguageVersion = minimumLanguageVersion;
             super.setMinimumLanguageVersion(minimumLanguageVersion);
         }
@@ -89,7 +123,7 @@ public class RuleReference extends AbstractDelegateRule {
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!isSame(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
+        if (!Objects.equals(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
             this.maximumLanguageVersion = maximumLanguageVersion;
             super.setMaximumLanguageVersion(maximumLanguageVersion);
         }
@@ -101,7 +135,7 @@ public class RuleReference extends AbstractDelegateRule {
 
     @Override
     public boolean isDeprecated() {
-        return deprecated != null && deprecated.booleanValue();
+        return deprecated != null && deprecated;
     }
 
     @Override
@@ -170,6 +204,10 @@ public class RuleReference extends AbstractDelegateRule {
 
     @Override
     public void addExample(String example) {
+        // TODO Intuitively, if some examples are overridden (even with empty value), then
+        // I think we should discard the previous ones. If the rule needs new examples,
+        // then the previous ones are not relevant.
+
         // TODO Meaningful override of examples is hard, because they are merely
         // a list of strings. How does one indicate override of a particular
         // value? Via index? Rule.setExample(int, String)? But the XML format
@@ -220,9 +258,11 @@ public class RuleReference extends AbstractDelegateRule {
         }
     }
 
-    public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
 
-        return propertyDescriptors == null ? EMPTY_DESCRIPTORS : propertyDescriptors;
+    @Override
+    public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
+        return propertyDescriptors == null ? Collections.<PropertyDescriptor<?>>emptyList()
+                                           : new ArrayList<>(propertyDescriptors);
     }
 
     @Override
@@ -237,14 +277,16 @@ public class RuleReference extends AbstractDelegateRule {
         propertyDescriptors.add(propertyDescriptor);
     }
 
+
+    @Override
     public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
-        return propertyValues;
+        return propertyValues == null ? new HashMap<PropertyDescriptor<?>, Object>() : new HashMap<>(propertyValues);
     }
 
     @Override
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         // Only override if different than current value.
-        if (!isSame(super.getProperty(propertyDescriptor), value)) {
+        if (!Objects.equals(super.getProperty(propertyDescriptor), value)) {
             if (propertyValues == null) {
                 propertyValues = new HashMap<>();
             }
@@ -254,14 +296,15 @@ public class RuleReference extends AbstractDelegateRule {
     }
 
 
-
-
-
-
     public RuleSetReference getRuleSetReference() {
         return ruleSetReference;
     }
 
+
+    /**
+     * @deprecated There's no use in setting the ruleset reference after construction
+     */
+    @Deprecated
     public void setRuleSetReference(RuleSetReference ruleSetReference) {
         this.ruleSetReference = ruleSetReference;
     }
@@ -270,19 +313,6 @@ public class RuleReference extends AbstractDelegateRule {
         return StringUtil.isSame(s1, s2, true, false, true);
     }
 
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
-    private static boolean isSame(Object o1, Object o2) {
-        if (o1 instanceof Object[] && o2 instanceof Object[]) {
-            return isSame((Object[]) o1, (Object[]) o2);
-        }
-        return o1 == o2 || o1 != null && o2 != null && o1.equals(o2);
-    }
-
-    @SuppressWarnings("PMD.UnusedNullCheckInEquals")
-    // TODO: fix UnusedNullCheckInEquals rule for Arrays
-    private static boolean isSame(Object[] a1, Object[] a2) {
-        return a1 == a2 || a1 != null && a2 != null && Arrays.equals(a1, a2);
-    }
 
     private static boolean contains(Collection<String> collection, String s1) {
         for (String s2 : collection) {
@@ -299,11 +329,21 @@ public class RuleReference extends AbstractDelegateRule {
                 || super.hasDescriptor(descriptor);
     }
 
+    /**
+     * @deprecated Use {@link #isPropertyOverridden(PropertyDescriptor)} instead
+     */
+    @Deprecated
     public boolean hasOverriddenProperty(PropertyDescriptor<?> descriptor) {
+        return isPropertyOverridden(descriptor);
+    }
+
+    @Override
+    public boolean isPropertyOverridden(PropertyDescriptor<?> descriptor) {
         return propertyValues != null && propertyValues.containsKey(descriptor);
     }
 
     @Override
+    @Deprecated
     public boolean usesDefaultValues() {
 
         List<PropertyDescriptor<?>> descriptors = getOverriddenPropertyDescriptors();
@@ -312,19 +352,16 @@ public class RuleReference extends AbstractDelegateRule {
         }
 
         for (PropertyDescriptor<?> desc : descriptors) {
-            if (!isSame(desc.defaultValue(), getProperty(desc))) {
+            if (!Objects.equals(desc.defaultValue(), getProperty(desc))) {
                 return false;
             }
         }
 
-        if (!getRule().usesDefaultValues()) {
-            return false;
-        }
-
-        return true;
+        return getRule().usesDefaultValues();
     }
 
     @Override
+    @Deprecated
     public void useDefaultValueFor(PropertyDescriptor<?> desc) {
 
         // not sure if we should go all the way through to the real thing?
@@ -343,28 +380,6 @@ public class RuleReference extends AbstractDelegateRule {
     
     @Override
     public Rule deepCopy() {
-        RuleReference rule = null;
-        try {
-            rule = getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            // Can't happen... we already have an instance
-        }
-        rule.setRule(this.getRule().deepCopy());
-        
-        rule.language = language;
-        rule.minimumLanguageVersion = minimumLanguageVersion;
-        rule.maximumLanguageVersion = maximumLanguageVersion;
-        rule.deprecated = deprecated;
-        rule.name = name;
-        rule.propertyDescriptors = propertyDescriptors;
-        rule.propertyValues = propertyValues == null ? null : new HashMap<>(propertyValues);
-        rule.message = message;
-        rule.description = description;
-        rule.examples = examples == null ? null : new ArrayList<>(examples);
-        rule.externalInfoUrl = externalInfoUrl;
-        rule.priority = priority;
-        rule.ruleSetReference = ruleSetReference;
-        
-        return rule;
+        return new RuleReference(this);
     }
 }

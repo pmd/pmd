@@ -12,15 +12,12 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SourceCodeProcessor;
+import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
@@ -30,23 +27,20 @@ public class PmdRunnable implements Callable<Report> {
 
     private static final ThreadLocal<ThreadContext> LOCAL_THREAD_CONTEXT = new ThreadLocal<>();
 
-    private final PMDConfiguration configuration;
     private final DataSource dataSource;
     private final String fileName;
     private final List<Renderer> renderers;
     private final RuleContext ruleContext;
-    private final RuleSetFactory ruleSetFactory;
+    private final RuleSets ruleSets;
     private final SourceCodeProcessor sourceCodeProcessor;
 
-    public PmdRunnable(PMDConfiguration configuration, DataSource dataSource, String fileName,
-            List<Renderer> renderers, RuleContext ruleContext, RuleSetFactory ruleSetFactory,
-            SourceCodeProcessor sourceCodeProcessor) {
-        this.configuration = configuration;
+    public PmdRunnable(DataSource dataSource, String fileName, List<Renderer> renderers,
+            RuleContext ruleContext, RuleSets ruleSets, SourceCodeProcessor sourceCodeProcessor) {
+        this.ruleSets = ruleSets;
         this.dataSource = dataSource;
         this.fileName = fileName;
         this.renderers = renderers;
         this.ruleContext = ruleContext;
-        this.ruleSetFactory = ruleSetFactory;
         this.sourceCodeProcessor = sourceCodeProcessor;
     }
 
@@ -62,23 +56,15 @@ public class PmdRunnable implements Callable<Report> {
 
     @Override
     public Report call() {
+        TimeTracker.initThread();
+        
         ThreadContext tc = LOCAL_THREAD_CONTEXT.get();
         if (tc == null) {
-            try {
-                tc = new ThreadContext(ruleSetFactory.createRuleSets(configuration.getRuleSets()),
-                        new RuleContext(ruleContext));
-            } catch (RuleSetNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            tc = new ThreadContext(new RuleSets(ruleSets), new RuleContext(ruleContext));
             LOCAL_THREAD_CONTEXT.set(tc);
         }
 
-        /*
-         * FIXME : This creates ConfigErrors for dysfunctional rules **per-thread**.
-         * We need rulesets to be copy-constructable and have them cleaned-up only once
-         * before analysis starts, reducing this to Report.createReport(tc.ruleContext, fileName);
-         */
-        Report report = PMD.setupReport(tc.ruleSets, tc.ruleContext, fileName);
+        Report report = Report.createReport(tc.ruleContext, fileName);
 
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("Processing " + tc.ruleContext.getSourceCodeFilename());
@@ -87,8 +73,7 @@ public class PmdRunnable implements Callable<Report> {
             r.startFileAnalysis(dataSource);
         }
 
-        try {
-            InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+        try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
             tc.ruleContext.setLanguageVersion(null);
             sourceCodeProcessor.processSourceCode(stream, tc.ruleSets, tc.ruleContext);
         } catch (PMDException pmde) {
@@ -99,6 +84,8 @@ public class PmdRunnable implements Callable<Report> {
             addError(report, re, "RuntimeException during processing of " + fileName);
         }
 
+        TimeTracker.finishThread();
+        
         return report;
     }
 

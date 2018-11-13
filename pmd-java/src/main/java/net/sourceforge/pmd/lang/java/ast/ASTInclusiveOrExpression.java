@@ -5,18 +5,33 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents a non-shortcut boolean OR-expression. This has a precedence
+ * greater than {@link ASTConditionalAndExpression}, and lower than
+ * {@link ASTExclusiveOrExpression}.
+ *
+ * <p>Note that the children of this node are not necessarily {@link ASTExclusiveOrExpression},
+ * rather, they are expressions with an operator precedence greater or equal to ExclusiveOrExpression.
+ *
+ *
+ * <pre>
+ *
+ * InclusiveOrExpression ::=  {@linkplain ASTExclusiveOrExpression ExclusiveOrExpression} ( "|" {@linkplain ASTExclusiveOrExpression ExclusiveOrExpression} )+
+ *
+ * </pre>
+ */
 public class ASTInclusiveOrExpression extends AbstractJavaTypeNode {
     public ASTInclusiveOrExpression(int id) {
         super(id);
     }
 
+
     public ASTInclusiveOrExpression(JavaParser p, int id) {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

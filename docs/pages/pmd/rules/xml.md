@@ -1,12 +1,25 @@
 ---
 title: XML Rules
+tags: [rule_references, xml]
+summary: Index of all built-in rules available for XML
+language_name: XML
 permalink: pmd_rules_xml.html
 folder: pmd/rules
 ---
-List of rulesets and rules contained in each ruleset.
+## Error Prone
 
-*   [Basic XML](pmd_rules_xml_basic.html): The Basic XML Ruleset contains a collection of good practices which everyone should follow.
+{% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
 
-## Basic XML
-*   [MistypedCDATASection](pmd_rules_xml_basic.html#mistypedcdatasection): An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and ends with a ]]> mar...
+*   [MistypedCDATASection](pmd_rules_xml_errorprone.html#mistypedcdatasection): An XML CDATA section begins with a <!CDATA[ marker, which has only one [, and ends with a ]]> mar...
+
+## Additional rulesets
+
+*   Basic XML (`rulesets/xml/basic.xml`):
+
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
+
+    It contains the following rules:
+
+    [MistypedCDATASection](pmd_rules_xml_errorprone.html#mistypedcdatasection)
+
 

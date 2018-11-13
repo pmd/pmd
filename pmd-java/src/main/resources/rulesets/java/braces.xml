@@ -3,143 +3,15 @@
 <ruleset name="Braces"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 The Braces ruleset contains rules regarding the use and placement of braces.
   </description>
 
-   <rule name="IfStmtsMustUseBraces"
-         language="java"
-         since="1.0"
-         message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.lang.rule.XPathRule"
-         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#ifstmtsmustusebraces">
-     <description>
-Avoid using if statements without using braces to surround the code block. If the code 
-formatting or indentation is lost then it becomes difficult to separate the code being
-controlled from the rest.
-     </description>
-     <priority>3</priority>
-       <properties>
-           <property name="xpath">
-               <value>
-                   <![CDATA[
-//IfStatement[count(*) < 3][not(Statement/Block)]
-                   ]]>
-               </value>
-           </property>
-       </properties>
-     <example>
- <![CDATA[
-if (foo)    // not recommended
-    x++;
-
-if (foo) {  // preferred approach
-    x++;
-}
-
- ]]>
-     </example>
-     </rule>
-
-    <rule name="WhileLoopsMustUseBraces"
-          language="java"
-          since="0.7"
-          message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#whileloopsmustusebraces">
-      <description>
-Avoid using 'while' statements without using braces to surround the code block. If the code 
-formatting or indentation is lost then it becomes difficult to separate the code being
-controlled from the rest.
-      </description>
-      <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//WhileStatement[not(Statement/Block)]
-]]>
-                </value>
-            </property>
-        </properties>
-      <example>
-<![CDATA[
-while (true)    // not recommended
-      x++;
-      
-while (true) {  // preferred approach
-      x++;
-}
-]]>
-      </example>
-    </rule>
-
-      <rule name="IfElseStmtsMustUseBraces"
-            language="java"
-            since="0.2"
-            message="Avoid using 'if...else' statements without curly braces"
-            class="net.sourceforge.pmd.lang.rule.XPathRule"
-            externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#ifelsestmtsmustusebraces">
-       <description>
-Avoid using if..else statements without using surrounding braces. If the code formatting 
-or indentation is lost then it becomes difficult to separate the code being controlled 
-from the rest.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
-<![CDATA[
-//Statement
- [parent::IfStatement[@Else='true']]
- [not(child::Block)]
- [not(child::IfStatement)]
- ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
-<![CDATA[
-   // this is OK
-if (foo) x++;
-
-   // but this is not
-if (foo)
-       x = x+1;
-   else
-       x = x-1;
-]]>
-       </example>
-     </rule>
-
-     <rule name="ForLoopsMustUseBraces"
-           language="java"
-           since="0.7"
-           message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.lang.rule.XPathRule"
-           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_braces.html#forloopsmustusebraces">
-       <description>
-Avoid using 'for' statements without using curly braces. If the code formatting or 
-indentation is lost then it becomes difficult to separate the code being controlled 
-from the rest.
-       </description>
-       <priority>3</priority>
-         <properties>
-             <property name="xpath">
-                 <value>
- <![CDATA[
-//ForStatement[not(Statement/Block)]
- ]]>
-                 </value>
-             </property>
-         </properties>
-       <example>
-<![CDATA[
-for (int i = 0; i < 42; i++)
-   foo();
-]]>
-       </example>
-     </rule>
+    <!-- Rules, that have been moved into a category -->
+    <rule ref="category/java/codestyle.xml/ForLoopsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/IfElseStmtsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/IfStmtsMustUseBraces" deprecated="true" />
+    <rule ref="category/java/codestyle.xml/WhileLoopsMustUseBraces" deprecated="true" />
 
 </ruleset>

@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTAnnotationTypeMemberDeclaration extends AbstractJavaNode implements ASTAnyTypeBodyDeclaration {
+public class ASTAnnotationTypeMemberDeclaration extends AbstractTypeBodyDeclaration {
     public ASTAnnotationTypeMemberDeclaration(int id) {
         super(id);
     }
@@ -17,6 +17,7 @@ public class ASTAnnotationTypeMemberDeclaration extends AbstractJavaNode impleme
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

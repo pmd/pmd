@@ -12,20 +12,23 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
-import net.sourceforge.pmd.lang.java.metrics.JavaMetricsVisitorFacade;
+import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
+import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
 import net.sourceforge.pmd.lang.java.xpath.JavaFunctions;
 import net.sourceforge.pmd.lang.java.xpath.MetricFunction;
+import net.sourceforge.pmd.lang.java.xpath.TypeIsExactlyFunction;
+import net.sourceforge.pmd.lang.java.xpath.TypeIsFunction;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
@@ -46,19 +49,24 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
 
     @Override
     public XPathHandler getXPathHandler() {
-        return new AbstractASTXPathHandler() {
+        return new DefaultASTXPathHandler() {
+            @Override
             public void initialize() {
                 TypeOfFunction.registerSelfInSimpleContext();
                 GetCommentOnFunction.registerSelfInSimpleContext();
                 MetricFunction.registerSelfInSimpleContext();
+                TypeIsFunction.registerSelfInSimpleContext();
+                TypeIsExactlyFunction.registerSelfInSimpleContext();
             }
 
+            @Override
             public void initialize(IndependentContext context) {
                 super.initialize(context, LanguageRegistry.getLanguage(JavaLanguageModule.NAME), JavaFunctions.class);
             }
         };
     }
 
+    @Override
     public RuleViolationFactory getRuleViolationFactory() {
         return JavaRuleViolationFactory.INSTANCE;
     }
@@ -66,6 +74,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getDataFlowFacade() {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTCompilationUnit) rootNode);
             }
@@ -75,6 +84,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getSymbolFacade() {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new SymbolFacade().initializeWith(null, (ASTCompilationUnit) rootNode);
             }
@@ -84,6 +94,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getSymbolFacade(final ClassLoader classLoader) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new SymbolFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
@@ -93,6 +104,7 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     @Override
     public VisitorStarter getTypeResolutionFacade(final ClassLoader classLoader) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new TypeResolutionFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
@@ -100,23 +112,36 @@ public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler
     }
 
     @Override
-    public VisitorStarter getMetricsVisitorFacade() {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new JavaMetricsVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
-            }
-        };
-    }
-
-    @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
+            @Override
             public void start(Node rootNode) {
                 new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
             }
         };
     }
+
+    @Override
+    public VisitorStarter getMultifileFacade() {
+        return new VisitorStarter() {
+            @Override
+            public void start(Node rootNode) {
+                new MultifileVisitorFacade().initializeWith((ASTCompilationUnit) rootNode);
+            }
+        };
+    }
+
+
+    @Override
+    public VisitorStarter getQualifiedNameResolutionFacade(final ClassLoader classLoader) {
+        return new VisitorStarter() {
+            @Override
+            public void start(Node rootNode) {
+                new QualifiedNameResolver().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
+            }
+        };
+    }
+
 
     @Override
     public DFAGraphRule getDFAGraphRule() {

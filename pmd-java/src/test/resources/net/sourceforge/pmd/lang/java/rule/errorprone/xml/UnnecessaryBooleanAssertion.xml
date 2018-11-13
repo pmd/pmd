@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+variations
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ void bar() {
+  assertTrue(true); 
+  assertTrue(false); 
+  assertFalse(true); 
+  assertFalse(false); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+nested boolean literal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ void bar() {
+  assertTrue(foobar(fiddle, true)); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+asserting true a !
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ void bar() {
+  assertTrue(!foo); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+asserting false a !
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ void bar() {
+  assertFalse(!foo); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+buz
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class Foo extends TestCase {
+ void bar() {
+  assertTrue(!s.contains(new NameOccurrence(node, node.getImage()))); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+not a JUnit test - failure case
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 4 - failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+ @Test
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 5 - failure case - @Test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+public class Foo {
+ @Test
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -9,12 +9,14 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
 
+
 /**
  * Base class for multi-valued numeric properties.
  *
  * @param <T> The type of number
  *
  * @author Brian Remedios
+ * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
 /* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
@@ -41,6 +43,9 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
         super(theName, theDescription, theDefault, theUIOrder, isDefinedExternally);
 
         module = new NumericPropertyModule<>(lower, upper);
+        for (T num : theDefault) {
+            module.checkNumber(num);
+        }
     }
 
 

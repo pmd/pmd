@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
 import java.awt.Dimension;
-
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -23,7 +22,7 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-
+@Deprecated // to be removed with PMD 7.0.0
 public class XPathPanel extends JTabbedPane implements ViewerModelListener {
     private ViewerModel model;
     private JTextArea xPathArea;

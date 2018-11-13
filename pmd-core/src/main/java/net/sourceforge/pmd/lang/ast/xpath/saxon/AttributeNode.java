@@ -4,26 +4,34 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.type.Type;
-import net.sf.saxon.value.BooleanValue;
-import net.sf.saxon.value.EmptySequence;
-import net.sf.saxon.value.Int64Value;
-import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.Value;
 
 /**
  * A Saxon OM Attribute node for an AST Node Attribute.
+ * Belongs to an {@link ElementNode}, and wraps an
+ * {@link Attribute}.
  */
+@Deprecated
+@InternalApi
 public class AttributeNode extends AbstractNodeInfo {
     protected final Attribute attribute;
     protected final int id;
     protected Value value;
 
+
+    /**
+     * Creates a new AttributeNode from a PMD Attribute.
+     *
+     * @param id The index within the attribute order
+     */
     public AttributeNode(Attribute attribute, int id) {
         this.attribute = attribute;
         this.id = id;
@@ -45,23 +53,9 @@ public class AttributeNode extends AbstractNodeInfo {
     }
 
     @Override
-    public Value atomize() throws XPathException {
+    public Value atomize() {
         if (value == null) {
-            Object v = attribute.getValue();
-            // TODO Need to handle the full range of types, is there something
-            // Saxon can do to help?
-            if (v instanceof String) {
-                value = new StringValue((String) v);
-            } else if (v instanceof Boolean) {
-                value = BooleanValue.get(((Boolean) v).booleanValue());
-            } else if (v instanceof Integer) {
-                value = Int64Value.makeIntegerValue((Integer) v);
-            } else if (v == null) {
-                value = EmptySequence.getInstance();
-            } else {
-                throw new RuntimeException(
-                        "Unable to create ValueRepresentaton for attribute value: " + v + " of type " + v.getClass());
-            }
+            value = SaxonXPathRuleQuery.getAtomicRepresentation(attribute.getValue());
         }
         return value;
     }

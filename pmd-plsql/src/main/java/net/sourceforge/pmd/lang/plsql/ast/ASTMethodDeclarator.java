@@ -17,6 +17,7 @@ public class ASTMethodDeclarator extends net.sourceforge.pmd.lang.plsql.ast.Abst
     }
 
     /** Accept the visitor. **/
+    @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

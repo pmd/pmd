@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Hard coded inline cryptographic key, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+
+    void encrypt() {
+        SecretKeySpec keySpec =  new SecretKeySpec("hard coded key here".getBytes("UTF-8"), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Key stored in a property, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+
+    void encrypt() {
+        SecretKeySpec keySpec =  new SecretKeySpec(secureProperty.getKeyBytes(), "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Hard coded in field cryptographic key, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+
+    static private String key = "0123456789ABCDEF";
+
+    void encrypt() {
+        byte[] keyData = key.getBytes("UTF-8");
+
+        SecretKeySpec keySpec =  new SecretKeySpec(keyData, "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Hard coded crypto key byte[], bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+
+    static private byte[] encryptionKey = new byte[] { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00 };
+
+    void encrypt() {
+        SecretKeySpec keySpec =  new SecretKeySpec(encryptionKey, "AES");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Key fetched from a property, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+
+public class Foo {
+
+    void encrypt() {
+        byte[] computedSecretKey = SecureUtils.computeSecretKey(data.getSecretKeyAlgorithm(),
+            data.getAccessKey(), data.getClientIp(), data.getTimeStamp(), data.getEnv());
+        SecretKeySpec secretKeySpec = new SecretKeySpec(computedSecretKey, data.getSecretKeyAlgorithm().getName());
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

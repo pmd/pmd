@@ -1,5 +1,6 @@
 ---
 title: Ant Task Usage
+tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_ant.html
 author: >
     David Dixon-Peugh <dpeugh@users.sourceforge.net>,
@@ -76,8 +77,16 @@ Runs a set of static code analysis rules on some source code files and generates
       <td>cacheLocation</td>
       <td>
         The location of the analysis cache file to be used.
-        The cache can greatly improve analysis time without loosing analysis quality.
-        <b>It's use is strongly recommended.</b>
+        Setting this property enables Incremental Analysis, which can greatly improve analysis time without loosing analysis quality.
+        <b>Its use is strongly recommended.</b>
+      </td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>noCache</td>
+      <td>
+        Setting this property to true disables Incremental Analysis, even if <i>cacheLocation</i> is provided.
+        You can use this to explicitly turn off suggestions to use incremental analysis, or for testing purposes.
       </td>
       <td>No</td>
     </tr>
@@ -151,8 +160,7 @@ and the associated version (1.5, 1.6,...)
 The specific version of a language to be used for parsing is selected via the `sourceLanguage`
 nested element. Possible values are:
 
-    <sourceLanguage name="cpp" version=""/>
-    <sourceLanguage name="fortran" version=""/>
+    <sourceLanguage name="apex" version=""/>
     <sourceLanguage name="ecmascript" version="3"/>
     <sourceLanguage name="java" version="1.3"/>
     <sourceLanguage name="java" version="1.4"/>
@@ -160,12 +168,13 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="1.6"/>
     <sourceLanguage name="java" version="1.7"/>
     <sourceLanguage name="java" version="1.8"/>
+    <sourceLanguage name="java" version="9"/>
     <sourceLanguage name="jsp" version=""/>
-    <sourceLanguage name="php" version=""/>
-    <sourceLanguage name="ruby" version=""/>
+    <sourceLanguage name="pom" version=""/>
     <sourceLanguage name="plsql" version=""/>
     <sourceLanguage name="xsl" version=""/>
     <sourceLanguage name="xml" version=""/>
+    <sourceLanguage name="vf" version=""/>
     <sourceLanguage name="vm" version=""/>
 
 ### Postprocessing the report file with XSLT

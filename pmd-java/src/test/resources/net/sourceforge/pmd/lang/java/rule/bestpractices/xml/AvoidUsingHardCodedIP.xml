@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+	<code-fragment id="addresses"><![CDATA[
+public class Foo {
+ String[] literals = {
+  // Not IPv4
+  "-0.0.0.0",
+  "327.0.0.1",
+  "192.468.0.0",
+  "255.255.955.0",
+  "1.2.3.412",
+  "3.14.2159.2",
+  "1.2.3.4.5",
+
+  // Not IPv6
+  "2001:0db8:0000:0000:0000:0000:1428:57ab  testing",
+  "::1  testing",
+  ":::1",
+  "::1:",
+  "0",
+  "0000000000000",
+  "2001:0db8:0000:0000:0000:0000:1428:57ab:0000",
+  ":bee",
+  
+  // IPv4
+  "0.0.0.0",
+  "127.0.0.1",
+  "192.168.0.0",
+  "255.255.255.0",
+  "1.2.3.4",
+  "3.14.159.2",
+
+  // IPv6
+  "2001:0db8:0000:0000:0000:0000:1428:57ab",
+  "2001:0db8:0000:0000:0000::1428:57ab",
+  "2001:0db8:0:0:0:0:1428:57ab",
+  "2001:0db8:0:0::1428:57ab",
+  "2001:0db8::1428:57ab",
+  "2001:db8::1428:57ab",
+  "::1",
+  "::ffff:0c22:384e",
+  "0:0:0:0:0:ffff:0c22:384e",
+  "ff00::",
+  "::bee",
+
+  // IPv4 mapped IPv6
+  "2001:0db8:0000:0000:0000:0000:12.34.56.78",
+  "::ffff:12.34.56.78",
+  "::12.34.56.78",
+  "::FFFF:129.144.52.38",
+ };
+}
+	]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check for IPv4 mapped IPv6 xxx
+     ]]></description>
+        <rule-property name="checkAddressTypes">IPv4 mapped IPv6</rule-property>
+        <expected-problems>4</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Common basic case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String badIdea = "127.0.0.1";
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Not detected via string concatenation.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String badIdea = "127.0" + "0.1"; // this is not detected
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Null literal does not puke.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String bar = null;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Non String literal does not puke.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  double bar = 123.47654;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Not an ip address string
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String ID_MD5 = "1.2.840.113549.2.5";
+  String bar = "testing 1.2.3.4";
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check IPv4, IPv6, and IPv4 mapped IPv6
+     ]]></description>
+        <expected-problems>21</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check for nothing
+     ]]></description>
+        <rule-property name="checkAddressTypes"></rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check for IPv4
+     ]]></description>
+        <rule-property name="checkAddressTypes">IPv4</rule-property>
+        <expected-problems>6</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check for IPv6
+     ]]></description>
+        <rule-property name="checkAddressTypes">IPv6</rule-property>
+        <expected-problems>11</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check for IPv4 mapped IPv6
+     ]]></description>
+        <rule-property name="checkAddressTypes">IPv4 mapped IPv6</rule-property>
+        <expected-problems>4</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Comprehensive, check for IPv6 and IPv4 mapped IPv6
+     ]]></description>
+        <rule-property name="checkAddressTypes">IPv6|IPv4 mapped IPv6</rule-property>
+        <expected-problems>15</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+</test-data>

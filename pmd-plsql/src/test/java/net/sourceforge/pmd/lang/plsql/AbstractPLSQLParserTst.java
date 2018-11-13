@@ -4,24 +4,26 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-// Root Production comprising PLSQL definitions, and SQL*PLus, DDL, GRANTS etc.
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-//Covers all executbale code units, such as package and object type bodies, standalone procedures and functions, and triggers 
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserVisitor;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
@@ -128,5 +130,13 @@ public abstract class AbstractPLSQLParserTst {
         LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         return languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions()).parse(null,
                 new StringReader(code));
+    }
+
+    public String loadTestResource(String name) {
+        try {
+            return IOUtils.toString(this.getClass().getResourceAsStream(name), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

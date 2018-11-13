@@ -14,6 +14,7 @@ public class ASTSwitchStatement extends AbstractEcmascriptNode<SwitchStatement> 
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(EcmascriptParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

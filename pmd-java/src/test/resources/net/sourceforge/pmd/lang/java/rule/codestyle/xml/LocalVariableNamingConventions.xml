@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Default is camel case</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The local variable name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final local variable name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The exception block parameter name 'E' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+
+                {
+                    int Foo;
+                    final int Hoo;
+
+                    try {
+
+                    } catch (Exception E) {
+
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test local variable property</description>
+        <rule-property name="localVarPattern">[A-Z][A-Z0-9]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The local variable name 'Foo' doesn't match '[A-Z][A-Z0-9]+'</message>
+            <message>The final local variable name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The exception block parameter name 'E' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+
+                {
+                    int Foo;
+                    int FOO; // that's ok
+                    final int Hoo;
+
+                    try {
+
+                    } catch (Exception E) {
+
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test final local variable property</description>
+        <rule-property name="finalVarPattern">[A-Z][A-Z0-9]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The local variable name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final local variable name 'Hoo' doesn't match '[A-Z][A-Z0-9]+'</message>
+            <message>The exception block parameter name 'E' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+
+                {
+                    int Foo;
+                    final int FOO; // that's ok
+                    final int Hoo;
+
+                    try {
+
+                    } catch (Exception E) {
+
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test exception parameter property</description>
+        <rule-property name="catchParameterPattern">[A-Z][A-Z0-9]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The local variable name 'Foo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The final local variable name 'Hoo' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The exception block parameter name 'Eff' doesn't match '[A-Z][A-Z0-9]+'</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Bar {
+
+                {
+                    int Foo;
+                    final int Hoo;
+
+                    try {
+
+                    } catch (Exception Eff) {
+
+                    }
+
+                    try {
+
+                    } catch (Exception EFF) { // that's ok
+
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>One character for loop variables should be ok by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class LocalVarNamingConvention {
+            public void bar() {
+                for (int i = 0; i < 10; i++) { }
+
+                List<String> data = Arrays.asList("a", "b");
+                for (String s : data) { }
+            }
+        }
+        ]]></code>
+    </test-code>
+
+</test-data>

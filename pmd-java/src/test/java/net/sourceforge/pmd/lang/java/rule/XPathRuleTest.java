@@ -8,13 +8,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -32,6 +35,7 @@ import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.StringMultiProperty;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.testframework.RuleTst;
 
@@ -53,16 +57,35 @@ public class XPathRuleTest extends RuleTst {
     public void testPluginname() throws Exception {
         rule.setXPath("//VariableDeclaratorId[string-length(@Image) < 3]");
         rule.setMessage("{0}");
-        PMD p = new PMD();
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST1), new RuleSets(rules), ctx);
+        Report report = getReportForTestString(rule, TEST1);
         RuleViolation rv = report.iterator().next();
         assertEquals("a", rv.getDescription());
     }
+
+
+    @Test
+    public void testXPathMultiProperty() throws Exception {
+        rule.setXPath("//VariableDeclaratorId[@Image=$forbiddenNames]");
+        rule.setMessage("Avoid vars");
+        rule.setVersion(XPathRuleQuery.XPATH_2_0);
+        StringMultiProperty varDescriptor
+            = StringMultiProperty.named("forbiddenNames")
+                                 .desc("Forbidden names")
+                                 .defaultValues("forbid1", "forbid2")
+                                 .delim('$')
+                                 .build();
+
+        rule.definePropertyDescriptor(varDescriptor);
+
+        Report report = getReportForTestString(rule, TEST3);
+        Iterator<RuleViolation> rv = report.iterator();
+        int i = 0;
+        for (; rv.hasNext(); ++i) {
+            rv.next();
+        }
+        assertEquals(2, i);
+    }
+
 
     @Test
     public void testVariables() throws Exception {
@@ -71,16 +94,11 @@ public class XPathRuleTest extends RuleTst {
         StringProperty varDescriptor = new StringProperty("var", "Test var", null, 1.0f);
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
-        PMD p = new PMD();
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
-        p.getSourceCodeProcessor().processSourceCode(new StringReader(TEST2), new RuleSets(rules), ctx);
+        Report report = getReportForTestString(rule, TEST2);
         RuleViolation rv = report.iterator().next();
         assertEquals(3, rv.getBeginLine());
     }
+
 
     /**
      * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
@@ -168,8 +186,24 @@ public class XPathRuleTest extends RuleTst {
         assertEquals(5, nodes.get(1).getBeginLine());
     }
 
+    private static Report getReportForTestString(Rule r, String test) throws PMDException {
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        Report report = new Report();
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename("n/a");
+        RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
+        p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
+        return report;
+    }
+
+
     private static final String TEST1 = "public class Foo {" + PMD.EOL + " int a;" + PMD.EOL + "}";
 
     private static final String TEST2 = "public class Foo {" + PMD.EOL + " int faddle;" + PMD.EOL + " int fiddle;"
             + PMD.EOL + "}";
+
+
+    private static final String TEST3 = "public class Foo {" + PMD.EOL + " int forbid1; int forbid2; int forbid1$forbid2;" + PMD.EOL + "}";
+
 }

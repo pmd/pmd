@@ -27,8 +27,8 @@ public class SourceFileScope extends AbstractScope {
     }
 
     /**
-     * {@inheritDoc}
-     * 
+     *
+     *
      * @throws IllegalArgumentException
      *             if declaration is not a {@link ClassNameDeclaration}
      */
@@ -40,6 +40,7 @@ public class SourceFileScope extends AbstractScope {
         super.addDeclaration(declaration);
     }
 
+    @Override
     public String toString() {
         return "SourceFileScope: " + getDeclarations().keySet();
     }

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>inner class has private constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo1 {
+ public class InnerClass {
+   private InnerClass(){
+   }
+ }
+ void method(){
+   new InnerClass();//Causes generation of accessor
+ }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>inner class has public constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo2 {
+ public class InnerClass {
+   public InnerClass(){
+   }
+ }
+ void method(){
+   new InnerClass(); //OK, due to public constructor
+ }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>outer class has public constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo3 {
+    public class InnerClass {
+      void method(){
+        new Foo3();//Causes generation of accessor
+      }
+    }
+    private Foo3() {
+    }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>final inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void method() {
+   final class Inner {};
+   Inner i = new Inner();
+ }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+ 
+    <test-code>
+        <description>interface inner class has private constructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+ package foo;
+public interface Foo1 {
+ public class InnerClass {
+   private InnerClass(){
+   }
+ }
+ void method(){
+   new InnerClass();//Causes generation of accessor
+ }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>there's a check for int declaration - not sure right now why</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo1 {
+ public class InnerClass {
+   private InnerClass(int[] a){
+   }
+ }
+ void method(){
+   new InnerClass(new int[]{1});//Causes generation of accessor
+ }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#1452 ArrayIndexOutOfBoundsException with Annotations for AccessorClassGenerationRule</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public @interface Something { public interface SomthingElse{}; }
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>#291 - Private constructor called from anonymous class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Example extends View {
+  private int foo;
+
+  private Example(final Context context) {
+    super(context);
+  }
+
+  public static void create() {
+    new Handler().post(new Runnable() {
+      @Override
+      public void run() {
+          Example example = new Example(null); // Should be marked since the constructor is private.
+      }
+    });
+  }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Array initializer is not a class body</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private class Bar {
+        private int size;
+
+        private Bar() {
+        }
+
+        void bar() {
+            new Bar[size];
+        }
+    }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
+</test-data>

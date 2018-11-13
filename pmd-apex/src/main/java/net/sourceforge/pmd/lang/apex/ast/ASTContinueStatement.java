@@ -12,6 +12,7 @@ public class ASTContinueStatement extends AbstractApexNode<ContinueStatement> {
         super(continueStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -77,6 +78,19 @@ import java.util.Set;
         return firstJavaType().getComponentType();
     }
 
+
+    @Override
+    public JavaTypeDefinition getElementType() {
+        return firstJavaType().getElementType();
+    }
+
+
+    @Override
+    public JavaTypeDefinition withDimensions(int numDimensions) {
+        return firstJavaType().withDimensions(numDimensions);
+    }
+
+
     @Override
     public boolean isClassOrInterface() {
         return firstJavaType().isClassOrInterface();
@@ -111,14 +125,19 @@ import java.util.Set;
     public String toString() {
         StringBuilder builder = new StringBuilder()
                 .append("JavaTypeDefinition ")
-                .append(getDefinitionType().toString())
+                .append(getDefinitionType())
                 .append(" [")
                 .append(typeList[0]);
         for (int index = 1; index < typeList.length; ++index) {
-            builder.append(" && ");
-            builder.append(typeList[index]);
+            builder.append(" && ")
+                .append(typeList[index]);
         }
         return builder.append("]").toString();
+    }
+    
+    @Override
+    protected String shallowString() {
+        return toString();
     }
 
     @Override
@@ -139,18 +158,7 @@ import java.util.Set;
         }
 
         // we assume that the typeList list cannot contain duplicates, then indeed, this will prove equality
-        outer:
-        for (JavaTypeDefinition intersectionTypeDef : typeList) {
-            for (JavaTypeDefinition otherIntersectionTypeDef : otherTypeDef.typeList) {
-                if (intersectionTypeDef.equals(otherIntersectionTypeDef)) {
-                    continue outer;
-                }
-            }
-
-            return false;
-        }
-
-        return true;
+        return Arrays.deepEquals(typeList, otherTypeDef.typeList);
     }
 
     @Override

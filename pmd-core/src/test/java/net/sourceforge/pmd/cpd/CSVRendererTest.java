@@ -6,17 +6,20 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
 public class CSVRendererTest {
     @Test
-    public void testLineCountPerFile() {
-        Renderer renderer = new CSVRenderer(true);
+    public void testLineCountPerFile() throws IOException {
+        CPDRenderer renderer = new CSVRenderer(true);
         List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";
         Mark mark1 = createMark("public", "/var/Foo.java", 48, 10, codeFragment);
@@ -24,7 +27,9 @@ public class CSVRendererTest {
         Match match = new Match(75, mark1, mark2);
 
         list.add(match);
-        String report = renderer.render(list.iterator());
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
         String expectedReport = "tokens,occurrences" + PMD.EOL + "75,2,48,10,/var/Foo.java,73,20,/var/Bar.java"
                 + PMD.EOL;
 
@@ -32,8 +37,8 @@ public class CSVRendererTest {
     }
 
     @Test
-    public void testFilenameEscapes() {
-        Renderer renderer = new CSVRenderer();
+    public void testFilenameEscapes() throws IOException {
+        CPDRenderer renderer = new CSVRenderer();
         List<Match> list = new ArrayList<>();
         String codeFragment = "code\nfragment";
         Mark mark1 = createMark("public", "/var,with,commas/Foo.java", 48, 10, codeFragment);
@@ -41,7 +46,9 @@ public class CSVRendererTest {
         Match match = new Match(75, mark1, mark2);
         list.add(match);
 
-        String report = renderer.render(list.iterator());
+        StringWriter sw = new StringWriter();
+        renderer.render(list.iterator(), sw);
+        String report = sw.toString();
         String expectedReport = "lines,tokens,occurrences" + PMD.EOL
                 + "10,75,2,48,\"/var,with,commas/Foo.java\",73,\"/var,with,commas/Bar.java\"" + PMD.EOL;
         assertEquals(expectedReport, report);

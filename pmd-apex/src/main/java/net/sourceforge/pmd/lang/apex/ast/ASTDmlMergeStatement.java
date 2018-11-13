@@ -12,6 +12,7 @@ public class ASTDmlMergeStatement extends AbstractApexNode<DmlMergeStatement> {
         super(dmlMergeStatement);
     }
 
+    @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

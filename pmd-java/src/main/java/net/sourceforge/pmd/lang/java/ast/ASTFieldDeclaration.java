@@ -5,10 +5,38 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.SignedNode;
-import net.sourceforge.pmd.lang.java.metrics.signature.JavaFieldSignature;
+import java.util.Iterator;
 
-public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration> {
+import net.sourceforge.pmd.lang.ast.SignedNode;
+import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+
+
+/**
+ * Represents a field declaration in the body of a type declaration.
+ *
+ * <p>This statement may define several variables, possibly of different types (see {@link ASTVariableDeclaratorId#getType()}).
+ * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
+ *
+ * <p>{@link AccessNode} methods take into account the syntactic context of the
+ * declaration, e.g. {@link #isPublic()} will always return true if the field is
+ * declared inside an interface, regardless of whether the {@code public} modifier
+ * was specified or not. If you want to know whether the modifier was explicitly
+ * stated, use e.g {@link #isSyntacticallyPublic()}.
+ *
+ * <pre>
+ *
+ * FieldDeclaration ::= Modifiers {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ *
+ * Modifiers        ::= "public" | "static" | "protected" | "private"
+ *                    | "final"  | "abstract" | "synchronized"
+ *                    | "native" | "transient" | "volatile" | "strictfp"
+ *                    | "default"  | {@linkplain ASTAnnotation Annotation}
+ *
+ * </pre>
+ */
+public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration>, Iterable<ASTVariableDeclaratorId> {
+
+    private JavaFieldSignature signature;
 
 
     public ASTFieldDeclaration(int id) {
@@ -88,24 +116,23 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     }
 
     public boolean isAnnotationMember() {
-        if (jjtGetParent().jjtGetParent() instanceof ASTAnnotationTypeBody) {
-            return true;
-        }
-        return false;
+        return getNthParent(2) instanceof ASTAnnotationTypeBody;
     }
 
     public boolean isInterfaceMember() {
-        if (jjtGetParent().jjtGetParent() instanceof ASTEnumBody) {
+        if (getNthParent(2) instanceof ASTEnumBody) {
             return false;
         }
         ASTClassOrInterfaceDeclaration n = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         return n != null && n.isInterface();
     }
 
+    @Override
     public boolean isArray() {
         return checkType() + checkDecl() > 0;
     }
 
+    @Override
     public int getArrayDepth() {
         if (!isArray()) {
             return 0;
@@ -145,6 +172,21 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     @Override
     public JavaFieldSignature getSignature() {
-        return JavaFieldSignature.buildFor(this);
+        if (signature == null) {
+            signature = JavaFieldSignature.buildFor(this);
+        }
+
+        return signature;
     }
+
+
+    /**
+     * Returns an iterator over the ids of the fields
+     * declared in this statement.
+     */
+    @Override
+    public Iterator<ASTVariableDeclaratorId> iterator() {
+        return ASTVariableDeclarator.iterateIds(this);
+    }
+
 }
