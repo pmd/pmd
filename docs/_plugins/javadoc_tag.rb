@@ -1,8 +1,16 @@
-# Tag to reference a javadoc page or package summary.
+# Tags to reference a javadoc page or package summary.
 #
+# Provides several tags, which should not be mixed up:
 # * The tag "jdoc" is used for a type or member reference
-# * The tag "jdoc_package" is used for a package reference
-# * DO NOT confuse the two
+# * The tag "jdoc_package" is used for a package summary reference
+#
+# Both of these link to the latest version of the API so when editing the site,
+# since it concerns an unpublished API version, the links don't work. When releasing
+# though, links on the published jekyll site will work.
+# To refer to the previous API version, e.g. to refer to a type or member that was removed,
+# the tag "jdoc_old" may be used. This tag is used exactly the same way as "jdoc". There's
+# no "jdoc_package_old" tag.
+#
 #
 # Usage (don't miss the DO NOT section at the bottom):
 #
@@ -18,7 +26,7 @@
 #   * The variable javadoc_context may be used to shorten references
 #     * You can assign it like so:
 #       * {% assign javadoc_context = "core @.properties" %}
-#         * The "@" symbol in the initializer is expanded to "net.sourceforge.pmd"
+#         * The "@" symbol in the initializer is expanded to "net.sourceforge.pmd", the artifact id is not optional though
 #         * So this assignment sets the context to pmd-core/net.sourceforge.pmd.properties
 #         * Then the symbol "@" in a javadoc tag will be expanded to "core net.sourceforge.pmd.properties"
 #         * E.g. the reference {% jdoc @.PropertyDescriptor %} is expanded to the same as {% jdoc core net.sourceforge.pmd.properties.PropertyDescriptor %}
@@ -39,6 +47,7 @@
 #
 # * DO NOT:
 #   - Include spaces between dots, or anywhere except between the artifact reference and the page reference
+#   - Forget to use an artifact id whenever setting javadoc_context
 #   - Use double or single quotes around the arguments
 #   - Use the "#" suffix to reference a nested type, instead, use a dot "." and reference it like a normal type name
 #
@@ -61,6 +70,8 @@ class JavadocTag < Liquid::Tag
     if tag_name == "jdoc_package"
       @is_package_ref = true
       @show_full_name = true
+    elsif tag_name == "jdoc_old"
+      @use_previous_api_version = true
     end
 
   end
@@ -72,19 +83,13 @@ class JavadocTag < Liquid::Tag
     doc_ctx = doc_ctx.sub("@", "net.sourceforge.pmd") # Allows to use @ as shortcut when assigning javadoc_context
     doc_ctx = doc_ctx.split(" ") # first is module, snd is package
 
-    p doc_ctx
-
     if @type_fqcn.include?("@") # Expand using the context
       if doc_ctx.length == 2 # if it's two words then the first is the module name
         # if the artifact was mentioned in the tag, it takes precedence
         @artifact_name = @artifact_name || ("pmd-" + doc_ctx.first)
         @type_fqcn = @type_fqcn.sub("@", doc_ctx.last)
-      elsif doc_ctx.length == 1
-        p @type_fqcn
-        @type_fqcn = @type_fqcn.sub("@", doc_ctx.last)
-        p @type_fqcn
       else
-        fail "Invalid javadoc context format (spaces), use either one word for a package prefix, or two words for module + package prefix"
+        fail "Invalid javadoc context format, you must specify artifact + package prefix in exactly two words"
       end
     end
 
@@ -92,15 +97,11 @@ class JavadocTag < Liquid::Tag
       fail "No artifact id was mentioned either in the tag or in the context"
     end
 
-
-    p @type_fqcn
-
     if @show_full_name # !! was mentioned
       visible_name = @type_fqcn
     else
       visible_name = @type_fqcn.split("\.").last # simple name
     end
-
 
     # Hack to reference the package summary
     # Has to be done after finding the visible_name
@@ -110,7 +111,14 @@ class JavadocTag < Liquid::Tag
 
 
     # Always hardcode the artifact version instead of using "latest"
-    api_version = context["site.pmd.version"]
+    api_version =
+        if @use_previous_api_version
+        then
+          context["site.pmd.previous_version"]
+        else
+          context["site.pmd.version"]
+        end
+
 
     markup_link(visible_name, doclink(@artifact_name, api_version, @type_fqcn, @member_suffix))
   end
@@ -129,3 +137,4 @@ end
 
 Liquid::Template.register_tag('jdoc', JavadocTag)
 Liquid::Template.register_tag('jdoc_package', JavadocTag)
+Liquid::Template.register_tag('jdoc_old', JavadocTag)
