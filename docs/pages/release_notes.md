@@ -33,12 +33,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
-{% jdoc_context "core @.lang.ast.xpath" %}
+{% jdoc_nspace :xpath core::lang.ast.xpath %}
 
-* The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package @ %})
-  are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc @.Attribute %} remains public API.
+* The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package :xpath %})
+  are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc xpath::Attribute %} remains public API.
 
-{% endjdoc_context %}
+{% jdoc !aq!core::lang.rule.stat.StatisticalRule#SIGMA_DESCRIPTOR %}
+
 
 ### External Contributions
 

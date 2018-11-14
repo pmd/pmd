@@ -1,4 +1,4 @@
-
+require_relative 'jdoc_namespace_tag'
 # Tags to reference a javadoc page or package summary.
 #
 # Provides several tags, which should not be mixed up:
@@ -15,168 +15,123 @@
 #
 # Usage (don't miss the DO NOT section at the bottom):
 #
-# * Simple type reference: {% jdoc core net.sourceforge.pmd.properties.PropertyDescriptor %}
-#   * First arg must be the name of the artifact, without the "pmd-" prefix, eg  "core" will be expanded to "pmd-core"
-#   * After a space, the fqcn of the type to reference is mentioned
-#   * This will be expanded to [`PropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/latest/net/sourceforge/pmd/properties/PropertyDescriptor.html)
-#     * Only the simple name of the type is visible by default
-#     * Prefixing the reference with a double bang ("!!") displays the FQCN instead of the simple name
-#       * E.g. {% jdoc core !!net.sourceforge.pmd.properties.PropertyDescriptor %} -> [`net.sourceforge.pmd.properties.PropertyDescriptor`](...),
+# * Simple type reference: {% jdoc core::properties.PropertyDescriptor %}
+#   * The arg of the tag is the FQCN of the type to reference, prefixed by a namespace
+#   * A namespaced qname is of the form 'nspace::a.b.Class'
+#     * The 'nspace::' identifies the namespace. A namespace is a shorthand for a package
+#       name and also stores the reference to the maven artifact to link to. The package
+#       name stored by the namespace is prefixed to the qname following the "::"
+#     * Namespaces for the maven modules of PMD are predefined. E.g. 'core::' points to pmd-core, 'java::'
+#       points to pmd-java. The package prefixes of these are all "net.sourceforge.pmd"
+#   * Example:
+#     * {% jdoc core::properties.PropertyDescriptor %} links to pmd-core, and the FQCN
+#       'properties.PropertyDescriptor' is expanded to 'net.sourceforge.pmd.properties.PropertyDescriptor'
+#       This is rendered as [`PropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html)
 #
-# * Using context handles
-#   * FQCNs are tedious to write and read so you can define shortcuts to a package or type name relevant
-#     to what you're documenting to save some keystrokes.
-#   * I call these shortcuts "context handles", they consist of an artifact id and a package or type name
-#   * The "jdoc_handle" tag is used to declare a handle. E.g.
-#     {% jdoc_handle @{coreast} core @.lang.ast %}
-#     {% jdoc_handle @{jast} java @.lang.java.ast}
-#     * The first argument is the handle as it will be referenced. It must have the form @{handle_name}
-#     * The second argument is the artifact id of the package.
-#     * The third argument is the package name, within which "@" is expanded to "net.sourceforge.pmd". Other handles
-#       may not be used within it.
-#   * After a handle is declared, it's used with the @{name} syntax, eg
-#     {% jdoc @{jast}.ASTType %}, or {% jdoc @{coreast}.Node %}
-#     The artifact id of the handle used for the type reference is used implicitly,
-#     and the handle reference is expanded to the package name.
-#   * "@" not followed by braces (not a handle) is expanded to "net.sourceforge.pmd", so
-#     {% jdoc core !!@.properties.PropertyDescriptor %} is the same as {% jdoc core !!net.sourceforge.pmd.properties.PropertyDescriptor %}
-#     Note that using "@" doesn't provide an implicit artifact id.
-#   * Handles can be used in method arguments but their artifact id is ignored. E.g.
-#     {% jdoc @.lang.java.ast.JavaNode.#(@{coreast}.Node) %} is invalid because neither
-#     * the artifact id was on the jdoc tag, nor did
-#     * the reference to JavaNode use a context handle that would have provided
-#       an implicit artifact id
+# * Defining custom namespaces
+#   * you can define a namespace pointing to a package name relevant to what
+#     you're documenting to save some keystrokes.
+#   * They're defined with the 'jdoc_nspace' tag, e.g.
+#     {% jdoc_nspace :coreast core::lang.ast %}
+#     {% jdoc_nspace :jmx java::lang.java.metrics %}
+#       * The first argument is the name of the namespace, (optionally prefixed with a colon)
+#       * The second argument is a namespaced FQCN identifying the package the namespace points to
+#         * You need a namespace to define another namespace. Again, predefined namespaces point to
+#           the different maven modules, eg 'core::' or 'apex::'
+#   * After a jdoc_nspace tag, the namespace can be used with the 'name::' syntax in
+#     jdoc tags or other jdoc_nspace tags. E.g.
+#      {% jdoc coreast::Node %} -> points to pmd-core, expanded to 'net.sourceforge.pmd.lang.ast.Node'
+#      {% jdoc jmx::impl.NcssVisitor %} -> points to pmd-java, expanded to 'net.sourceforge.pmd.lang.java.metrics.impl.NcssVisitor'
 #
-# * To reference a method or field: {% jdoc @.Rule#addRuleChainVisit(java.lang.Class) %}
+# * To reference a method or field: {% jdoc core::Rule#addRuleChainVisit(java.lang.Class) %}
 #   * The suffix # is followed by the name of the method or field
 #   * The (erased) types of method arguments must be fully qualified. This is the same
 #     convention as in javadoc {@link} tags, so you can use you're IDE's javadoc auto-
-#     complete and copy-paste. "@" and context handles can still be used to shorten FQCNs.
+#     complete and copy-paste. Namespaces also can be used for method arguments if they're from PMD.
 #
-# * To reference a package: eg {% jdoc_package @{foo}.properties %}, {% jdoc-package @ %}
+# * To reference a package: eg {% jdoc_package core::properties %}
+#   * If you want to reference the package prefix of a namespace, you can do so
+#     by using the syntax ':nspace', e.g.
+#     {% jdoc_package :jmx %} -> points to pmd-java, expanded to 'net.sourceforge.pmd.lang.ast.Node'
+#     {% jdoc_package :coreast %} -> points to pmd-core, expanded to 'net.sourceforge.pmd.lang.java.metrics'
 #
 # * Bang options:
-#   * Rendering may be customized by prefixing the reference to the linked member or type with some options.
-#   * Option syntax is "!name", and the options, if any, must be separated from the reference by another bang ("!")
+#   * The visible text of the link may be customized by prefixing the reference to the
+#     linked member or type with some options.
+#   * Option syntax is "!opts!", and prefixes the namespace. Options are one-character switches.
 #   * Available options:
 #     * No options -> just the member name:
 #         * {% jdoc @.Rule %} -> [`Rule`](...)
 #         * {% jdoc @.Rule#setName(java.lang.String) %} -> [`setName`](...)
 #         * {% jdoc @.AbstractRule#children %} -> [`children`](...)
-#     * args -> adds the simple name of the argument types for method references, noop for other references
-#         *  {% jdoc !args!@.Rule#setName(java.lang.String) %} -> [`setName(String)`](...)
-#     * qualify -> prefix with the fqcn of the class, noop for package references
-#         *  {% jdoc !qualify!@.Rule %} -> [`net.sourceforge.pmd.Rule`](...)
-#         *  {% jdoc !qualify!@.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName`](...)
-#     * class -> prefix the class name for member references, noop for type and package references, or if "qualify" is specified
-#         *  {% jdoc !class!@.Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
-#
-# * Double-bang shorthands:
-#     * For field or method references, "!!" is the "class" option
-#       * {% jdoc !!@.Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
-#     * For type references, "!!" is the "qualify" option
-#       *  {% jdoc !!@.Rule %} -> [`net.sourceforge.pmd.Rule`](...)
-#     * For package references, "!!" is a noop, they're always fully qualified
-#   * Options may be concatenated:
-#     * {% jdoc !args!!@.Rule#setName(java.lang.String) %} -> [`Rule#setName(String)`](...)
-#     * {% jdoc !args!qualify!@.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName(String)`](...)
-#
+#     * a (args) -> adds the simple name of the argument types for method references, noop for other references
+#         *  {% jdoc !a!@.Rule#setName(java.lang.String) %} -> [`setName(String)`](...)
+#     * q (qualify) -> prefix with the fqcn of the class, noop for package references
+#         *  {% jdoc !q!@.Rule %} -> [`net.sourceforge.pmd.Rule`](...)
+#         *  {% jdoc !q!@.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName`](...)
+#     * c (class) -> prefix the class name for member references, noop for type and package references, or if "qualify" is specified
+#         *  {% jdoc !c!@.Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
+#     * Empty options ("!!") - > shorthand to a commonly relevant option
+#         * For field or method references, "!!" is the "c" option
+#           * {% jdoc !!@.Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
+#         * For type references, "!!" is the "q" option
+#           *  {% jdoc !!@.Rule %} -> [`net.sourceforge.pmd.Rule`](...)
+#         * For package references, "!!" is a noop, they're always fully qualified
+#     * Several options may be used at once, though this is only useful for method references:
+#         * {% jdoc !ac!@.Rule#setName(java.lang.String) %} -> [`Rule#setName(String)`](...)
+#         * {% jdoc !aq!@.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName(String)`](...)
 #
 # * DO NOT:
-#   - Include spaces between dots, or anywhere except between the artifact reference and the page reference
+#   - Include spaces in any part of the reference
 #   - Use double or single quotes around the arguments
 #   - Use the "#" suffix to reference a nested type, instead, use a dot "." and reference it like a normal type name
 #
+#
 class JavadocTag < Liquid::Tag
 
-  FQCN_OPTION = "qualify"
-  ARGS_OPTION = "args"
-  CLASS_OPTION = "class"
-  DOUBLE_BANG_OPTION = "shorthand"
+  QNAME_NO_NAMESPACE_REGEX = /((?:\w+\.)*\w+)/
+
+  ARG_REGEX = Regexp.new(Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, QNAME_NO_NAMESPACE_REGEX).source + '(\[\])*')
+  ARGUMENTS_REGEX = Regexp.new('\(\)|\((' + ARG_REGEX.source + "(?:," + ARG_REGEX.source + ")*" + ')\)')
+
 
   def initialize(tag_name, doc_ref, tokens)
     super
 
-    options_str = ""
+    # sanitize a little
+    doc_ref.delete! " \"'"
 
-    if %r/^"?(\w+\s+)?((?:!\w+)*!?!)?(@(?:\{\w+\})?(?:\.?\w+)*)(#.*)?"?$/ =~ doc_ref.strip
+    arr = doc_ref.split("#") # split into fqcn + member suffix
 
-      @artifact_name = $1 && ("pmd-" + $1.strip) # is nil if not mentioned
-      options_str = $2 || ""
-      @display_options = [] # empty
-      @type_fqcn = $3 # may be just "@"
-      @member_suffix = $4 || "" # default to empty string instead of nil
+    @type_fqcn = arr[0]
+    @member_suffix = arr[1] || "" # default to empty string
 
-    else
-      fail "Invalid javadoc reference format, see doc on javadoc_tag.rb"
+    unless Regexp.new('(!\w*!)?' + JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX.source) =~ @type_fqcn
+      "Wrong syntax for type reference, expected eg nspace::a.b.C, !!nspace::a.b.C, or !opts!nspace::a.b.C"
     end
 
-    if options_str.end_with?("!!")
-      @display_options.push(DOUBLE_BANG_OPTION)
-    end
+    # If no options, then split produces [@type_fqcn]
+    # If options are present, then split produces eg ["", "aq", @type_fqcn] (there's an empty string first)
+    # If !!, then split produces eg ["", "", @type_fqcn]
+    *opts, @type_fqcn = @type_fqcn.split("!") # split into options + type fqcn
 
-    @display_options += options_str.split("!").compact.reject {|s| s.empty?} # filter out empty
+    @opts = Options.new(opts.last) # ignore first empty string, may be nil
 
     if tag_name == "jdoc_package"
       @is_package_ref = true
-      @display_options.push("qualify")
     elsif tag_name == "jdoc_old"
       @use_previous_api_version = true
     end
-
-    @display_options.each do |opt|
-      if opt != FQCN_OPTION && opt != ARGS_OPTION && opt != CLASS_OPTION && opt != DOUBLE_BANG_OPTION
-        fail "Unknown display option '#{opt}'"
-      end
-    end
   end
 
-  def get_visible_name
+  def render(var_ctx)
 
-    fqcn_regex =
+    artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
 
+    # Expand FQCN of arguments
+    @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
 
-    # method or field
-    if @member_suffix && /#(\w+)(\((\s*[\w.]+(?:\[\])*(?:,\s*[\w.]+(?:\[\])*)*)\s*\))?/ =~ @member_suffix
-
-
-      suffix = $1 # method or field name
-
-      if @display_options.include?(ARGS_OPTION) && $2 && !$2.empty? # is method
-
-
-        args = ($3 || "").split(",").map {|a| a.gsub(/\w+\./, "").strip} # map to simple names
-
-        suffix = "#{suffix}(#{args.join(", ")})"
-      end
-
-      visible_name = if @display_options.include?(FQCN_OPTION)
-                       @type_fqcn + "#" + suffix
-                     elsif @display_options.include?(CLASS_OPTION) || @display_options.include?(DOUBLE_BANG_OPTION)
-                       @type_fqcn.split("\.").last + "#" + suffix # type simple name
-                     else
-                       suffix
-                     end
-
-      return visible_name
-    end
-
-    # else package or type, for packages the FQCN_OPTION is present
-
-    if @display_options.include? FQCN_OPTION || @display_options.include?(DOUBLE_BANG_OPTION)
-      @type_fqcn
-    else
-      @type_fqcn.split("\.").last
-    end
-  end
-
-  def render(rendering_context)
-
-    doc_ctx, @type_fqcn = JDocContextDeclaration::escape_path(@type_fqcn, rendering_context)
-    @artifact_name = @artifact_name || doc_ctx.first # if the artifact was mentioned in the tag, it takes precedence
-    _, @member_suffix = JDocContextDeclaration::escape_path(@member_suffix, rendering_context)
-
-    visible_name = get_visible_name
+    visible_name = JavadocTag::get_visible_name(@opts, @type_fqcn, @member_suffix, @is_package_ref)
 
     # Hack to reference the package summary
     # Has to be done after finding the visible_name
@@ -184,145 +139,102 @@ class JavadocTag < Liquid::Tag
       @type_fqcn = @type_fqcn + ".package-summary"
     end
 
-
-    # Always hardcode the artifact version instead of using "latest"
-    api_version =
-        if @use_previous_api_version
-        then
-          rendering_context["site.pmd.previous_version"]
-        else
-          rendering_context["site.pmd.version"]
-        end
+    # Hardcode the artifact version instead of using "latest"
+    api_version = var_ctx["site.pmd." + (@use_previous_api_version ? "previous_version" : "version")]
 
 
-    markup_link(visible_name, doclink(@artifact_name, api_version, @type_fqcn, @member_suffix))
+    markup_link(visible_name, doclink(artifact_name, api_version, @type_fqcn, @member_suffix))
   end
 
   private
 
   def doclink(artifact, api_version, type_name, member_suffix)
-    "https://javadoc.io/page/net.sourceforge.pmd/#{artifact}/#{api_version}/#{type_name.gsub("\.", "/")}.html#{member_suffix.gsub(/\s+/, "")}"
+    "https://javadoc.io/page/net.sourceforge.pmd/#{artifact}/#{api_version}/#{type_name.gsub("\.", "/")}.html##{member_suffix}"
   end
 
   def markup_link(rname, link)
     "[`#{rname}`](#{link})"
   end
 
-end
 
+  def self.get_visible_name(opts, type_fqcn, member_suffix, is_package_ref)
 
-# Tag used to declare a javadoc handle to shorten javadoc references.
-#
-# Usage:
-# {% jdoc_handle @{coreast} core @.lang.ast %}
-# {% jdoc_handle @{jast} java @.lang.java.ast}
-#
-# * The first argument is the handle as it will be referenced. It must have the form @{handle_name}
-# * The second argument is the artifact id of the package.
-# * The third argument is the package name, within which "@" means net.sourceforge.pmd. Other handles
-#   may not be used within it.
-#
-# After those tags have been declared, the handle is used with the @{name} syntax, eg {% jdoc @{jast}.ASTType %}
-#
-class JDocContextDeclaration < Liquid::Tag
+    # method or field
+    if member_suffix && Regexp.new('(\w+)(' + ARGUMENTS_REGEX.source + ")?") =~ member_suffix
 
-  DEFAULT_JDOC_CONTEXT = ["pmd-core", "net.sourceforge.pmd"]
-  JDOC_CONTEXT_NAMESPACE = "jdoc_context"
+      suffix = $1 # method or field name
 
+      if opts.show_args? && $2 && !$2.empty? # is method
 
-  def initialize(tag_name, arg, tokens)
-    super
+        args = $3.split(",").map {|a| a.gsub(/\w+\./, "").strip} # map to simple names
 
-    all_args = arg.split(" ")
-
-    @ctx_name = JDocContextDeclaration::get_handle_name(all_args.shift)
-
-    @this_context = JDocContextDeclaration::validate_ctx(all_args || DEFAULT_JDOC_CONTEXT)
-
-  end
-
-  def render(ctx)
-
-    unless ctx[JDOC_CONTEXT_NAMESPACE]
-      ctx[JDOC_CONTEXT_NAMESPACE] = {} #empty map
-    end
-
-    ctx[JDOC_CONTEXT_NAMESPACE][@ctx_name] = @this_context
-
-    ""
-  end
-
-
-  def self.validate_ctx(ctx_arr)
-
-    unless ctx_arr && ctx_arr.compact.length == 2
-      fail "Invalid javadoc context format, you must specify artifact + package prefix in exactly two words"
-    end
-
-    # Allows to use @ as shortcut when assigning javadoc_context
-    ctx_arr[1].sub!("@", "net.sourceforge.pmd").gsub!("\"", "")
-
-
-    unless ctx_arr[0].strip.start_with?("pmd-")
-      ctx_arr[0] = "pmd-#{ctx_arr[0].strip}"
-    end
-
-    ctx_arr
-  end
-
-
-  # gets the expansion of a full handle, given as @{name}
-  def self.get_context(at_prefixed_name, ctx)
-
-    name = get_handle_name(at_prefixed_name)
-
-    unless ctx[JDOC_CONTEXT_NAMESPACE] && ctx[JDOC_CONTEXT_NAMESPACE][name]
-      fail "Undeclared javadoc context handle #{at_prefixed_name}"
-    end
-
-    ctx[JDOC_CONTEXT_NAMESPACE][name] # return the variable
-  end
-
-  def self.get_handle_name(at_prefixed_name)
-    if /@\{(\w+)\}/ =~ at_prefixed_name
-      $1
-    else
-      fail "Invalid format for javadoc context handle, expected @{name}, was #{at_prefixed_name}"
-    end
-  end
-
-
-  def self.escape_path(fqcn, rendering_ctx)
-
-    unless fqcn
-      return [DEFAULT_JDOC_CONTEXT, nil]
-    end
-
-    doc_ctx = DEFAULT_JDOC_CONTEXT
-
-    fqcn = fqcn.gsub(/@(\{(\w+)\})?/) do |h|
-      if $1
-        doc_ctx = get_context(h, rendering_ctx)
-      else
-        doc_ctx = DEFAULT_JDOC_CONTEXT
+        suffix = "#{suffix}(#{args.join(", ")})"
       end
-      doc_ctx[1]
+
+      visible_name = if opts.show_fqcn?
+                       type_fqcn + "#" + suffix
+                     elsif opts.is_double_bang? || opts.show_class?
+                       type_fqcn.split("\.").last + "#" + suffix # type simple name
+                     else
+                       suffix # just method name + possibly args
+                     end
+
+      return visible_name
     end
 
-    # return the last found context
-    # For the type fqcn there's only one so it's ok
-    # For argument types there may be several but they're ignored so it's ok
-    [doc_ctx, fqcn]
+    # else package or type, for packages the FQCN_OPTION is present
+
+    if is_package_ref || opts.show_fqcn? || opts.is_double_bang?
+      type_fqcn
+    else
+      type_fqcn.split("\.").last # type simple name
+    end
+  end
+
+
+  class Options
+
+    def initialize(str)
+      if str.nil?
+        @opts = ""
+        return
+      else
+        @opts = str.empty? ? "!!" : str
+      end
+
+      invalid = str.delete("aqc")
+
+      unless invalid.empty?
+        fail "Unknown display options '#{invalid}', I know only aqc"
+      end
+    end
+
+    def is_double_bang?
+      @opts == "!!"
+    end
+
+    def show_args?
+      @opts.include? "a"
+    end
+
+    def show_fqcn?
+      @opts.include? "q"
+    end
+
+
+    def show_class?
+      @opts.include? "c"
+    end
   end
 
 end
 
 
-Liquid::Template.register_tag('jdoc_context', JDocContextBlock)
+
 Liquid::Template.register_tag('jdoc', JavadocTag)
 Liquid::Template.register_tag('jdoc_package', JavadocTag)
 Liquid::Template.register_tag('jdoc_old', JavadocTag)
-Liquid::Template.register_tag('jdoc_handle', JDocContextDeclaration)
+Liquid::Template.register_tag('jdoc_nspace', JDocNamespaceDeclaration)
 
 
 
