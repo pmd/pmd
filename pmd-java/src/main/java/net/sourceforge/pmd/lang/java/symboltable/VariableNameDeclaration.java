@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
@@ -76,23 +74,11 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
                 && getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
-    public boolean isLambdaParamWithNoType() {
-        return getDeclaratorId().isLambdaParamWithNoType();
-    }
-
     @Override
     public String getTypeImage() {
         TypeNode typeNode = getTypeNode();
         if (typeNode != null) {
             return typeNode.getImage();
-        }
-        ASTLiteral assignedLiteral = getAccessNodeParent().getFirstDescendantOfType(ASTLiteral.class);
-        if (assignedLiteral != null
-                && !isLambdaParamWithNoType()
-                && assignedLiteral.getType() != null) {
-            // Even if ASTLiteral is a TypeNode, it is handled differently as
-            // the image is the literal value (example: 42L) and not the type (example: long)
-            return assignedLiteral.getType().getName();
         }
         return null;
     }
@@ -123,9 +109,6 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (!isTypeInferred()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0).jjtGetChild(0);
         }
-        if (!isLambdaParamWithNoType()) {
-            return getAccessNodeParent().getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        }
         return null;
     }
 
@@ -135,7 +118,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (typeNode != null) {
             return typeNode.getType();
         }
-        return null;
+        // if there is no type node, then return the type of the declarator id.
+        // this might be a inferred type
+        return getDeclaratorId().getType();
     }
 
     @Override

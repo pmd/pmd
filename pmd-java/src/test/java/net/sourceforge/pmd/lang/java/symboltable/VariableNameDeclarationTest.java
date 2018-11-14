@@ -92,7 +92,9 @@ public class VariableNameDeclarationTest extends STBBaseTst {
         parseCode(TEST6);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
-        assertEquals("MyObject", ((TypedNameDeclaration) decl).getTypeImage());
+        assertEquals("java.util.ArrayList", ((TypedNameDeclaration) decl).getType().getName());
+        // since the type is inferred, there is no type image
+        assertEquals(null, ((TypedNameDeclaration) decl).getTypeImage());
     }
 
     @Test
@@ -100,7 +102,9 @@ public class VariableNameDeclarationTest extends STBBaseTst {
         parseCode(TEST7);
         NameDeclaration decl = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0).getScope()
                 .getDeclarations().keySet().iterator().next();
-        assertEquals("long", ((TypedNameDeclaration) decl).getTypeImage());
+        assertEquals("long", ((TypedNameDeclaration) decl).getType().getName());
+        // since the type is inferred, there is no type image
+        assertEquals(null, ((TypedNameDeclaration) decl).getTypeImage());
     }
 
     @Test
@@ -110,6 +114,8 @@ public class VariableNameDeclarationTest extends STBBaseTst {
                 .getDeclarations().keySet().iterator();
         nameDeclarationIterator.next(); // first variable 'bar'
         NameDeclaration decl = nameDeclarationIterator.next(); // second variable 'foo'
+        assertEquals("java.lang.String", ((TypedNameDeclaration) decl).getType().getName());
+        // since the type is inferred, there is no type image
         assertEquals(null, ((TypedNameDeclaration) decl).getTypeImage());
     }
 
@@ -121,7 +127,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
                 true
         );
 
-        List<TypedNameDeclaration> nameDeclarations = new ArrayList<>();
+        List<VariableNameDeclaration> nameDeclarations = new ArrayList<>();
         for (ASTVariableDeclaratorId variableDeclaratorId : variableDeclaratorIds) {
             nameDeclarations.add(variableDeclaratorId.getNameDeclaration());
         }
@@ -129,7 +135,12 @@ public class VariableNameDeclarationTest extends STBBaseTst {
         assertEquals("Map", nameDeclarations.get(0).getTypeImage()); // variable 'bar'
         assertEquals(null, nameDeclarations.get(1).getTypeImage()); // variable 'key'
         assertEquals(null, nameDeclarations.get(2).getTypeImage()); // variable 'value'
-        assertEquals("long", nameDeclarations.get(3).getTypeImage()); // variable 'foo'
+
+        // variable 'foo'
+        assertEquals("foo", nameDeclarations.get(3).getName());
+        assertEquals("long", nameDeclarations.get(3).getType().getName());
+        // since the type is inferred, there is no type image
+        assertEquals(null, nameDeclarations.get(3).getTypeImage());
     }
 
     private static final String EXCEPTION_PARAMETER = "public class Test { { try {} catch(Exception ie) {} } }";
@@ -147,8 +158,8 @@ public class VariableNameDeclarationTest extends STBBaseTst {
             + PMD.EOL + " }" + PMD.EOL + "}";
     public static final String TEST5 = "public class Foo {" + PMD.EOL + " void foo(String x) {}" + PMD.EOL + "}";
 
-    public static final String TEST6 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL
-            + "  var bar = new MyObject<String>(\"param\");" + PMD.EOL + " }" + PMD.EOL + "}";
+    public static final String TEST6 = "import java.util.ArrayList; public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL
+            + "  var bar = new ArrayList<String>(\"param\");" + PMD.EOL + " }" + PMD.EOL + "}";
 
     public static final String TEST7 = "public class Foo {" + PMD.EOL + " void foo() {" + PMD.EOL + "  var bar = 42L;"
             + PMD.EOL + " }" + PMD.EOL + "}";

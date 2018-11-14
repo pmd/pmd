@@ -120,7 +120,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     }
 
 
-    public boolean isLambdaParamWithNoType() {
+    private boolean isLambdaParamWithNoType() {
         return jjtGetParent() instanceof ASTLambdaExpression;
     }
 
