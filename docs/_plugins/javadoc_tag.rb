@@ -133,6 +133,8 @@ class JavadocTag < Liquid::Tag
 
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
 
+    JavadocTag::check_exists(artifact_name, @type_fqcn, @is_package_ref)
+
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
 
@@ -196,6 +198,24 @@ class JavadocTag < Liquid::Tag
     end
   end
 
+  BASE_PMD_DIR = File.join(File.expand_path(File.dirname(__FILE__)), "..", "..")
+
+  def self.check_exists(artifact_id, fqcn, is_package)
+    artifact_dir = File.join(BASE_PMD_DIR, artifact_id)
+    src_dirs = [
+        File.join(artifact_dir, "src", "main", "java"),
+        File.join(artifact_dir, "target", "generated-sources", "javacc")
+    ].select {|dir| File.exist?(dir)}
+
+    targets = src_dirs
+                  .map {|dir| File.join(dir, fqcn.split("."))}
+                  .select {|f_or_dir| is_package ? File.exist?(f_or_dir) : File.file?(f_or_dir + ".java")}
+
+    if targets.empty?
+      warn "\e[33;1mjdoc generated link to #{fqcn}, but the #{is_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
+    end
+
+  end
 
   class Options
 
