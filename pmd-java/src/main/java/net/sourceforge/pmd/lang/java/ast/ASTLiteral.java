@@ -11,6 +11,11 @@ import java.util.regex.Pattern;
 
 public class ASTLiteral extends AbstractJavaTypeNode {
 
+    private boolean isInt;
+    private boolean isFloat;
+    private boolean isChar;
+    private boolean isString;
+
     /**
      * Pattern used to detect a single escaped character or octal character in a
      * String.
@@ -35,18 +40,17 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public void setIntLiteral() {
-        String image = getImage();
-        if (image != null) {
-            if (image.endsWith("l") || image.endsWith("L")) {
-                setType(long.class);
-            } else {
-                setType(int.class);
-            }
-        }
+        this.isInt = true;
     }
 
     public boolean isIntLiteral() {
-        return int.class == getType();
+        String image = getImage();
+        if (isInt && image != null && image.length() > 0) {
+            if (!image.endsWith("l") && !image.endsWith("L")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -55,23 +59,28 @@ public class ASTLiteral extends AbstractJavaTypeNode {
      * @return <code>true</code> if this literal is a long
      */
     public boolean isLongLiteral() {
-        return long.class == getType();
+        String image = getImage();
+        if (isInt && image != null && image.length() > 0) {
+            if (image.endsWith("l") || image.endsWith("L")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setFloatLiteral() {
-        String image = getImage();
-        if (image != null && !image.isEmpty()) {
-            char lastChar = image.charAt(image.length() - 1);
-            if (lastChar == 'f' || lastChar == 'F') {
-                setType(float.class);
-            } else if (lastChar == 'd' || lastChar == 'D' || Character.isDigit(lastChar) || lastChar == '.') {
-                setType(double.class);
-            }
-        }
+        this.isFloat = true;
     }
 
     public boolean isFloatLiteral() {
-        return float.class == getType();
+        String image = getImage();
+        if (isFloat && image != null && image.length() > 0) {
+            char lastChar = image.charAt(image.length() - 1);
+            if (lastChar == 'f' || lastChar == 'F') {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -80,7 +89,14 @@ public class ASTLiteral extends AbstractJavaTypeNode {
      * @return <code>true</code> if this literal is a double.
      */
     public boolean isDoubleLiteral() {
-        return double.class == getType();
+        String image = getImage();
+        if (isFloat && image != null && image.length() > 0) {
+            char lastChar = image.charAt(image.length() - 1);
+            if (lastChar == 'd' || lastChar == 'D' || Character.isDigit(lastChar) || lastChar == '.') {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String stripIntValue() {
@@ -150,19 +166,19 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public void setCharLiteral() {
-        setType(char.class);
+        this.isChar = true;
     }
 
     public boolean isCharLiteral() {
-        return char.class == getType();
+        return isChar;
     }
 
     public void setStringLiteral() {
-        setType(String.class);
+        this.isString = true;
     }
 
     public boolean isStringLiteral() {
-        return String.class == getType();
+        return isString;
     }
 
     /**
@@ -201,7 +217,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
      * @return true is this is a String literal with only one character
      */
     public boolean isSingleCharacterStringLiteral() {
-        if (isStringLiteral()) {
+        if (isString) {
             String image = getImage();
             int length = image.length();
             if (length == 3) {
