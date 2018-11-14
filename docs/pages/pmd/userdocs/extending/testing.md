@@ -3,7 +3,7 @@ title: Testing your rules
 tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
-last_updated: September 2017
+last_updated: November 2018
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -14,7 +14,7 @@ a violation - and a negative test case - a code example, that doesn't trigger th
 Of course, the more tests, the better the rule is verified. If the rule is more complex or defines properties,
 with which the behavior can be modified, then these different cases can also be tested.
 
-And if there is a bug fix for a rule, be it a false positive or a false negative case, should be accompanied
+And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
 with an additional test case, so that the bug is not accidentally reintroduced later on.
 
 ## How it works
@@ -25,7 +25,7 @@ Each category-ruleset has a single abstract base test class, from which the indi
 We have one test class per rule, which executes all test cases for a single rule. The actual test cases are
 stored in separate XML files, for each rule a separate file is used.
 
-All the test classes inherit from `net.sourceforge.pmd.testframework.SimpleAggregatorTst`,
+All the test classes inherit from `net.sourceforge.pmd.testframework.PmdRuleTst`,
 which provides the seamless integration with JUnit. This base class determines the language, the category name
 and the rule name from the concrete test class. It then searches the test code on its own.
 E.g. the individual rule test class
@@ -41,7 +41,7 @@ test case and just execute this one.
 
 ## Where to place the test code
 
-The `SimpleAggregatorTst` class searches the XML file, that describes the test cases for a certain rule
+The `PmdRuleTst` class searches the XML file, that describes the test cases for a certain rule
 using the following convention:
 The XML file is a test resource, so it is searched in the tree under `src/test/resources`.
 
@@ -65,19 +65,22 @@ In general, the class name and file name pattern for the test class and data is 
 Just search in the project for a file `<RuleName>.xml`. Search for a class `<Rule Name>Test` to find the
 unit test class for the given rule." %}
 
+{%include note.html content="If you want to use the test framework with a different package structure,
+see [Using the test framework externally](#using-the-test-framework-externally)." %}
+
 ## Simple example
 
 ### Test Class: AbstractClassWithoutAbstractMethodTest
 
-This class inherits from `SimpleAggregatorTst` and is located in the package "bestpractices", since the rule
+This class inherits from `PmdRuleTst` and is located in the package "bestpractices", since the rule
 belongs to the category "Best Practices":
 
 ``` java
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class AbstractClassWithoutAbstractMethodTest extends SimpleAggregatorTst {
+public class AbstractClassWithoutAbstractMethodTest extends PmdRuleTst {
     // no additional unit tests
 }
 ```
@@ -94,7 +97,7 @@ This is a stripped down example which just contains two test cases.
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd">
     <test-code>
         <description>concrete class</description>
         <expected-problems>0</expected-problems>
@@ -177,7 +180,11 @@ in a "CDATA" section, so that no further XML escapes (entity references such as 
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd">
+
     <test-code reinitializeRule="true" regressionTest="true" useAuxClasspath="true">
         <description>Just a description, will be used as the test name for JUnit in the reports</description>
         <rule-property name="somePropName">propValue</rule-property>    <!-- optional -->
@@ -252,7 +259,11 @@ The test data should be placed in an xml file located in "src/test/resources" un
 
 The framework uses a custom JUnit test runner under the hood, among a couple of utility classes:
 
-*   `SimpleAggregatorTst`: This is the base class for the test classes and defines the custom JUnit test runner.
+*   `PmdRuleTst`: This is the base class for tests in PMD's code base. It is a subclass of `RuleTst` and just
+    contains the logic to determine the test resources based on the test class name.
+
+*   `SimpleAggregatorTst`: This is a more generic base class for the test classes and defines
+    the custom JUnit test runner. It doesn't register any test cases on its own.
     It itself is a subclass of `RuleTst`.
 
 *   `RuleTst`: contains the logic to parse the XML files and provide a list of `TestDescriptor`s. Each test descriptor

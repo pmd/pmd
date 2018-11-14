@@ -7,17 +7,17 @@ package net.sourceforge.pmd.lang.java.typeresolution.typedefinition;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 
 public abstract class JavaTypeDefinition implements TypeDefinition {
     // contains non-generic and raw EXACT types
-    private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new HashMap<>();
+    private static final Map<Class<?>, JavaTypeDefinition> CLASS_EXACT_TYPE_DEF_CACHE = new ConcurrentHashMap<>();
 
     private final TypeDefinitionType definitionType;
 
