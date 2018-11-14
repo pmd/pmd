@@ -38,8 +38,6 @@ This is a {{ site.pmd.release_type }} release.
 * The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package :xpath %})
   are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc xpath::Attribute %} remains public API.
 
-{% jdoc !aq!core::lang.rule.stat.StatisticalRule#SIGMA_DESCRIPTOR %}
-
 
 ### External Contributions
 
@@ -50,5 +48,7 @@ This is a {{ site.pmd.release_type }} release.
 
 {% endtocmaker %}
 
-{% include note.html content="The release notes of previous versions are available [here](pmd_release_notes_old.html)" %}
+{% unless is_release_notes_processor %}
+    {% include note.html content="The release notes of previous versions are available [here](pmd_release_notes_old.html)" %}
+{% endunless %}
 

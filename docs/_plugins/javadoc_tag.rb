@@ -28,6 +28,16 @@ require_relative 'jdoc_namespace_tag'
 #       'properties.PropertyDescriptor' is expanded to 'net.sourceforge.pmd.properties.PropertyDescriptor'
 #       This is rendered as [`PropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html)
 #
+#
+# * To reference a package: eg {% jdoc_package core::properties %} -> points to pmd-core, expanded to 'net.sourceforge.pmd.properties'
+#
+# * To reference a method or field: {% jdoc core::Rule#addRuleChainVisit(java.lang.Class) %}
+#   * The suffix # is followed by the name of the method or field
+#   * The (erased) types of method arguments must be fully qualified. This is the same
+#     convention as in javadoc {@link} tags, so you can use you're IDE's javadoc auto-
+#     complete and copy-paste. Namespaces also can be used for method arguments if they're from PMD.
+#
+#
 # * Defining custom namespaces
 #   * you can define a namespace pointing to a package name relevant to what
 #     you're documenting to save some keystrokes.
@@ -42,18 +52,13 @@ require_relative 'jdoc_namespace_tag'
 #     jdoc tags or other jdoc_nspace tags. E.g.
 #      {% jdoc coreast::Node %} -> points to pmd-core, expanded to 'net.sourceforge.pmd.lang.ast.Node'
 #      {% jdoc jmx::impl.NcssVisitor %} -> points to pmd-java, expanded to 'net.sourceforge.pmd.lang.java.metrics.impl.NcssVisitor'
-#
-# * To reference a method or field: {% jdoc core::Rule#addRuleChainVisit(java.lang.Class) %}
-#   * The suffix # is followed by the name of the method or field
-#   * The (erased) types of method arguments must be fully qualified. This is the same
-#     convention as in javadoc {@link} tags, so you can use you're IDE's javadoc auto-
-#     complete and copy-paste. Namespaces also can be used for method arguments if they're from PMD.
-#
-# * To reference a package: eg {% jdoc_package core::properties %}
 #   * If you want to reference the package prefix of a namespace, you can do so
 #     by using the syntax ':nspace', e.g.
-#     {% jdoc_package :jmx %} -> points to pmd-java, expanded to 'net.sourceforge.pmd.lang.ast.Node'
-#     {% jdoc_package :coreast %} -> points to pmd-core, expanded to 'net.sourceforge.pmd.lang.java.metrics'
+#     {% jdoc_package :jmx %} -> points to pmd-java, expanded to 'net.sourceforge.pmd.lang.java.metrics'
+#     {% jdoc_package :coreast %} -> points to pmd-core, expanded to 'net.sourceforge.pmd.lang.ast'
+#     * This is especially cool because it allows you to assign a namespace to a type name and then add a method suffix, eg
+#       {% jdoc_nspace :PrD core::properties.PropertyDescriptor %}
+#       {% jdoc :PrD#description() %}
 #
 # * Bang options:
 #   * The visible text of the link may be customized by prefixing the reference to the
@@ -61,25 +66,25 @@ require_relative 'jdoc_namespace_tag'
 #   * Option syntax is "!opts!", and prefixes the namespace. Options are one-character switches.
 #   * Available options:
 #     * No options -> just the member name:
-#         * {% jdoc @.Rule %} -> [`Rule`](...)
-#         * {% jdoc @.Rule#setName(java.lang.String) %} -> [`setName`](...)
-#         * {% jdoc @.AbstractRule#children %} -> [`children`](...)
+#         * {% jdoc core::Rule %} -> [`Rule`](...)
+#         * {% jdoc core::Rule#setName(java.lang.String) %} -> [`setName`](...)
+#         * {% jdoc core::AbstractRule#children %} -> [`children`](...)
 #     * a (args) -> adds the simple name of the argument types for method references, noop for other references
-#         *  {% jdoc !a!@.Rule#setName(java.lang.String) %} -> [`setName(String)`](...)
+#         *  {% jdoc !a!core::Rule#setName(java.lang.String) %} -> [`setName(String)`](...)
 #     * q (qualify) -> prefix with the fqcn of the class, noop for package references
-#         *  {% jdoc !q!@.Rule %} -> [`net.sourceforge.pmd.Rule`](...)
-#         *  {% jdoc !q!@.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName`](...)
+#         *  {% jdoc !q!core::Rule %} -> [`net.sourceforge.pmd.Rule`](...)
+#         *  {% jdoc !q!core::Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName`](...)
 #     * c (class) -> prefix the class name for member references, noop for type and package references, or if "qualify" is specified
-#         *  {% jdoc !c!@.Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
+#         *  {% jdoc !c!core::Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
 #     * Empty options ("!!") - > shorthand to a commonly relevant option
 #         * For field or method references, "!!" is the "c" option
-#           * {% jdoc !!@.Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
+#           * {% jdoc !!core::Rule#setName(java.lang.String) %} -> [`Rule#setName`](...)
 #         * For type references, "!!" is the "q" option
-#           *  {% jdoc !!@.Rule %} -> [`net.sourceforge.pmd.Rule`](...)
+#           *  {% jdoc !!core::Rule %} -> [`net.sourceforge.pmd.Rule`](...)
 #         * For package references, "!!" is a noop, they're always fully qualified
 #     * Several options may be used at once, though this is only useful for method references:
-#         * {% jdoc !ac!@.Rule#setName(java.lang.String) %} -> [`Rule#setName(String)`](...)
-#         * {% jdoc !aq!@.Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName(String)`](...)
+#         * {% jdoc !ac!core::Rule#setName(java.lang.String) %} -> [`Rule#setName(String)`](...)
+#         * {% jdoc !aq!core::Rule#setName(java.lang.String) %} -> [`net.sourceforge.pmd.Rule#setName(String)`](...)
 #
 # * DO NOT:
 #   - Include spaces in any part of the reference
@@ -106,8 +111,8 @@ class JavadocTag < Liquid::Tag
     @type_fqcn = arr[0]
     @member_suffix = arr[1] || "" # default to empty string
 
-    unless Regexp.new('(!\w*!)?' + JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX.source) =~ @type_fqcn
-      "Wrong syntax for type reference, expected eg nspace::a.b.C, !!nspace::a.b.C, or !opts!nspace::a.b.C"
+    unless Regexp.new('(!\w*!)?' + Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, JDocNamespaceDeclaration::SYM_REGEX).source ) =~ @type_fqcn
+      fail "Wrong syntax for type reference, expected eg nspace::a.b.C, !opts!nspace::a.b.C, or :nspace"
     end
 
     # If no options, then split produces [@type_fqcn]
@@ -166,7 +171,7 @@ class JavadocTag < Liquid::Tag
 
       if opts.show_args? && $2 && !$2.empty? # is method
 
-        args = $3.split(",").map {|a| a.gsub(/\w+\./, "").strip} # map to simple names
+        args = ($3 || "").split(",").map {|a| a.gsub(/\w+\./, "").strip} # map to simple names
 
         suffix = "#{suffix}(#{args.join(", ")})"
       end
