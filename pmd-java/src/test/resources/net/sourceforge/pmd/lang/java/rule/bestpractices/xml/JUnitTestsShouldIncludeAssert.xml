@@ -456,6 +456,29 @@ class FooTest {
 }]]></code>
     </test-code>
     <test-code>
+        <description>#1435 Treat AssertJ soft assertions as assert expressions - missing assertAll</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,13</expected-linenumbers>
+        <code><![CDATA[
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+
+class FooTest {
+
+    @Test
+    void testFoo() {
+        var softly = new SoftAssertions();
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+    }
+
+    @Test
+    void testBar() {
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+    }
+}]]></code>
+    </test-code>
+    <test-code>
         <description>#1435 Treat AssertJ soft assertion rule for JUnit 4 as assert expressions</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
