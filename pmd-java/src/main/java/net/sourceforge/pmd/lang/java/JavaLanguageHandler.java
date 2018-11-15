@@ -14,6 +14,12 @@ public class JavaLanguageHandler extends AbstractJavaHandler {
         this.jdkVersion = jdkVersion;
     }
 
+
+    public final int getJdkVersion() {
+        return jdkVersion;
+    }
+
+
     @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new JavaLanguageParser(jdkVersion, parserOptions);

@@ -35,7 +35,7 @@ abstract class AbstractJScope implements JScope {
 
 
     @Override
-    public JScope getParent() {
+    public final JScope getParent() {
         return parent;
     }
 
@@ -50,7 +50,7 @@ abstract class AbstractJScope implements JScope {
 
 
     @Override
-    public Optional<? extends JSimpleTypeReference<?>> resolveTypeName(String simpleName) {
+    public final Optional<? extends JSimpleTypeReference<?>> resolveTypeName(String simpleName) {
         Optional<? extends JSimpleTypeReference<?>> result = resolveTypeNameImpl(simpleName);
         return result.isPresent() ? result : parent.resolveTypeName(simpleName);
     }

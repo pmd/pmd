@@ -65,7 +65,7 @@ public final class SingleImportScope extends AbstractImportScope {
                                                            .filter(m -> Modifier.isStatic(m.getModifiers()))
                                                            .filter(this::isAccessible)
                                                            .filter(m -> m.getName().equals(simpleName))
-                                                           .map(m -> new JMethodReference(this, m))
+                                                           .map(JMethodReference::new)
                                                            .collect(Collectors.toList());
 
                     importedStaticMethods.put(simpleName, methods);
@@ -75,7 +75,7 @@ public final class SingleImportScope extends AbstractImportScope {
                     try {
                         Field field = containerClass.getDeclaredField(simpleName);
                         if (field != null && Modifier.isStatic(field.getModifiers())) {
-                            importedStaticFields.put(simpleName, new JFieldReference(this, field));
+                            importedStaticFields.put(simpleName, new JFieldReference(field));
                         }
                     } catch (NoSuchFieldException e) {
                         // ignore eh
@@ -87,9 +87,9 @@ public final class SingleImportScope extends AbstractImportScope {
             } else {
                 // Single-Type-Import Declaration
 
-                importedTypes.put(simpleName, new JSymbolicClassReference(this,
-                                                                          // FIXME the qualifiedname resolver should resolve this itself
-                                                                          (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, classLoader)));
+                importedTypes.put(simpleName, new JSymbolicClassReference(
+                        // FIXME the qualifiedname resolver should resolve this itself
+                        (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, classLoader)));
             }
         }
     }

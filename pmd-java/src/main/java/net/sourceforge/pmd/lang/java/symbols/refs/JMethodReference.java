@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -25,11 +24,10 @@ public final class JMethodReference extends JAccessibleReference<ASTMethodDeclar
     /**
      * Constructor for methods found through reflection.
      *
-     * @param declaringScope Scope of the declaration
      * @param method         Method for which to create a reference
      */
-    public JMethodReference(JScope declaringScope, Method method) {
-        super(declaringScope, method.getModifiers(), method.getName());
+    public JMethodReference(Method method) {
+        super(method.getModifiers(), method.getName());
         this.isDefault = method.isDefault();
     }
 
@@ -37,11 +35,10 @@ public final class JMethodReference extends JAccessibleReference<ASTMethodDeclar
     /**
      * Constructor using the AST node.
      *
-     * @param declaringScope Scope of the declaration
      * @param node           Node representing the method declaration
      */
-    public JMethodReference(JScope declaringScope, ASTMethodDeclaration node) {
-        super(declaringScope, node, getModifiers(node), node.getMethodName());
+    public JMethodReference(ASTMethodDeclaration node) {
+        super(node, getModifiers(node), node.getMethodName());
         this.isDefault = node.isDefault();
     }
 

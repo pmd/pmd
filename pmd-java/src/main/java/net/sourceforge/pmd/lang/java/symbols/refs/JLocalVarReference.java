@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -16,17 +15,16 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  */
 public class JLocalVarReference extends AbstractCodeReference<ASTVariableDeclaratorId> implements JVarReference {
 
-    // cannot be built from reflection, but a node is always available
     private final boolean isFinal;
 
     /**
      * Constructor using the AST node.
      *
-     * @param declaringScope Scope of the declaration
      * @param node           Node representing the id of the field, must be from an ASTLocalVariableDeclaration
      */
-    public JLocalVarReference(JScope declaringScope, ASTVariableDeclaratorId node) {
-        super(declaringScope, node, node.getVariableName());
+    // cannot be built from reflection, but a node is always available
+    public JLocalVarReference(ASTVariableDeclaratorId node) {
+        super(node, node.getVariableName());
         this.isFinal = node.isFinal();
     }
 

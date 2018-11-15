@@ -13,25 +13,23 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
- * Implicit imports from {@literal java.lang}, bottom of all scope stacks.
+ * Implicit type imports from {@literal java.lang}.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JavaLangScope implements JScope {
+public final class JavaLangScope extends AbstractJScope {
 
-    private static final JavaLangScope SINGLETON = new JavaLangScope();
-    private final Map<String, JSymbolicClassReference> javaLang;
+    private static final Map<String, JSymbolicClassReference> JAVA_8_LANG;
 
-
-    private JavaLangScope() {
-
+    static {
         List<Class<?>> classes = Arrays.asList(
                 // from a jdk8
                 // these may differ from a jdk version to another.
@@ -139,46 +137,54 @@ public final class JavaLangScope implements JScope {
 
         for (Class<?> aClass : classes) {
 
-            JSymbolicClassReference reference = new JSymbolicClassReference(this, aClass);
+            JSymbolicClassReference reference = new JSymbolicClassReference(aClass);
 
             theJavaLang.put(aClass.getSimpleName(), reference);
             theJavaLang.put(aClass.getCanonicalName(), reference);
         }
-        javaLang = Collections.unmodifiableMap(theJavaLang);
+        JAVA_8_LANG = Collections.unmodifiableMap(theJavaLang);
+
+    }
+
+    private final Map<String, JSymbolicClassReference> javaLangTypes;
+
+
+    /**
+     * Constructor with just the parent scope.
+     *
+     * @param parent     Parent scope
+     * @param jdkVersion Version of the JDK
+     */
+    public JavaLangScope(JScope parent, int jdkVersion) {
+        super(parent);
+        this.javaLangTypes = getJavaLangForJdkVersion(jdkVersion);
     }
 
 
     @Override
-    public JScope getParent() {
-        return null;
-    }
-
-
-    @Override
-    public Optional<JSymbolicClassReference> resolveTypeName(String name) {
-        if (javaLang.containsKey(name)) {
-            return Optional.of(javaLang.get(name));
+    protected Optional<? extends JSimpleTypeReference<?>> resolveTypeNameImpl(String simpleName) {
+        if (javaLangTypes.containsKey(simpleName)) {
+            return Optional.of(javaLangTypes.get(simpleName));
         }
         return Optional.empty();
     }
 
 
     @Override
-    public Stream<JMethodReference> resolveMethodName(String simpleName) {
+    protected Stream<JMethodReference> resolveMethodNameImpl(String simpleName) {
         return Stream.empty();
     }
 
 
     @Override
-    public Optional<JVarReference> resolveValueName(String simpleName) {
+    protected Optional<JVarReference> resolveValueNameImpl(String simpleName) {
         return Optional.empty();
     }
 
 
-    /**
-     * Returns the shared instance.
-     */
-    public static JavaLangScope getInstance() {
-        return SINGLETON;
+    private static Map<String, JSymbolicClassReference> getJavaLangForJdkVersion(int jdkVersion) {
+        // TODO implement for other jdk versions
+        return JAVA_8_LANG;
     }
+
 }
