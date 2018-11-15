@@ -1288,6 +1288,13 @@ verifies that numeric literals over a given length (4 chars by default, but conf
 underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.</li>
 </ul>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#junittestsshouldincludeassert"><code class="highlighter-rouge">JUnitTestsShouldIncludeAssert</code></a> (<code class="highlighter-rouge">java-bestpractices</code>)
+now also detects <a href="https://github.com/joel-costigliola/assertj-core">Soft Assertions</a>.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 <ul>
   <li>all
@@ -1306,6 +1313,7 @@ underscores every 3 digits for readability. The rule only applies to Java 7+ cod
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1232">#1232</a>: [java] Detector for large numbers not separated by _</li>
       <li><a href="https://github.com/pmd/pmd/issues/1372">#1372</a>: [java] false positive for UselessQualifiedThis</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1435">#1435</a>: [java] JUnitTestsShouldIncludeAssert: Support AssertJ soft assertions</li>
     </ul>
   </li>
 </ul>
@@ -1324,6 +1332,7 @@ are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <
   <li><a href="https://github.com/pmd/pmd/pull/1424">#1424</a>: [doc] #1341 Updating Regex Values in default Value Property - <a href="https://github.com/vishva007">avishvat</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1428">#1428</a>: [core] Upgrading JCommander from 1.48 to 1.72 - <a href="https://github.com/Thunderforge">Thunderforge</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1430">#1430</a>: [doc] Who really knows regex? - <a href="https://github.com/dpilafian">Dem Pilafian</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1434">#1434</a>: [java] JUnitTestsShouldIncludeAssert: Recognize AssertJ soft assertions as valid assert statements - <a href="https://github.com/ledoyen">Loïc Ledoyen</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1464">#1464</a>: [doc] Fix XSS on documentation web page - <a href="https://github.com/marob">Maxime Robert</a></li>
 </ul>
 
