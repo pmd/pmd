@@ -1309,7 +1309,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Avoid using expressions without escaping / sanitizing. This could lead to cross site scripting - as the expression
-would be interpreted by the browser directly (e.g. “<script>alert('hello');</script>”).</p>
+would be interpreted by the browser directly (e.g. “&lt;script&gt;alert(‘hello’);&lt;/script&gt;”).</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-jsp/src/main/java/net/sourceforge/pmd/lang/jsp/rule/security/NoUnsanitizedJSPExpressionRule.java">net.sourceforge.pmd.lang.jsp.rule.security.NoUnsanitizedJSPExpressionRule</a></p>
 
@@ -1342,7 +1342,7 @@ ${fn:escapeXml(expression)}      &lt;!-- instead, escape it --&gt;
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 14, 2018 <br />
+ Site last generated: Nov 15, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
