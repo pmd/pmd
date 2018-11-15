@@ -143,8 +143,10 @@ public final class TypeHelper {
     public static boolean isA(TypedNameDeclaration vnd, String className) {
         Class<?> type = vnd.getType();
         if (type != null) {
-            Class<?> expected = loadClass(type.getClassLoader(), className);
-            return expected.isAssignableFrom(type);
+            Class<?> clazz = loadClass(type.getClassLoader(), className);
+            if (clazz != null) {
+                return clazz.isAssignableFrom(type);
+            }
         }
         return false;
     }
