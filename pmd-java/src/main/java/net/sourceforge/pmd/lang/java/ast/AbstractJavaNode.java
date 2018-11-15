@@ -5,14 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
-    private JScope symbolTable;
+    private JSymbolTable symbolTable;
     private Comment comment;
 
     public AbstractJavaNode(int id) {
@@ -83,7 +83,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     }
 
 
-    void setSymbolTable(JScope table) {
+    void setSymbolTable(JSymbolTable table) {
         this.symbolTable = table;
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
 
     @Override
-    public JScope getSymbolTable() {
+    public JSymbolTable getSymbolTable() {
         return symbolTable == null ? jjtGetParent().getSymbolTable() : symbolTable;
     }
 

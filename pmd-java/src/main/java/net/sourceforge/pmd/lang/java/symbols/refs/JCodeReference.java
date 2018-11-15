@@ -9,6 +9,7 @@ import java.util.Optional;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 
 /**
@@ -21,8 +22,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <p>Code references have no reference to the scope they were found in, because
  * that would tie the code reference to the analysed file, preventing the garbage
- * collection of scopes and nodes. The declaring scope would also vary from file
- * to file. E.g.
+ * collection of scopes and nodes. This is a major difference with {@link NameDeclaration}.
+ * The declaring scope would also vary from file to file. E.g.
  *
  * <pre>
  * class Foo {
@@ -38,7 +39,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <p>By storing no reference, we ensure that code references can be shared across the
  * analysed project, allowing reflective resolution to be only done once.
  *
- * <p>TODO implement sharing of code references across the analysed project
+ * <p>TODO implement sharing of reflectively found code references across the analysed project
+ * <p>References bound to an AST node cannot be shared.
  *
  * @param <N> Type of AST node that can represent this type of declaration
  *

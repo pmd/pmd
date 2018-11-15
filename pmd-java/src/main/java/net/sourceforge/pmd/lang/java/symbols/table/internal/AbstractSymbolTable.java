@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -19,23 +19,23 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractJScope implements JScope {
+abstract class AbstractSymbolTable implements JSymbolTable {
 
-    private final JScope parent;
+    private final JSymbolTable parent;
 
 
     /**
-     * Constructor with just the parent scope.
+     * Constructor with just the parent table.
      *
-     * @param parent Parent scope
+     * @param parent Parent table
      */
-    AbstractJScope(JScope parent) {
+    AbstractSymbolTable(JSymbolTable parent) {
         this.parent = parent;
     }
 
 
     @Override
-    public final JScope getParent() {
+    public final JSymbolTable getParent() {
         return parent;
     }
 

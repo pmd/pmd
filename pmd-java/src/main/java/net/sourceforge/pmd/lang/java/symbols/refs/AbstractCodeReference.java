@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.refs;
 import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
