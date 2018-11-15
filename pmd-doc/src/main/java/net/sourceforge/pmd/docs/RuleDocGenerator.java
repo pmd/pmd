@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -194,7 +195,7 @@ public class RuleDocGenerator {
             for (RuleSet ruleset : entry.getValue()) {
                 lines.add("## " + ruleset.getName());
                 lines.add("");
-                lines.add("{% include callout.html content=\"" + getRuleSetDescriptionSingleLine(ruleset).replaceAll("\"", "'") + "\" %}");
+                lines.add("{% include callout.html content=\"" + getRuleSetDescriptionSingleLine(ruleset) + "\" %}");
                 lines.add("");
 
                 for (Rule rule : getSortedRules(ruleset)) {
@@ -293,15 +294,20 @@ public class RuleDocGenerator {
      * @return
      */
     private static String getShortRuleDescription(Rule rule) {
-        return StringUtils.abbreviate(
-                StringUtils.stripToEmpty(rule.getDescription().replaceAll("\n|\r", "")
+        return StringEscapeUtils.escapeHtml4(
+            StringUtils.abbreviate(
+                StringUtils.stripToEmpty(
+                    rule.getDescription()
+                        .replaceAll("\n|\r", "")
                         .replaceAll("\\|", "\\\\|")
                         .replaceAll("`", "'")
-                        .replaceAll("\\*", "")), 100);
+                        .replaceAll("\\*", "")),
+                100));
     }
 
     private static String getRuleSetDescriptionSingleLine(RuleSet ruleset) {
         String description = ruleset.getDescription();
+        description = StringEscapeUtils.escapeHtml4(description);
         description = description.replaceAll("\\n|\\r", " ");
         description = StringUtils.stripToEmpty(description);
         return description;
@@ -389,7 +395,7 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
 
-                    lines.addAll(toLines(stripIndentation(rule.getDescription())));
+                    lines.addAll(escapeLines(toLines(stripIndentation(rule.getDescription()))));
                     lines.add("");
 
                     if (rule instanceof XPathRule || rule instanceof RuleReference && ((RuleReference) rule).getRule() instanceof XPathRule) {
@@ -430,9 +436,11 @@ public class RuleDocGenerator {
                         lines.add("|----|-------------|-----------|-----------|");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             String description = propertyDescriptor.description();
-                            if (description != null && description.toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER)) {
-                                description = DEPRECATION_LABEL_SMALL
-                                        + description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
+                            boolean isDeprecated = false;
+                            if (description != null && description.toLowerCase(Locale.ROOT)
+                                    .startsWith(DEPRECATED_RULE_PROPERTY_MARKER)) {
+                                isDeprecated = true;
+                                description = description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
                             }
 
                             String defaultValue = "";
@@ -452,14 +460,6 @@ public class RuleDocGenerator {
                                 }
                             }
 
-                            defaultValue = defaultValue.replace("\\", "\\\\")
-                                    .replace("*", "\\*")
-                                    .replace("_", "\\_")
-                                    .replace("~", "\\~")
-                                    .replace("[", "\\[")
-                                    .replace("]", "\\]")
-                                    .replace("|", "\\|");
-
                             String multiValued = "no";
                             if (propertyDescriptor.isMultiValue()) {
                                 MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
@@ -468,11 +468,11 @@ public class RuleDocGenerator {
                                         + multiValuePropertyDescriptor.multiValueDelimiter() + "'.";
                             }
 
-                            lines.add("|" + propertyDescriptor.name()
-                                + "|" + defaultValue
-                                + "|" + description
-                                + "|" + multiValued.replace("|", "\\|")
-                                + "|");
+                            lines.add("|" + escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
+                                    + "|" + escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue)) + "|"
+                                    + escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "")
+                                            + StringEscapeUtils.escapeHtml4(description))
+                                    + "|" + escapeMarkdown(StringEscapeUtils.escapeHtml4(multiValued)) + "|");
                         }
                         lines.add("");
                     }
@@ -614,5 +614,128 @@ public class RuleDocGenerator {
         }
 
         return FilenameUtils.normalize(relativeSourceFilename, true);
+    }
+
+    private static String escapeMarkdown(String unescaped) {
+        return unescaped.replace("\\", "\\\\").replace("*", "\\*").replace("_", "\\_").replace("~", "\\~")
+                .replace("[", "\\[").replace("]", "\\]").replace("|", "\\|");
+    }
+
+    private enum State {
+        S, LT, LT_H, LT_H_T, LT_H_T_T, LT_H_T_T_P, LT_H_T_T_P1, LT_H_T_T_P_S, LT_H_T_T_P_S1;
+    }
+
+    private static String escapeSingleLine(String line) {
+        StringBuilder escaped = new StringBuilder(line.length() + 16);
+        State s = State.S;
+        boolean needsEscape = true;
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '`') {
+                needsEscape = !needsEscape;
+            }
+            switch (s) {
+            case S:
+                if (c == '<') {
+                    s = State.LT;
+                } else if (c == '>') {
+                    if (needsEscape) {
+                        escaped.append("&gt;");
+                    } else {
+                        escaped.append(c);
+                    }
+                } else {
+                    escaped.append(c);
+                }
+                break;
+            case LT:
+                if (c == 'h' || c == 'H') {
+                    s = State.LT_H;
+                } else {
+                    if (needsEscape) {
+                        escaped.append("&lt;").append(c);
+                    } else {
+                        escaped.append("<").append(c);
+                    }
+                    s = State.S;
+                }
+                break;
+            case LT_H:
+                if (c == 't' || c == 'T') {
+                    s = State.LT_H_T;
+                } else {
+                    escaped.append("&lt;h").append(c);
+                    s = State.S;
+                }
+                break;
+            case LT_H_T:
+                if (c == 't' || c == 'T') {
+                    s = State.LT_H_T_T;
+                } else {
+                    escaped.append("&lt;ht").append(c);
+                    s = State.S;
+                }
+                break;
+            case LT_H_T_T:
+                if (c == 'p' || c == 'P') {
+                    s = State.LT_H_T_T_P;
+                } else {
+                    escaped.append("&lt;htt").append(c);
+                    s = State.S;
+                }
+                break;
+            case LT_H_T_T_P:
+                if (c == 's' || c == 'S') {
+                    s = State.LT_H_T_T_P_S;
+                } else if (c == ':') {
+                    escaped.append("<http:");
+                    s = State.LT_H_T_T_P1;
+                } else {
+                    escaped.append("&lt;htt").append(c);
+                    s = State.S;
+                }
+                break;
+            case LT_H_T_T_P1:
+                escaped.append(c);
+                if (c == '>') {
+                    s = State.S;
+                }
+                break;
+            case LT_H_T_T_P_S:
+                if (c == ':') {
+                    escaped.append("<https:");
+                    s = State.LT_H_T_T_P_S1;
+                } else {
+                    escaped.append("&lt;https").append(c);
+                    s = State.S;
+                }
+                break;
+            case LT_H_T_T_P_S1:
+                escaped.append(c);
+                if (c == '>') {
+                    s = State.S;
+                }
+                break;
+            default:
+                escaped.append(c);
+                break;
+            }
+        }
+        return escaped.toString();
+    }
+
+    private static List<String> escapeLines(List<String> lines) {
+        boolean needsEscape = true;
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (line.startsWith("```")) {
+                needsEscape = !needsEscape;
+            }
+            if (needsEscape && !line.startsWith("    ") && !line.startsWith(">")) {
+                line = escapeSingleLine(line);
+            }
+            lines.set(i, line);
+        }
+        return lines;
     }
 }
