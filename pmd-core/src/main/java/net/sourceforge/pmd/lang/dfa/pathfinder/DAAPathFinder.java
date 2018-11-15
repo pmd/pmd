@@ -45,6 +45,7 @@ public class DAAPathFinder {
         this.maxPaths = maxPaths;
         this.maxLoops = MAX_LOOPS;
     }
+
     public DAAPathFinder(DataFlowNode rootNode, Executable shim, int maxPaths, int maxLoops) {
         this.rootNode = rootNode;
         this.shim = shim;
