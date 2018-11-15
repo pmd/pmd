@@ -20,6 +20,11 @@ This is a {{ site.pmd.release_type }} release.
     verifies that numeric literals over a given length (4 chars by default, but configurable) are using
     underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.
 
+#### Modified Rules
+
+*   The Java rule {% rule "java/bestpractices/JUnitTestsShouldIncludeAssert" %} (`java-bestpractices`)
+    now also detects [Soft Assertions](https://github.com/joel-costigliola/assertj-core).
+
 ### Fixed Issues
 *   all
     *   [#1284](https://github.com/pmd/pmd/issues/1284): \[doc] Keep record of every currently deprecated API
@@ -30,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-codestyle
     *   [#1232](https://github.com/pmd/pmd/issues/1232): \[java] Detector for large numbers not separated by _
     *   [#1372](https://github.com/pmd/pmd/issues/1372): \[java] false positive for UselessQualifiedThis
+    *   [#1435](https://github.com/pmd/pmd/issues/1435): \[java] JUnitTestsShouldIncludeAssert: Support AssertJ soft assertions
 
 ### API Changes
 
@@ -42,6 +48,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1424](https://github.com/pmd/pmd/pull/1424): \[doc] #1341 Updating Regex Values in default Value Property - [avishvat](https://github.com/vishva007)
 *   [#1428](https://github.com/pmd/pmd/pull/1428): \[core] Upgrading JCommander from 1.48 to 1.72 - [Thunderforge](https://github.com/Thunderforge)
 *   [#1430](https://github.com/pmd/pmd/pull/1430): \[doc] Who really knows regex? - [Dem Pilafian](https://github.com/dpilafian)
+*   [#1434](https://github.com/pmd/pmd/pull/1434): \[java] JUnitTestsShouldIncludeAssert: Recognize AssertJ soft assertions as valid assert statements - [Loïc Ledoyen](https://github.com/ledoyen)
 *   [#1464](https://github.com/pmd/pmd/pull/1464): \[doc] Fix XSS on documentation web page - [Maxime Robert](https://github.com/marob)
 
 {% endtocmaker %}
