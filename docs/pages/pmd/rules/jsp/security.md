@@ -46,7 +46,7 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 **Priority:** Medium (3)
 
 Avoid using expressions without escaping / sanitizing. This could lead to cross site scripting - as the expression
-would be interpreted by the browser directly (e.g. "<script>alert('hello');</script>").
+would be interpreted by the browser directly (e.g. "&lt;script&gt;alert('hello');&lt;/script&gt;").
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.jsp.rule.security.NoUnsanitizedJSPExpressionRule](https://github.com/pmd/pmd/blob/master/pmd-jsp/src/main/java/net/sourceforge/pmd/lang/jsp/rule/security/NoUnsanitizedJSPExpressionRule.java)
 
