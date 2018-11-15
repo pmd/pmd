@@ -133,7 +133,7 @@ class JavadocTag < Liquid::Tag
 
     artifact_name, @type_fqcn = JDocNamespaceDeclaration::parse_fqcn(@type_fqcn, var_ctx)
 
-    JavadocTag::check_exists(artifact_name, @type_fqcn, @is_package_ref)
+    JavadocTag::diagnose(artifact_name, @type_fqcn, @is_package_ref)
 
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
@@ -200,7 +200,24 @@ class JavadocTag < Liquid::Tag
 
   BASE_PMD_DIR = File.join(File.expand_path(File.dirname(__FILE__)), "..", "..")
 
-  def self.check_exists(artifact_id, fqcn, is_package)
+  def self.diagnose(artifact_id, fqcn, expect_package)
+    resolved_type = JavadocTag::fqcn_type(artifact_id, fqcn)
+
+    tag_name= expect_package ? "jdoc_package" : "jdoc"
+
+    if resolved_type == :package && !expect_package
+      warn "\e[33;1m#{tag_name} generated link to #{fqcn}, but it was found to be a package name. Did you mean to use jdoc_package instead of jdoc?\e[0m"
+    elsif resolved_type == :file && expect_package
+      warn "\e[33;1m#{tag_name} generated link to #{fqcn}, but it was found to be a java file name. Did you mean to use jdoc instead of jdoc_package?\e[0m"
+    elsif !resolved_type
+      warn "\e[33;1m#{tag_name} generated link to #{fqcn}, but the #{expect_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
+    end
+  end
+
+  # Returns :package, or :file depending on the type of entity the fqcn refers to on the filesystem
+  # Returns nil if it cannot be found
+  def self.fqcn_type(artifact_id, fqcn)
+
     artifact_dir = File.join(BASE_PMD_DIR, artifact_id)
     src_dirs = [
         File.join(artifact_dir, "src", "main", "java"),
@@ -209,12 +226,10 @@ class JavadocTag < Liquid::Tag
 
     targets = src_dirs
                   .map {|dir| File.join(dir, fqcn.split("."))}
-                  .select {|f_or_dir| is_package ? File.exist?(f_or_dir) : File.file?(f_or_dir + ".java")}
+                  .map {|f| File.file?(f + ".java") ? :file : File.exist?(f) ? :package : nil}
+                  .compact
 
-    if targets.empty?
-      warn "\e[33;1mjdoc generated link to #{fqcn}, but the #{is_package ? "directory" : "source file"} couldn't be found in the source tree of #{artifact_id}\e[0m"
-    end
-
+    targets.first
   end
 
   class Options
