@@ -11,12 +11,15 @@ import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * @author daniels
  */
+@Deprecated
+@InternalApi
 public class DocumentNavigator extends DefaultNavigator {
 
     private static final Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
