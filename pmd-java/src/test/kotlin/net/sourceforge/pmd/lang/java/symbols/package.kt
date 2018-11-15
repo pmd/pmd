@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration
 import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.ParserTstUtil
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
-import net.sourceforge.pmd.lang.java.ast.JScopeResolver
+import net.sourceforge.pmd.lang.java.ast.SymbolTableResolver
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -25,7 +25,7 @@ object DefaultAnalysisConfiguration : AstAnalysisConfiguration {
 
 fun Class<*>.parse(): ASTCompilationUnit {
     val acu = ParserTstUtil.parseJavaDefaultVersion(this)
-    JScopeResolver(DefaultAnalysisConfiguration).visit(acu, DefaultAnalysisConfiguration)
+    SymbolTableResolver(DefaultAnalysisConfiguration, acu).visit(acu, DefaultAnalysisConfiguration)
 
     return acu
 }

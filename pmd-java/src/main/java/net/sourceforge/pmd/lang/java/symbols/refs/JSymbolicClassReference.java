@@ -71,7 +71,7 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
             return Optional.empty();
         }
 
-        return Optional.of(new JClassReference(qualifiedName));
+        return Optional.of(new JClassReference(type));
     }
 
 }

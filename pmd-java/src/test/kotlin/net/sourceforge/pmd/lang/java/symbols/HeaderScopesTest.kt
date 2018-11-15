@@ -6,20 +6,20 @@ import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.java.ast.parserTest
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SamePackageScope
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
+import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable
 
 
 /**
- * Tests the imports scopes and their relative precedence of the scope tree.
+ * Tests the scopes that dominate the whole compilation unit.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ImportScopesTest : FunSpec({
+class HeaderScopesTest : FunSpec({
 
     val typesInTheSamePackage = "types in the same package"
     val javalangTypes = "types from java.lang"
@@ -29,7 +29,7 @@ class ImportScopesTest : FunSpec({
 
 
     // expects a symbolic type
-    fun JScope.resolveSymbolic(s: String): Class<*> =
+    fun JSymbolTable.resolveSymbolic(s: String): Class<*> =
             resolveTypeName(s)
                     .shouldBePresent()
                     .shouldBeA<JSymbolicClassReference>()
@@ -38,7 +38,7 @@ class ImportScopesTest : FunSpec({
                     .classObject
 
 
-    fun JScope.resolveField(s: String): JFieldReference =
+    fun JSymbolTable.resolveField(s: String): JFieldReference =
             resolveValueName(s)
                     .shouldBePresent()
                     .shouldBeA()
@@ -49,7 +49,7 @@ class ImportScopesTest : FunSpec({
 
         val acu = javasymbols.testdata.TestCase1::class.java.parse()
 
-        acu.symbolTable.shouldBeA<SamePackageScope> {
+        acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
             it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
         }
     }
@@ -59,11 +59,11 @@ class ImportScopesTest : FunSpec({
 
         val acu = javasymbols.testdata.TestCase1::class.java.parse()
 
-        acu.symbolTable.shouldBeA<SamePackageScope> {
+        acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
 
             it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
 
-            it.parent.shouldBeA<JavaLangScope> {
+            it.parent.shouldBeA<JavaLangSymbolTable> {
                 it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
             }
         }
@@ -76,11 +76,11 @@ class ImportScopesTest : FunSpec({
         val acu = javasymbols.testdata.deep.SomewhereElse::class.java.parse()
 
 
-        acu.symbolTable.shouldBeA<SingleImportScope> {
+        acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
 
             it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
 
-            it.parent.shouldBeA<SamePackageScope> {
+            it.parent.shouldBeA<SamePackageSymbolTable> {
 
                 it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
             }
@@ -93,13 +93,13 @@ class ImportScopesTest : FunSpec({
         val acu = javasymbols.testdata.deep.SomewhereElse::class.java.parse()
 
 
-        acu.symbolTable.shouldBeA<SingleImportScope> {
+        acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
 
             it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
 
-            it.parent.shouldBeA<SamePackageScope> {
+            it.parent.shouldBeA<SamePackageSymbolTable> {
 
-                it.parent.shouldBeA<JavaLangScope> {
+                it.parent.shouldBeA<JavaLangSymbolTable> {
 
                     it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
 
@@ -114,7 +114,7 @@ class ImportScopesTest : FunSpec({
         val acu = javasymbols.testdata.deep.TypeImportsOnDemand::class.java.parse()
         // import javasymbols.testdata.*;
 
-        acu.symbolTable.shouldBeA<SingleImportScope> {
+        acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
             // from java.lang
             it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
             // from same package
@@ -126,16 +126,16 @@ class ImportScopesTest : FunSpec({
 
 
 
-            it.parent.shouldBeA<SamePackageScope> {
+            it.parent.shouldBeA<SamePackageSymbolTable> {
 
                 // shadowing javasymbols.testdata.SomeClassA
                 it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
 
-                it.parent.shouldBeA<JavaLangScope> {
+                it.parent.shouldBeA<JavaLangSymbolTable> {
                     // shadows javasymbols.testdata.Thread
                     it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
 
-                    it.parent.shouldBeA<ImportOnDemandScope> {
+                    it.parent.shouldBeA<ImportOnDemandSymbolTable> {
                         it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
                         it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
                         it.resolveSymbolic("Statics") shouldBe Statics::class.java
@@ -154,7 +154,7 @@ class ImportScopesTest : FunSpec({
         // import javasymbols.testdata.Statics.*;
 
 
-        acu.symbolTable.shouldBeA<SamePackageScope> {
+        acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
 
             it.resolveValueName("PUBLIC_FIELD").shouldBePresent()
             it.resolveValueName("PACKAGE_FIELD").shouldBeEmpty()
@@ -181,7 +181,7 @@ class ImportScopesTest : FunSpec({
         // import javasymbols.testdata.Statics.*;
 
 
-        acu.symbolTable.shouldBeA<SamePackageScope> {
+        acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
 
             it.resolveValueName("PUBLIC_FIELD").shouldBePresent()
             it.resolveValueName("publicField").shouldBeEmpty()
@@ -201,12 +201,12 @@ class ImportScopesTest : FunSpec({
         // import javasymbols.testdata.Statics.*;
 
 
-        acu.symbolTable.shouldBeA<SamePackageScope> {
+        acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
 
             it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.deep.PublicShadowed::class.java
 
-            it.parent.shouldBeA<JavaLangScope> {
-                it.parent.shouldBeA<ImportOnDemandScope> {
+            it.parent.shouldBeA<JavaLangSymbolTable> {
+                it.parent.shouldBeA<ImportOnDemandSymbolTable> {
 
                     // static type member
                     it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.Statics.PublicShadowed::class.java
@@ -221,13 +221,13 @@ class ImportScopesTest : FunSpec({
         // import javasymbols.testdata.Statics.*;
 
 
-        acu.symbolTable.shouldBeA<SingleImportScope> {
+        acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
 
             it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
 
-            it.parent.shouldBeA<SamePackageScope> {
-                it.parent.shouldBeA<JavaLangScope> {
-                    it.parent.shouldBeA<ImportOnDemandScope> {
+            it.parent.shouldBeA<SamePackageSymbolTable> {
+                it.parent.shouldBeA<JavaLangSymbolTable> {
+                    it.parent.shouldBeA<ImportOnDemandSymbolTable> {
 
                         // static type member
                         it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.Statics.SomeClassA::class.java

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**

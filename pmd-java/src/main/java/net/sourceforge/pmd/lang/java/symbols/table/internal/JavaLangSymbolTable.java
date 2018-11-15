@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JavaLangScope extends AbstractJScope {
+public final class JavaLangSymbolTable extends AbstractSymbolTable {
 
     private static final Map<String, JSymbolicClassReference> JAVA_8_LANG;
 
@@ -150,12 +150,12 @@ public final class JavaLangScope extends AbstractJScope {
 
 
     /**
-     * Constructor with just the parent scope.
+     * Constructor with just the parent table.
      *
-     * @param parent     Parent scope
+     * @param parent     Parent table
      * @param jdkVersion Version of the JDK
      */
-    public JavaLangScope(JScope parent, int jdkVersion) {
+    public JavaLangSymbolTable(JSymbolTable parent, int jdkVersion) {
         super(parent);
         this.javaLangTypes = getJavaLangForJdkVersion(jdkVersion);
     }

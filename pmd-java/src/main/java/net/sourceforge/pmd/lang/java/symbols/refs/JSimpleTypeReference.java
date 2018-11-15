@@ -14,6 +14,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * but not array types or parameterized types. Primitive types are excluded
  * as well because that wouldn't be useful.
  *
+ * @param <N> Type of AST node that can represent this type of declaration
+ *
  * @author Clément Fournier
  * @since 7.0.0
  */

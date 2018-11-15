@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
 
 
 /**
@@ -26,20 +26,8 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
 
 
     /**
-     * Constructor using a FQCN, used to create a full class reference from
-     * a symbolic reference. The type must have been loaded correctly!
-     *
-     * @param fqcn           FQCN with resolved type
-     */
-    JClassReference(JavaTypeQualifiedName fqcn) {
-        super(fqcn.getType().getModifiers(), fqcn.getClassSimpleName());
-        this.fqcn = fqcn;
-    }
-
-
-    /**
      * Constructor using a class, used to create a reference for a class
-     * found by reflection, or a class known at compile-time (eg in {@link JavaLangScope}).
+     * found by reflection, or a class known at compile-time (eg in {@link JavaLangSymbolTable}).
      *
      * @param clazz          Class represented by this reference
      */
@@ -55,7 +43,7 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
      * @param node           Node of the declaration
      */
     public JClassReference(ASTAnyTypeDeclaration node) {
-        super(getModifiers(node), node.getImage());
+        super(node, getModifiers(node), node.getImage());
         this.fqcn = node.getQualifiedName();
     }
 
@@ -87,6 +75,12 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
 
     public boolean isInterface() {
         return Modifier.isInterface(modifiers);
+    }
+
+
+    @Override
+    public String toString() {
+        return "JClassReference(" + fqcn.getBinaryName() + ")";
     }
 
 

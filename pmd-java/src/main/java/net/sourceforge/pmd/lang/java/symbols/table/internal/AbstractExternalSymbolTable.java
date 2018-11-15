@@ -2,14 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -17,12 +17,12 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * outside the currently analysed file, i.e., they proceed
  * by reflection (and need a classLoader). Includes import
  * scopes, package scope. Probably will include every scope
- * I reckon.
+ * I reckon so this may be merged into {@link AbstractSymbolTable}.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractExternalScope extends AbstractJScope {
+abstract class AbstractExternalSymbolTable extends AbstractSymbolTable {
 
     /** Classloader with analysis classpath. */
     protected final ClassLoader classLoader;
@@ -31,13 +31,14 @@ abstract class AbstractExternalScope extends AbstractJScope {
 
 
     /**
-     * Constructor with the parent scope and the auxclasspath classloader.
+     * Constructor with the parent table and the auxclasspath classloader.
      * Used to build the top-level scope.
-     *  @param parent      Parent scope
+     *
+     * @param parent      Parent table
      * @param classLoader ClassLoader used to resolve e.g. import-on-demand
      * @param thisPackage Package name of the current compilation unit, used to check for accessibility
      */
-    AbstractExternalScope(JScope parent, ClassLoader classLoader, String thisPackage) {
+    AbstractExternalSymbolTable(JSymbolTable parent, ClassLoader classLoader, String thisPackage) {
         super(parent);
         this.classLoader = classLoader;
         this.thisPackage = thisPackage;

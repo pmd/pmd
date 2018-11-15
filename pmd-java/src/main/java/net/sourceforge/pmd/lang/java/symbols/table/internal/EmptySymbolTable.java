@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
@@ -19,27 +19,19 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class EmptyScope implements JScope {
+public final class EmptySymbolTable implements JSymbolTable {
 
 
-    private static final EmptyScope INSTANCE = new EmptyScope();
+    private static final EmptySymbolTable INSTANCE = new EmptySymbolTable();
 
 
-    private EmptyScope() {
+    private EmptySymbolTable() {
 
-    }
-
-
-    /**
-     * Returns the shared instance.
-     */
-    public static EmptyScope getInstance() {
-        return INSTANCE;
     }
 
 
     @Override
-    public JScope getParent() {
+    public JSymbolTable getParent() {
         return null;
     }
 
@@ -59,5 +51,13 @@ public final class EmptyScope implements JScope {
     @Override
     public Stream<JMethodReference> resolveMethodName(String simpleName) {
         return Stream.empty();
+    }
+
+
+    /**
+     * Returns the shared instance.
+     */
+    public static EmptySymbolTable getInstance() {
+        return INSTANCE;
     }
 }

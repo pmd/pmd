@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.scopes.internal;
+package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -18,34 +18,34 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
  * Scope for imports on demand. Imports-on-demand never shadow anything, so this scope, if it exists,
- * is the top-level non-empty scope. All scope stacks have {@link EmptyScope} as bottom though, for
+ * is the top-level non-empty scope. All scope stacks have {@link EmptySymbolTable} as bottom though, for
  * implementation simplicity.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class ImportOnDemandScope extends AbstractImportScope {
+public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
-    private static final Logger LOG = Logger.getLogger(ImportOnDemandScope.class.getName());
+    private static final Logger LOG = Logger.getLogger(ImportOnDemandSymbolTable.class.getName());
 
     /** Stores the names of packages and types for which all their types are imported. */
     private final List<String> importedPackagesAndTypes = new ArrayList<>();
 
 
     /**
-     * Creates a new import-on-demand scope. Automatically linked to the {@link JavaLangScope}.
+     * Creates a new import-on-demand scope. Automatically linked to the {@link JavaLangSymbolTable}.
      *
-     * @param parent          Parent scope
+     * @param parent          Parent table
      * @param classLoader     Analysis classloader
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
      * @param thisPackage     Package name of the current compilation unit, used to check for accessibility
      */
-    public ImportOnDemandScope(JScope parent, ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
+    public ImportOnDemandSymbolTable(JSymbolTable parent, ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
         super(parent, classLoader, thisPackage);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
