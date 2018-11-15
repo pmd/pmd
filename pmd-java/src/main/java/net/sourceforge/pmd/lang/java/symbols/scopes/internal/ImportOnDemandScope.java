@@ -18,14 +18,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
- * Scope for imports on demand. Imports-on-demand never shadow anything, including types imported
- * implicitly from java.lang. This is however placed as a child scope of JavaLangScope, since we
- * want {@link JavaLangScope#getInstance()} to be shared across all compilation units by being the
- * root of all scope stacks. To respect the shadowing spec, we cheat a little and let {@link JavaLangScope}
- * try first.
+ * Scope for imports on demand. Imports-on-demand never shadow anything, so this scope, if it exists,
+ * is the top-level non-empty scope. All scope stacks have {@link EmptyScope} as bottom though, for
+ * implementation simplicity.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -46,7 +45,7 @@ public final class ImportOnDemandScope extends AbstractImportScope {
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
      * @param thisPackage     Package name of the current compilation unit, used to check for accessibility
      */
-    public ImportOnDemandScope(JavaLangScope parent, ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
+    public ImportOnDemandScope(JScope parent, ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
         super(parent, classLoader, thisPackage);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
@@ -66,7 +65,7 @@ public final class ImportOnDemandScope extends AbstractImportScope {
                     Map<String, List<JMethodReference>> methods = Arrays.stream(containerClass.getDeclaredMethods())
                                                                         .filter(m -> Modifier.isStatic(m.getModifiers()))
                                                                         .filter(this::isAccessible)
-                                                                        .map(m -> new JMethodReference(this, m))
+                                                                        .map(JMethodReference::new)
                                                                         .collect(Collectors.groupingBy(JMethodReference::getSimpleName));
 
                     importedStaticMethods.putAll(methods);
@@ -74,13 +73,13 @@ public final class ImportOnDemandScope extends AbstractImportScope {
                     Arrays.stream(containerClass.getDeclaredFields())
                           .filter(f -> Modifier.isStatic(f.getModifiers()))
                           .filter(this::isAccessible)
-                          .map(f -> new JFieldReference(this, f))
+                          .map(JFieldReference::new)
                           .forEach(f -> importedStaticFields.put(f.getSimpleName(), f));
 
                     Arrays.stream(containerClass.getDeclaredClasses())
                           .filter(t -> Modifier.isStatic(t.getModifiers()))
                           .filter(this::isAccessible)
-                          .map(t -> new JSymbolicClassReference(this, t))
+                          .map(JSymbolicClassReference::new)
                           .forEach(t -> importedTypes.put(t.getSimpleName(), t));
                 }
 
@@ -97,22 +96,7 @@ public final class ImportOnDemandScope extends AbstractImportScope {
 
 
     @Override
-    public JavaLangScope getParent() {
-        return (JavaLangScope) super.getParent();
-    }
-
-
-    @Override
     protected Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName) {
-
-        // We actually don't delegate to java.lang, we let it have precedence.
-        // Import-on-demand cannot shadow java.lang types, but we'd like JavaLangScope
-        // to be a singleton and be shared.
-        Optional<JSymbolicClassReference> javaLangName = getParent().resolveTypeName(simpleName);
-
-        if (javaLangName.isPresent()) {
-            return javaLangName;
-        }
 
         // Check for static import-on-demand
         Optional<JSymbolicClassReference> typename = super.resolveTypeNameImpl(simpleName);
@@ -137,7 +121,7 @@ public final class ImportOnDemandScope extends AbstractImportScope {
                                        })
                                        .filter(Objects::nonNull)
                                        .filter(this::isAccessible)
-                                       .map(c -> new JSymbolicClassReference(this, c))
+                                       .map(JSymbolicClassReference::new)
                                        .findAny();
     }
 

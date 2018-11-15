@@ -19,12 +19,12 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 public class JTypeVariableReference extends AbstractCodeReference<ASTTypeParameter> implements JSimpleTypeReference<ASTTypeParameter> {
 
 
-    JTypeVariableReference(JScope declaringScope, String simpleName) {
-        super(declaringScope, simpleName);
+    JTypeVariableReference(String simpleName) {
+        super(simpleName);
     }
 
 
-    JTypeVariableReference(JScope declaringScope, ASTTypeParameter node, String simpleName) {
-        super(declaringScope, node, simpleName);
+    JTypeVariableReference(ASTTypeParameter node, String simpleName) {
+        super(node, simpleName);
     }
 }

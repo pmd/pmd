@@ -24,13 +24,7 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  * <p>Rules for shadowing of imports: bottom of https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.4.1
  *
  * <p>The simplest way to implement that is to layer the imports into several scopes.
- * Here are the highest-level scopes of a compilation unit:
- * <ul>
- * <li> {@link JavaLangScope}
- * <li> {@link ImportOnDemandScope}: never shadow anything, is shadowed by everything (see javadoc for why it's not the root)
- * <li> {@link SamePackageScope}: shadow imports-on-demands, is shadowed by single imports and lower
- * <li> {@link SingleImportScope}: shadows all of the above, is shadowed by type definitions of this compilation unit
- * </ul>
+ * See doc on {@link JScope} about the higher level scopes of the scope stacks.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -44,7 +38,6 @@ abstract class AbstractImportScope extends AbstractExternalScope {
 
     /**
      * Constructor with the parent scope and the auxclasspath classloader.
-     * Used to build the top-level scope.
      *
      * @param parent      Parent scope
      * @param classLoader ClassLoader used to resolve e.g. import-on-demand

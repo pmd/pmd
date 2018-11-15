@@ -10,7 +10,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
+import net.sourceforge.pmd.lang.java.JavaLanguageHandler;
 import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.EmptyScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SamePackageScope;
@@ -28,11 +30,13 @@ public class JScopeResolver extends SideEffectingVisitorAdapter<AstAnalysisConfi
 
     private String packageName;
     private final PMDASMClassLoader classLoader;
+    private final int jdkVersion;
     private JScope top;
 
 
     public JScopeResolver(AstAnalysisConfiguration data) {
         this.classLoader = PMDASMClassLoader.getInstance(data.getTypeResolutionClassLoader());
+        this.jdkVersion = ((JavaLanguageHandler) data.getLanguageVersion().getLanguageVersionHandler()).getJdkVersion();
     }
 
 
@@ -45,12 +49,14 @@ public class JScopeResolver extends SideEffectingVisitorAdapter<AstAnalysisConfi
         Map<Boolean, List<ASTImportDeclaration>> isImportOnDemand = node.findChildrenOfType(ASTImportDeclaration.class).stream()
                                                                         .collect(Collectors.partitioningBy(ASTImportDeclaration::isImportOnDemand));
 
-        top = JavaLangScope.getInstance();
+        top = EmptyScope.getInstance();
 
         if (!isImportOnDemand.get(true).isEmpty()) {
             // there are on-demand imports
-            top = new ImportOnDemandScope((JavaLangScope) top, classLoader, isImportOnDemand.get(true), packageName);
+            top = new ImportOnDemandScope(top, classLoader, isImportOnDemand.get(true), packageName);
         }
+
+        top = new JavaLangScope(top, jdkVersion);
 
         top = new SamePackageScope(top, classLoader, packageName);
 

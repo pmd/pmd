@@ -10,7 +10,6 @@ import java.util.Optional;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -31,11 +30,10 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
     /**
      * Builds a symbolic reference to a type using its qualified name.
      *
-     * @param declaringScope Scope to which the class belongs
      * @param fqcn           Fully-qualified class name
      */
-    public JSymbolicClassReference(JScope declaringScope, JavaTypeQualifiedName fqcn) {
-        super(declaringScope, fqcn.getClassSimpleName());
+    public JSymbolicClassReference(JavaTypeQualifiedName fqcn) {
+        super(fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
     }
 
@@ -43,11 +41,10 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
     /**
      * Builds a symbolic reference to a type that has already been resolved.
      *
-     * @param declaringScope  Scope to which the class belongs
      * @param alreadyResolved Already resolved type
      */
-    public JSymbolicClassReference(JScope declaringScope, Class<?> alreadyResolved) {
-        super(declaringScope, alreadyResolved.getSimpleName());
+    public JSymbolicClassReference(Class<?> alreadyResolved) {
+        super(alreadyResolved.getSimpleName());
         this.qualifiedName = QualifiedNameFactory.ofClass(Objects.requireNonNull(alreadyResolved));
     }
 
@@ -74,7 +71,7 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
             return Optional.empty();
         }
 
-        return Optional.of(new JClassReference(getDeclaringScope(), qualifiedName));
+        return Optional.of(new JClassReference(qualifiedName));
     }
 
 }

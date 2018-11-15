@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
 
 
 /**
@@ -26,22 +25,20 @@ public class JFieldReference extends JAccessibleReference<ASTVariableDeclaratorI
     /**
      * Constructor for fields found through reflection.
      *
-     * @param declaringScope Scope of the declaration
      * @param field          Field for which to create a reference
      */
-    public JFieldReference(JScope declaringScope, Field field) {
-        super(declaringScope, field.getModifiers(), field.getName());
+    public JFieldReference(Field field) {
+        super(field.getModifiers(), field.getName());
     }
 
 
     /**
      * Constructor using the AST node.
      *
-     * @param declaringScope Scope of the declaration
      * @param node           Node representing the id of the field, must be from an ASTFieldDeclaration
      */
-    JFieldReference(JScope declaringScope, ASTVariableDeclaratorId node) {
-        super(declaringScope, node, getModifiers(node), node.getVariableName());
+    JFieldReference(ASTVariableDeclaratorId node) {
+        super(node, getModifiers(node), node.getVariableName());
 
     }
 
@@ -61,6 +58,7 @@ public class JFieldReference extends JAccessibleReference<ASTVariableDeclaratorI
     }
 
 
+    @Override
     public final boolean isFinal() {
         return Modifier.isFinal(modifiers);
     }

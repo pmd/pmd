@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JTypeVariableReference;
 import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.scopes.internal.EmptyScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.JavaLangScope;
 import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SamePackageScope;
@@ -25,10 +26,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 /**
  * A symbol table for a piece of Java code. Keeps track of the types, values, and
  * methods accessible from their simple name in their extent.
- *
- * <p>Note: I chose the term "scope" because of the similarity with the current {@link net.sourceforge.pmd.lang.symboltable.Scope}.
- * For now, however, it's more what one would call a "symbol table", since it resolves
- * symbols, and is basically a linked. It is very different from the notion of scope described in the JLS.
  *
  * <p>Each scope is linked to a parent scope, and keeps track of a particular set
  * of declarations having the same relative precedence. When a scope is asked for
@@ -50,6 +47,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
  * The following describes the most general form of the bottom part of the
  * stack (before the first type declaration), in increasing order of precedence:
  * <ul>
+ *     <li> {@link EmptyScope}: Contains nothing. This is the shared root of all scope stacks, for
+ *     implementation simplicity.
  *     <li> {@link ImportOnDemandScope}: Types imported from a package or type by an import-on-demand,
  *     and static method or field names imported from a type by a static-import-on-demand;
  *     <li> {@link JavaLangScope}: Top-level types implicitly imported from {@literal java.lang};
@@ -57,10 +56,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
  *     <li> {@link SingleImportScope}: types imported by single-type-imports, and static methods and
  *     fields imported by a single-static-import.
  * </ul>
- *
- * <p>Note that the bottom of every stack is actually {@link JavaLangScope}
- * for all compilation units, because we use a singleton to avoid
- * duplicating it. The above precedence order is nevertheless respected.
  *
  * <h2>Why not keep the current symbol table</h2>
  *

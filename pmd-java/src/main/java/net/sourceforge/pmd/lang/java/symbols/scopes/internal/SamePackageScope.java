@@ -53,8 +53,7 @@ public final class SamePackageScope extends AbstractExternalScope {
         try {
             // We know it's accessible, since top-level classes are either public or package private,
             // and we're in the package
-            return Optional.ofNullable(classLoader.loadClass(fqcn))
-                           .map(t -> new JSymbolicClassReference(this, t));
+            return Optional.ofNullable(classLoader.loadClass(fqcn)).map(JSymbolicClassReference::new);
         } catch (ClassNotFoundException | LinkageError e2) {
             // ignore the exception. We don't know if the classpath is badly configured
             // or if the type was never in this package in the first place

@@ -18,26 +18,18 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  */
 abstract class AbstractCodeReference<N extends Node> implements JCodeReference<N> {
 
-    private final JScope declaringScope;
     private final String simpleName;
     private N boundNode;
 
 
-    AbstractCodeReference(JScope declaringScope, String simpleName) {
-        this.declaringScope = declaringScope;
+    AbstractCodeReference(String simpleName) {
         this.simpleName = simpleName;
     }
 
 
-    AbstractCodeReference(JScope declaringScope, N node, String simpleName) {
-        this(declaringScope, simpleName);
+    AbstractCodeReference(N node, String simpleName) {
+        this(simpleName);
         this.boundNode = node;
-    }
-
-
-    @Override
-    public final JScope getDeclaringScope() {
-        return declaringScope;
     }
 
 

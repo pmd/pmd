@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
- * A reference type that can be described using a simple name.
+ * A reference type that can be referred to using a simple name.
  * These include references to {@linkplain JSymbolicClassReference class or interfaces}
  * and references to {@linkplain JTypeVariableReference type parameters},
  * but not array types or parameterized types. Primitive types are excluded

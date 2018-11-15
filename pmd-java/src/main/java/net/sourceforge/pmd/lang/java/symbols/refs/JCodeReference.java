@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.refs;
 import java.util.Optional;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.ImportOnDemandScope;
-import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
 
 
 /**
@@ -21,8 +19,26 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
  * rules. It's mostly intended to unify the representation of type resolution
  * and symbol analysis. At least for now it's internal.
  *
- * <p>Instances are not shared across compilation units during PMD's analysis,
- * because that would prevent the garbage collection of scopes and nodes.
+ * <p>Code references have no reference to the scope they were found in, because
+ * that would tie the code reference to the analysed file, preventing the garbage
+ * collection of scopes and nodes. The declaring scope would also vary from file
+ * to file. E.g.
+ *
+ * <pre>
+ * class Foo {
+ *     public int foo;
+ *     // here the declaring scope of Foo#foo would be the class scope of this file
+ * }
+ *
+ * class Bar extends Foo {
+ *     // here the declaring scope of Foo#foo would be the inherited scope from Foo
+ * }
+ * </pre>
+ *
+ * <p>By storing no reference, we ensure that code references can be shared across the
+ * analysed project, allowing reflective resolution to be only done once.
+ *
+ * <p>TODO implement sharing of code references across the analysed project
  *
  * @param <N> Type of AST node that can represent this type of declaration
  *
@@ -30,21 +46,9 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.internal.SingleImportScope;
  * @since 7.0.0
  */
 @Experimental
+@InternalApi
 public interface JCodeReference<N extends Node> {
 
-
-    /**
-     * Gets the scope in which this declaration was brought into scope.
-     * Eg. for a reference to an imported type, this will be an {@link ImportOnDemandScope},
-     * or a {@link SingleImportScope}. For a reference to a local variable,
-     * this will be the scope in which it was declared.
-     *
-     * @return the declaration scope
-     */
-    // TODO prove usefulness of that or remove
-    // it may be useful eg to discriminate method parameters from other local variables,
-    // but that could also be achieved by setting a boolean constructor parameter
-    JScope getDeclaringScope();
 
     /**
      * Returns the node corresponding to this declaration, if it exists.
@@ -65,5 +69,7 @@ public interface JCodeReference<N extends Node> {
     String getSimpleName();
 
     // TODO add type information when TypeDefinitions are reviewed
-
+    // We should be able to create a type definition from a java.lang.reflect.Type,
+    // paying attention to type variables of enclosing methods and types.
+    // We should also be able to do so from an ASTType, with support from a JScope.
 }

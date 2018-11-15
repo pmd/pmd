@@ -18,12 +18,12 @@ import net.sourceforge.pmd.lang.java.symbols.scopes.JScope;
  */
 public class JConstructorReference extends JAccessibleReference<ASTConstructorDeclaration> {
 
-    JConstructorReference(JScope declaringScope, Constructor<?> constructor) {
-        super(declaringScope, constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName());
+    JConstructorReference(Constructor<?> constructor) {
+        super(constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName());
     }
 
 
-    JConstructorReference(JScope declaringScope, ASTConstructorDeclaration node) {
-        super(declaringScope, node, accessNodeToModifiers(node), node.getImage());
+    JConstructorReference(ASTConstructorDeclaration node) {
+        super(node, accessNodeToModifiers(node), node.getImage());
     }
 }

@@ -131,18 +131,15 @@ class ImportScopesTest : FunSpec({
                 // shadowing javasymbols.testdata.SomeClassA
                 it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
 
-                it.parent.shouldBeA<ImportOnDemandScope> {
-                    // from java.lang instead of importing javasymbols.testdata.Thread
+                it.parent.shouldBeA<JavaLangScope> {
+                    // shadows javasymbols.testdata.Thread
                     it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
-                    // from the import-on-demand
-                    it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
-                    // from the import-on-demand
-                    it.resolveSymbolic("Statics") shouldBe Statics::class.java
-                    // from the import-on-demand
-                    it.resolveSymbolic("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
 
-                    it.parent.shouldBeA<JavaLangScope> {
-                        it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
+                    it.parent.shouldBeA<ImportOnDemandScope> {
+                        it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
+                        it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
+                        it.resolveSymbolic("Statics") shouldBe Statics::class.java
+                        it.resolveSymbolic("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
                     }
                 }
             }
@@ -208,10 +205,12 @@ class ImportScopesTest : FunSpec({
 
             it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.deep.PublicShadowed::class.java
 
-            it.parent.shouldBeA<ImportOnDemandScope> {
+            it.parent.shouldBeA<JavaLangScope> {
+                it.parent.shouldBeA<ImportOnDemandScope> {
 
-                // static type member
-                it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.Statics.PublicShadowed::class.java
+                    // static type member
+                    it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.Statics.PublicShadowed::class.java
+                }
             }
         }
     }
@@ -227,11 +226,12 @@ class ImportScopesTest : FunSpec({
             it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
 
             it.parent.shouldBeA<SamePackageScope> {
+                it.parent.shouldBeA<JavaLangScope> {
+                    it.parent.shouldBeA<ImportOnDemandScope> {
 
-                it.parent.shouldBeA<ImportOnDemandScope> {
-
-                    // static type member
-                    it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.Statics.SomeClassA::class.java
+                        // static type member
+                        it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.Statics.SomeClassA::class.java
+                    }
                 }
             }
         }
