@@ -98,23 +98,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
 
     /**
-     * Specify the UI order of the property.
-     *
-     * @param f The UI order
-     *
-     * @return The same builder
-     *
-     * @deprecated see {@link PropertyDescriptor#uiOrder()}
-     */
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public B uiOrder(float f) {
-        this.uiOrder = f;
-        return (B) this;
-    }
-
-
-    /**
      * Add a constraint on the values that this property may take.
      * The validity of values will be checked when parsing the XML,
      * and invalid values will be reported. A rule will never be run
