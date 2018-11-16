@@ -12,6 +12,7 @@ package net.sourceforge.pmd.properties;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public interface PackagedPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     /** Delimiter used to separate package names. */

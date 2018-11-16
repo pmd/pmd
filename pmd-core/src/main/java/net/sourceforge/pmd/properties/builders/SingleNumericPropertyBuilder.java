@@ -8,6 +8,7 @@ package net.sourceforge.pmd.properties.builders;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public abstract class SingleNumericPropertyBuilder<V, T extends SingleNumericPropertyBuilder<V, T>>
     extends SingleValuePropertyBuilder<V, T> {
 

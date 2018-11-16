@@ -19,6 +19,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.0.0
  */
+// @Deprecated // will be rewritten in the next PR and placed in the properties package,
+// since there will be no need for a separate package
 public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorBuilder<E, T>> {
 
     protected String name;
@@ -58,8 +60,10 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
      * @param f The UI order
      *
      * @return The same builder
+     * @deprecated See {@link PropertyDescriptor#uiOrder()}
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public T uiOrder(float f) {
         this.uiOrder = f;
         return (T) this;

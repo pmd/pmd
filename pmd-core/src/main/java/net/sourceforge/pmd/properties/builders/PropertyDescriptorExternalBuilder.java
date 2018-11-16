@@ -17,7 +17,9 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated The property XML API will not need this anymore
  */
+@Deprecated
 public interface PropertyDescriptorExternalBuilder<E> {
 
 

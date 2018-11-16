@@ -11,6 +11,7 @@ import java.util.Arrays;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public abstract class MultiPackagedPropertyBuilder<V, T extends MultiPackagedPropertyBuilder<V, T>>
         extends MultiValuePropertyBuilder<V, T> {
 
