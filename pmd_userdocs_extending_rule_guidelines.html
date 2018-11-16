@@ -1296,9 +1296,12 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h2 id="code-formatting">Code formatting</h2>
 
-<p>We try to keep a consistent code formatting through out PMD code base to ensure an easier maintenance and also make the diff send to the mailing list as readable as possible.</p>
+<p>We try to keep a consistent code formatting through out PMD code base to ensure an easier maintenance and also make
+the pull request as readable as possible.</p>
 
-<p>In order to ensure this, we use a PMD specific Eclipse formatter configuration: <strong>tools/config/eclipse-code-formatter-settings.xml</strong>. Please do not forget to uses it before committing or any source code!</p>
+<p>In order to ensure this, we use a PMD specific Eclipse formatter configuration, which is maintained in a
+separate project - “build-tools”: <a href="https://github.com/pmd/build-tools/blob/master/eclipse/pmd-eclipse-code-formatter.xml">eclipse-code-formatter.xml</a>.
+Please do not forget to use it before committing or any source code!</p>
 
 <h2 id="correctness">Correctness</h2>
 
