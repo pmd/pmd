@@ -46,10 +46,10 @@ final class ConstraintFactory {
                 return pred.test(value);
             }
 
-
+            // TODO message could be better, eg include name of the property
             @Override
             public String validate(U value) {
-                return pred.test(value) ? null : "Constraint violated on value '" + value + "' (" + constraintDescription + ")";
+                return pred.test(value) ? null : "Constraint violated on property value '" + value + "' (" + constraintDescription + ")";
             }
 
 

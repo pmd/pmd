@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -33,11 +34,16 @@ final class GenericMultiValuePropertyDescriptor<V, C extends Collection<V>> exte
                                         ValueParser<V> parser,
                                         char delim,
                                         Class<V> type) {
-
+        // this cast is safe until 7.0.0
         super(name, description, (List<V>) defaultValue, uiOrder, delim, false);
         this.listValidators = listValidators;
         this.parser = parser;
         this.type = type;
+
+        String dftValueError = errorFor(new ArrayList<>(defaultValue));
+        if (dftValueError != null) {
+            throw new IllegalStateException(dftValueError);
+        }
     }
 
 

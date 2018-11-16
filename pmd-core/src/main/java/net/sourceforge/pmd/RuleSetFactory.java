@@ -265,13 +265,13 @@ public class RuleSetFactory {
     }
 
     /**
-     * Creates a new RuleSet for a single rule
+     * Creates a new RuleSet containing a single rule.
      *
      * @param rule
      *            The rule being created
      * @return The newly created RuleSet
      */
-    public RuleSet createSingleRuleRuleSet(final Rule rule) {
+    public RuleSet createSingleRuleRuleSet(final Rule rule) { // TODO make static?
         final long checksum;
         if (rule instanceof XPathRule) {
             checksum = rule.getProperty(XPathRule.XPATH_DESCRIPTOR).hashCode();

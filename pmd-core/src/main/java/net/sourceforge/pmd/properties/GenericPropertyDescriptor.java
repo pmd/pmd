@@ -36,6 +36,11 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
         this.constraints = constraints;
         this.parser = parser;
         this.type = type;
+
+        String dftValueError = errorFor(defaultValue);
+        if (dftValueError != null) {
+            throw new IllegalStateException(dftValueError);
+        }
     }
 
 
