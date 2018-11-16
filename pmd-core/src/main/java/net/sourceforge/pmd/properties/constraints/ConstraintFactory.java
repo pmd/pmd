@@ -60,7 +60,7 @@ final class ConstraintFactory {
 
 
             @Override
-            public PropertyConstraint<Iterable<? extends U>> toMulti() {
+            public PropertyConstraint<Iterable<? extends U>> toCollectionConstraint() {
                 final PropertyConstraint<U> thisValidator = this;
                 return fromPredicate(
                         new Predicate<Iterable<? extends U>>() {

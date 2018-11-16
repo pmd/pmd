@@ -134,7 +134,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      *
      * @return The built descriptor
      *
-     * @throws IllegalArgumentException if parameters are incorrect
+     * @throws IllegalStateException if the default value doesn't satisfy the given constraints
      */
     public abstract PropertyDescriptor<T> build();
 
@@ -194,7 +194,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         /* package private */ GenericCollectionPropertyBuilder<T, List<T>> toList() {
 
-            // TODO 7.0.0 this is obviously a lambda
             Supplier<List<T>> listSupplier = new Supplier<List<T>>() {
                 @Override
                 public List<T> get() {
@@ -205,7 +204,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return toCollection(listSupplier);
         }
 
-
+        // TODO 7.0.0 this can be inlined
         private <C extends Collection<T>> GenericCollectionPropertyBuilder<T, C> toCollection(Supplier<C> emptyCollSupplier) {
             if (getDefaultValue() != null) {
                 throw new IllegalStateException("The default value is already set!");
@@ -217,7 +216,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                                                                                                    getType());
 
             for (PropertyConstraint<? super T> validator : getConstraints()) {
-                result.require(validator.toMulti());
+                result.require(validator.toCollectionConstraint());
             }
 
             return result;
@@ -308,8 +307,21 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         @SuppressWarnings("unchecked")
         public GenericCollectionPropertyBuilder<V, C> defaultValues(V... val) {
-            super.defaultValue(getDefaultValue(Arrays.asList(val)));
-            return this;
+            return super.defaultValue(getDefaultValue(Arrays.asList(val)));
+        }
+
+
+        /**
+         * Require that the given constraint be fulfilled on each item of the
+         * value of this properties. This is a convenient shorthand for
+         * {@code require(constraint.toCollectionConstraint())}.
+         *
+         * @param constraint Constraint to impose on the items of the collection value
+         *
+         * @return The same builder
+         */
+        public GenericCollectionPropertyBuilder<V, C> requireEach(PropertyConstraint<? super V> constraint) {
+            return super.require(constraint.toCollectionConstraint());
         }
 
 
@@ -332,11 +344,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
 
 
-        /**
-         * Builds a new property descriptor with the configuration held in this builder.
-         *
-         * @return A new property
-         */
         @SuppressWarnings("unchecked")
         @Override
         public PropertyDescriptor<C> build() {

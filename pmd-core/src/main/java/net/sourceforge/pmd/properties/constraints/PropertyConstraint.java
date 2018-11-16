@@ -59,7 +59,8 @@ public interface PropertyConstraint<T> {
      *
      * @return A collection validator
      */
-    PropertyConstraint<Iterable<? extends T>> toMulti();
+    @Experimental
+    PropertyConstraint<Iterable<? extends T>> toCollectionConstraint();
 
     // TODO Java 8 move ConstraintFactory#fromPredicate here
 
