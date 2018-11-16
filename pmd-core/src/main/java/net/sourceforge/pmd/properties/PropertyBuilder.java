@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder.Supplier;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
@@ -29,9 +28,8 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * @param <T> Type of values the property handles
  *
  * @author Clément Fournier
- * @since 6.7.0
+ * @since 6.10.0
  */
-@Experimental
 public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
@@ -54,6 +52,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
+    // will maybe be scrapped
     @Deprecated
     void setDefinedExternally(boolean bool) {
         this.isDefinedExternally = bool;
@@ -70,6 +69,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
+    @Deprecated
     float getUiOrder() {
         return uiOrder;
     }
@@ -103,8 +103,11 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @param f The UI order
      *
      * @return The same builder
+     *
+     * @deprecated see {@link PropertyDescriptor#uiOrder()}
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public B uiOrder(float f) {
         this.uiOrder = f;
         return (B) this;
@@ -113,13 +116,15 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     /**
      * Add a constraint on the values that this property may take.
-     * The validity of values will be checked when constructing the XML
-     * and invalid values will be reported.
+     * The validity of values will be checked when parsing the XML,
+     * and invalid values will be reported. A rule will never be run
+     * if some of its properties violate some constraints.
      *
      * @param constraint The constraint
      *
      * @return The same builder
      */
+    // TODO we could probably specify the order of execution of constraints come 7.0.0, for now this remains unspecified
     @SuppressWarnings("unchecked")
     public B require(PropertyConstraint<? super T> constraint) {
         validators.add(constraint);
@@ -206,6 +211,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         /* package private */ GenericCollectionPropertyBuilder<T, List<T>> toList() {
 
+            // TODO 7.0.0 this is obviously a lambda
             Supplier<List<T>> listSupplier = new Supplier<List<T>>() {
                 @Override
                 public List<T> get() {
@@ -255,10 +261,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     /**
      * Generic builder for a collection-valued property.
-     * This builder allows some nice syntax to define
-     * the {@linkplain #defaultValues(Object[]) default value}.
+     * This class adds overloads to {@linkplain #defaultValues(Object[])}
+     * to make its use more flexible.
      *
-     * <p>Note: this is meant to support arbitrary collections.
+     * <p>Note: this is designed to support arbitrary collections.
      * Pre-7.0.0, the only collections available from the {@link PropertyFactory}
      * are list types though.
      *
@@ -333,8 +339,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * @return The same builder
          *
          * @deprecated PMD 7.0.0 will introduce a new XML syntax for multi-valued properties which will not rely on delimiters.
-         *             This method is kept until this is implemented for compatibility reasons with the pre-7.0.0 framework, but
-         *             it will be scrapped come 7.0.0.
+         * This method is kept until this is implemented for compatibility reasons with the pre-7.0.0 framework, but
+         * it will be scrapped come 7.0.0.
          */
         @Deprecated
         public GenericCollectionPropertyBuilder<V, C> delim(char delim) {

@@ -16,6 +16,8 @@ import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
  * Note: from 7.0.0 on, this will be the only way to
  * build property descriptors.
  *
+ * TODO next PR add doc
+ *
  * @author Clément Fournier
  * @since 6.10.0
  */
@@ -59,8 +61,7 @@ public final class PropertyFactory {
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         // TODO find solution to document the set of possible values
         // At best, map that requirement to a constraint (eg make parser return null if not found, and
-        // add a non-null constraint with the right description. But if we disallow null values everywhere,
-        // this will get caught early on.)
+        // add a non-null constraint with the right description.)
         return new GenericPropertyBuilder<>(name, ValueParserConstants.enumerationParser(nameToValue), (Class<T>) Object.class);
     }
 

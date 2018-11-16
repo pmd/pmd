@@ -120,6 +120,8 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      *
      * @param propertyString The string to parse
      *
+     * @return The value represented by the string
+     *
      * @throws IllegalArgumentException if the given string cannot be parsed
      * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
      * simple strings, this method won't be general enough
@@ -148,8 +150,10 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      *
      * @param rule Rule
      *
+     * @return String
+     *
      * @deprecated Used nowhere, and fails if the rule doesn't define the property descriptor
-     *             A better solution will be added on property source
+     * A better solution will be added on property source
      */
     @Deprecated
     String propertyErrorFor(Rule rule);
