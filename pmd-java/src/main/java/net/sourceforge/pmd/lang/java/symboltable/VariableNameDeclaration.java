@@ -118,7 +118,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
         if (typeNode != null) {
             return typeNode.getType();
         }
-        return null;
+        // if there is no type node, then return the type of the declarator id.
+        // this might be a inferred type
+        return getDeclaratorId().getType();
     }
 
     @Override
