@@ -46,11 +46,11 @@ public class EscapeUtilsTest {
 
     @Test
     public void testEscapeHtmlWithinMarkdownBlocks() {
-        String text = "paragraph\n\n> quote <script>\n> quote line \"2\"\n> quote line `<script>` 3\n\n"
+        String text = "paragraph\n\n> quote <script>\n> quote line \"2\"\n>quote line `<script>` 3\n\n"
                 + "next paragraph\n\n    code <script> \"a < b\"\n    code line 2\n\n"
                 + "next paragraph\n\n```\ncode <script> \"a < b\"\ncode line 2\n```\n\n"
                 + "next paragraph\n\n```java\nString = \"code <script> with syntax highlighting\";\ncode line 2\n```\n";
-        String expected = "paragraph\n\n> quote &lt;script&gt;\n> quote line &quot;2&quot;\n> quote line `<script>` 3\n\n"
+        String expected = "paragraph\n\n> quote &lt;script&gt;\n> quote line &quot;2&quot;\n>quote line `<script>` 3\n\n"
                 + "next paragraph\n\n    code <script> \"a < b\"\n    code line 2\n\n"
                 + "next paragraph\n\n```\ncode <script> \"a < b\"\ncode line 2\n```\n\n"
                 + "next paragraph\n\n```java\nString = \"code <script> with syntax highlighting\";\ncode line 2\n```\n";

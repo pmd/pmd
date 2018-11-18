@@ -11,7 +11,7 @@ import org.apache.commons.text.StringEscapeUtils;
 public final class EscapeUtils {
     private static final String BACKTICK = "`";
     private static final String URL_START = "<http";
-    private static final String QUOTE_START = "> ";
+    private static final String QUOTE_START = ">";
 
     private EscapeUtils() {
         // This is a utility class
@@ -32,8 +32,8 @@ public final class EscapeUtils {
 
         String currentLine = line;
         if (currentLine.startsWith(QUOTE_START)) {
-            escaped.append(currentLine.substring(0, 2));
-            currentLine = currentLine.substring(2);
+            escaped.append(currentLine.substring(0, 1));
+            currentLine = currentLine.substring(1);
         }
 
         int url = currentLine.indexOf(URL_START);
