@@ -38,6 +38,10 @@ public class EscapeUtilsTest {
                 EscapeUtils.escapeSingleLine("URL: <http://www.google.com> is a url without ssl"));
         assertEquals("> this is a quote line",
                 EscapeUtils.escapeSingleLine("> this is a quote line"));
+        assertEquals("combination of URLs and backticks: <https://pmd.github.io> but `<script>` &lt;strong&gt;escaped&lt;/strong&gt;",
+                EscapeUtils.escapeSingleLine("combination of URLs and backticks: <https://pmd.github.io> but `<script>` <strong>escaped</strong>"));
+        assertEquals("combination of URLs and backticks: `<script>` &lt;strong&gt;escaped&lt;/strong&gt; but <https://pmd.github.io>",
+                EscapeUtils.escapeSingleLine("combination of URLs and backticks: `<script>` <strong>escaped</strong> but <https://pmd.github.io>"));
     }
 
     @Test

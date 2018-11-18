@@ -261,7 +261,7 @@ The paragraph after the quotation.
 > in cdata
 
 
-If the description contains a code example, then e.g. "quotes" should not be escaped:
+If the description contains a code example, then e.g. &quot;quotes&quot; should not be escaped:
 
 ```
 if (0 > 1 && 0 < 1) {
