@@ -58,7 +58,7 @@ public class ASTType extends AbstractJavaTypeNode {
      */
     @Deprecated
     public boolean isArray() {
-        return getArrayDepth() > 0;
+        return isArrayType();
     }
 
 
@@ -67,6 +67,6 @@ public class ASTType extends AbstractJavaTypeNode {
      *
      */
     public boolean isArrayType() {
-        return isArray();
+        return getArrayDepth() > 0;
     }
 }
