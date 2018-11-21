@@ -4034,7 +4034,7 @@ NullPointerExceptions.</p>
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="w">
 </span><span class="p">[</span><span class="w">
-</span><span class="p">(.</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="na">@Array</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="w">
+</span><span class="p">(.</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="p">[</span><span class="na">@ArrayType</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="w">
 </span><span class="ow">and</span><span class="w">
 </span><span class="p">(.</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">BlockStatement</span><span class="o">/</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">ReturnStatement</span><span class="o">/</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">NullLiteral</span><span class="p">)</span><span class="w">
 </span><span class="p">]</span><span class="w">
