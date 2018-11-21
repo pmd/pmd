@@ -39,9 +39,6 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
-* The implementation of the adapters for the XPath engines Saxon and Jaxen (package `net.sourceforge.pmd.lang.ast.xpath`)
-  are now deprecated. They'll be moved to an internal package come 7.0.0. Only `Attribute` remains public API.
-  
 #### Properties framework
 
 The properties framework is about to get a lifting, and for that reason, the following APIs are
@@ -79,6 +76,24 @@ now deprecated until 7.0.0. The proposed changes to the API are described [on th
       which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
       new way to document these properties exhaustively will be added with 7.0.0.
     * `errorFor` is deprecated as its return type will be changed to `Optional<String>` with the shift to Java 8.
+
+#### Deprecated APIs
+
+*   The implementation of the adapters for the XPath engines Saxon and Jaxen (package `net.sourceforge.pmd.lang.ast.xpath`)
+    are now deprecated. They'll be moved to an internal package come 7.0.0. Only `Attribute` remains public API.
+
+*   The interface `net.sourceforge.pmd.lang.java.ast.Dimensionable` has been deprecated.
+    It gets in the way of a grammar change for 7.0.0 and won't be needed anymore (see [#997](https://github.com/pmd/pmd/issues/997)).
+
+*   Several methods from LocalVariableDeclaration and FieldDeclaration have also been deprecated:
+
+    *   FieldDeclaration won't be a TypeNode come 7.0.0, so `getType` and `getTypeDefinition` are deprecated.
+
+    *   The method `getVariableName` on those two nodes will be removed, too.
+
+    All these are deprecated because those nodes may declare several variables at once, possibly
+    with different types (and obviously with different names). They both implement `Iterator<ASTVariableDeclaratorId>`
+    though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
 
 ### External Contributions
 
