@@ -2750,7 +2750,7 @@ NullPointerExceptions.
 ``` xpath
 //MethodDeclaration
 [
-(./ResultType/Type[@Array='true'])
+(./ResultType/Type[@ArrayType='true'])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]

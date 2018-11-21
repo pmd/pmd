@@ -903,9 +903,9 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
    [
-     @Image = ancestor::MethodDeclaration//LocalVariableDeclaration[@Array="true"]/VariableDeclarator/VariableDeclaratorId/@Image
+     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType="true"]/@Image
      or
-     @Image = ancestor::MethodDeclaration//FormalParameter/VariableDeclaratorId/@Image
+     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Image
    ]
    /../..[count(.//PrimarySuffix)
    =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix

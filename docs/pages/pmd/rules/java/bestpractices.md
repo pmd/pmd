@@ -1557,18 +1557,18 @@ having to deal with the creation of an array.
 ``` xpath
 //FormalParameters/FormalParameter
     [position()=last()]
-    [@Array='true']
-    [@Varargs='false']
-    [not (./Type/ReferenceType[@Array='true'][PrimitiveType[@Image='byte']])]
+    [VariableDeclaratorId/@ArrayType=true()]
+    [@Varargs=false()]
+    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
     [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
     [not (./Type/PrimitiveType[@Image='byte'])]
     [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
     [not(
         ancestor::MethodDeclaration
-            [@Public='true' and @Static='true']
-            [child::ResultType[@Void='true']] and
+            [@Public=true() and @Static=true()]
+            [child::ResultType[@Void=true()]] and
         ancestor::MethodDeclarator[@Image='main'] and
-        ..[@ParameterCount='1'] and
+        ..[@ParameterCount=1] and
         ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
     )]
 ```
