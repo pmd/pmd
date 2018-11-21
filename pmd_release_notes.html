@@ -1320,11 +1320,6 @@ now also detects <a href="https://github.com/joel-costigliola/assertj-core">Soft
 
 <h3 id="api-changes">API Changes</h3>
 
-<ul>
-  <li>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code>)
-are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <code class="highlighter-rouge">Attribute</code> remains public API.</li>
-</ul>
-
 <h4 id="properties-framework">Properties framework</h4>
 
 <p>The properties framework is about to get a lifting, and for that reason, the following APIs are
@@ -1371,6 +1366,35 @@ new way to document these properties exhaustively will be added with 7.0.0.</li>
   </li>
 </ul>
 
+<h4 id="deprecated-apis">Deprecated APIs</h4>
+
+<ul>
+  <li>
+    <p>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code>)
+are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <code class="highlighter-rouge">Attribute</code> remains public API.</p>
+  </li>
+  <li>
+    <p>The interface <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.Dimensionable</code> has been deprecated.
+It gets in the way of a grammar change for 7.0.0 and won’t be needed anymore (see <a href="https://github.com/pmd/pmd/issues/997">#997</a>).</p>
+  </li>
+  <li>
+    <p>Several methods from LocalVariableDeclaration and FieldDeclaration have also been deprecated:</p>
+
+    <ul>
+      <li>
+        <p>FieldDeclaration won’t be a TypeNode come 7.0.0, so <code class="highlighter-rouge">getType</code> and <code class="highlighter-rouge">getTypeDefinition</code> are deprecated.</p>
+      </li>
+      <li>
+        <p>The method <code class="highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
+      </li>
+    </ul>
+
+    <p>All these are deprecated because those nodes may declare several variables at once, possibly
+with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;ASTVariableDeclaratorId&gt;</code>
+though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
+  </li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1400,7 +1424,7 @@ new way to document these properties exhaustively will be added with 7.0.0.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 16, 2018 <br />
+ Site last generated: Nov 21, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
