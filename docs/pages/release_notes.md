@@ -81,20 +81,26 @@ now deprecated until 7.0.0. The proposed changes to the API are described [on th
 
 #### Deprecated APIs
 
-*   The implementation of the adapters for the XPath engines Saxon and Jaxen (package `net.sourceforge.pmd.lang.ast.xpath`)
-    are now deprecated. They'll be moved to an internal package come 7.0.0. Only `Attribute` remains public API.
+{% jdoc_nspace :xpath core::lang.ast.xpath %}
+{% jdoc_nspace :jast java::lang.java.ast %}
 
-*   The interface `net.sourceforge.pmd.lang.java.ast.Dimensionable` has been deprecated.
+*   The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package :xpath %})
+    are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc xpath::Attribute %} remains public API.
+
+*   The interface {% jdoc jast::Dimensionable %} has been deprecated.
     It gets in the way of a grammar change for 7.0.0 and won't be needed anymore (see [#997](https://github.com/pmd/pmd/issues/997)).
 
-*   Several methods from LocalVariableDeclaration and FieldDeclaration have also been deprecated:
+*   Several methods from {% jdoc jast::ASTLocalVariableDeclaration %} and {% jdoc jast::ASTFieldDeclaration %} have
+    also been deprecated:
 
-    *   FieldDeclaration won't be a TypeNode come 7.0.0, so `getType` and `getTypeDefinition` are deprecated.
+    *   {% jdoc jast::ASTFieldDeclaration %} won't be a {% jdoc jast::TypeNode %} come 7.0.0, so
+        {% jdoc jast::ASTFieldDeclaration#getType() %} and
+        {% jdoc jast::ASTFieldDeclaration#getTypeDefinition() %} are deprecated.
 
     *   The method `getVariableName` on those two nodes will be removed, too.
 
     All these are deprecated because those nodes may declare several variables at once, possibly
-    with different types (and obviously with different names). They both implement `Iterator<ASTVariableDeclaratorId>`
+    with different types (and obviously with different names). They both implement `Iterator<`{% jdoc jast::ASTVariableDeclaratorId %}`>`
     though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
 
 ### External Contributions
@@ -110,5 +116,7 @@ now deprecated until 7.0.0. The proposed changes to the API are described [on th
 
 {% endtocmaker %}
 
-{% include note.html content="The release notes of previous versions are available [here](pmd_release_notes_old.html)" %}
+{% unless is_release_notes_processor %}
+    {% include note.html content="The release notes of previous versions are available [here](pmd_release_notes_old.html)" %}
+{% endunless %}
 
