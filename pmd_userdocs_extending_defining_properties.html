@@ -1274,7 +1274,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="defining-properties">Defining properties</h2>
+  
+<h2 id="defining-properties">Defining properties</h2>
 
 <p>If you’re a rule developer, you may want to think about what would be useful for a user of your rule to parameterise. It could be a numeric report level, a boolean flag changing the behaviour of your rule… PMD ships with many types of properties ready to use!</p>
 
@@ -1378,10 +1379,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>The procedure to define a property is quite straightforward:</p>
 <ul>
   <li>Create a property descriptor of the type you want, using its builder;</li>
-  <li>Call <code class="highlighter-rouge">definePropertyDescriptor(&lt;your descriptor&gt;)</code> in the rule’s noarg constructor.</li>
+  <li>Call <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertySource.html#definePropertyDescriptor(net.sourceforge.pmd.properties.PropertyDescriptor)"><code class="highlighter-rouge">definePropertyDescriptor(PropertyDescriptor)</code></a>` in the rule’s noarg constructor.</li>
 </ul>
 
-<p>You can then retrieve the value of the property at any time using <code class="highlighter-rouge">getProperty(&lt;your descriptor&gt;)</code>.</p>
+<p>You can then retrieve the value of the property at any time using <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertySource.html#getProperty(net.sourceforge.pmd.properties.PropertyDescriptor)"><code class="highlighter-rouge">getProperty(PropertyDescriptor)</code></a>.</p>
 
 <h4 id="creating-a-descriptor">Creating a descriptor</h4>
 
@@ -1527,6 +1528,7 @@ There are several things to notice here:</p>
 <p>Notice that in the example above, <code class="highlighter-rouge">@Image = $reportedIdentifiers</code> doesn’t test <code class="highlighter-rouge">@Image</code> for equality with the whole sequence <code class="highlighter-rouge">('foo', 'bar')</code>, it tests whether the sequence <em>contains</em> <code class="highlighter-rouge">@Image</code>. That is, the above rule will report all variables named <code class="highlighter-rouge">foo</code> or <code class="highlighter-rouge">bar</code>. All other XPath 2.0 <a href="https://www.w3.org/TR/xpath-functions/#sequence-functions">functions operating on sequences</a> are supported.</p>
 
 
+
     <div class="tags">
         
         <b>Tags: </b>
@@ -1553,7 +1555,7 @@ There are several things to notice here:</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> December 2017 (6.0.0)<br/> Site last generated: Nov 21, 2018 <br />
+<span>Page last updated:</span> December 2017 (6.0.0)<br/> Site last generated: Nov 22, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

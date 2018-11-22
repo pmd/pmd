@@ -1375,19 +1375,22 @@ new way to document these properties exhaustively will be added with 7.0.0.</li>
 
 <ul>
   <li>
-    <p>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code>)
-are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <code class="highlighter-rouge">Attribute</code> remains public API.</p>
+    <p>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code></a>)
+are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/Attribute.html#"><code class="highlighter-rouge">Attribute</code></a> remains public API.</p>
   </li>
   <li>
-    <p>The interface <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.Dimensionable</code> has been deprecated.
+    <p>The interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/Dimensionable.html#"><code class="highlighter-rouge">Dimensionable</code></a> has been deprecated.
 It gets in the way of a grammar change for 7.0.0 and won’t be needed anymore (see <a href="https://github.com/pmd/pmd/issues/997">#997</a>).</p>
   </li>
   <li>
-    <p>Several methods from LocalVariableDeclaration and FieldDeclaration have also been deprecated:</p>
+    <p>Several methods from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code class="highlighter-rouge">ASTLocalVariableDeclaration</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code class="highlighter-rouge">ASTFieldDeclaration</code></a> have
+also been deprecated:</p>
 
     <ul>
       <li>
-        <p>FieldDeclaration won’t be a TypeNode come 7.0.0, so <code class="highlighter-rouge">getType</code> and <code class="highlighter-rouge">getTypeDefinition</code> are deprecated.</p>
+        <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code class="highlighter-rouge">ASTFieldDeclaration</code></a> won’t be a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code class="highlighter-rouge">TypeNode</code></a> come 7.0.0, so
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code class="highlighter-rouge">getType</code></a> and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code class="highlighter-rouge">getTypeDefinition</code></a> are deprecated.</p>
       </li>
       <li>
         <p>The method <code class="highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
@@ -1395,7 +1398,7 @@ It gets in the way of a grammar change for 7.0.0 and won’t be needed anymore (
     </ul>
 
     <p>All these are deprecated because those nodes may declare several variables at once, possibly
-with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;ASTVariableDeclaratorId&gt;</code>
+with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;</code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code class="highlighter-rouge">ASTVariableDeclaratorId</code></a><code class="highlighter-rouge">&gt;</code>
 though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
   </li>
 </ul>
@@ -1410,10 +1413,12 @@ though, so you should iterate on each declared variable. See <a href="https://gi
   <li><a href="https://github.com/pmd/pmd/pull/1434">#1434</a>: [java] JUnitTestsShouldIncludeAssert: Recognize AssertJ soft assertions as valid assert statements - <a href="https://github.com/ledoyen">Loïc Ledoyen</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1447">#1447</a>: [fortran] Use diamond operator in impl - <a href="https://github.com/reudismam">reudismam</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1453">#1453</a>: [java] Adding the fix for #1440. Showing correct message for CommentDefaultAccessmodifier. - <a href="https://github.com/stationeros">Rohit Kumar</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1464">#1464</a>: [doc] Fix XSS on documentation web page - <a href="https://github.com/marob">Maxime Robert</a></li>
-</ul>
+  <li>
+    <p><a href="https://github.com/pmd/pmd/pull/1464">#1464</a>: [doc] Fix XSS on documentation web page - <a href="https://github.com/marob">Maxime Robert</a></p>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The release notes of previous versions are available <a href="pmd_release_notes_old.html">here</a></div>
+    <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The release notes of previous versions are available <a href="pmd_release_notes_old.html">here</a></div>
+  </li>
+</ul>
 
 
 
@@ -1431,7 +1436,7 @@ though, so you should iterate on each declared variable. See <a href="https://gi
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 21, 2018 <br />
+ Site last generated: Nov 22, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
