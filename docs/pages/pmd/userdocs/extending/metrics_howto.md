@@ -39,8 +39,9 @@ which is the name of the metric key as defined in  `JavaClassMetricKey` or `Java
 
 The function will throw an exception in the following cases:
 * The context node is neither an instance of {% jdoc jast::ASTAnyTypeDeclaration %} or {% jdoc jast::MethodLikeNode %}, that is,
-it's not one of `ClassOrInterfaceDeclaration`, `EnumDeclaration`, `AnnotationDeclaration`, `MethodDeclaration`,
-`ConstructorDeclaration`, or `LambdaExpression`.
+it's not one of {% jdoc jast::ASTClassOrInterfaceDeclaration %}, {% jdoc jast::ASTEnumDeclaration},
+{% jdoc jast::ASTAnnotationDeclaration %}, {% jdoc jast::ASTMethodDeclaration %},
+{% jdoc jast::ASTConstructorDeclaration %}, or {% jdoc jast::ASTLambdaExpression %}.
 * The metric key does not exist (the name is case insensitive) or is not defined for the type of the context node.
 
 {%include note.html

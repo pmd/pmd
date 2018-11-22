@@ -269,12 +269,6 @@ class JavadocTag < Liquid::Tag
 
 end
 
-
-
 Liquid::Template.register_tag('jdoc', JavadocTag)
 Liquid::Template.register_tag('jdoc_package', JavadocTag)
 Liquid::Template.register_tag('jdoc_old', JavadocTag)
-Liquid::Template.register_tag('jdoc_nspace', JDocNamespaceDeclaration)
-
-
-

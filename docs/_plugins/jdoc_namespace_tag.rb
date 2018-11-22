@@ -37,7 +37,6 @@ class JDocNamespaceDeclaration < Liquid::Tag
   end
 
   def render(var_ctx)
-
     unless var_ctx[JDOC_NAMESPACE_MAP]
       var_ctx[JDOC_NAMESPACE_MAP] = JDocNamespaceDeclaration::make_base_namespaces #base namespace map
     end
@@ -55,6 +54,9 @@ class JDocNamespaceDeclaration < Liquid::Tag
   # Parses a namespaced fqcn of the form nspace::a.b.c.Class into a tuple [artifactId, expandedFQCN]
   # If allow_sym is true, then the syntax :nspace is allowed as well
   def self.parse_fqcn(fqcn, var_ctx, allow_sym = true)
+    unless var_ctx[JDOC_NAMESPACE_MAP]
+      var_ctx[JDOC_NAMESPACE_MAP] = JDocNamespaceDeclaration::make_base_namespaces #base namespace map
+    end
 
     nspace = nil
     fqcn_suffix = ""
@@ -108,3 +110,5 @@ class JDocNamespaceDeclaration < Liquid::Tag
   end
 
 end
+
+Liquid::Template.register_tag('jdoc_nspace', JDocNamespaceDeclaration)
