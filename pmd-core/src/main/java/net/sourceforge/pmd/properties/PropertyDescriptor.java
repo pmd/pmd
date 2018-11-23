@@ -16,7 +16,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * any associated GUIs. While concrete descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
- * <h1>Upcoming API changes to the properties framework: see https://github.com/pmd/pmd/issues/1415</h1>
+ * <h1>Upcoming API changes to the properties framework</h1>
+ * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
  *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
  *
