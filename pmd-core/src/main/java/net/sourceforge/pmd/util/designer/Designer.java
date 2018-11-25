@@ -1015,11 +1015,7 @@ public class Designer implements ClipboardOwner {
                         break;
                     }
                 }
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
+            } catch (ParserConfigurationException | IOException | SAXException e) {
                 e.printStackTrace();
             }
         }
@@ -1056,11 +1052,7 @@ public class Designer implements ClipboardOwner {
             Source source = new DOMSource(document);
             Result result = new StreamResult(new FileWriter(new File(SETTINGS_FILE_NAME)));
             transformer.transform(source, result);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
+        } catch (ParserConfigurationException | IOException | TransformerException e) {
             e.printStackTrace();
         }
     }

@@ -380,18 +380,12 @@ public class RuleSetFactory {
             ruleSetBuilder.filterRulesByPriority(minimumPriority);
 
             return ruleSetBuilder.build();
-        } catch (ClassNotFoundException cnfe) {
-            return classNotFoundProblem(cnfe);
-        } catch (InstantiationException ie) {
-            return classNotFoundProblem(ie);
-        } catch (IllegalAccessException iae) {
-            return classNotFoundProblem(iae);
-        } catch (ParserConfigurationException pce) {
-            return classNotFoundProblem(pce);
-        } catch (IOException ioe) {
-            return classNotFoundProblem(ioe);
-        } catch (SAXException se) {
-            return classNotFoundProblem(se);
+        } catch (ReflectiveOperationException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Couldn't find the class " + ex.getMessage(), ex);
+        } catch (ParserConfigurationException | IOException | SAXException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Couldn't read the ruleset " + ruleSetReferenceId + ": " + ex.getMessage(), ex);
         }
     }
 
@@ -430,11 +424,6 @@ public class RuleSetFactory {
         }
         
         return dbf.newDocumentBuilder();
-    }
-
-    private static RuleSet classNotFoundProblem(Exception ex) {
-        ex.printStackTrace();
-        throw new RuntimeException("Couldn't find the class " + ex.getMessage());
     }
 
     /**
