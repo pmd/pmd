@@ -37,7 +37,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     protected boolean isDefinedExternally;
     private String name;
     private String description;
-    private float uiOrder = 0f;
     private T defaultValue;
 
 
@@ -66,12 +65,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     String getDescription() {
         return description;
-    }
-
-
-    @Deprecated
-    float getUiOrder() {
-        return uiOrder;
     }
 
 
@@ -229,7 +222,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return new GenericPropertyDescriptor<>(
                     getName(),
                     getDescription(),
-                    getUiOrder(),
+                    0f,
                     getDefaultValue(),
                     getConstraints(),
                     parser,
@@ -358,7 +351,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return (PropertyDescriptor<C>) new GenericMultiValuePropertyDescriptor<>(
                     getName(),
                     getDescription(),
-                    getUiOrder(),
+                    0f,
                     getDefaultValue(),
                     getConstraints(),
                     parser,
