@@ -146,7 +146,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @param <T> Type of values the property handles
      *
      * @author Clément Fournier
-     * @since 6.7.0
+     * @since 6.10.0
      */
     // Note: we may keep some specialized property builders around to allow for some sugar,
     // e.g. specifying the default value of a regex property as a string, or like the collection one,
@@ -247,7 +247,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @param <C> Collection type for the property being built
      *
      * @author Clément Fournier
-     * @since 6.7.0
+     * @since 6.10.0
      */
     public static final class GenericCollectionPropertyBuilder<V, C extends Collection<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
         private final ValueParser<V> parser;
