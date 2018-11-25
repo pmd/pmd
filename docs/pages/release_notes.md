@@ -31,6 +31,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1318](https://github.com/pmd/pmd/issues/1318): \[test] Kotlin DSL to ease test writing
     *   [#1328](https://github.com/pmd/pmd/issues/1328): \[ci] Building docs for release fails
     *   [#1341](https://github.com/pmd/pmd/issues/1341): \[doc] Documentation Error with Regex Properties
+    *   [#1468](https://github.com/pmd/pmd/issues/1468): \[doc] Missing escaping leads to XSS
 *   java
     *   [#1460](https://github.com/pmd/pmd/issues/1460): \[java] Intermittent PMD failure : PMD processing errors while no violations reported
 *   java-bestpractices
