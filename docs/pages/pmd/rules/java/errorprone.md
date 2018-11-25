@@ -381,7 +381,7 @@ private void buz(String x) {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set|no|
+|exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.|no|
 |separator|,|Ignore list separator|no|
 |exceptionList||Strings to ignore|no|
 |maxDuplicateLiterals|4|Max duplicate literals|no|
