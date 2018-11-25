@@ -29,6 +29,7 @@ This is a {{ site.pmd.release_type }} release.
 *   all
     *   [#1284](https://github.com/pmd/pmd/issues/1284): \[doc] Keep record of every currently deprecated API
     *   [#1318](https://github.com/pmd/pmd/issues/1318): \[test] Kotlin DSL to ease test writing
+    *   [#1328](https://github.com/pmd/pmd/issues/1328): \[ci] Building docs for release fails
     *   [#1341](https://github.com/pmd/pmd/issues/1341): \[doc] Documentation Error with Regex Properties
 *   java
     *   [#1460](https://github.com/pmd/pmd/issues/1460): \[java] Intermittent PMD failure : PMD processing errors while no violations reported
