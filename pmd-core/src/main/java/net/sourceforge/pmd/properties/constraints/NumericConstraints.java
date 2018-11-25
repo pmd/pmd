@@ -26,19 +26,17 @@ public final class NumericConstraints {
 
     /**
      * Requires the number to be inside a range.
-     * The int values of the numbers are used so there
-     * may be some unexpected behaviour with decimal numbers.
      *
      * @param <N> Type of number
      *
      * @return A range constraint
      */
-    public static <N extends Number> PropertyConstraint<N> inRange(final N minInclusive, final N maxInclusive) {
+    public static <N extends Number & Comparable<N>> PropertyConstraint<N> inRange(final N minInclusive, final N maxInclusive) {
         return ConstraintFactory.fromPredicate(
                 new Predicate<N>() {
                     @Override
                     public boolean test(N t) {
-                        return minInclusive.intValue() <= t.intValue() && maxInclusive.intValue() >= t.intValue();
+                        return minInclusive.compareTo(t) >= 0 && maxInclusive.compareTo(t) <= 0;
                     }
                 },
                 "Should be between " + minInclusive + " and " + maxInclusive
@@ -49,6 +47,9 @@ public final class NumericConstraints {
 
     /**
      * Requires the number to be strictly positive.
+     * The int values of the number is used for comparison
+     * so there may be some unexpected behaviour with decimal
+     * numbers.
      *
      * @param <N> Type of number
      *
@@ -64,6 +65,5 @@ public final class NumericConstraints {
                 },
                 "Should be positive"
         );
-
     }
 }
