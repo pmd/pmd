@@ -36,7 +36,7 @@ public final class NumericConstraints {
                 new Predicate<N>() {
                     @Override
                     public boolean test(N t) {
-                        return minInclusive.compareTo(t) >= 0 && maxInclusive.compareTo(t) <= 0;
+                        return minInclusive.compareTo(t) <= 0 && maxInclusive.compareTo(t) >= 0;
                     }
                 },
                 "Should be between " + minInclusive + " and " + maxInclusive

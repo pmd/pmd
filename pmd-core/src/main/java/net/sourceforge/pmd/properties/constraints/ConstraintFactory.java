@@ -62,7 +62,7 @@ final class ConstraintFactory {
             @Override
             public PropertyConstraint<Iterable<? extends U>> toCollectionConstraint() {
                 final PropertyConstraint<U> thisValidator = this;
-                return fromPredicate(
+                return ConstraintFactory.<Iterable<? extends U>>fromPredicate(
                         new Predicate<Iterable<? extends U>>() {
                             @Override
                             public boolean test(Iterable<? extends U> us) {
