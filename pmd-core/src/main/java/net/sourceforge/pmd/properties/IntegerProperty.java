@@ -16,7 +16,7 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
  * @author Brian Remedios
  *
  * @deprecated Use a {@code PropertyDescriptor<Integer>} instead. A builder is available from {@link PropertyFactory#intProperty(String)}.
- *             Will be removed in 7.0.0.
+ *             This class will be removed in 7.0.0.
  */
 @Deprecated
 public final class IntegerProperty extends AbstractNumericProperty<Integer> {

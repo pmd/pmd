@@ -18,10 +18,24 @@ import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyB
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
-
+// @formatter:off
 /**
  * Base class for generic property builders.
- * Note: from 7.0.0 on, all property builders will
+ * Property builders are obtained from the {@link PropertyFactory},
+ * and are used to build {@link PropertyDescriptor}s.
+ *
+ * <p>All properties <i>must</i> specify the following attributes to build
+ * properly:
+ * <ul>
+ *   <li>A name: filled-in when obtaining the builder
+ *   <li>A description: see {@link #desc(String)}
+ *   <li>A default value: see {@link #defaultValue(Object)}
+ * </ul>
+ *
+ * <p>The {@link PropertyDescriptor} may be built after this required steps by
+ * calling {@link #build()}.
+ *
+ * <p>Note: from 7.0.0 on, all property builders will
  * extend this class instead of {@link PropertyDescriptorBuilder}.
  *
  * @param <B> Concrete type of this builder instance
@@ -30,6 +44,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * @author Clément Fournier
  * @since 6.10.0
  */
+// @formatter:on
 public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
@@ -63,22 +78,34 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
-    String getDescription() {
+    protected String getDescription() {
+        if (StringUtils.isBlank(description)) {
+            throw new IllegalArgumentException("Description must be provided");
+        }
         return description;
     }
 
 
-    T getDefaultValue() {
+    protected T getDefaultValue() {
+        if (defaultValue == null) {
+            throw new IllegalArgumentException("The default value may not be null.");
+        }
         return defaultValue;
     }
 
 
     /**
-     * Specify the description of the property.
+     * Specify the description of the property. This is used for documentation.
+     * Please describe precisely how the property may change the behaviour of the
+     * rule. Providing complete information should be preferred over being concise.
+     *
+     * <p>Calling this method is required for {@link #build()} to succeed.
      *
      * @param desc The description
      *
      * @return The same builder
+     *
+     * @throws IllegalArgumentException If the description is null or whitespace
      */
     @SuppressWarnings("unchecked")
     public B desc(String desc) {
@@ -89,6 +116,13 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return (B) this;
     }
 
+    // TODO 7.0.0 document the following:
+    //
+    //     * <p>Constraints should be independent from each other, and should
+    //     * perform no side effects. PMD doesn't specify how many times a
+    //     * constraint predicate will be executed, or in what order.
+    //
+    // This is superfluous right now bc users may not create their own constraints
 
     /**
      * Add a constraint on the values that this property may take.
@@ -100,7 +134,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      *
      * @return The same builder
      */
-    // TODO we could probably specify the order of execution of constraints come 7.0.0, for now this remains unspecified
     @SuppressWarnings("unchecked")
     public B require(PropertyConstraint<? super T> constraint) {
         validators.add(constraint);
@@ -109,14 +142,23 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
 
     /**
-     * Specify a default value.
+     * Specify a default value. Some subclasses provide convenient
+     * related methods, see e.g. {@link GenericCollectionPropertyBuilder#defaultValues(Object[])}.
+     * Using the null value is prohibited.
      *
-     * @param val Value
+     * <p>Calling this method is required for {@link #build()} to succeed.
+     *
+     * @param val Default value
      *
      * @return The same builder
+     *
+     * @throws IllegalArgumentException If the argument is null
      */
     @SuppressWarnings("unchecked")
     public B defaultValue(T val) {
+        if (val == null) {
+            throw new IllegalArgumentException("Property values may not be null.");
+        }
         this.defaultValue = val;
         return (B) this;
     }
@@ -127,7 +169,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      *
      * @return The built descriptor
      *
-     * @throws IllegalStateException if the default value doesn't satisfy the given constraints
+     * @throws IllegalArgumentException if the description or default value were not provided, or if the default value doesn't satisfy the given constraints
      */
     public abstract PropertyDescriptor<T> build();
 
@@ -196,6 +238,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
             return toCollection(listSupplier);
         }
+
 
         // TODO 7.0.0 this can be inlined
         private <C extends Collection<T>> GenericCollectionPropertyBuilder<T, C> toCollection(Supplier<C> emptyCollSupplier) {
