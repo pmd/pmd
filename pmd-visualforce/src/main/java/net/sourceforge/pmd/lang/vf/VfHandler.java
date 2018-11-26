@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.vf;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.vf.ast.DumpFacade;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.rule.VfRuleViolationFactory;
 
-public class VfHandler extends AbstractLanguageVersionHandler {
+public class VfHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.apex;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.apex.rule.ApexRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
-public class ApexHandler extends AbstractLanguageVersionHandler {
+public class ApexHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public VisitorStarter getMultifileFacade() {

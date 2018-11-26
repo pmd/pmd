@@ -596,6 +596,8 @@ public class RuleSet implements ChecksumAware {
         return includePatterns;
     }
 
+
+
     /**
      * Does any Rule for the given Language use the DFA layer?
      *
@@ -604,6 +606,7 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if a Rule for the Language uses the DFA layer,
      *         <code>false</code> otherwise.
      */
+    @Deprecated
     public boolean usesDFA(Language language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language) && r.isDfa()) {
@@ -621,6 +624,7 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if a Rule for the Language uses Type
      *         Resolution, <code>false</code> otherwise.
      */
+    @Deprecated
     public boolean usesTypeResolution(Language language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language) && r.isTypeResolution()) {
@@ -640,6 +644,7 @@ public class RuleSet implements ChecksumAware {
      * @return {@code true} if a Rule for the Language uses multi file analysis,
      *         {@code false} otherwise.
      */
+    @Deprecated
     public boolean usesMultifile(Language language) {
         for (Rule r : rules) {
             if (r.getLanguage().equals(language) && r.isMultifile()) {

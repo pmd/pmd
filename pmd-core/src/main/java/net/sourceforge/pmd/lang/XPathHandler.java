@@ -48,6 +48,9 @@ public interface XPathHandler {
     /**
      * Get a Jaxen Navigator for this Language. May return <code>null</code> if
      * there is no Jaxen Navigation for this language.
+     *
+     * @deprecated PMD 7.0.0 will remove support for Jaxen
      */
+    @Deprecated
     Navigator getNavigator();
 }
