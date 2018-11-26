@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language Module for Swift
+ *
+ * @deprecated There is no full PMD support for Swift.
  */
+@Deprecated
 public class SwiftLanguageModule extends BaseLanguageModule {
 
     /** The name. */

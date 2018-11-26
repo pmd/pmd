@@ -110,6 +110,30 @@ now deprecated until 7.0.0. The proposed changes to the API are described [on th
     with different types (and obviously with different names). They both implement `Iterator<`{% jdoc jast::ASTVariableDeclaratorId %}`>`
     though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
 
+*   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
+    are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+    not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:
+
+    *   {% jdoc cpp::lang.cpp.CppHandler %}
+    *   {% jdoc cpp::lang.cpp.CppLanguageModule %}
+    *   {% jdoc cpp::lang.cpp.CppParser %}
+    *   {% jdoc cs::lang.cs.CsLanguageModule %}
+    *   {% jdoc fortran::lang.fortran.FortranLanguageModule %}
+    *   {% jdoc groovy::lang.groovy.GroovyLanguageModule %}
+    *   {% jdoc matlab::lang.matlab.MatlabHandler %}
+    *   {% jdoc matlab::lang.matlab.MatlabLanguageModule %}
+    *   {% jdoc matlab::lang.matlab.MatlabParser %}
+    *   {% jdoc objectivec::lang.objectivec.ObjectiveCHandler %}
+    *   {% jdoc objectivec::lang.objectivec.ObjectiveCLanguageModule %}
+    *   {% jdoc objectivec::lang.objectivec.ObjectiveCParser %}
+    *   {% jdoc php::lang.php.PhpLanguageModule %}
+    *   {% jdoc python::lang.python.PythonHandler %}
+    *   {% jdoc python::lang.python.PythonLanguageModule %}
+    *   {% jdoc python::lang.python.PythonParser %}
+    *   {% jdoc ruby::lang.ruby.RubyLanguageModule %}
+    *   {% jdoc scala::lang.scala.ScalaLanguageModule %}
+    *   {% jdoc swift::lang.swift.SwiftLanguageModule %}
+
 ### External Contributions
 
 *   [#1384](https://github.com/pmd/pmd/pull/1384): \[java] New Rule - UseUnderscoresInNumericLiterals - [RajeshR](https://github.com/rajeshggwp)
