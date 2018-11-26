@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.xml;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.xml.rule.XmlRuleViolationFactory;
 /**
  * Implementation of LanguageVersionHandler for the XML.
  */
-public class XmlHandler extends AbstractLanguageVersionHandler {
+public class XmlHandler extends AbstractPmdLanguageVersionHandler {
 
     @Override
     public XPathHandler getXPathHandler() {

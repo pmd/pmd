@@ -5,9 +5,13 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.Writer;
+import java.util.List;
 
+import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+
 
 /**
  * Interface for obtaining the classes necessary for checking source files of a
@@ -17,20 +21,21 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  */
 public interface LanguageVersionHandler {
 
-    /**
-     * Get the DataFlowHandler.
-     */
-    DataFlowHandler getDataFlowHandler();
 
     /**
      * Get the XPathHandler.
      */
     XPathHandler getXPathHandler();
 
+
     /**
-     * Get the RuleViolationFactory.
+     * Returns the list of all supported optional processing stages.
+     *
+     * @return A list of all optional processing stages.
      */
-    RuleViolationFactory getRuleViolationFactory();
+    @Experimental
+    List<? extends AstProcessingStage<?>> getProcessingStages();
+
 
     /**
      * Get the default ParserOptions.
@@ -39,6 +44,7 @@ public interface LanguageVersionHandler {
      */
     ParserOptions getDefaultParserOptions();
 
+
     /**
      * Get the Parser.
      *
@@ -46,46 +52,70 @@ public interface LanguageVersionHandler {
      */
     Parser getParser(ParserOptions parserOptions);
 
+
+    /**
+     * Get the RuleViolationFactory.
+     */
+    RuleViolationFactory getRuleViolationFactory();
+
+
+    /**
+     * Get the DumpFacade.
+     *
+     * @param writer The writer to dump to.
+     *
+     * @return VisitorStarter
+     */
+    // TODO should we deprecate? Not much use to it.
+    // Plus if it's not implemented, then it does nothing to the writer which is unexpected.
+    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
+
+
+    /**
+     * Get the DataFlowHandler.
+     */
+    @Deprecated
+    DataFlowHandler getDataFlowHandler();
+
+
     /**
      * Get the DataFlowFacade.
      *
      * @return VisitorStarter
      */
+    @Deprecated
     VisitorStarter getDataFlowFacade();
 
-    /**
-     * Get the SymbolFacade.
-     *
-     * @return VisitorStarter
-     */
-    VisitorStarter getSymbolFacade();
 
     /**
      * Get the SymbolFacade.
      *
-     * @param classLoader
-     *            A ClassLoader to use for resolving Types.
      * @return VisitorStarter
      */
+    @Deprecated
+    VisitorStarter getSymbolFacade();
+
+
+    /**
+     * Get the SymbolFacade.
+     *
+     * @param classLoader A ClassLoader to use for resolving Types.
+     *
+     * @return VisitorStarter
+     */
+    @Deprecated
     VisitorStarter getSymbolFacade(ClassLoader classLoader);
+
 
     /**
      * Get the TypeResolutionFacade.
      *
-     * @param classLoader
-     *            A ClassLoader to use for resolving Types.
-     * @return VisitorStarter
-     */
-    VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
-
-    /**
-     * Get the DumpFacade.
+     * @param classLoader A ClassLoader to use for resolving Types.
      *
-     * @param writer
-     *            The writer to dump to.
      * @return VisitorStarter
      */
-    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
+    @Deprecated
+    VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
 
 
     /**
@@ -93,6 +123,7 @@ public interface LanguageVersionHandler {
      *
      * @return The visitor starter
      */
+    @Deprecated
     VisitorStarter getMultifileFacade();
 
 
@@ -104,8 +135,10 @@ public interface LanguageVersionHandler {
      *
      * @return The visitor starter
      */
+    @Deprecated
     VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader);
 
 
+    @Deprecated
     DFAGraphRule getDFAGraphRule();
 }

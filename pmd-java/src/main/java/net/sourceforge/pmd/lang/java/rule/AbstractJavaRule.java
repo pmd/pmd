@@ -8,12 +8,14 @@ import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.JavaProcessingStage;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
@@ -83,6 +85,14 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     protected boolean isSuppressed(Node node) {
         return JavaRuleViolation.isSupressed(node, this);
+    }
+    
+    @Override
+    public final boolean dependsOn(AstProcessingStage<?> stage) {
+        if (!(stage instanceof JavaProcessingStage)) {
+            throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
+        }
+        return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
     }
 
 }

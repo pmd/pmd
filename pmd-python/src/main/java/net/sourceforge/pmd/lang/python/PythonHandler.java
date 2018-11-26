@@ -4,20 +4,22 @@
 
 package net.sourceforge.pmd.lang.python;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractCpdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+
 
 /**
  * Implementation of LanguageVersionHandler for the Python Language.
  */
-public class PythonHandler extends AbstractLanguageVersionHandler {
+public class PythonHandler extends AbstractCpdLanguageVersionHandler {
+
 
     @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        throw new UnsupportedOperationException("getRuleViolationFactory() is not supported for Python");
+    protected String getLanguageName() {
+        return "Python";
     }
+
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
