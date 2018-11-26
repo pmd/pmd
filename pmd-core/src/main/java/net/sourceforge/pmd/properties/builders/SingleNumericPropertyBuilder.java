@@ -7,6 +7,7 @@ package net.sourceforge.pmd.properties.builders;
 /**
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated see {@link net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder}
  */
 @Deprecated
 public abstract class SingleNumericPropertyBuilder<V, T extends SingleNumericPropertyBuilder<V, T>>

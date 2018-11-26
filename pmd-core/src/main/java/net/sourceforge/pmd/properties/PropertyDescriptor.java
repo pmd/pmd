@@ -16,7 +16,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * any associated GUIs. While concrete descriptor instances are static and immutable they provide validation,
  * serialization, and default values for any specific datatypes.
  *
- * <h1>Upcoming API changes to the properties framework: see <a href="https://github.com/pmd/pmd/wiki/Property-framework-7-0-0">wiki</a></h1>
+ * <h1>Upcoming API changes to the properties framework</h1>
+ * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
  *
  * @param <T> type of the property's value. This is a list type for multi-valued properties.
  *
@@ -92,8 +93,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
     boolean isMultiValue();
 
 
-
-
     /**
      * Denotes the relative order the property field should occupy if we are using an auto-generated UI to display and
      * edit property values. If the value returned has a non-zero fractional part then this is can be used to place
@@ -155,7 +154,7 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * @return String
      *
      * @deprecated Used nowhere, and fails if the rule doesn't define the property descriptor
-     *             A better solution will be added on property source
+     * A better solution will be added on property source
      */
     @Deprecated
     String propertyErrorFor(Rule rule);
@@ -165,9 +164,8 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * If the datatype is a String then return the preferred number of rows to allocate in the text widget, returns a
      * value of one for all other types. Useful for multi-line XPATH editors.
      *
-     * @return int
-     *
      * @deprecated Was never implemented, and is none of the descriptor's concern. Will be removed with 7.0.0
+     * @return int
      */
     @Deprecated
     int preferredRowCount();
@@ -176,9 +174,8 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
     /**
      * Returns a map representing all the property attributes of the receiver in string form.
      *
-     * @return map
-     *
      * @deprecated Will be removed with 7.0.0
+     * @return map
      */
     @Deprecated
     Map<PropertyDescriptorField, String> attributeValuesById();
@@ -189,9 +186,8 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      * to write out the property correctly: if it was defined externally, then its definition must be written out,
      * otherwise only its value.
      *
-     * @return True if the descriptor was defined in xml
-     *
      * @deprecated May be removed with 7.0.0
+     * @return True if the descriptor was defined in xml
      */
     @Deprecated
     @InternalApi
