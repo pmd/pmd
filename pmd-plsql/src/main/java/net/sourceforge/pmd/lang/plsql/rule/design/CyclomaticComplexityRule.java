@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +32,9 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * @author Donald A. Leckie,
@@ -43,10 +47,10 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
     private static final Logger LOGGER = Logger.getLogger(CyclomaticComplexityRule.class.getName());
     private static final String CLASS_NAME = CyclomaticComplexityRule.class.getName();
 
-    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR 
-            = IntegerProperty.named("reportLevel")
+    public static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
+            = PropertyFactory.intProperty("reportLevel")
                              .desc("Cyclomatic Complexity reporting threshold")
-                             .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
+                             .require(positive()).defaultValue(10).build();
 
     public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(
             "showClassesComplexity", "Add class average violations to the report", true, 2.0f);

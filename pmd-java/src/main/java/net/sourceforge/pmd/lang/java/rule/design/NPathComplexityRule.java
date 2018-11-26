@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -14,7 +16,8 @@ import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.properties.DoubleProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
@@ -33,9 +36,9 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
                         .range(0d, 2000d).defaultValue(200d).uiOrder(2.0f).build();
 
 
-    private static final IntegerProperty REPORT_LEVEL_DESCRIPTOR
-        = IntegerProperty.named("reportLevel").desc("N-Path Complexity reporting threshold")
-                         .range(1, 2000).defaultValue(200).uiOrder(1.0f).build();
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
+        = PropertyFactory.intProperty("reportLevel").desc("N-Path Complexity reporting threshold")
+                         .require(positive()).defaultValue(200).build();
 
 
     private int reportLevel = 200;

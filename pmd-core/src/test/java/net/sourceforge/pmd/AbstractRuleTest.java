@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,9 +21,10 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.StringProperty;
+
 
 public class AbstractRuleTest {
 
@@ -86,7 +88,7 @@ public class AbstractRuleTest {
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
-        RuleViolation rv = new ParametricRuleViolation(r, ctx, s, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation<>(r, ctx, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -96,7 +98,7 @@ public class AbstractRuleTest {
     @Test
     public void testRuleWithVariableInMessage() {
         MyRule r = new MyRule();
-        r.definePropertyDescriptor(IntegerProperty.named("testInt").desc("description").range(0, 100).defaultValue(10).uiOrder(0).build());
+        r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
@@ -123,7 +125,7 @@ public class AbstractRuleTest {
         DummyNode n = new DummyNode(1);
         n.testingOnlySetBeginColumn(5);
         n.testingOnlySetBeginLine(5);
-        RuleViolation rv = new ParametricRuleViolation(r, ctx, n, "specificdescription");
+        RuleViolation rv = new ParametricRuleViolation<>(r, ctx, n, "specificdescription");
         ctx.getReport().addRuleViolation(rv);
         assertTrue(ctx.getReport().isEmpty());
     }
