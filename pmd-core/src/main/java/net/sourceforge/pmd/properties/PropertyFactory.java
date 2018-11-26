@@ -34,7 +34,7 @@ public final class PropertyFactory {
 
 
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
-        return intProperty(name).toList();
+        return intProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
     }
 
 
@@ -44,7 +44,7 @@ public final class PropertyFactory {
 
 
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
-        return doubleProperty(name).toList();
+        return doubleProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
     }
 
 
@@ -54,7 +54,7 @@ public final class PropertyFactory {
 
 
     public static GenericCollectionPropertyBuilder<String, List<String>> stringListProperty(String name) {
-        return stringProperty(name).toList();
+        return stringProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }
 
 
