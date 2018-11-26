@@ -104,11 +104,11 @@ public class Complicated {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
 |cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
 |cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
 |classReportLevel|40|Total class complexity reporting threshold|no|
+|methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml

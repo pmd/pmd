@@ -808,7 +808,7 @@ class Foo {
 |finalFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final field names|no|
 |staticFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to static field names|no|
 |defaultFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to field names|no|
-|exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is '\|'.|
+|exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is ' '.|
 
 **Use this rule by referencing it:**
 ``` xml
