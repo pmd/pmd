@@ -195,11 +195,11 @@
 
     <test-code>
         <description>More exclusions can be configured</description>
-        <rule-property name="exclusions">m$mangled</rule-property>
+        <rule-property name="exclusions">m$mangled|serialVersionUID</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public class MyException {
-
+                private static final long serialVersionUID = -8134636876462178354L;
                 private static final long m$mangled = -8134636876462178354L;
 
             }

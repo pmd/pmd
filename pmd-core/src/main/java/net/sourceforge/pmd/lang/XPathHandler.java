@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import org.jaxen.Navigator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import net.sf.saxon.sxpath.IndependentContext;
@@ -14,6 +15,8 @@ import net.sf.saxon.sxpath.IndependentContext;
  * Interface for performing Language specific XPath handling, such as
  * initialization and navigation.
  */
+@InternalApi
+@Deprecated
 public interface XPathHandler {
 
     XPathHandler DUMMY = new XPathHandler() {

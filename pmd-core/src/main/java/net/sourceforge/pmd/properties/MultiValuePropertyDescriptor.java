@@ -17,13 +17,18 @@ import java.util.List;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated The hard divide between multi- and single-value properties will be removed with 7.0.0
  */
+@Deprecated
 public interface MultiValuePropertyDescriptor<V> extends PropertyDescriptor<List<V>> {
 
     /** Default delimiter for multi-valued properties other than numeric ones. */
+    @Deprecated
     char DEFAULT_DELIMITER = '|';
 
     /** Default delimiter for numeric multi-valued properties. */
+    @Deprecated
     char DEFAULT_NUMERIC_DELIMITER = ',';
 
 
@@ -33,9 +38,11 @@ public interface MultiValuePropertyDescriptor<V> extends PropertyDescriptor<List
      *
      * @return char
      */
+    @Deprecated
     char multiValueDelimiter();
 
 
     @Override
+    @Deprecated
     Class<V> type();
 }

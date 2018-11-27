@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -39,10 +40,12 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
     public Object visit(ASTMethodDeclaration method, Object data) {
         if (isJUnitMethod(method, data)) {
             if (!isExpectAnnotated(method.jjtGetParent())) {
+                Map<String, VariableNameDeclaration> variables = getVariables(method);
+
                 Scope classScope = method.getScope().getParent();
                 Map<String, List<NameOccurrence>> expectables = getRuleAnnotatedExpectedExceptions(classScope);
-                
-                if (!containsExpectOrAssert(method.getBlock(), expectables)) {
+
+                if (!containsExpectOrAssert(method.getBlock(), expectables, variables)) {
                     addViolation(data, method);
                 }
             }
@@ -50,24 +53,35 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         return data;
     }
 
-    private boolean containsExpectOrAssert(Node n, Map<String, List<NameOccurrence>> expectables) {
+    private boolean containsExpectOrAssert(Node n,
+                                           Map<String, List<NameOccurrence>> expectables,
+                                           Map<String, VariableNameDeclaration> variables) {
         if (n instanceof ASTStatementExpression) {
             if (isExpectStatement((ASTStatementExpression) n, expectables)
                     || isAssertOrFailStatement((ASTStatementExpression) n)
-                    || isVerifyStatement((ASTStatementExpression) n)) {
+                    || isVerifyStatement((ASTStatementExpression) n)
+                    || isSoftAssertionStatement((ASTStatementExpression) n, variables)) {
                 return true;
             }
         } else {
             for (int i = 0; i < n.jjtGetNumChildren(); i++) {
                 Node c = n.jjtGetChild(i);
-                if (containsExpectOrAssert(c, expectables)) {
+                if (containsExpectOrAssert(c, expectables, variables)) {
                     return true;
                 }
             }
         }
         return false;
     }
-    
+
+    private Map<String, VariableNameDeclaration> getVariables(ASTMethodDeclaration method) {
+        Map<String, VariableNameDeclaration> variables = new HashMap<>();
+        for (VariableNameDeclaration vnd : method.getScope().getDeclarations(VariableNameDeclaration.class).keySet()) {
+            variables.put(vnd.getName(), vnd);
+        }
+        return variables;
+    }
+
     /**
      * Gets a list of NameDeclarations for all the fields that have type
      * ExpectedException and have a Rule annotation.
@@ -184,6 +198,32 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                     if (occ.getLocation() == name && img.startsWith(varname + ".expect")) {
                         return true;
                     }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isSoftAssertionStatement(ASTStatementExpression expression,
+                                             Map<String, VariableNameDeclaration> variables) {
+        if (expression != null) {
+            ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+            if (pe != null) {
+                Node name = pe.getFirstDescendantOfType(ASTName.class);
+                if (name != null) {
+                    String img = name.getImage();
+                    if (img.indexOf(".") == -1) {
+                        return false;
+                    }
+                    String[] tokens = img.split("\\.");
+                    String methodName = tokens[1];
+                    boolean methodIsAssertAll = "assertAll".equals(methodName);
+
+                    String varName = tokens[0];
+                    boolean variableTypeIsSoftAssertion = variables.containsKey(varName)
+                            && TypeHelper.isA(variables.get(varName), "org.assertj.core.api.AbstractSoftAssertions");
+
+                    return methodIsAssertAll && variableTypeIsSoftAssertion;
                 }
             }
         }

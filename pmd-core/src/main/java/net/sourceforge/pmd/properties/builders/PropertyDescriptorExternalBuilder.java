@@ -14,10 +14,13 @@ import net.sourceforge.pmd.properties.PropertyDescriptorField;
  * Builds properties from a map of key value pairs, eg extracted from an XML element.
  *
  * @param <E> The type of values.
- *
+ * @deprecated see {@link net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder}
+
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated The property XML API will not need this anymore
  */
+@Deprecated
 public interface PropertyDescriptorExternalBuilder<E> {
 
 

@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +49,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             "Ignore list separator", ',', 4.0f);
 
     public static final FileProperty EXCEPTION_FILE_DESCRIPTOR = new FileProperty("exceptionfile",
-            "File containing strings to skip (one string per line), only used if ignore list is not set", null, 5.0f);
+            "File containing strings to skip (one string per line), only used if ignore list is not set. "
+            + "File must be UTF-8 encoded.", null, 5.0f);
 
     public static class ExceptionParser {
 
@@ -102,8 +102,9 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         definePropertyDescriptor(EXCEPTION_FILE_DESCRIPTOR);
     }
 
-    private LineNumberReader getLineReader() throws FileNotFoundException {
-        return new LineNumberReader(new BufferedReader(new FileReader(getProperty(EXCEPTION_FILE_DESCRIPTOR))));
+    private LineNumberReader getLineReader() throws IOException {
+        return new LineNumberReader(Files.newBufferedReader(getProperty(EXCEPTION_FILE_DESCRIPTOR).toPath(),
+                StandardCharsets.UTF_8));
     }
 
     @Override

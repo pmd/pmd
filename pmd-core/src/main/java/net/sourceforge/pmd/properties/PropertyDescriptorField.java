@@ -16,7 +16,9 @@ import net.sourceforge.pmd.RuleSetFactory;
  * @author Brian Remedios
  * @see RuleSetFactory
  * @see PropertyTypeId
+ * @deprecated Will be removed with 7.0.0
  */
+@Deprecated
 public enum PropertyDescriptorField {
 
     /** The type of the property. */
