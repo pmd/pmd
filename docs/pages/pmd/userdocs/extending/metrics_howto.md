@@ -240,11 +240,6 @@ the Java framework but it's symmetrical in the Apex framework.
     or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java).
     Additionnally, it makes your metric more easily generalisable to other node types.
 
-    {%include tip.html
-              content="All visitor metrics shipped with PMD define their visitor
-              publicly, so that you may extend it to override its behaviour
-              easily. You can find them in the package `n.s.pmd.lang.<name>.metrics.impl.visitors`." %}
-
   * *Signature matching metrics:* That's even more straightforward when you want
     to count the number of methods or fields that match a specific signature, e.g.
     public static final fields. Basically a signature is an object that describes
