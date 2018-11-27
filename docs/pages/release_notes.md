@@ -112,11 +112,12 @@ now deprecated until 7.0.0. The proposed changes to the API are described [on th
 
 * Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
   composable visitors, used in the metrics framework, but they didn't prove cost-effective.
-  * In `net.sourceforge.pmd.lang.java.ast`: JavaParserDecoratedVisitor, JavaParserControllessVisitor,
-    JavaParserControllessVisitorAdapter, and JavaParserVisitorDecorator are deprecated with no intended replacement
-  * In `net.sourceforge.pmd.lang.java.metrics.impl`:
-    * CycloAssertAwareDecorator, CycloBaseVisitor, and CycloPathAwareDecorator are deprecated and are replaced with CycloVisitor
-    * NcssBaseVisitor and NcssCountImportsDecorator are deprecated and are replaced with NcssVisitor
+  * In {% jdoc_package :jast %}: {% jdoc jast::JavaParserDecoratedVisitor %}, {% jdoc jast::JavaParserControllessVisitor %},
+    {% jdoc jast::JavaParserControllessVisitorAdapter %}, and {% jdoc jast::JavaParserVisitorDecorator %} are deprecated with no intended replacement
+
+* All classes from {% jdoc_package java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
+  and will be moved into an internal package with 7.0.0. To implement your own metrics visitors, {% jdoc jast::JavaParserVisitorAdapter %}
+  you be directly subclassed.
 
 
 ### External Contributions
