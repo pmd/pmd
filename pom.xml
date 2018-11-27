@@ -282,7 +282,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.2</pmd.build-tools.version>
+        <pmd.build-tools.version>1.3-SNAPSHOT</pmd.build-tools.version>
 
     </properties>
 
@@ -653,7 +653,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>8.8</version>
+                        <version>8.12</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
@@ -668,6 +668,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <sourceDirectories>
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                     </sourceDirectories>
+                    <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -842,7 +843,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
               <groupId>com.beust</groupId>
               <artifactId>jcommander</artifactId>
-              <version>1.48</version>
+              <version>1.72</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -935,6 +936,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-rules</artifactId>
                 <version>1.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.11.0</version>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -1149,6 +1155,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-kotlin</module>
         <module>pmd-matlab</module>
         <module>pmd-objectivec</module>
         <module>pmd-perl</module>

@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -206,9 +205,7 @@ public class Formatter {
                 if (res instanceof Charset) {
                     return ((Charset) res).name();
                 }
-            } catch (NoSuchFieldException ignored) {
-                // fall-through
-            } catch (IllegalAccessException ignored) {
+            } catch (ReflectiveOperationException ignored) {
                 // fall-through
             }
             return getNativeConsoleEncoding();
@@ -224,11 +221,7 @@ public class Formatter {
             if (res instanceof String) {
                 return (String) res;
             }
-        } catch (NoSuchMethodException ignored) {
-            // fall-through
-        } catch (InvocationTargetException ignored) {
-            // fall-through
-        } catch (IllegalAccessException ignored) {
+        } catch (ReflectiveOperationException ignored) {
             // fall-through
         }
         return null;

@@ -40,6 +40,9 @@ The release notes usual mention any new rules that have been added since the las
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
 that all new rules are listed.
 
+We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
+changes from the current release notes to this document: `docs/pages/next_major_development.md`.
+
 Check in all (version) changes to branch master or any other branch, from which the release takes place:
 
     $ git commit -a -m "Prepare pmd release <version>"

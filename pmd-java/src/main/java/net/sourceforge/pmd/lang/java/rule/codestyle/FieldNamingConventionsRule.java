@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.RegexProperty;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 
 /**
@@ -23,10 +24,11 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
 public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
     // TODO we need a more powerful scheme to match some fields, e.g. include modifiers/type
     // We could define a new property, but specifying property values as a single string doesn't scale
-    private static final StringMultiProperty EXCLUDED_NAMES = StringMultiProperty.named("exclusions")
-                                                                                 .desc("Names of fields to whitelist.")
-                                                                                 .defaultValues("serialVersionUID")
-                                                                                 .build();
+    private static final PropertyDescriptor<List<String>> EXCLUDED_NAMES =
+            PropertyFactory.stringListProperty("exclusions")
+                           .desc("Names of fields to whitelist.")
+                           .defaultValues("serialVersionUID")
+                           .build();
 
 
     private final RegexProperty publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();

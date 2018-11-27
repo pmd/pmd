@@ -706,10 +706,7 @@ public class GUI implements CPDListener {
             } else {
                 resultsTextArea.setText(report);
             }
-        } catch (IOException t) {
-            t.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
-        } catch (RuntimeException t) {
+        } catch (IOException | RuntimeException t) {
             t.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
         }

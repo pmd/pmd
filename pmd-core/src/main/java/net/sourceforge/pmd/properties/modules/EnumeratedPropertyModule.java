@@ -15,6 +15,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public class EnumeratedPropertyModule<E> {
 
     private final Map<String, E> choicesByLabel;

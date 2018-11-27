@@ -3,8 +3,7 @@ title: Old Release Notes
 permalink: pmd_release_notes_old.html
 ---
 
-Previous versions of PMD can be downloaded here:
-http://sourceforge.net/projects/pmd/files/pmd/
+Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
 ## 28-October-2018 - 6.9.0
 

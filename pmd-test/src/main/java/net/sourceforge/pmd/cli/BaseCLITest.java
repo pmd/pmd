@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,10 +60,10 @@ public abstract class BaseCLITest {
 
     protected void createTestOutputFile(String filename) {
         try {
-            PrintStream out = new PrintStream(new FileOutputStream(filename));
+            PrintStream out = new PrintStream(Files.newOutputStream(new File(filename).toPath()));
             System.setOut(out);
             System.setErr(out);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             fail("Can't create file " + filename + " for test.");
         }
     }

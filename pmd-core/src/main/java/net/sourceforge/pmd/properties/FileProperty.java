@@ -17,7 +17,9 @@ import net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder;
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Will be removed with 7.0.0 with no scheduled replacement
  */
+@Deprecated
 public final class FileProperty extends AbstractSingleValueProperty<File> {
 
 

@@ -174,7 +174,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
                 final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfType(ASTClassOrInterfaceBody.class)
                         .findDescendantsOfType(ASTFieldDeclaration.class);
                 // only look for ASTVariableDeclarator that are Fields
-                final List<ASTVariableDeclarator> fields = new ArrayList<ASTVariableDeclarator>(fieldlist.size());
+                final List<ASTVariableDeclarator> fields = new ArrayList<>(fieldlist.size());
                 for (final ASTFieldDeclaration astFieldDeclaration : fieldlist) {
                     fields.add(astFieldDeclaration.getFirstChildOfType(ASTVariableDeclarator.class));
                 }
