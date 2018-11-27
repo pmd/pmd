@@ -77,7 +77,8 @@ mkdir pmd.github.io
     git config user.email "andreas.dangel+pmd-bot@adangel.org"
     git config core.sparsecheckout true
     git remote add origin git@github.com:pmd/pmd.github.io.git
-    echo "latest/" > .git/info/sparse-checkout
+    echo "/latest/" > .git/info/sparse-checkout
+    echo "/sitemap.xml" >> .git/info/sparse-checkout
     git pull --depth=1 origin master
     log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ to pmd-${RELEASE_VERSION}/ ..."
     rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/

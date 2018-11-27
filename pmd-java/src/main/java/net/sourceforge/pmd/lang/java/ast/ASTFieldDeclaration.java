@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
 /**
@@ -135,11 +136,13 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     }
 
     @Override
+    @Deprecated
     public boolean isArray() {
         return checkType() + checkDecl() > 0;
     }
 
     @Override
+    @Deprecated
     public int getArrayDepth() {
         if (!isArray()) {
             return 0;
@@ -166,8 +169,14 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
      * VariableDeclartorId node and returns its image or <code>null</code> if
      * the child node is not found.
      *
+     *
+     * @deprecated FieldDeclaration may declare several variables, so this is not exhaustive
+     *             Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
+     *
+     *
      * @return a String representing the name of the variable
      */
+    @Deprecated
     public String getVariableName() {
         ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         if (decl != null) {
@@ -196,4 +205,26 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return ASTVariableDeclarator.iterateIds(this);
     }
 
+
+    /**
+     * @deprecated FieldDeclaration may declare several variables with a different type
+     *             It won't implement TypeNode anymore come 7.0.0
+     */
+    @Override
+    @Deprecated
+    public Class<?> getType() {
+        return super.getType();
+    }
+
+
+    /**
+     *
+     * @deprecated FieldDeclaration may declare several variables with a different type
+     *             It won't implement TypeNode anymore come 7.0.0
+     */
+    @Override
+    @Deprecated
+    public JavaTypeDefinition getTypeDefinition() {
+        return super.getTypeDefinition();
+    }
 }

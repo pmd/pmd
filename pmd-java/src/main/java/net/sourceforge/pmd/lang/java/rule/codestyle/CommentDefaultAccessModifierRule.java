@@ -38,7 +38,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
             .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").uiOrder(1.0f).build();
     private static final String MESSAGE = "To avoid mistakes add a comment "
             + "at the beginning of the %s %s if you want a default access modifier";
-    private final Set<Integer> interestingLineNumberComments = new HashSet<Integer>();
+    private final Set<Integer> interestingLineNumberComments = new HashSet<>();
 
     public CommentDefaultAccessModifierRule() {
         definePropertyDescriptor(REGEX_DESCRIPTOR);
