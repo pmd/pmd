@@ -61,7 +61,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    public static class Handler extends AbstractLanguageVersionHandler {
+    public static class Handler extends AbstractPmdLanguageVersionHandler {
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();

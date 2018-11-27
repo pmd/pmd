@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.VisitorStarter;
@@ -40,7 +40,12 @@ import net.sf.saxon.sxpath.IndependentContext;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-public abstract class AbstractJavaHandler extends AbstractLanguageVersionHandler {
+public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHandler {
+
+    AbstractJavaHandler() {
+        super(JavaProcessingStage.class);
+    }
+
 
     @Override
     public DataFlowHandler getDataFlowHandler() {

@@ -14,8 +14,8 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.AbstractParser;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.BaseLanguageModule;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -67,7 +67,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    public static class Handler extends AbstractLanguageVersionHandler {
+    public static class Handler extends AbstractPmdLanguageVersionHandler {
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();

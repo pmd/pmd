@@ -4,20 +4,21 @@
 
 package net.sourceforge.pmd.lang.objectivec;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractCpdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+
 
 /**
  * Implementation of LanguageVersionHandler for the Objective-C Language.
  */
-public class ObjectiveCHandler extends AbstractLanguageVersionHandler {
+public class ObjectiveCHandler extends AbstractCpdLanguageVersionHandler {
 
     @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        throw new UnsupportedOperationException("getRuleViolationFactory() is not supported for Objective-C");
+    protected String getLanguageName() {
+        return "Objective-C";
     }
+
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {

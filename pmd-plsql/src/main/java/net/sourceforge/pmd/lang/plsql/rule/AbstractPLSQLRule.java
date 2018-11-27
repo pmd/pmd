@@ -9,8 +9,10 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
+import net.sourceforge.pmd.lang.plsql.PlsqlProcessingStage;
 import net.sourceforge.pmd.lang.plsql.ast.*;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -88,6 +90,16 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     public static boolean importsPackage(ASTInput node, String packageName) {
         return false;
     }
+
+
+    @Override
+    public final boolean dependsOn(AstProcessingStage<?> stage) {
+        if (!(stage instanceof PlsqlProcessingStage)) {
+            throw new IllegalArgumentException("Processing stage wasn't a " + PLSQLLanguageModule.NAME + " one: " + stage);
+        }
+        return ((PlsqlProcessingStage) stage).ruleDependsOnThisStage(this);
+    }
+
 
     /*
      * Duplicate PLSQLParserVisitor API

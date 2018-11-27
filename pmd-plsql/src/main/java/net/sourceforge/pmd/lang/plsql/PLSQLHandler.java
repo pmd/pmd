@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.plsql;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -30,7 +30,12 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  *
  * @author sturton - PLDoc - pldoc.sourceforge.net
  */
-public class PLSQLHandler extends AbstractLanguageVersionHandler {
+public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
+
+
+    public PLSQLHandler() {
+        super(PlsqlProcessingStage.class);
+    }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
