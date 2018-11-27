@@ -18,12 +18,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.CycloVisitor;
+
 
 /**
  * Visitor calculating cyclo without counting boolean operators.
  *
  * @deprecated Visitor decorators are deprecated because they lead to fragile code.
- * Customise {@link CycloVisitor} instead.
  *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric

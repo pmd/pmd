@@ -8,13 +8,14 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.CycloVisitor;
+
 
 /**
  * @author Clément Fournier
  * @since 6.0.0
  *
  * @deprecated Visitor decorators are deprecated because they lead to fragile code.
- *  Customise {@link CycloVisitor} instead.
  *
  */
 @Deprecated

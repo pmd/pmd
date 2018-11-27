@@ -34,6 +34,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.CycloVisitor;
+
 
 /**
  * Default visitor for the calculation of Ncss.
@@ -42,7 +44,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
  *
  * @deprecated Visitor decorators are deprecated because they lead to fragile code.
- * Customise {@link CycloVisitor} instead.
  *
  */
 @Deprecated
