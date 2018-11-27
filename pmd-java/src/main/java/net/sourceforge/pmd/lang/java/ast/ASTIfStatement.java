@@ -65,7 +65,7 @@ public class ASTIfStatement extends AbstractJavaNode {
      * Returns the statement that will be run if the guard evaluates
      * to true.
      */
-    public ASTStatement getTrueAlternative() {
+    public ASTStatement getThenBranch() {
         return (ASTStatement) jjtGetChild(1);
     }
 
@@ -73,7 +73,7 @@ public class ASTIfStatement extends AbstractJavaNode {
     /**
      * Returns the statement of the {@code else} clause, if any.
      */
-    public ASTStatement getFalseAlternative() {
+    public ASTStatement getElseBranch() {
         return hasElse() ? (ASTStatement) jjtGetChild(2) : null;
     }
 
