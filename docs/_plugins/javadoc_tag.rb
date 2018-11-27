@@ -137,6 +137,7 @@ class JavadocTag < Liquid::Tag
 
     # Expand FQCN of arguments
     @member_suffix.gsub!(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
+    @member_suffix.gsub!(JDocNamespaceDeclaration::SYM_REGEX) {|fqcn| JDocNamespaceDeclaration::parse_fqcn(fqcn, var_ctx)[1]}
 
     visible_name = JavadocTag::get_visible_name(@opts, @type_fqcn, @member_suffix, @is_package_ref)
 

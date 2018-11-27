@@ -78,7 +78,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
-    protected String getDescription() {
+    String getDescription() {
         if (StringUtils.isBlank(description)) {
             throw new IllegalArgumentException("Description must be provided");
         }
@@ -86,7 +86,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
-    protected T getDefaultValue() {
+    T getDefaultValue() {
         if (defaultValue == null) {
             throw new IllegalArgumentException("The default value may not be null.");
         }
@@ -123,6 +123,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     //     * constraint predicate will be executed, or in what order.
     //
     // This is superfluous right now bc users may not create their own constraints
+
 
     /**
      * Add a constraint on the values that this property may take.
@@ -349,7 +350,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         /**
          * Require that the given constraint be fulfilled on each item of the
-         * value of this properties. This is a convenient shorthand for
+         * value of this property. This is a convenient shorthand for
          * {@code require(constraint.toCollectionConstraint())}.
          *
          * @param constraint Constraint to impose on the items of the collection value

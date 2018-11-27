@@ -23,10 +23,10 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * <h1>Usage</h1>
  *
  * Properties are a way to make your rule configurable by
- * letting a user filling-in some config value in their
+ * letting a user fill in some config value in their
  * ruleset XML.
  *
- * As a developer, to declare a property on your rule, you
+ * As a rule developer, to declare a property on your rule, you
  * must:
  * <ul>
  *     <li>Build a {@link PropertyDescriptor} using one of
