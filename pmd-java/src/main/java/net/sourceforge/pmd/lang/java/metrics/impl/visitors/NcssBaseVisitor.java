@@ -34,7 +34,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
-import net.sourceforge.pmd.lang.java.metrics.impl.internal.CycloVisitor;
 
 
 /**

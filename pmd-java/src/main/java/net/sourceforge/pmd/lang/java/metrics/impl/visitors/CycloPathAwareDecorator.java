@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.internal.CycloVisitor;
 
 
 /**
