@@ -1707,6 +1707,12 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
       <td>no</td>
     </tr>
     <tr>
+      <td>skipAnnotations</td>
+      <td>false</td>
+      <td>Skip literals within annotations</td>
+      <td>no</td>
+    </tr>
+    <tr>
       <td>maxDuplicateLiterals</td>
       <td>4</td>
       <td>Max duplicate literals</td>
@@ -1716,12 +1722,6 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
       <td>minimumLength</td>
       <td>3</td>
       <td>Minimum string length to check</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>skipAnnotations</td>
-      <td>false</td>
-      <td>Skip literals within annotations</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -2594,15 +2594,15 @@ From those informations there can be found various problems.</p>
   </thead>
   <tbody>
     <tr>
-      <td>maxViolations</td>
-      <td>100</td>
-      <td>Maximum number of anomalies per class</td>
-      <td>no</td>
-    </tr>
-    <tr>
       <td>maxPaths</td>
       <td>1000</td>
       <td>Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>maxViolations</td>
+      <td>100</td>
+      <td>Maximum number of anomalies per class</td>
       <td>no</td>
     </tr>
   </tbody>
