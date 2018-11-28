@@ -385,9 +385,9 @@ private void buz(String x) {}
 |exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.|no|
 |separator|,|Ignore list separator|no|
 |exceptionList||Strings to ignore|no|
+|skipAnnotations|false|Skip literals within annotations|no|
 |maxDuplicateLiterals|4|Max duplicate literals|no|
 |minimumLength|3|Minimum string length to check|no|
-|skipAnnotations|false|Skip literals within annotations|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1232,8 +1232,8 @@ public void foo() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|maxViolations|100|Maximum number of anomalies per class|no|
 |maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|no|
+|maxViolations|100|Maximum number of anomalies per class|no|
 
 **Use this rule by referencing it:**
 ``` xml
