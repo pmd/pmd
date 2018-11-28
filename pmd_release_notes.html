@@ -1329,6 +1329,11 @@ now also detects <a href="https://github.com/joel-costigliola/assertj-core">Soft
       <li><a href="https://github.com/pmd/pmd/issues/1440">#1440</a>: [java] CommentDefaultAccessModifierRule shows incorrect message</li>
     </ul>
   </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1483">#1483</a>: [java] Cyclo metric should count conditions of for statements correctly</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
@@ -1409,6 +1414,20 @@ also been deprecated:</p>
 with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;</code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code class="highlighter-rouge">ASTVariableDeclaratorId</code></a><code class="highlighter-rouge">&gt;</code>
 though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
   </li>
+  <li>
+    <p>Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
+composable visitors, used in the metrics framework, but they didn’t prove cost-effective.</p>
+
+    <ul>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code class="highlighter-rouge">JavaParserDecoratedVisitor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code class="highlighter-rouge">JavaParserControllessVisitor</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserControllessVisitorAdapter</code></a>, and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code class="highlighter-rouge">JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.</li>
+    </ul>
+  </li>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.metrics.impl.visitors</code></a> are now considered internal API. They’re deprecated
+and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserVisitorAdapter</code></a> should be directly subclassed.</p>
+  </li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1446,7 +1465,7 @@ though, so you should iterate on each declared variable. See <a href="https://gi
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 27, 2018 <br />
+ Site last generated: Nov 28, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
