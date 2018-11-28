@@ -14,7 +14,10 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
  */
+@Deprecated
 public class JavaParserDecoratedVisitor implements JavaParserVisitor {
 
 

@@ -46,6 +46,9 @@ This means, you can use CPD to find duplicated code in your Kotlin projects.
     *   [#1232](https://github.com/pmd/pmd/issues/1232): \[java] Detector for large numbers not separated by _
     *   [#1372](https://github.com/pmd/pmd/issues/1372): \[java] false positive for UselessQualifiedThis
     *   [#1440](https://github.com/pmd/pmd/issues/1440): \[java] CommentDefaultAccessModifierRule shows incorrect message
+*   java-design
+    *   [#1483](https://github.com/pmd/pmd/issues/1483): \[java] Cyclo metric should count conditions of for statements correctly
+
 
 ### API Changes
 
@@ -110,6 +113,17 @@ now deprecated until 7.0.0. The proposed changes to the API are described [on th
     All these are deprecated because those nodes may declare several variables at once, possibly
     with different types (and obviously with different names). They both implement `Iterator<`{% jdoc jast::ASTVariableDeclaratorId %}`>`
     though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
+
+*   Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
+    composable visitors, used in the metrics framework, but they didn't prove cost-effective.
+
+    *   In {% jdoc_package :jast %}: {% jdoc jast::JavaParserDecoratedVisitor %}, {% jdoc jast::JavaParserControllessVisitor %},
+        {% jdoc jast::JavaParserControllessVisitorAdapter %}, and {% jdoc jast::JavaParserVisitorDecorator %} are deprecated with no intended replacement.
+
+*   All classes from {% jdoc_package java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
+    and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+    {% jdoc jast::JavaParserVisitorAdapter %} should be directly subclassed.
+
 
 ### External Contributions
 

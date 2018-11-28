@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -22,16 +23,21 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 
+
 /**
  * Visitor for the default n-path complexity version.
  *
  * @author Clément Fournier
  * @author Jason Bennett
+ * @deprecated Is internal API, will be moved in 7.0.0
  */
+@Deprecated
+@InternalApi
 public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
+
 
     /* Multiplies the complexity of the children of this node. */
     private int multiplyChildrenComplexities(JavaNode node, Object data) {
