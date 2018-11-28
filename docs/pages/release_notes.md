@@ -99,7 +99,7 @@ You're highly encouraged to migrate to using this new API as soon as possible, t
 
 * {% jdoc props::EnumeratedPropertyDescriptor %}, {% jdoc props::NumericPropertyDescriptor %}, {% jdoc props::PackagedPropertyDescriptor %},
 and the related builders (in {% jdoc_package props::builders %}) will be removed.
-These specialized interfaces allowed additionnal constraints to be enforced on the
+These specialized interfaces allowed additional constraints to be enforced on the
 value of a property, but made the property class hierarchy very large and impractical
 to maintain. Their functionality will be mapped uniformly to {% jdoc props::constraints.PropertyConstraint %}s,
 which will allow virtually any constraint to be defined, and improve documentation and error reporting. The
@@ -138,7 +138,7 @@ The following APIs were never intended as public API and will be internalized or
 * The classes {% jdoc props::PropertyDescriptorField %}, {% jdoc props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
   {% jdoc !c!:PDr#attributeValuesById %}, {% jdoc !c!:PDr#isDefinedExternally() %} and {% jdoc !c!props::PropertyTypeId#getFactory() %}.
   These were used to read and write properties to and from XML, but were not intended as public API.
-* The class {% jdoc props::ValueParserConstants %} and the interface {% jdoc props::ValueParser %}
+* The class {% jdoc props::ValueParserConstants %} and the interface {% jdoc props::ValueParser %}.
   
 #### Deprecated APIs
 
