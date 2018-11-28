@@ -85,7 +85,7 @@ public class PropertyDescriptorTest {
     public void testDefaultValueConstraintViolationCausesFailure() {
         PropertyConstraint<Integer> constraint = inRange(1, 10);
 
-        thrown.expect(IllegalStateException.class);
+        thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
                                    containsIgnoreCase(constraint.getConstraintDescription())));
 

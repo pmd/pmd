@@ -66,8 +66,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
-    // will maybe be scrapped
-    @Deprecated
     void setDefinedExternally(boolean bool) {
         this.isDefinedExternally = bool;
     }
@@ -85,12 +83,17 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return description;
     }
 
-
+    /** Returns the value, asserting it has been set. */
     T getDefaultValue() {
-        if (defaultValue == null) {
-            throw new IllegalArgumentException("The default value may not be null.");
+        if (!isDefaultValueSet()) {
+            throw new IllegalArgumentException("A default value must be provided");
         }
         return defaultValue;
+    }
+
+
+    boolean isDefaultValueSet() {
+        return defaultValue != null;
     }
 
 
@@ -243,7 +246,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
         // TODO 7.0.0 this can be inlined
         private <C extends Collection<T>> GenericCollectionPropertyBuilder<T, C> toCollection(Supplier<C> emptyCollSupplier) {
-            if (getDefaultValue() != null) {
+            if (isDefaultValueSet()) {
                 throw new IllegalStateException("The default value is already set!");
             }
 
