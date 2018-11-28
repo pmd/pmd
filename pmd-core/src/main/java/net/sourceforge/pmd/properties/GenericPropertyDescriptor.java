@@ -39,7 +39,7 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
 
         String dftValueError = errorFor(defaultValue);
         if (dftValueError != null) {
-            throw new IllegalStateException(dftValueError);
+            throw new IllegalArgumentException(dftValueError);
         }
     }
 

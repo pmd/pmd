@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -21,7 +23,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * Simple rule for Ncss. Maybe to be enriched with type specific thresholds.
@@ -31,17 +35,17 @@ import net.sourceforge.pmd.properties.IntegerProperty;
 public final class NcssCountRule extends AbstractJavaMetricsRule {
 
 
-    private static final IntegerProperty METHOD_REPORT_LEVEL_DESCRIPTOR =
-            IntegerProperty.named("methodReportLevel")
+    private static final PropertyDescriptor<Integer> METHOD_REPORT_LEVEL_DESCRIPTOR =
+            PropertyFactory.intProperty("methodReportLevel")
                            .desc("NCSS reporting threshold for methods")
-                           .range(1, 2000)
+                           .require(positive())
                            .defaultValue(60)
                            .build();
 
-    private static final IntegerProperty CLASS_REPORT_LEVEL_DESCRIPTOR =
-            IntegerProperty.named("classReportLevel")
+    private static final PropertyDescriptor<Integer> CLASS_REPORT_LEVEL_DESCRIPTOR =
+            PropertyFactory.intProperty("classReportLevel")
                            .desc("NCSS reporting threshold for classes")
-                           .range(1, 20000)
+                           .require(positive())
                            .defaultValue(1500)
                            .build();
 

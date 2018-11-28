@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -25,19 +27,20 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.FileProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
+
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
-    public static final IntegerProperty THRESHOLD_DESCRIPTOR 
-            = IntegerProperty.named("maxDuplicateLiterals")
+    public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = PropertyFactory.intProperty("maxDuplicateLiterals")
                              .desc("Max duplicate literals")
-                             .range(1, 20).defaultValue(4).uiOrder(1.0f).build();
+                             .require(positive()).defaultValue(4).build();
 
-    public static final IntegerProperty MINIMUM_LENGTH_DESCRIPTOR = new IntegerProperty("minimumLength",
-            "Minimum string length to check", 1, Integer.MAX_VALUE, 3, 1.5f);
+    public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = PropertyFactory.intProperty("minimumLength").desc("Minimum string length to check").require(positive()).defaultValue(3).build();
 
     public static final BooleanProperty SKIP_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("skipAnnotations",
             "Skip literals within annotations", false, 2.0f);

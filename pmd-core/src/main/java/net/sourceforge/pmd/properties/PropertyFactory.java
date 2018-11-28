@@ -9,18 +9,68 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
+import net.sourceforge.pmd.properties.constraints.NumericConstraints;
+import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
-
+//@formatter:off
 /**
  * Provides factory methods for common property types.
  * Note: from 7.0.0 on, this will be the only way to
- * build property descriptors.
+ * build property descriptors. Concrete property classes
+ * and their constructors/ builders will be gradually
+ * deprecated before 7.0.0.
  *
- * TODO next PR add doc
+ * <h1>Usage</h1>
+ *
+ * Properties are a way to make your rule configurable by
+ * letting a user fill in some config value in their
+ * ruleset XML.
+ *
+ * As a rule developer, to declare a property on your rule, you
+ * must:
+ * <ul>
+ *     <li>Build a {@link PropertyDescriptor} using one of
+ *     the factory methods of this class, and providing the
+ *     {@linkplain PropertyBuilder builder} with the required
+ *     info.
+ *     <li>Define the property on your rule using {@link PropertySource#definePropertyDescriptor(PropertyDescriptor)}.
+ *     This should be done in your rule's constructor.
+ * </ul>
+ *
+ * You can then retrieve the value configured by the user in your
+ * rule using {@link PropertySource#getProperty(PropertyDescriptor)}.
+ *
+ * <h1>Example</h1>
+ *
+ * <pre>
+ * class MyRule {
+ *   // The property descriptor may be static, it can be shared across threads.
+ *   private static final {@link PropertyDescriptor}&lt;Integer> myIntProperty
+ *     = PropertyFactory.{@linkplain #intProperty(String) intProperty}("myIntProperty")
+ *                      .{@linkplain PropertyBuilder#desc(String) desc}("This is my property")
+ *                      .{@linkplain PropertyBuilder#defaultValue(Object) defaultValue}(3)
+ *                      .{@linkplain PropertyBuilder#require(PropertyConstraint) require}(inRange(0, 100))   // constraints are checked before the rule is run
+ *                      .{@linkplain PropertyBuilder#build() build}();
+ *
+ *   // ..
+ *
+ *   public MyRule() {
+ *     {@linkplain PropertySource#definePropertyDescriptor(PropertyDescriptor) definePropertyDescriptor}(myIntProperty);
+ *   }
+ *
+ *     // ... somewhere in the rule
+ *
+ *     int myPropertyValue = {@linkplain PropertySource#getProperty(PropertyDescriptor) getProperty(myIntProperty)};
+ *     // use it.
+ *
+ * }
+ * </pre>
+ *
  *
  * @author Clément Fournier
  * @since 6.10.0
  */
+//@formatter:on
 public final class PropertyFactory {
 
     private PropertyFactory() {
@@ -28,6 +78,20 @@ public final class PropertyFactory {
     }
 
 
+    /**
+     * Returns a builder for an integer property. The property descriptor
+     * will by default accept any value conforming to the format specified
+     * by {@link Integer#parseInt(String)}, e.g. {@code 1234} or {@code -123}.
+     * Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
+     * The class {@link NumericConstraints} provides some useful ready-made constraints
+     * for that purpose.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     *
+     * @see NumericConstraints
+     */
     public static GenericPropertyBuilder<Integer> intProperty(String name) {
         return new GenericPropertyBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
     }
