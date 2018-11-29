@@ -83,6 +83,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return description;
     }
 
+
     /** Returns the value, asserting it has been set. */
     T getDefaultValue() {
         if (!isDefaultValueSet()) {
@@ -197,13 +198,14 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // Note: we may keep some specialized property builders around to allow for some sugar,
     // e.g. specifying the default value of a regex property as a string, or like the collection one,
     // with varargs for collection types
-    public static final class GenericPropertyBuilder<T> extends PropertyBuilder<GenericPropertyBuilder<T>, T> {
+    public static class GenericPropertyBuilder<T> extends PropertyBuilder<GenericPropertyBuilder<T>, T> {
 
 
         private final ValueParser<T> parser;
         private final Class<T> type;
 
 
+        // Class is not final but a package-private constructor restricts inheritance
         GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
             super(name);
             this.parser = parser;
@@ -277,9 +279,58 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
                     type
             );
         }
-
-
     }
+
+
+    /**
+     * Specialized builder for regex properties. Allows specifying the pattern as a
+     * string, with {@link #defaultValue(String)}.
+     *
+     * @author Clément Fournier
+     * @since 6.10.0
+     */
+    public static final class RegexPropertyBuilder extends GenericPropertyBuilder<Pattern> {
+
+        RegexPropertyBuilder(String name) {
+            super(name, ValueParserConstants.REGEX_PARSER, Pattern.class);
+        }
+
+
+        /**
+         * Specify a default value using a string pattern. The argument is
+         * compiled to a pattern using {@link Pattern#compile(String)}.
+         *
+         * @param pattern String pattern
+         *
+         * @return The same builder
+         *
+         * @throws java.util.regex.PatternSyntaxException If the argument is not a valid pattern
+         */
+        public RegexPropertyBuilder defaultValue(String pattern) {
+            super.defaultValue(Pattern.compile(pattern));
+            return this;
+        }
+
+
+        /**
+         * Specify a default value using a string pattern. The argument is
+         * compiled to a pattern using {@link Pattern#compile(String, int)}.
+         *
+         * @param pattern String pattern
+         * @param flags   Regex compilation flags, the same as for {@link Pattern#compile(String, int)}
+         *
+         * @return The same builder
+         *
+         * @throws java.util.regex.PatternSyntaxException If the argument is not a valid pattern
+         * @throws IllegalArgumentException               If bit values other than those corresponding to the defined
+         *                                                match flags are set in {@code flags}
+         */
+        public RegexPropertyBuilder defaultValue(String pattern, int flags) {
+            super.defaultValue(Pattern.compile(pattern, flags));
+            return this;
+        }
+    }
+
 
     /**
      * Generic builder for a collection-valued property.
