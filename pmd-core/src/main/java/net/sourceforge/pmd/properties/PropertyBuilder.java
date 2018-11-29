@@ -32,7 +32,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  *   <li>A default value: see {@link #defaultValue(Object)}
  * </ul>
  *
- * <p>The {@link PropertyDescriptor} may be built after this required steps by
+ * <p>The {@link PropertyDescriptor} may be built after those required steps by
  * calling {@link #build()}.
  *
  * <p>Note: from 7.0.0 on, all property builders will

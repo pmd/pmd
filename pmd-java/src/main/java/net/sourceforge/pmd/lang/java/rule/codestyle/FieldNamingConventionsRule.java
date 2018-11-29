@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.properties.RegexProperty;
 
 
 /**
@@ -31,12 +30,12 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
                            .build();
 
 
-    private final RegexProperty publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
-    private final RegexProperty constantFieldRegex = defaultProp("constant").desc("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
-    private final RegexProperty enumConstantRegex = defaultProp("enum constant").defaultValue("[A-Z][A-Z_0-9]*").build();
-    private final RegexProperty finalFieldRegex = defaultProp("final field").build();
-    private final RegexProperty staticFieldRegex = defaultProp("static field").build();
-    private final RegexProperty defaultFieldRegex = defaultProp("defaultField", "field").build();
+    private final PropertyDescriptor<Pattern> publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
+    private final PropertyDescriptor<Pattern> constantFieldRegex = defaultProp("constant").desc("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
+    private final PropertyDescriptor<Pattern> enumConstantRegex = defaultProp("enum constant").defaultValue("[A-Z][A-Z_0-9]*").build();
+    private final PropertyDescriptor<Pattern> finalFieldRegex = defaultProp("final field").build();
+    private final PropertyDescriptor<Pattern> staticFieldRegex = defaultProp("static field").build();
+    private final PropertyDescriptor<Pattern> defaultFieldRegex = defaultProp("defaultField", "field").build();
 
 
     public FieldNamingConventionsRule() {
