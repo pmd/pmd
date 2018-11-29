@@ -38,6 +38,7 @@ This means, you can use CPD to find duplicated code in your Kotlin projects.
     *   [#1341](https://github.com/pmd/pmd/issues/1341): \[doc] Documentation Error with Regex Properties
     *   [#1468](https://github.com/pmd/pmd/issues/1468): \[doc] Missing escaping leads to XSS
     *   [#1471](https://github.com/pmd/pmd/issues/1471): \[core] XMLRenderer: ProcessingErrors from exceptions without a message missing
+    *   [#1477](https://github.com/pmd/pmd/issues/1477): \[core] Analysis cache fails with wildcard classpath entries
 *   java
     *   [#1460](https://github.com/pmd/pmd/issues/1460): \[java] Intermittent PMD failure : PMD processing errors while no violations reported
 *   java-bestpractices
