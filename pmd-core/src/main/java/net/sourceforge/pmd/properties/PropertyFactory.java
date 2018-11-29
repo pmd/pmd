@@ -110,6 +110,20 @@ public final class PropertyFactory {
     }
 
 
+    /**
+     * Returns a builder for a double property. The property descriptor
+     * will by default accept any value conforming to the format specified
+     * by {@link Double#valueOf(String)}, e.g. {@code 0}, {@code .93}, or {@code 1e-1}.
+     * Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
+     * The class {@link NumericConstraints} provides some useful ready-made constraints
+     * for that purpose.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     *
+     * @see NumericConstraints
+     */
     public static GenericPropertyBuilder<Double> doubleProperty(String name) {
         return new GenericPropertyBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
     }

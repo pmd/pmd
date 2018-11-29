@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
-import net.sourceforge.pmd.properties.DoubleProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -31,9 +30,9 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
     private static final Logger LOG = Logger.getLogger(NPathComplexityRule.class.getName());
 
     @Deprecated
-    private static final DoubleProperty MINIMUM_DESCRIPTOR
-        = DoubleProperty.named("minimum").desc("Deprecated! Minimum reporting threshold")
-                        .range(0d, 2000d).defaultValue(200d).uiOrder(2.0f).build();
+    private static final PropertyDescriptor<Double> MINIMUM_DESCRIPTOR
+            = PropertyFactory.doubleProperty("minimum").desc("Deprecated! Minimum reporting threshold")
+                             .require(positive()).defaultValue(200d).build();
 
 
     private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
