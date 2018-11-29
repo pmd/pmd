@@ -10,10 +10,8 @@ import java.io.StringReader;
 
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.objectivec.ObjectiveCLanguageModule;
+import net.sourceforge.pmd.lang.objectivec.ObjectiveCTokenManager;
 import net.sourceforge.pmd.lang.objectivec.ast.Token;
 
 /**
@@ -25,11 +23,7 @@ public class ObjectiveCTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         try (Reader reader = new StringReader(buffer.toString())) {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(ObjectiveCLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(languageVersionHandler
-                    .getParser(languageVersionHandler.getDefaultParserOptions())
-                    .getTokenManager(sourceCode.getFileName(), reader));
+            final TokenFilter tokenFilter = new JavaCCTokenFilter(new ObjectiveCTokenManager(reader));
             Token currentToken = (Token) tokenFilter.getNextToken();
             while (currentToken != null) {
                 tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));

@@ -64,12 +64,12 @@ to remove them in 7.0.0. The proposed changes to the API are described [on the w
 ##### Changes to how you define properties
 
 
-* Construction of property descriptors has been possible through builders since 6.0.0. The 7.0.0 API will only allow 
+* Construction of property descriptors has been possible through builders since 6.0.0. The 7.0.0 API will only allow
 construction through builders. The builder hierarchy, currently found in the package {% jdoc_package props::builders %},
 is being replaced by the simpler {% jdoc props::PropertyBuilder %}. Their APIs enjoy a high degree of source compatibility.
 
 * Concrete property classes like {% jdoc props::IntegerProperty %} and {% jdoc props::StringMultiProperty %} will gradually
-all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the {% jdoc props::PropertyDescriptor %} 
+all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the {% jdoc props::PropertyDescriptor %}
 interface, e.g. `PropertyDescriptor<Integer>` or `PropertyDescriptor<List<String>>`.
 
 * Instead of spreading properties across countless classes, the utility class {% jdoc :PF %} will become
@@ -84,7 +84,7 @@ by a corresponding method on `PropertyFactory`:
     <!-- TODO complete that as we proceed. -->
 
 
-Here's an example: 
+Here's an example:
 ```java
 // Before 7.0.0, these are equivalent:
 IntegerProperty myProperty = new IntegerProperty("score", "Top score value", 1, 100, 40, 3.0f);
@@ -138,12 +138,12 @@ accordingly.
 
 The following APIs were never intended as public API and will be internalized or removed with 7.0.0.
 
-* All classes from {% jdoc_package props::modules %} are deprecated and will be removed. 
+* All classes from {% jdoc_package props::modules %} are deprecated and will be removed.
 * The classes {% jdoc props::PropertyDescriptorField %}, {% jdoc props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
   {% jdoc !c!:PDr#attributeValuesById %}, {% jdoc !c!:PDr#isDefinedExternally() %} and {% jdoc !c!props::PropertyTypeId#getFactory() %}.
   These were used to read and write properties to and from XML, but were not intended as public API.
 * The class {% jdoc props::ValueParserConstants %} and the interface {% jdoc props::ValueParser %}.
-  
+
 #### Deprecated APIs
 
 {% jdoc_nspace :xpath core::lang.ast.xpath %}
@@ -178,6 +178,30 @@ The following APIs were never intended as public API and will be internalized or
     and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
     {% jdoc jast::JavaParserVisitorAdapter %} should be directly subclassed.
 
+
+*   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
+    are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+    not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:
+
+    *   {% jdoc cpp::lang.cpp.CppHandler %}
+    *   {% jdoc cpp::lang.cpp.CppLanguageModule %}
+    *   {% jdoc cpp::lang.cpp.CppParser %}
+    *   {% jdoc cs::lang.cs.CsLanguageModule %}
+    *   {% jdoc fortran::lang.fortran.FortranLanguageModule %}
+    *   {% jdoc groovy::lang.groovy.GroovyLanguageModule %}
+    *   {% jdoc matlab::lang.matlab.MatlabHandler %}
+    *   {% jdoc matlab::lang.matlab.MatlabLanguageModule %}
+    *   {% jdoc matlab::lang.matlab.MatlabParser %}
+    *   {% jdoc objectivec::lang.objectivec.ObjectiveCHandler %}
+    *   {% jdoc objectivec::lang.objectivec.ObjectiveCLanguageModule %}
+    *   {% jdoc objectivec::lang.objectivec.ObjectiveCParser %}
+    *   {% jdoc php::lang.php.PhpLanguageModule %}
+    *   {% jdoc python::lang.python.PythonHandler %}
+    *   {% jdoc python::lang.python.PythonLanguageModule %}
+    *   {% jdoc python::lang.python.PythonParser %}
+    *   {% jdoc ruby::lang.ruby.RubyLanguageModule %}
+    *   {% jdoc scala::lang.scala.ScalaLanguageModule %}
+    *   {% jdoc swift::lang.swift.SwiftLanguageModule %}
 
 ### External Contributions
 
