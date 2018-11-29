@@ -22,6 +22,13 @@ public class ASTThrowStatement extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Gets the image of the first ASTClassOrInterfaceType child or
      * <code>null</code> if none is found. Note that when the statement is

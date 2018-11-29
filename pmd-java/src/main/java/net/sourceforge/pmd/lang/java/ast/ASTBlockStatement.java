@@ -22,6 +22,13 @@ public class ASTBlockStatement extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Tells if this BlockStatement is an allocation statement. This is done by
      *

@@ -36,6 +36,12 @@ public class ASTSwitchStatement extends AbstractJavaNode implements Iterable<AST
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns true if this switch has a {@code default} case.
      */

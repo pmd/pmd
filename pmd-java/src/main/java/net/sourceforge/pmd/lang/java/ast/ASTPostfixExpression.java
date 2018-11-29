@@ -32,6 +32,12 @@ public class ASTPostfixExpression extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the image of this unary operator, i.e. "++" or "--".
      */

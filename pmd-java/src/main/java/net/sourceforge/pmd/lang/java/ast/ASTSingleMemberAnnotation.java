@@ -32,6 +32,12 @@ public class ASTSingleMemberAnnotation extends AbstractJavaTypeNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the value of the default member
      * set by this annotation.

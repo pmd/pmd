@@ -21,6 +21,12 @@ public class ASTResource extends ASTFormalParameter {
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
     // TODO Should we deprecate all methods from ASTFormalParameter?
 
 }

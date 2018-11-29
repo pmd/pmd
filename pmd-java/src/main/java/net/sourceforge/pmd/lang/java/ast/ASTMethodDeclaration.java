@@ -33,6 +33,13 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
         return visitor.visit(this, data);
     }
 
+
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns the simple name of the method.
      */

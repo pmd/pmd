@@ -31,6 +31,12 @@ public class ASTTryStatement extends AbstractJavaNode {
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     /**
      * Returns true if this node is a try-with-resources, in which case it
      * has a ResourceSpecification child node.

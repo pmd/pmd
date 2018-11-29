@@ -36,6 +36,12 @@ public class ASTTypeParameters extends AbstractJavaNode implements Iterable<ASTT
 
 
     @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
+    @Override
     public Iterator<ASTTypeParameter> iterator() {
         return new NodeChildrenIterator<>(this, ASTTypeParameter.class);
     }

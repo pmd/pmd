@@ -36,6 +36,12 @@ public class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClas
     }
 
 
+    @Override
+    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
+        visitor.visit(this, data);
+    }
+
+
     @Override    // TODO this doesn't preserve the annotations.
     public Iterator<ASTClassOrInterfaceType> iterator() {
         return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
