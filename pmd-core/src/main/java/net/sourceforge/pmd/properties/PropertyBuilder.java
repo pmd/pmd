@@ -187,26 +187,19 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     }
 
 
-    /**
-     * Generic builder for a single-value property.
-     *
-     * @param <T> Type of values the property handles
-     *
-     * @author Clément Fournier
-     * @since 6.10.0
-     */
-    // Note: we may keep some specialized property builders around to allow for some sugar,
-    // e.g. specifying the default value of a regex property as a string, or like the collection one,
-    // with varargs for collection types
-    public static class GenericPropertyBuilder<T> extends PropertyBuilder<GenericPropertyBuilder<T>, T> {
-
-
+    // Technically this may very well be merged into PropertyBuilder
+    // We'd have all properties (even collection properties) enjoy a ValueParser,
+    // which means they could be parsed in a <value> tag (collections would use delimiters) if they opt in.
+    // The delimiters wouldn't be configurable (we'd take our current defaults). If they could ambiguous
+    // then the <seq> syntax should be the only one available.
+    // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look clumsy
+    abstract static class BaseSinglePropertyBuilder<B extends PropertyBuilder<B, T>, T> extends PropertyBuilder<B, T> {
         private final ValueParser<T> parser;
         private final Class<T> type;
 
 
         // Class is not final but a package-private constructor restricts inheritance
-        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
+        BaseSinglePropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
             super(name);
             this.parser = parser;
             this.type = type;
@@ -281,6 +274,22 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
     }
 
+    /**
+     * Generic builder for a single-value property.
+     *
+     * @param <T> Type of values the property handles
+     *
+     * @author Clément Fournier
+     * @since 6.10.0
+     */
+    // Note: This type is used to fix the first type parameter for classes that don't need more API.
+    public static final class GenericPropertyBuilder<T> extends BaseSinglePropertyBuilder<GenericPropertyBuilder<T>, T> {
+
+        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
+            super(name, parser, type);
+        }
+    }
+
 
     /**
      * Specialized builder for regex properties. Allows specifying the pattern as a
@@ -289,7 +298,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @author Clément Fournier
      * @since 6.10.0
      */
-    public static final class RegexPropertyBuilder extends GenericPropertyBuilder<Pattern> {
+    public static final class RegexPropertyBuilder extends BaseSinglePropertyBuilder<RegexPropertyBuilder, Pattern> {
 
         RegexPropertyBuilder(String name) {
             super(name, ValueParserConstants.REGEX_PARSER, Pattern.class);
