@@ -1292,8 +1292,8 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|no|
 |reportLevel|200|N-Path Complexity reporting threshold|no|
+|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
