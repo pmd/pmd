@@ -137,6 +137,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @param constraint The constraint
      *
      * @return The same builder
+     *
+     * @see net.sourceforge.pmd.properties.constraints.NumericConstraints
      */
     @SuppressWarnings("unchecked")
     public B require(PropertyConstraint<? super T> constraint) {

@@ -11,8 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
@@ -89,11 +92,11 @@ public class PropertyDescriptorTest {
         thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
                                    containsIgnoreCase(constraint.getConstraintDescription())));
 
-        PropertyDescriptor<Integer> intProperty = PropertyFactory.intProperty("fooProp")
-                                                                 .desc("hello")
-                                                                 .defaultValue(1000)
-                                                                 .require(constraint)
-                                                                 .build();
+        PropertyFactory.intProperty("fooProp")
+                       .desc("hello")
+                       .defaultValue(1000)
+                       .require(constraint)
+                       .build();
     }
 
 
@@ -142,6 +145,76 @@ public class PropertyDescriptorTest {
         assertEquals("bazooli", descriptor.defaultValue());
     }
 
+    @Test
+    public void testIntProperty() {
+        PropertyDescriptor<Integer> descriptor = PropertyFactory.intProperty("intProp")
+                .desc("hello")
+                .defaultValue(1)
+                .build();
+        assertEquals(Integer.valueOf(1), descriptor.defaultValue());
+        assertEquals("intProp", descriptor.name());
+        assertEquals("hello", descriptor.description());
+
+        PropertyDescriptor<List<Integer>> listDescriptor = PropertyFactory.intListProperty("intListProp")
+                .desc("hello")
+                .defaultValues(1, 2)
+                .build();
+        assertEquals(Arrays.asList(1, 2), listDescriptor.defaultValue());
+        assertEquals("intListProp", listDescriptor.name());
+        assertEquals("hello", listDescriptor.description());
+    }
+
+    @Test
+    public void testDoubleProperty() {
+        PropertyDescriptor<Double> descriptor = PropertyFactory.doubleProperty("doubleProp")
+                .desc("hello")
+                .defaultValue(1.0)
+                .build();
+        assertEquals(Double.valueOf(1.0), descriptor.defaultValue());
+
+        PropertyDescriptor<List<Double>> listDescriptor = PropertyFactory.doubleListProperty("doubleListProp")
+                .desc("hello")
+                .defaultValues(1.0, 2.0)
+                .build();
+        assertEquals(Arrays.asList(1.0, 2.0), listDescriptor.defaultValue());
+    }
+
+    @Test
+    public void testStringProperty() {
+        PropertyDescriptor<String> descriptor = PropertyFactory.stringProperty("stringProp")
+                .desc("hello")
+                .defaultValue("default value")
+                .build();
+        assertEquals("default value", descriptor.defaultValue());
+
+        PropertyDescriptor<List<String>> listDescriptor = PropertyFactory.stringListProperty("stringListProp")
+                .desc("hello")
+                .defaultValues("v1", "v2")
+                .build();
+        assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
+    }
+
+    private enum SampleEnum { A, B, C }
+
+    @Test
+    public void testEnumProperty() {
+        Map<String, SampleEnum> nameMap = new HashMap<>();
+        nameMap.put("TEST_A", SampleEnum.A);
+        nameMap.put("TEST_B", SampleEnum.B);
+        nameMap.put("TEST_C", SampleEnum.C);
+
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+        assertEquals(SampleEnum.B, descriptor.defaultValue());
+
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", nameMap)
+                .desc("hello")
+                .defaultValues(SampleEnum.A, SampleEnum.B)
+                .build();
+        assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+    }
 
     private static Matcher<String> containsIgnoreCase(final String substring) {
         return new SubstringMatcher(substring) {

@@ -76,9 +76,11 @@ interface, e.g. `PropertyDescriptor<Integer>` or `PropertyDescriptor<List<String
 from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
 by a corresponding method on `PropertyFactory`:
   * {% jdoc props::IntegerProperty %} is replaced by {% jdoc !c!:PF#intProperty(java.lang.String) %}
-  * {% jdoc props::IntegerMultiProperty %} is replaced by {% jdoc !c!:PF#intListProperty(java.lang.String) %}
+    * {% jdoc props::IntegerMultiProperty %} is replaced by {% jdoc !c!:PF#intListProperty(java.lang.String) %}
   * {% jdoc props::FloatProperty %} and {% jdoc props::DoubleProperty %} are both replaced by {% jdoc !c!:PF#doubleProperty(java.lang.String) %}.
     Having a separate property for floats wasn't that useful.
+    * Similarly, {% jdoc props::FloatMultiProperty %} and {% jdoc props::DoubleMultiProperty %} are replaced by {% jdoc !c!:PF#doubleListProperty(java.lang.String) %}.
+
   * {% jdoc props::MethodProperty %}, {% jdoc props::FileProperty %}, {% jdoc props::TypeProperty %} and their multi-valued counterparts
     are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
     <!-- TODO complete that as we proceed. -->
