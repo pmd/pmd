@@ -463,8 +463,8 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|regex|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|Regular expression|no|
 |ignoredAnnotations|com.google.common.annotations.VisibleForTesting \| android.support.annotation.VisibleForTesting|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|regex|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|Regular expression|no|
 
 **Use this rule by referencing it:**
 ``` xml
