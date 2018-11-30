@@ -13,6 +13,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
@@ -142,6 +143,16 @@ public class PropertyDescriptorTest {
         assertEquals("bazooli", descriptor.defaultValue());
     }
 
+    @Test
+    public void testRegexProperty() {
+        PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
+                .desc("hello")
+                .defaultValue("^[A-Z].*$")
+                .build();
+        assertEquals("regexProp", descriptor.name());
+        assertEquals("hello", descriptor.description());
+        assertEquals("^[A-Z].*$", descriptor.defaultValue().toString());
+    }
 
     private static Matcher<String> containsIgnoreCase(final String substring) {
         return new SubstringMatcher(substring) {
