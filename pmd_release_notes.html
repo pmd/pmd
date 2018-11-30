@@ -1361,10 +1361,17 @@ interface, e.g. <code class="highlighter-rouge">PropertyDescriptor&lt;Integer&gt
 from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
 by a corresponding method on <code class="highlighter-rouge">PropertyFactory</code>:</p>
     <ul>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code class="highlighter-rouge">IntegerProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intProperty</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code class="highlighter-rouge">IntegerMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intListProperty</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code class="highlighter-rouge">IntegerProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code class="highlighter-rouge">IntegerMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intListProperty</code></a></li>
+        </ul>
+      </li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatProperty.html#"><code class="highlighter-rouge">FloatProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleProperty.html#"><code class="highlighter-rouge">DoubleProperty</code></a> are both replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleProperty</code></a>.
-Having a separate property for floats wasn’t that useful.</li>
+Having a separate property for floats wasn’t that useful.
+        <ul>
+          <li>Similarly, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code class="highlighter-rouge">FloatMultiProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code class="highlighter-rouge">DoubleMultiProperty</code></a> are replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleListProperty</code></a>.</li>
+        </ul>
+      </li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code class="highlighter-rouge">MethodProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FileProperty.html#"><code class="highlighter-rouge">FileProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code class="highlighter-rouge">TypeProperty</code></a> and their multi-valued counterparts
 are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
 <!-- TODO complete that as we proceed. --></li>
@@ -1545,7 +1552,7 @@ not affected by this change. The following classes have been deprecated and will
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Nov 29, 2018 <br />
+ Site last generated: Nov 30, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
