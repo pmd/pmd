@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 
@@ -139,6 +140,25 @@ public final class PropertyFactory {
      */
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
         return doubleProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
+    }
+
+
+    /**
+     * Returns a builder for a regex property. The value type of such
+     * a property is {@link java.util.regex.Pattern}. For this use case, this type of
+     * property should be preferred over {@linkplain #stringProperty(String) stringProperty}
+     * as pattern compilation, including syntax errors, are handled transparently to
+     * the rule.
+     *
+     * <p>This type of property is not available as a list, because the delimiters
+     * could be part of the regex. This restriction will be lifted with 7.0.0.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static RegexPropertyBuilder regexProperty(String name) {
+        return new RegexPropertyBuilder(name);
     }
 
 

@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
@@ -214,6 +215,17 @@ public class PropertyDescriptorTest {
                 .defaultValues(SampleEnum.A, SampleEnum.B)
                 .build();
         assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+    }
+
+    @Test
+    public void testRegexProperty() {
+        PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
+                .desc("hello")
+                .defaultValue("^[A-Z].*$")
+                .build();
+        assertEquals("regexProp", descriptor.name());
+        assertEquals("hello", descriptor.description());
+        assertEquals("^[A-Z].*$", descriptor.defaultValue().toString());
     }
 
     private static Matcher<String> containsIgnoreCase(final String substring) {
