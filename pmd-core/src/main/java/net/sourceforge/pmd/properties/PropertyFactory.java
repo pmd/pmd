@@ -181,7 +181,7 @@ public final class PropertyFactory {
 
 
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
-        return enumProperty(name, nameToValue).toList();
+        return enumProperty(name, nameToValue).toList().delim(MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }
 
 
