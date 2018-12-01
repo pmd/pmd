@@ -5,13 +5,12 @@
 package net.sourceforge.pmd.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.util.Objects;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -60,8 +59,8 @@ public class ResourceLoader {
         final File file = new File(name);
         if (file.exists()) {
             try {
-                return new FileInputStream(file);
-            } catch (final FileNotFoundException e) {
+                return Files.newInputStream(file.toPath());
+            } catch (final IOException e) {
                 // if the file didn't exist, we wouldn't be here
                 throw new RuntimeException(e); // somehow the file vanished between checking for existence and opening
             }

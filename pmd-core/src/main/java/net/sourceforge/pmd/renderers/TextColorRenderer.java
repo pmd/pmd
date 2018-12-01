@@ -7,9 +7,10 @@ package net.sourceforge.pmd.renderers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -201,7 +202,13 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     }
 
     protected Reader getReader(String sourceFile) throws FileNotFoundException {
-        return new FileReader(new File(sourceFile));
+        try {
+            return Files.newBufferedReader(new File(sourceFile).toPath(), Charset.defaultCharset());
+        } catch (IOException e) {
+            FileNotFoundException ex = new FileNotFoundException(sourceFile);
+            ex.initCause(e);
+            throw ex;
+        }
     }
 
     /**

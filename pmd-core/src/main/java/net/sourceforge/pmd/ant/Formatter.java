@@ -7,7 +7,6 @@ package net.sourceforge.pmd.ant;
 import java.io.BufferedWriter;
 import java.io.Console;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -16,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -181,7 +181,7 @@ public class Formatter {
         Writer writer = null;
         boolean isOnError = true;
         try {
-            output = new FileOutputStream(file);
+            output = Files.newOutputStream(file.toPath());
             writer = new OutputStreamWriter(output, charset);
             writer = new BufferedWriter(writer);
             isOnError = false;
