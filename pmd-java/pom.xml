@@ -18,7 +18,7 @@
             <testResource>
                 <directory>${basedir}/src/test/java</directory>
                 <includes>
-                    <include>**/testdata/*.java</include>
+                    <include>**/testdata/**/*.java</include>
                 </includes>
             </testResource>
         </testResources>

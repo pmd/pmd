@@ -3,7 +3,7 @@
  */
 
 
-package net.sourceforge.pmd.typeresolution.testdata;
+package net.sourceforge.pmd.typeresolution.testdata.java8;
 
 public class ThisExpression {
 

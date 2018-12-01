@@ -6,42 +6,25 @@ package net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jaxen.JaxenException;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
-import net.sourceforge.pmd.typeresolution.testdata.SuperClass;
-import net.sourceforge.pmd.typeresolution.testdata.SuperExpression;
-import net.sourceforge.pmd.typeresolution.testdata.ThisExpression;
-import net.sourceforge.pmd.typeresolution.testdata.UsesJavaStreams;
-import net.sourceforge.pmd.typeresolution.testdata.UsesRepeatableAnnotations;
+import net.sourceforge.pmd.typeresolution.testdata.java8.SuperClass;
+import net.sourceforge.pmd.typeresolution.testdata.java8.SuperExpression;
+import net.sourceforge.pmd.typeresolution.testdata.java8.ThisExpression;
 
 
 
 public class ClassTypeResolverJava8Test {
-
-    @Test
-    public void interfaceMethodShouldBeParseable() {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass18(UsesJavaStreams.class);
-    }
-
-    @Test
-    public void repeatableAnnotationsMethodShouldBeParseable() {
-        ASTCompilationUnit acu = parseAndTypeResolveForClass18(UsesRepeatableAnnotations.class);
-    }
-
     @Test
     public void testThisExpression() throws JaxenException {
         ASTCompilationUnit acu = parseAndTypeResolveForClass18(ThisExpression.class);
@@ -90,27 +73,7 @@ public class ClassTypeResolverJava8Test {
     }
 
     private ASTCompilationUnit parseAndTypeResolveForClass18(Class<?> clazz) {
-        return parseAndTypeResolveForClass(clazz, "1.8");
-    }
-
-    // Note: If you're using Eclipse or some other IDE to run this test, you
-    // _must_ have the regress folder in
-    // the classpath. Normally the IDE doesn't put source directories themselves
-    // directly in the classpath, only
-    // the output directories are in the classpath.
-    private ASTCompilationUnit parseAndTypeResolveForClass(Class<?> clazz, String version) {
-        String sourceFile = clazz.getName().replace('.', '/') + ".java";
-        InputStream is = ClassTypeResolverJava8Test.class.getClassLoader().getResourceAsStream(sourceFile);
-        if (is == null) {
-            throw new IllegalArgumentException("Unable to find source file " + sourceFile + " for " + clazz);
-        }
-        LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                .getVersion(version).getLanguageVersionHandler();
-        ASTCompilationUnit acu = (ASTCompilationUnit) languageVersionHandler
-                .getParser(languageVersionHandler.getDefaultParserOptions()).parse(null, new InputStreamReader(is));
-        languageVersionHandler.getSymbolFacade().start(acu);
-        languageVersionHandler.getQualifiedNameResolutionFacade(ClassTypeResolverJava8Test.class.getClassLoader()).start(acu);
-        languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverJava8Test.class.getClassLoader()).start(acu);
-        return acu;
+        String source = ParserTstUtil.getSourceFromClass(clazz);
+        return ParserTstUtil.parseAndTypeResolveJava("1.8", source);
     }
 }
