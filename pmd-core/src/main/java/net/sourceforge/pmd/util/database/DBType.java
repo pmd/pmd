@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -171,7 +172,7 @@ public class DBType {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("Attempting File no file suffix: " + matchString);
         }
-        try (InputStream stream = new FileInputStream(propertiesFile)) {
+        try (InputStream stream = Files.newInputStream(propertiesFile.toPath())) {
             resourceBundle = new PropertyResourceBundle(stream);
             propertiesSource = propertiesFile.getAbsolutePath();
             LOGGER.finest("FileSystemWithoutExtension");
@@ -180,7 +181,7 @@ public class DBType {
                 LOGGER.finest("notFoundOnFilesystemWithoutExtension");
                 LOGGER.finest("Attempting File with added file suffix: " + matchString + ".properties");
             }
-            try (InputStream stream = new FileInputStream(propertiesFile)) {
+            try (InputStream stream = Files.newInputStream(propertiesFile.toPath())) {
                 propertiesFile = new File(matchString + ".properties");
                 resourceBundle = new PropertyResourceBundle(stream);
                 propertiesSource = propertiesFile.getAbsolutePath();

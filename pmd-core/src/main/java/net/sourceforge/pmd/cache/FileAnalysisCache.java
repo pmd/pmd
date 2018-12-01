@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
         if (cacheExists()) {
             try (
                 DataInputStream inputStream = new DataInputStream(
-                    new BufferedInputStream(new FileInputStream(cacheFile)));
+                    new BufferedInputStream(Files.newInputStream(cacheFile.toPath())));
             ) {
                 final String cacheVersion = inputStream.readUTF();
 
