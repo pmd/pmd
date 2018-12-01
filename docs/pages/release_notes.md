@@ -48,6 +48,8 @@ This means, you can use CPD to find duplicated code in your Kotlin projects.
     *   [#1440](https://github.com/pmd/pmd/issues/1440): \[java] CommentDefaultAccessModifierRule shows incorrect message
 *   java-design
     *   [#1483](https://github.com/pmd/pmd/issues/1483): \[java] Cyclo metric should count conditions of for statements correctly
+*   plsql
+    *   [#1454](https://github.com/pmd/pmd/issues/1454): \[plsql] ParseException for IF/CASE statement with >=, <=, !=
 
 
 ### API Changes
