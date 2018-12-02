@@ -47,6 +47,7 @@ This means, you can use CPD to find duplicated code in your Kotlin projects.
     *   [#1372](https://github.com/pmd/pmd/issues/1372): \[java] false positive for UselessQualifiedThis
     *   [#1440](https://github.com/pmd/pmd/issues/1440): \[java] CommentDefaultAccessModifierRule shows incorrect message
 *   java-design
+    *   [#1151](https://github.com/pmd/pmd/issues/1151): \[java] ImmutableField false positive with multiple constructors
     *   [#1483](https://github.com/pmd/pmd/issues/1483): \[java] Cyclo metric should count conditions of for statements correctly
 
 
@@ -217,6 +218,7 @@ The following APIs were never intended as public API and will be internalized or
 *   [#1453](https://github.com/pmd/pmd/pull/1453): \[java] Adding the fix for #1440. Showing correct message for CommentDefaultAccessmodifier. - [Rohit Kumar](https://github.com/stationeros)
 *   [#1464](https://github.com/pmd/pmd/pull/1464): \[doc] Fix XSS on documentation web page - [Maxime Robert](https://github.com/marob)
 *   [#1469](https://github.com/pmd/pmd/pull/1469): \[core] Configurable max loops in DAAPathFinder - [Alberto Fernández](https://github.com/albfernandez)
+*   [#1494](https://github.com/pmd/pmd/pull/1494): \[java] 1151: Rephrase ImmutableField documentation in design.xml - [Robbie Martinus](https://github.com/rmartinus)
 
 {% endtocmaker %}
 
