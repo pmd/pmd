@@ -824,7 +824,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
 **Priority:** Medium (3)
 
-Identifies private fields whose values never change once they are initialized either in the declaration
+Identifies private fields whose values never change once object initialization ends either in the declaration
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ImmutableFieldRule.java)
