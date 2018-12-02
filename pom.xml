@@ -641,29 +641,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>true</inherited>
-                <executions>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <!-- configuration is in plugin management section -->
             </plugin>
