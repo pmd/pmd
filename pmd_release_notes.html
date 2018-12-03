@@ -1433,24 +1433,41 @@ new way to document these properties exhaustively will be added with 7.0.0.</li>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code class="highlighter-rouge">errorFor</code></a> is deprecated as its return type will be changed to <code class="highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
 </ul>
 
-<h5 id="internalized-api">Internalized API</h5>
-
-<p>The following APIs were never intended as public API and will be internalized or removed with 7.0.0.</p>
-
-<ul>
-  <li>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/modules/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.modules</code></a> are deprecated and will be removed.</li>
-  <li>The classes <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptorField.html#"><code class="highlighter-rouge">PropertyDescriptorField</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/PropertyDescriptorBuilderConversionWrapper.html#"><code class="highlighter-rouge">PropertyDescriptorBuilderConversionWrapper</code></a>, and the methods
-<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#attributeValuesById"><code class="highlighter-rouge">PropertyDescriptor#attributeValuesById</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isDefinedExternally()"><code class="highlighter-rouge">PropertyDescriptor#isDefinedExternally</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#getFactory()"><code class="highlighter-rouge">PropertyTypeId#getFactory</code></a>.
-These were used to read and write properties to and from XML, but were not intended as public API.</li>
-  <li>The class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParserConstants.html#"><code class="highlighter-rouge">ValueParserConstants</code></a> and the interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParser.html#"><code class="highlighter-rouge">ValueParser</code></a>.</li>
-</ul>
-
 <h4 id="deprecated-apis">Deprecated APIs</h4>
+
+<h5 id="for-internalization">For internalization</h5>
 
 <ul>
   <li>
     <p>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code></a>)
 are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/Attribute.html#"><code class="highlighter-rouge">Attribute</code></a> remains public API.</p>
+  </li>
+  <li>
+    <p>The classes <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptorField.html#"><code class="highlighter-rouge">PropertyDescriptorField</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/PropertyDescriptorBuilderConversionWrapper.html#"><code class="highlighter-rouge">PropertyDescriptorBuilderConversionWrapper</code></a>, and the methods
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#attributeValuesById"><code class="highlighter-rouge">PropertyDescriptor#attributeValuesById</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isDefinedExternally()"><code class="highlighter-rouge">PropertyDescriptor#isDefinedExternally</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#getFactory()"><code class="highlighter-rouge">PropertyTypeId#getFactory</code></a>.
+These were used to read and write properties to and from XML, but were not intended as public API.</p>
+  </li>
+  <li>
+    <p>The class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParserConstants.html#"><code class="highlighter-rouge">ValueParserConstants</code></a> and the interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParser.html#"><code class="highlighter-rouge">ValueParser</code></a>.</p>
+  </li>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.metrics.impl.visitors</code></a> are now considered internal API. They’re deprecated
+and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserVisitorAdapter</code></a> should be directly subclassed.</p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowHandler()"><code class="highlighter-rouge">LanguageVersionHandler#getDataFlowHandler()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDFAGraphRule()"><code class="highlighter-rouge">LanguageVersionHandler#getDFAGraphRule()</code></a></p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/VisitorStarter.html#"><code class="highlighter-rouge">VisitorStarter</code></a></p>
+  </li>
+</ul>
+
+<h5 id="for-removal">For removal</h5>
+
+<ul>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/modules/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.modules</code></a> will be removed.</p>
   </li>
   <li>
     <p>The interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/Dimensionable.html#"><code class="highlighter-rouge">Dimensionable</code></a> has been deprecated.
@@ -1485,11 +1502,6 @@ composable visitors, used in the metrics framework, but they didn’t prove cost
     </ul>
   </li>
   <li>
-    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.metrics.impl.visitors</code></a> are now considered internal API. They’re deprecated
-and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
-<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserVisitorAdapter</code></a> should be directly subclassed.</p>
-  </li>
-  <li>
     <p>The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
 are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
 not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:</p>
@@ -1514,6 +1526,20 @@ not affected by this change. The following classes have been deprecated and will
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-ruby/6.10.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code class="highlighter-rouge">RubyLanguageModule</code></a></li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-scala/6.10.0/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code class="highlighter-rouge">ScalaLanguageModule</code></a></li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-swift/6.10.0/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#"><code class="highlighter-rouge">SwiftLanguageModule</code></a></li>
+    </ul>
+  </li>
+  <li>
+    <p>Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
+in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
+found on <a href="https://github.com/pmd/pmd/pull/1426">#1426</a>. Consequently, the following APIs are deprecated for
+removal:</p>
+    <ul>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#"><code class="highlighter-rouge">Rule</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isDfa()"><code class="highlighter-rouge">isDfa()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code class="highlighter-rouge">isTypeResolution()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isMultifile()"><code class="highlighter-rouge">isMultifile()</code></a> and their
+respective setters.</li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#"><code class="highlighter-rouge">RuleSet</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesDFA(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesTypeResolution(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesMultifile(Language)</code></a></li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#"><code class="highlighter-rouge">RuleSets</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesDFA(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesTypeResolution(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesMultifile(Language)</code></a></li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code class="highlighter-rouge">LanguageVersionHandler</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()"><code class="highlighter-rouge">getDataFlowFacade()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()"><code class="highlighter-rouge">getSymbolFacade()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getSymbolFacade(ClassLoader)</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getTypeResolutionFacade(ClassLoader)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getQualifiedNameResolutionFacade(ClassLoader)</code></a></li>
     </ul>
   </li>
 </ul>
@@ -1554,7 +1580,7 @@ not affected by this change. The following classes have been deprecated and will
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 2, 2018 <br />
+ Site last generated: Dec 3, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
