@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
@@ -24,7 +24,10 @@ public interface LanguageVersionHandler {
 
     /**
      * Get the DataFlowHandler.
+     * @deprecated This is internal API
      */
+    @Deprecated
+    @InternalApi
     DataFlowHandler getDataFlowHandler();
 
     /**
@@ -126,5 +129,10 @@ public interface LanguageVersionHandler {
     VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader);
 
 
+    /**
+     * @deprecated This is internal API
+     */
+    @Deprecated
+    @InternalApi
     DFAGraphRule getDFAGraphRule();
 }
