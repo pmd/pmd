@@ -136,24 +136,37 @@ accordingly.
   new way to document these properties exhaustively will be added with 7.0.0.
 * {% jdoc :PDr#errorFor(java.lang.Object) %} is deprecated as its return type will be changed to `Optional<String>` with the shift to Java 8.
 
-
-##### Internalized API
-
-The following APIs were never intended as public API and will be internalized or removed with 7.0.0.
-
-* All classes from {% jdoc_package props::modules %} are deprecated and will be removed.
-* The classes {% jdoc props::PropertyDescriptorField %}, {% jdoc props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
-  {% jdoc !c!:PDr#attributeValuesById %}, {% jdoc !c!:PDr#isDefinedExternally() %} and {% jdoc !c!props::PropertyTypeId#getFactory() %}.
-  These were used to read and write properties to and from XML, but were not intended as public API.
-* The class {% jdoc props::ValueParserConstants %} and the interface {% jdoc props::ValueParser %}.
-
 #### Deprecated APIs
 
 {% jdoc_nspace :xpath core::lang.ast.xpath %}
 {% jdoc_nspace :jast java::lang.java.ast %}
+{% jdoc_nspace :rule core::Rule %}
+{% jdoc_nspace :lvh core::lang.LanguageVersionHandler %}
+{% jdoc_nspace :rset core::RuleSet %}
+{% jdoc_nspace :rsets core::RuleSets %}
+
+##### For internalization
 
 *   The implementation of the adapters for the XPath engines Saxon and Jaxen (package {% jdoc_package :xpath %})
     are now deprecated. They'll be moved to an internal package come 7.0.0. Only {% jdoc xpath::Attribute %} remains public API.
+
+*   The classes {% jdoc props::PropertyDescriptorField %}, {% jdoc props::builders.PropertyDescriptorBuilderConversionWrapper %}, and the methods
+    {% jdoc !c!:PDr#attributeValuesById %}, {% jdoc !c!:PDr#isDefinedExternally() %} and {% jdoc !c!props::PropertyTypeId#getFactory() %}.
+    These were used to read and write properties to and from XML, but were not intended as public API.
+
+*   The class {% jdoc props::ValueParserConstants %} and the interface {% jdoc props::ValueParser %}.
+
+*   All classes from {% jdoc_package java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
+    and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+    {% jdoc jast::JavaParserVisitorAdapter %} should be directly subclassed.
+
+*   {% jdoc !ac!:lvh#getDataFlowHandler() %}, {% jdoc !ac!:lvh#getDFAGraphRule() %}
+
+*   {% jdoc core::lang.VisitorStarter %}
+
+##### For removal
+
+*   All classes from {% jdoc_package props::modules %} will be removed.
 
 *   The interface {% jdoc jast::Dimensionable %} has been deprecated.
     It gets in the way of a grammar change for 7.0.0 and won't be needed anymore (see [#997](https://github.com/pmd/pmd/issues/997)).
@@ -176,10 +189,6 @@ The following APIs were never intended as public API and will be internalized or
 
     *   In {% jdoc_package :jast %}: {% jdoc jast::JavaParserDecoratedVisitor %}, {% jdoc jast::JavaParserControllessVisitor %},
         {% jdoc jast::JavaParserControllessVisitorAdapter %}, and {% jdoc jast::JavaParserVisitorDecorator %} are deprecated with no intended replacement.
-
-*   All classes from {% jdoc_package java::lang.java.metrics.impl.visitors %} are now considered internal API. They're deprecated
-    and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
-    {% jdoc jast::JavaParserVisitorAdapter %} should be directly subclassed.
 
 
 *   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
@@ -205,6 +214,21 @@ The following APIs were never intended as public API and will be internalized or
     *   {% jdoc ruby::lang.ruby.RubyLanguageModule %}
     *   {% jdoc scala::lang.scala.ScalaLanguageModule %}
     *   {% jdoc swift::lang.swift.SwiftLanguageModule %}
+
+
+* Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
+in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
+found on [#1426](https://github.com/pmd/pmd/pull/1426). Consequently, the following APIs are deprecated for
+removal:
+  * In {% jdoc :rule %}: {% jdoc !a!:rule#isDfa() %}, {% jdoc !a!:rule#isTypeResolution() %}, {% jdoc !a!:rule#isMultifile() %} and their
+    respective setters.
+  * In {% jdoc :rset %}: {% jdoc !a!:rset#usesDFA(core::lang.Language) %}, {% jdoc !a!:rset#usesTypeResolution(core::lang.Language) %}, {% jdoc !a!:rset#usesMultifile(core::lang.Language) %}
+  * In {% jdoc :rsets %}: {% jdoc !a!:rsets#usesDFA(core::lang.Language) %}, {% jdoc !a!:rsets#usesTypeResolution(core::lang.Language) %}, {% jdoc !a!:rsets#usesMultifile(core::lang.Language) %}
+  * In {% jdoc :lvh %}: {% jdoc !a!:lvh#getDataFlowFacade() %}, {% jdoc !a!:lvh#getSymbolFacade() %}, {% jdoc !a!:lvh#getSymbolFacade(java.lang.ClassLoader) %},
+    {% jdoc !a!:lvh#getTypeResolutionFacade(java.lang.ClassLoader) %}, {% jdoc !a!:lvh#getQualifiedNameResolutionFacade(java.lang.ClassLoader) %}
+
+
+
 
 ### External Contributions
 
