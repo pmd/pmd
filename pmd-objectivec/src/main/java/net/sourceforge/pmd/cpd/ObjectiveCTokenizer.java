@@ -4,17 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.objectivec.ObjectiveCLanguageModule;
+import net.sourceforge.pmd.lang.objectivec.ObjectiveCTokenManager;
 import net.sourceforge.pmd.lang.objectivec.ast.Token;
 
 /**
@@ -25,14 +22,8 @@ public class ObjectiveCTokenizer implements Tokenizer {
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
-        Reader reader = null;
-        try {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(ObjectiveCLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-            reader = new StringReader(buffer.toString());
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(languageVersionHandler
-                    .getParser(languageVersionHandler.getDefaultParserOptions())
-                    .getTokenManager(sourceCode.getFileName(), reader));
+        try (Reader reader = new StringReader(buffer.toString())) {
+            final TokenFilter tokenFilter = new JavaCCTokenFilter(new ObjectiveCTokenManager(reader));
             Token currentToken = (Token) tokenFilter.getNextToken();
             while (currentToken != null) {
                 tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
@@ -44,8 +35,8 @@ public class ObjectiveCTokenizer implements Tokenizer {
             err.printStackTrace();
             System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             tokenEntries.add(TokenEntry.getEOF());
-        } finally {
-            IOUtils.closeQuietly(reader);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

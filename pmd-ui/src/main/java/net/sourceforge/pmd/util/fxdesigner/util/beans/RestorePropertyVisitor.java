@@ -54,6 +54,7 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
                 try {
                     PropertyUtils.setProperty(target, saved.getKey(), saved.getValue());
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    System.err.println("Error setting property " + saved.getKey() + " on a " + target.getClass().getSimpleName());
                     e.printStackTrace();
                 }
             }

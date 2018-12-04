@@ -37,16 +37,19 @@ public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensiona
         return visitor.visit(this, data);
     }
 
+    @Deprecated
     public void bumpArrayDepth() {
         arrayDepth++;
     }
 
     @Override
+    @Deprecated
     public int getArrayDepth() {
         return arrayDepth;
     }
 
     @Override
+    @Deprecated
     public boolean isArray() {
         return arrayDepth > 0;
     }

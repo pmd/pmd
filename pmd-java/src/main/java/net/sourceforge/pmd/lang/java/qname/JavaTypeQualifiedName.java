@@ -166,6 +166,7 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
      * Gets the Class instance identified by this qualified name.
      *
      * @return A class instance, or null if the classloader threw a {@link ClassNotFoundException}
+     *     or {@link LinkageError} while trying to load the class.
      */
     public Class<?> getType() {
         synchronized (this) {
@@ -173,8 +174,9 @@ public final class JavaTypeQualifiedName extends JavaQualifiedName {
                 typeLoaded = true;
                 try {
                     representedType = loadType();
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException | LinkageError e) {
                     representedType = null;
+                    //TODO: report missing/broken type in auxclasspath
                 }
             }
             return representedType;

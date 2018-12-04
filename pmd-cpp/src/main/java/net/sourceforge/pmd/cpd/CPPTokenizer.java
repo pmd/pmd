@@ -10,16 +10,12 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
+import net.sourceforge.pmd.lang.cpp.CppTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -56,15 +52,8 @@ public class CPPTokenizer implements Tokenizer {
     @Override
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
-        Reader reader = null;
-        try {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-            reader = new StringReader(maybeSkipBlocks(buffer.toString()));
-            reader = IOUtil.skipBOM(reader);
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(
-                languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
-                    .getTokenManager(sourceCode.getFileName(), reader));
+        try (Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString())))) {
+            final TokenFilter tokenFilter = new JavaCCTokenFilter(new CppTokenManager(reader));
             
             GenericToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
@@ -73,16 +62,10 @@ public class CPPTokenizer implements Tokenizer {
             }
             tokenEntries.add(TokenEntry.getEOF());
             System.err.println("Added " + sourceCode.getFileName());
-        } catch (TokenMgrError err) {
+        } catch (TokenMgrError | IOException err) {
             err.printStackTrace();
             System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             tokenEntries.add(TokenEntry.getEOF());
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-            tokenEntries.add(TokenEntry.getEOF());
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
     }
 

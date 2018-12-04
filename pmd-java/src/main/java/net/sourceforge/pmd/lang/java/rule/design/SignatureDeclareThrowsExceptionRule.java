@@ -13,8 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -60,28 +58,17 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
-        if (impl != null && impl.jjtGetParent().equals(node)) {
-            for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-                Node child = impl.jjtGetChild(ix);
-
-                if (child.getClass() != ASTClassOrInterfaceType.class) {
-                    continue;
-                }
-
-                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
-                if (isJUnitTest(type)) {
-                    junitImported = true;
-                    return super.visit(node, data);
-                }
-            }
-        }
-        if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
-            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
+        for (final ASTClassOrInterfaceType type : node.getSuperInterfacesTypeNodes()) {
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
             }
+        }
+        
+        ASTClassOrInterfaceType type = node.getSuperClassTypeNode();
+        if (type != null && isJUnitTest(type)) {
+            junitImported = true;
+            return super.visit(node, data);
         }
 
         return super.visit(node, data);

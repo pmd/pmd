@@ -26,8 +26,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 public final class StringUtils {
     private StringUtils() {
         // to prevent instantiation
@@ -35,15 +33,11 @@ public final class StringUtils {
 
     public static List<String> convertStringToListOfLines(String string) throws IOException {
         final List<String> lines = new ArrayList<>();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new StringReader(string));
+        try (BufferedReader reader = new BufferedReader(new StringReader(string))) {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
         return lines;
     }

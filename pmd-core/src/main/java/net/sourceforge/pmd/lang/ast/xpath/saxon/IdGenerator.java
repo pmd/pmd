@@ -4,9 +4,14 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+
 /**
  * This class is used to generate unique IDs for nodes.
  */
+@Deprecated
+@InternalApi
 public class IdGenerator {
     private int id;
 

@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.RegexProperty;
 
 
 /**
@@ -25,12 +24,12 @@ import net.sourceforge.pmd.properties.RegexProperty;
  */
 public class ClassNamingConventionsRule extends AbstractNamingConventionRule<ASTAnyTypeDeclaration> {
 
-    private final RegexProperty classRegex = defaultProp("class", "concrete class").build();
-    private final RegexProperty abstractClassRegex = defaultProp("abstract class").build();
-    private final RegexProperty interfaceRegex = defaultProp("interface").build();
-    private final RegexProperty enumerationRegex = defaultProp("enum").build();
-    private final RegexProperty annotationRegex = defaultProp("annotation").build();
-    private final RegexProperty utilityClassRegex = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+(Utils?|Helper)").build();
+    private final PropertyDescriptor<Pattern> classRegex = defaultProp("class", "concrete class").build();
+    private final PropertyDescriptor<Pattern> abstractClassRegex = defaultProp("abstract class").build();
+    private final PropertyDescriptor<Pattern> interfaceRegex = defaultProp("interface").build();
+    private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
+    private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
+    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").defaultValue("[A-Z][a-zA-Z0-9]+(Utils?|Helper)").build();
 
 
     public ClassNamingConventionsRule() {

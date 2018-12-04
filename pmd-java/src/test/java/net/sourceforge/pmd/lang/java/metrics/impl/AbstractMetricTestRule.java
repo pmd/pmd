@@ -20,8 +20,10 @@ import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.DoubleProperty;
 import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard framework for rule testing, using one dummy rule
@@ -38,8 +40,8 @@ public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
         "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
     private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
         "reportMethods", "Add method violations to the report", isReportMethods(), 3.0f);
-    private final DoubleProperty reportLevelDescriptor = new DoubleProperty(
-        "reportLevel", "Minimum value required to report", -1., Double.POSITIVE_INFINITY, defaultReportLevel(), 3.0f);
+    private final PropertyDescriptor<Double> reportLevelDescriptor =
+            PropertyFactory.doubleProperty("reportLevel").desc("Minimum value required to report").defaultValue(defaultReportLevel()).build();
 
     private MetricOptions metricOptions;
     private boolean reportClasses;

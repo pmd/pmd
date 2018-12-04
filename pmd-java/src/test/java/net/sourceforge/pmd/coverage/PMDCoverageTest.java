@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +70,7 @@ public class PMDCoverageTest {
             assertFalse("Wrong configuration? Ruleset not found", errorStream.getLog().contains("Ruleset not found"));
             assertEquals("No usage of deprecated XPath attributes expected", 0, StringUtils.countMatches(errorStream.getLog(), "Use of deprecated attribute"));
 
-            String report = FileUtils.readFileToString(f);
+            String report = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
             assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));
 
             // we might have explicit examples of parsing errors, so these are maybe false positives

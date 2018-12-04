@@ -3,7 +3,7 @@
 <ruleset name="Error Prone"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
@@ -2294,6 +2294,8 @@ public void bar(int status) {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingserialversionuid">
         <description>
 Serializable classes should provide a serialVersionUID field.
+The serialVersionUID field is also needed for abstract base classes. Each individual class in the inheritance
+chain needs an own serialVersionUID field. See also [Should an abstract class have a serialVersionUID](https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid).
         </description>
         <priority>3</priority>
         <properties>
@@ -2301,7 +2303,7 @@ Serializable classes should provide a serialVersionUID field.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration
-    [@Abstract = 'false']
+    [@Interface = 'false']
     [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
@@ -2626,7 +2628,7 @@ NullPointerExceptions.
 <![CDATA[
 //MethodDeclaration
 [
-(./ResultType/Type[@Array='true'])
+(./ResultType/Type[@ArrayType='true'])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]

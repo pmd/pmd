@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,17 +38,12 @@ public class DBTypeTest {
         includeProperties.putAll(testProperties);
         includeProperties.put("prop3", "include3");
 
-        PrintStream printStream = null;
-        try {
-            absoluteFile = File.createTempFile("dbtypetest", ".properties");
-            FileOutputStream fileOutputStream = new FileOutputStream(absoluteFile);
-            printStream = new PrintStream(fileOutputStream);
-
+        absoluteFile = File.createTempFile("dbtypetest", ".properties");
+        try (FileOutputStream fileOutputStream = new FileOutputStream(absoluteFile);
+             PrintStream printStream = new PrintStream(fileOutputStream)) {
             for (Entry<?, ?> entry : testProperties.entrySet()) {
                 printStream.printf("%s=%s\n", entry.getKey(), entry.getValue());
             }
-        } finally {
-            IOUtils.closeQuietly(printStream);
         }
     }
 

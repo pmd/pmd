@@ -169,7 +169,7 @@ The whole ruleset file should look something like this:
 <ruleset name="My custom rules"
 		xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+		xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 	<rule name="WhileLoopsMustUseBracesRule"
 			message="Avoid using 'while' statements without curly braces"
 			class="WhileLoopsMustUseBracesRule">

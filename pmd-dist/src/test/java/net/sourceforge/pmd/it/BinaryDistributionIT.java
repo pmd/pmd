@@ -93,11 +93,11 @@ public class BinaryDistributionIT {
         result = PMDExecutor.runPMD(tempDir, "-h");
         result.assertExecutionResult(1, "apex, ecmascript, java, jsp, plsql, pom, vf, vm, wsdl, xml, xsl");
 
-        result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-basic");
+        result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExecutionResult(4, "JumbledIncrementer.java:8:");
 
-        result = PMDExecutor.runPMDRules(tempDir, srcDir, "java-design");
-        result.assertExecutionResult(0, "");
+        result = PMDExecutor.runPMDRules(tempDir, srcDir, "rulesets/java/quickstart.xml");
+        result.assertExecutionResult(4, "");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class BinaryDistributionIT {
 
         result = CpdExecutor.runCpd(tempDir, "-h");
 
-        result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
+        result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, kotlin, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");

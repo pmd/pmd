@@ -7,6 +7,7 @@ package net.sourceforge.pmd.docs;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,6 +55,6 @@ public class SidebarGeneratorTest {
         }
         String yaml = new Yaml(options).dump(result);
 
-        assertEquals(IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml")), yaml);
+        assertEquals(IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8), yaml);
     }
 }

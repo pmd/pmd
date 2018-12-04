@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.io.BufferedReader;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -27,19 +27,20 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.FileProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
+
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
-    public static final IntegerProperty THRESHOLD_DESCRIPTOR 
-            = IntegerProperty.named("maxDuplicateLiterals")
+    public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = PropertyFactory.intProperty("maxDuplicateLiterals")
                              .desc("Max duplicate literals")
-                             .range(1, 20).defaultValue(4).uiOrder(1.0f).build();
+                             .require(positive()).defaultValue(4).build();
 
-    public static final IntegerProperty MINIMUM_LENGTH_DESCRIPTOR = new IntegerProperty("minimumLength",
-            "Minimum string length to check", 1, Integer.MAX_VALUE, 3, 1.5f);
+    public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = PropertyFactory.intProperty("minimumLength").desc("Minimum string length to check").require(positive()).defaultValue(3).build();
 
     public static final BooleanProperty SKIP_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("skipAnnotations",
             "Skip literals within annotations", false, 2.0f);
@@ -51,7 +52,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             "Ignore list separator", ',', 4.0f);
 
     public static final FileProperty EXCEPTION_FILE_DESCRIPTOR = new FileProperty("exceptionfile",
-            "File containing strings to skip (one string per line), only used if ignore list is not set", null, 5.0f);
+            "File containing strings to skip (one string per line), only used if ignore list is not set. "
+            + "File must be UTF-8 encoded.", null, 5.0f);
 
     public static class ExceptionParser {
 
@@ -103,8 +105,9 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         definePropertyDescriptor(EXCEPTION_FILE_DESCRIPTOR);
     }
 
-    private LineNumberReader getLineReader() throws FileNotFoundException {
-        return new LineNumberReader(new BufferedReader(new FileReader(getProperty(EXCEPTION_FILE_DESCRIPTOR))));
+    private LineNumberReader getLineReader() throws IOException {
+        return new LineNumberReader(Files.newBufferedReader(getProperty(EXCEPTION_FILE_DESCRIPTOR).toPath(),
+                StandardCharsets.UTF_8));
     }
 
     @Override
@@ -116,17 +119,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             exceptions = p.parse(getProperty(EXCEPTION_LIST_DESCRIPTOR));
         } else if (getProperty(EXCEPTION_FILE_DESCRIPTOR) != null) {
             exceptions = new HashSet<>();
-            LineNumberReader reader = null;
-            try {
-                reader = getLineReader();
+            try (LineNumberReader reader = getLineReader()) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     exceptions.add(line);
                 }
             } catch (IOException ioe) {
-                ioe.printStackTrace();
-            } finally {
-                IOUtils.closeQuietly(reader);
+                throw new RuntimeException(ioe);
             }
         }
 

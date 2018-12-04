@@ -8,7 +8,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.8.0-SNAPSHOT</version>
+        <version>6.10.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -61,6 +61,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-text</artifactId>
+          <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>

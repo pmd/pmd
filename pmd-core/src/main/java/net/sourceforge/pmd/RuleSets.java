@@ -160,7 +160,9 @@ public class RuleSets {
      * @param language
      *            the language of a source
      * @return true if any rule in the RuleSet needs the DFA layer
+     * @deprecated See {@link Rule#isDfa()}
      */
+    @Deprecated
     public boolean usesDFA(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesDFA(language)) {
@@ -209,7 +211,9 @@ public class RuleSets {
      *            The Language.
      * @return <code>true</code> if a Rule for the Language uses Type
      *         Resolution, <code>false</code> otherwise.
+     * @deprecated See {@link Rule#isTypeResolution()}
      */
+    @Deprecated
     public boolean usesTypeResolution(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesTypeResolution(language)) {
@@ -227,7 +231,9 @@ public class RuleSets {
      *
      * @return {@code true} if a Rule for the Language uses multi file analysis,
      *         {@code false} otherwise.
+     * @deprecated See {@link Rule#isMultifile()}
      */
+    @Deprecated
     public boolean usesMultifile(Language language) {
         for (RuleSet ruleSet : ruleSets) {
             if (ruleSet.usesMultifile(language)) {
