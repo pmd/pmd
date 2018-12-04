@@ -180,6 +180,8 @@ public final class PropertyFactory {
      * @param name Name of the property to build
      *
      * @return A new builder
+     *
+     * @see #booleanProperty(String, boolean)
      */
     public static GenericPropertyBuilder<Boolean> booleanProperty(String name) {
         return new GenericPropertyBuilder<>(name, ValueParserConstants.BOOLEAN_PARSER, Boolean.class);
@@ -194,6 +196,8 @@ public final class PropertyFactory {
      * @param defaultValue Default value of the property
      *
      * @return A new builder
+     *
+     * @see #booleanProperty(String)
      */
     public static GenericPropertyBuilder<Boolean> booleanProperty(String name, boolean defaultValue) {
         return booleanProperty(name).defaultValue(defaultValue);
