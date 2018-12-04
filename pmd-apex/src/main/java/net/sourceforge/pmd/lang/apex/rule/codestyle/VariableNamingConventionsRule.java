@@ -45,21 +45,40 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
     private static final BooleanProperty CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
             "Check constructor and method parameter variables", true, 3.0f);
 
-    private static final PropertyDescriptor<List<String>> STATIC_PREFIXES_DESCRIPTOR = stringListProperty("staticPrefix").desc("Static variable prefixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> STATIC_PREFIXES_DESCRIPTOR =
+            stringListProperty("staticPrefix")
+                    .desc("Static variable prefixes").defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> STATIC_SUFFIXES_DESCRIPTOR = stringListProperty("staticSuffix").desc("Static variable suffixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> STATIC_SUFFIXES_DESCRIPTOR =
+            stringListProperty("staticSuffix")
+                    .desc("Static variable suffixes").defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> MEMBER_PREFIXES_DESCRIPTOR = stringListProperty("memberPrefix").desc("Member variable prefixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> MEMBER_PREFIXES_DESCRIPTOR =
+            stringListProperty("memberPrefix")
+                    .desc("Member variable prefixes").defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> MEMBER_SUFFIXES_DESCRIPTOR = stringListProperty("memberSuffix").desc("Member variable suffixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> MEMBER_SUFFIXES_DESCRIPTOR =
+            stringListProperty("memberSuffix")
+                    .desc("Member variable suffixes").defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> LOCAL_PREFIXES_DESCRIPTOR = stringListProperty("localPrefix").desc("Local variable prefixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> LOCAL_PREFIXES_DESCRIPTOR =
+            stringListProperty("localPrefix")
+                    .desc("Local variable prefixes").defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> LOCAL_SUFFIXES_DESCRIPTOR = stringListProperty("localSuffix").desc("Local variable suffixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> LOCAL_SUFFIXES_DESCRIPTOR =
+            stringListProperty("localSuffix")
+                    .desc("Local variable suffixes").defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> PARAMETER_PREFIXES_DESCRIPTOR = stringListProperty("parameterPrefix").desc("Method parameter variable prefixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> PARAMETER_PREFIXES_DESCRIPTOR =
+            stringListProperty("parameterPrefix")
+                    .desc("Method parameter variable prefixes")
+                    .defaultValues("").delim(',').build();
 
-    private static final PropertyDescriptor<List<String>> PARAMETER_SUFFIXES_DESCRIPTOR = stringListProperty("parameterSuffix").desc("Method parameter variable suffixes").defaultValues("").delim(',').build();
+    private static final PropertyDescriptor<List<String>> PARAMETER_SUFFIXES_DESCRIPTOR =
+            stringListProperty("parameterSuffix")
+                    .desc("Method parameter variable suffixes")
+                    .defaultValues("").delim(',').build();
+
 
     public VariableNamingConventionsRule() {
         definePropertyDescriptor(CHECK_MEMBERS_DESCRIPTOR);
