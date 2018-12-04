@@ -25,13 +25,25 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class AssignmentInOperandRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR = booleanProperty("allowIf").defaultValue(false).desc("Allow assignment within the conditional expression of an if statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR =
+            booleanProperty("allowIf")
+                    .desc("Allow assignment within the conditional expression of an if statement")
+                    .defaultValue(false).build();
 
-    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR = booleanProperty("allowFor").defaultValue(false).desc("Allow assignment within the conditional expression of a for statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR =
+            booleanProperty("allowFor")
+                    .desc("Allow assignment within the conditional expression of a for statement")
+                    .defaultValue(false).build();
 
-    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR = booleanProperty("allowWhile").defaultValue(false).desc("Allow assignment within the conditional expression of a while statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR =
+            booleanProperty("allowWhile")
+                    .desc("Allow assignment within the conditional expression of a while statement")
+                    .defaultValue(false).build();
 
-    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR = booleanProperty("allowIncrementDecrement").defaultValue(false).desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR =
+            booleanProperty("allowIncrementDecrement")
+                    .desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement")
+                    .defaultValue(false).build();
 
 
     public AssignmentInOperandRule() {

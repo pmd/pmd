@@ -33,8 +33,14 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;
 
-    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR = booleanProperty("checkNonStaticMethods").defaultValue(true).desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.").build();
-    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR = booleanProperty("checkNonStaticFields").defaultValue(false).desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.").build();
+    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR =
+            booleanProperty("checkNonStaticMethods")
+                    .desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.")
+                    .defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR =
+            booleanProperty("checkNonStaticFields")
+                    .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
+                    .defaultValue(false).build();
 
 
     public NonThreadSafeSingletonRule() {

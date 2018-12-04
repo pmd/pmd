@@ -30,10 +30,13 @@ public class LinguisticNamingRule extends AbstractJavaRule {
     private static final PropertyDescriptor<Boolean> CHECK_SETTERS =
             booleanProperty("checkSetters").defaultValue(true).desc("Check return type of setters.").build();
     private static final PropertyDescriptor<Boolean> CHECK_PREFIXED_TRANSFORM_METHODS =
-            booleanProperty("checkPrefixedTransformMethods").defaultValue(true).desc("Check return type of methods whose names start with the configured prefix (see transformMethodNames property).").build();
+            booleanProperty("checkPrefixedTransformMethods")
+                    .desc("Check return type of methods whose names start with the configured prefix (see transformMethodNames property).")
+                    .defaultValue(true).build();
     private static final PropertyDescriptor<Boolean> CHECK_TRANSFORM_METHODS =
-            booleanProperty("checkTransformMethods").defaultValue(false)
-                                                    .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).").build();
+            booleanProperty("checkTransformMethods")
+                    .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).")
+                    .defaultValue(false).build();
     private static final StringMultiProperty BOOLEAN_METHOD_PREFIXES_PROPERTY = StringMultiProperty
             .named("booleanMethodPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
             .desc("The prefixes of methods that return boolean.").build();

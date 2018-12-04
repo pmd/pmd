@@ -42,7 +42,9 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = PropertyFactory.intProperty("minimumLength").desc("Minimum string length to check").require(positive()).defaultValue(3).build();
 
-    public static final PropertyDescriptor<Boolean> SKIP_ANNOTATIONS_DESCRIPTOR = booleanProperty("skipAnnotations").defaultValue(false).desc("Skip literals within annotations").build();
+    public static final PropertyDescriptor<Boolean> SKIP_ANNOTATIONS_DESCRIPTOR =
+            booleanProperty("skipAnnotations")
+                    .desc("Skip literals within annotations").defaultValue(false).build();
 
     public static final StringProperty EXCEPTION_LIST_DESCRIPTOR = new StringProperty("exceptionList",
             "Strings to ignore", null, 3.0f);
