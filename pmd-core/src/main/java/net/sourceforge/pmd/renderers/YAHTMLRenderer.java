@@ -26,6 +26,8 @@ import net.sourceforge.pmd.properties.StringProperty;
 public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
+    // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
+    // Why does this one define an output dir property, shouldn't this be available to all renderers?
     public static final StringProperty OUTPUT_DIR = new StringProperty("outputDir", "Output directory.", null, 0);
 
     private SortedMap<String, ReportNode> reportNodesByPackage = new TreeMap<>();

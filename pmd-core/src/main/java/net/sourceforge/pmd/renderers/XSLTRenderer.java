@@ -38,6 +38,7 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
+    // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
     public static final StringProperty XSLT_FILENAME = new StringProperty("xsltFilename", "The XSLT file name.", null,
             0);
 

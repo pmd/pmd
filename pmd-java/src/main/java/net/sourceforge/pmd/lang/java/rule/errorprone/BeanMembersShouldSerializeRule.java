@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -23,14 +26,14 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
     private String prefixProperty;
 
-    private static final StringProperty PREFIX_DESCRIPTOR = new StringProperty("prefix",
-            "A variable prefix to skip, i.e., m_", "", 1.0f);
+    private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
+
 
     public BeanMembersShouldSerializeRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
@@ -81,8 +84,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
             if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {
                 continue;
             }
-            String varName = trimIfPrefix(decl.getImage());
-            varName = varName.substring(0, 1).toUpperCase(Locale.ROOT) + varName.substring(1, varName.length());
+            String varName = StringUtils.capitalize(trimIfPrefix(decl.getImage()));
             boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0
                     || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
             boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
