@@ -15,6 +15,8 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
  */
 public class HeaderCommentsRule extends AbstractCommentRule {
 
+    // Rule is not used and not implemented, properties won't be converted
+
     private static final String[] REQUIRED_WORKDS = new String[] { "copyright" };
     private static final String[] REQUIRED_TAGS = new String[] { "author", "version" };
 

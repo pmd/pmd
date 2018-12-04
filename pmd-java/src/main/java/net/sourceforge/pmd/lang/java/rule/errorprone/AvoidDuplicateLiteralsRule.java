@@ -54,7 +54,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     // TODO 7.0.0:
     // EXCEPTION_LIST_DESCRIPTOR -> PropertyDescriptor<Set<String>>
     // delete SEPARATOR_DESCRIPTOR, EXCEPTION_FILE_DESCRIPTOR
-    // Try hard to convert the properties to the seq syntax
+    // Try hard to convert the properties to the seq syntax, using the separator descriptor
 
     // TODO We use the old builders here, bc of the null default value
     public static final StringProperty EXCEPTION_LIST_DESCRIPTOR
@@ -65,9 +65,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
                             .defaultValue(null)
                             .build();
 
-    @Deprecated
     public static final CharacterProperty SEPARATOR_DESCRIPTOR = new CharacterProperty("separator",
-            "deprecated!(Avoid setting this property, use the comma) Ignore list separator", ',', 4.0f);
+            "Ignore list separator", ',', 4.0f);
 
     @Deprecated
     public static final FileProperty EXCEPTION_FILE_DESCRIPTOR = new FileProperty("exceptionfile",

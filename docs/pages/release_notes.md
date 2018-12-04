@@ -229,14 +229,8 @@ removal:
 
 #### Modified rules
 
-* The properties of the {% rule java/errorprone/AvoidDuplicateLiterals %} have been reworked a little
-to prepare for 7.0.0.
-  * The property `exceptionfile` is now deprecated. Please use `exceptionList` instead
-  * The property `separator` is now deprecated. Please avoid overriding its value and
-    instead use the default (a comma) separator. This is because delimiter logic will
-    be scrapped from property descriptors. Multi-valued properties will use a dedicated syntax,
-    which doesn't rely on a delimiter, to avoid ambiguity around the delimiter.
-  * These properties will be removed with 7.0.0
+* The property `exceptionfile` of the rule {% rule java/errorprone/AvoidDuplicateLiterals %} has been
+  deprecated and will be removed with 7.0.0. Please use `exceptionList` instead.
 
 ### External Contributions
 

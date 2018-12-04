@@ -39,6 +39,7 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     private List<String> parameterPrefixes;
     private List<String> parameterSuffixes;
 
+    // the rule is deprecated and will be removed so its properties won't be converted
     private static final BooleanProperty CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
             "Check member variables", true, 1.0f);
 

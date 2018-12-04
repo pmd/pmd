@@ -4,18 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
-    private final StringMultiProperty ignoredAnnotationsDescriptor
-        = StringMultiProperty.named("ignoredAnnotations")
+    private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor
+        = stringListProperty("ignoredAnnotations")
         .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-        .defaultValues(defaultSuppressionAnnotations())
+        .defaultValue(defaultSuppressionAnnotations())
         .build();
 
     protected Collection<String> defaultSuppressionAnnotations() {
