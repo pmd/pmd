@@ -172,6 +172,20 @@ public final class PropertyFactory {
     }
 
 
+    /**
+     * Returns a builder for a boolean property. The boolean is parsed from
+     * the XML using {@link Boolean#valueOf(String)}, i.e. the only truthy
+     * value is the string "true", and all other string values are falsy.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static GenericPropertyBuilder<Boolean> booleanProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.BOOLEAN_PARSER, Boolean.class);
+    }
+
+
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         // TODO find solution to document the set of possible values
         // At best, map that requirement to a constraint (eg make parser return null if not found, and

@@ -34,6 +34,8 @@ public enum PropertyTypeId {
     // e.g. the Class type), including the mnemonics (eg. xs:integer instead of Integer)
 
     BOOLEAN("Boolean", BooleanProperty.extractor(), ValueParserConstants.BOOLEAN_PARSER),
+    /** @deprecated see {@link BooleanMultiProperty} */
+    @Deprecated
     BOOLEAN_LIST("List[Boolean]", BooleanMultiProperty.extractor(), ValueParserConstants.BOOLEAN_PARSER),
 
     STRING("String", StringProperty.extractor(), ValueParserConstants.STRING_PARSER),
