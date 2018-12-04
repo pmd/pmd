@@ -67,10 +67,6 @@ public class CommentContentRule extends AbstractCommentRule {
         if (caseSensitive) {
             currentBadWords = originalBadWords;
         } else {
-            // TODO this only accounts for the original word
-            // + the all uppercase version
-            // but not eg a capitalized version
-            // (hardly a case insensitive comparison)
             currentBadWords = new ArrayList<>();
             for (String badWord : originalBadWords) {
                 currentBadWords.add(badWord.toUpperCase(Locale.ROOT));
