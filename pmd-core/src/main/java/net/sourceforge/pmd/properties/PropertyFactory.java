@@ -186,6 +186,20 @@ public final class PropertyFactory {
     }
 
 
+    /**
+     * Returns a builder for a boolean property, with a default value
+     * already specified. This is shorthand for {@code booleanProperty(name).defaultValue(defaultValue)}
+     *
+     * @param name         Name of the property to build
+     * @param defaultValue Default value of the property
+     *
+     * @return A new builder
+     */
+    public static GenericPropertyBuilder<Boolean> booleanProperty(String name, boolean defaultValue) {
+        return booleanProperty(name).defaultValue(defaultValue);
+    }
+
+
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         // TODO find solution to document the set of possible values
         // At best, map that requirement to a constraint (eg make parser return null if not found, and

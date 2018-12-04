@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -19,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.StringMultiProperty;
 
@@ -39,17 +40,13 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     private List<String> parameterPrefixes;
     private List<String> parameterSuffixes;
 
-    private static final BooleanProperty CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
-            "Check member variables", true, 1.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_MEMBERS_DESCRIPTOR = booleanProperty("checkMembers", true).desc("Check member variables").build();
 
-    private static final BooleanProperty CHECK_LOCALS_DESCRIPTOR = new BooleanProperty("checkLocals",
-            "Check local variables", true, 2.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_LOCALS_DESCRIPTOR = booleanProperty("checkLocals", true).desc("Check local variables").build();
 
-    private static final BooleanProperty CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
-            "Check constructor and method parameter variables", true, 3.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_PARAMETERS_DESCRIPTOR = booleanProperty("checkParameters", true).desc("Check constructor and method parameter variables").build();
 
-    private static final BooleanProperty CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR = new BooleanProperty(
-            "checkNativeMethodParameters", "Check method parameter of native methods", true, 3.5f);
+    private static final PropertyDescriptor<Boolean> CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR = booleanProperty("checkNativeMethodParameters", true).desc("Check method parameter of native methods").build();
 
     private static final StringMultiProperty STATIC_PREFIXES_DESCRIPTOR = new StringMultiProperty("staticPrefix",
             "Static variable prefixes", new String[] { "" }, 4.0f, ',');

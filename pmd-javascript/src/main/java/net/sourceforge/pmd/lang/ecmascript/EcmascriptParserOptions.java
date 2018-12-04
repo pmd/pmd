@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
 
+
 public class EcmascriptParserOptions extends ParserOptions {
 
     public enum Version {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.FileProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -42,8 +42,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = PropertyFactory.intProperty("minimumLength").desc("Minimum string length to check").require(positive()).defaultValue(3).build();
 
-    public static final BooleanProperty SKIP_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("skipAnnotations",
-            "Skip literals within annotations", false, 2.0f);
+    public static final PropertyDescriptor<Boolean> SKIP_ANNOTATIONS_DESCRIPTOR = booleanProperty("skipAnnotations", false).desc("Skip literals within annotations").build();
 
     public static final StringProperty EXCEPTION_LIST_DESCRIPTOR = new StringProperty("exceptionList",
             "Strings to ignore", null, 3.0f);
