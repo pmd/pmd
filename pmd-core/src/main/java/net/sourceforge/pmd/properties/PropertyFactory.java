@@ -164,7 +164,7 @@ public final class PropertyFactory {
 
     /**
      * Returns a builder for a string property. The property descriptor
-     * will accept any string for now, and performs no expansion of escape
+     * will accept any string, and performs no expansion of escape
      * sequences (e.g. {@code \n} in the XML will be represented as the
      * character sequence '\' 'n' and not the line-feed character '\n'). This
      * behaviour could be changed with PMD 7.0.0.
@@ -180,14 +180,14 @@ public final class PropertyFactory {
 
     /**
      * Returns a builder for a property having as value a list of strings. The
-     * format of the individual items is the same as for {@linkplain #stringProperty(String)} stringProperty}.
+     * format of the individual items is the same as for {@linkplain #stringProperty(String) stringProperty}.
      *
      * @param name Name of the property to build
      *
      * @return A new builder
      */
     public static GenericCollectionPropertyBuilder<String, List<String>> stringListProperty(String name) {
-        return stringProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
+        return stringProperty(name).toList();
     }
 
 

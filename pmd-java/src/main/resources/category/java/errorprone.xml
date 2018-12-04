@@ -320,14 +320,11 @@ BigDecimal bd = new BigDecimal(12);          // preferred approach, ok for integ
 
     <rule name="AvoidDuplicateLiterals"
           since="1.0"
-          message="The String literal {0} appears {1} times in this file"
+          message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidDuplicateLiteralsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidduplicateliterals">
         <description>
-            Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
-
-            The minimum number of occurrences needed to report a violation is configurable via a property.
-            Exceptions can also be configured via the property `ignoredImages`.
+Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
         </description>
         <priority>3</priority>
         <example>

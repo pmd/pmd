@@ -36,9 +36,6 @@ public class CommentContentRule extends AbstractCommentRule {
     private List<String> originalBadWords;
     private List<String> currentBadWords;
 
-    // FIXME need some better defaults (or none?)
-    private static final String[] BAD_WORDS = {"idiot", "jerk" };
-
     // ignored when property above == True
     public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
             "Case sensitive", false, 2.0f);
@@ -70,6 +67,10 @@ public class CommentContentRule extends AbstractCommentRule {
         if (caseSensitive) {
             currentBadWords = originalBadWords;
         } else {
+            // TODO this only accounts for the original word
+            // + the all uppercase version
+            // but not eg a capitalized version
+            // (hardly a case insensitive comparison)
             currentBadWords = new ArrayList<>();
             for (String badWord : originalBadWords) {
                 currentBadWords.add(badWord.toUpperCase(Locale.ROOT));

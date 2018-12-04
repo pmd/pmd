@@ -173,7 +173,7 @@ public class Foo {
         <description>#1425 Invalid XML Characters in Output</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file</message>
+            <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file; the first occurrence is on line 2</message>
         </expected-messages>
         <code><![CDATA[
 public class Duplicate {

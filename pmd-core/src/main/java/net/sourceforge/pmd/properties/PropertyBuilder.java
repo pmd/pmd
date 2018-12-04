@@ -363,7 +363,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         private final ValueParser<V> parser;
         private final Supplier<C> emptyCollSupplier;
         private final Class<V> type;
-        private char multiValueDelimiter;
+        private char multiValueDelimiter = MultiValuePropertyDescriptor.DEFAULT_DELIMITER;
 
 
         /**
