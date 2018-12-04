@@ -49,6 +49,8 @@ This means, you can use CPD to find duplicated code in your Kotlin projects.
 *   java-design
     *   [#1151](https://github.com/pmd/pmd/issues/1151): \[java] ImmutableField false positive with multiple constructors
     *   [#1483](https://github.com/pmd/pmd/issues/1483): \[java] Cyclo metric should count conditions of for statements correctly
+*   plsql
+    *   [#1454](https://github.com/pmd/pmd/issues/1454): \[plsql] ParseException for IF/CASE statement with >=, <=, !=
 
 
 ### API Changes
