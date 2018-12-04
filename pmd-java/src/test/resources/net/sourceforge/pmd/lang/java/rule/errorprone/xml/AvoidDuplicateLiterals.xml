@@ -173,7 +173,7 @@ public class Foo {
         <description>#1425 Invalid XML Characters in Output</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file; the first occurrence is on line 2</message>
+            <message>The String literal "Tokenizer \ud801\udc1ctest" appears 4 times in this file</message>
         </expected-messages>
         <code><![CDATA[
 public class Duplicate {
@@ -185,5 +185,34 @@ public class Duplicate {
     char c\u0030 = 'a';
 }
         ]]></code>
+    </test-code>
+    <test-code>
+        <description>Test ignoredLiterals takes precedence over exceptionList</description>
+        <rule-property name="ignoredLiterals">Hodor,foo</rule-property>
+        <rule-property name="exceptionList">Howdy:foo</rule-property>
+        <rule-property name="separator">:</rule-property>
+        <rule-property name="maxDuplicateLiterals">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <!-- We test here that howdy is not ignored, whereas Hodor is -->
+            <message>The String literal "Howdy" appears 4 times in this file</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                private void bar() {
+                    buz("Howdy");
+                    buz("Howdy");
+                    buz("Howdy");
+                    buz("Howdy");
+                    buz("Hodor");
+                    buz("Hodor");
+                    buz("Hodor");
+                    buz("foo");
+                    buz("foo");
+                    buz("foo");
+                    buz("foo");
+                }
+            }
+            ]]></code>
     </test-code>
 </test-data>

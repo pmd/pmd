@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +35,7 @@ import net.sourceforge.pmd.properties.StringProperty;
 
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(AvoidDuplicateLiteralsRule.class.getName());
 
     public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
             = PropertyFactory.intProperty("maxDuplicateLiterals")
@@ -45,14 +47,27 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     public static final BooleanProperty SKIP_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("skipAnnotations",
             "Skip literals within annotations", false, 2.0f);
 
+    // TODO 7.0.0 change to PropertyDescriptor<Set<String>>
+    public static final PropertyDescriptor<List<String>> IGNORED_LIST_DESCRIPTOR =
+            PropertyFactory.stringListProperty("ignoredLiterals")
+                           .desc("List of literals to ignore. "
+                                         + "A literal is ignored if its image can be found in this list. "
+                                         + "Components of this list should not be surrounded by double quotes.")
+                           .delim(',') // the delimiter stuff will anyway be removed with 7.0.0. It's just for better compat here
+                           .emptyDefaultValue()
+                           .build();
+
+    @Deprecated
     public static final StringProperty EXCEPTION_LIST_DESCRIPTOR = new StringProperty("exceptionList",
-            "Strings to ignore", null, 3.0f);
+            "deprecated!(Use 'ignoredLiterals' property)Strings to ignore", null, 3.0f);
 
+    @Deprecated
     public static final CharacterProperty SEPARATOR_DESCRIPTOR = new CharacterProperty("separator",
-            "Ignore list separator", ',', 4.0f);
+            "deprecated!(Use 'ignoredLiterals' property) Ignore list separator", ',', 4.0f);
 
+    @Deprecated
     public static final FileProperty EXCEPTION_FILE_DESCRIPTOR = new FileProperty("exceptionfile",
-            "File containing strings to skip (one string per line), only used if ignore list is not set. "
+            "deprecated!(Use 'ignoredLiterals' property) File containing strings to skip (one string per line), only used if ignore list is not set. "
             + "File must be UTF-8 encoded.", null, 5.0f);
 
     public static class ExceptionParser {
@@ -100,6 +115,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
         definePropertyDescriptor(MINIMUM_LENGTH_DESCRIPTOR);
         definePropertyDescriptor(SKIP_ANNOTATIONS_DESCRIPTOR);
+        definePropertyDescriptor(IGNORED_LIST_DESCRIPTOR);
         definePropertyDescriptor(EXCEPTION_LIST_DESCRIPTOR);
         definePropertyDescriptor(SEPARATOR_DESCRIPTOR);
         definePropertyDescriptor(EXCEPTION_FILE_DESCRIPTOR);
@@ -114,11 +130,19 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         literals.clear();
 
-        if (getProperty(EXCEPTION_LIST_DESCRIPTOR) != null) {
+        if (isPropertyOverridden(IGNORED_LIST_DESCRIPTOR)) {
+            exceptions = new HashSet<>(getProperty(IGNORED_LIST_DESCRIPTOR));
+        } else if (getProperty(EXCEPTION_LIST_DESCRIPTOR) != null) {
             ExceptionParser p = new ExceptionParser(getProperty(SEPARATOR_DESCRIPTOR));
             exceptions = p.parse(getProperty(EXCEPTION_LIST_DESCRIPTOR));
+            LOG.warning("Rule AvoidDuplicateLiterals uses deprecated property 'exceptionList'. "
+                                + "Future versions of PMD will remove support for this property. "
+                                + "Please use 'ignoredLiteralImages' instead.");
         } else if (getProperty(EXCEPTION_FILE_DESCRIPTOR) != null) {
             exceptions = new HashSet<>();
+            LOG.warning("Rule AvoidDuplicateLiterals uses deprecated property 'exceptionFile'. "
+                                + "Future versions of PMD will remove support for this property. "
+                                + "Please use 'ignoredLiteralImages' instead.");
             try (LineNumberReader reader = getLineReader()) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -147,8 +171,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             if (occurrences.size() >= threshold) {
                 ASTLiteral first = occurrences.get(0);
                 String rawImage = first.getEscapedStringLiteral();
-                Object[] args = new Object[] { rawImage, Integer.valueOf(occurrences.size()),
-                    Integer.valueOf(first.getBeginLine()), };
+                Object[] args = { rawImage, occurrences.size(), };
                 addViolation(data, first, args);
             }
         }

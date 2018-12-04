@@ -166,8 +166,8 @@ public final class PropertyFactory {
      * Returns a builder for a string property. The property descriptor
      * will accept any string for now, and performs no expansion of escape
      * sequences (e.g. {@code \n} in the XML will be represented as the
-     * character sequence '\' 'n' and not the character '\u000A'). This
-     * behaviour will probably be changed with PMD 7.0.0.
+     * character sequence '\' 'n' and not the line-feed character '\n'). This
+     * behaviour could be changed with PMD 7.0.0.
      *
      * @param name Name of the property to build
      *

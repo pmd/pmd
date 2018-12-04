@@ -227,7 +227,14 @@ removal:
   * In {% jdoc :lvh %}: {% jdoc !a!:lvh#getDataFlowFacade() %}, {% jdoc !a!:lvh#getSymbolFacade() %}, {% jdoc !a!:lvh#getSymbolFacade(java.lang.ClassLoader) %},
     {% jdoc !a!:lvh#getTypeResolutionFacade(java.lang.ClassLoader) %}, {% jdoc !a!:lvh#getQualifiedNameResolutionFacade(java.lang.ClassLoader) %}
 
+#### Modified rules
 
+* The properties of the {% rule java/errorprone/AvoidDuplicateLiterals %} have been reworked a little
+to prepare for 7.0.0.
+  * The properties `exceptionfile`, `exceptionList` and `separator` are now deprecated and will be removed with 7.0.0
+  * The new property `ignoredLiterals` works the same as exceptionList, except its delimiter is not
+    selected by the `separator` property. The delimiter is invariably `,`. If you didn't override `separator`,
+    then updating only involves changing the name `exceptionList` to `ignoredLiterals`
 
 
 ### External Contributions
