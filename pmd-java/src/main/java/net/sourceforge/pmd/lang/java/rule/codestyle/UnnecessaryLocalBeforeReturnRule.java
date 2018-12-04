@@ -30,7 +30,8 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters", true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
+    private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
+
 
     public UnnecessaryLocalBeforeReturnRule() {
         definePropertyDescriptor(STATEMENT_ORDER_MATTERS);

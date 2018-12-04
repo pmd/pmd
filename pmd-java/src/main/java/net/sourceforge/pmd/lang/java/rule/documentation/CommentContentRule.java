@@ -40,7 +40,7 @@ public class CommentContentRule extends AbstractCommentRule {
     private static final String[] BAD_WORDS = {"idiot", "jerk" };
 
     // ignored when property above == True
-    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive", false).desc("Case sensitive").build();
+    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive").defaultValue(false).desc("Case sensitive").build();
 
     public static final StringMultiProperty DISSALLOWED_TERMS_DESCRIPTOR = new StringMultiProperty("disallowedTerms",
             "Illegal terms or phrases", BAD_WORDS, 3.0f, '|');

@@ -40,13 +40,13 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     private List<String> parameterPrefixes;
     private List<String> parameterSuffixes;
 
-    private static final PropertyDescriptor<Boolean> CHECK_MEMBERS_DESCRIPTOR = booleanProperty("checkMembers", true).desc("Check member variables").build();
+    private static final PropertyDescriptor<Boolean> CHECK_MEMBERS_DESCRIPTOR = booleanProperty("checkMembers").defaultValue(true).desc("Check member variables").build();
 
-    private static final PropertyDescriptor<Boolean> CHECK_LOCALS_DESCRIPTOR = booleanProperty("checkLocals", true).desc("Check local variables").build();
+    private static final PropertyDescriptor<Boolean> CHECK_LOCALS_DESCRIPTOR = booleanProperty("checkLocals").defaultValue(true).desc("Check local variables").build();
 
-    private static final PropertyDescriptor<Boolean> CHECK_PARAMETERS_DESCRIPTOR = booleanProperty("checkParameters", true).desc("Check constructor and method parameter variables").build();
+    private static final PropertyDescriptor<Boolean> CHECK_PARAMETERS_DESCRIPTOR = booleanProperty("checkParameters").defaultValue(true).desc("Check constructor and method parameter variables").build();
 
-    private static final PropertyDescriptor<Boolean> CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR = booleanProperty("checkNativeMethodParameters", true).desc("Check method parameter of native methods").build();
+    private static final PropertyDescriptor<Boolean> CHECK_NATIVE_METHOD_PARAMETERS_DESCRIPTOR = booleanProperty("checkNativeMethodParameters").defaultValue(true).desc("Check method parameter of native methods").build();
 
     private static final StringMultiProperty STATIC_PREFIXES_DESCRIPTOR = new StringMultiProperty("staticPrefix",
             "Static variable prefixes", new String[] { "" }, 4.0f, ',');

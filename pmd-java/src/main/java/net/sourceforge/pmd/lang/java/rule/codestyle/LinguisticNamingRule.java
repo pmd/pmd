@@ -24,16 +24,16 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
 
 public class LinguisticNamingRule extends AbstractJavaRule {
     private static final PropertyDescriptor<Boolean> CHECK_BOOLEAN_METHODS =
-            booleanProperty("checkBooleanMethod", true).desc("Check method names and types for inconsistent naming.").build();
+            booleanProperty("checkBooleanMethod").defaultValue(true).desc("Check method names and types for inconsistent naming.").build();
     private static final PropertyDescriptor<Boolean> CHECK_GETTERS =
             booleanProperty("checkGetters").defaultValue(true).desc("Check return type of getters.").build();
     private static final PropertyDescriptor<Boolean> CHECK_SETTERS =
-            booleanProperty("checkSetters", true).desc("Check return type of setters.").build();
+            booleanProperty("checkSetters").defaultValue(true).desc("Check return type of setters.").build();
     private static final PropertyDescriptor<Boolean> CHECK_PREFIXED_TRANSFORM_METHODS =
-            booleanProperty("checkPrefixedTransformMethods", true).desc("Check return type of methods whose names start with the configured prefix (see transformMethodNames property).").build();
+            booleanProperty("checkPrefixedTransformMethods").defaultValue(true).desc("Check return type of methods whose names start with the configured prefix (see transformMethodNames property).").build();
     private static final PropertyDescriptor<Boolean> CHECK_TRANSFORM_METHODS =
-            booleanProperty("checkTransformMethods", false)
-            .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).").build();
+            booleanProperty("checkTransformMethods").defaultValue(false)
+                                                    .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).").build();
     private static final StringMultiProperty BOOLEAN_METHOD_PREFIXES_PROPERTY = StringMultiProperty
             .named("booleanMethodPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
             .desc("The prefixes of methods that return boolean.").build();
@@ -42,9 +42,9 @@ public class LinguisticNamingRule extends AbstractJavaRule {
             .desc("The prefixes and infixes that indicate a transform method.").build();
 
     private static final PropertyDescriptor<Boolean> CHECK_FIELDS =
-            booleanProperty("checkFields", true).desc("Check field names and types for inconsistent naming.").build();
+            booleanProperty("checkFields").defaultValue(true).desc("Check field names and types for inconsistent naming.").build();
     private static final PropertyDescriptor<Boolean> CHECK_VARIABLES =
-            booleanProperty("checkVariables", true).desc("Check local variable names and types for inconsistent naming.").build();
+            booleanProperty("checkVariables").defaultValue(true).desc("Check local variable names and types for inconsistent naming.").build();
     private static final StringMultiProperty BOOLEAN_FIELD_PREFIXES_PROPERTY = StringMultiProperty
             .named("booleanFieldPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
             .desc("The prefixes of fields and variables that indicate boolean.").build();

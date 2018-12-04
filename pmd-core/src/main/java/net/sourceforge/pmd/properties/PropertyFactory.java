@@ -180,27 +180,9 @@ public final class PropertyFactory {
      * @param name Name of the property to build
      *
      * @return A new builder
-     *
-     * @see #booleanProperty(String, boolean)
      */
     public static GenericPropertyBuilder<Boolean> booleanProperty(String name) {
         return new GenericPropertyBuilder<>(name, ValueParserConstants.BOOLEAN_PARSER, Boolean.class);
-    }
-
-
-    /**
-     * Returns a builder for a boolean property, with a default value
-     * already specified. This is shorthand for {@code booleanProperty(name).defaultValue(defaultValue)}
-     *
-     * @param name         Name of the property to build
-     * @param defaultValue Default value of the property
-     *
-     * @return A new builder
-     *
-     * @see #booleanProperty(String)
-     */
-    public static GenericPropertyBuilder<Boolean> booleanProperty(String name, boolean defaultValue) {
-        return booleanProperty(name).defaultValue(defaultValue);
     }
 
 

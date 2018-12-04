@@ -105,7 +105,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
             return prop;
         }
 
-        prop = PropertyFactory.booleanProperty(id, true).desc("Include " + label + " column").build();
+        prop = PropertyFactory.booleanProperty(id).defaultValue(true).desc("Include " + label + " column").build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }

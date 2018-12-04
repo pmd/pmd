@@ -25,13 +25,14 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class AssignmentInOperandRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR = booleanProperty("allowIf", false).desc("Allow assignment within the conditional expression of an if statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR = booleanProperty("allowIf").defaultValue(false).desc("Allow assignment within the conditional expression of an if statement").build();
 
-    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR = booleanProperty("allowFor", false).desc("Allow assignment within the conditional expression of a for statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR = booleanProperty("allowFor").defaultValue(false).desc("Allow assignment within the conditional expression of a for statement").build();
 
-    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR = booleanProperty("allowWhile", false).desc("Allow assignment within the conditional expression of a while statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR = booleanProperty("allowWhile").defaultValue(false).desc("Allow assignment within the conditional expression of a while statement").build();
 
-    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR = booleanProperty("allowIncrementDecrement", false).desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement").build();
+    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR = booleanProperty("allowIncrementDecrement").defaultValue(false).desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement").build();
+
 
     public AssignmentInOperandRule() {
         definePropertyDescriptor(ALLOW_IF_DESCRIPTOR);

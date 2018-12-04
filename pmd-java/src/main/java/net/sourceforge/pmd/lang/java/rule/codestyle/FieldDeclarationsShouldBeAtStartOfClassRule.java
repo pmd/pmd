@@ -39,9 +39,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRule {
 
-    private final PropertyDescriptor<Boolean> ignoreEnumDeclarations = booleanProperty("ignoreEnumDeclarations", true).desc("Ignore Enum Declarations that precede fields.").build();
-    private final PropertyDescriptor<Boolean> ignoreAnonymousClassDeclarations = booleanProperty("ignoreAnonymousClassDeclarations", true).desc("Ignore Field Declarations, that are initialized with anonymous class declarations").build();
-    private final PropertyDescriptor<Boolean> ignoreInterfaceDeclarations = booleanProperty("ignoreInterfaceDeclarations", false).desc("Ignore Interface Declarations that precede fields.").build();
+    private final PropertyDescriptor<Boolean> ignoreEnumDeclarations = booleanProperty("ignoreEnumDeclarations").defaultValue(true).desc("Ignore Enum Declarations that precede fields.").build();
+    private final PropertyDescriptor<Boolean> ignoreAnonymousClassDeclarations = booleanProperty("ignoreAnonymousClassDeclarations").defaultValue(true).desc("Ignore Field Declarations, that are initialized with anonymous class declarations").build();
+    private final PropertyDescriptor<Boolean> ignoreInterfaceDeclarations = booleanProperty("ignoreInterfaceDeclarations").defaultValue(false).desc("Ignore Interface Declarations that precede fields.").build();
+
 
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         definePropertyDescriptor(ignoreEnumDeclarations);

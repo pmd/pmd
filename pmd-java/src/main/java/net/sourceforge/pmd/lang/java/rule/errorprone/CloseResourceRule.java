@@ -66,7 +66,8 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types", "Affected types",
             new String[] { "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet" }, 2.0f, ',');
 
-    private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET = booleanProperty("closeAsDefaultTarget", true).desc("Consider 'close' as a target by default").build();
+    private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET = booleanProperty("closeAsDefaultTarget").defaultValue(true).desc("Consider 'close' as a target by default").build();
+
 
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
