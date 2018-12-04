@@ -186,33 +186,4 @@ public class Duplicate {
 }
         ]]></code>
     </test-code>
-    <test-code>
-        <description>Test ignoredLiterals takes precedence over exceptionList</description>
-        <rule-property name="ignoredLiterals">Hodor,foo</rule-property>
-        <rule-property name="exceptionList">Howdy:foo</rule-property>
-        <rule-property name="separator">:</rule-property>
-        <rule-property name="maxDuplicateLiterals">2</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <!-- We test here that howdy is not ignored, whereas Hodor is -->
-            <message>The String literal "Howdy" appears 4 times in this file</message>
-        </expected-messages>
-        <code><![CDATA[
-            public class Foo {
-                private void bar() {
-                    buz("Howdy");
-                    buz("Howdy");
-                    buz("Howdy");
-                    buz("Howdy");
-                    buz("Hodor");
-                    buz("Hodor");
-                    buz("Hodor");
-                    buz("foo");
-                    buz("foo");
-                    buz("foo");
-                    buz("foo");
-                }
-            }
-            ]]></code>
-    </test-code>
 </test-data>
