@@ -57,4 +57,63 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Return from a Class in Finally
+    ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String bar() {
+    try {
+    } finally {
+        Object o = new Object() {
+            @Override
+            public String toString() {
+                return "";
+            }
+        };
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Return from Lambda in Finally
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String getBar() {
+   try {
+   } finally {
+    Collection<ServiceExecutionEntry> untracked = serviceExecutionTracker.untrackMatchingEntries(e -> {
+        ServiceExecutionIdentifiers ids = e.getIdentifiers();
+        Long execBqiId = (ids == null) ? null : ids.getBqiId();
+        return Objects.equals(bqiId, execBqiId);
+    });
+    untracked.forEach(e -> logger.info("overwriteLastBqi(bqId={}, bqiId={}) untracked {}", bqId, bqiId, e));
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+return from a lambda should not cause issues
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void printSomething() {
+        try {
+            System.out.println("Integers: ");
+        } finally {
+            Arrays.asList(0, 1, 2).map(i -> { return i + 1; }).forEach(i -> System.out.println(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
