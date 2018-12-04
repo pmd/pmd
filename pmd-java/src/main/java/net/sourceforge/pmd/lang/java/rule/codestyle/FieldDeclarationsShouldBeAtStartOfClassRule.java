@@ -39,13 +39,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRule {
 
-    private PropertyDescriptor<Boolean> ignoreEnumDeclarations = booleanProperty("ignoreEnumDeclarations").desc("Ignore Enum Declarations that precede fields.").defaultValue(true).build();
-    private PropertyDescriptor<Boolean> ignoreAnonymousClassDeclarations = booleanProperty("ignoreAnonymousClassDeclarations").desc("Ignore Field Declarations, that are initialized with anonymous class declarations").defaultValue(true).build();
-    private PropertyDescriptor<Boolean> ignoreInterfaceDeclarations = booleanProperty("ignoreInterfaceDeclarations").desc("Ignore Interface Declarations that precede fields.").defaultValue(false).build();
+    private final PropertyDescriptor<Boolean> ignoreEnumDeclarations = booleanProperty("ignoreEnumDeclarations", true).desc("Ignore Enum Declarations that precede fields.").build();
+    private final PropertyDescriptor<Boolean> ignoreAnonymousClassDeclarations = booleanProperty("ignoreAnonymousClassDeclarations", true).desc("Ignore Field Declarations, that are initialized with anonymous class declarations").build();
+    private final PropertyDescriptor<Boolean> ignoreInterfaceDeclarations = booleanProperty("ignoreInterfaceDeclarations", false).desc("Ignore Interface Declarations that precede fields.").build();
 
-    /**
-     * Initializes the rule {@link FieldDeclarationsShouldBeAtStartOfClassRule}.
-     */
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         definePropertyDescriptor(ignoreEnumDeclarations);
         definePropertyDescriptor(ignoreAnonymousClassDeclarations);
@@ -67,7 +64,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
                 continue;
             }
             if (node.hasDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class)
-                    && getProperty(ignoreAnonymousClassDeclarations).booleanValue()) {
+                    && getProperty(ignoreAnonymousClassDeclarations)) {
                 continue;
             }
             if (child instanceof ASTMethodDeclaration || child instanceof ASTConstructorDeclaration
@@ -77,14 +74,14 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             }
             if (child instanceof ASTClassOrInterfaceDeclaration) {
                 ASTClassOrInterfaceDeclaration declaration = (ASTClassOrInterfaceDeclaration) child;
-                if (declaration.isInterface() && getProperty(ignoreInterfaceDeclarations).booleanValue()) {
+                if (declaration.isInterface() && getProperty(ignoreInterfaceDeclarations)) {
                     continue;
                 } else {
                     addViolation(data, node);
                     break;
                 }
             }
-            if (child instanceof ASTEnumDeclaration && !getProperty(ignoreEnumDeclarations).booleanValue()) {
+            if (child instanceof ASTEnumDeclaration && !getProperty(ignoreEnumDeclarations)) {
                 addViolation(data, node);
                 break;
             }
