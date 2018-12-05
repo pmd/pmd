@@ -91,6 +91,9 @@ by a corresponding method on `PropertyFactory`:
 
   * {% jdoc props::RegexProperty %} is replaced by {% jdoc !c!:PF#regexProperty(java.lang.String) %}
 
+  * {% jdoc props::BooleanProperty %} is replaced by {% jdoc !c!:PF#booleanProperty(java.lang.String) %}
+    * Its multi-valued counterpart, {% jdoc props::BooleanMultiProperty %}, is not replaced, because it doesn't have a use case.
+
   * {% jdoc props::MethodProperty %}, {% jdoc props::FileProperty %}, {% jdoc props::TypeProperty %} and their multi-valued counterparts
     are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
     <!-- TODO complete that as we proceed. -->

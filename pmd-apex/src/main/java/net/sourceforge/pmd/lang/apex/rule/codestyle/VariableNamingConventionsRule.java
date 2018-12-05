@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class VariableNamingConventionsRule extends AbstractApexRule {
@@ -36,14 +36,17 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
     private List<String> parameterPrefixes;
     private List<String> parameterSuffixes;
 
-    private static final BooleanProperty CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
-            "Check member variables", true, 1.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_MEMBERS_DESCRIPTOR =
+            booleanProperty("checkMembers")
+                .desc("Check member variables").defaultValue(true).build();
 
-    private static final BooleanProperty CHECK_LOCALS_DESCRIPTOR = new BooleanProperty("checkLocals",
-            "Check local variables", true, 2.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_LOCALS_DESCRIPTOR =
+            booleanProperty("checkLocals")
+                .desc("Check local variables").defaultValue(true).build();
 
-    private static final BooleanProperty CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
-            "Check constructor and method parameter variables", true, 3.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_PARAMETERS_DESCRIPTOR =
+            booleanProperty("checkParameters")
+                .desc("Check constructor and method parameter variables").defaultValue(true).build();
 
     private static final PropertyDescriptor<List<String>> STATIC_PREFIXES_DESCRIPTOR =
             stringListProperty("staticPrefix")

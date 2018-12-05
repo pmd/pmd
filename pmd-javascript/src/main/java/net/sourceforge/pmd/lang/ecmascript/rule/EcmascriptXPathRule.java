@@ -9,13 +9,14 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class EcmascriptXPathRule extends XPathRule {
 
-    private static final BooleanProperty RECORDING_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR;
-    private static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR;
+    private static final PropertyDescriptor<Boolean> RECORDING_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR;
+    private static final PropertyDescriptor<Boolean> RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR;
     private static final EnumeratedProperty<EcmascriptParserOptions.Version> RHINO_LANGUAGE_VERSION = EcmascriptParserOptions.RHINO_LANGUAGE_VERSION;
 
     public EcmascriptXPathRule() {

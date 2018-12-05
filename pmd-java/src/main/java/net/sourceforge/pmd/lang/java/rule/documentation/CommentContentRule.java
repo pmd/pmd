@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -37,8 +37,7 @@ public class CommentContentRule extends AbstractCommentRule {
     private List<String> currentBadWords;
 
     // ignored when property above == True
-    public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
-            "Case sensitive", false, 2.0f);
+    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive").defaultValue(false).desc("Case sensitive").build();
 
     public static final PropertyDescriptor<List<String>> DISSALLOWED_TERMS_DESCRIPTOR =
             stringListProperty("disallowedTerms")

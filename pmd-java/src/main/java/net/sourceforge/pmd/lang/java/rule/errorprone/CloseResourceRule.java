@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -72,8 +72,10 @@ public class CloseResourceRule extends AbstractJavaRule {
                     .defaultValues("java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
                     .delim(',').build();
 
-    private static final BooleanProperty USE_CLOSE_AS_DEFAULT_TARGET = new BooleanProperty("closeAsDefaultTarget",
-            "Consider 'close' as a target by default", true, 3.0f);
+    private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
+            booleanProperty("closeAsDefaultTarget")
+                    .desc("Consider 'close' as a target by default").defaultValue(true).build();
+
 
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
