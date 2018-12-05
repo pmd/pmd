@@ -2384,15 +2384,15 @@ except when using one of the configured allowed classes.</p>
   </thead>
   <tbody>
     <tr>
-      <td>classes</td>
-      <td> </td>
-      <td>Allowed classes</td>
-      <td>yes. Delimiter is ‘,’.</td>
-    </tr>
-    <tr>
       <td>packages</td>
       <td> </td>
       <td>Restricted packages</td>
+      <td>yes. Delimiter is ‘,’.</td>
+    </tr>
+    <tr>
+      <td>classes</td>
+      <td> </td>
+      <td>Allowed classes</td>
       <td>yes. Delimiter is ‘,’.</td>
     </tr>
   </tbody>
@@ -3148,10 +3148,10 @@ within those methods.</p>
   </thead>
   <tbody>
     <tr>
-      <td>disallowNotAssignment</td>
-      <td>false</td>
-      <td>Disallow violations where the first usage is not an assignment</td>
-      <td>no</td>
+      <td>ignoredAnnotations</td>
+      <td>lombok.Setter | lombok.Getter | lombok.Builder | lombok.Data | lombok.RequiredArgsConstructor | lombok.AllArgsConstructor | lombok.Value | lombok.NoArgsConstructor</td>
+      <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
+      <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>checkInnerClasses</td>
@@ -3160,10 +3160,10 @@ within those methods.</p>
       <td>no</td>
     </tr>
     <tr>
-      <td>ignoredAnnotations</td>
-      <td>lombok.Setter | lombok.Getter | lombok.Builder | lombok.Data | lombok.RequiredArgsConstructor | lombok.AllArgsConstructor | lombok.Value | lombok.NoArgsConstructor</td>
-      <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
-      <td>yes. Delimiter is ‘|’.</td>
+      <td>disallowNotAssignment</td>
+      <td>false</td>
+      <td>Disallow violations where the first usage is not an assignment</td>
+      <td>no</td>
     </tr>
   </tbody>
 </table>

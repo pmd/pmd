@@ -2142,9 +2142,9 @@ usage by developers who should be implementing their own versions in the concret
   </thead>
   <tbody>
     <tr>
-      <td>ignoreInterfaceDeclarations</td>
-      <td>false</td>
-      <td>Ignore Interface Declarations that precede fields.</td>
+      <td>ignoreEnumDeclarations</td>
+      <td>true</td>
+      <td>Ignore Enum Declarations that precede fields.</td>
       <td>no</td>
     </tr>
     <tr>
@@ -2154,9 +2154,9 @@ usage by developers who should be implementing their own versions in the concret
       <td>no</td>
     </tr>
     <tr>
-      <td>ignoreEnumDeclarations</td>
-      <td>true</td>
-      <td>Ignore Enum Declarations that precede fields.</td>
+      <td>ignoreInterfaceDeclarations</td>
+      <td>false</td>
+      <td>Ignore Interface Declarations that precede fields.</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -2611,34 +2611,22 @@ Developers Perceive Them</a>.</p>
   </thead>
   <tbody>
     <tr>
-      <td>booleanFieldPrefixes</td>
-      <td>is | has | can | have | will | should</td>
-      <td>The prefixes of fields and variables that indicate boolean.</td>
-      <td>yes. Delimiter is ‘|’.</td>
-    </tr>
-    <tr>
-      <td>checkVariables</td>
+      <td>checkBooleanMethod</td>
       <td>true</td>
-      <td>Check local variable names and types for inconsistent naming.</td>
+      <td>Check method names and types for inconsistent naming.</td>
       <td>no</td>
     </tr>
     <tr>
-      <td>checkFields</td>
+      <td>checkGetters</td>
       <td>true</td>
-      <td>Check field names and types for inconsistent naming.</td>
+      <td>Check return type of getters.</td>
       <td>no</td>
     </tr>
     <tr>
-      <td>transformMethodNames</td>
-      <td>to | as</td>
-      <td>The prefixes and infixes that indicate a transform method.</td>
-      <td>yes. Delimiter is ‘|’.</td>
-    </tr>
-    <tr>
-      <td>booleanMethodPrefixes</td>
-      <td>is | has | can | have | will | should</td>
-      <td>The prefixes of methods that return boolean.</td>
-      <td>yes. Delimiter is ‘|’.</td>
+      <td>checkSetters</td>
+      <td>true</td>
+      <td>Check return type of setters.</td>
+      <td>no</td>
     </tr>
     <tr>
       <td>checkPrefixedTransformMethods</td>
@@ -2653,22 +2641,34 @@ Developers Perceive Them</a>.</p>
       <td>no</td>
     </tr>
     <tr>
-      <td>checkSetters</td>
+      <td>booleanMethodPrefixes</td>
+      <td>is | has | can | have | will | should</td>
+      <td>The prefixes of methods that return boolean.</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>transformMethodNames</td>
+      <td>to | as</td>
+      <td>The prefixes and infixes that indicate a transform method.</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>checkFields</td>
       <td>true</td>
-      <td>Check return type of setters.</td>
+      <td>Check field names and types for inconsistent naming.</td>
       <td>no</td>
     </tr>
     <tr>
-      <td>checkGetters</td>
+      <td>checkVariables</td>
       <td>true</td>
-      <td>Check return type of getters.</td>
+      <td>Check local variable names and types for inconsistent naming.</td>
       <td>no</td>
     </tr>
     <tr>
-      <td>checkBooleanMethod</td>
-      <td>true</td>
-      <td>Check method names and types for inconsistent naming.</td>
-      <td>no</td>
+      <td>booleanFieldPrefixes</td>
+      <td>is | has | can | have | will | should</td>
+      <td>The prefixes of fields and variables that indicate boolean.</td>
+      <td>yes. Delimiter is ‘|’.</td>
     </tr>
   </tbody>
 </table>
@@ -3964,6 +3964,24 @@ that should not include underscores.</p>
       <td>yes. Delimiter is ‘,’.</td>
     </tr>
     <tr>
+      <td>staticPrefix</td>
+      <td> </td>
+      <td>Static variable prefixes</td>
+      <td>yes. Delimiter is ‘,’.</td>
+    </tr>
+    <tr>
+      <td>checkMembers</td>
+      <td>true</td>
+      <td>Check member variables</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>checkLocals</td>
+      <td>true</td>
+      <td>Check local variables</td>
+      <td>no</td>
+    </tr>
+    <tr>
       <td>checkParameters</td>
       <td>true</td>
       <td>Check constructor and method parameter variables</td>
@@ -3973,24 +3991,6 @@ that should not include underscores.</p>
       <td>checkNativeMethodParameters</td>
       <td>true</td>
       <td>Check method parameter of native methods</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>staticPrefix</td>
-      <td> </td>
-      <td>Static variable prefixes</td>
-      <td>yes. Delimiter is ‘,’.</td>
-    </tr>
-    <tr>
-      <td>checkLocals</td>
-      <td>true</td>
-      <td>Check local variables</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>checkMembers</td>
-      <td>true</td>
-      <td>Check member variables</td>
       <td>no</td>
     </tr>
   </tbody>

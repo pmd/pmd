@@ -1308,15 +1308,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </thead>
   <tbody>
     <tr>
-      <td>allowIncrementDecrement</td>
+      <td>allowIf</td>
       <td>false</td>
-      <td>Allow increment or decrement operators within the conditional expression of an if, for, or while statement</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>allowWhile</td>
-      <td>false</td>
-      <td>Allow assignment within the conditional expression of a while statement</td>
+      <td>Allow assignment within the conditional expression of an if statement</td>
       <td>no</td>
     </tr>
     <tr>
@@ -1326,9 +1320,15 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <td>no</td>
     </tr>
     <tr>
-      <td>allowIf</td>
+      <td>allowWhile</td>
       <td>false</td>
-      <td>Allow assignment within the conditional expression of an if statement</td>
+      <td>Allow assignment within the conditional expression of a while statement</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>allowIncrementDecrement</td>
+      <td>false</td>
+      <td>Allow increment or decrement operators within the conditional expression of an if, for, or while statement</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -1691,25 +1691,13 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
     <tr>
       <td>exceptionfile</td>
       <td> </td>
-      <td>File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> (Use ‘exceptionList’ property) File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.</td>
       <td>no</td>
     </tr>
     <tr>
       <td>separator</td>
       <td>,</td>
       <td>Ignore list separator</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>exceptionList</td>
-      <td> </td>
-      <td>Strings to ignore</td>
-      <td>no</td>
-    </tr>
-    <tr>
-      <td>skipAnnotations</td>
-      <td>false</td>
-      <td>Skip literals within annotations</td>
       <td>no</td>
     </tr>
     <tr>
@@ -1722,6 +1710,18 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
       <td>minimumLength</td>
       <td>3</td>
       <td>Minimum string length to check</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>skipAnnotations</td>
+      <td>false</td>
+      <td>Skip literals within annotations</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>exceptionList</td>
+      <td> </td>
+      <td>List of literals to ignore. A literal is ignored if its image can be found in this list. Components of this list should not be surrounded by double quotes.</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -2465,10 +2465,10 @@ of the clone method doesn’t need to cast the returned clone to the correct typ
   </thead>
   <tbody>
     <tr>
-      <td>closeAsDefaultTarget</td>
-      <td>true</td>
-      <td>Consider ‘close’ as a target by default</td>
-      <td>no</td>
+      <td>closeTargets</td>
+      <td> </td>
+      <td>Methods which may close this resource</td>
+      <td>yes. Delimiter is ‘,’.</td>
     </tr>
     <tr>
       <td>types</td>
@@ -2477,10 +2477,10 @@ of the clone method doesn’t need to cast the returned clone to the correct typ
       <td>yes. Delimiter is ‘,’.</td>
     </tr>
     <tr>
-      <td>closeTargets</td>
-      <td> </td>
-      <td>Methods which may close this resource</td>
-      <td>yes. Delimiter is ‘,’.</td>
+      <td>closeAsDefaultTarget</td>
+      <td>true</td>
+      <td>Consider ‘close’ as a target by default</td>
+      <td>no</td>
     </tr>
   </tbody>
 </table>
