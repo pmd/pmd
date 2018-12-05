@@ -29,8 +29,8 @@ A rule for the politically correct... we don't want to offend anyone.
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|disallowedTerms|idiot \| jerk|Illegal terms or phrases|yes. Delimiter is '\|'.|
 |caseSensitive|false|Case sensitive|no|
+|disallowedTerms|idiot \| jerk|Illegal terms or phrases|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml

@@ -437,12 +437,12 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|showMethodsComplexity|true|Add method average violations to the report|no|
-|showClassesComplexity|true|Add class average violations to the report|no|
 |cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
 |cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
+|showClassesComplexity|true|Add class average violations to the report|no|
+|showMethodsComplexity|true|Add method average violations to the report|no|
 
 **Use this rule by referencing it:**
 ``` xml

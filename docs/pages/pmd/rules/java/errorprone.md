@@ -34,10 +34,10 @@ public void bar() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
-|allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
-|allowFor|false|Allow assignment within the conditional expression of a for statement|no|
 |allowIf|false|Allow assignment within the conditional expression of an if statement|no|
+|allowFor|false|Allow assignment within the conditional expression of a for statement|no|
+|allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
+|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -382,12 +382,12 @@ private void buz(String x) {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.|no|
+|exceptionfile||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> (Use 'exceptionList' property) File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.|no|
 |separator|,|Ignore list separator|no|
-|exceptionList||Strings to ignore|no|
-|skipAnnotations|false|Skip literals within annotations|no|
 |maxDuplicateLiterals|4|Max duplicate literals|no|
 |minimumLength|3|Minimum string length to check|no|
+|skipAnnotations|false|Skip literals within annotations|no|
+|exceptionList||List of literals to ignore. A literal is ignored if its image can be found in this list. Components of this list should not be surrounded by double quotes.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1124,9 +1124,9 @@ public class Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
-|types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
 |closeTargets||Methods which may close this resource|yes. Delimiter is ','.|
+|types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
+|closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
 
 **Use this rule by referencing it:**
 ``` xml

@@ -753,9 +753,9 @@ public class HelloWorldBean {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoreInterfaceDeclarations|false|Ignore Interface Declarations that precede fields.|no|
-|ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|no|
 |ignoreEnumDeclarations|true|Ignore Enum Declarations that precede fields.|no|
+|ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|no|
+|ignoreInterfaceDeclarations|false|Ignore Interface Declarations that precede fields.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1145,16 +1145,16 @@ public class LinguisticNaming {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
-|checkVariables|true|Check local variable names and types for inconsistent naming.|no|
-|checkFields|true|Check field names and types for inconsistent naming.|no|
-|transformMethodNames|to \| as|The prefixes and infixes that indicate a transform method.|yes. Delimiter is '\|'.|
-|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|The prefixes of methods that return boolean.|yes. Delimiter is '\|'.|
+|checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
+|checkGetters|true|Check return type of getters.|no|
+|checkSetters|true|Check return type of setters.|no|
 |checkPrefixedTransformMethods|true|Check return type of methods whose names start with the configured prefix (see transformMethodNames property).|no|
 |checkTransformMethods|false|Check return type of methods which contain the configured infix in their name (see transformMethodNames property).|no|
-|checkSetters|true|Check return type of setters.|no|
-|checkGetters|true|Check return type of getters.|no|
-|checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
+|booleanMethodPrefixes|is \| has \| can \| have \| will \| should|The prefixes of methods that return boolean.|yes. Delimiter is '\|'.|
+|transformMethodNames|to \| as|The prefixes and infixes that indicate a transform method.|yes. Delimiter is '\|'.|
+|checkFields|true|Check field names and types for inconsistent naming.|no|
+|checkVariables|true|Check local variable names and types for inconsistent naming.|no|
+|booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -2295,11 +2295,11 @@ public class Foo {
 |memberSuffix||Member variable suffixes|yes. Delimiter is ','.|
 |memberPrefix||Member variable prefixes|yes. Delimiter is ','.|
 |staticSuffix||Static variable suffixes|yes. Delimiter is ','.|
+|staticPrefix||Static variable prefixes|yes. Delimiter is ','.|
+|checkMembers|true|Check member variables|no|
+|checkLocals|true|Check local variables|no|
 |checkParameters|true|Check constructor and method parameter variables|no|
 |checkNativeMethodParameters|true|Check method parameter of native methods|no|
-|staticPrefix||Static variable prefixes|yes. Delimiter is ','.|
-|checkLocals|true|Check local variables|no|
-|checkMembers|true|Check member variables|no|
 
 **Use this rule by referencing it:**
 ``` xml

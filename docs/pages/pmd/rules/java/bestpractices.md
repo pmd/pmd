@@ -436,8 +436,8 @@ otherwise skip the associate String creation and manipulation.
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|guardsMethods|isTraceEnabled , isDebugEnabled , isInfoEnabled , isWarnEnabled , isErrorEnabled , isLoggable|method use to guard the log statement|yes. Delimiter is ','.|
 |logLevels|trace , debug , info , warn , error , log , finest , finer , fine , info , warning , severe|LogLevels to guard|yes. Delimiter is ','.|
+|guardsMethods|isTraceEnabled , isDebugEnabled , isInfoEnabled , isWarnEnabled , isErrorEnabled , isLoggable|Method use to guard the log statement|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml

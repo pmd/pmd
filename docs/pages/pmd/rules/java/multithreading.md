@@ -265,8 +265,8 @@ public static Foo getFoo() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|no|
 |checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|no|
+|checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|no|
 
 **Use this rule by referencing it:**
 ``` xml

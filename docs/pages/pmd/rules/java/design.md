@@ -965,8 +965,8 @@ public class Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|classes||Allowed classes|yes. Delimiter is ','.|
 |packages||Restricted packages|yes. Delimiter is ','.|
+|classes||Allowed classes|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1577,9 +1577,9 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
-|checkInnerClasses|false|Check inner classes|no|
 |ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|checkInnerClasses|false|Check inner classes|no|
+|disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
 
 **Use this rule by referencing it:**
 ``` xml
