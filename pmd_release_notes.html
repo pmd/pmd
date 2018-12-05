@@ -1379,6 +1379,19 @@ Having a separate property for floats wasn’t that useful.
           <li>Similarly, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code class="highlighter-rouge">FloatMultiProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code class="highlighter-rouge">DoubleMultiProperty</code></a> are replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleListProperty</code></a>.</li>
         </ul>
       </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringProperty.html#"><code class="highlighter-rouge">StringProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#stringProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code class="highlighter-rouge">StringMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#stringListProperty</code></a></li>
+        </ul>
+      </li>
+      <li>
+        <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/RegexProperty.html#"><code class="highlighter-rouge">RegexProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#regexProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#regexProperty</code></a></p>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanProperty.html#"><code class="highlighter-rouge">BooleanProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#booleanProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#booleanProperty</code></a>
+        <ul>
+          <li>Its multi-valued counterpart, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code class="highlighter-rouge">BooleanMultiProperty</code></a>, is not replaced, because it doesn’t have a use case.</li>
+        </ul>
+      </li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code class="highlighter-rouge">MethodProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FileProperty.html#"><code class="highlighter-rouge">FileProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code class="highlighter-rouge">TypeProperty</code></a> and their multi-valued counterparts
 are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
 <!-- TODO complete that as we proceed. --></li>
@@ -1550,6 +1563,13 @@ respective setters.</li>
   </li>
 </ul>
 
+<h4 id="modified-rules-1">Modified rules</h4>
+
+<ul>
+  <li>The property <code class="highlighter-rouge">exceptionfile</code> of the rule <a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="highlighter-rouge">AvoidDuplicateLiterals</code></a> has been
+deprecated and will be removed with 7.0.0. Please use <code class="highlighter-rouge">exceptionList</code> instead.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1587,7 +1607,7 @@ respective setters.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 4, 2018 <br />
+ Site last generated: Dec 5, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
