@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -18,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class LinguisticNamingRule extends AbstractJavaRule {
     private static final BooleanProperty CHECK_BOOLEAN_METHODS = BooleanProperty.named("checkBooleanMethod")
@@ -35,20 +37,25 @@ public class LinguisticNamingRule extends AbstractJavaRule {
             .defaultValue(false)
             .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).")
             .uiOrder(4.0f).build();
-    private static final StringMultiProperty BOOLEAN_METHOD_PREFIXES_PROPERTY = StringMultiProperty
-            .named("booleanMethodPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
-            .desc("The prefixes of methods that return boolean.").uiOrder(5.0f).build();
-    private static final StringMultiProperty TRANSFORM_METHOD_NAMES_PROPERTY = StringMultiProperty
-            .named("transformMethodNames").defaultValues("to", "as")
-            .desc("The prefixes and infixes that indicate a transform method.").uiOrder(6.0f).build();
 
     private static final BooleanProperty CHECK_FIELDS = BooleanProperty.named("checkFields").defaultValue(true)
             .desc("Check field names and types for inconsistent naming.").uiOrder(7.0f).build();
     private static final BooleanProperty CHECK_VARIABLES = BooleanProperty.named("checkVariables").defaultValue(true)
             .desc("Check local variable names and types for inconsistent naming.").uiOrder(8.0f).build();
-    private static final StringMultiProperty BOOLEAN_FIELD_PREFIXES_PROPERTY = StringMultiProperty
-            .named("booleanFieldPrefixes").defaultValues("is", "has", "can", "have", "will", "should")
-            .desc("The prefixes of fields and variables that indicate boolean.").uiOrder(9.0f).build();
+
+    private static final PropertyDescriptor<List<String>> BOOLEAN_METHOD_PREFIXES_PROPERTY =
+            stringListProperty("booleanMethodPrefixes")
+                    .desc("The prefixes of methods that return boolean.")
+                    .defaultValues("is", "has", "can", "have", "will", "should").build();
+    private static final PropertyDescriptor<List<String>> TRANSFORM_METHOD_NAMES_PROPERTY =
+            stringListProperty("transformMethodNames")
+                    .desc("The prefixes and infixes that indicate a transform method.")
+                    .defaultValues("to", "as").build();
+    private static final PropertyDescriptor<List<String>> BOOLEAN_FIELD_PREFIXES_PROPERTY =
+            stringListProperty("booleanFieldPrefixes")
+                    .desc("The prefixes of fields and variables that indicate boolean.")
+                    .defaultValues("is", "has", "can", "have", "will", "should").build();
+
 
     public LinguisticNamingRule() {
         definePropertyDescriptor(CHECK_BOOLEAN_METHODS);

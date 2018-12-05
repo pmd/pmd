@@ -53,6 +53,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "textcolor";
 
+    // What? TODO 7.0.0 Use a boolean property
     public static final StringProperty COLOR = new StringProperty("color",
             "Enables colors with anything other than 'false' or '0'.", "yes", 0);
     private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";

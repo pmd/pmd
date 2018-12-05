@@ -28,6 +28,7 @@ public interface Rule extends PropertySource {
      * The property descriptor to universally suppress violations with messages
      * matching a regular expression.
      */
+    // TODO 7.0.0 use PropertyDescriptor<Pattern>
     StringProperty VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = new StringProperty("violationSuppressRegex",
             "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
 
@@ -35,6 +36,7 @@ public interface Rule extends PropertySource {
      * Name of the property to universally suppress violations on nodes which
      * match a given relative XPath expression.
      */
+    // TODO 7.0.0 use PropertyDescriptor<String>
     StringProperty VIOLATION_SUPPRESS_XPATH_DESCRIPTOR = new StringProperty("violationSuppressXPath",
             "Suppress violations on nodes which match a given relative XPath expression.", null, Integer.MAX_VALUE - 2);
 

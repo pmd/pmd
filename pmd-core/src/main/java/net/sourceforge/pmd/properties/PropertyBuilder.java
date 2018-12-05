@@ -7,6 +7,7 @@ package net.sourceforge.pmd.properties;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -150,7 +151,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     /**
      * Specify a default value. Some subclasses provide convenient
-     * related methods, see e.g. {@link GenericCollectionPropertyBuilder#defaultValues(Object[])}.
+     * related methods, see e.g. {@link GenericCollectionPropertyBuilder#defaultValues(Object, Object[])}.
      * Using the null value is prohibited.
      *
      * <p>Calling this method is required for {@link #build()} to succeed.
@@ -345,8 +346,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     /**
      * Generic builder for a collection-valued property.
-     * This class adds overloads to {@linkplain #defaultValues(Object[])}
-     * to make its use more flexible.
+     * This class adds methods related to {@link #defaultValue(Collection)}
+     * to make its use more flexible. See e.g. {@link #defaultValues(Object, Object[])}.
      *
      * <p>Note: this is designed to support arbitrary collections.
      * Pre-7.0.0, the only collections available from the {@link PropertyFactory}
@@ -362,7 +363,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         private final ValueParser<V> parser;
         private final Supplier<C> emptyCollSupplier;
         private final Class<V> type;
-        private char multiValueDelimiter;
+        private char multiValueDelimiter = MultiValuePropertyDescriptor.DEFAULT_DELIMITER;
 
 
         /**
@@ -401,15 +402,30 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
 
         /**
-         * Specify default values.
+         * Specify default values. To specify an empty
+         * default value, use {@link #emptyDefaultValue()}.
          *
-         * @param val List of values
+         * @param head First value
+         * @param tail Rest of the values
          *
          * @return The same builder
          */
         @SuppressWarnings("unchecked")
-        public GenericCollectionPropertyBuilder<V, C> defaultValues(V... val) {
-            return super.defaultValue(getDefaultValue(Arrays.asList(val)));
+        public GenericCollectionPropertyBuilder<V, C> defaultValues(V head, V... tail) {
+            List<V> tmp = new ArrayList<>(tail.length + 1);
+            tmp.add(head);
+            tmp.addAll(Arrays.asList(tail));
+            return super.defaultValue(getDefaultValue(tmp));
+        }
+
+
+        /**
+         * Specify that the default value is an empty collection.
+         *
+         * @return The same builder
+         */
+        public GenericCollectionPropertyBuilder<V, C> emptyDefaultValue() {
+            return super.defaultValue(getDefaultValue(Collections.<V>emptyList()));
         }
 
 

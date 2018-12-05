@@ -24,6 +24,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "xml";
 
+    // TODO 7.0.0 use PropertyDescriptor<String> or something more specialized
     public static final StringProperty ENCODING = new StringProperty("encoding",
             "XML encoding format, defaults to UTF-8.", "UTF-8", 0);
     private boolean useUTF8 = false;
