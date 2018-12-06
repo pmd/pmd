@@ -53,6 +53,10 @@ public class EcmascriptParserOptions extends ParserOptions {
 
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
+
+    // These aren't converted to the new property framework
+    // Do we need them anyway?
+
     public static final BooleanProperty RECORDING_COMMENTS_DESCRIPTOR = new BooleanProperty("recordingComments",
             "Specifies that comments are produced in the AST.", Boolean.TRUE, 3.0f);
     public static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = new BooleanProperty(

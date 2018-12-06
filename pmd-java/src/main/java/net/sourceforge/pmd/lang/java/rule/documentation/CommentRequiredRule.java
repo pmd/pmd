@@ -23,8 +23,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.properties.EnumeratedProperty.EnumPBuilder;
+import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
@@ -36,27 +37,25 @@ public class CommentRequiredRule extends AbstractCommentRule {
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
 
 
-    private static final EnumeratedProperty<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
+    private static final PropertyDescriptor<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
         = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters\"")
         .defaultValue(CommentRequirement.Ignored).build();
-    private static final EnumeratedProperty<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
+    private static final PropertyDescriptor<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
         = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
         .defaultValue(CommentRequirement.Ignored).build();
-    private static final EnumeratedProperty<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("headerCommentRequirement", "Header comments").uiOrder(1.0f).build();
-    private static final EnumeratedProperty<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("fieldCommentRequirement", "Field comments").uiOrder(2.0f).build();
-    private static final EnumeratedProperty<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("publicMethodCommentRequirement", "Public method and constructor comments")
-        .uiOrder(3.0f).build();
-    private static final EnumeratedProperty<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("protectedMethodCommentRequirement", "Protected method constructor comments")
-        .uiOrder(4.0f).build();
-    private static final EnumeratedProperty<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("enumCommentRequirement", "Enum comments").uiOrder(5.0f).build();
-    private static final EnumeratedProperty<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
+    private static final PropertyDescriptor<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("headerCommentRequirement", "Header comments").build();
+    private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("fieldCommentRequirement", "Field comments").build();
+    private static final PropertyDescriptor<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("publicMethodCommentRequirement", "Public method and constructor comments").build();
+    private static final PropertyDescriptor<CommentRequirement> PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("protectedMethodCommentRequirement", "Protected method constructor comments").build();
+    private static final PropertyDescriptor<CommentRequirement> ENUM_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("enumCommentRequirement", "Enum comments").build();
+    private static final PropertyDescriptor<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("serialVersionUIDCommentRequired", "Serial version UID comments")
-        .defaultValue(CommentRequirement.Ignored).uiOrder(6.0f).build();
+        .defaultValue(CommentRequirement.Ignored).build();
 
 
     public CommentRequiredRule() {
@@ -72,7 +71,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     private void checkCommentMeetsRequirement(Object data, AbstractJavaNode node,
-                                              EnumeratedProperty<CommentRequirement> descriptor) {
+                                              PropertyDescriptor<CommentRequirement> descriptor) {
         switch (getProperty(descriptor)) {
         case Ignored:
             break;
@@ -94,7 +93,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     // Adds a violation
     private void commentRequiredViolation(Object data, AbstractJavaNode node,
-                                          EnumeratedProperty<CommentRequirement> descriptor) {
+                                          PropertyDescriptor<CommentRequirement> descriptor) {
 
 
         addViolationWithMessage(data, node,
@@ -242,12 +241,10 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
 
     // pre-filled builder
-    private static EnumPBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
+    private static GenericPropertyBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
         DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
-        return EnumeratedProperty.<CommentRequirement>named(name)
+        return PropertyFactory.enumProperty(name, CommentRequirement.mappings())
             .desc(commentType + ". Possible values: " + CommentRequirement.labels())
-            .mappings(CommentRequirement.mappings())
-            .defaultValue(CommentRequirement.Required)
-            .type(CommentRequirement.class);
+            .defaultValue(CommentRequirement.Required);
     }
 }
