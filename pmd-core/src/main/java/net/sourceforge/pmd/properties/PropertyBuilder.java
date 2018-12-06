@@ -35,6 +35,10 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  *
  * <p>The {@link PropertyDescriptor} may be built after those required steps by
  * calling {@link #build()}.
+ * 
+ * <p>A property builder may throw {@link IllegalArgumentException} at any
+ * stage during the build process to indicate invalid input. It usually tries
+ * to do so as early as possible, rather than waiting for the call to {@link #build()}.
  *
  * <p>Note: from 7.0.0 on, all property builders will
  * extend this class instead of {@link PropertyDescriptorBuilder}.

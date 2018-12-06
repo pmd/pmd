@@ -13,6 +13,7 @@ import static org.junit.Assert.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,7 @@ public class PropertyDescriptorTest {
     public void testDefaultValueConstraintViolationCausesFailureMulti() {
         PropertyConstraint<Double> constraint = inRange(1d, 10d);
 
-        thrown.expect(IllegalStateException.class);
+        thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage(allOf(containsIgnoreCase("Constraint violat"/*-ed or -ion*/),
                                    containsIgnoreCase(constraint.getConstraintDescription())));
 
@@ -263,6 +264,31 @@ public class PropertyDescriptorTest {
         assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.valueFrom("TEST_B|TEST_C"));
     }
 
+
+    @Test
+    public void testEnumPropertyNullValueFailsBuild() {
+        Map<String, SampleEnum> map = new HashMap<>(nameMap);
+        map.put("TEST_NULL", null);
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(containsIgnoreCase("null value"));
+
+        PropertyFactory.enumProperty("enumProp", map);
+    }
+
+
+    @Test
+    public void testEnumListPropertyNullValueFailsBuild() {
+        Map<String, SampleEnum> map = new HashMap<>(nameMap);
+        map.put("TEST_NULL", null);
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(containsIgnoreCase("null value"));
+
+        PropertyFactory.enumListProperty("enumProp", map);
+    }
+
+
     @Test
     public void testEnumPropertyInvalidValue() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
@@ -318,7 +344,7 @@ public class PropertyDescriptorTest {
 
             @Override
             protected String relationship() {
-                return "containing ignoring case";
+                return "containing (ignoring case)";
             }
         };
     }
