@@ -15,6 +15,7 @@ import org.junit.Test;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public class CharacterPropertyTest extends AbstractPropertyDescriptorTester<Character> {
 
     private static final char DELIMITER = '|';
