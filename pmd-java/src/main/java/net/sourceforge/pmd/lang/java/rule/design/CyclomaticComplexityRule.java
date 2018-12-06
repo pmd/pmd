@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -63,13 +62,13 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         OPTION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
         OPTION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
     }
-    
-    private static final EnumeratedMultiProperty<CycloOption> CYCLO_OPTIONS_DESCRIPTOR
-        = EnumeratedMultiProperty.<CycloOption>named("cycloOptions").type(CycloOption.class)
-                                                                    .desc("Choose options for the computation of Cyclo")
-                                                                    .mappings(OPTION_MAP)
-                                                                    .defaultValues(Collections.<CycloOption>emptyList())
-                                                                    .uiOrder(3.0f).build();
+
+    private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
+            = PropertyFactory.enumListProperty("cycloOptions", OPTION_MAP)
+                             .desc("Choose options for the computation of Cyclo")
+                             .emptyDefaultValue()
+                             .build();
+
     private int methodReportLevel;
     private int classReportLevel;
     private MetricOptions cycloOptions;

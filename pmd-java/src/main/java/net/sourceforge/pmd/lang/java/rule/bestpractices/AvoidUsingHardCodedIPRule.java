@@ -4,9 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,9 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
+
+    // why is everything public?
 
     public static final String IPV4 = "IPv4";
     public static final String IPV6 = "IPv6";
@@ -35,10 +39,10 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     }
 
 
-    public static final EnumeratedMultiProperty<String> CHECK_ADDRESS_TYPES_DESCRIPTOR = new EnumeratedMultiProperty<>(
-        "checkAddressTypes", "Check for IP address types.", ADDRESSES_TO_CHECK,
-        Arrays.asList(IPV4, IPV6, IPV4_MAPPED_IPV6),
-        String.class, 2.0f);
+    private static final PropertyDescriptor<List<String>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
+            PropertyFactory.enumListProperty("checkAddressTypes", ADDRESSES_TO_CHECK)
+                           .desc("Check for IP address types.")
+                           .defaultValue(ADDRESSES_TO_CHECK.keySet()).build();
 
     // Provides 4 capture groups that can be used for additional validation
     protected static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";

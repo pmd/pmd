@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -19,8 +19,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -33,15 +31,26 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public abstract class AbstractMetricTestRule extends AbstractJavaMetricsRule {
 
-    private final EnumeratedMultiProperty<MetricOption> optionsDescriptor = new EnumeratedMultiProperty<>(
-        "metricOptions", "Choose a variant of the metric or the standard",
-        optionMappings(), Collections.<MetricOption>emptyList(), MetricOption.class, 3.0f);
-    private final BooleanProperty reportClassesDescriptor = new BooleanProperty(
-        "reportClasses", "Add class violations to the report", isReportClasses(), 2.0f);
-    private final BooleanProperty reportMethodsDescriptor = new BooleanProperty(
-        "reportMethods", "Add method violations to the report", isReportMethods(), 3.0f);
+
+    private final PropertyDescriptor<List<MetricOption>> optionsDescriptor =
+            PropertyFactory.enumListProperty("metricOptions", optionMappings())
+                           .desc("Choose a variant of the metric or the standard")
+                           .emptyDefaultValue().build();
+
+    private final PropertyDescriptor<Boolean> reportClassesDescriptor =
+            PropertyFactory.booleanProperty("reportClasses")
+                           .desc("Add class violations to the report")
+                           .defaultValue(isReportClasses()).build();
+
+    private final PropertyDescriptor<Boolean> reportMethodsDescriptor =
+            PropertyFactory.booleanProperty("reportMethods")
+                           .desc("Add method violations to the report")
+                           .defaultValue(isReportMethods()).build();
+
     private final PropertyDescriptor<Double> reportLevelDescriptor =
-            PropertyFactory.doubleProperty("reportLevel").desc("Minimum value required to report").defaultValue(defaultReportLevel()).build();
+            PropertyFactory.doubleProperty("reportLevel")
+                           .desc("Minimum value required to report")
+                           .defaultValue(defaultReportLevel()).build();
 
     private MetricOptions metricOptions;
     private boolean reportClasses;
