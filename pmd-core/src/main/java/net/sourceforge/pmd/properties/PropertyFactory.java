@@ -83,7 +83,10 @@ public final class PropertyFactory {
      * Returns a builder for an integer property. The property descriptor
      * will by default accept any value conforming to the format specified
      * by {@link Integer#parseInt(String)}, e.g. {@code 1234} or {@code -123}.
-     * Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
+     *
+     * <p>Note that that parser only supports decimal representations.
+     *
+     * <p>Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
      * The class {@link NumericConstraints} provides some useful ready-made constraints
      * for that purpose.
      *
@@ -108,6 +111,43 @@ public final class PropertyFactory {
      */
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
         return intProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
+    }
+
+
+    /**
+     * Returns a builder for a long integer property. The property descriptor
+     * will by default accept any value conforming to the format specified
+     * by {@link Long#parseLong(String)}, e.g. {@code 1234455678854}.
+     *
+     * <p>Note that that parser only supports decimal representations, and that neither
+     * the character L nor l is permitted to appear at the end of the string as a type
+     * indicator, as would be permitted in Java source.
+     *
+     * <p>Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
+     * The class {@link NumericConstraints} provides some useful ready-made constraints
+     * for that purpose.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     *
+     * @see NumericConstraints
+     */
+    public static GenericPropertyBuilder<Long> longIntProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.LONG_PARSER, Long.class);
+    }
+
+
+    /**
+     * Returns a builder for a property having as value a list of long integers. The
+     * format of the individual items is the same as for {@linkplain #longIntProperty(String)} longIntProperty}.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
+        return longIntProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
     }
 
 
@@ -190,7 +230,7 @@ public final class PropertyFactory {
         return stringProperty(name).toList();
     }
 
-    
+
     /**
      * Returns a builder for a character property. The property descriptor
      * will accept any single character string. No unescaping is performed
