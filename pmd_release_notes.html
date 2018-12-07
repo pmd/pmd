@@ -1397,6 +1397,16 @@ Having a separate property for floats wasn’t that useful.
           <li>Its multi-valued counterpart, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code class="highlighter-rouge">BooleanMultiProperty</code></a>, is not replaced, because it doesn’t have a use case.</li>
         </ul>
       </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/CharacterProperty.html#"><code class="highlighter-rouge">CharacterProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#charProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#charProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#"><code class="highlighter-rouge">CharacterMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#charListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#charListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/LongProperty.html#"><code class="highlighter-rouge">LongProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#longIntProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/LongMultiProperty.html#"><code class="highlighter-rouge">LongMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#longIntListProperty</code></a></li>
+        </ul>
+      </li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code class="highlighter-rouge">MethodProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FileProperty.html#"><code class="highlighter-rouge">FileProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code class="highlighter-rouge">TypeProperty</code></a> and their multi-valued counterparts
 are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
 <!-- TODO complete that as we proceed. --></li>
