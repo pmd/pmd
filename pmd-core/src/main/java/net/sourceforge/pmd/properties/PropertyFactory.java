@@ -46,7 +46,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * <pre>
  * class MyRule {
  *   // The property descriptor may be static, it can be shared across threads.
- *   private static final {@link PropertyDescriptor}&lt;Integer> myIntProperty
+ *   private static final {@link PropertyDescriptor}&lt;Integer&gt; myIntProperty
  *     = PropertyFactory.{@linkplain #intProperty(String) intProperty}("myIntProperty")
  *                      .{@linkplain PropertyBuilder#desc(String) desc}("This is my property")
  *                      .{@linkplain PropertyBuilder#defaultValue(Object) defaultValue}(3)
@@ -83,7 +83,10 @@ public final class PropertyFactory {
      * Returns a builder for an integer property. The property descriptor
      * will by default accept any value conforming to the format specified
      * by {@link Integer#parseInt(String)}, e.g. {@code 1234} or {@code -123}.
-     * Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
+     *
+     * <p>Note that that parser only supports decimal representations.
+     *
+     * <p>Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
      * The class {@link NumericConstraints} provides some useful ready-made constraints
      * for that purpose.
      *
@@ -108,6 +111,43 @@ public final class PropertyFactory {
      */
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
         return intProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
+    }
+
+
+    /**
+     * Returns a builder for a long integer property. The property descriptor
+     * will by default accept any value conforming to the format specified
+     * by {@link Long#parseLong(String)}, e.g. {@code 1234455678854}.
+     *
+     * <p>Note that that parser only supports decimal representations, and that neither
+     * the character L nor l is permitted to appear at the end of the string as a type
+     * indicator, as would be permitted in Java source.
+     *
+     * <p>Acceptable values may be further refined by {@linkplain PropertyBuilder#require(PropertyConstraint) adding constraints}.
+     * The class {@link NumericConstraints} provides some useful ready-made constraints
+     * for that purpose.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     *
+     * @see NumericConstraints
+     */
+    public static GenericPropertyBuilder<Long> longIntProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.LONG_PARSER, Long.class);
+    }
+
+
+    /**
+     * Returns a builder for a property having as value a list of long integers. The
+     * format of the individual items is the same as for {@linkplain #longIntProperty(String)} longIntProperty}.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
+        return longIntProperty(name).toList().delim(MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER);
     }
 
 
@@ -166,8 +206,8 @@ public final class PropertyFactory {
      * Returns a builder for a string property. The property descriptor
      * will accept any string, and performs no expansion of escape
      * sequences (e.g. {@code \n} in the XML will be represented as the
-     * character sequence '\' 'n' and not the line-feed character '\n'). This
-     * behaviour could be changed with PMD 7.0.0.
+     * character sequence '\' 'n' and not the line-feed character '\n').
+     * This behaviour could be changed with PMD 7.0.0.
      *
      * @param name Name of the property to build
      *
@@ -188,6 +228,37 @@ public final class PropertyFactory {
      */
     public static GenericCollectionPropertyBuilder<String, List<String>> stringListProperty(String name) {
         return stringProperty(name).toList();
+    }
+
+
+    /**
+     * Returns a builder for a character property. The property descriptor
+     * will accept any single character string. No unescaping is performed
+     * other than what the XML parser does itself. That means that Java
+     * escape sequences are not expanded: e.g. "\n", will be represented as the
+     * character sequence '\' 'n', so it's not a valid value for this type
+     * of property. On the other hand, XML character references are expanded,
+     * like {@literal &amp;} ('&amp;') or {@literal &lt;} ('&lt;').
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static GenericPropertyBuilder<Character> charProperty(String name) {
+        return new GenericPropertyBuilder<>(name, ValueParserConstants.CHARACTER_PARSER, Character.class);
+    }
+
+
+    /**
+     * Returns a builder for a property having as value a list of characters. The
+     * format of the individual items is the same as for {@linkplain #charProperty(String) charProperty}.
+     *
+     * @param name Name of the property to build
+     *
+     * @return A new builder
+     */
+    public static GenericCollectionPropertyBuilder<Character, List<Character>> charListProperty(String name) {
+        return charProperty(name).toList();
     }
 
 
