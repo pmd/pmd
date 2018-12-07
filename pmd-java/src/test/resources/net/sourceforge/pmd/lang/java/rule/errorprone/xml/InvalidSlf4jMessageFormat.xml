@@ -271,7 +271,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>NPE in static block</description>
+        <description>NPE in static block (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.slf4j.Logger;
@@ -304,7 +304,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>NPE in lambda call</description>
+        <description>NPE in lambda call (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.slf4j.Logger;
