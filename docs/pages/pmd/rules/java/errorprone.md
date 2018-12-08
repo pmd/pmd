@@ -205,9 +205,9 @@ for (int i = 0; i < 10; i++) {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|checkReturnLoopTypes|for \| do \| while|Check for return statements in loop types|yes. Delimiter is '\|'.|
-|checkContinueLoopTypes|for \| do \| while|Check for continue statements in loop types|yes. Delimiter is '\|'.|
-|checkBreakLoopTypes|for \| do \| while|Check for break statements in loop types|yes. Delimiter is '\|'.|
+|checkBreakLoopTypes|for \| do \| while|List of loop types in which break statements will be checked|yes. Delimiter is '\|'.|
+|checkContinueLoopTypes|for \| do \| while|List of loop types in which continue statements will be checked|yes. Delimiter is '\|'.|
+|checkReturnLoopTypes|for \| do \| while|List of loop types in which return statements will be checked|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml

@@ -61,14 +61,14 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|serialVersionUIDCommentRequired|Ignored|Serial version UID comments. Possible values: \[Required, Ignored, Unwanted\]|no|
-|enumCommentRequirement|Required|Enum comments. Possible values: \[Required, Ignored, Unwanted\]|no|
-|protectedMethodCommentRequirement|Required|Protected method constructor comments. Possible values: \[Required, Ignored, Unwanted\]|no|
-|publicMethodCommentRequirement|Required|Public method and constructor comments. Possible values: \[Required, Ignored, Unwanted\]|no|
-|fieldCommentRequirement|Required|Field comments. Possible values: \[Required, Ignored, Unwanted\]|no|
-|headerCommentRequirement|Required|Header comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 |methodWithOverrideCommentRequirement|Ignored|Comments on @Override methods. Possible values: \[Required, Ignored, Unwanted\]|no|
 |accessorCommentRequirement|Ignored|Comments on getters and setters&quot;. Possible values: \[Required, Ignored, Unwanted\]|no|
+|headerCommentRequirement|Required|Header comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|fieldCommentRequirement|Required|Field comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|publicMethodCommentRequirement|Required|Public method and constructor comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|protectedMethodCommentRequirement|Required|Protected method constructor comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|enumCommentRequirement|Required|Enum comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|serialVersionUIDCommentRequired|Ignored|Serial version UID comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 
 **Use this rule by referencing it:**
 ``` xml

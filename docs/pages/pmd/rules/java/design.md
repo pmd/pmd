@@ -457,9 +457,9 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cycloOptions||Choose options for the computation of Cyclo|yes. Delimiter is '\|'.|
 |classReportLevel|80|Total class complexity reporting threshold|no|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
+|cycloOptions||Choose options for the computation of Cyclo|yes. Delimiter is '\|'.|
 |reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
@@ -1134,9 +1134,9 @@ class Foo {                         // +1, total Ncss = 12
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ncssOptions||Choose options for the calculation of Ncss|yes. Delimiter is '\|'.|
 |methodReportLevel|60|NCSS reporting threshold for methods|no|
 |classReportLevel|1500|NCSS reporting threshold for classes|no|
+|ncssOptions||Choose options for the computation of Ncss|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml

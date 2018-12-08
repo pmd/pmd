@@ -250,7 +250,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|checkAddressTypes|IPv4 \| IPv6 \| IPv4 mapped IPv6|Check for IP address types.|yes. Delimiter is '\|'.|
+|checkAddressTypes|IPv4 mapped IPv6 \| IPv6 \| IPv4|Check for IP address types.|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
