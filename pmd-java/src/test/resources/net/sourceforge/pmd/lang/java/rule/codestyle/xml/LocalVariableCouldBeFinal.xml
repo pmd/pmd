@@ -175,4 +175,18 @@ public class Test {
 }
        ]]></code>
    </test-code>
+    <test-code>
+        <description>Parameter to ignore non-final variables in for each loops (see #1513).</description>
+        <rule-property name="ignoreForEachDecl">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  for ( String c : strings ) {
+   System.out.println(c); // use c
+  }
+ }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -1127,6 +1127,9 @@ public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // n
 A local variable assigned only once can be declared final.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="ignoreForEachDecl" type="Boolean" description="Ignore non-final loop variables in a for-each statement." value="false"/>
+        </properties>
         <example>
 <![CDATA[
 public class Bar {
