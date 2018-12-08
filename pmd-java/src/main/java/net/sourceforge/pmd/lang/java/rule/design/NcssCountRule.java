@@ -59,7 +59,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
     private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR =
             PropertyFactory.enumListProperty("ncssOptions", OPTION_MAP)
-                           .desc("Choose options for the computation of Cyclo")
+                           .desc("Choose options for the computation of Ncss")
                            .emptyDefaultValue()
                            .build();
 
