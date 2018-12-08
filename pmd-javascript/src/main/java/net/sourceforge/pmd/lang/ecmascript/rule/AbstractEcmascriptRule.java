@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
+import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions.Version;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehension;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayComprehensionLoop;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTArrayLiteral;
@@ -65,7 +66,6 @@ import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -74,10 +74,11 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
 
     private static final PropertyDescriptor<Boolean> RECORDING_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_COMMENTS_DESCRIPTOR;
     private static final PropertyDescriptor<Boolean> RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = EcmascriptParserOptions.RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR;
-    private static final EnumeratedProperty<EcmascriptParserOptions.Version> RHINO_LANGUAGE_VERSION = EcmascriptParserOptions.RHINO_LANGUAGE_VERSION;
+    private static final PropertyDescriptor<Version> RHINO_LANGUAGE_VERSION = EcmascriptParserOptions.RHINO_LANGUAGE_VERSION;
 
     public AbstractEcmascriptRule() {
         super.setLanguage(LanguageRegistry.getLanguage(EcmascriptLanguageModule.NAME));
+        // Rule-specific parser options are not supported. What do we do?
         definePropertyDescriptor(RECORDING_COMMENTS_DESCRIPTOR);
         definePropertyDescriptor(RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR);
         definePropertyDescriptor(RHINO_LANGUAGE_VERSION);

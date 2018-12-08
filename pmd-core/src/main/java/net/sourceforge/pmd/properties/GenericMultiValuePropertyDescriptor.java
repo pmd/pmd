@@ -42,7 +42,7 @@ final class GenericMultiValuePropertyDescriptor<V, C extends Collection<V>> exte
 
         String dftValueError = errorFor(new ArrayList<>(defaultValue));
         if (dftValueError != null) {
-            throw new IllegalStateException(dftValueError);
+            throw new IllegalArgumentException(dftValueError);
         }
     }
 

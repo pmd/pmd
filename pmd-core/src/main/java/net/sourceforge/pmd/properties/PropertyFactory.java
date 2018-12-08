@@ -275,7 +275,25 @@ public final class PropertyFactory {
         return new GenericPropertyBuilder<>(name, ValueParserConstants.BOOLEAN_PARSER, Boolean.class);
     }
 
+    // We can add more useful factories with Java 8.
+    // * We don't really need a Map, just a Function<String, T>.
+    // * We could have a factory taking a Class<? extends Enum<T>>
+    //   and a Function<T, String> to build a mapper for a whole enum.
 
+    /**
+     * Returns a builder for an enumerated property. Such a property can be
+     * defined for any type {@code <T>}, provided the possible values can be
+     * indexed by strings. This is enforced by passing a {@code Map<String, T>}
+     * at construction time, which maps labels to values. If {@link Map#get(Object)}
+     * returns null for a given label, then the value is rejected. Null values
+     * are hence prohibited.
+     *
+     * @param name        Name of the property to build
+     * @param nameToValue Map of labels to values. The null key is ignored.
+     * @param <T>         Value type of the property
+     *
+     * @return A new builder
+     */
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         // TODO find solution to document the set of possible values
         // At best, map that requirement to a constraint (eg make parser return null if not found, and
@@ -284,6 +302,16 @@ public final class PropertyFactory {
     }
 
 
+    /**
+     * Returns a builder for a property having as value a list of {@code <T>}. The
+     * format of the individual items is the same as for {@linkplain #enumProperty(String, Map)}.
+     *
+     * @param name        Name of the property to build
+     * @param nameToValue Map of labels to values. The null key is ignored.
+     * @param <T>         Value type of the property
+     *
+     * @return A new builder
+     */
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
         return enumProperty(name, nameToValue).toList().delim(MultiValuePropertyDescriptor.DEFAULT_DELIMITER);
     }

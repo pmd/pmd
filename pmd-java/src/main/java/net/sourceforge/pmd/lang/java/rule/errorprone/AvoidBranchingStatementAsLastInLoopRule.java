@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
@@ -19,7 +21,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
@@ -39,15 +42,14 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
         LOOP_TYPES_MAPPINGS = Collections.unmodifiableMap(mappings);
     }
 
-    public static final EnumeratedMultiProperty<String> CHECK_BREAK_LOOP_TYPES = new EnumeratedMultiProperty<>(
-        "checkBreakLoopTypes", "Check for break statements in loop types", LOOP_TYPES_MAPPINGS, DEFAULTS,
-        String.class, 1);
-    public static final EnumeratedMultiProperty<String> CHECK_CONTINUE_LOOP_TYPES = new EnumeratedMultiProperty<>(
-        "checkContinueLoopTypes", "Check for continue statements in loop types", LOOP_TYPES_MAPPINGS, DEFAULTS,
-        String.class, 2);
-    public static final EnumeratedMultiProperty<String> CHECK_RETURN_LOOP_TYPES = new EnumeratedMultiProperty<>(
-        "checkReturnLoopTypes", "Check for return statements in loop types", LOOP_TYPES_MAPPINGS, DEFAULTS,
-        String.class, 3);
+    // TODO I don't think we need this configurability.
+    // I think we should tone that down to just be able to ignore some type of statement,
+    // but I can't see a use case to e.g. report only breaks in 'for' loops but not in 'while'.
+
+    public static final PropertyDescriptor<List<String>> CHECK_BREAK_LOOP_TYPES = propertyFor("break");
+    public static final PropertyDescriptor<List<String>> CHECK_CONTINUE_LOOP_TYPES = propertyFor("continue");
+    public static final PropertyDescriptor<List<String>> CHECK_RETURN_LOOP_TYPES = propertyFor("return");
+
 
 
     public AvoidBranchingStatementAsLastInLoopRule() {
@@ -71,7 +73,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
     }
 
 
-    protected Object check(EnumeratedMultiProperty<String> property, Node node, Object data) {
+    protected Object check(PropertyDescriptor<List<String>> property, Node node, Object data) {
         Node parent = node.getNthParent(5);
         if (parent instanceof ASTForStatement) {
             if (hasPropertyValue(property, CHECK_FOR)) {
@@ -90,7 +92,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
     }
 
 
-    protected boolean hasPropertyValue(EnumeratedMultiProperty<String> property, String value) {
+    protected boolean hasPropertyValue(PropertyDescriptor<List<String>> property, String value) {
         return getProperty(property).contains(value);
     }
 
@@ -115,6 +117,12 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRule {
         return checksNothing() ? "All loop types are ignored" : null;
     }
 
+    private static PropertyDescriptor<List<String>> propertyFor(String stmtName) {
+        return PropertyFactory.enumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LOOP_TYPES_MAPPINGS)
+                .desc("List of loop types in which " + stmtName + " statements will be checked")
+                .defaultValue(DEFAULTS)
+                .build();
+    }
 
     public boolean checksNothing() {
 

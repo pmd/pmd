@@ -54,6 +54,7 @@ public interface CodeClimateRule extends Rule {
         }
     }
 
+    // these properties may not be updated yet
 
     /**
      * Defines the code climate categories for which this rule will find

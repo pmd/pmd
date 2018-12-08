@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -58,9 +57,11 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
     }
 
 
-    private static final EnumeratedMultiProperty<NcssOption> NCSS_OPTIONS_DESCRIPTOR = new EnumeratedMultiProperty<>(
-        "ncssOptions", "Choose options for the calculation of Ncss",
-        OPTION_MAP, Collections.<NcssOption>emptyList(), NcssOption.class, 3.0f);
+    private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR =
+            PropertyFactory.enumListProperty("ncssOptions", OPTION_MAP)
+                           .desc("Choose options for the computation of Cyclo")
+                           .emptyDefaultValue()
+                           .build();
 
 
     private int methodReportLevel;
