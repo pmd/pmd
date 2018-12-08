@@ -2,13 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.typeresolution.testdata;
+package net.sourceforge.pmd.typeresolution.testdata.java8;
 
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import net.sourceforge.pmd.typeresolution.testdata.UsesRepeatableAnnotations.Multitude;
+import net.sourceforge.pmd.typeresolution.testdata.java8.UsesRepeatableAnnotations.Multitude;
 
 @Multitude("1")
 @Multitude("2")

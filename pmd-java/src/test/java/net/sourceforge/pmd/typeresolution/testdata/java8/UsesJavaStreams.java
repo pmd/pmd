@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.typeresolution.testdata;
+package net.sourceforge.pmd.typeresolution.testdata.java8;
 
 public class UsesJavaStreams {
     interface WithStaticAndDefaultMethod {
