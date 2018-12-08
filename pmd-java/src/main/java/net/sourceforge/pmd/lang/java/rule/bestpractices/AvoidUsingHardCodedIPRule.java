@@ -39,7 +39,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     }
 
 
-    private static final PropertyDescriptor<List<String>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
+    public static final PropertyDescriptor<List<String>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
             PropertyFactory.enumListProperty("checkAddressTypes", ADDRESSES_TO_CHECK)
                            .desc("Check for IP address types.")
                            .defaultValue(ADDRESSES_TO_CHECK.keySet()).build();
