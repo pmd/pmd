@@ -1379,9 +1379,12 @@ It is much better to use one of the type-specific toString() methods instead.</p
 
 <p><strong>Minimum Language Version:</strong> Java 1.7</p>
 
-<p>The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage collection pauses. See <a href="https://bugs.openjdk.java.net/browse/JDK-8080225">JDK-8080225</a> for details.</p>
+<p>The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage
+collection pauses.
+See <a href="https://bugs.openjdk.java.net/browse/JDK-8080225">JDK-8080225</a> for details.</p>
 
-<p>The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream, again causing garbage collection issues while finalizer methods are called.</p>
+<p>The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream,
+again causing garbage collection issues while finalizer methods are called.</p>
 
 <ul>
   <li>Use <code class="highlighter-rouge">Files.newInputStream(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileInputStream(fileName)</code>.</li>
@@ -1389,6 +1392,11 @@ It is much better to use one of the type-specific toString() methods instead.</p
   <li>Use <code class="highlighter-rouge">Files.newBufferedReader(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileReader(fileName)</code>.</li>
   <li>Use <code class="highlighter-rouge">Files.newBufferedWriter(Paths.get(fileName))</code> instead of <code class="highlighter-rouge">new FileWriter(fileName)</code>.</li>
 </ul>
+
+<p>Please note, that the <code class="highlighter-rouge">java.nio</code> API does not throw a <code class="highlighter-rouge">FileNotFoundException</code> anymore, instead
+it throws a <code class="highlighter-rouge">NoSuchFileException</code>. If your code dealt explicitly with a <code class="highlighter-rouge">FileNotFoundException</code>,
+then this needs to be adjusted. Both exceptions are subclasses of <code class="highlighter-rouge">IOException</code>, so catching
+that one covers both.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">AllocationExpression</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="w">
