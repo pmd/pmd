@@ -30,6 +30,9 @@ This means, you can use CPD to find duplicated code in your Kotlin projects.
 *   The Java rule {% rule "java/bestpractices/JUnitTestsShouldIncludeAssert" %} (`java-bestpractices`)
     now also detects [Soft Assertions](https://github.com/joel-costigliola/assertj-core).
 
+*   The property `exceptionfile` of the rule {% rule java/errorprone/AvoidDuplicateLiterals %} (`java-errorprone`)
+    has been deprecated and will be removed with 7.0.0. Please use `exceptionList` instead.
+
 ### Fixed Issues
 *   all
     *   [#1284](https://github.com/pmd/pmd/issues/1284): \[doc] Keep record of every currently deprecated API
@@ -119,7 +122,6 @@ IntegerProperty myProperty = IntegerProperty.named("score").desc("Top score valu
 
 // They both map to the following in 7.0.0
 PropertyDescriptor<Integer> myProperty = PropertyFactory.intProperty("score").desc("Top score value").require(inRange(1, 100)).defaultValue(40);
-
 ```
 
 You're highly encouraged to migrate to using this new API as soon as possible, to ease your migration to 7.0.0.
@@ -250,11 +252,6 @@ removal:
   * In {% jdoc :rsets %}: {% jdoc !a!:rsets#usesDFA(core::lang.Language) %}, {% jdoc !a!:rsets#usesTypeResolution(core::lang.Language) %}, {% jdoc !a!:rsets#usesMultifile(core::lang.Language) %}
   * In {% jdoc :lvh %}: {% jdoc !a!:lvh#getDataFlowFacade() %}, {% jdoc !a!:lvh#getSymbolFacade() %}, {% jdoc !a!:lvh#getSymbolFacade(java.lang.ClassLoader) %},
     {% jdoc !a!:lvh#getTypeResolutionFacade(java.lang.ClassLoader) %}, {% jdoc !a!:lvh#getQualifiedNameResolutionFacade(java.lang.ClassLoader) %}
-
-#### Modified rules
-
-* The property `exceptionfile` of the rule {% rule java/errorprone/AvoidDuplicateLiterals %} has been
-  deprecated and will be removed with 7.0.0. Please use `exceptionList` instead.
 
 ### External Contributions
 
