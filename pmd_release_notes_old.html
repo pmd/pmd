@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.10.0</li>
+    <li class="sidebarTitle">PMD 6.11.0</li>
     
     
     
@@ -1274,13 +1274,380 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
   <p>Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases</p>
 
+<h2 id="09-december-2018---6100">09-December-2018 - 6.10.0</h2>
+
+<p>The PMD team is pleased to announce PMD 6.10.0.</p>
+
+<p>This is a minor release.</p>
+
+<h3 id="table-of-contents">Table Of Contents</h3>
+
+<ul>
+  <li><a href="#new-and-noteworthy">New and noteworthy</a>
+    <ul>
+      <li><a href="#kotlin-support-for-cpd">Kotlin support for CPD</a></li>
+      <li><a href="#new-rules">New Rules</a></li>
+      <li><a href="#modified-rules">Modified Rules</a></li>
+    </ul>
+  </li>
+  <li><a href="#fixed-issues">Fixed Issues</a></li>
+  <li><a href="#api-changes">API Changes</a>
+    <ul>
+      <li><a href="#properties-framework">Properties framework</a>
+        <ul>
+          <li><a href="#changes-to-how-you-define-properties">Changes to how you define properties</a></li>
+          <li><a href="#architectural-simplifications">Architectural simplifications</a></li>
+          <li><a href="#changes-to-the-propertydescriptor-interface">Changes to the PropertyDescriptor interface</a></li>
+        </ul>
+      </li>
+      <li><a href="#deprecated-apis">Deprecated APIs</a>
+        <ul>
+          <li><a href="#for-internalization">For internalization</a></li>
+          <li><a href="#for-removal">For removal</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#external-contributions">External Contributions</a></li>
+</ul>
+
+<h3 id="new-and-noteworthy">New and noteworthy</h3>
+
+<h4 id="kotlin-support-for-cpd">Kotlin support for CPD</h4>
+
+<p>Thanks to <a href="https://github.com/maikelsteneker">Maikel Steneker</a>, CPD now supports <a href="https://kotlinlang.org/">Kotlin</a>.
+This means, you can use CPD to find duplicated code in your Kotlin projects.</p>
+
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The new Java rule <a href="https://pmd.github.io/pmd-6.10.0/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals"><code class="highlighter-rouge">UseUnderscoresInNumericLiterals</code></a> (<code class="highlighter-rouge">java-codestyle</code>)
+verifies that numeric literals over a given length (4 chars by default, but configurable) are using
+underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.</li>
+</ul>
+
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>
+    <p>The Java rule <a href="https://pmd.github.io/pmd-6.10.0/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert"><code class="highlighter-rouge">JUnitTestsShouldIncludeAssert</code></a> (<code class="highlighter-rouge">java-bestpractices</code>)
+now also detects <a href="https://github.com/joel-costigliola/assertj-core">Soft Assertions</a>.</p>
+  </li>
+  <li>
+    <p>The property <code class="highlighter-rouge">exceptionfile</code> of the rule <a href="https://pmd.github.io/pmd-6.10.0/pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="highlighter-rouge">AvoidDuplicateLiterals</code></a> (<code class="highlighter-rouge">java-errorprone</code>)
+has been deprecated and will be removed with 7.0.0. Please use <code class="highlighter-rouge">exceptionList</code> instead.</p>
+  </li>
+</ul>
+
+<h3 id="fixed-issues">Fixed Issues</h3>
+<ul>
+  <li>all
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1284">#1284</a>: [doc] Keep record of every currently deprecated API</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1318">#1318</a>: [test] Kotlin DSL to ease test writing</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1328">#1328</a>: [ci] Building docs for release fails</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1341">#1341</a>: [doc] Documentation Error with Regex Properties</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1468">#1468</a>: [doc] Missing escaping leads to XSS</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1471">#1471</a>: [core] XMLRenderer: ProcessingErrors from exceptions without a message missing</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1477">#1477</a>: [core] Analysis cache fails with wildcard classpath entries</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1460">#1460</a>: [java] Intermittent PMD failure : PMD processing errors while no violations reported</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/647">#647</a>: [java] JUnitTestsShouldIncludeAssertRule should support <code class="highlighter-rouge">this.exception</code> as well as just <code class="highlighter-rouge">exception</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/1435">#1435</a>: [java] JUnitTestsShouldIncludeAssert: Support AssertJ soft assertions</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1232">#1232</a>: [java] Detector for large numbers not separated by _</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1372">#1372</a>: [java] false positive for UselessQualifiedThis</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1440">#1440</a>: [java] CommentDefaultAccessModifierRule shows incorrect message</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1151">#1151</a>: [java] ImmutableField false positive with multiple constructors</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1483">#1483</a>: [java] Cyclo metric should count conditions of for statements correctly</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1512">#1512</a>: [java] InvalidSlf4jMessageFormatRule causes NPE in lambda and static blocks</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1454">#1454</a>: [plsql] ParseException for IF/CASE statement with &gt;=, &lt;=, !=</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="api-changes">API Changes</h3>
+
+<h4 id="properties-framework">Properties framework</h4>
+
+<p>The properties framework is about to get a lifting, and for that reason, we need to deprecate a lot of APIs
+to remove them in 7.0.0. The proposed changes to the API are described <a href="https://github.com/pmd/pmd/wiki/Property-framework-7-0-0">on the wiki</a></p>
+
+<h5 id="changes-to-how-you-define-properties">Changes to how you define properties</h5>
+
+<ul>
+  <li>
+    <p>Construction of property descriptors has been possible through builders since 6.0.0. The 7.0.0 API will only allow
+construction through builders. The builder hierarchy, currently found in the package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.builders</code></a>,
+is being replaced by the simpler <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyBuilder.html#"><code class="highlighter-rouge">PropertyBuilder</code></a>. Their APIs enjoy a high degree of source compatibility.</p>
+  </li>
+  <li>
+    <p>Concrete property classes like <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code class="highlighter-rouge">IntegerProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code class="highlighter-rouge">StringMultiProperty</code></a> will gradually
+all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code class="highlighter-rouge">PropertyDescriptor</code></a>
+interface, e.g. <code class="highlighter-rouge">PropertyDescriptor&lt;Integer&gt;</code> or <code class="highlighter-rouge">PropertyDescriptor&lt;List&lt;String&gt;&gt;</code>.</p>
+  </li>
+  <li>
+    <p>Instead of spreading properties across countless classes, the utility class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#"><code class="highlighter-rouge">PropertyFactory</code></a> will become
+from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
+by a corresponding method on <code class="highlighter-rouge">PropertyFactory</code>:</p>
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code class="highlighter-rouge">IntegerProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code class="highlighter-rouge">IntegerMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatProperty.html#"><code class="highlighter-rouge">FloatProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleProperty.html#"><code class="highlighter-rouge">DoubleProperty</code></a> are both replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleProperty</code></a>.
+Having a separate property for floats wasn’t that useful.
+        <ul>
+          <li>Similarly, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code class="highlighter-rouge">FloatMultiProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code class="highlighter-rouge">DoubleMultiProperty</code></a> are replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleListProperty</code></a>.</li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringProperty.html#"><code class="highlighter-rouge">StringProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#stringProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code class="highlighter-rouge">StringMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#stringListProperty</code></a></li>
+        </ul>
+      </li>
+      <li>
+        <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/RegexProperty.html#"><code class="highlighter-rouge">RegexProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#regexProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#regexProperty</code></a></p>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code class="highlighter-rouge">EnumeratedProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map)"><code class="highlighter-rouge">PropertyFactory#enumProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code class="highlighter-rouge">EnumeratedProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map)"><code class="highlighter-rouge">PropertyFactory#enumListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanProperty.html#"><code class="highlighter-rouge">BooleanProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#booleanProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#booleanProperty</code></a>
+        <ul>
+          <li>Its multi-valued counterpart, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code class="highlighter-rouge">BooleanMultiProperty</code></a>, is not replaced, because it doesn’t have a use case.</li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/CharacterProperty.html#"><code class="highlighter-rouge">CharacterProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#charProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#charProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#"><code class="highlighter-rouge">CharacterMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#charListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#charListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/LongProperty.html#"><code class="highlighter-rouge">LongProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#longIntProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/LongMultiProperty.html#"><code class="highlighter-rouge">LongMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#longIntListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code class="highlighter-rouge">MethodProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FileProperty.html#"><code class="highlighter-rouge">FileProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code class="highlighter-rouge">TypeProperty</code></a> and their multi-valued counterparts
+are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
+<!-- TODO complete that as we proceed. --></li>
+    </ul>
+  </li>
+</ul>
+
+<p>Here’s an example:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Before 7.0.0, these are equivalent:</span>
+<span class="n">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntegerProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Top score value"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">40</span><span class="o">,</span> <span class="mf">3.0f</span><span class="o">);</span>
+<span class="n">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="n">IntegerProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">range</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">).</span><span class="na">uiOrder</span><span class="o">(</span><span class="mf">3.0f</span><span class="o">);</span>
+
+<span class="c1">// They both map to the following in 7.0.0</span>
+<span class="n">PropertyDescriptor</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="n">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">require</span><span class="o">(</span><span class="n">inRange</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">)).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>You’re highly encouraged to migrate to using this new API as soon as possible, to ease your migration to 7.0.0.</p>
+
+<h5 id="architectural-simplifications">Architectural simplifications</h5>
+
+<ul>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/EnumeratedPropertyDescriptor.html#"><code class="highlighter-rouge">EnumeratedPropertyDescriptor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/NumericPropertyDescriptor.html#"><code class="highlighter-rouge">NumericPropertyDescriptor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PackagedPropertyDescriptor.html#"><code class="highlighter-rouge">PackagedPropertyDescriptor</code></a>,
+and the related builders (in <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.builders</code></a>) will be removed.
+These specialized interfaces allowed additional constraints to be enforced on the
+value of a property, but made the property class hierarchy very large and impractical
+to maintain. Their functionality will be mapped uniformly to <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/constraints/PropertyConstraint.html#"><code class="highlighter-rouge">PropertyConstraint</code></a>s,
+which will allow virtually any constraint to be defined, and improve documentation and error reporting. The
+related methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyNumeric()"><code class="highlighter-rouge">PropertyTypeId#isPropertyNumeric</code></a> and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyPackaged()"><code class="highlighter-rouge">PropertyTypeId#isPropertyPackaged</code></a> are also deprecated.</p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MultiValuePropertyDescriptor.html#"><code class="highlighter-rouge">MultiValuePropertyDescriptor</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/SingleValuePropertyDescriptor.html#"><code class="highlighter-rouge">SingleValuePropertyDescriptor</code></a>
+are deprecated. 7.0.0 will introduce a new XML syntax which will remove the need for such a divide
+between single- and multi-valued properties. The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code class="highlighter-rouge">PropertyDescriptor#isMultiValue</code></a> will be removed
+accordingly.</p>
+  </li>
+</ul>
+
+<h5 id="changes-to-the-propertydescriptor-interface">Changes to the PropertyDescriptor interface</h5>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#preferredRowCount()"><code class="highlighter-rouge">preferredRowCount</code></a> is deprecated with no intended replacement. It was never implemented, and does not belong
+in this interface. The methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#uiOrder()"><code class="highlighter-rouge">uiOrder</code></a> and <code class="highlighter-rouge">compareTo(PropertyDescriptor)</code> are deprecated for the
+same reason. These methods mix presentation logic with business logic and are not necessary for PropertyDescriptors to work.
+<code class="highlighter-rouge">PropertyDescriptor</code> will not extend <code class="highlighter-rouge">Comparable&lt;PropertyDescriptor&gt;</code> anymore come 7.0.0.</li>
+  <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#propertyErrorFor(net.sourceforge.pmd.Rule)"><code class="highlighter-rouge">propertyErrorFor</code></a> is deprecated and will be removed with no intended
+replacement. It’s really just a shortcut for <code class="highlighter-rouge">prop.errorFor(rule.getProperty(prop))</code>.</li>
+  <li><code class="highlighter-rouge">T </code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#valueFrom(java.lang.String)"><code class="highlighter-rouge">valueFrom(String)</code></a> and <code class="highlighter-rouge">String </code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#asDelimitedString(java.lang.Object)"><code class="highlighter-rouge">asDelimitedString</code></a><code class="highlighter-rouge">(T)</code> are deprecated and will be removed. These were
+used to serialize and deserialize properties to/from a string, but 7.0.0 will introduce a more flexible
+XML syntax which will make them obsolete.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code class="highlighter-rouge">isMultiValue</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#type()"><code class="highlighter-rouge">type</code></a> are deprecated and won’t be replaced. The new XML syntax will remove the need
+for a divide between multi- and single-value properties, and will allow arbitrary types to be represented.
+Since arbitrary types may be represented, <code class="highlighter-rouge">type</code> will become obsolete as it can’t represent generic types,
+which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
+new way to document these properties exhaustively will be added with 7.0.0.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code class="highlighter-rouge">errorFor</code></a> is deprecated as its return type will be changed to <code class="highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
+</ul>
+
+<h4 id="deprecated-apis">Deprecated APIs</h4>
+
+<h5 id="for-internalization">For internalization</h5>
+
+<ul>
+  <li>
+    <p>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code></a>)
+are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/Attribute.html#"><code class="highlighter-rouge">Attribute</code></a> remains public API.</p>
+  </li>
+  <li>
+    <p>The classes <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptorField.html#"><code class="highlighter-rouge">PropertyDescriptorField</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/PropertyDescriptorBuilderConversionWrapper.html#"><code class="highlighter-rouge">PropertyDescriptorBuilderConversionWrapper</code></a>, and the methods
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#attributeValuesById"><code class="highlighter-rouge">PropertyDescriptor#attributeValuesById</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isDefinedExternally()"><code class="highlighter-rouge">PropertyDescriptor#isDefinedExternally</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#getFactory()"><code class="highlighter-rouge">PropertyTypeId#getFactory</code></a>.
+These were used to read and write properties to and from XML, but were not intended as public API.</p>
+  </li>
+  <li>
+    <p>The class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParserConstants.html#"><code class="highlighter-rouge">ValueParserConstants</code></a> and the interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParser.html#"><code class="highlighter-rouge">ValueParser</code></a>.</p>
+  </li>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.metrics.impl.visitors</code></a> are now considered internal API. They’re deprecated
+and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserVisitorAdapter</code></a> should be directly subclassed.</p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowHandler()"><code class="highlighter-rouge">LanguageVersionHandler#getDataFlowHandler()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDFAGraphRule()"><code class="highlighter-rouge">LanguageVersionHandler#getDFAGraphRule()</code></a></p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/VisitorStarter.html#"><code class="highlighter-rouge">VisitorStarter</code></a></p>
+  </li>
+</ul>
+
+<h5 id="for-removal">For removal</h5>
+
+<ul>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/modules/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.modules</code></a> will be removed.</p>
+  </li>
+  <li>
+    <p>The interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/Dimensionable.html#"><code class="highlighter-rouge">Dimensionable</code></a> has been deprecated.
+It gets in the way of a grammar change for 7.0.0 and won’t be needed anymore (see <a href="https://github.com/pmd/pmd/issues/997">#997</a>).</p>
+  </li>
+  <li>
+    <p>Several methods from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code class="highlighter-rouge">ASTLocalVariableDeclaration</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code class="highlighter-rouge">ASTFieldDeclaration</code></a> have
+also been deprecated:</p>
+
+    <ul>
+      <li>
+        <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code class="highlighter-rouge">ASTFieldDeclaration</code></a> won’t be a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code class="highlighter-rouge">TypeNode</code></a> come 7.0.0, so
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code class="highlighter-rouge">getType</code></a> and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code class="highlighter-rouge">getTypeDefinition</code></a> are deprecated.</p>
+      </li>
+      <li>
+        <p>The method <code class="highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
+      </li>
+    </ul>
+
+    <p>All these are deprecated because those nodes may declare several variables at once, possibly
+with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;</code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code class="highlighter-rouge">ASTVariableDeclaratorId</code></a><code class="highlighter-rouge">&gt;</code>
+though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
+  </li>
+  <li>
+    <p>Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
+composable visitors, used in the metrics framework, but they didn’t prove cost-effective.</p>
+
+    <ul>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code class="highlighter-rouge">JavaParserDecoratedVisitor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code class="highlighter-rouge">JavaParserControllessVisitor</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserControllessVisitorAdapter</code></a>, and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code class="highlighter-rouge">JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
+are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:</p>
+
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.10.0/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code class="highlighter-rouge">CppHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.10.0/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code class="highlighter-rouge">CppLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.10.0/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code class="highlighter-rouge">CppParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cs/6.10.0/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code class="highlighter-rouge">CsLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-fortran/6.10.0/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code class="highlighter-rouge">FortranLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-groovy/6.10.0/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code class="highlighter-rouge">GroovyLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.10.0/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code class="highlighter-rouge">MatlabHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.10.0/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code class="highlighter-rouge">MatlabLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.10.0/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code class="highlighter-rouge">MatlabParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.10.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code class="highlighter-rouge">ObjectiveCHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.10.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code class="highlighter-rouge">ObjectiveCLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.10.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code class="highlighter-rouge">ObjectiveCParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-php/6.10.0/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code class="highlighter-rouge">PhpLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.10.0/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code class="highlighter-rouge">PythonHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.10.0/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code class="highlighter-rouge">PythonLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.10.0/net/sourceforge/pmd/lang/python/PythonParser.html#"><code class="highlighter-rouge">PythonParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-ruby/6.10.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code class="highlighter-rouge">RubyLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-scala/6.10.0/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code class="highlighter-rouge">ScalaLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-swift/6.10.0/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#"><code class="highlighter-rouge">SwiftLanguageModule</code></a></li>
+    </ul>
+  </li>
+  <li>
+    <p>Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
+in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
+found on <a href="https://github.com/pmd/pmd/pull/1426">#1426</a>. Consequently, the following APIs are deprecated for
+removal:</p>
+    <ul>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#"><code class="highlighter-rouge">Rule</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isDfa()"><code class="highlighter-rouge">isDfa()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code class="highlighter-rouge">isTypeResolution()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isMultifile()"><code class="highlighter-rouge">isMultifile()</code></a> and their
+respective setters.</li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#"><code class="highlighter-rouge">RuleSet</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesDFA(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesTypeResolution(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesMultifile(Language)</code></a></li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#"><code class="highlighter-rouge">RuleSets</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesDFA(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesTypeResolution(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesMultifile(Language)</code></a></li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code class="highlighter-rouge">LanguageVersionHandler</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()"><code class="highlighter-rouge">getDataFlowFacade()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()"><code class="highlighter-rouge">getSymbolFacade()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getSymbolFacade(ClassLoader)</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getTypeResolutionFacade(ClassLoader)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getQualifiedNameResolutionFacade(ClassLoader)</code></a></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="external-contributions">External Contributions</h3>
+
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1384">#1384</a>: [java] New Rule - UseUnderscoresInNumericLiterals - <a href="https://github.com/rajeshggwp">RajeshR</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1424">#1424</a>: [doc] #1341 Updating Regex Values in default Value Property - <a href="https://github.com/vishva007">avishvat</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1428">#1428</a>: [core] Upgrading JCommander from 1.48 to 1.72 - <a href="https://github.com/Thunderforge">Thunderforge</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1430">#1430</a>: [doc] Who really knows regex? - <a href="https://github.com/dpilafian">Dem Pilafian</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1434">#1434</a>: [java] JUnitTestsShouldIncludeAssert: Recognize AssertJ soft assertions as valid assert statements - <a href="https://github.com/ledoyen">Loïc Ledoyen</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1439">#1439</a>: [java] Avoid FileInputStream and FileOutputStream - <a href="https://github.com/reudismam">reudismam</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1441">#1441</a>: [kotlin] [cpd] Added CPD support for Kotlin - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1447">#1447</a>: [fortran] Use diamond operator in impl - <a href="https://github.com/reudismam">reudismam</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1453">#1453</a>: [java] Adding the fix for #1440. Showing correct message for CommentDefaultAccessmodifier. - <a href="https://github.com/stationeros">Rohit Kumar</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1457">#1457</a>: [java] Adding test for Issue #647 - <a href="https://github.com/orimarko">orimarko</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1464">#1464</a>: [doc] Fix XSS on documentation web page - <a href="https://github.com/marob">Maxime Robert</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1469">#1469</a>: [core] Configurable max loops in DAAPathFinder - <a href="https://github.com/albfernandez">Alberto Fernández</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1494">#1494</a>: [java] 1151: Rephrase ImmutableField documentation in design.xml - <a href="https://github.com/rmartinus">Robbie Martinus</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1504">#1504</a>: [java] NPE in InvalidSlf4jMessageFormatRule if a logger call with a variable as parameter is not inside a method or constructor - <a href="https://github.com/kris-scheibe">kris-scheibe</a></li>
+</ul>
+
 <h2 id="28-october-2018---690">28-October-2018 - 6.9.0</h2>
 
 <p>The PMD team is pleased to announce PMD 6.9.0.</p>
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents">Table Of Contents</h3>
+<h3 id="table-of-contents-1">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -1294,7 +1661,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-1">New and noteworthy</h3>
 
 <h4 id="improved-golang-cpd-support">Improved Golang CPD Support</h4>
 
@@ -1303,7 +1670,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 Golang is now backed by a proper Antlr Grammar. This means CPD is now better at detecting duplicates,
 as comments are recognized as such and ignored.</p>
 
-<h4 id="new-rules">New Rules</h4>
+<h4 id="new-rules-1">New Rules</h4>
 
 <ul>
   <li>The new PLSQL rule <a href="https://pmd.github.io/pmd-6.9.0/pmd_rules_plsql_codestyle.html#codeformat"><code class="highlighter-rouge">CodeFormat</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>) verifies that
@@ -1311,7 +1678,7 @@ PLSQL code is properly formatted. It checks e.g. for correct indentation in sele
 that each parameter is defined on a separate line.</li>
 </ul>
 
-<h3 id="fixed-issues">Fixed Issues</h3>
+<h3 id="fixed-issues-1">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -1365,7 +1732,7 @@ that each parameter is defined on a separate line.</li>
   </li>
 </ul>
 
-<h3 id="api-changes">API Changes</h3>
+<h3 id="api-changes-1">API Changes</h3>
 
 <ul>
   <li>PMD has a new CLI option <code class="highlighter-rouge">-ignorelist</code>. With that, you can provide a file containing a comma-delimit list of files,
@@ -1375,7 +1742,7 @@ Note: there is no corresponding option for the Ant task, since the feature is al
 Ant’s FileSet include/exclude filters.</li>
 </ul>
 
-<h3 id="external-contributions">External Contributions</h3>
+<h3 id="external-contributions-1">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1338">#1338</a>: [core] [cpd] Generalize ANTLR tokens preparing support for ANTLR token filter - <a href="https://github.com/matifraga">Matías Fraga</a> and <a href="https://github.com/tomidelucca">Tomi De Lucca</a></li>
@@ -1403,7 +1770,7 @@ Ant’s FileSet include/exclude filters.</li>
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-1">Table Of Contents</h3>
+<h3 id="table-of-contents-2">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -1425,7 +1792,7 @@ Ant’s FileSet include/exclude filters.</li>
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-1">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-2">New and noteworthy</h3>
 
 <h4 id="drawing-a-line-between-private-and-public-api">Drawing a line between private and public API</h4>
 
@@ -1485,7 +1852,7 @@ references only rules, that are most likely to apply everywhere.</p>
 
 <p>Any feedback would be greatly appreciated.</p>
 
-<h4 id="new-rules-1">New Rules</h4>
+<h4 id="new-rules-2">New Rules</h4>
 
 <ul>
   <li>The new Apex rule <a href="https://pmd.github.io/pmd-6.8.0/pmd_rules_apex_documentation.html#apexdoc"><code class="highlighter-rouge">ApexDoc</code></a> (<code class="highlighter-rouge">apex-documentation</code>)
@@ -1494,7 +1861,7 @@ sanity rules for such docs (no missing parameters, parameters’ order, and retu
 method overrides and test classes are allowed to not include ApexDoc.</li>
 </ul>
 
-<h4 id="modified-rules">Modified Rules</h4>
+<h4 id="modified-rules-1">Modified Rules</h4>
 
 <ul>
   <li>The rule <a href="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingserialversionuid"><code class="highlighter-rouge">MissingSerialVersionUID</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been modified
@@ -1510,7 +1877,7 @@ statements. Previously such statements have been simply skipped ahead, now PMD i
 to the individual parts of a SELECT-statement, such as the Where-Clause. This might produce new parsing errors
 where PMD previously could successfully parse PLSQL code. If this happens, please report a new <a href="https://github.com/pmd/pmd/issues/new">issue</a> to get this problem fixed.</p>
 
-<h3 id="fixed-issues-1">Fixed Issues</h3>
+<h3 id="fixed-issues-2">Fixed Issues</h3>
 
 <ul>
   <li>apex-bestpractices
@@ -1542,7 +1909,7 @@ where PMD previously could successfully parse PLSQL code. If this happens, pleas
   </li>
 </ul>
 
-<h3 id="api-changes-1">API Changes</h3>
+<h3 id="api-changes-2">API Changes</h3>
 
 <ul>
   <li>
@@ -1568,7 +1935,7 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
   </li>
 </ul>
 
-<h3 id="external-contributions-1">External Contributions</h3>
+<h3 id="external-contributions-2">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1309">#1309</a>: [core] [CPD] Decouple Antlr Tokenizer implementation from any CPD language supported with Antlr - <a href="https://github.com/matifraga">Matías Fraga</a></li>
@@ -1584,7 +1951,7 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-2">Table Of Contents</h3>
+<h3 id="table-of-contents-3">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -1599,16 +1966,16 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-2">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-3">New and noteworthy</h3>
 
-<h4 id="modified-rules-1">Modified Rules</h4>
+<h4 id="modified-rules-2">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <a href="pmd_rules_java_bestpractices.html#onedeclarationperline"><code class="highlighter-rouge">OneDeclarationPerLine</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) has been revamped to
 consider not only local variable declarations, but field declarations too.</li>
 </ul>
 
-<h4 id="new-rules-2">New Rules</h4>
+<h4 id="new-rules-3">New Rules</h4>
 
 <ul>
   <li>
@@ -1644,7 +2011,7 @@ now deprecated, and will be removed with version 7.0.0. They are replaced by the
 <a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>.</li>
 </ul>
 
-<h3 id="fixed-issues-2">Fixed Issues</h3>
+<h3 id="fixed-issues-3">Fixed Issues</h3>
 
 <ul>
   <li>core
@@ -1694,7 +2061,7 @@ now deprecated, and will be removed with version 7.0.0. They are replaced by the
   </li>
 </ul>
 
-<h3 id="api-changes-2">API Changes</h3>
+<h3 id="api-changes-3">API Changes</h3>
 
 <ul>
   <li>
@@ -1711,7 +2078,7 @@ ShiftExpression#getOperator.</p>
   </li>
 </ul>
 
-<h3 id="external-contributions-2">External Contributions</h3>
+<h3 id="external-contributions-3">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/109">#109</a>: [java] Add two linguistics rules under naming - <a href="https://github.com/ardaasln">Arda Aslan</a></li>
@@ -1733,7 +2100,7 @@ ShiftExpression#getOperator.</p>
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-3">Table Of Contents</h3>
+<h3 id="table-of-contents-4">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -1748,7 +2115,7 @@ ShiftExpression#getOperator.</p>
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-3">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-4">New and noteworthy</h3>
 
 <h4 id="java-11-support">Java 11 Support</h4>
 
@@ -1756,7 +2123,7 @@ ShiftExpression#getOperator.</p>
 extended for lambda parameters with Java 11 via
 <a href="http://openjdk.java.net/jeps/323">JEP 323: Local-Variable Syntax for Lambda Parameters</a>.</p>
 
-<h4 id="new-rules-3">New Rules</h4>
+<h4 id="new-rules-4">New Rules</h4>
 
 <ul>
   <li>
@@ -1773,7 +2140,7 @@ parameters and lambda parameters (considering whether they are explicitly typed 
   </li>
 </ul>
 
-<h4 id="modified-rules-2">Modified Rules</h4>
+<h4 id="modified-rules-3">Modified Rules</h4>
 
 <ul>
   <li>The Java rules <a href="pmd_rules_java_bestpracices.html#accessorclassgeneration"><code class="highlighter-rouge">AccessorClassGeneration</code></a> and
@@ -1783,7 +2150,7 @@ parameters and lambda parameters (considering whether they are explicitly typed 
 accessor classes / methods altogether.</li>
 </ul>
 
-<h3 id="fixed-issues-3">Fixed Issues</h3>
+<h3 id="fixed-issues-4">Fixed Issues</h3>
 
 <ul>
   <li>core
@@ -1823,7 +2190,7 @@ accessor classes / methods altogether.</li>
   </li>
 </ul>
 
-<h3 id="api-changes-3">API Changes</h3>
+<h3 id="api-changes-4">API Changes</h3>
 
 <ul>
   <li>The <code class="highlighter-rouge">findDescendantsOfType</code> methods in <code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.AbstractNode</code> no longer search for
@@ -1831,7 +2198,7 @@ exact type matches, but will match subclasses, too. That means, it’s now possi
 types such as <code class="highlighter-rouge">AbstractJavaTypeNode</code> and not only for it’s concrete subtypes.</li>
 </ul>
 
-<h3 id="external-contributions-3">External Contributions</h3>
+<h3 id="external-contributions-4">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1182">#1182</a>: [ui] XPath AutoComplete - <a href="https://github.com/akshatbahety">Akshat Bahety</a></li>
@@ -1845,7 +2212,7 @@ types such as <code class="highlighter-rouge">AbstractJavaTypeNode</code> and no
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-4">Table Of Contents</h3>
+<h3 id="table-of-contents-5">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -1859,9 +2226,9 @@ types such as <code class="highlighter-rouge">AbstractJavaTypeNode</code> and no
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-4">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-5">New and noteworthy</h3>
 
-<h4 id="new-rules-4">New Rules</h4>
+<h4 id="new-rules-5">New Rules</h4>
 
 <ul>
   <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#avoidnonexistentannotations"><code class="highlighter-rouge">AvoidNonExistentAnnotations</code></a> (<code class="highlighter-rouge">apex-errorprone</code>)
@@ -1870,7 +2237,7 @@ In the future, use of such non-existent annotations could result in broken Apex 
 A full list of supported annotations can be found <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">here</a></li>
 </ul>
 
-<h4 id="modified-rules-3">Modified Rules</h4>
+<h4 id="modified-rules-4">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <a href="pmd_rules_java_codestyle.html#unnecessarymodifier">UnnecessaryModifier</a> (<code class="highlighter-rouge">java-codestyle</code>)
@@ -1878,7 +2245,7 @@ now detects enum constrcutors with explicit <code class="highlighter-rouge">priv
 letting you know exactly which modifiers are redundant at each declaration.</li>
 </ul>
 
-<h3 id="fixed-issues-4">Fixed Issues</h3>
+<h3 id="fixed-issues-5">Fixed Issues</h3>
 <ul>
   <li>all
     <ul>
@@ -1925,7 +2292,7 @@ letting you know exactly which modifiers are redundant at each declaration.</li>
   </li>
 </ul>
 
-<h3 id="api-changes-4">API Changes</h3>
+<h3 id="api-changes-5">API Changes</h3>
 
 <ul>
   <li>
@@ -1945,7 +2312,7 @@ data they might be accompanied.</p>
   </li>
 </ul>
 
-<h3 id="external-contributions-4">External Contributions</h3>
+<h3 id="external-contributions-5">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/836">#836</a>: [apex] Add a rule to prevent use of non-existent annotations - <a href="https://github.com/anand13s">anand13s</a></li>
@@ -1961,7 +2328,7 @@ data they might be accompanied.</p>
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-5">Table Of Contents</h3>
+<h3 id="table-of-contents-6">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -1977,7 +2344,7 @@ data they might be accompanied.</p>
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-5">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-6">New and noteworthy</h3>
 
 <h4 id="java-10-support">Java 10 Support</h4>
 
@@ -2026,7 +2393,7 @@ but checks for exact type matches, without considering the type hierarchy. That 
 not if it’s an instance of a subclass of <code class="highlighter-rouge">TestCase</code>. Be aware then, that using that method with abstract types will
 never match.</p>
 
-<h4 id="new-rules-5">New Rules</h4>
+<h4 id="new-rules-6">New Rules</h4>
 
 <ul>
   <li>
@@ -2041,7 +2408,7 @@ multi-catch try statement.</p>
   </li>
 </ul>
 
-<h4 id="modified-rules-4">Modified Rules</h4>
+<h4 id="modified-rules-5">Modified Rules</h4>
 
 <ul>
   <li>
@@ -2056,7 +2423,7 @@ still be adjusted by setting the property <code class="highlighter-rouge">regex<
   </li>
 </ul>
 
-<h3 id="fixed-issues-5">Fixed Issues</h3>
+<h3 id="fixed-issues-6">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -2118,7 +2485,7 @@ still be adjusted by setting the property <code class="highlighter-rouge">regex<
   </li>
 </ul>
 
-<h3 id="api-changes-5">API Changes</h3>
+<h3 id="api-changes-6">API Changes</h3>
 
 <ul>
   <li>The following classes in package <code class="highlighter-rouge">net.sourceforge.pmd.benchmark</code> have been deprecated: <code class="highlighter-rouge">Benchmark</code>, <code class="highlighter-rouge">Benchmarker</code>,
@@ -2132,7 +2499,7 @@ Use the newer <code class="highlighter-rouge">typeIs</code> method in the same c
 Use the new <code class="highlighter-rouge">isExactlyAny</code> and <code class="highlighter-rouge">isExactlyNone</code> methods in the same class instead.</li>
 </ul>
 
-<h3 id="external-contributions-5">External Contributions</h3>
+<h3 id="external-contributions-6">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/966">#966</a>: [java] Issue #955: add new rule to detect identical catch statement - <a href="https://github.com/oowekyala">Clément Fournier</a> and <a href="https://github.com/djydewang">BBG</a></li>
@@ -2150,7 +2517,7 @@ Use the new <code class="highlighter-rouge">isExactlyAny</code> and <code class=
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-6">Table Of Contents</h3>
+<h3 id="table-of-contents-7">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -2168,7 +2535,7 @@ Use the new <code class="highlighter-rouge">isExactlyAny</code> and <code class=
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-6">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-7">New and noteworthy</h3>
 
 <h4 id="tree-traversal-revision">Tree Traversal Revision</h4>
 
@@ -2256,7 +2623,7 @@ the same Swift version, we felt strongly this change was both safe and necessary
 We had great feedback from the community during the process but if you have a legitimate use case for older Swift
 versions, please let us know <a href="https://github.com/pmd/pmd/issues">on our Issue Tracker</a>.</p>
 
-<h4 id="new-rules-6">New Rules</h4>
+<h4 id="new-rules-7">New Rules</h4>
 
 <ul>
   <li>The new Java rule <a href="pmd_rules_java_security.html#insecurecryptoiv">InsecureCryptoIv</a> (<code class="highlighter-rouge">java-security</code>)
@@ -2264,7 +2631,7 @@ detects hard coded initialization vectors used in cryptographic operations. It i
 a randomly generated IV.</li>
 </ul>
 
-<h4 id="modified-rules-5">Modified Rules</h4>
+<h4 id="modified-rules-6">Modified Rules</h4>
 
 <ul>
   <li>
@@ -2294,7 +2661,7 @@ in favour of <a href="pmd_rules_java_codestyle.html#classnamingconventions">Clas
 See <a href="#naming-rules-enhancements">Naming rules enhancements</a>.</li>
 </ul>
 
-<h3 id="fixed-issues-6">Fixed Issues</h3>
+<h3 id="fixed-issues-7">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -2362,7 +2729,7 @@ See <a href="#naming-rules-enhancements">Naming rules enhancements</a>.</li>
   </li>
 </ul>
 
-<h3 id="external-contributions-6">External Contributions</h3>
+<h3 id="external-contributions-7">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/778">#778</a>: [swift] Support Swift 4 grammar - <a href="https://github.com/kenji21">kenji21</a></li>
@@ -2384,7 +2751,7 @@ See <a href="#naming-rules-enhancements">Naming rules enhancements</a>.</li>
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-7">Table Of Contents</h3>
+<h3 id="table-of-contents-8">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -2400,7 +2767,7 @@ See <a href="#naming-rules-enhancements">Naming rules enhancements</a>.</li>
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-7">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-8">New and noteworthy</h3>
 
 <h4 id="ecmascript-javascript">Ecmascript (JavaScript)</h4>
 
@@ -2426,7 +2793,7 @@ the new <code class="highlighter-rouge">-no-cache</code> flag. On Ant, there is 
 
 <p>On both scenarios, disabling the cache takes precedence over setting a cache location.</p>
 
-<h4 id="new-rules-7">New Rules</h4>
+<h4 id="new-rules-8">New Rules</h4>
 
 <ul>
   <li>
@@ -2451,7 +2818,7 @@ deprecated rules <code class="highlighter-rouge">WhileLoopMustUseBraces</code>, 
   </li>
 </ul>
 
-<h4 id="modified-rules-6">Modified Rules</h4>
+<h4 id="modified-rules-7">Modified Rules</h4>
 
 <ul>
   <li>
@@ -2487,7 +2854,7 @@ annotations are ignored</p>
 are deprecated. They will be replaced by the new rule <code class="highlighter-rouge">ControlStatementBraces</code>, in the category <code class="highlighter-rouge">codestyle</code>.</li>
 </ul>
 
-<h3 id="fixed-issues-7">Fixed Issues</h3>
+<h3 id="fixed-issues-8">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -2523,7 +2890,7 @@ are deprecated. They will be replaced by the new rule <code class="highlighter-r
   </li>
 </ul>
 
-<h3 id="api-changes-6">API Changes</h3>
+<h3 id="api-changes-7">API Changes</h3>
 
 <ul>
   <li>
@@ -2541,7 +2908,7 @@ for removal in 7.0.0. The new instance method <code class="highlighter-rouge">PM
   </li>
 </ul>
 
-<h3 id="external-contributions-7">External Contributions</h3>
+<h3 id="external-contributions-8">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/941">#941</a>: [java] Use char notation to represent a character to improve performance - <a href="https://github.com/reudismam">reudismam</a></li>
@@ -2565,7 +2932,7 @@ for removal in 7.0.0. The new instance method <code class="highlighter-rouge">PM
 
 <p>This is a minor release.</p>
 
-<h3 id="table-of-contents-8">Table Of Contents</h3>
+<h3 id="table-of-contents-9">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -2580,7 +2947,7 @@ for removal in 7.0.0. The new instance method <code class="highlighter-rouge">PM
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-8">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-9">New and noteworthy</h3>
 
 <h4 id="designer-ui">Designer UI</h4>
 
@@ -2589,7 +2956,7 @@ The Designer is still under development and any feedback is welcome.</p>
 
 <p>You can start the designer via <code class="highlighter-rouge">run.sh designer</code> or <code class="highlighter-rouge">designer.bat</code>.</p>
 
-<h3 id="fixed-issues-8">Fixed Issues</h3>
+<h3 id="fixed-issues-9">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -2653,7 +3020,7 @@ The Designer is still under development and any feedback is welcome.</p>
   </li>
 </ul>
 
-<h3 id="api-changes-7">API Changes</h3>
+<h3 id="api-changes-8">API Changes</h3>
 
 <h4 id="changes-to-the-node-interface">Changes to the Node interface</h4>
 
@@ -2675,7 +3042,7 @@ it was causing <code class="highlighter-rouge">OutOfMemoryError</code>s (see <a 
 
 <p><code class="highlighter-rouge">net.sourceforge.pmd.cpd.FileReporter</code> has also been deprecated as part of this change, as it’s no longer needed.</p>
 
-<h3 id="external-contributions-8">External Contributions</h3>
+<h3 id="external-contributions-9">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/790">#790</a>: [java] Added some comments for JDK 9 - <a href="https://github.com/tweimer">Tobias Weimer</a></li>
@@ -2698,7 +3065,7 @@ it was causing <code class="highlighter-rouge">OutOfMemoryError</code>s (see <a 
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="table-of-contents-9">Table Of Contents</h3>
+<h3 id="table-of-contents-10">Table Of Contents</h3>
 
 <ul>
   <li><a href="#additional-information-about-the-new-introduced-rule-categories">Additional information about the new introduced rule categories</a></li>
@@ -2734,7 +3101,7 @@ be logged as a warning. See <a href="https://github.com/pmd/pmd/pull/865">PR #86
 rule names will keep working throughout PMD 6. You can upgrade to PMD 6 without the immediate need
 to migrate your current ruleset. That backwards compatibility will be maintained until PMD 7.0.0 is released.</p>
 
-<h3 id="fixed-issues-9">Fixed Issues</h3>
+<h3 id="fixed-issues-10">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -2795,14 +3162,14 @@ to migrate your current ruleset. That backwards compatibility will be maintained
   </li>
 </ul>
 
-<h3 id="api-changes-8">API Changes</h3>
+<h3 id="api-changes-9">API Changes</h3>
 
 <ul>
   <li>The constant <code class="highlighter-rouge">net.sourceforge.pmd.PMD.VERSION</code> has been deprecated and will be removed with PMD 7.0.0.
 Please use <code class="highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSION</code> instead.</li>
 </ul>
 
-<h3 id="external-contributions-9">External Contributions</h3>
+<h3 id="external-contributions-10">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/796">#796</a>: [apex] AvoidDirectAccessTriggerMap incorrectly detects array access in classes - <a href="https://github.com/up2go-rsoesemann">Robert Sösemann</a></li>
@@ -2815,7 +3182,7 @@ Please use <code class="highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSIO
 
 <p>This is a major release.</p>
 
-<h3 id="table-of-contents-10">Table Of Contents</h3>
+<h3 id="table-of-contents-11">Table Of Contents</h3>
 
 <ul>
   <li><a href="#new-and-noteworthy">New and noteworthy</a>
@@ -2843,7 +3210,7 @@ Please use <code class="highlighter-rouge">net.sourceforge.pmd.PMDVersion.VERSIO
   <li><a href="#external-contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-9">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-10">New and noteworthy</h3>
 
 <h4 id="new-rule-designer">New Rule Designer</h4>
 
@@ -2989,7 +3356,7 @@ ruleset “java-basic” has now been moved to the “Error Prone” category. T
 <p>The old rulesets like “java-basic” are still kept for backwards-compatibility but will be removed eventually.
 The rule reference documentation has been updated to reflect these changes.</p>
 
-<h4 id="new-rules-8">New Rules</h4>
+<h4 id="new-rules-9">New Rules</h4>
 
 <ul>
   <li>
@@ -3044,7 +3411,7 @@ The 5 rules are migrated for Apex from the equivalent Java rules and include:
 loops, to avoid governor issues, and hitting the database too often.</li>
 </ul>
 
-<h4 id="modified-rules-7">Modified Rules</h4>
+<h4 id="modified-rules-8">Modified Rules</h4>
 
 <ul>
   <li>
@@ -3218,7 +3585,7 @@ This is now very well documented in <a href="pmd_devdocs_working_with_properties
 
 <p>With PMD 6.0.0, multivalued properties are now also possible with XPath rules.</p>
 
-<h3 id="fixed-issues-10">Fixed Issues</h3>
+<h3 id="fixed-issues-11">Fixed Issues</h3>
 
 <ul>
   <li>all
@@ -3315,7 +3682,7 @@ This is now very well documented in <a href="pmd_devdocs_working_with_properties
   </li>
 </ul>
 
-<h3 id="api-changes-9">API Changes</h3>
+<h3 id="api-changes-10">API Changes</h3>
 
 <ul>
   <li>
@@ -3438,7 +3805,7 @@ All methods are replaced by their bean-like counterparts
   </li>
 </ul>
 
-<h3 id="external-contributions-10">External Contributions</h3>
+<h3 id="external-contributions-11">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/287">#287</a>: [apex] Make Rule suppression work - <a href="https://github.com/up2go-rsoesemann">Robert Sösemann</a></li>
@@ -3530,7 +3897,7 @@ All methods are replaced by their bean-like counterparts
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="fixed-issues-11">Fixed Issues</h3>
+<h3 id="fixed-issues-12">Fixed Issues</h3>
 
 <ul>
   <li>java
@@ -3542,14 +3909,14 @@ All methods are replaced by their bean-like counterparts
   </li>
 </ul>
 
-<h3 id="api-changes-10">API Changes</h3>
+<h3 id="api-changes-11">API Changes</h3>
 
 <ul>
   <li>The <code class="highlighter-rouge">getGenericArgs()</code> method introduced to <code class="highlighter-rouge">TypeNode</code> in 5.8.0 was removed. You can access to generics’ info through the <code class="highlighter-rouge">JavaTypeDefinition</code> object.</li>
   <li>The <code class="highlighter-rouge">JavaTypeDefinitionBuilder</code> class introduced in 5.8.0 is not more. You can use factory methods available on <code class="highlighter-rouge">JavaTypeDefinition</code></li>
 </ul>
 
-<h3 id="external-contributions-11">External Contributions</h3>
+<h3 id="external-contributions-12">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/472">#472</a>: [java] fix error with raw types, bug #471</li>
@@ -3561,7 +3928,7 @@ All methods are replaced by their bean-like counterparts
 
 <p>This is a minor release.</p>
 
-<h3 id="new-and-noteworthy-10">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-11">New and noteworthy</h3>
 
 <h4 id="java-type-resolution-1">Java Type Resolution</h4>
 
@@ -3589,7 +3956,7 @@ defined in the <em>java-codesize</em> ruleset (see also <a href="https://github.
 <p>Since this work is still in progress, the metrics API (package <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.oom</code>)
 is not finalized yet and is expected to change.</p>
 
-<h4 id="modified-rules-8">Modified Rules</h4>
+<h4 id="modified-rules-9">Modified Rules</h4>
 
 <ul>
   <li>
@@ -3623,7 +3990,7 @@ either <code class="highlighter-rouge">ignored</code> or <code class="highlighte
 by a new CyclomaticComplexity rule based on the metrics framework. See also <a href="https://github.com/pmd/pmd/issues/445">issue #445</a>.</li>
 </ul>
 
-<h3 id="fixed-issues-12">Fixed Issues</h3>
+<h3 id="fixed-issues-13">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -3701,7 +4068,7 @@ by a new CyclomaticComplexity rule based on the metrics framework. See also <a h
   </li>
 </ul>
 
-<h3 id="external-contributions-12">External Contributions</h3>
+<h3 id="external-contributions-13">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/406">#406</a>: [java] False positive with lambda in java-design/ConstructorCallsOverridableMethod</li>
@@ -3724,9 +4091,9 @@ by a new CyclomaticComplexity rule based on the metrics framework. See also <a h
 
 <p>This is a minor release.</p>
 
-<h3 id="new-and-noteworthy-11">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-12">New and noteworthy</h3>
 
-<h4 id="modified-rules-9">Modified Rules</h4>
+<h4 id="modified-rules-10">Modified Rules</h4>
 
 <ul>
   <li>
@@ -3749,7 +4116,7 @@ Example usage:</p>
 will still indicate whether violations were found.</li>
 </ul>
 
-<h3 id="fixed-issues-13">Fixed Issues</h3>
+<h3 id="fixed-issues-14">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -3791,14 +4158,14 @@ will still indicate whether violations were found.</li>
   </li>
 </ul>
 
-<h3 id="api-changes-11">API Changes</h3>
+<h3 id="api-changes-12">API Changes</h3>
 
 <ul>
   <li>The method <code class="highlighter-rouge">net.sourceforge.pmd.util.StringUtil#htmlEncode(String)</code> is deprecated.
 <code class="highlighter-rouge">org.apache.commons.lang3.StringEscapeUtils#escapeHtml4(String)</code> should be used instead.</li>
 </ul>
 
-<h3 id="external-contributions-13">External Contributions</h3>
+<h3 id="external-contributions-14">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/368">#368</a>: [vf] Adding proper AST support for negation expressions</li>
@@ -3819,7 +4186,7 @@ will still indicate whether violations were found.</li>
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="fixed-issues-14">Fixed Issues</h3>
+<h3 id="fixed-issues-15">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -3857,7 +4224,7 @@ than PMD 5.5.1, when we first started working on it.</p>
 <p>Java developers will also appreciate the revamp of <code class="highlighter-rouge">CloneMethodMustImplementCloneable</code>,
 making it over 500X faster, and <code class="highlighter-rouge">PreserveStackTrace</code> which is now 7X faster.</p>
 
-<h3 id="new-and-noteworthy-12">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-13">New and noteworthy</h3>
 
 <h4 id="incremental-analysis-1">Incremental Analysis</h4>
 
@@ -4127,7 +4494,7 @@ for (int i = 0; i &lt; 42; i++) { // preferred approach
 }
 </code></pre></div></div>
 
-<h4 id="new-rules-9">New Rules</h4>
+<h4 id="new-rules-10">New Rules</h4>
 
 <h5 id="accessormethodgeneration-java-design">AccessorMethodGeneration (java-design)</h5>
 
@@ -4155,7 +4522,7 @@ be avoided by changing the visibility of the field / method from private to pack
 
 <p>This new rule is part of the <code class="highlighter-rouge">java-design</code> ruleset.</p>
 
-<h4 id="modified-rules-10">Modified Rules</h4>
+<h4 id="modified-rules-11">Modified Rules</h4>
 
 <ul>
   <li>
@@ -4225,7 +4592,7 @@ See <a href="https://github.com/pmd/pmd/pull/250">PR #250</a>.</p>
 contains the names and paths of the files, that should be analyzed. This is similar to PMD’s filelist option.
 You need to use this, if you have a large project with many files, and you hit the command line length limit.</p>
 
-<h3 id="fixed-issues-15">Fixed Issues</h3>
+<h3 id="fixed-issues-16">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -4361,7 +4728,7 @@ You need to use this, if you have a large project with many files, and you hit t
   </li>
 </ul>
 
-<h3 id="api-changes-12">API Changes</h3>
+<h3 id="api-changes-13">API Changes</h3>
 
 <ul>
   <li><code class="highlighter-rouge">net.sourceforge.pmd.RuleSetFactory</code> is now immutable and its behavior cannot be changed anymore.
@@ -4376,7 +4743,7 @@ Therefore, the methods <code class="highlighter-rouge">getSynchronizedListeners(
 replaced by <code class="highlighter-rouge">getListeners()</code> and <code class="highlighter-rouge">addListeners(...)</code>. See <a href="https://github.com/pmd/pmd/pull/193">PR #193</a>.</li>
 </ul>
 
-<h3 id="external-contributions-14">External Contributions</h3>
+<h3 id="external-contributions-15">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/123">#123</a>: [apex] Changing method names to lowercase so casing doesn’t matter</li>
@@ -4448,7 +4815,7 @@ replaced by <code class="highlighter-rouge">getListeners()</code> and <code clas
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="fixed-issues-16">Fixed Issues</h3>
+<h3 id="fixed-issues-17">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -4464,7 +4831,7 @@ replaced by <code class="highlighter-rouge">getListeners()</code> and <code clas
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="fixed-issues-17">Fixed Issues</h3>
+<h3 id="fixed-issues-18">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -4479,7 +4846,7 @@ replaced by <code class="highlighter-rouge">getListeners()</code> and <code clas
 
 <p>The PMD team is pleased to announce PMD 5.5.5.</p>
 
-<h3 id="fixed-issues-18">Fixed Issues</h3>
+<h3 id="fixed-issues-19">Fixed Issues</h3>
 
 <ul>
   <li>general:
@@ -4517,7 +4884,7 @@ replaced by <code class="highlighter-rouge">getListeners()</code> and <code clas
   </li>
 </ul>
 
-<h3 id="external-contributions-15">External Contributions</h3>
+<h3 id="external-contributions-16">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/280">#280</a>: [apex] Support for Aggregate Result in CRUD rules</li>
@@ -4532,9 +4899,9 @@ replaced by <code class="highlighter-rouge">getListeners()</code> and <code clas
 
 <p>The PMD team is pleased to announce PMD 5.5.4</p>
 
-<h3 id="new-and-noteworthy-13">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-14">New and noteworthy</h3>
 
-<h4 id="new-rules-10">New Rules</h4>
+<h4 id="new-rules-11">New Rules</h4>
 
 <h5 id="accessormethodgeneration-java-design-1">AccessorMethodGeneration (java-design)</h5>
 
@@ -4562,7 +4929,7 @@ be avoided by changing the visibility of the field / method from private to pack
 
 <p>This new rule is part of the <code class="highlighter-rouge">java-design</code> ruleset.</p>
 
-<h4 id="modified-rules-11">Modified Rules</h4>
+<h4 id="modified-rules-12">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <code class="highlighter-rouge">UnusedModifier</code> (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
@@ -4579,7 +4946,7 @@ and return statement to be on consecutive lines. Any variable that is used solel
 reported.</li>
 </ul>
 
-<h3 id="fixed-issues-19">Fixed Issues</h3>
+<h3 id="fixed-issues-20">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -4632,7 +4999,7 @@ reported.</li>
   </li>
 </ul>
 
-<h3 id="external-contributions-16">External Contributions</h3>
+<h3 id="external-contributions-17">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/227">#227</a>: [apex] Improving detection of getters</li>
@@ -4664,7 +5031,7 @@ than PMD 5.5.1, when we first started working on it.</p>
 <p>Java developers will also appreciate the revamp of <code class="highlighter-rouge">CloneMethodMustImplementCloneable</code>,
 making it over 500X faster, and <code class="highlighter-rouge">PreserveStackTrace</code> which is now 7X faster.</p>
 
-<h3 id="new-and-noteworthy-14">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-15">New and noteworthy</h3>
 
 <h4 id="apex-security-rule-set-1">Apex Security Rule Set</h4>
 
@@ -4809,14 +5176,14 @@ attacks if unescaped.</p>
 <p>Makes sure that all values obtained from URL parameters are properly escaped / sanitized
 to avoid XSS attacks.</p>
 
-<h4 id="modified-rules-12">Modified Rules</h4>
+<h4 id="modified-rules-13">Modified Rules</h4>
 
 <p>The Java rule “UseLocaleWithCaseConversions” (ruleset java-design) has been modified, to detect calls
 to <code class="highlighter-rouge">toLowerCase</code> and to <code class="highlighter-rouge">toUpperCase</code> also within method call chains. This leads to more detected cases
 and potentially new false positives.
 See also <a href="https://sourceforge.net/p/pmd/bugs/1556/">bugfix #1556</a>.</p>
 
-<h3 id="fixed-issues-20">Fixed Issues</h3>
+<h3 id="fixed-issues-21">Fixed Issues</h3>
 
 <ul>
   <li>General
@@ -4894,7 +5261,7 @@ See also <a href="https://sourceforge.net/p/pmd/bugs/1556/">bugfix #1556</a>.</p
   </li>
 </ul>
 
-<h3 id="api-changes-13">API Changes</h3>
+<h3 id="api-changes-14">API Changes</h3>
 
 <ul>
   <li><code class="highlighter-rouge">net.sourceforge.pmd.RuleSetFactory</code> is now immutable and its behavior cannot be changed anymore.
@@ -4902,7 +5269,7 @@ It provides constructors to create new adjusted instances. This allows to avoid 
 See <a href="https://github.com/pmd/pmd/pull/131">PR #131</a>.</li>
 </ul>
 
-<h3 id="external-contributions-17">External Contributions</h3>
+<h3 id="external-contributions-18">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/123">#123</a>: [apex] Changing method names to lowercase so casing doesn’t matter</li>
@@ -5329,14 +5696,14 @@ hides member variable</li>
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="table-of-contents-11">Table Of Contents</h3>
+<h3 id="table-of-contents-12">Table Of Contents</h3>
 
 <ul>
   <li><a href="#Fixed_Issues">Fixed Issues</a></li>
   <li><a href="#External_Contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="fixed-issues-21">Fixed Issues</h3>
+<h3 id="fixed-issues-22">Fixed Issues</h3>
 
 <ul>
   <li>general:
@@ -5371,7 +5738,7 @@ hides member variable</li>
   </li>
 </ul>
 
-<h3 id="external-contributions-18">External Contributions</h3>
+<h3 id="external-contributions-19">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/303">#303</a>: [java] InefficientEmptyStringCheckRule now reports String.trim().isEmpty()</li>
@@ -5385,7 +5752,7 @@ hides member variable</li>
 
 <p>This is a bug fixing release.</p>
 
-<h3 id="table-of-contents-12">Table Of Contents</h3>
+<h3 id="table-of-contents-13">Table Of Contents</h3>
 
 <ul>
   <li><a href="#New_and_noteworthy">New and noteworthy</a>
@@ -5397,9 +5764,9 @@ hides member variable</li>
   <li><a href="#External_Contributions">External Contributions</a></li>
 </ul>
 
-<h3 id="new-and-noteworthy-15">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-16">New and noteworthy</h3>
 
-<h4 id="modified-rules-13">Modified Rules</h4>
+<h4 id="modified-rules-14">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <code class="highlighter-rouge">UnusedModifier</code> (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
@@ -5413,7 +5780,7 @@ hides member variable</li>
   </li>
 </ul>
 
-<h3 id="fixed-issues-22">Fixed Issues</h3>
+<h3 id="fixed-issues-23">Fixed Issues</h3>
 
 <ul>
   <li>general
@@ -5453,7 +5820,7 @@ hides member variable</li>
   </li>
 </ul>
 
-<h3 id="external-contributions-19">External Contributions</h3>
+<h3 id="external-contributions-20">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/266">#266</a>: [java] corrected invalid reporting of LoD violation</li>
@@ -5479,18 +5846,18 @@ than PMD 5.4.2, when we first started working on it.</p>
 <p>Java developers will also appreciate the revamp of <code class="highlighter-rouge">CloneMethodMustImplementCloneable</code>,
 making it over 500X faster, and <code class="highlighter-rouge">PreserveStackTrace</code> which is now 7X faster.</p>
 
-<h3 id="new-and-noteworthy-16">New and noteworthy</h3>
+<h3 id="new-and-noteworthy-17">New and noteworthy</h3>
 
 <p>This is a bug fixing release, no major changes were introduced.</p>
 
-<h4 id="modified-rules-14">Modified Rules</h4>
+<h4 id="modified-rules-15">Modified Rules</h4>
 
 <p>The Java rule “UseLocaleWithCaseConversions” (ruleset java-design) has been modified, to detect calls
 to <code class="highlighter-rouge">toLowerCase</code> and to <code class="highlighter-rouge">toUpperCase</code> also within method call chains. This leads to more detected cases
 and potentially new false positives.
 See also <a href="https://sourceforge.net/p/pmd/bugs/1556/">bugfix #1556</a>.</p>
 
-<h3 id="fixed-issues-23">Fixed Issues</h3>
+<h3 id="fixed-issues-24">Fixed Issues</h3>
 
 <ul>
   <li>java
@@ -5549,7 +5916,7 @@ See also <a href="https://sourceforge.net/p/pmd/bugs/1556/">bugfix #1556</a>.</p
   </li>
 </ul>
 
-<h3 id="external-contributions-20">External Contributions</h3>
+<h3 id="external-contributions-21">External Contributions</h3>
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/129">#129</a>: [plsql] Added correct parse of IS [NOT] NULL and multiline DML</li>
@@ -8809,7 +9176,7 @@ Added new HTML report format
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 8, 2018 <br />
+ Site last generated: Dec 9, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

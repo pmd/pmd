@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.10.0</li>
+    <li class="sidebarTitle">PMD 6.11.0</li>
     
     
     
@@ -1339,6 +1339,240 @@ the breaking API changes will be performed in 7.0.0.</p>
 an API is tagged as <code class="highlighter-rouge">@Deprecated</code> or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we’ll try to avoid it.</div>
 
+<h4 id="690">6.9.0</h4>
+
+<h5 id="properties-framework">Properties framework</h5>
+
+<p>The properties framework is about to get a lifting, and for that reason, we need to deprecate a lot of APIs
+to remove them in 7.0.0. The proposed changes to the API are described <a href="https://github.com/pmd/pmd/wiki/Property-framework-7-0-0">on the wiki</a></p>
+
+<h6 id="changes-to-how-you-define-properties">Changes to how you define properties</h6>
+
+<ul>
+  <li>
+    <p>Construction of property descriptors has been possible through builders since 6.0.0. The 7.0.0 API will only allow
+construction through builders. The builder hierarchy, currently found in the package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/builders/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.builders</code></a>,
+is being replaced by the simpler <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyBuilder.html#"><code class="highlighter-rouge">PropertyBuilder</code></a>. Their APIs enjoy a high degree of source compatibility.</p>
+  </li>
+  <li>
+    <p>Concrete property classes like <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code class="highlighter-rouge">IntegerProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code class="highlighter-rouge">StringMultiProperty</code></a> will gradually
+all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#"><code class="highlighter-rouge">PropertyDescriptor</code></a>
+interface, e.g. <code class="highlighter-rouge">PropertyDescriptor&lt;Integer&gt;</code> or <code class="highlighter-rouge">PropertyDescriptor&lt;List&lt;String&gt;&gt;</code>.</p>
+  </li>
+  <li>
+    <p>Instead of spreading properties across countless classes, the utility class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#"><code class="highlighter-rouge">PropertyFactory</code></a> will become
+from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
+by a corresponding method on <code class="highlighter-rouge">PropertyFactory</code>:</p>
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/IntegerProperty.html#"><code class="highlighter-rouge">IntegerProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#"><code class="highlighter-rouge">IntegerMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#intListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/FloatProperty.html#"><code class="highlighter-rouge">FloatProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/DoubleProperty.html#"><code class="highlighter-rouge">DoubleProperty</code></a> are both replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleProperty</code></a>.
+Having a separate property for floats wasn’t that useful.
+        <ul>
+          <li>Similarly, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#"><code class="highlighter-rouge">FloatMultiProperty</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#"><code class="highlighter-rouge">DoubleMultiProperty</code></a> are replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#doubleListProperty</code></a>.</li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/StringProperty.html#"><code class="highlighter-rouge">StringProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#stringProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/StringMultiProperty.html#"><code class="highlighter-rouge">StringMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#stringListProperty</code></a></li>
+        </ul>
+      </li>
+      <li>
+        <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/RegexProperty.html#"><code class="highlighter-rouge">RegexProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#regexProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#regexProperty</code></a></p>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code class="highlighter-rouge">EnumeratedProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map)"><code class="highlighter-rouge">PropertyFactory#enumProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#"><code class="highlighter-rouge">EnumeratedProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map)"><code class="highlighter-rouge">PropertyFactory#enumListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/BooleanProperty.html#"><code class="highlighter-rouge">BooleanProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#booleanProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#booleanProperty</code></a>
+        <ul>
+          <li>Its multi-valued counterpart, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#"><code class="highlighter-rouge">BooleanMultiProperty</code></a>, is not replaced, because it doesn’t have a use case.</li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/CharacterProperty.html#"><code class="highlighter-rouge">CharacterProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#charProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#charProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#"><code class="highlighter-rouge">CharacterMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#charListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#charListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/LongProperty.html#"><code class="highlighter-rouge">LongProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#longIntProperty</code></a>
+        <ul>
+          <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/LongMultiProperty.html#"><code class="highlighter-rouge">LongMultiProperty</code></a> is replaced by <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntListProperty(java.lang.String)"><code class="highlighter-rouge">PropertyFactory#longIntListProperty</code></a></li>
+        </ul>
+      </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/MethodProperty.html#"><code class="highlighter-rouge">MethodProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/FileProperty.html#"><code class="highlighter-rouge">FileProperty</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/TypeProperty.html#"><code class="highlighter-rouge">TypeProperty</code></a> and their multi-valued counterparts
+are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
+<!-- TODO complete that as we proceed. --></li>
+    </ul>
+  </li>
+</ul>
+
+<p>Here’s an example:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Before 7.0.0, these are equivalent:</span>
+<span class="n">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntegerProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Top score value"</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">40</span><span class="o">,</span> <span class="mf">3.0f</span><span class="o">);</span>
+<span class="n">IntegerProperty</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="n">IntegerProperty</span><span class="o">.</span><span class="na">named</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">range</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">).</span><span class="na">uiOrder</span><span class="o">(</span><span class="mf">3.0f</span><span class="o">);</span>
+
+<span class="c1">// They both map to the following in 7.0.0</span>
+<span class="n">PropertyDescriptor</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">myProperty</span> <span class="o">=</span> <span class="n">PropertyFactory</span><span class="o">.</span><span class="na">intProperty</span><span class="o">(</span><span class="s">"score"</span><span class="o">).</span><span class="na">desc</span><span class="o">(</span><span class="s">"Top score value"</span><span class="o">).</span><span class="na">require</span><span class="o">(</span><span class="n">inRange</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">)).</span><span class="na">defaultValue</span><span class="o">(</span><span class="mi">40</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>You’re highly encouraged to migrate to using this new API as soon as possible, to ease your migration to 7.0.0.</p>
+
+<h6 id="architectural-simplifications">Architectural simplifications</h6>
+
+<ul>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/EnumeratedPropertyDescriptor.html#"><code class="highlighter-rouge">EnumeratedPropertyDescriptor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/NumericPropertyDescriptor.html#"><code class="highlighter-rouge">NumericPropertyDescriptor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PackagedPropertyDescriptor.html#"><code class="highlighter-rouge">PackagedPropertyDescriptor</code></a>,
+and the related builders (in <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/builders/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.builders</code></a>) will be removed.
+These specialized interfaces allowed additional constraints to be enforced on the
+value of a property, but made the property class hierarchy very large and impractical
+to maintain. Their functionality will be mapped uniformly to <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/constraints/PropertyConstraint.html#"><code class="highlighter-rouge">PropertyConstraint</code></a>s,
+which will allow virtually any constraint to be defined, and improve documentation and error reporting. The
+related methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyNumeric()"><code class="highlighter-rouge">PropertyTypeId#isPropertyNumeric</code></a> and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyPackaged()"><code class="highlighter-rouge">PropertyTypeId#isPropertyPackaged</code></a> are also deprecated.</p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/MultiValuePropertyDescriptor.html#"><code class="highlighter-rouge">MultiValuePropertyDescriptor</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/SingleValuePropertyDescriptor.html#"><code class="highlighter-rouge">SingleValuePropertyDescriptor</code></a>
+are deprecated. 7.0.0 will introduce a new XML syntax which will remove the need for such a divide
+between single- and multi-valued properties. The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code class="highlighter-rouge">PropertyDescriptor#isMultiValue</code></a> will be removed
+accordingly.</p>
+  </li>
+</ul>
+
+<h6 id="changes-to-the-propertydescriptor-interface">Changes to the PropertyDescriptor interface</h6>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#preferredRowCount()"><code class="highlighter-rouge">preferredRowCount</code></a> is deprecated with no intended replacement. It was never implemented, and does not belong
+in this interface. The methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#uiOrder()"><code class="highlighter-rouge">uiOrder</code></a> and <code class="highlighter-rouge">compareTo(PropertyDescriptor)</code> are deprecated for the
+same reason. These methods mix presentation logic with business logic and are not necessary for PropertyDescriptors to work.
+<code class="highlighter-rouge">PropertyDescriptor</code> will not extend <code class="highlighter-rouge">Comparable&lt;PropertyDescriptor&gt;</code> anymore come 7.0.0.</li>
+  <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#propertyErrorFor(net.sourceforge.pmd.Rule)"><code class="highlighter-rouge">propertyErrorFor</code></a> is deprecated and will be removed with no intended
+replacement. It’s really just a shortcut for <code class="highlighter-rouge">prop.errorFor(rule.getProperty(prop))</code>.</li>
+  <li><code class="highlighter-rouge">T </code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#valueFrom(java.lang.String)"><code class="highlighter-rouge">valueFrom(String)</code></a> and <code class="highlighter-rouge">String </code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#asDelimitedString(java.lang.Object)"><code class="highlighter-rouge">asDelimitedString</code></a><code class="highlighter-rouge">(T)</code> are deprecated and will be removed. These were
+used to serialize and deserialize properties to/from a string, but 7.0.0 will introduce a more flexible
+XML syntax which will make them obsolete.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()"><code class="highlighter-rouge">isMultiValue</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#type()"><code class="highlighter-rouge">type</code></a> are deprecated and won’t be replaced. The new XML syntax will remove the need
+for a divide between multi- and single-value properties, and will allow arbitrary types to be represented.
+Since arbitrary types may be represented, <code class="highlighter-rouge">type</code> will become obsolete as it can’t represent generic types,
+which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
+new way to document these properties exhaustively will be added with 7.0.0.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)"><code class="highlighter-rouge">errorFor</code></a> is deprecated as its return type will be changed to <code class="highlighter-rouge">Optional&lt;String&gt;</code> with the shift to Java 8.</li>
+</ul>
+
+<h5 id="deprecated-apis">Deprecated APIs</h5>
+
+<h6 id="for-internalization">For internalization</h6>
+
+<ul>
+  <li>
+    <p>The implementation of the adapters for the XPath engines Saxon and Jaxen (package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/ast/xpath/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.ast.xpath</code></a>)
+are now deprecated. They’ll be moved to an internal package come 7.0.0. Only <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/ast/xpath/Attribute.html#"><code class="highlighter-rouge">Attribute</code></a> remains public API.</p>
+  </li>
+  <li>
+    <p>The classes <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptorField.html#"><code class="highlighter-rouge">PropertyDescriptorField</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/builders/PropertyDescriptorBuilderConversionWrapper.html#"><code class="highlighter-rouge">PropertyDescriptorBuilderConversionWrapper</code></a>, and the methods
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#attributeValuesById"><code class="highlighter-rouge">PropertyDescriptor#attributeValuesById</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isDefinedExternally()"><code class="highlighter-rouge">PropertyDescriptor#isDefinedExternally</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertyTypeId.html#getFactory()"><code class="highlighter-rouge">PropertyTypeId#getFactory</code></a>.
+These were used to read and write properties to and from XML, but were not intended as public API.</p>
+  </li>
+  <li>
+    <p>The class <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/ValueParserConstants.html#"><code class="highlighter-rouge">ValueParserConstants</code></a> and the interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/ValueParser.html#"><code class="highlighter-rouge">ValueParser</code></a>.</p>
+  </li>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.metrics.impl.visitors</code></a> are now considered internal API. They’re deprecated
+and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserVisitorAdapter</code></a> should be directly subclassed.</p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowHandler()"><code class="highlighter-rouge">LanguageVersionHandler#getDataFlowHandler()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDFAGraphRule()"><code class="highlighter-rouge">LanguageVersionHandler#getDFAGraphRule()</code></a></p>
+  </li>
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/VisitorStarter.html#"><code class="highlighter-rouge">VisitorStarter</code></a></p>
+  </li>
+</ul>
+
+<h6 id="for-removal">For removal</h6>
+
+<ul>
+  <li>
+    <p>All classes from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/modules/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.properties.modules</code></a> will be removed.</p>
+  </li>
+  <li>
+    <p>The interface <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/Dimensionable.html#"><code class="highlighter-rouge">Dimensionable</code></a> has been deprecated.
+It gets in the way of a grammar change for 7.0.0 and won’t be needed anymore (see <a href="https://github.com/pmd/pmd/issues/997">#997</a>).</p>
+  </li>
+  <li>
+    <p>Several methods from <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#"><code class="highlighter-rouge">ASTLocalVariableDeclaration</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code class="highlighter-rouge">ASTFieldDeclaration</code></a> have
+also been deprecated:</p>
+
+    <ul>
+      <li>
+        <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#"><code class="highlighter-rouge">ASTFieldDeclaration</code></a> won’t be a <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#"><code class="highlighter-rouge">TypeNode</code></a> come 7.0.0, so
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()"><code class="highlighter-rouge">getType</code></a> and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()"><code class="highlighter-rouge">getTypeDefinition</code></a> are deprecated.</p>
+      </li>
+      <li>
+        <p>The method <code class="highlighter-rouge">getVariableName</code> on those two nodes will be removed, too.</p>
+      </li>
+    </ul>
+
+    <p>All these are deprecated because those nodes may declare several variables at once, possibly
+with different types (and obviously with different names). They both implement <code class="highlighter-rouge">Iterator&lt;</code><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#"><code class="highlighter-rouge">ASTVariableDeclaratorId</code></a><code class="highlighter-rouge">&gt;</code>
+though, so you should iterate on each declared variable. See <a href="https://github.com/pmd/pmd/issues/910">#910</a>.</p>
+  </li>
+  <li>
+    <p>Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
+composable visitors, used in the metrics framework, but they didn’t prove cost-effective.</p>
+
+    <ul>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#"><code class="highlighter-rouge">JavaParserDecoratedVisitor</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#"><code class="highlighter-rouge">JavaParserControllessVisitor</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#"><code class="highlighter-rouge">JavaParserControllessVisitorAdapter</code></a>, and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#"><code class="highlighter-rouge">JavaParserVisitorDecorator</code></a> are deprecated with no intended replacement.</li>
+    </ul>
+  </li>
+  <li>
+    <p>The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
+are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:</p>
+
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.11.0/net/sourceforge/pmd/lang/cpp/CppHandler.html#"><code class="highlighter-rouge">CppHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.11.0/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#"><code class="highlighter-rouge">CppLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.11.0/net/sourceforge/pmd/lang/cpp/CppParser.html#"><code class="highlighter-rouge">CppParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-cs/6.11.0/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#"><code class="highlighter-rouge">CsLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-fortran/6.11.0/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#"><code class="highlighter-rouge">FortranLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-groovy/6.11.0/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#"><code class="highlighter-rouge">GroovyLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.11.0/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#"><code class="highlighter-rouge">MatlabHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.11.0/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#"><code class="highlighter-rouge">MatlabLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.11.0/net/sourceforge/pmd/lang/matlab/MatlabParser.html#"><code class="highlighter-rouge">MatlabParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.11.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#"><code class="highlighter-rouge">ObjectiveCHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.11.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#"><code class="highlighter-rouge">ObjectiveCLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.11.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#"><code class="highlighter-rouge">ObjectiveCParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-php/6.11.0/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#"><code class="highlighter-rouge">PhpLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.11.0/net/sourceforge/pmd/lang/python/PythonHandler.html#"><code class="highlighter-rouge">PythonHandler</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.11.0/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#"><code class="highlighter-rouge">PythonLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.11.0/net/sourceforge/pmd/lang/python/PythonParser.html#"><code class="highlighter-rouge">PythonParser</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-ruby/6.11.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#"><code class="highlighter-rouge">RubyLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-scala/6.11.0/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#"><code class="highlighter-rouge">ScalaLanguageModule</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-swift/6.11.0/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#"><code class="highlighter-rouge">SwiftLanguageModule</code></a></li>
+    </ul>
+  </li>
+  <li>
+    <p>Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
+in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
+found on <a href="https://github.com/pmd/pmd/pull/1426">#1426</a>. Consequently, the following APIs are deprecated for
+removal:</p>
+    <ul>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/Rule.html#"><code class="highlighter-rouge">Rule</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/Rule.html#isDfa()"><code class="highlighter-rouge">isDfa()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/Rule.html#isTypeResolution()"><code class="highlighter-rouge">isTypeResolution()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/Rule.html#isMultifile()"><code class="highlighter-rouge">isMultifile()</code></a> and their
+respective setters.</li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSet.html#"><code class="highlighter-rouge">RuleSet</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesDFA(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesTypeResolution(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesMultifile(Language)</code></a></li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSets.html#"><code class="highlighter-rouge">RuleSets</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesDFA(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesTypeResolution(Language)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language)"><code class="highlighter-rouge">usesMultifile(Language)</code></a></li>
+      <li>In <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code class="highlighter-rouge">LanguageVersionHandler</code></a>: <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()"><code class="highlighter-rouge">getDataFlowFacade()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()"><code class="highlighter-rouge">getSymbolFacade()</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getSymbolFacade(ClassLoader)</code></a>,
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getTypeResolutionFacade(ClassLoader)</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader)"><code class="highlighter-rouge">getQualifiedNameResolutionFacade(ClassLoader)</code></a></li>
+    </ul>
+  </li>
+</ul>
+
 <h4 id="680">6.8.0</h4>
 
 <ul>
@@ -1520,7 +1754,7 @@ the same name from category <code class="highlighter-rouge">bestpractices</code>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 8, 2018 <br />
+ Site last generated: Dec 9, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
