@@ -4,9 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-throw exception but return from finally
-     ]]></description>
+        <description>throw exception but return from finally</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -23,9 +21,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-lots of returns
-     ]]></description>
+        <description>lots of returns</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -42,9 +38,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -58,9 +52,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Return from a Class in Finally
-    ]]></description>
+        <description>#1035 [java] ReturnFromFinallyBlock: False positive on lambda expression in finally block</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -79,9 +71,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Return from Lambda in Finally
-     ]]></description>
+        <description>Return from Lambda in Finally</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -100,9 +90,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-return from a lambda should not cause issues
-        ]]></description>
+        <description>return from a lambda should not cause issues</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -111,6 +99,22 @@ public class Foo {
             System.out.println("Integers: ");
         } finally {
             Arrays.asList(0, 1, 2).map(i -> { return i + 1; }).forEach(i -> System.out.println(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in finally should give error but not in lambda</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String printSomething() {
+        try {
+            System.out.println("Integers: ");
+        } finally {
+            Arrays.asList(0, 1, 2).map(i -> { return i + 1; }).forEach(i -> System.out.println(i));
+            return "foo";
         }
     }
 }
