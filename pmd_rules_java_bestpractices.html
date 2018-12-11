@@ -2159,6 +2159,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="w">
+   </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">ForInit</span><span class="p">)]</span><span class="w">
    </span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
    </span><span class="p">[</span><span class="nv">$strictMode</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nf">distinct-values</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="err">/</span><span class="na">@BeginLine</span><span class="p">))</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">)]</span><span class="w">
 </span><span class="p">|</span><span class="w">
