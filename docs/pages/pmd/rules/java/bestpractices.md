@@ -872,6 +872,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //LocalVariableDeclaration
+   [not(parent::ForInit)]
    [count(VariableDeclarator) > 1]
    [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
 |
