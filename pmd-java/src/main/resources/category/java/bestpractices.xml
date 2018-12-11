@@ -812,6 +812,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
                 <value>
 <![CDATA[
 //LocalVariableDeclaration
+   [not(parent::ForInit)]
    [count(VariableDeclarator) > 1]
    [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
 |
