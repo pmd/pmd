@@ -17,8 +17,16 @@ public class SelectExpressionsTest extends AbstractPLSQLParserTst {
 
     @Test
     @Ignore
-    public void parseSelectCount() throws Exception {
+    public void parseSelectExpression() throws Exception {
         String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectExpressions.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
+
+    @Test
+    public void parseSelectCount() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectCount.pls"),
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);

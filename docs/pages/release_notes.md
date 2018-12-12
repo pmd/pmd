@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-bestpractices
     *   [#658](https://github.com/pmd/pmd/issues/658): \[java] OneDeclarationPerLine: False positive for loops
+*   plsql
+    *   [#1508](https://github.com/pmd/pmd/issues/1508): \[plsql] Parse Exception when using SELECT COUNT(*)
 
 ### API Changes
 
