@@ -1549,7 +1549,7 @@ ASTTableReference TableReference() :
         "(" Subquery() ")"
     )
 
-    [ TableAlias() ]
+    [ LOOKAHEAD(2) TableAlias() ]
     
     { return jjtThis; }
 }
@@ -2650,7 +2650,7 @@ ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
 { PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {
   (
-    LOOKAHEAD(<IDENTIFIER> <IS> [<NOT>] <NULL>)
+    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>)
     (
 		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
 	)
