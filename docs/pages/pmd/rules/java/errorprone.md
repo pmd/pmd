@@ -2790,7 +2790,7 @@ Avoid returning from a finally block, this can discard exceptions.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//FinallyStatement//ReturnStatement
+//FinallyStatement//ReturnStatement except //FinallyStatement//(MethodDeclaration|LambdaExpression)//ReturnStatement
 ```
 
 **Example(s):**
