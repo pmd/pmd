@@ -4071,7 +4071,7 @@ NullPointerExceptions.</p>
 <p>Avoid returning from a finally block, this can discard exceptions.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FinallyStatement</span><span class="o">//</span><span class="nt">ReturnStatement</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">FinallyStatement</span><span class="o">//</span><span class="nt">ReturnStatement</span><span class="w"> </span><span class="kr">except</span><span class="w"> </span><span class="o">//</span><span class="nt">FinallyStatement</span><span class="err">//</span><span class="p">(</span><span class="nt">MethodDeclaration</span><span class="p">|</span><span class="nt">LambdaExpression</span><span class="p">)</span><span class="o">//</span><span class="nt">ReturnStatement</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4774,7 +4774,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2018 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Dec 12, 2018 <br />
+ Site last generated: Dec 13, 2018 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
