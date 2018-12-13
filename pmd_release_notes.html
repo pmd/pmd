@@ -1280,12 +1280,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="highlighter-rouge">LocalVariableCouldBeFinal</code></a> (<code class="highlighter-rouge">java-codestyle</code>) has a new
+property <code class="highlighter-rouge">ignoreForEachDecl</code>, which is by default disabled. The new property allows for ignoring
+non-final loop variables in a for-each statement.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/658">#658</a>: [java] OneDeclarationPerLine: False positive for loops</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1513">#1513</a>: [java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -1301,6 +1314,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1503">#1503</a>: [java] Fix for ReturnFromFinallyBlock false-positives - <a href="https://github.com/rishabhdeepsingh">RishabhDeep Singh</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1514">#1514</a>: [java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1516">#1516</a>: [java] OneDeclarationPerLine: Don’t report multiple variables in a for statement. - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1521">#1521</a>: [java] Upgrade to ASM7 for JDK 11 support - <a href="https://github.com/markpritchard">Mark Pritchard</a></li>
 </ul>
