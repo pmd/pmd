@@ -189,4 +189,31 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>By default, for-each loops should be flagged (see #1513).</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  for ( String c : strings ) {
+   System.out.println(c); // use c
+  }
+ }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Normal for-loops should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  for (int i = 0; i < 10; i++ ) {
+   System.out.println(i);
+  }
+ }
+}
+        ]]></code>
+    </test-code>
 </test-data>
