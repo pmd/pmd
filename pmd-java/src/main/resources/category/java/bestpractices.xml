@@ -167,6 +167,29 @@ class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidReassigningLoopVariables"
+          since="6.11.0"
+          message="Avoid reassigning the loop control variable ''{0}''"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningLoopVariablesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidreassigningloopvariables">
+        <description>
+Reassigning loop control variables can lead to hard-to-find bugs. Prevent or limit how these variables can be changed.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+  private void foo() {
+    for (int i=0; i < 10; i++) {
+      doSomethingWith(i);
+      i = 5;
+    }
+  }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidReassigningParameters"
           since="1.0"
           message="Avoid reassigning parameters such as ''{0}''"
