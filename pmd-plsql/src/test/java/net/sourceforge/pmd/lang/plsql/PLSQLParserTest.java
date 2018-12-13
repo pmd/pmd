@@ -69,4 +69,9 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
     public void testCodingStyleExample() throws Exception {
         parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/CodingStyleExample.pls"), StandardCharsets.UTF_8));
     }
+
+    @Test
+    public void testCaseIssue1454() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/CaseIssue1454.pls"), StandardCharsets.UTF_8));
+    }
 }

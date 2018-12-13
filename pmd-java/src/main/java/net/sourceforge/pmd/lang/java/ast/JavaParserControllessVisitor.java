@@ -13,6 +13,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @see JavaParserDecoratedVisitor
  * @see JavaParserVisitorDecorator
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
  */
+@Deprecated
 public interface JavaParserControllessVisitor extends JavaParserVisitor {
 }

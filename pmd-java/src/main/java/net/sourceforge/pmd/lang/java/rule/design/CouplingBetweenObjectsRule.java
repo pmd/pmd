@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +22,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * CouplingBetweenObjects attempts to capture all unique Class attributes, local
@@ -36,10 +40,10 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private int couplingCount;
     private Set<String> typesFoundSoFar;
 
-    private static final IntegerProperty THRESHOLD_DESCRIPTOR 
-            = IntegerProperty.named("threshold")
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = PropertyFactory.intProperty("threshold")
                              .desc("Unique type reporting threshold")
-                             .range(2, 100).defaultValue(20).uiOrder(1.0f).build();
+                             .require(positive()).defaultValue(20).build();
 
     public CouplingBetweenObjectsRule() {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);

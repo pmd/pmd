@@ -30,6 +30,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public class XPathRule extends AbstractRule {
 
+    // TODO 7.0.0 use PropertyDescriptor<String>
     public static final StringProperty XPATH_DESCRIPTOR = StringProperty.named("xpath")
             .desc("XPath expression")
             .defaultValue("")
@@ -45,7 +46,8 @@ public class XPathRule extends AbstractRule {
         tmp.put(XPATH_2_0, XPATH_2_0);
         XPATH_VERSIONS = Collections.unmodifiableMap(tmp);
     }
-
+    
+    // published, can't be converted
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = EnumeratedProperty.<String>named("version")
             .desc("XPath specification version")
             .mappings(XPATH_VERSIONS)

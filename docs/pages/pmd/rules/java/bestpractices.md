@@ -250,7 +250,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|checkAddressTypes|IPv4 \| IPv6 \| IPv4 mapped IPv6|Check for IP address types.|yes. Delimiter is '\|'.|
+|checkAddressTypes|IPv4 mapped IPv6 \| IPv6 \| IPv4|Check for IP address types.|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -436,8 +436,8 @@ otherwise skip the associate String creation and manipulation.
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|guardsMethods|isTraceEnabled , isDebugEnabled , isInfoEnabled , isWarnEnabled , isErrorEnabled , isLoggable|method use to guard the log statement|yes. Delimiter is ','.|
 |logLevels|trace , debug , info , warn , error , log , finest , finer , fine , info , warning , severe|LogLevels to guard|yes. Delimiter is ','.|
+|guardsMethods|isTraceEnabled , isDebugEnabled , isInfoEnabled , isWarnEnabled , isErrorEnabled , isLoggable|Method use to guard the log statement|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -872,6 +872,7 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //LocalVariableDeclaration
+   [not(parent::ForInit)]
    [count(VariableDeclarator) > 1]
    [$strictMode or count(distinct-values(VariableDeclarator/@BeginLine)) != count(VariableDeclarator)]
 |

@@ -7,9 +7,10 @@ package net.sourceforge.pmd.renderers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "textcolor";
 
+    // What? TODO 7.0.0 Use a boolean property
     public static final StringProperty COLOR = new StringProperty("color",
             "Enables colors with anything other than 'false' or '0'.", "yes", 0);
     private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";
@@ -201,7 +203,13 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
     }
 
     protected Reader getReader(String sourceFile) throws FileNotFoundException {
-        return new FileReader(new File(sourceFile));
+        try {
+            return Files.newBufferedReader(new File(sourceFile).toPath(), Charset.defaultCharset());
+        } catch (IOException e) {
+            FileNotFoundException ex = new FileNotFoundException(sourceFile);
+            ex.initCause(e);
+            throw ex;
+        }
     }
 
     /**

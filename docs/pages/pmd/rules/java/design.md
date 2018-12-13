@@ -457,9 +457,9 @@ class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cycloOptions||Choose options for the computation of Cyclo|yes. Delimiter is '\|'.|
 |classReportLevel|80|Total class complexity reporting threshold|no|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
+|cycloOptions||Choose options for the computation of Cyclo|yes. Delimiter is '\|'.|
 |reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|no|
 
 **Use this rule by referencing it:**
@@ -824,7 +824,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
 
 **Priority:** Medium (3)
 
-Identifies private fields whose values never change once they are initialized either in the declaration
+Identifies private fields whose values never change once object initialization ends either in the declaration
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ImmutableFieldRule.java)
@@ -965,8 +965,8 @@ public class Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|classes||Allowed classes|yes. Delimiter is ','.|
 |packages||Restricted packages|yes. Delimiter is ','.|
+|classes||Allowed classes|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1134,9 +1134,9 @@ class Foo {                         // +1, total Ncss = 12
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ncssOptions||Choose options for the calculation of Ncss|yes. Delimiter is '\|'.|
 |methodReportLevel|60|NCSS reporting threshold for methods|no|
 |classReportLevel|1500|NCSS reporting threshold for classes|no|
+|ncssOptions||Choose options for the computation of Ncss|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1292,8 +1292,8 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|no|
 |reportLevel|200|N-Path Complexity reporting threshold|no|
+|minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1577,9 +1577,9 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
-|checkInnerClasses|false|Check inner classes|no|
 |ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|checkInnerClasses|false|Check inner classes|no|
+|disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
 
 **Use this rule by referencing it:**
 ``` xml

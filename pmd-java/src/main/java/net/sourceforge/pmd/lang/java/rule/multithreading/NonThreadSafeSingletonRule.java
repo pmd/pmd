@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 
@@ -30,12 +33,15 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;
 
-    private static final BooleanProperty CHECK_NON_STATIC_METHODS_DESCRIPTOR = new BooleanProperty(
-            "checkNonStaticMethods",
-            "Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.", true, 1.0f);
-    private static final BooleanProperty CHECK_NON_STATIC_FIELDS_DESCRIPTOR = new BooleanProperty(
-            "checkNonStaticFields",
-            "Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.", false, 2.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR =
+            booleanProperty("checkNonStaticMethods")
+                    .desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.")
+                    .defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR =
+            booleanProperty("checkNonStaticFields")
+                    .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
+                    .defaultValue(false).build();
+
 
     public NonThreadSafeSingletonRule() {
         definePropertyDescriptor(CHECK_NON_STATIC_METHODS_DESCRIPTOR);

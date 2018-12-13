@@ -34,10 +34,10 @@ public void bar() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
-|allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
-|allowFor|false|Allow assignment within the conditional expression of a for statement|no|
 |allowIf|false|Allow assignment within the conditional expression of an if statement|no|
+|allowFor|false|Allow assignment within the conditional expression of a for statement|no|
+|allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
+|allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -205,9 +205,9 @@ for (int i = 0; i < 10; i++) {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|checkReturnLoopTypes|for \| do \| while|Check for return statements in loop types|yes. Delimiter is '\|'.|
-|checkContinueLoopTypes|for \| do \| while|Check for continue statements in loop types|yes. Delimiter is '\|'.|
-|checkBreakLoopTypes|for \| do \| while|Check for break statements in loop types|yes. Delimiter is '\|'.|
+|checkBreakLoopTypes|for \| do \| while|List of loop types in which break statements will be checked|yes. Delimiter is '\|'.|
+|checkContinueLoopTypes|for \| do \| while|List of loop types in which continue statements will be checked|yes. Delimiter is '\|'.|
+|checkReturnLoopTypes|for \| do \| while|List of loop types in which return statements will be checked|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -382,12 +382,12 @@ private void buz(String x) {}
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|exceptionfile||File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.|no|
+|exceptionfile||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> (Use 'exceptionList' property) File containing strings to skip (one string per line), only used if ignore list is not set. File must be UTF-8 encoded.|no|
 |separator|,|Ignore list separator|no|
-|exceptionList||Strings to ignore|no|
 |maxDuplicateLiterals|4|Max duplicate literals|no|
 |minimumLength|3|Minimum string length to check|no|
 |skipAnnotations|false|Skip literals within annotations|no|
+|exceptionList||List of literals to ignore. A literal is ignored if its image can be found in this list. Components of this list should not be surrounded by double quotes.|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1124,9 +1124,9 @@ public class Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
-|types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
 |closeTargets||Methods which may close this resource|yes. Delimiter is ','.|
+|types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
+|closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1232,8 +1232,8 @@ public void foo() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|maxViolations|100|Maximum number of anomalies per class|no|
 |maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|no|
+|maxViolations|100|Maximum number of anomalies per class|no|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -2790,7 +2790,7 @@ Avoid returning from a finally block, this can discard exceptions.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//FinallyStatement//ReturnStatement
+//FinallyStatement//ReturnStatement except //FinallyStatement//(MethodDeclaration|LambdaExpression)//ReturnStatement
 ```
 
 **Example(s):**

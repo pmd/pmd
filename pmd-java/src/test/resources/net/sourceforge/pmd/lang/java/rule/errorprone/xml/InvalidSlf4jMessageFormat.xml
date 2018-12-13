@@ -269,4 +269,70 @@ public final class Main {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NPE in static block (see #1512)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                static {
+                    Logger logger = LoggerFactory.getLogger(loggerName);
+                    logger.info(message);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>missing argument in static block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                static {
+                    final String pattern = "log: {}";
+
+                    Logger logger = LoggerFactory.getLogger(loggerName);
+                    logger.info(pattern, 1, 2);
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NPE in lambda call (see #1512)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                final Logger logger = LoggerFactory.getLogger(loggerName);
+
+                final List<String> list = someMethod(message -> logger.info(message));
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>missing argument in lambda call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+
+            public class LoggerHelper {
+                final Logger logger = LoggerFactory.getLogger(loggerName);
+
+                final List<String> list = someMethod(message -> {
+                    final String pattern = "log: {}";
+
+                    logger.info(pattern, 1, 2);
+                });
+            }
+        ]]></code>
+    </test-code>
 </test-data>

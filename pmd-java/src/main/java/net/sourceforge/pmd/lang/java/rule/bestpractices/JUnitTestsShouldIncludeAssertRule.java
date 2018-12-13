@@ -17,6 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
@@ -173,29 +175,25 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
     private boolean isExpectStatement(ASTStatementExpression expression,
             Map<String, List<NameOccurrence>> expectables) {
-        
-        if (expression != null) {
-            
-            ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
-            if (pe != null) {
-                Node name = pe.getFirstDescendantOfType(ASTName.class);
-                // case of an AllocationExpression
-                if (name == null) {
-                    return false;
+        ASTPrimaryExpression pe = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+        if (pe != null) {
+            ASTPrimaryPrefix primaryPrefix = pe.getFirstChildOfType(ASTPrimaryPrefix.class);
+            Node name = pe.getFirstDescendantOfType(ASTName.class);
+            if (!primaryPrefix.usesThisModifier() && name != null) {
+                String[] parts = name.getImage().split("\\.");
+                if (parts.length >= 2) {
+                    String varname = parts[0];
+                    String methodName = parts[1];
+                    if (expectables.containsKey(varname) && "expect".equals(methodName)) {
+                        return true;
+                    }
                 }
-                
-                String img = name.getImage();
-                if (img.indexOf(".") == -1) {
-                    return false;
-                }
-                String varname = img.split("\\.")[0];
-
-                if (!expectables.containsKey(varname)) {
-                    return false;
-                }
-
-                for (NameOccurrence occ : expectables.get(varname)) {
-                    if (occ.getLocation() == name && img.startsWith(varname + ".expect")) {
+            } else if (primaryPrefix.usesThisModifier()) {
+                List<ASTPrimarySuffix> primarySuffixes = pe.findChildrenOfType(ASTPrimarySuffix.class);
+                if (primarySuffixes.size() >= 2) {
+                    String varname = primarySuffixes.get(0).getImage();
+                    String methodName = primarySuffixes.get(1).getImage();
+                    if (expectables.containsKey(varname) && "expect".equals(methodName)) {
                         return true;
                     }
                 }

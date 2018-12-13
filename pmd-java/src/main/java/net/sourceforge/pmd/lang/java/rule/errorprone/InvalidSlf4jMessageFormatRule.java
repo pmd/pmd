@@ -22,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -31,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
@@ -163,11 +166,12 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
             count = countPlaceholders(node);
         } else if (node.getFirstDescendantOfType(ASTName.class) != null) {
             final String variableName = node.getFirstDescendantOfType(ASTName.class).getImage();
-            // look if the message is defined locally
-            final List<ASTVariableDeclarator> localVariables = node
-                    .getFirstParentOfType(ASTMethodOrConstructorDeclaration.class)
-                    .findDescendantsOfType(ASTVariableDeclarator.class);
-            count = getAmountOfExpectedArguments(variableName, localVariables);
+            // look if the message is defined locally in a method/constructor, initializer block or lambda expression
+            final JavaNode parentBlock = node.getFirstParentOfAnyType(ASTMethodOrConstructorDeclaration.class, ASTInitializer.class, ASTLambdaExpression.class);
+            if (parentBlock != null) {
+                final List<ASTVariableDeclarator> localVariables = parentBlock.findDescendantsOfType(ASTVariableDeclarator.class);
+                count = getAmountOfExpectedArguments(variableName, localVariables);
+            }
 
             if (count == 0) {
                 // look if the message is defined in a field

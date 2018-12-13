@@ -2494,57 +2494,68 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
  }
 }
 
+/**
+ * Relational operators: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-language-fundamentals.html#GUID-2EB964C8-9B36-4009-A45F-B340F44EE2A2
+ */
 ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
  (
   //AdditiveExpression() ( ( "<" | ">" | "<=" | ">=" | [<NOT>] (<IN> | <BETWEEN> | <LIKE>) ) AdditiveExpression() )*
-  (simpleNode = AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
-  ( 
-   ( 
+  ( simpleNode = AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
+  (
+    (
+
       (
-	(
-	    (("<" ) { sb.append("<"); } 
-	     [">"  { sb.append(">"); } ] // <> 
-	    )
-	  | (">" ) { sb.append(">"); }
-	)
-	[ ("=" ) { sb.append("="); } ]
-    
+          ("<>" { sb.append(" <> "); } )
+        | ("<=" { sb.append(" <= "); } )
+        | (">=" { sb.append(" >= "); } )
+        | ("!=" { sb.append(" != "); } )
+        | ("~=" { sb.append(" ~= "); } )
+        | ("^=" { sb.append(" ^= "); } )
+        | ("<" { sb.append(" < "); } )
+        | (">" { sb.append(" > "); } )
       )
+
       { sb.append(" "); } 
-   | [(<NOT>) { sb.append(" NOT "); }] 
-     ((<IN>) { sb.append(" IN "); } 
-     | (<BETWEEN> ) { sb.append(" BETWEEN "); }
-     | (<LIKE> ) { sb.append(" LIKE "); }
-     | (
-	 (
-	   (<MEMBER>) { sb.append(" MEMBER "); }
-	   |
-	   (<SUBMULTISET>) { sb.append(" SUBMULTISET "); }
-	 )
-         [ <OF> { sb.append(" OF "); } ]
-       )
-     ) 
-    // MULTISET Operators 
-    | ( 
-       <MULTISET> { sb.append (" MULTISET " );}  
-       (   <EXCEPT>  { sb.append (" EXCEPT " );}  
-         | <INTERSECT>  { sb.append (" INTERSECT " );} 
-	 | <UNION>  { sb.append (" UNION " ); }    
-       )
-       [   <DISTINCT>  { sb.append (" DISTINCT " );} 
-         | <ALL>  { sb.append (" ALL " );}   
-       ]
-     ) 
-   ) 
-   (AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
-   [
-	<ESCAPE> { sb.append(" ESCAPE ");} 
-	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }  
-	  | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }  
-	)
-   ]
+      | [(<NOT>) { sb.append(" NOT "); }]
+      (
+        (<IN>) { sb.append(" IN "); }
+        | (<BETWEEN> ) { sb.append(" BETWEEN "); }
+        | (<LIKE> ) { sb.append(" LIKE "); }
+        |
+        (
+          (
+            (<MEMBER>) { sb.append(" MEMBER "); }
+            |
+            (<SUBMULTISET>) { sb.append(" SUBMULTISET "); }
+          )
+          [ <OF> { sb.append(" OF "); } ]
+        )
+      )
+      // MULTISET Operators
+      |
+      (
+        <MULTISET> { sb.append (" MULTISET " );}
+        (
+          <EXCEPT>  { sb.append (" EXCEPT " );}
+          | <INTERSECT>  { sb.append (" INTERSECT " );}
+          | <UNION>  { sb.append (" UNION " ); }
+        )
+        [
+          <DISTINCT>  { sb.append (" DISTINCT " );}
+          | <ALL>  { sb.append (" ALL " );}
+        ]
+      )
+    )
+    ( AdditiveExpression() ) { sb.append(simpleNode.getImage()); }
+    [
+      <ESCAPE> { sb.append(" ESCAPE ");}
+      (
+        <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }
+        | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }
+      )
+    ]
   )*
  )
  { 

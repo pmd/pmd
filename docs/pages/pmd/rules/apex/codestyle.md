@@ -265,20 +265,20 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|parameterSuffix||Method parameter variable suffixes|yes. Delimiter is ','.|
-|parameterPrefix||Method parameter variable prefixes|yes. Delimiter is ','.|
-|localSuffix||Local variable suffixes|yes. Delimiter is ','.|
-|localPrefix||Local variable prefixes|yes. Delimiter is ','.|
-|memberSuffix||Member variable suffixes|yes. Delimiter is ','.|
-|memberPrefix||Member variable prefixes|yes. Delimiter is ','.|
-|staticSuffix||Static variable suffixes|yes. Delimiter is ','.|
-|staticPrefix||Static variable prefixes|yes. Delimiter is ','.|
-|checkParameters|true|Check constructor and method parameter variables|no|
-|checkLocals|true|Check local variables|no|
 |cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
 |cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
 |checkMembers|true|Check member variables|no|
+|checkLocals|true|Check local variables|no|
+|checkParameters|true|Check constructor and method parameter variables|no|
+|staticPrefix||Static variable prefixes|yes. Delimiter is ','.|
+|staticSuffix||Static variable suffixes|yes. Delimiter is ','.|
+|memberPrefix||Member variable prefixes|yes. Delimiter is ','.|
+|memberSuffix||Member variable suffixes|yes. Delimiter is ','.|
+|localPrefix||Local variable prefixes|yes. Delimiter is ','.|
+|localSuffix||Local variable suffixes|yes. Delimiter is ','.|
+|parameterPrefix||Method parameter variable prefixes|yes. Delimiter is ','.|
+|parameterSuffix||Method parameter variable suffixes|yes. Delimiter is ','.|
 
 **Use this rule by referencing it:**
 ``` xml

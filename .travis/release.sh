@@ -117,7 +117,7 @@ mkdir pmd.github.io
 
     log_info "Uploading the new release to pmd.sourceforge.net which serves as an archive..."
 
-    travis_wait rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
+    .travis/travis_wait "rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/"
 
     if [ $? -ne 0 ]; then
         log_error "Uploading documentation to pmd.sourceforge.net failed..."

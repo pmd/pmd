@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * A method/constructor shouldn't explicitly throw java.lang.Exception, since it
@@ -36,8 +39,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
-    private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty(
-            "IgnoreJUnitCompletely", "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
+    private static final PropertyDescriptor<Boolean> IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = booleanProperty("IgnoreJUnitCompletely").defaultValue(false).desc("Allow all methods in a JUnit testcase to throw Exceptions").build();
 
     // Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;

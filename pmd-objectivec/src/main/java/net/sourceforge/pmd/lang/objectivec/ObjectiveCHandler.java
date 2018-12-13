@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.ParserOptions;
 
 /**
  * Implementation of LanguageVersionHandler for the Objective-C Language.
+ *
+ * @deprecated There is no full PMD support for Objective-C.
  */
 public class ObjectiveCHandler extends AbstractCpdLanguageVersionHandler {
 
