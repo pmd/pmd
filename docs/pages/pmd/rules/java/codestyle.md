@@ -1254,6 +1254,12 @@ public class Bar {
 }
 ```
 
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoreForEachDecl|false|Ignore non-final loop variables in a for-each statement.|no|
+
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
