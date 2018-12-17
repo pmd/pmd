@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -304,10 +305,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
 
     private void sideEffectParents(ASTTreeItem deepest, BiConsumer<ASTTreeItem, Integer> itemAndDepthConsumer) {
-        Iterable<TreeItem<Node>> parents = () -> IteratorUtil.parentIterator(deepest, true);
 
         int depth = 0;
-        for (TreeItem<Node> item : parents) {
+        for (TreeItem<Node> item : toIterable(parentIterator(deepest, true))) {
+            // the depth is "reversed" here, i.e. the deepest node has depth 0
             itemAndDepthConsumer.accept(((ASTTreeItem) item), depth++);
         }
 

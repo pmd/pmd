@@ -30,7 +30,10 @@ public final class ASTTreeItem extends TreeItem<Node> {
 
     private Var<ASTTreeCell> treeCell = Var.newSimpleVar(null);
 
-    // the value is never null
+    /**
+     * Latent style classes are style classes that logically belong to this tree item (i.e. the node it wraps).
+     * The TreeItem must sync them to the TreeCell that currently displays it. The value is never null.
+     */
     private Var<List<String>> latentStyleClasses = Var.newSimpleVar(Collections.emptyList());
 
     private ASTTreeItem(Node n) {
@@ -71,6 +74,9 @@ public final class ASTTreeItem extends TreeItem<Node> {
      *         root of the tree to which the parameter belongs
      */
     public ASTTreeItem findItem(Node node) {
+        // This is an improvement over the previous algorithm which performed a greedy
+        // depth-first traversal over all the tree (was at worst O(size of the tree),
+        // now it's at worst O(number of parents of the searched node))
 
         Objects.requireNonNull(node, "Cannot find a null item");
 

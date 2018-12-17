@@ -41,7 +41,7 @@ public final class IteratorUtil {
     }
 
 
-    public static <T> Iterable<T> wrap(Iterator<T> it) {
+    public static <T> Iterable<T> toIterable(Iterator<T> it) {
         return () -> it;
     }
 
@@ -49,16 +49,16 @@ public final class IteratorUtil {
     /**
      * Returns an iterator over the parents of the given node, in innermost to outermost order.
      */
-    public static Iterator<Node> parentIterator(Node deepest, boolean includeDeepest) {
-        return iteratorFrom(deepest, n -> n.jjtGetParent() != null, Node::jjtGetParent, includeDeepest);
+    public static Iterator<Node> parentIterator(Node deepest, boolean includeSelf) {
+        return iteratorFrom(deepest, n -> n.jjtGetParent() != null, Node::jjtGetParent, includeSelf);
     }
 
 
     /**
      * Returns an iterator over the parents of the given node, in innermost to outermost order.
      */
-    public static <T> Iterator<TreeItem<T>> parentIterator(TreeItem<T> deepest, boolean includeDeepest) {
-        return iteratorFrom(deepest, n -> n.getParent() != null, TreeItem::getParent, includeDeepest);
+    public static <T> Iterator<TreeItem<T>> parentIterator(TreeItem<T> deepest, boolean includeSelf) {
+        return iteratorFrom(deepest, n -> n.getParent() != null, TreeItem::getParent, includeSelf);
     }
 
 
@@ -78,20 +78,20 @@ public final class IteratorUtil {
         return new Iterator<T>() {
 
             private T current = seed;
-            private boolean includeCurrent = includeSeed; // include the current item iff it's the first and includeFirst
+            private boolean myIncludeCurrent = includeSeed; // include the current item iff it's the first and includeFirst
 
 
             @Override
             public boolean hasNext() {
-                return includeCurrent || hasSuccessor.test(current);
+                return myIncludeCurrent || hasSuccessor.test(current);
             }
 
 
             @Override
             public T next() {
 
-                if (includeCurrent) {
-                    includeCurrent = false;
+                if (myIncludeCurrent) {
+                    myIncludeCurrent = false;
                 } else {
                     current = successorFun.apply(current);
                 }

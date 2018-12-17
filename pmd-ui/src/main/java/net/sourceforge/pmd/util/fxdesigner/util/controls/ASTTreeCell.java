@@ -40,11 +40,12 @@ public class ASTTreeCell extends TreeCell<Node> {
     public ASTTreeCell(MainDesignerController controller) {
         this.controller = controller;
 
+        // Binds the cell to its treeItem
         Val.wrap(treeItemProperty())
            .map(ASTTreeItem.class::cast)
            .changes()
            .subscribe(change -> {
-               if (change.getOldValue() != null) { // TODO possible race condition here
+               if (change.getOldValue() != null) {
                    change.getOldValue().treeCellProperty().setValue(null);
                }
                if (change.getNewValue() != null) {
