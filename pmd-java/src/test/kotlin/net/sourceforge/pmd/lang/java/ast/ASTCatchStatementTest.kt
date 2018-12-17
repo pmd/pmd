@@ -44,7 +44,7 @@ class ASTCatchStatementTest : FunSpec({
             child<ASTCatchStatement> {
                 it.isMulticatchStatement shouldBe true
 
-                val types = childRet<ASTFormalParameter, List<ASTType>> {
+                val types = fromChild<ASTFormalParameter, List<ASTType>> {
                     val ioe = child<ASTType>(ignoreChildren = true) {
                         it.type shouldBe IOException::class.java
                     }
@@ -57,7 +57,7 @@ class ASTCatchStatementTest : FunSpec({
                         it.image shouldBe "e"
                     }
 
-                    return@childRet listOf(ioe, aerr)
+                    listOf(ioe, aerr)
                 }
 
                 it.caughtExceptionTypeNodes.shouldContainExactly(types)

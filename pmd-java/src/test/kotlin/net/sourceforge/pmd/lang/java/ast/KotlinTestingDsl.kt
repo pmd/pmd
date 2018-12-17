@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.Matcher
-import io.kotlintest.Result
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.AbstractFunSpec
@@ -9,7 +8,6 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ParserTstUtil
 import io.kotlintest.should as kotlintestShould
-
 
 /**
  * Represents the different Java language versions.
@@ -185,11 +183,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             return types + otherImports.map { "import $it;" }
         }
 
-    inline fun <reified N : Node> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> =
-            object : Matcher<String> {
-                override fun test(value: String): Result =
-                        matchNode(ignoreChildren, nodeSpec).test(nodeParsingCtx.parseAndFind<N>(value))
-            }
+    inline fun <reified N : Node> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NodeSpec<N>)
+            : Assertions<String> = { nodeParsingCtx.parseAndFind<N>(it).shouldMatchNode(ignoreChildren, nodeSpec) }
 
 
     /**
@@ -198,7 +193,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      *
      */
     inline fun <reified N : Node> matchExpr(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NWrapper<N>.() -> Unit): Matcher<String> =
+                                            noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(ExpressionParsingCtx(this), ignoreChildren, nodeSpec)
 
     /**
@@ -206,7 +201,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
     inline fun <reified N : Node> matchStmt(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NWrapper<N>.() -> Unit) =
+                                            noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(StatementParsingCtx(this), ignoreChildren, nodeSpec)
 
 
@@ -215,7 +210,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
     inline fun <reified N : Node> matchType(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NWrapper<N>.() -> Unit) =
+                                            noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(TypeParsingCtx(this), ignoreChildren, nodeSpec)
 
 

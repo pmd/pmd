@@ -82,6 +82,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.oowekyala.treeutils</groupId>
+            <artifactId>tree-matchers</artifactId>
+            <version>2.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Use pmd-java for tests -->
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
