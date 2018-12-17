@@ -1486,7 +1486,7 @@ void SelectListEntry() #void :
 ASTColumnAlias ColumnAlias() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ( <IDENTIFIER> | <QUOTED_LITERAL> ) { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1549,7 +1549,7 @@ ASTTableReference TableReference() :
         "(" Subquery() ")"
     )
 
-    [ TableAlias() ]
+    [ LOOKAHEAD(2) TableAlias() ]
     
     { return jjtThis; }
 }
@@ -2983,9 +2983,8 @@ ASTArguments Arguments() :
 }
 {
   //"(" [ ArgumentList() ] ")"
-  ("(")   
-  [ (ArgumentList())  ] 
-  (")")   
+
+  "(" [ [<ALL> | <DISTINCT> | <UNIQUE>] ("*" | ArgumentList()) ] ")"
  { 
  return jjtThis ; 
  }
@@ -3362,7 +3361,7 @@ ASTTypeSpecification TypeSpecification()  :
 		( 
 		    <UNDER> ObjectNameDeclaration()  //SUBTYPE
 		  | LOOKAHEAD(2) (<IS> | <AS> )   <OBJECT>  // OBJECT TYPE
-		  | LOOKAHEAD(2) (<IS> | <AS> )   <OPAQUE> <VARYING> "(*)" // OPAQUE TYPE
+		  | LOOKAHEAD(2) (<IS> | <AS> )   <OPAQUE> <VARYING> "(" "*" ")" // OPAQUE TYPE
 		                                                                <USING> <LIBRARY>  (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() )
 			                                                                             [ "." (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() ) ]
 		  | LOOKAHEAD(2) (<IS> | <AS> ) CollectionTypeName() <OF> Datatype() 
