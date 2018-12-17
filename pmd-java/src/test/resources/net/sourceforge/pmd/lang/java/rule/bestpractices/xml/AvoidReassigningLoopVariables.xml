@@ -36,6 +36,36 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>no violation: incremented other variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            x++;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            this.i++; // not OK
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
         <description>violation: add to 'for' loop variable</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
