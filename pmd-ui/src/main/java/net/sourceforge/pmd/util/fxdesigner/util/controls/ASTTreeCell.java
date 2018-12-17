@@ -42,16 +42,16 @@ public class ASTTreeCell extends TreeCell<Node> {
 
         // Binds the cell to its treeItem
         Val.wrap(treeItemProperty())
-           .map(ASTTreeItem.class::cast)
-           .changes()
-           .subscribe(change -> {
-               if (change.getOldValue() != null) {
-                   change.getOldValue().treeCellProperty().setValue(null);
-               }
-               if (change.getNewValue() != null) {
-                   change.getNewValue().treeCellProperty().setValue(this);
-               }
-           });
+            .map(ASTTreeItem.class::cast)
+            .changes()
+            .subscribe(change -> {
+                if (change.getOldValue() != null) {
+                    change.getOldValue().treeCellProperty().setValue(null);
+                }
+                if (change.getNewValue() != null) {
+                    change.getNewValue().treeCellProperty().setValue(this);
+                }
+            });
 
     }
 
