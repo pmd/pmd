@@ -57,19 +57,14 @@
   -fx-max-height: @height;
 }
 
-// Mixin to iterate over colors in a stack and create a ruleset for each one
+// Mixin to iterate over the range [0, @i]
 // * The selector in which the mixin is called is appended with a class depth-x,
 //   where x is the index of the color in the stack
-// * The ruleset can access the variables
-//     @color, which is the current color of the stack
-//     @depth, the current index of the depth class (offset by -1 compared to the color's stack index)
-.make-depth-classes(@stack, @ruleset, @depth: length(@stack) - 1) when (@depth >= 0) {
-  .make-depth-classes(@stack, @ruleset, @depth - 1);
+// * The ruleset can access the variable @i, the current index variable
+.make-depth-classes(@i, @ruleset) when (@i >= 0) {
+  .make-depth-classes(@i - 1, @ruleset);
 
-  // the first style class is depth-0, but CSS arrays indices start at 1
-  @color: extract(@stack, @depth + 1);
-
-  &.depth-@{depth} {
+  &.depth-@{i} {
     @ruleset();
   }
 }

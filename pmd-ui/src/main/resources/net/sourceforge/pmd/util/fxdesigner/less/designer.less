@@ -8,13 +8,13 @@
 
 @import "constants";
 
-// Each color in this stack corresponds to a depth level in XPath colors
-@ast-tree-color-stack: rgba(249, 248, 113, 0.25),
-rgba(255, 199, 95, 0.4),
-rgba(255, 150, 113, 0.5),
-rgba(255, 111, 145, 0.6),
-rgba(214, 93, 177, 0.7),
-rgba(132, 94, 194, 0.8);
+// Each color in this stack corresponds to the color of a parent
+// in the tree view
+@ast-tree-color-stack: @selection-focus-color,
+#454555,
+#aaaabc,
+#d62c49,
+#ff6a7a;
 
 
 .list-view, .tree-view, .table-view {
@@ -24,17 +24,16 @@ rgba(132, 94, 194, 0.8);
 
 .tree-cell.ast-parent {
 
-    // TODO update stack colors
-    @depth-rset: {
-        -fx-background-color: linear-gradient(to right, @color, darken(white, 3%) 10%);
+    @foreach-i: {
+        -fx-background-color: linear-gradient(to right, fade(@selection-focus-color, percentage(1- (@i / 5))) 0%, darken(white, 5%) 10%);
     };
 
-    .make-depth-classes(@ast-tree-color-stack, @depth-rset);
+    .make-depth-classes(4, @foreach-i);
 
     // This is the focused node
     &.depth-0:focused {
         -fx-font-weight: bold;
-        -fx-background-color: linear-gradient(to right, extract(@ast-tree-color-stack, 1), @selection-focus-color 10%);
+        -fx-background-color: @selection-focus-color;
     }
 
 }
