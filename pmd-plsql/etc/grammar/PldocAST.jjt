@@ -1448,7 +1448,7 @@ void FromClauseEntry() #void :
  |
      // using lookahead to avoid misinterpreting the token after the identifier
      // as a table alias rather than as a keyword
-     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>)) JoinClause()
+     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
  |
      LOOKAHEAD(3) TableReference()
  |
@@ -1574,7 +1574,8 @@ ASTTableReference TableReferenceInJoin() #TableReference :
         && getToken(1).kind != CROSS
         && getToken(1).kind != ON
         && getToken(1).kind != PARTITION
-        && getToken(1).kind != RIGHT})
+        && getToken(1).kind != RIGHT
+        && getToken(1).kind != FULL})
 
         TableAlias() ]
 
