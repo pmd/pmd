@@ -6,11 +6,15 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import org.jaxen.Navigator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.XPathHandler;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
+
+@Deprecated
+@InternalApi
 public abstract class AbstractASTXPathHandler implements XPathHandler {
 
     @Override

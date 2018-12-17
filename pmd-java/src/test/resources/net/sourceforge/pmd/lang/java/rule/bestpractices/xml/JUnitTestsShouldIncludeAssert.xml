@@ -417,4 +417,99 @@ public class FooTest {
 
 }]]></code>
     </test-code>
+    <test-code>
+        <description>#1365 detect test classes marked with fully qualified annotation.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+class Style {
+  // This used to trigger the JUnitTestsShouldIncludeWarning rule
+  @org.junit.Test(expected = IllegalArgumentException.class)
+  public void moveOutOfBoundsFrom() {
+    doSomething();
+  }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#1435 Treat AssertJ soft assertions as assert expressions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+
+class FooTest {
+
+    @Test
+    void testFoo() {
+        var softly = new SoftAssertions();
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+        softly.assertAll();
+    }
+
+    @Test
+    void testBar() {
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+        softly.assertAll();
+    }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#1435 Treat AssertJ soft assertions as assert expressions - missing assertAll</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,13</expected-linenumbers>
+        <code><![CDATA[
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
+
+class FooTest {
+
+    @Test
+    void testFoo() {
+        var softly = new SoftAssertions();
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+    }
+
+    @Test
+    void testBar() {
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+    }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#1435 Treat AssertJ soft assertion rule for JUnit 4 as assert expressions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Test;
+
+public class FooTest {
+
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
+    @Test
+    void testFoo() {
+        softly.assertThat("doesn't matter").isEqualTo("doesn't matter");
+    }
+}]]></code>
+    </test-code>
+    <test-code>
+        <description>#647 JUnitTestsShouldIncludeAssertRule should support `this.exception` as well as just `exception`</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.*;
+public class DigitalAssetManagerTest {
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
+  @Test
+  public void throwsIllegalArgumentExceptionIfIconIsNull() {
+    this.exception.expect(IllegalArgumentException.class);
+    this.exception.expectMessage("Icon is null, not a file, or doesn't exist.");
+    new DigitalAssetManager(null, null);
+  }
+}]]></code>
+    </test-code>
 </test-data>

@@ -4,18 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -74,7 +75,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
     /**
      * Check for suppression on this node, on parents, and on contained types
      * for ASTCompilationUnit
-     * 
+     *
      * @param node
      */
     public static boolean isSupressed(Node node, Rule rule) {
@@ -97,7 +98,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
     private void setClassNameFrom(JavaNode node) {
         String qualifiedName = null;
-        for (ASTClassOrInterfaceDeclaration parent : node.getParentsOfType(ASTClassOrInterfaceDeclaration.class)) {
+        for (AbstractAnyTypeDeclaration parent : node.getParentsOfType(AbstractAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
             if (qualifiedName == null) {
                 qualifiedName = clsName;
@@ -130,11 +131,23 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                 && ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(rule);
     }
 
+    private String getVariableNames(Iterable<ASTVariableDeclaratorId> iterable) {
+
+        Iterator<ASTVariableDeclaratorId> it = iterable.iterator();
+        StringBuilder builder = new StringBuilder();
+        builder.append(it.next());
+
+        while (it.hasNext()) {
+            builder.append(", ").append(it.next());
+        }
+        return builder.toString();
+    }
+
     private void setVariableNameIfExists(Node node) {
         if (node instanceof ASTFieldDeclaration) {
-            variableName = ((ASTFieldDeclaration) node).getVariableName();
+            variableName = getVariableNames((ASTFieldDeclaration) node);
         } else if (node instanceof ASTLocalVariableDeclaration) {
-            variableName = ((ASTLocalVariableDeclaration) node).getVariableName();
+            variableName = getVariableNames((ASTLocalVariableDeclaration) node);
         } else if (node instanceof ASTVariableDeclarator) {
             variableName = node.jjtGetChild(0).getImage();
         } else if (node instanceof ASTVariableDeclaratorId) {

@@ -42,6 +42,12 @@ public class ImportWrapper {
                     allDemands.add(f.getName());
                 }
             }
+            // and methods, too
+            for (Method m : type.getDeclaredMethods()) {
+                if (Modifier.isStatic(m.getModifiers())) {
+                    allDemands.add(m.getName());
+                }
+            }
         }
     }
 

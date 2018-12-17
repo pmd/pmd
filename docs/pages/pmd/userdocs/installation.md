@@ -17,6 +17,9 @@ sidebar: pmd_sidebar
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
     * For Linux / Unix: [InfoZip](http://www.info-zip.org/pub/infozip/)
 
+{% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
+
+
 ### Installation
 
 PMD is distributed as a zip archive, which includes both [PMD](#running-pmd-via-command-line) and [CPD](/pmd_userdocs_cpd.html). 
@@ -47,9 +50,9 @@ modifiers on Java sources with `-R category/java/codestyle.xml/UnnecessaryModifi
 
 {% include note.html
    content="At the moment the formerly provided rulesets (eg `rulesets/java/basic.xml`) are deprecated,
-   though you can still use them. PMD will soon include standard rulesets as default configurations,
-   but you're strongly encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from
-   the start." %}
+   though you can still use them. PMD includes a quickstart ruleset for some languages (currently, Java)
+   as base configurations, which you can reference as e.g. `rulesets/java/quickstart.xml`. You're strongly
+   encouraged to [create your own ruleset](pmd_userdocs_making_rulesets.html) from the start though." %}
 
 Additionally, the following options, are specified most of the time even though they're not required:
 * `-f <format>`: report format. PMD supports many report formats out of the box. You may want to start with the basic

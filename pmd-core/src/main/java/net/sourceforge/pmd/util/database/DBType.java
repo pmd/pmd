@@ -5,17 +5,15 @@
 package net.sourceforge.pmd.util.database;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * Encapsulate the settings needed to access database source code.
@@ -159,7 +157,6 @@ public class DBType {
         LOGGER.entering(DBType.class.getCanonicalName(), matchString);
         // Locale locale = Control.g;
         ResourceBundle resourceBundle = null;
-        InputStream stream = null;
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest("class_path+" + System.getProperty("java.class.path"));
@@ -170,27 +167,25 @@ public class DBType {
          * properties suffix File path without properties suffix Resource
          * without class prefix Resource with class prefix
          */
-        try {
-            File propertiesFile = new File(matchString);
-            if (LOGGER.isLoggable(Level.FINEST)) {
-                LOGGER.finest("Attempting File no file suffix: " + matchString);
-            }
-            stream = new FileInputStream(propertiesFile);
+        File propertiesFile = new File(matchString);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("Attempting File no file suffix: " + matchString);
+        }
+        try (InputStream stream = Files.newInputStream(propertiesFile.toPath())) {
             resourceBundle = new PropertyResourceBundle(stream);
             propertiesSource = propertiesFile.getAbsolutePath();
             LOGGER.finest("FileSystemWithoutExtension");
-        } catch (FileNotFoundException notFoundOnFilesystemWithoutExtension) {
+        } catch (NoSuchFileException notFoundOnFilesystemWithoutExtension) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 LOGGER.finest("notFoundOnFilesystemWithoutExtension");
                 LOGGER.finest("Attempting File with added file suffix: " + matchString + ".properties");
             }
-            try {
-                File propertiesFile = new File(matchString + ".properties");
-                stream = new FileInputStream(propertiesFile);
+            propertiesFile = new File(matchString + ".properties");
+            try (InputStream stream = Files.newInputStream(propertiesFile.toPath())) {
                 resourceBundle = new PropertyResourceBundle(stream);
                 propertiesSource = propertiesFile.getAbsolutePath();
                 LOGGER.finest("FileSystemWithExtension");
-            } catch (FileNotFoundException notFoundOnFilesystemWithExtensionTackedOn) {
+            } catch (NoSuchFileException notFoundOnFilesystemWithExtensionTackedOn) {
                 if (LOGGER.isLoggable(Level.FINEST)) {
                     LOGGER.finest("Attempting JARWithoutClassPrefix: " + matchString);
                 }
@@ -214,8 +209,6 @@ public class DBType {
                     }
                 }
             }
-        } finally {
-            IOUtils.closeQuietly(stream);
         }
 
         // Properties in this matched resource

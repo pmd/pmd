@@ -3,7 +3,7 @@
 <ruleset name="Performance"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules that flag suboptimal code.
@@ -120,14 +120,22 @@ public class Test {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidfilestream">
         <description>
-The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage collection pauses. See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
+The FileInputStream and FileOutputStream classes contains a finalizer method which will cause garbage
+collection pauses.
+See [JDK-8080225](https://bugs.openjdk.java.net/browse/JDK-8080225) for details.
 
-The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream, again causing garbage collection issues while finalizer methods are called.
+The FileReader and FileWriter constructors instantiate FileInputStream and FileOutputStream,
+again causing garbage collection issues while finalizer methods are called.
 
 * Use `Files.newInputStream(Paths.get(fileName))` instead of `new FileInputStream(fileName)`.
 * Use `Files.newOutputStream(Paths.get(fileName))` instead of `new FileOutputStream(fileName)`.
 * Use `Files.newBufferedReader(Paths.get(fileName))` instead of `new FileReader(fileName)`.
 * Use `Files.newBufferedWriter(Paths.get(fileName))` instead of `new FileWriter(fileName)`.
+
+Please note, that the `java.nio` API does not throw a `FileNotFoundException` anymore, instead
+it throws a `NoSuchFileException`. If your code dealt explicitly with a `FileNotFoundException`,
+then this needs to be adjusted. Both exceptions are subclasses of `IOException`, so catching
+that one covers both.
         </description>
         <priority>1</priority>
         <properties>
@@ -135,10 +143,10 @@ The FileReader and FileWriter constructors instantiate FileInputStream and FileO
                 <value>
 <![CDATA[
 //PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[
-       typeIs('java.io.FileInputStream')
-    or typeIs('java.io.FileOutputStream')
-    or typeIs('java.io.FileReader')
-    or typeIs('java.io.FileWriter')
+       pmd-java:typeIs('java.io.FileInputStream')
+    or pmd-java:typeIs('java.io.FileOutputStream')
+    or pmd-java:typeIs('java.io.FileReader')
+    or pmd-java:typeIs('java.io.FileWriter')
   ]
 ]]>
                 </value>
@@ -209,10 +217,10 @@ adverse impacts on performance.
 <![CDATA[
 //FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
     /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
 |
-//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[typeIs('java.lang.Override')])]
+//ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
     /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
 |
 //LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
@@ -294,7 +302,7 @@ Note that new Byte() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Byte')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
 ]]>
                 </value>
             </property>
@@ -467,7 +475,7 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
   [not (ArrayDimsAndInits)
-   and ClassOrInterfaceType[typeIs('java.lang.Integer')]]
+   and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Integer')]]
 ]]>
                 </value>
             </property>
@@ -500,7 +508,7 @@ Note that new Long() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Long')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
 ]]>
                 </value>
             </property>
@@ -664,7 +672,7 @@ Note that new Short() is deprecated since JDK 9 for that reason.
 <![CDATA[
 //AllocationExpression
 [not (ArrayDimsAndInits)
-and ClassOrInterfaceType[typeIs('java.lang.Short')]]
+and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
 ]]>
                 </value>
             </property>
@@ -862,9 +870,9 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
    [
-     @Image = ancestor::MethodDeclaration//LocalVariableDeclaration[@Array="true"]/VariableDeclarator/VariableDeclaratorId/@Image
+     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType="true"]/@Image
      or
-     @Image = ancestor::MethodDeclaration//FormalParameter/VariableDeclaratorId/@Image
+     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Image
    ]
    /../..[count(.//PrimarySuffix)
    =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix

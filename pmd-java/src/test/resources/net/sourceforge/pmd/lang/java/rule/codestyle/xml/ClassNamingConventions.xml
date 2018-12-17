@@ -36,7 +36,7 @@
         <rule-property name="annotationPattern">[a-z][A-Za-z]*</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The class name 'foo' doesn't match '[A-Z][a-zA-Z0-9]+'</message>
+            <message>The class name 'foo' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
             @covfefe

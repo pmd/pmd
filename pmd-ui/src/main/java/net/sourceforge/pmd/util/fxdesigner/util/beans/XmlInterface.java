@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.util.fxdesigner.util.beans;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Optional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -109,7 +110,7 @@ public abstract class XmlInterface {
 
             Source source = new DOMSource(document);
             outputFile.getParentFile().mkdirs();
-            Result result = new StreamResult(new FileWriter(outputFile));
+            Result result = new StreamResult(Files.newBufferedWriter(outputFile.toPath(), StandardCharsets.UTF_8));
             transformer.transform(source, result);
         } catch (TransformerException e) {
             throw new IOException("Failed to save settings", e);

@@ -40,6 +40,7 @@ public interface Renderer extends PropertySource {
      *
      * @return The name of the Renderer.
      */
+    @Override
     String getName();
 
     /**

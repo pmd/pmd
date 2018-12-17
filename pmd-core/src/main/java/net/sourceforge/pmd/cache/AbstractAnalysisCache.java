@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDVersion;
@@ -43,11 +44,11 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     protected final String pmdVersion;
     protected final ConcurrentMap<String, AnalysisResult> fileResultsCache;
     protected final ConcurrentMap<String, AnalysisResult> updatedResultsCache;
+    protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
     protected long rulesetChecksum;
     protected long auxClassPathChecksum;
     protected long executionClassPathChecksum;
-    protected final CachedRuleMapper ruleMapper = new CachedRuleMapper();
-    
+
     /**
      * Creates a new empty cache
      */
@@ -62,10 +63,10 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         // There is a new file being analyzed, prepare entry in updated cache
         final AnalysisResult updatedResult = new AnalysisResult(sourceFile);
         updatedResultsCache.put(sourceFile.getPath(), updatedResult);
-        
+
         // Now check the old cache
         final AnalysisResult analysisResult = fileResultsCache.get(sourceFile.getPath());
-        
+
         // is this a known file? has it changed?
         final boolean result = analysisResult != null
                 && analysisResult.getFileChecksum() == updatedResult.getFileChecksum();
@@ -99,11 +100,19 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         updatedResultsCache.remove(sourceFile.getPath());
     }
 
+
+    /**
+     * Returns true if the cache exists. If so, normal cache validity checks
+     * will be performed. Otherwise, the cache is necessarily invalid (e.g. on a first run).
+     */
+    protected abstract boolean cacheExists();
+
+
     @Override
     public void checkValidity(final RuleSets ruleSets, final ClassLoader auxclassPathClassLoader) {
-        boolean cacheIsValid = true;
+        boolean cacheIsValid = cacheExists();
 
-        if (ruleSets.getChecksum() != rulesetChecksum) {
+        if (cacheIsValid && ruleSets.getChecksum() != rulesetChecksum) {
             LOG.info("Analysis cache invalidated, rulesets changed.");
             cacheIsValid = false;
         }
@@ -112,7 +121,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         if (auxclassPathClassLoader instanceof URLClassLoader) {
             final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
             currentAuxClassPathChecksum = computeClassPathHash(urlClassLoader.getURLs());
-            
+
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                 // Do we even care?
                 for (final Rule r : ruleSets.getAllRules()) {
@@ -126,9 +135,9 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         } else {
             currentAuxClassPathChecksum = 0;
         }
-        
+
         final long currentExecutionClassPathChecksum = computeClassPathHash(getClassPathEntries());
-        if (currentExecutionClassPathChecksum != executionClassPathChecksum) {
+        if (cacheIsValid && currentExecutionClassPathChecksum != executionClassPathChecksum) {
             LOG.info("Analysis cache invalidated, execution classpath changed.");
             cacheIsValid = false;
         }
@@ -145,35 +154,55 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         ruleMapper.initialize(ruleSets);
     }
 
+    private static boolean isClassPathWildcard(String entry) {
+        return entry.endsWith("/*") || entry.endsWith("\\*");
+    }
+
     private URL[] getClassPathEntries() {
         final String classpath = System.getProperty("java.class.path");
         final String[] classpathEntries = classpath.split(File.pathSeparator);
         final List<URL> entries = new ArrayList<>();
-        
+
+        final SimpleFileVisitor<Path> fileVisitor = new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file,
+                    final BasicFileAttributes attrs) throws IOException {
+                if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
+                    entries.add(file.toUri().toURL());
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        };
+        final SimpleFileVisitor<Path> jarFileVisitor = new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(final Path file,
+                    final BasicFileAttributes attrs) throws IOException {
+                String extension = FilenameUtils.getExtension(file.toString());
+                if ("jar".equalsIgnoreCase(extension)) {
+                    fileVisitor.visitFile(file, attrs);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        };
+
         try {
             for (final String entry : classpathEntries) {
                 final File f = new File(entry);
-                if (f.isFile()) {
+                if (isClassPathWildcard(entry)) {
+                    Files.walkFileTree(new File(entry.substring(0, entry.length() - 1)).toPath(),
+                            EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
+                } else if (f.isFile()) {
                     entries.add(f.toURI().toURL());
                 } else {
                     Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
-                        new SimpleFileVisitor<Path>() {
-                            @Override
-                            public FileVisitResult visitFile(final Path file,
-                                    final BasicFileAttributes attrs) throws IOException {
-                                if (!attrs.isSymbolicLink()) { // Broken link that can't be followed
-                                    entries.add(file.toUri().toURL());
-                                }
-                                return FileVisitResult.CONTINUE;
-                            }
-                        });
+                            fileVisitor);
                 }
             }
         } catch (final IOException e) {
             LOG.log(Level.SEVERE, "Incremental analysis can't check execution classpath contents", e);
             throw new RuntimeException(e);
         }
-        
+
         return entries.toArray(new URL[0]);
     }
 
@@ -199,7 +228,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
     @Override
     public void ruleViolationAdded(final RuleViolation ruleViolation) {
         final AnalysisResult analysisResult = updatedResultsCache.get(ruleViolation.getFilename());
-        
+
         analysisResult.addViolation(ruleViolation);
     }
 

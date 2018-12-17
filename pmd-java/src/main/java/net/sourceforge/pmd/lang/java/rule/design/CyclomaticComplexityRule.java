@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.Collections;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -20,8 +22,8 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 
 /**
@@ -37,21 +39,21 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     // Deprecated, kept for backwards compatibility (6.0.0)
     @Deprecated
-    private static final IntegerProperty REPORT_LEVEL_DESCRIPTOR
-        = IntegerProperty.named("reportLevel")
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
+        = PropertyFactory.intProperty("reportLevel")
                          .desc("Deprecated! Cyclomatic Complexity reporting threshold")
-                         .range(1, 30).defaultValue(10).uiOrder(1.0f).build();
+                         .require(positive()).defaultValue(10).build();
 
 
-    private static final IntegerProperty CLASS_LEVEL_DESCRIPTOR
-        = IntegerProperty.named("classReportLevel")
+    private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR
+        = PropertyFactory.intProperty("classReportLevel")
                          .desc("Total class complexity reporting threshold")
-                         .range(1, 600).defaultValue(80).uiOrder(1.0f).build();
+                         .require(positive()).defaultValue(80).build();
 
-    private static final IntegerProperty METHOD_LEVEL_DESCRIPTOR
-        = IntegerProperty.named("methodReportLevel")
+    private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR
+        = PropertyFactory.intProperty("methodReportLevel")
                          .desc("Cyclomatic complexity reporting threshold")
-                         .range(1, 50).defaultValue(10).uiOrder(1.0f).build();
+                         .require(positive()).defaultValue(10).build();
 
     private static final Map<String, CycloOption> OPTION_MAP;
     
@@ -60,13 +62,13 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
         OPTION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
         OPTION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
     }
-    
-    private static final EnumeratedMultiProperty<CycloOption> CYCLO_OPTIONS_DESCRIPTOR
-        = EnumeratedMultiProperty.<CycloOption>named("cycloOptions").type(CycloOption.class)
-                                                                    .desc("Choose options for the computation of Cyclo")
-                                                                    .mappings(OPTION_MAP)
-                                                                    .defaultValues(Collections.<CycloOption>emptyList())
-                                                                    .uiOrder(3.0f).build();
+
+    private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
+            = PropertyFactory.enumListProperty("cycloOptions", OPTION_MAP)
+                             .desc("Choose options for the computation of Cyclo")
+                             .emptyDefaultValue()
+                             .build();
+
     private int methodReportLevel;
     private int classReportLevel;
     private MetricOptions cycloOptions;

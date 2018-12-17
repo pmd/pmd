@@ -37,7 +37,11 @@ public abstract class AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return "";
     }
-    
+
+    public String getExpectedErrorWithoutMessage(ProcessingError error) {
+        return getExpectedError(error);
+    }
+
     public String getExpectedError(ConfigurationError error) {
         return "";
     }
@@ -68,7 +72,7 @@ public abstract class AbstractRendererTst {
         return report;
     }
 
-    private RuleViolation newRuleViolation(int endColumn) {
+    protected RuleViolation newRuleViolation(int endColumn) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename(getSourceCodeFilename());
@@ -127,7 +131,16 @@ public abstract class AbstractRendererTst {
         String actual = ReportTest.render(getRenderer(), rep);
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
-    
+
+    @Test
+    public void testErrorWithoutMessage() throws Exception {
+        Report rep = new Report();
+        Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), "file");
+        rep.addError(err);
+        String actual = ReportTest.render(getRenderer(), rep);
+        assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
+    }
+
     @Test
     public void testConfigError() throws Exception {
         Report rep = new Report();

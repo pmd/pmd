@@ -25,6 +25,9 @@ entries:
     - title: Release notes
       url: /pmd_release_notes.html
       output: web, pdf
+    - title: PMD 7.0.0 development
+      url: /pmd_next_major_development.html
+      output: web, pdf
     - title: Getting help
       url: /pmd_about_help.html
       output: web, pdf
@@ -324,6 +327,9 @@ entries:
       output: web, pdf
     - title: How PMD works
       url: /pmd_devdocs_how_pmd_works.html
+      output: web, pdf
+    - title: Pmdtester
+      url: /pmd_devdocs_pmdtester.html
       output: web, pdf
     - title: null
       output: web, pdf

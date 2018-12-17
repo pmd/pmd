@@ -3,7 +3,7 @@
 <ruleset name="Documentation"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules that are related to code documentation.
@@ -96,7 +96,7 @@ and unintentional empty constructors.
 <![CDATA[
 //ConstructorDeclaration[@Private='false']
                         [count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
-                        [not(../Annotation/MarkerAnnotation/Name[typeIs('javax.inject.Inject')])]
+                        [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('javax.inject.Inject')])]
 ]]>
                 </value>
             </property>

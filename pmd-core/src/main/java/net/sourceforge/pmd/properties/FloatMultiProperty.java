@@ -16,7 +16,10 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<List<Double>>} instead. A builder is available from {@link PropertyFactory#doubleListProperty(String)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float> {
 
 
@@ -31,7 +34,9 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated use {@link PropertyFactory#doubleListProperty(String)}
      */
+    @Deprecated
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               Float[] defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
@@ -56,7 +61,9 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated use {@link PropertyFactory#doubleListProperty(String)}
      */
+    @Deprecated
     public FloatMultiProperty(String theName, String theDescription, Float min, Float max,
                               List<Float> defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
@@ -85,11 +92,15 @@ public final class FloatMultiProperty extends AbstractMultiNumericProperty<Float
     }
 
 
+    /** @deprecated use {@link PropertyFactory#doubleListProperty(String)} */
+    @Deprecated
     public static FloatMultiPBuilder named(String name) {
         return new FloatMultiPBuilder(name);
     }
 
 
+    /** @deprecated use {@link PropertyFactory#doubleListProperty(String)} */
+    @Deprecated
     public static final class FloatMultiPBuilder extends MultiNumericPropertyBuilder<Float, FloatMultiPBuilder> {
         private FloatMultiPBuilder(String name) {
             super(name);

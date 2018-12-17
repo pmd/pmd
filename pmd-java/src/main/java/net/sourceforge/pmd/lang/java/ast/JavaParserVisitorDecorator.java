@@ -7,9 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Decorates a control less visitor. This must be wrapped into a {@link JavaParserDecoratedVisitor} to work properly.
  *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
+@Deprecated
 public class JavaParserVisitorDecorator implements JavaParserControllessVisitor {
 
     private JavaParserVisitor visitor;
@@ -199,13 +202,21 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     }
 
 
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRUNSIGNEDSHIFT node, Object data) {
         return visitor.visit(node, data);
     }
 
 
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRSIGNEDSHIFT node, Object data) {
         return visitor.visit(node, data);
     }

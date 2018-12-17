@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import org.apache.commons.io.IOUtils;
+import java.io.StringReader;
+
 import org.codehaus.groovy.antlr.parser.GroovyLexer;
 
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
@@ -22,7 +23,7 @@ public class GroovyTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
 
-        GroovyLexer lexer = new GroovyLexer(IOUtils.toInputStream(buffer.toString()));
+        GroovyLexer lexer = new GroovyLexer(new StringReader(buffer.toString()));
         TokenStream tokenStream = lexer.plumb();
 
         try {

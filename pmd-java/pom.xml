@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.6.0-SNAPSHOT</version>
+        <version>6.11.0-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -40,6 +40,11 @@
             </plugin>
 
             <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <inherited>true</inherited>
@@ -53,23 +58,6 @@
                                     <property name="target" value="${project.build.directory}/generated-sources/javacc" />
                                     <property name="javacc.jar" value="${settings.localRepository}/net/java/dev/javacc/javacc/${javacc.version}/javacc-${javacc.version}.jar" />
                                 </ant>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated markdown</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
-                                    <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
-                                    <fileset dir="${basedir}/src/site/" includes="site.xml" />
-                                </delete>
                             </target>
                         </configuration>
                         <goals>
@@ -139,6 +127,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
@@ -162,6 +157,11 @@
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-testutil</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

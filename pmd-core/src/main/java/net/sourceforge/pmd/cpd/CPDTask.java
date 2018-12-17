@@ -6,11 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -137,9 +137,9 @@ public class CPDTask extends Task {
             if (outputFile == null) {
                 os = System.out;
             } else if (outputFile.isAbsolute()) {
-                os = new FileOutputStream(outputFile);
+                os = Files.newOutputStream(outputFile.toPath());
             } else {
-                os = new FileOutputStream(new File(getProject().getBaseDir(), outputFile.toString()));
+                os = Files.newOutputStream(new File(getProject().getBaseDir(), outputFile.toString()).toPath());
             }
             
             if (encoding == null) {

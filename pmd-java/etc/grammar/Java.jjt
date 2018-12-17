@@ -1854,7 +1854,7 @@ void ConstructorDeclaration(int modifiers) :
 Token t;}
 {
     [ TypeParameters() ]
-  <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
+   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ "throws" NameList() ]
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
@@ -2097,8 +2097,8 @@ void ShiftExpression() #ShiftExpression(>1):
   AdditiveExpression() 
    ( LOOKAHEAD(2)
     ( "<<" { jjtThis.setImage("<<");}
-     | RSIGNEDSHIFT()
-     | RUNSIGNEDSHIFT()
+     | RSIGNEDSHIFT() { jjtThis.setImage(">>"); }
+     | RUNSIGNEDSHIFT() { jjtThis.setImage(">>>"); }
     ) AdditiveExpression() )*
 }
 
@@ -2206,8 +2206,36 @@ void LambdaExpression() :
 { checkForBadLambdaUsage(); }
 {
   VariableDeclaratorId() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) FormalParameters() "->" ( Expression() | Block() )
+| LOOKAHEAD(3) LambdaParameters() "->" ( Expression() | Block() )
 | LOOKAHEAD(3) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
+}
+
+void LambdaParameters() #FormalParameters :
+{}
+{
+    "(" [ LambdaParameterList() ] ")"
+}
+
+void LambdaParameterList() #void :
+{}
+{
+    LambdaParameter() ( "," LambdaParameter() )*
+}
+
+void LambdaParameter() #FormalParameter :
+{}
+{
+    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+    LambdaParameterType()
+    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    VariableDeclaratorId()
+}
+
+void LambdaParameterType() #void :
+{}
+{
+    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } ) <IDENTIFIER>
+    | Type()
 }
 
 void PrimarySuffix() :
@@ -2557,7 +2585,7 @@ void AssertStatement() :
  * type declaration syntax with generics clean
  */
 
-void RUNSIGNEDSHIFT():
+void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&
@@ -2566,7 +2594,7 @@ void RUNSIGNEDSHIFT():
   )
 }
 
-void RSIGNEDSHIFT():
+void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&

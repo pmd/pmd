@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner.util.beans;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.ElementType;
@@ -14,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,7 +24,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -92,17 +91,13 @@ public final class SettingsPersistenceUtil {
      * @param file File to parse
      */
     private static Optional<Document> getDocument(File file) {
-        InputStream stream = null;
         if (file.exists()) {
-            try {
+            try (InputStream stream = Files.newInputStream(file.toPath())) {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                stream = new FileInputStream(file);
                 Document document = builder.parse(stream);
                 return Optional.of(document);
             } catch (SAXException | ParserConfigurationException | IOException e) {
                 e.printStackTrace();
-            } finally {
-                IOUtils.closeQuietly(stream);
             }
         }
 

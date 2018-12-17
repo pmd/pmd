@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -22,16 +23,21 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
 
+
 /**
  * Visitor for the default n-path complexity version.
  *
  * @author Clément Fournier
  * @author Jason Bennett
+ * @deprecated Is internal API, will be moved in 7.0.0
  */
+@Deprecated
+@InternalApi
 public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
+
 
     /* Multiplies the complexity of the children of this node. */
     private int multiplyChildrenComplexities(JavaNode node, Object data) {
@@ -39,7 +45,16 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             JavaNode n = (JavaNode) node.jjtGetChild(i);
-            product *= (Integer) n.jjtAccept(this, data);
+            int childComplexity = (int) n.jjtAccept(this, data);
+
+            int newProduct = product * childComplexity;
+            if (newProduct >= product) {
+                product = newProduct;
+            } else {
+                // Overflow happened
+                product = Integer.MAX_VALUE;
+                break;
+            }
         }
 
         return product;
@@ -52,7 +67,16 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             JavaNode n = (JavaNode) node.jjtGetChild(i);
-            sum += (Integer) n.jjtAccept(this, data);
+            int childComplexity = (int) n.jjtAccept(this, data);
+
+            int newSum = sum + childComplexity;
+            if (newSum >= sum) {
+                sum = newSum;
+            } else {
+                // Overflow happened
+                sum = Integer.MAX_VALUE;
+                break;
+            }
         }
 
         return sum;
@@ -81,7 +105,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
         int complexity = node.hasElse() ? 0 : 1;
 
         for (ASTStatement element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
+            complexity += (int) element.jjtAccept(this, data);
         }
 
         int boolCompIf = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
@@ -95,7 +119,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
         int boolCompWhile = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
-        int nPathWhile = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
+        int nPathWhile = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
         return boolCompWhile + nPathWhile + 1;
     }
@@ -107,7 +131,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
         int boolCompDo = CycloMetric.booleanExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
 
-        int nPathDo = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
+        int nPathDo = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
         return boolCompDo + nPathDo + 1;
     }
@@ -119,7 +143,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
         int boolCompFor = CycloMetric.booleanExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
-        int nPathFor = (Integer) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
+        int nPathFor = (int) node.getFirstChildOfType(ASTStatement.class).jjtAccept(this, data);
 
         return boolCompFor + nPathFor + 1;
     }
@@ -162,7 +186,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
                 npath += caseRange;
                 caseRange = 1;
             } else {
-                Integer complexity = (Integer) n.jjtAccept(this, data);
+                int complexity = (int) n.jjtAccept(this, data);
                 caseRange *= complexity;
             }
         }

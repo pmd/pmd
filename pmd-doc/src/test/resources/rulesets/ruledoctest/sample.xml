@@ -3,10 +3,84 @@
 <ruleset name="Sample"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
   <description>
 Sample ruleset to test rule doc generation.
+
+Here might be &lt;script&gt;alert('XSS');&lt;/script&gt; as well. And "quotes".
+
+<![CDATA[Inside CDATA <script>alert('XSS');</script>.]]>
   </description>
+
+    <rule name="XSSInDocumentation"
+          language="java"
+          since="0.1"
+          message="Tests that &lt;script&gt;alert('XSS');&lt;/script&gt; is properly escaped"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_sample.html#xssindocumentation">
+       <description>
+            &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.
+            Sometimes they should be escaped, sometimes not:
+
+                For example, in a code sample, it should &lt;strong&gt;not&lt;/strong&gt; be escaped.
+                This means, &lt;script&gt;alert('XSS');&lt;/script&gt; is no problem here.
+
+            Also in backticks `&lt;script&gt;alert('XSS');&lt;/script&gt;` like here it is no problem.
+
+            The tags are already escaped in the text, e.g. &lt;script&gt;alert('XSS');&lt;/script&gt;.
+
+            A valid case in markdown is a &lt;https://en.wikipedia.org/wiki/Hyperlink&gt;
+
+            <![CDATA[
+            If using CDATA you don't need to escape, but this <script>alert('XSS');</script>
+            should still not be executed.
+            ]]>
+
+            &gt; this is a
+            > block quote
+            > in markdown
+
+            The paragraph after the quotation.
+
+            <![CDATA[
+            > block quote
+            > in cdata
+            ]]>
+
+            If the description contains a code example, then e.g. "quotes" should not be escaped:
+
+            ```
+            if (0 &gt; 1 &amp;&amp; 0 &lt; 1) {
+                System.out.println("impossible");
+            }
+            ```
+       </description>
+       <priority>3</priority>
+       <properties>
+           <property name="xpath">
+               <value>
+<![CDATA[
+//ForStatement
+]]>
+               </value>
+           </property>
+           <property name="sampleRegexProperty" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
+           <property name="XSSpropertyTest &lt;script&gt;alert('XSS');&lt;/script&gt;" type="String" description="&lt;script&gt;alert('XSS');&lt;/script&gt;" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
+           <property name="escapingNeeded" type="String" description="You should be able to use | in the description" value="this is escaped: |" />
+       </properties>
+       <example>
+<![CDATA[
+public class Bar {
+    public boolean foo() {
+      if (0 < 1) { // less-than should not be escaped in markdown
+          String s = "abc"; // the quotes should not be escaped in markdown.
+      }
+    }
+    // <script>alert('XSS');</script>
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="OverrideBothEqualsAndHashcode"
           language="java"
@@ -79,6 +153,13 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
          <property name="sampleAdditionalProperty" type="String" description="This is a additional property for tests" value="the value" />
          <property name="sampleMultiStringProperty" type="List[String]" description="Test property with multiple strings" value="Value1|Value2" />
          <property name="sampleDeprecatedProperty" type="String" description="Deprecated! This is a sample deprecated property for tests" value="test" />
+         <property name="sampleRegexProperty1" type="Regex" description="The property is of type regex" value="\/\*\s+(default|package)\s+\*\/" />
+         <property name="sampleRegexProperty2" type="Regex" description="The property is of type regex" value="[a-z]*" />
+         <property name="sampleRegexProperty3" type="Regex" description="The property is of type regex" value="\s+" />
+         <property name="sampleRegexProperty4" type="Regex" description="The property is of type regex" value="_dd_" />
+         <property name="sampleRegexProperty5" type="Regex" description="The property is of type regex" value="[0-9]{1,3}" />
+         <property name="sampleRegexProperty6" type="Regex" description="The property is of type regex" value="\b" />
+         <property name="sampleRegexProperty7" type="Regex" description="The property is of type regex" value="\n" />
      </properties>
      <example>
  <![CDATA[

@@ -14,7 +14,10 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
  */
+@Deprecated
 public class JavaParserDecoratedVisitor implements JavaParserVisitor {
 
 
@@ -252,14 +255,22 @@ public class JavaParserDecoratedVisitor implements JavaParserVisitor {
     }
 
 
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRUNSIGNEDSHIFT node, Object data) {
         visitor.visit(node, data);
         return visit((JavaNode) node, data);
     }
 
 
+    /**
+     * @deprecated Will be removed in 7.0.0. Use {@link ASTShiftExpression#getOperator()}
+     */
     @Override
+    @Deprecated
     public Object visit(ASTRSIGNEDSHIFT node, Object data) {
         visitor.visit(node, data);
         return visit((JavaNode) node, data);

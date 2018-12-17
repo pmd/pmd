@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,8 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaration;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.NumericConstants;
 
 public class TooManyFieldsRule extends AbstractPLSQLRule {
@@ -25,8 +28,12 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     private Map<String, Integer> stats;
     private Map<String, PLSQLNode> nodes;
 
-    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty("maxfields",
-            "Max allowable fields", 1, 300, DEFAULT_MAXFIELDS, 1.0f);
+    private static final PropertyDescriptor<Integer> MAX_FIELDS_DESCRIPTOR
+            = PropertyFactory.intProperty("maxfields")
+                             .desc("Max allowable fields")
+                             .defaultValue(DEFAULT_MAXFIELDS)
+                             .require(positive())
+                             .build();
 
     public TooManyFieldsRule() {
         definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
@@ -87,7 +94,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
             stats.put(key, NumericConstants.ZERO);
             nodes.put(key, clazz);
         }
-        Integer i = Integer.valueOf(stats.get(key) + 1);
+        Integer i = stats.get(key) + 1;
         stats.put(key, i);
     }
 }

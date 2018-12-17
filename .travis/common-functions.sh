@@ -10,6 +10,7 @@ echo "TRAVIS_SECURE_ENV_VARS: ${TRAVIS_SECURE_ENV_VARS}"
 echo "TRAVIS_BRANCH: ${TRAVIS_BRANCH}"
 echo "TRAVIS_TAG: ${TRAVIS_TAG}"
 echo "TRAVIS_ALLOW_FAILURE: ${TRAVIS_ALLOW_FAILURE}"
+echo "TRAVIS_OS_NAME: ${TRAVIS_OS_NAME}"
 
 function travis_isPullRequest() {
     if [ "${TRAVIS_REPO_SLUG}" != "pmd/pmd" ] || [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
@@ -21,6 +22,14 @@ function travis_isPullRequest() {
 
 function travis_isPush() {
     if [ "${TRAVIS_REPO_SLUG}" = "pmd/pmd" ] && [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_SECURE_ENV_VARS}" = "true" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function travis_isOSX() {
+    if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
         return 0
     else
         return 1

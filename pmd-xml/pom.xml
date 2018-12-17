@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.6.0-SNAPSHOT</version>
+        <version>6.11.0-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -25,41 +25,6 @@
                     <delimiters>
                         <delimiter>${*}</delimiter>
                     </delimiters>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated markdown</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
-                                    <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
-                                    <fileset dir="${basedir}/src/site/" includes="site.xml" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Disable rule MissingOverride, see https://github.com/pmd/pmd/issues/1074 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <rulesets>
-                        <ruleset>pmd-xml-ruleset.xml</ruleset>
-                    </rulesets>
                 </configuration>
             </plugin>
         </plugins>

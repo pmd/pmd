@@ -5,13 +5,13 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,6 +38,7 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
+    // TODO 7.0.0 use PropertyDescriptor<Optional<File>>
     public static final StringProperty XSLT_FILENAME = new StringProperty("xsltFilename", "The XSLT file name.", null,
             0);
 
@@ -77,12 +78,12 @@ public class XSLTRenderer extends XMLRenderer {
         InputStream xslt = null;
         File file = new File(this.xsltFilename);
         if (file.exists() && file.canRead()) {
-            xslt = new FileInputStream(file);
+            xslt = Files.newInputStream(file.toPath());
         } else {
             xslt = this.getClass().getResourceAsStream(this.xsltFilename);
         }
         if (xslt == null) {
-            throw new FileNotFoundException("Can't file XSLT sheet :" + this.xsltFilename);
+            throw new FileNotFoundException("Can't find XSLT file: " + this.xsltFilename);
         }
         this.prepareTransformer(xslt);
         // Now we build the XML file
@@ -142,11 +143,7 @@ public class XSLTRenderer extends XMLRenderer {
         try {
             DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             return parser.parse(new InputSource(new StringReader(xml)));
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
         return null;

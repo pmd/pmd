@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -67,21 +68,21 @@ public class CPPTokenizerTest {
 
     @Test
     public void testTokenizerWithSkipBlocks() throws Exception {
-        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
         Tokens tokens = parse(test, true);
         assertEquals(19, tokens.size());
     }
 
     @Test
     public void testTokenizerWithSkipBlocksPattern() throws Exception {
-        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
         Tokens tokens = parse(test, true, "#if debug|#endif");
         assertEquals(31, tokens.size());
     }
 
     @Test
     public void testTokenizerWithoutSkipBlocks() throws Exception {
-        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"));
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
         Tokens tokens = parse(test, false);
         assertEquals(37, tokens.size());
     }

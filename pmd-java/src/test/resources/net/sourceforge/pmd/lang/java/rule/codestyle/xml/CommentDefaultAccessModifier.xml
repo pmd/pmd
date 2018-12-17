@@ -161,7 +161,19 @@ public class CommentDefaultAccessModifier {
 }
         ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>#1430 CommentDefaultAccessModifier triggers on field annotated with @VisibleForTesting 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.google.common.annotations.VisibleForTesting;
+
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#536 Constructor with default access modifier should trigger</description>
         <expected-problems>1</expected-problems>
@@ -220,5 +232,47 @@ public interface A {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use property ignoredAnnotations (see #1343)</description>
+        <rule-property name="ignoredAnnotations">net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier.OnlyForTesting</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>To avoid mistakes add a comment at the beginning of the method method if you want a default access modifier</message>
+        </expected-messages>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.commentdefaultaccessmodifier;
+
+import android.support.annotation.VisibleForTesting;
+
+public class CommentDefaultAccessModifier {
+    @VisibleForTesting void method() {}
+
+    @OnlyForTesting void method2() {}
+}
+        ]]></code>
+    </test-code>
+
+    <code-fragment id="constructor-with-default-access-modifier-rule"><![CDATA[
+public class Foo {
+   Foo() {} // should be reported
+
+   Foo(final String str) {} // should be reported
+
+   /* default */ Foo(final String str1, final String str2) {}  // should not be reported
+}
+    ]]>
+    </code-fragment>
+    <test-code>
+        <description>Add a comment to the constructors with default access modifiers to avoid mistakes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <expected-messages>
+            <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
+                <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
+            </expected-messages>
+        <code-ref id="constructor-with-default-access-modifier-rule"/>
     </test-code>
 </test-data>

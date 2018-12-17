@@ -18,11 +18,11 @@ import net.sourceforge.pmd.Rule;
  * <p>This statement may define several variables, possibly of different types (see {@link ASTVariableDeclaratorId#getType()}).
  * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
  *
- * <p>
+ * <pre>
  *
- * LocalVariableDeclaration ::=  ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ * LocalVariableDeclaration ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
  *
- * </p>
+ * </pre>
  */
 public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
 
@@ -64,13 +64,13 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     }
 
     @Override
-    // TODO deprecate
+    @Deprecated
     public boolean isArray() {
         return getArrayDepth() > 0;
     }
 
     @Override
-    // TODO deprecate
+    @Deprecated
     public int getArrayDepth() {
         return getArrayDimensionOnType() + getArrayDimensionOnDeclaratorId();
     }
@@ -107,11 +107,14 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
      * VariableDeclartorId node and returns it's image or <code>null</code> if
      * the child node is not found.
      *
+     * @deprecated LocalVariableDeclaration may declare several variables, so this is not exhaustive
+     *             Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
+     *
      * @return a String representing the name of the variable
      */
-    // TODO deprecate.
     // It would be nice to have a way to inform XPath users of the intended replacement
     // for a deprecated attribute. We may use another annotation for that.
+    @Deprecated
     public String getVariableName() {
         ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         if (decl != null) {
@@ -127,6 +130,6 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
      */
     @Override
     public Iterator<ASTVariableDeclaratorId> iterator() {
-        return new NodeChildrenIterator<>(this, ASTVariableDeclaratorId.class);
+        return ASTVariableDeclarator.iterateIds(this);
     }
 }

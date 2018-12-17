@@ -3,7 +3,7 @@
 <ruleset name="Design"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
 Rules that help you discover design issues.
@@ -29,7 +29,7 @@ protected constructor in order to prevent instantiation than make the class misl
 //ClassOrInterfaceDeclaration
     [@Abstract = 'true']
     [count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0]
-    [not(../Annotation/MarkerAnnotation/Name[typeIs('com.google.auto.value.AutoValue')])]
+    [not(../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('com.google.auto.value.AutoValue')])]
 ]]>
                 </value>
             </property>
@@ -267,13 +267,13 @@ Exception, or Error, use a subclassed exception or error instead.
 <![CDATA[
 //ThrowStatement//AllocationExpression
  /ClassOrInterfaceType[
- typeIsExactly('java.lang.Throwable')
+ pmd-java:typeIsExactly('java.lang.Throwable')
 or
- typeIsExactly('java.lang.Exception')
+ pmd-java:typeIsExactly('java.lang.Exception')
 or
- typeIsExactly('java.lang.Error')
+ pmd-java:typeIsExactly('java.lang.Error')
 or
- typeIsExactly('java.lang.RuntimeException')
+ pmd-java:typeIsExactly('java.lang.RuntimeException')
 ]
 ]]>
                 </value>
@@ -410,7 +410,7 @@ in a single method makes its behaviour hard to read and change.
 Cyclomatic complexity assesses the complexity of a method by counting the number of decision points in a method,
 plus one for the method entry. Decision points are places where the control flow jumps to another place in the
 program. As such, they include all control flow statements, such as `if`, `while`, `for`, and `case`. For more
-details on the calculation, see the documentation of the [Cyclo metric](/pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
+details on the calculation, see the documentation of the [Cyclo metric](pmd_java_metrics_index.html#cyclomatic-complexity-cyclo).
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity >= 10.
@@ -503,7 +503,7 @@ Errors are system exceptions. Do not extend them.
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration/ExtendsList/ClassOrInterfaceType
-  [typeIs('java.lang.Error')]
+  [pmd-java:typeIs('java.lang.Error')]
 
 
 ]]>
@@ -737,7 +737,7 @@ of Object-Oriented Systems. Springer, Berlin, 1 edition, October 2006. Page 80.
           class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#immutablefield">
         <description>
-Identifies private fields whose values never change once they are initialized either in the declaration
+Identifies private fields whose values never change once object initialization ends either in the declaration
 of the field or by a constructor.  This helps in converting existing classes to becoming immutable ones.
         </description>
         <priority>3</priority>
@@ -1187,6 +1187,7 @@ public class Foo {
           since="3.6"
           message="assertTrue(!expr) can be replaced by assertFalse(expr)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#simplifybooleanassertion">
         <description>
 Avoid negation in an assertTrue or assertFalse test.
@@ -1213,8 +1214,14 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix
 ]
-[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')] or //MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]]]
-]]>
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
+    or //MarkerAnnotation/Name[
+        pmd-java:typeIs('org.junit.Test')
+        or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+        or pmd-java:typeIs('org.junit.jupiter.api.TestFactory') or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+        or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]
+]]]]>
                 </value>
             </property>
         </properties>

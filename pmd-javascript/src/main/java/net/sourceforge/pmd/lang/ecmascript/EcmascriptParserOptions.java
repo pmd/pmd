@@ -4,13 +4,15 @@
 
 package net.sourceforge.pmd.lang.ecmascript;
 
+import java.util.Objects;
+
 import org.mozilla.javascript.Context;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.util.StringUtil;
+
 
 public class EcmascriptParserOptions extends ParserOptions {
 
@@ -51,6 +53,10 @@ public class EcmascriptParserOptions extends ParserOptions {
 
     // Note: The UI order values are chosen to be larger than those built into
     // XPathRule.
+
+    // These aren't converted to the new property framework
+    // Do we need them anyway?
+
     public static final BooleanProperty RECORDING_COMMENTS_DESCRIPTOR = new BooleanProperty("recordingComments",
             "Specifies that comments are produced in the AST.", Boolean.TRUE, 3.0f);
     public static final BooleanProperty RECORDING_LOCAL_JSDOC_COMMENTS_DESCRIPTOR = new BooleanProperty(
@@ -120,7 +126,7 @@ public class EcmascriptParserOptions extends ParserOptions {
             return false;
         }
         final EcmascriptParserOptions that = (EcmascriptParserOptions) obj;
-        return StringUtil.isSame(this.suppressMarker, that.suppressMarker, false, false, false)
+        return Objects.equals(this.suppressMarker, that.suppressMarker)
                 && this.recordingComments == that.recordingComments
                 && this.recordingLocalJsDocComments == that.recordingLocalJsDocComments
                 && this.rhinoLanguageVersion == that.rhinoLanguageVersion;

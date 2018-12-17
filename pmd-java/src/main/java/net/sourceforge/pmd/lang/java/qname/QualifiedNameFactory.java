@@ -15,6 +15,8 @@ import net.sourceforge.pmd.lang.java.qname.ImmutableList.ListFactory;
 
 /**
  * Static factory methods for JavaQualifiedName.
+ * These are intended only for tests, even though some deprecated
+ * APIs use it. May be moved to an internal package?
  *
  * @author Clément Fournier
  * @since 6.1.0
@@ -108,13 +110,10 @@ public final class QualifiedNameFactory {
             name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
         }
 
-        JavaTypeQualifiedName qualifiedName = (JavaTypeQualifiedName) ofString(name);
-        if (qualifiedName != null) {
-            // Note: this assumes, that clazz has been loaded through the correct classloader,
-            // specifically through the auxclasspath classloader.
-            qualifiedName.withClassLoader(clazz.getClassLoader());
-        }
-        return qualifiedName;
+        // Note: this assumes, that clazz has been loaded through the correct classloader,
+        // specifically through the auxclasspath classloader.
+        // But this method should only be used in tests anyway
+        return (JavaTypeQualifiedName) ofStringWithClassLoader(name, clazz.getClassLoader());
     }
 
 
@@ -146,6 +145,10 @@ public final class QualifiedNameFactory {
      * @return A qualified name instance corresponding to the parsed string.
      */
     public static JavaQualifiedName ofString(String name) {
+        return ofStringWithClassLoader(name, null);
+    }
+
+    private static JavaQualifiedName ofStringWithClassLoader(String name, ClassLoader classLoader) {
         Matcher matcher = FORMAT.matcher(name);
 
         if (!matcher.matches()) {
@@ -153,8 +156,8 @@ public final class QualifiedNameFactory {
         }
 
         ImmutableList<String> packages = StringUtils.isBlank(matcher.group(PACKAGES_GROUP_INDEX))
-                ? ListFactory.<String>emptyList()
-                : ListFactory.split(matcher.group(PACKAGES_GROUP_INDEX), "\\.");
+                                         ? ListFactory.<String>emptyList()
+                                         : ListFactory.split(matcher.group(PACKAGES_GROUP_INDEX), "\\.");
 
         String operation = matcher.group(OPERATION_GROUP_INDEX) == null ? null : matcher.group(OPERATION_GROUP_INDEX).substring(1);
         boolean isLambda = operation != null && COMPILED_LAMBDA_PATTERN.matcher(operation).matches();
@@ -175,7 +178,7 @@ public final class QualifiedNameFactory {
             }
         }
 
-        JavaTypeQualifiedName parent = new JavaTypeQualifiedName(packages, classes, localIndices);
+        JavaTypeQualifiedName parent = new JavaTypeQualifiedName(packages, classes, localIndices, classLoader);
         return operation == null ? parent : new JavaOperationQualifiedName(parent, operation, isLambda);
     }
 }

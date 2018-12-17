@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -13,14 +15,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
-import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * A method/constructor shouldn't explicitly throw java.lang.Exception, since it
@@ -38,8 +39,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
-    private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty(
-            "IgnoreJUnitCompletely", "Allow all methods in a JUnit testcase to throw Exceptions", false, 1.0f);
+    private static final PropertyDescriptor<Boolean> IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = booleanProperty("IgnoreJUnitCompletely").defaultValue(false).desc("Allow all methods in a JUnit testcase to throw Exceptions").build();
 
     // Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
@@ -60,28 +60,17 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
-        if (impl != null && impl.jjtGetParent().equals(node)) {
-            for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
-                Node child = impl.jjtGetChild(ix);
-
-                if (child.getClass() != ASTClassOrInterfaceType.class) {
-                    continue;
-                }
-
-                ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) child;
-                if (isJUnitTest(type)) {
-                    junitImported = true;
-                    return super.visit(node, data);
-                }
-            }
-        }
-        if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
-            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
+        for (final ASTClassOrInterfaceType type : node.getSuperInterfacesTypeNodes()) {
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
             }
+        }
+        
+        ASTClassOrInterfaceType type = node.getSuperClassTypeNode();
+        if (type != null && isJUnitTest(type)) {
+            junitImported = true;
+            return super.visit(node, data);
         }
 
         return super.visit(node, data);

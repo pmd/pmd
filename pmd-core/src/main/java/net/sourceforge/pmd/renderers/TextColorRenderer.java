@@ -7,13 +7,12 @@ package net.sourceforge.pmd.renderers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -55,6 +54,7 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "textcolor";
 
+    // What? TODO 7.0.0 Use a boolean property
     public static final StringProperty COLOR = new StringProperty("color",
             "Enables colors with anything other than 'false' or '0'.", "yes", 0);
     private static final String SYSTEM_PROPERTY_PMD_COLOR = "pmd.color";
@@ -191,23 +191,25 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
      */
     private String getLine(String sourceFile, int line) {
         String code = null;
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(getReader(sourceFile));
+        try (BufferedReader br = new BufferedReader(getReader(sourceFile))) {
             for (int i = 0; line > i; i++) {
                 String txt = br.readLine();
                 code = txt == null ? "" : txt.trim();
             }
         } catch (IOException ioErr) {
             ioErr.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(br);
         }
         return code;
     }
 
     protected Reader getReader(String sourceFile) throws FileNotFoundException {
-        return new FileReader(new File(sourceFile));
+        try {
+            return Files.newBufferedReader(new File(sourceFile).toPath(), Charset.defaultCharset());
+        } catch (IOException e) {
+            FileNotFoundException ex = new FileNotFoundException(sourceFile);
+            ex.initCause(e);
+            throw ex;
+        }
     }
 
     /**

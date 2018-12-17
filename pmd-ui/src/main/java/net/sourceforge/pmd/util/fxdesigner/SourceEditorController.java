@@ -47,6 +47,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
+import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -121,7 +122,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                       .subscribe(tick -> {
                           // Discard the AST if the language version has changed
                           tick.ifRight(c -> astTreeView.setRoot(null));
-                          parent.refreshAST();
+                          Platform.runLater(parent::refreshAST);
                       });
 
         codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
@@ -258,6 +259,10 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     private void scrollEditorToNode(Node node) {
 
         codeEditorArea.moveTo(node.getBeginLine() - 1, 0);
+
+        if (codeEditorArea.getVisibleParagraphs().size() < 1) {
+            return;
+        }
 
         int visibleLength = codeEditorArea.lastVisibleParToAllParIndex() - codeEditorArea.firstVisibleParToAllParIndex();
 

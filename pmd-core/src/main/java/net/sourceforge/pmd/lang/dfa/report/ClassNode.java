@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.dfa.report;
 
+@Deprecated // will be removed with PMD 7.0.0 without replacement. See net.sourceforge.pmd.lang.dfa.report.ReportTree for details.
 public class ClassNode extends AbstractReportNode {
 
     private String className;

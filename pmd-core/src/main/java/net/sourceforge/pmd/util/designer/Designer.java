@@ -20,13 +20,13 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -92,7 +92,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -992,12 +991,10 @@ public class Designer implements ClipboardOwner {
     }
 
     private void loadSettings() {
-        InputStream stream = null;
-        try {
-            File file = new File(SETTINGS_FILE_NAME);
-            if (file.exists()) {
+        File file = new File(SETTINGS_FILE_NAME);
+        if (file.exists()) {
+            try (InputStream stream = Files.newInputStream(file.toPath())) {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                stream = new FileInputStream(file);
                 Document document = builder.parse(stream);
                 Element settingsElement = document.getDocumentElement();
                 Element codeElement = (Element) settingsElement.getElementsByTagName("code").item(0);
@@ -1018,15 +1015,9 @@ public class Designer implements ClipboardOwner {
                         break;
                     }
                 }
+            } catch (ParserConfigurationException | IOException | SAXException e) {
+                e.printStackTrace();
             }
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(stream);
         }
     }
 
@@ -1059,13 +1050,10 @@ public class Designer implements ClipboardOwner {
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
             Source source = new DOMSource(document);
-            Result result = new StreamResult(new FileWriter(new File(SETTINGS_FILE_NAME)));
+            Result result = new StreamResult(Files.newBufferedWriter(new File(SETTINGS_FILE_NAME).toPath(),
+                    StandardCharsets.UTF_8));
             transformer.transform(source, result);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
+        } catch (ParserConfigurationException | IOException | TransformerException e) {
             e.printStackTrace();
         }
     }

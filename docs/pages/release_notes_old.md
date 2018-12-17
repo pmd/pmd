@@ -3,8 +3,710 @@ title: Old Release Notes
 permalink: pmd_release_notes_old.html
 ---
 
-Previous versions of PMD can be downloaded here:
-http://sourceforge.net/projects/pmd/files/pmd/
+Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
+
+## 09-December-2018 - 6.10.0
+
+The PMD team is pleased to announce PMD 6.10.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Kotlin support for CPD](#kotlin-support-for-cpd)
+    * [New Rules](#new-rules)
+    * [Modified Rules](#modified-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Properties framework](#properties-framework)
+        * [Changes to how you define properties](#changes-to-how-you-define-properties)
+        * [Architectural simplifications](#architectural-simplifications)
+        * [Changes to the PropertyDescriptor interface](#changes-to-the-propertydescriptor-interface)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For internalization](#for-internalization)
+        * [For removal](#for-removal)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Kotlin support for CPD
+
+Thanks to [Maikel Steneker](https://github.com/maikelsteneker), CPD now supports [Kotlin](https://kotlinlang.org/).
+This means, you can use CPD to find duplicated code in your Kotlin projects.
+
+#### New Rules
+
+*   The new Java rule [`UseUnderscoresInNumericLiterals`](https://pmd.github.io/pmd-6.10.0/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals) (`java-codestyle`)
+    verifies that numeric literals over a given length (4 chars by default, but configurable) are using
+    underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.
+
+#### Modified Rules
+
+*   The Java rule [`JUnitTestsShouldIncludeAssert`](https://pmd.github.io/pmd-6.10.0/pmd_rules_java_bestpractices.html#junittestsshouldincludeassert) (`java-bestpractices`)
+    now also detects [Soft Assertions](https://github.com/joel-costigliola/assertj-core).
+
+*   The property `exceptionfile` of the rule [`AvoidDuplicateLiterals`](https://pmd.github.io/pmd-6.10.0/pmd_rules_java_errorprone.html#avoidduplicateliterals) (`java-errorprone`)
+    has been deprecated and will be removed with 7.0.0. Please use `exceptionList` instead.
+
+### Fixed Issues
+*   all
+    *   [#1284](https://github.com/pmd/pmd/issues/1284): \[doc] Keep record of every currently deprecated API
+    *   [#1318](https://github.com/pmd/pmd/issues/1318): \[test] Kotlin DSL to ease test writing
+    *   [#1328](https://github.com/pmd/pmd/issues/1328): \[ci] Building docs for release fails
+    *   [#1341](https://github.com/pmd/pmd/issues/1341): \[doc] Documentation Error with Regex Properties
+    *   [#1468](https://github.com/pmd/pmd/issues/1468): \[doc] Missing escaping leads to XSS
+    *   [#1471](https://github.com/pmd/pmd/issues/1471): \[core] XMLRenderer: ProcessingErrors from exceptions without a message missing
+    *   [#1477](https://github.com/pmd/pmd/issues/1477): \[core] Analysis cache fails with wildcard classpath entries
+*   java
+    *   [#1460](https://github.com/pmd/pmd/issues/1460): \[java] Intermittent PMD failure : PMD processing errors while no violations reported
+*   java-bestpractices
+    *   [#647](https://github.com/pmd/pmd/issues/647): \[java] JUnitTestsShouldIncludeAssertRule should support `this.exception` as well as just `exception`
+    *   [#1435](https://github.com/pmd/pmd/issues/1435): \[java] JUnitTestsShouldIncludeAssert: Support AssertJ soft assertions
+*   java-codestyle
+    *   [#1232](https://github.com/pmd/pmd/issues/1232): \[java] Detector for large numbers not separated by _
+    *   [#1372](https://github.com/pmd/pmd/issues/1372): \[java] false positive for UselessQualifiedThis
+    *   [#1440](https://github.com/pmd/pmd/issues/1440): \[java] CommentDefaultAccessModifierRule shows incorrect message
+*   java-design
+    *   [#1151](https://github.com/pmd/pmd/issues/1151): \[java] ImmutableField false positive with multiple constructors
+    *   [#1483](https://github.com/pmd/pmd/issues/1483): \[java] Cyclo metric should count conditions of for statements correctly
+*   java-errorprone
+    *   [#1512](https://github.com/pmd/pmd/issues/1512): \[java] InvalidSlf4jMessageFormatRule causes NPE in lambda and static blocks
+*   plsql
+    *   [#1454](https://github.com/pmd/pmd/issues/1454): \[plsql] ParseException for IF/CASE statement with >=, <=, !=
+
+
+### API Changes
+
+#### Properties framework
+
+
+
+
+
+The properties framework is about to get a lifting, and for that reason, we need to deprecate a lot of APIs
+to remove them in 7.0.0. The proposed changes to the API are described [on the wiki](https://github.com/pmd/pmd/wiki/Property-framework-7-0-0)
+
+##### Changes to how you define properties
+
+
+* Construction of property descriptors has been possible through builders since 6.0.0. The 7.0.0 API will only allow
+construction through builders. The builder hierarchy, currently found in the package [`net.sourceforge.pmd.properties.builders`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/package-summary.html#),
+is being replaced by the simpler [`PropertyBuilder`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyBuilder.html#). Their APIs enjoy a high degree of source compatibility.
+
+* Concrete property classes like [`IntegerProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerProperty.html#) and [`StringMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringMultiProperty.html#) will gradually
+all be deprecated until 7.0.0. Their usages should be replaced by direct usage of the [`PropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#)
+interface, e.g. `PropertyDescriptor<Integer>` or `PropertyDescriptor<List<String>>`.
+
+* Instead of spreading properties across countless classes, the utility class [`PropertyFactory`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#) will become
+from 7.0.0 on the only provider for property descriptor builders. Each current property type will be replaced
+by a corresponding method on `PropertyFactory`:
+  * [`IntegerProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerProperty.html#) is replaced by [`PropertyFactory#intProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intProperty(java.lang.String))
+    * [`IntegerMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/IntegerMultiProperty.html#) is replaced by [`PropertyFactory#intListProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#intListProperty(java.lang.String))
+
+  * [`FloatProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatProperty.html#) and [`DoubleProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleProperty.html#) are both replaced by [`PropertyFactory#doubleProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleProperty(java.lang.String)).
+    Having a separate property for floats wasn't that useful.
+    * Similarly, [`FloatMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FloatMultiProperty.html#) and [`DoubleMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/DoubleMultiProperty.html#) are replaced by [`PropertyFactory#doubleListProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#doubleListProperty(java.lang.String)).
+
+  * [`StringProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringProperty.html#) is replaced by [`PropertyFactory#stringProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringProperty(java.lang.String))
+    * [`StringMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/StringMultiProperty.html#) is replaced by [`PropertyFactory#stringListProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#stringListProperty(java.lang.String))
+
+  * [`RegexProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/RegexProperty.html#) is replaced by [`PropertyFactory#regexProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#regexProperty(java.lang.String))
+
+  * [`EnumeratedProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#) is replaced by [`PropertyFactory#enumProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map))
+    * [`EnumeratedProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/EnumeratedProperty.html#) is replaced by [`PropertyFactory#enumListProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map))
+
+  * [`BooleanProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanProperty.html#) is replaced by [`PropertyFactory#booleanProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#booleanProperty(java.lang.String))
+    * Its multi-valued counterpart, [`BooleanMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/BooleanMultiProperty.html#), is not replaced, because it doesn't have a use case.
+
+  * [`CharacterProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/CharacterProperty.html#) is replaced by [`PropertyFactory#charProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#charProperty(java.lang.String))
+    * [`CharacterMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/CharacterMultiProperty.html#) is replaced by [`PropertyFactory#charListProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#charListProperty(java.lang.String))
+
+  * [`LongProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/LongProperty.html#) is replaced by [`PropertyFactory#longIntProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntProperty(java.lang.String))
+    * [`LongMultiProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/LongMultiProperty.html#) is replaced by [`PropertyFactory#longIntListProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyFactory.html#longIntListProperty(java.lang.String))
+
+  * [`MethodProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MethodProperty.html#), [`FileProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/FileProperty.html#), [`TypeProperty`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/TypeProperty.html#) and their multi-valued counterparts
+    are discontinued for lack of a use-case, and have no planned replacement in 7.0.0 for now.
+    <!-- TODO complete that as we proceed. -->
+
+
+Here's an example:
+```java
+// Before 7.0.0, these are equivalent:
+IntegerProperty myProperty = new IntegerProperty("score", "Top score value", 1, 100, 40, 3.0f);
+IntegerProperty myProperty = IntegerProperty.named("score").desc("Top score value").range(1, 100).defaultValue(40).uiOrder(3.0f);
+
+// They both map to the following in 7.0.0
+PropertyDescriptor<Integer> myProperty = PropertyFactory.intProperty("score").desc("Top score value").require(inRange(1, 100)).defaultValue(40);
+```
+
+You're highly encouraged to migrate to using this new API as soon as possible, to ease your migration to 7.0.0.
+
+
+
+##### Architectural simplifications
+
+* [`EnumeratedPropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/EnumeratedPropertyDescriptor.html#), [`NumericPropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/NumericPropertyDescriptor.html#), [`PackagedPropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PackagedPropertyDescriptor.html#),
+and the related builders (in [`net.sourceforge.pmd.properties.builders`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/package-summary.html#)) will be removed.
+These specialized interfaces allowed additional constraints to be enforced on the
+value of a property, but made the property class hierarchy very large and impractical
+to maintain. Their functionality will be mapped uniformly to [`PropertyConstraint`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/constraints/PropertyConstraint.html#)s,
+which will allow virtually any constraint to be defined, and improve documentation and error reporting. The
+related methods [`PropertyTypeId#isPropertyNumeric`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyNumeric()) and
+[`PropertyTypeId#isPropertyPackaged`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#isPropertyPackaged()) are also deprecated.
+
+* [`MultiValuePropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/MultiValuePropertyDescriptor.html#) and [`SingleValuePropertyDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/SingleValuePropertyDescriptor.html#)
+are deprecated. 7.0.0 will introduce a new XML syntax which will remove the need for such a divide
+between single- and multi-valued properties. The method [`PropertyDescriptor#isMultiValue`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()) will be removed
+accordingly.
+
+##### Changes to the PropertyDescriptor interface
+
+* [`preferredRowCount`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#preferredRowCount()) is deprecated with no intended replacement. It was never implemented, and does not belong
+  in this interface. The methods [`uiOrder`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#uiOrder()) and `compareTo(PropertyDescriptor)` are deprecated for the
+  same reason. These methods mix presentation logic with business logic and are not necessary for PropertyDescriptors to work.
+  `PropertyDescriptor` will not extend `Comparable<PropertyDescriptor>` anymore come 7.0.0.
+* The method [`propertyErrorFor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#propertyErrorFor(net.sourceforge.pmd.Rule)) is deprecated and will be removed with no intended
+  replacement. It's really just a shortcut for `prop.errorFor(rule.getProperty(prop))`.
+* `T `[`valueFrom(String)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#valueFrom(java.lang.String)) and `String `[`asDelimitedString`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#asDelimitedString(java.lang.Object))`(T)` are deprecated and will be removed. These were
+  used to serialize and deserialize properties to/from a string, but 7.0.0 will introduce a more flexible
+  XML syntax which will make them obsolete.
+* [`isMultiValue`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isMultiValue()) and [`type`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#type()) are deprecated and won't be replaced. The new XML syntax will remove the need
+  for a divide between multi- and single-value properties, and will allow arbitrary types to be represented.
+  Since arbitrary types may be represented, `type` will become obsolete as it can't represent generic types,
+  which will nevertheless be representable with the XML syntax. It was only used for documentation, but a
+  new way to document these properties exhaustively will be added with 7.0.0.
+* [`errorFor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#errorFor(java.lang.Object)) is deprecated as its return type will be changed to `Optional<String>` with the shift to Java 8.
+
+#### Deprecated APIs
+
+
+
+
+
+
+
+
+##### For internalization
+
+*   The implementation of the adapters for the XPath engines Saxon and Jaxen (package [`net.sourceforge.pmd.lang.ast.xpath`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/package-summary.html#))
+    are now deprecated. They'll be moved to an internal package come 7.0.0. Only [`Attribute`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/ast/xpath/Attribute.html#) remains public API.
+
+*   The classes [`PropertyDescriptorField`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptorField.html#), [`PropertyDescriptorBuilderConversionWrapper`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/builders/PropertyDescriptorBuilderConversionWrapper.html#), and the methods
+    [`PropertyDescriptor#attributeValuesById`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#attributeValuesById), [`PropertyDescriptor#isDefinedExternally`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyDescriptor.html#isDefinedExternally()) and [`PropertyTypeId#getFactory`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/PropertyTypeId.html#getFactory()).
+    These were used to read and write properties to and from XML, but were not intended as public API.
+
+*   The class [`ValueParserConstants`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParserConstants.html#) and the interface [`ValueParser`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/ValueParser.html#).
+
+*   All classes from [`net.sourceforge.pmd.lang.java.metrics.impl.visitors`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/metrics/impl/visitors/package-summary.html#) are now considered internal API. They're deprecated
+    and will be moved into an internal package with 7.0.0. To implement your own metrics visitors,
+    [`JavaParserVisitorAdapter`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorAdapter.html#) should be directly subclassed.
+
+*   [`LanguageVersionHandler#getDataFlowHandler()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowHandler()), [`LanguageVersionHandler#getDFAGraphRule()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDFAGraphRule())
+
+*   [`VisitorStarter`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/VisitorStarter.html#)
+
+##### For removal
+
+*   All classes from [`net.sourceforge.pmd.properties.modules`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/properties/modules/package-summary.html#) will be removed.
+
+*   The interface [`Dimensionable`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/Dimensionable.html#) has been deprecated.
+    It gets in the way of a grammar change for 7.0.0 and won't be needed anymore (see [#997](https://github.com/pmd/pmd/issues/997)).
+
+*   Several methods from [`ASTLocalVariableDeclaration`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTLocalVariableDeclaration.html#) and [`ASTFieldDeclaration`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#) have
+    also been deprecated:
+
+    *   [`ASTFieldDeclaration`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#) won't be a [`TypeNode`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/TypeNode.html#) come 7.0.0, so
+        [`getType`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getType()) and
+        [`getTypeDefinition`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTFieldDeclaration.html#getTypeDefinition()) are deprecated.
+
+    *   The method `getVariableName` on those two nodes will be removed, too.
+
+    All these are deprecated because those nodes may declare several variables at once, possibly
+    with different types (and obviously with different names). They both implement `Iterator<`[`ASTVariableDeclaratorId`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/ASTVariableDeclaratorId.html#)`>`
+    though, so you should iterate on each declared variable. See [#910](https://github.com/pmd/pmd/issues/910).
+
+*   Visitor decorators are now deprecated and will be removed in PMD 7.0.0. They were originally a way to write
+    composable visitors, used in the metrics framework, but they didn't prove cost-effective.
+
+    *   In [`net.sourceforge.pmd.lang.java.ast`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/package-summary.html#): [`JavaParserDecoratedVisitor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserDecoratedVisitor.html#), [`JavaParserControllessVisitor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitor.html#),
+        [`JavaParserControllessVisitorAdapter`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserControllessVisitorAdapter.html#), and [`JavaParserVisitorDecorator`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.10.0/net/sourceforge/pmd/lang/java/ast/JavaParserVisitorDecorator.html#) are deprecated with no intended replacement.
+
+
+*   The LanguageModules of several languages, that only support CPD execution, have been deprecated. These languages
+    are not fully supported by PMD, so having a language module does not make sense. The functionality of CPD is
+    not affected by this change. The following classes have been deprecated and will be removed with PMD 7.0.0:
+
+    *   [`CppHandler`](https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.10.0/net/sourceforge/pmd/lang/cpp/CppHandler.html#)
+    *   [`CppLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.10.0/net/sourceforge/pmd/lang/cpp/CppLanguageModule.html#)
+    *   [`CppParser`](https://javadoc.io/page/net.sourceforge.pmd/pmd-cpp/6.10.0/net/sourceforge/pmd/lang/cpp/CppParser.html#)
+    *   [`CsLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-cs/6.10.0/net/sourceforge/pmd/lang/cs/CsLanguageModule.html#)
+    *   [`FortranLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-fortran/6.10.0/net/sourceforge/pmd/lang/fortran/FortranLanguageModule.html#)
+    *   [`GroovyLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-groovy/6.10.0/net/sourceforge/pmd/lang/groovy/GroovyLanguageModule.html#)
+    *   [`MatlabHandler`](https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.10.0/net/sourceforge/pmd/lang/matlab/MatlabHandler.html#)
+    *   [`MatlabLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.10.0/net/sourceforge/pmd/lang/matlab/MatlabLanguageModule.html#)
+    *   [`MatlabParser`](https://javadoc.io/page/net.sourceforge.pmd/pmd-matlab/6.10.0/net/sourceforge/pmd/lang/matlab/MatlabParser.html#)
+    *   [`ObjectiveCHandler`](https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.10.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCHandler.html#)
+    *   [`ObjectiveCLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.10.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCLanguageModule.html#)
+    *   [`ObjectiveCParser`](https://javadoc.io/page/net.sourceforge.pmd/pmd-objectivec/6.10.0/net/sourceforge/pmd/lang/objectivec/ObjectiveCParser.html#)
+    *   [`PhpLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-php/6.10.0/net/sourceforge/pmd/lang/php/PhpLanguageModule.html#)
+    *   [`PythonHandler`](https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.10.0/net/sourceforge/pmd/lang/python/PythonHandler.html#)
+    *   [`PythonLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.10.0/net/sourceforge/pmd/lang/python/PythonLanguageModule.html#)
+    *   [`PythonParser`](https://javadoc.io/page/net.sourceforge.pmd/pmd-python/6.10.0/net/sourceforge/pmd/lang/python/PythonParser.html#)
+    *   [`RubyLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-ruby/6.10.0/net/sourceforge/pmd/lang/ruby/RubyLanguageModule.html#)
+    *   [`ScalaLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-scala/6.10.0/net/sourceforge/pmd/lang/scala/ScalaLanguageModule.html#)
+    *   [`SwiftLanguageModule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-swift/6.10.0/net/sourceforge/pmd/lang/swift/SwiftLanguageModule.html#)
+
+
+* Optional AST processing stages like symbol table, type resolution or data-flow analysis will be reified
+in 7.0.0 to factorise common logic and make them extensible. Further explanations about this change can be
+found on [#1426](https://github.com/pmd/pmd/pull/1426). Consequently, the following APIs are deprecated for
+removal:
+  * In [`Rule`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#): [`isDfa()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isDfa()), [`isTypeResolution()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isTypeResolution()), [`isMultifile()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/Rule.html#isMultifile()) and their
+    respective setters.
+  * In [`RuleSet`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#): [`usesDFA(Language)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesDFA(net.sourceforge.pmd.lang.Language)), [`usesTypeResolution(Language)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)), [`usesMultifile(Language)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSet.html#usesMultifile(net.sourceforge.pmd.lang.Language))
+  * In [`RuleSets`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#): [`usesDFA(Language)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesDFA(net.sourceforge.pmd.lang.Language)), [`usesTypeResolution(Language)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesTypeResolution(net.sourceforge.pmd.lang.Language)), [`usesMultifile(Language)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/RuleSets.html#usesMultifile(net.sourceforge.pmd.lang.Language))
+  * In [`LanguageVersionHandler`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#): [`getDataFlowFacade()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDataFlowFacade()), [`getSymbolFacade()`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade()), [`getSymbolFacade(ClassLoader)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getSymbolFacade(java.lang.ClassLoader)),
+    [`getTypeResolutionFacade(ClassLoader)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getTypeResolutionFacade(java.lang.ClassLoader)), [`getQualifiedNameResolutionFacade(ClassLoader)`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.10.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getQualifiedNameResolutionFacade(java.lang.ClassLoader))
+
+### External Contributions
+
+*   [#1384](https://github.com/pmd/pmd/pull/1384): \[java] New Rule - UseUnderscoresInNumericLiterals - [RajeshR](https://github.com/rajeshggwp)
+*   [#1424](https://github.com/pmd/pmd/pull/1424): \[doc] #1341 Updating Regex Values in default Value Property - [avishvat](https://github.com/vishva007)
+*   [#1428](https://github.com/pmd/pmd/pull/1428): \[core] Upgrading JCommander from 1.48 to 1.72 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1430](https://github.com/pmd/pmd/pull/1430): \[doc] Who really knows regex? - [Dem Pilafian](https://github.com/dpilafian)
+*   [#1434](https://github.com/pmd/pmd/pull/1434): \[java] JUnitTestsShouldIncludeAssert: Recognize AssertJ soft assertions as valid assert statements - [Loïc Ledoyen](https://github.com/ledoyen)
+*   [#1439](https://github.com/pmd/pmd/pull/1439): \[java] Avoid FileInputStream and FileOutputStream - [reudismam](https://github.com/reudismam)
+*   [#1441](https://github.com/pmd/pmd/pull/1441): \[kotlin] [cpd] Added CPD support for Kotlin - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1447](https://github.com/pmd/pmd/pull/1447): \[fortran] Use diamond operator in impl - [reudismam](https://github.com/reudismam)
+*   [#1453](https://github.com/pmd/pmd/pull/1453): \[java] Adding the fix for #1440. Showing correct message for CommentDefaultAccessmodifier. - [Rohit Kumar](https://github.com/stationeros)
+*   [#1457](https://github.com/pmd/pmd/pull/1457): \[java] Adding test for Issue #647 - [orimarko](https://github.com/orimarko)
+*   [#1464](https://github.com/pmd/pmd/pull/1464): \[doc] Fix XSS on documentation web page - [Maxime Robert](https://github.com/marob)
+*   [#1469](https://github.com/pmd/pmd/pull/1469): \[core] Configurable max loops in DAAPathFinder - [Alberto Fernández](https://github.com/albfernandez)
+*   [#1494](https://github.com/pmd/pmd/pull/1494): \[java] 1151: Rephrase ImmutableField documentation in design.xml - [Robbie Martinus](https://github.com/rmartinus)
+*   [#1504](https://github.com/pmd/pmd/pull/1504): \[java] NPE in InvalidSlf4jMessageFormatRule if a logger call with a variable as parameter is not inside a method or constructor - [kris-scheibe](https://github.com/kris-scheibe)
+
+## 28-October-2018 - 6.9.0
+
+The PMD team is pleased to announce PMD 6.9.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Improved Golang CPD Support](#improved-golang-cpd-support)
+    * [New Rules](#new-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Improved Golang CPD Support
+
+Thanks to the work of [ITBA](https://www.itba.edu.ar/) students [Matías Fraga](https://github.com/matifraga),
+[Tomi De Lucca](https://github.com/tomidelucca) and [Lucas Soncini](https://github.com/lsoncini),
+Golang is now backed by a proper Antlr Grammar. This means CPD is now better at detecting duplicates,
+as comments are recognized as such and ignored.
+
+#### New Rules
+
+*   The new PLSQL rule [`CodeFormat`](https://pmd.github.io/pmd-6.9.0/pmd_rules_plsql_codestyle.html#codeformat) (`plsql-codestyle`) verifies that
+    PLSQL code is properly formatted. It checks e.g. for correct indentation in select statements and verifies
+    that each parameter is defined on a separate line.
+
+### Fixed Issues
+
+*   all
+    *   [#649](https://github.com/pmd/pmd/issues/649): \[core] Exclude specific files from command line
+    *   [#1272](https://github.com/pmd/pmd/issues/1272): \[core] Could not find or load main class when using symlinked run.sh
+    *   [#1377](https://github.com/pmd/pmd/issues/1377): \[core] LanguageRegistry uses default class loader when invoking ServiceLocator 
+    *   [#1394](https://github.com/pmd/pmd/issues/1394): \[doc] How to configure "-cache <path>"
+    *   [#1412](https://github.com/pmd/pmd/issues/1412): \[doc] Broken link to adding new cpd language documentation
+*   apex
+    *   [#1396](https://github.com/pmd/pmd/issues/1396): \[apex] ClassCastException caused by Javadoc
+*   java
+    *   [#1330](https://github.com/pmd/pmd/issues/1330): \[java] PMD crashes with java.lang.ClassFormatError: Absent Code attribute in method that is not native or abstract in class file javax/xml/ws/Service
+*   java-bestpractices
+    *   [#1202](https://github.com/pmd/pmd/issues/1202): \[java] GuardLogStatement: "There is log block not surrounded by if" doesn't sound right
+    *   [#1209](https://github.com/pmd/pmd/issues/1209): \[java] UnusedImports false positive for static import with package-private method usage
+    *   [#1343](https://github.com/pmd/pmd/issues/1343): \[java] Update CommentDefaultAccessModifierRule to extend AbstractIgnoredAnnotationRule
+    *   [#1365](https://github.com/pmd/pmd/issues/1365): \[java] JUnitTestsShouldIncludeAssert false positive
+    *   [#1404](https://github.com/pmd/pmd/issues/1404): \[java] UnusedImports false positive with static ondemand import with method call
+*   java-codestyle
+    *   [#1199](https://github.com/pmd/pmd/issues/1199): \[java] UnnecessaryFullyQualifiedName doesn't flag same package FQCNs
+    *   [#1356](https://github.com/pmd/pmd/issues/1356): \[java] UnnecessaryModifier wrong message public-\>static
+*   java-design
+    *   [#1369](https://github.com/pmd/pmd/issues/1369): \[java] Processing error (ClassCastException) if a TYPE\_USE annotation is used on a base class in the "extends" clause
+*   jsp
+    *   [#1402](https://github.com/pmd/pmd/issues/1402): \[jsp] JspTokenManager has a problem about jsp scriptlet
+*   documentation
+    *   [#1349](https://github.com/pmd/pmd/pull/1349): \[doc] Provide some explanation for WHY duplicate code is bad, like mutations
+
+### API Changes
+
+*   PMD has a new CLI option `-ignorelist`. With that, you can provide a file containing a comma-delimit list of files,
+    that should be excluded during analysis. The ignorelist is applied after the files have been selected
+    via `-dir` or `-filelist`, which means, if the file is in both lists, then it will be ignored.
+    Note: there is no corresponding option for the Ant task, since the feature is already available via
+    Ant's FileSet include/exclude filters.
+
+### External Contributions
+
+*   [#1338](https://github.com/pmd/pmd/pull/1338): \[core] \[cpd] Generalize ANTLR tokens preparing support for ANTLR token filter - [Matías Fraga](https://github.com/matifraga) and [Tomi De Lucca](https://github.com/tomidelucca)
+*   [#1361](https://github.com/pmd/pmd/pull/1361): \[doc] Update cpd.md with information about risks - [David M. Karr](https://github.com/davidmichaelkarr)
+*   [#1366](https://github.com/pmd/pmd/pull/1366): \[java] Static Modifier on Internal Interface pmd #1356 - [avishvat](https://github.com/vishva007)
+*   [#1368](https://github.com/pmd/pmd/pull/1368): \[doc] Updated outdated note in the building documentation. - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1374](https://github.com/pmd/pmd/pull/1374): \[java] Simplify check for 'Test' annotation in JUnitTestsShouldIncludeAssertRule. - [Will Winder](https://github.com/winder)
+*   [#1375](https://github.com/pmd/pmd/pull/1375): \[java] Add missing null check AbstractJavaAnnotatableNode - [Will Winder](https://github.com/winder)
+*   [#1376](https://github.com/pmd/pmd/pull/1376): \[all] Upgrading Apache Commons IO from 2.4 to 2.6 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1378](https://github.com/pmd/pmd/pull/1378): \[all] Upgrading Apache Commons Lang 3 from 3.7 to 3.8.1 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1382](https://github.com/pmd/pmd/pull/1382): \[all] Replacing deprecated IO methods with ones that specify a charset - [Thunderforge](https://github.com/Thunderforge)
+*   [#1383](https://github.com/pmd/pmd/pull/1383): \[java] Improved message for GuardLogStatement rule - [Felix Lampe](https://github.com/fblampe)
+*   [#1386](https://github.com/pmd/pmd/pull/1386): \[go] \[cpd] Add CPD support for Antlr based grammar on Golang - [Matías Fraga](https://github.com/matifraga)
+*   [#1398](https://github.com/pmd/pmd/pull/1398): \[all] Upgrading SLF4J from 1.7.12 to 1.7.25 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1400](https://github.com/pmd/pmd/pull/1400): \[java] Fix Issue 1343: Update CommentDefaultAccessModifierRule - [CrazyUnderdog](https://github.com/CrazyUnderdog)
+*   [#1401](https://github.com/pmd/pmd/pull/1401): \[all] Replacing IOUtils.closeQuietly(foo) with try-with-resources statements - [Thunderforge](https://github.com/Thunderforge)
+*   [#1406](https://github.com/pmd/pmd/pull/1406): \[jsp] Fix issue 1402: JspTokenManager has a problem about jsp scriptlet - [JustPRV](https://github.com/JustPRV)
+*   [#1411](https://github.com/pmd/pmd/pull/1411): \[core] Add ignore file path functionality - [Jon Moroney](https://github.com/darakian)
+*   [#1414](https://github.com/pmd/pmd/pull/1414): \[doc] Fix broken link. Fixes #1412 - [Johan Hammar](https://github.com/johanhammar)
+
+
+## 30-September-2018 - 6.8.0
+
+The PMD team is pleased to announce PMD 6.8.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Drawing a line between private and public API](#drawing-a-line-between-private-and-public-api)
+            * [`.internal` packages and `@InternalApi` annotation](#`.internal`-packages-and-`@internalapi`-annotation)
+            * [`@ReservedSubclassing`](#`@reservedsubclassing`)
+            * [`@Experimental`](#`@experimental`)
+            * [`@Deprecated`](#`@deprecated`)
+            * [The transition](#the-transition)
+    * [Quickstart Ruleset](#quickstart-ruleset)
+    * [New Rules](#new-rules)
+    * [Modified Rules](#modified-rules)
+    * [PLSQL](#plsql)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Drawing a line between private and public API
+
+Until now, all released public members and types were implicitly considered part
+of PMD's public API, including inheritance-specific members (protected members, abstract methods).
+We have maintained those APIs with the goal to preserve full binary compatibility between minor releases,
+only breaking those APIs infrequently, for major releases.
+
+In order to allow PMD to move forward at a faster pace, this implicit contract will
+be invalidated with PMD 7.0.0. We now introduce more fine-grained distinctions between
+the type of compatibility support we guarantee for our libraries, and ways to make
+them explicit to clients of PMD.
+
+###### `.internal` packages and `@InternalApi` annotation
+
+*Internal API* is meant for use *only* by the main PMD codebase. Internal types and methods
+may be modified in any way, or even removed, at any time.
+
+Any API in a package that contains an `.internal` segment is considered internal.
+The `@InternalApi` annotation will be used for APIs that have to live outside of
+these packages, e.g. methods of a public type that shouldn't be used outside of PMD (again,
+these can be removed anytime).
+
+###### `@ReservedSubclassing`
+
+Types marked with the `@ReservedSubclassing` annotation are only meant to be subclassed
+by classes within PMD. As such, we may add new abstract methods, or remove protected methods,
+at any time. All published public members remain supported. The annotation is *not* inherited, which
+means a reserved interface doesn't prevent its implementors to be subclassed.
+
+###### `@Experimental`
+
+APIs marked with the `@Experimental` annotation at the class or method level are subject to change.
+They can be modified in any way, or even removed, at any time. You should not use or rely
+ on them in any production code. They are purely to allow broad testing and feedback.
+
+###### `@Deprecated`
+
+APIs marked with the `@Deprecated` annotation at the class or method level will remain supported
+until the next major release but it is recommended to stop using them.
+
+###### The transition
+
+*All currently supported APIs will remain so until 7.0.0*. All APIs that are to be moved to
+`.internal` packages or hidden will be tagged `@InternalApi` before that major release, and
+the breaking API changes will be performed in 7.0.0.
+
+
+#### Quickstart Ruleset
+
+PMD 6.8.0 provides a first quickstart ruleset for Java, which you can use as a base ruleset to get your
+custom ruleset started. You can reference it with `rulesets/java/quickstart.xml`.
+You are strongly encouraged to [create your own ruleset](https://pmd.github.io/pmd-6.7.0/pmd_userdocs_making_rulesets.html)
+though.
+
+The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
+references only rules, that are most likely to apply everywhere.
+
+Any feedback would be greatly appreciated.
+
+
+#### New Rules
+
+*   The new Apex rule [`ApexDoc`](https://pmd.github.io/pmd-6.8.0/pmd_rules_apex_documentation.html#apexdoc) (`apex-documentation`)
+    enforces the inclusion of ApexDoc on classes, interfaces, properties and methods; as well as some
+    sanity rules for such docs (no missing parameters, parameters' order, and return value). By default,
+    method overrides and test classes are allowed to not include ApexDoc.
+
+
+#### Modified Rules
+
+*   The rule [`MissingSerialVersionUID`](https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingserialversionuid) (`java-errorprone`) has been modified
+    in order to recognize also missing `serialVersionUID` fields in abstract classes, if they are serializable.
+    Each individual class in the inheritance chain needs an own serialVersionUID field. See also [Should an abstract class have a serialVersionUID](https://stackoverflow.com/questions/893259/should-an-abstract-class-have-a-serialversionuid).
+    This change might lead to additional violations in existing code bases.
+
+
+#### PLSQL
+
+The grammar for PLSQL has been revamped in order to fully parse `SELECT INTO`, `UPDATE`, and `DELETE`
+statements. Previously such statements have been simply skipped ahead, now PMD is parsing them, giving access
+to the individual parts of a SELECT-statement, such as the Where-Clause. This might produce new parsing errors
+where PMD previously could successfully parse PLSQL code. If this happens, please report a new [issue](https://github.com/pmd/pmd/issues/new) to get this problem fixed.
+
+
+### Fixed Issues
+
+*   apex-bestpractices
+    *   [#1348](https://github.com/pmd/pmd/issues/1348): \[apex] AvoidGlobalModifierRule gives warning even when its a webservice - false positive
+*   java-codestyle
+    *   [#1329](https://github.com/pmd/pmd/issues/1329): \[java] FieldNamingConventions: false positive in serializable class with serialVersionUID
+    *   [#1334](https://github.com/pmd/pmd/issues/1334): \[java] LinguisticNaming should support AtomicBooleans
+*   java-errorprone
+    *   [#1350](https://github.com/pmd/pmd/issues/1350): \[java] MissingSerialVersionUID false-positive on interfaces
+    *   [#1352](https://github.com/pmd/pmd/issues/1352): \[java] MissingSerialVersionUID false-negative with abstract classes
+*   java-performance
+    *   [#1325](https://github.com/pmd/pmd/issues/1325): \[java] False positive in ConsecutiveLiteralAppends
+*   plsql
+    *   [#1279](https://github.com/pmd/pmd/pull/1279): \[plsql] Support for SELECT INTO
+
+
+### API Changes
+
+*   A couple of methods and fields in `net.sourceforge.pmd.properties.AbstractPropertySource` have been
+    deprecated, as they are replaced by already existing functionality or expose internal implementation
+    details: `propertyDescriptors`, `propertyValuesByDescriptor`,
+    `copyPropertyDescriptors()`, `copyPropertyValues()`, `ignoredProperties()`, `usesDefaultValues()`,
+    `useDefaultValueFor()`.
+
+*   Some methods in `net.sourceforge.pmd.properties.PropertySource` have been deprecated as well:
+    `usesDefaultValues()`, `useDefaultValueFor()`, `ignoredProperties()`.
+
+*   The class `net.sourceforge.pmd.lang.rule.AbstractDelegateRule` has been deprecated and will
+    be removed with PMD 7.0.0. It is internally only in use by RuleReference.
+
+*   The default constructor of `net.sourceforge.pmd.lang.rule.RuleReference` has been deprecated
+    and will be removed with PMD 7.0.0. RuleReferences should only be created by providing a Rule and
+    a RuleSetReference. Furthermore the following methods are deprecated: `setRuleReference()`,
+    `hasOverriddenProperty()`, `usesDefaultValues()`, `useDefaultValueFor()`.
+
+
+### External Contributions
+
+*   [#1309](https://github.com/pmd/pmd/pull/1309): \[core] \[CPD] Decouple Antlr Tokenizer implementation from any CPD language supported with Antlr - [Matías Fraga](https://github.com/matifraga)
+*   [#1314](https://github.com/pmd/pmd/pull/1314): \[apex] Add validation of ApexDoc comments - [Jeff Hube](https://github.com/jeffhube)
+*   [#1339](https://github.com/pmd/pmd/pull/1339): \[ci] Improve danger message - [BBG](https://github.com/djydewang)
+*   [#1340](https://github.com/pmd/pmd/pull/1340): \[java] Derive correct classname for non-public non-classes - [kris-scheibe](https://github.com/kris-scheibe)
+*   [#1357](https://github.com/pmd/pmd/pull/1357): \[doc] Improve Codacy description - [Daniel Reigada](https://github.com/DReigada)
+
+
+## 02-September-2018 - 6.7.0
+
+The PMD team is pleased to announce PMD 6.7.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    *   [Modified Rules](#modified-rules)
+    *   [New Rules](#new-rules)
+    *   [Deprecated Rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Modified Rules
+
+*   The Java rule {% rule java/bestpractices/OneDeclarationPerLine %} (`java-bestpractices`) has been revamped to
+    consider not only local variable declarations, but field declarations too.
+
+#### New Rules
+
+*   The new Java rule {% rule java/codestyle/LinguisticNaming %} (`java-codestyle`)
+    detects cases, when a method name indicates it returns a boolean (such as `isSmall()`) but it doesn't.
+    Besides method names, the rule also checks field and variable names. It also checks, that getters return
+    something but setters won't. The rule has several properties with which it can be customized.
+
+*   The new PL/SQL rule {% rule plsql/codestyle/ForLoopNaming %} (`plsql-codestyle`)
+    enforces a naming convention for "for loops". Both "cursor for loops" and "index for loops" are covered.
+    The rule can be customized via patterns. By default, short variable names are reported.
+
+*   The new Java rule {% rule java/codestyle/FieldNamingConventions %} (`java-codestyle`)
+    detects field names that don't comply to a given convention. It defaults to standard Java convention of using camelCase,
+    but can be configured with ease for e.g. constants or static fields.
+
+*   The new Apex rule {% rule apex/codestyle/OneDeclarationPerLine %} (`apex-codestyle`) enforces declaring a
+    single field / variable per line; or per statement if the `strictMode` property is set.
+    It's an Apex equivalent of the already existing Java rule of the same name.
+
+#### Deprecated Rules
+
+*   The Java rules {% rule java/codestyle/VariableNamingConventions %}, {% rule java/codestyle/MIsLeadingVariableName %},
+    {% rule java/codestyle/SuspiciousConstantFieldName %}, and {% rule java/codestyle/AvoidPrefixingMethodParameters %} are 
+    now deprecated, and will be removed with version 7.0.0. They are replaced by the more general
+    {% rule java/codestyle/FieldNamingConventions %}, {% rule java/codestyle/FormalParameterNamingConventions %}, and
+    {% rule java/codestyle/LocalVariableNamingConventions %}.
+
+### Fixed Issues
+
+*   core
+    *   [#1191](https://github.com/pmd/pmd/issues/1191): \[core] Test Framework: Sort violations by line/column
+    *   [#1283](https://github.com/pmd/pmd/issues/1283): \[core] Deprecate ReportTree
+    *   [#1288](https://github.com/pmd/pmd/issues/1288): \[core] No supported build listeners found with Gradle
+    *   [#1300](https://github.com/pmd/pmd/issues/1300): \[core] PMD stops processing file completely, if one rule in a rule chain fails
+    *   [#1317](https://github.com/pmd/pmd/issues/1317): \[ci] Coveralls hasn't built the project since June 25th
+*   java-bestpractices
+    *   [#940](https://github.com/pmd/pmd/issues/940): \[java] JUnit 4 false positives for JUnit 5 tests
+    *   [#1267](https://github.com/pmd/pmd/pull/1267): \[java] MissingOverrideRule: Avoid NoClassDefFoundError with incomplete classpath
+    *   [#1323](https://github.com/pmd/pmd/issues/1323): \[java] AvoidUsingHardCodedIP ignores match pattern
+    *   [#1327](https://github.com/pmd/pmd/pull/1327): \[java] AvoidUsingHardCodedIP false positive for ":bee"
+*   java-codestyle
+    *   [#1255](https://github.com/pmd/pmd/issues/1255): \[java] UnnecessaryFullyQualifiedName false positive: static method on shadowed implicitly imported class
+    *   [#1258](https://github.com/pmd/pmd/issues/1285): \[java] False positive "UselessParentheses" for parentheses that contain assignment
+*   java-errorprone
+    *   [#1078](https://github.com/pmd/pmd/issues/1078): \[java] MissingSerialVersionUID rule does not seem to catch inherited classes
+*   java-performance
+    *   [#1291](https://github.com/pmd/pmd/issues/1291): \[java] InvalidSlf4jMessageFormat false positive: too many arguments with string concatenation operator
+    *   [#1298](https://github.com/pmd/pmd/issues/1298): \[java] RedundantFieldInitializer - NumberFormatException with Long
+*   jsp
+    *   [#1274](https://github.com/pmd/pmd/issues/1274): \[jsp] Support EL in tag attributes
+    *   [#1276](https://github.com/pmd/pmd/issues/1276): \[jsp] add support for jspf and tag extensions
+*   plsql
+    *   [#681](https://github.com/pmd/pmd/issues/681): \[plsql] Parse error with Cursor For Loop
+
+### API Changes
+
+*   All classes in the package `net.sourceforge.pmd.lang.dfa.report` have been deprecated and will be removed
+    with PMD 7.0.0. This includes the class `net.sourceforge.pmd.lang.dfa.report.ReportTree`. The reason is,
+    that this class is very specific to Java and not suitable for other languages. It has only been used for
+    `YAHTMLRenderer`, which has been rewritten to work without these classes.
+    
+*   The nodes RUNSIGNEDSHIFT and RSIGNEDSHIFT are deprecated and will be removed from the AST with PMD 7.0.0.
+    These represented the operator of ShiftExpression in two cases out of three, but they're not needed and
+    make ShiftExpression inconsistent. The operator of a ShiftExpression is now accessible through
+    ShiftExpression#getOperator.
+
+### External Contributions
+
+*   [#109](https://github.com/pmd/pmd/pull/109): \[java] Add two linguistics rules under naming - [Arda Aslan](https://github.com/ardaasln)
+*   [#1254](https://github.com/pmd/pmd/pull/1254): \[ci] \[GSoC] Integrating the danger and pmdtester to travis CI - [BBG](https://github.com/djydewang)
+*   [#1258](https://github.com/pmd/pmd/pull/1258): \[java] Use typeof in MissingSerialVersionUID - [krichter722](https://github.com/krichter722)
+*   [#1264](https://github.com/pmd/pmd/pull/1264): \[cpp] Fix NullPointerException in CPPTokenizer:99 - [Rafael Cortês](https://github.com/mrfyda)
+*   [#1277](https://github.com/pmd/pmd/pull/1277): \[jsp] #1276 add support for jspf and tag extensions - [Jordi Llach](https://github.com/jordillachmrf)
+*   [#1275](https://github.com/pmd/pmd/pull/1275): \[jsp] Issue #1274 - Support EL in tag attributes - [Jordi Llach](https://github.com/jordillachmrf)
+*   [#1278](https://github.com/pmd/pmd/pull/1278): \[ci] \[GSoC] Use pmdtester 1.0.0.pre.beta3 - [BBG](https://github.com/djydewang)
+*   [#1289](https://github.com/pmd/pmd/pull/1289): \[java] UselessParentheses: Fix false positive with assignments - [cobratbq](https://github.com/cobratbq)
+*   [#1290](https://github.com/pmd/pmd/pull/1290): \[docs] \[GSoC] Create the documentation about pmdtester - [BBG](https://github.com/djydewang)
+*   [#1256](https://github.com/pmd/pmd/pull/1256): \[java] #940 Avoid JUnit 4 false positives for JUnit 5 tests - [Alex Shesterov](https://github.com/vovkss)
+*   [#1315](https://github.com/pmd/pmd/pull/1315): \[apex] Add OneDeclarationPerStatement rule - [Jeff Hube](https://github.com/jeffhube) 
+
+
+## 29-July-2018 - 6.6.0
+
+The PMD team is pleased to announce PMD 6.6.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    *   [Java 11 Support](#java-11-support)
+    *   [New Rules](#new-rules)
+    *   [Modified Rules](#modified-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Java 11 Support
+
+PMD is now able to parse the local-variable declaration syntax `var xxx`, that has been
+extended for lambda parameters with Java 11 via
+[JEP 323: Local-Variable Syntax for Lambda Parameters](http://openjdk.java.net/jeps/323).
+
+#### New Rules
+
+*   The new Java rule [`LocalVariableNamingConventions`](pmd_rules_java_codestyle.html#localvariablenamingconventions)
+    (`java-codestyle`) detects local variable names that don't comply to a given convention. It defaults to standard
+    Java convention of using camelCase, but can be configured. Special cases can be configured for final variables
+    and caught exceptions' names.
+
+*   The new Java rule [`FormalParameterNamingConventions`](pmd_rules_java_codestyle.html#formalparameternamingconventions)
+    (`java-codestyle`) detects formal parameter names that don't comply to a given convention. It defaults to
+    standard Java convention of using camelCase, but can be configured. Special cases can be configured for final
+    parameters and lambda parameters (considering whether they are explicitly typed or not).
+
+#### Modified Rules
+
+*   The Java rules [`AccessorClassGeneration`](pmd_rules_java_bestpracices.html#accessorclassgeneration) and
+    [`AccessorMethodGeneration`](pmd_rules_java_bestpracices.html#accessormethodgeneration) (both in category
+    `java-bestpractices`) have been modified to be only valid up until Java 10. Java 11 adds support for
+    [JEP 181: Nest-Based Access Control](http://openjdk.java.net/jeps/181) which avoids the generation of
+    accessor classes / methods altogether.
+
+### Fixed Issues
+
+*   core
+    *   [#1178](https://github.com/pmd/pmd/issues/1178): \[core] "Unsupported build listener" in gradle build
+    *   [#1225](https://github.com/pmd/pmd/issues/1225): \[core] Error in sed expression on line 82 of run.sh while detecting installed version of Java
+*   doc
+    *   [#1215](https://github.com/pmd/pmd/issues/1215): \[doc] TOC links don't work?
+*   java-codestyle
+    *   [#1211](https://github.com/pmd/pmd/issues/1211): \[java] CommentDefaultAccessModifier false positive with nested interfaces (regression from 6.4.0)
+    *   [#1216](https://github.com/pmd/pmd/issues/1216): \[java] UnnecessaryFullyQualifiedName false positive for the same name method
+*   java-design
+    *   [#1217](https://github.com/pmd/pmd/issues/1217): \[java] CyclomaticComplexityRule counts ?-operator twice
+    *   [#1226](https://github.com/pmd/pmd/issues/1226): \[java] NPath complexity false negative due to overflow
+*   plsql
+    *   [#980](https://github.com/pmd/pmd/issues/980): \[plsql] ParseException for CREATE TABLE
+    *   [#981](https://github.com/pmd/pmd/issues/981): \[plsql] ParseException when parsing VIEW
+    *   [#1047](https://github.com/pmd/pmd/issues/1047): \[plsql] ParseException when parsing EXECUTE IMMEDIATE
+*   ui
+    *   [#1233](https://github.com/pmd/pmd/issues/1233): \[ui] XPath autocomplete arrows on first and last items
+
+### API Changes
+
+*   The `findDescendantsOfType` methods in `net.sourceforge.pmd.lang.ast.AbstractNode` no longer search for
+    exact type matches, but will match subclasses, too. That means, it's now possible to look for abstract node
+    types such as `AbstractJavaTypeNode` and not only for it's concrete subtypes.
+
+### External Contributions
+
+* [#1182](https://github.com/pmd/pmd/pull/1182): \[ui] XPath AutoComplete - [Akshat Bahety](https://github.com/akshatbahety)
+* [#1231](https://github.com/pmd/pmd/pull/1231): \[doc] Minor typo fix in installation.md - [Ashish Rana](https://github.com/ashishrana160796)
+* [#1250](https://github.com/pmd/pmd/pull/1250): \[ci] \[GSoC] Upload baseline of pmdtester automatically - [BBG](https://github.com/djydewang)
+
 
 ## 26-June-2018 - 6.5.0
 

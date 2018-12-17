@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -35,31 +37,41 @@ public class PLSQLParserTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testBug1527() throws Exception {
-        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/InlinePragmaProcError.pls")));
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/InlinePragmaProcError.pls"), StandardCharsets.UTF_8));
     }
 
     @Test
     public void testBug1520IsOfType() throws Exception {
-        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsOfType.pls")));
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsOfType.pls"), StandardCharsets.UTF_8));
     }
 
     @Test
     public void testBug1520Using() throws Exception {
-        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/Using.pls")));
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/Using.pls"), StandardCharsets.UTF_8));
     }
 
     @Test
     public void testSingleLineSelect() throws Exception {
-        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/SingleLineSelect.pls")));
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/SingleLineSelect.pls"), StandardCharsets.UTF_8));
     }
 
     @Test
     public void testMultiLineSelect() throws Exception {
-        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/MultiLineSelect.pls")));
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/MultiLineSelect.pls"), StandardCharsets.UTF_8));
     }
 
     @Test
     public void testIsNull() throws Exception {
-        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsNull.pls")));
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/IsNull.pls"), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testCodingStyleExample() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/CodingStyleExample.pls"), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testCaseIssue1454() throws Exception {
+        parsePLSQL(IOUtils.toString(PLSQLParserTest.class.getResourceAsStream("ast/CaseIssue1454.pls"), StandardCharsets.UTF_8));
     }
 }

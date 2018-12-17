@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.RegexProperty;
-import net.sourceforge.pmd.properties.RegexProperty.RegexPBuilder;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 
@@ -26,19 +26,19 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 abstract class AbstractNamingConventionRule<T extends JavaNode> extends AbstractJavaRule {
 
-    static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]+";
-    static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]+";
+    static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]*";
+    static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]*";
 
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
-    RegexPBuilder defaultProp(String name) {
-        return defaultProp(StringUtil.toCamelCase(name, true), name);
+    RegexPropertyBuilder defaultProp(String displayName) {
+        return defaultProp(StringUtil.toCamelCase(displayName, true), displayName);
     }
 
     /** Returns a pre-filled builder with the given name and display name (for the description). */
-    RegexPBuilder defaultProp(String name, String displayName) {
-        return RegexProperty.named(name + "Pattern")
-                            .desc("Regex which applies to " + displayName.trim() + " names")
-                            .defaultValue(defaultConvention());
+    RegexPropertyBuilder defaultProp(String name, String displayName) {
+        return PropertyFactory.regexProperty(name + "Pattern")
+                              .desc("Regex which applies to " + displayName.trim() + " names")
+                              .defaultValue(defaultConvention());
     }
 
     /** Default regex string for this kind of entities. */

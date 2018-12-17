@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>6.6.0-SNAPSHOT</version>
+    <version>6.11.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -234,7 +234,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <connection>scm:git:git://github.com/pmd/pmd.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/pmd/pmd.git</developerConnection>
         <url>https://github.com/pmd/pmd</url>
-        <tag>pmd_releases/6.5.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
@@ -260,10 +260,18 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <maven.compiler.source>1.${java.version}</maven.compiler.source>
         <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
+        <maven.compiler.test.source>1.8</maven.compiler.test.source>
+        <maven.compiler.test.target>1.8</maven.compiler.test.target>
+
+
+        <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
+        <kotlin.version>1.2.61</kotlin.version>
+
+
         <javacc.version>5.0</javacc.version>
         <surefire.version>2.22.0</surefire.version>
         <checkstyle.version>3.0.0</checkstyle.version>
-        <pmd.plugin.version>3.10.0</pmd.plugin.version>
+        <pmd.plugin.version>3.11.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
         <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
@@ -274,7 +282,8 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.2</pmd.build-tools.version>
+        <pmd.build-tools.version>1.3.0</pmd.build-tools.version>
+
     </properties>
 
     <build>
@@ -329,6 +338,30 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
+
+                <!-- Kotlin compiler for test-compile -->
+                <!-- The kotlin plugin has to run before the java plugin-->
+                <plugin>
+                    <artifactId>kotlin-maven-plugin</artifactId>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <version>${kotlin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>kotlin-test-compile</id>
+                            <goals>
+                                <goal>test-compile</goal>
+                            </goals>
+                            <phase>process-test-sources</phase>
+                            <configuration>
+                                <sourceDirs>
+                                    <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                                    <sourceDir>${project.basedir}/src/test/java</sourceDir>
+                                </sourceDirs>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -336,6 +369,36 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <release>${java.version}</release>
                     </configuration>
+                    <executions>
+                        <!-- Replacing default-compile as it is treated specially by maven -->
+                        <execution>
+                            <id>default-compile</id>
+                            <phase>none</phase>
+                        </execution>
+                        <!-- Replacing default-testCompile as it is treated specially by maven -->
+                        <execution>
+                            <id>default-testCompile</id>
+                            <phase>none</phase>
+                        </execution>
+                        <execution>
+                            <id>java-compile</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>java-test-compile</id>
+                            <phase>test-compile</phase>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                            <configuration>
+                                <source>${maven.compiler.test.source}</source>
+                                <target>${maven.compiler.test.target}</target>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -369,7 +432,27 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
+                        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
+                        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
                     </configuration>
+                    <dependencies>
+                        <!-- Junit 5 = Platform + Jupiter (5) + Vintage (3 & 4)-->
+
+                        <!-- Junit platform -->
+                        <!-- Needed to use kotlintest -->
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-surefire-provider</artifactId>
+                            <version>1.2.0</version>
+                        </dependency>
+
+                        <!-- Junit 3 & 4 engine -->
+                        <dependency>
+                            <groupId>org.junit.vintage</groupId>
+                            <artifactId>junit-vintage-engine</artifactId>
+                            <version>5.3.0-M1</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -405,6 +488,36 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${checkstyle.version}</version>
+                    <executions>
+                        <execution>
+                            <id>checkstyle-check</id>
+                            <phase>verify</phase>
+                            <goals>
+                              <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>8.12</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-build-tools-config</artifactId>
+                            <version>${pmd.build-tools.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                        <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <sourceDirectories>
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                        </sourceDirectories>
+                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -445,12 +558,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.5.0</version>
+                            <version>6.9.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.5.0</version>
+                            <version>6.9.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -473,7 +586,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <plugin>
                       <groupId>org.jacoco</groupId>
                       <artifactId>jacoco-maven-plugin</artifactId>
-                      <version>0.8.1</version>
+                      <version>0.8.2</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
@@ -519,33 +632,10 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[9,)</version>
+                                    <version>[10,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>true</inherited>
-                <executions>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -557,35 +647,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>checkstyle-check</id>
-                        <phase>verify</phase>
-                        <goals>
-                          <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>8.8</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd-build-tools-config</artifactId>
-                        <version>${pmd.build-tools.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
-                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                </configuration>
+                <!-- configuration is in plugin management section -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -661,14 +723,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
-                <configuration>
-                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
-                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                </configuration>
+                <!-- configuration is in plugin management section -->
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -759,12 +814,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
               <groupId>com.beust</groupId>
               <artifactId>jcommander</artifactId>
-              <version>1.48</version>
+              <version>1.72</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>6.1.1</version>
+                <version>7.0</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -815,7 +870,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -825,12 +880,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
+                <version>3.8.1</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.12</version>
+                <version>1.7.25</version>
             </dependency>
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
@@ -853,6 +908,52 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <artifactId>system-rules</artifactId>
                 <version>1.8.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.11.0</version>
+            </dependency>
+
+            <!-- TEST DEPENDENCIES -->
+
+
+            <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-lang-test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Kotlin -->
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-test-junit</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.kotlintest</groupId>
+                <artifactId>kotlintest-runner-junit5</artifactId>
+                <version>3.1.8</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -965,6 +1066,49 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <groupId>org.eluder.coveralls</groupId>
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>4.3.0</version>
+                        <dependencies>
+                            <!--
+                                coveralls maven plugin needs javax.xml.bind api
+                                See also https://github.com/trautonen/coveralls-maven-plugin/issues/112
+                            -->
+                            <dependency>
+                                <groupId>javax.xml.bind</groupId>
+                                <artifactId>jaxb-api</artifactId>
+                                <version>2.3.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonarsource.scanner.maven</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>3.4.1.1168</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                      <groupId>org.jacoco</groupId>
+                      <artifactId>jacoco-maven-plugin</artifactId>
+                      <executions>
+                          <execution>
+                              <id>default-prepare-agent</id>
+                              <goals>
+                                  <goal>prepare-agent</goal>
+                              </goals>
+                          </execution>
+                      </executions>
                     </plugin>
                 </plugins>
             </build>
@@ -982,6 +1126,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-kotlin</module>
         <module>pmd-matlab</module>
         <module>pmd-objectivec</module>
         <module>pmd-perl</module>
@@ -1002,5 +1147,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-java8</module>
         <module>pmd-ui</module>
         <module>pmd-doc</module>
+        <module>pmd-lang-test</module>
     </modules>
 </project>

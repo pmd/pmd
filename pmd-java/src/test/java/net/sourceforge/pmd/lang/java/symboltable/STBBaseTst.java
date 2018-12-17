@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 
@@ -19,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 public abstract class STBBaseTst {
 
     protected ASTCompilationUnit acu;
-    protected SymbolFacade stb;
 
     protected void parseCode(final String code) {
         parseCode(code, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
@@ -33,8 +33,9 @@ public abstract class STBBaseTst {
         final LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         acu = (ASTCompilationUnit) languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
                 .parse(null, new StringReader(code));
-        stb = new SymbolFacade();
-        stb.initializeWith(acu);
+        languageVersionHandler.getQualifiedNameResolutionFacade(STBBaseTst.class.getClassLoader()).start(acu);
+        languageVersionHandler.getSymbolFacade(STBBaseTst.class.getClassLoader()).start(acu);
+        languageVersionHandler.getTypeResolutionFacade(STBBaseTst.class.getClassLoader()).start(acu);
     }
 
     // Note: If you're using Eclipse or some other IDE to run this test, you
@@ -49,7 +50,7 @@ public abstract class STBBaseTst {
         }
         final String source;
         try {
-            source = IOUtils.toString(is);
+            source = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }

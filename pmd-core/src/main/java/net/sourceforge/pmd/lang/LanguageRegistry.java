@@ -27,7 +27,8 @@ public final class LanguageRegistry {
 
     private LanguageRegistry() {
         List<Language> languagesList = new ArrayList<>();
-        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class);
+        // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
+        ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
         Iterator<Language> iterator = languageLoader.iterator();
         while (iterator.hasNext()) {
             try {
@@ -61,7 +62,16 @@ public final class LanguageRegistry {
     }
 
     public static Collection<Language> getLanguages() {
-        return getInstance().languages.values();
+        // Filter out languages, that are not fully supported by PMD yet.
+        // Those languages should not have a LanguageModule then, but they have it.
+        // TODO This is unnecessary, if the incomplete language modules have been removed.
+        List<Language> languages = new ArrayList<>();
+        for (Language language : getInstance().languages.values()) {
+            if (language.getRuleChainVisitorClass() != null) {
+                languages.add(language);
+            }
+        }
+        return languages;
     }
 
     public static Language getLanguage(String languageName) {
@@ -131,15 +141,12 @@ public final class LanguageRegistry {
      * A utility method to find the Languages which have Rule support.
      *
      * @return A List of Languages with Rule support.
+     *
+     * @deprecated This method will be removed with PMD 7.0.0. Use {@link #getLanguages()} instead.
      */
+    @Deprecated
     public static List<Language> findWithRuleSupport() {
-        List<Language> languages = new ArrayList<>();
-        for (Language language : getInstance().languages.values()) {
-            if (language.getRuleChainVisitorClass() != null) {
-                languages.add(language);
-            }
-        }
-        return languages;
+        return new ArrayList<>(getLanguages());
     }
 
     public static String commaSeparatedTerseNamesForLanguage(List<Language> languages) {

@@ -6,10 +6,10 @@ package net.sourceforge.pmd.lang.dfa.report;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
@@ -25,6 +25,7 @@ import net.sourceforge.pmd.RuleViolation;
  *
  * @author raik
  */
+@Deprecated // will be removed with PMD 7.0.0 without replacement. See net.sourceforge.pmd.lang.dfa.report.ReportTree for details.
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
@@ -44,9 +45,10 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
      * Writes the buffer to file.
      */
     private void write(String filename, StringBuilder buf) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + FILE_SEPARATOR + filename)));
-        bw.write(buf.toString(), 0, buf.length());
-        IOUtils.closeQuietly(bw);
+        try (BufferedWriter bw = Files.newBufferedWriter(new File(baseDir + FILE_SEPARATOR + filename).toPath(),
+                StandardCharsets.UTF_8)) {
+            bw.write(buf.toString(), 0, buf.length());
+        }
     }
 
     /**
@@ -92,7 +94,9 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
          */
         if (node.getParent() == null) {
             packageBuf.insert(0,
-                    "<html>" + " <head>" + "   <title>PMD</title>" + " </head>" + " <body>" + PMD.EOL
+                    "<!DOCTYPE html>" + PMD.EOL
+                    + "<html>" + " <head>" + PMD.EOL + "    <meta charset=\"UTF-8\">" + PMD.EOL
+                            + "   <title>PMD</title>" + " </head>" + " <body>" + PMD.EOL
                             + "<h2>Package View</h2>"
                             + "<table border=\"1\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + " <tr>"
                             + PMD.EOL + "<th>Package</th>" + "<th>Class</th>" + "<th>#</th>" + " </tr>" + PMD.EOL);
@@ -152,7 +156,8 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         String str = cnode.getClassName();
 
         classBuf.insert(0,
-                "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + "<h2>Class View</h2>"
+                "<!DOCTYPE html>" + PMD.EOL
+                + "<html><head><meta charset=\"UTF-8\"><title>PMD - " + str + "</title></head><body>" + PMD.EOL + "<h2>Class View</h2>"
                         + "<h3 align=\"center\">Class: " + str + "</h3>"
                         + "<table border=\"\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + " <tr>" + PMD.EOL
                         + "<th>Method</th>" + "<th>Violation</th>" + " </tr>" + PMD.EOL);

@@ -3,11 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>pmd-test</artifactId>
     <name>PMD Test Framework</name>
+    <description>Contains a test framework to test rules.</description>
 
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.6.0-SNAPSHOT</version>
+        <version>6.11.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>

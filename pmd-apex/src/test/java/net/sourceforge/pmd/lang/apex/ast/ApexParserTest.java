@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -113,7 +114,7 @@ public class ApexParserTest {
 
         for (File file : fList) {
             if (file.isFile() && file.getName().endsWith(".cls")) {
-                String sourceCode = FileUtils.readFileToString(file);
+                String sourceCode = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
                 ApexNode<Compilation> rootNode = parse(sourceCode);
                 Assert.assertNotNull(rootNode);
             }
@@ -127,7 +128,8 @@ public class ApexParserTest {
      */
     @Test
     public void stackOverflowDuringClassParsing() throws Exception {
-        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"));
+        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
+                StandardCharsets.UTF_8);
         ApexNode<Compilation> rootNode = parse(source);
         Assert.assertNotNull(rootNode);
 

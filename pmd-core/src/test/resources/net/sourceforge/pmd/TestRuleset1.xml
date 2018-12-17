@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="Test Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
     <description>
   Ruleset used by test net.sourceforge.pmd.RuleSetWriter and RuleSetFactoryTest
@@ -33,7 +33,7 @@ Just for test
     <rule name="MockRule3" deprecated="true" ref="net/sourceforge/pmd/TestRuleset2.xml/TestRule"/>
 
     <rule name="MockRule4" language="dummy" since="1.0" message="Test Rule"
-          class="net.sourceforge.pmd.lang.rule.MockRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/rules/test/TestRuleset1.xml#MockRule">
         <description>
             Just for test

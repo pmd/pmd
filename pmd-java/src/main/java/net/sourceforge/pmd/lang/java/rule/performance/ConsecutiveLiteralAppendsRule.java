@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +35,9 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
@@ -71,10 +76,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
     }
 
-    private static final IntegerProperty THRESHOLD_DESCRIPTOR 
-            = IntegerProperty.named("threshold")
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = PropertyFactory.intProperty("threshold")
                              .desc("Max consecutive appends")
-                             .range(1, 10).defaultValue(1).uiOrder(1.0f).build();
+                             .require(inRange(1, 10)).defaultValue(1).build();
 
     private int threshold = 1;
 
@@ -85,7 +90,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
-        if (!isStringBuffer(node)) {
+        if (!isStringBuilderOrBuffer(node)) {
             return data;
         }
         threshold = getProperty(THRESHOLD_DESCRIPTOR);
@@ -96,33 +101,22 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         }
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
-        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope()
-                .getDeclarations(VariableNameDeclaration.class);
         Node rootNode = null;
         // only want the constructor flagged if it's really containing strings
         if (concurrentCount >= 1) {
             rootNode = node;
         }
-        for (List<NameOccurrence> decl : decls.values()) {
-            for (NameOccurrence no : decl) {
-                JavaNameOccurrence jno = (JavaNameOccurrence) no;
-                Node n = jno.getLocation();
 
-                // skip the declarations/usages, that deal with a different
-                // variable
-                if (!node.getImage().equals(jno.getImage())) {
-                    continue;
-                }
+        List<NameOccurrence> usages = determineUsages(node);
 
-                currentBlock = getFirstParentBlock(n);
+        for (NameOccurrence no : usages) {
+            JavaNameOccurrence jno = (JavaNameOccurrence) no;
+            Node n = jno.getLocation();
 
-                if (!InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
-                    if (!jno.isPartOfQualifiedName()) {
-                        checkForViolation(rootNode, data, concurrentCount);
-                        concurrentCount = 0;
-                    }
-                    continue;
-                }
+            currentBlock = getFirstParentBlock(n);
+
+            if (InefficientStringBufferingRule.isInStringBufferOperation(n, 3, "append")) {
+                // append method call detected
                 ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
                 int numChildren = s.jjtGetNumChildren();
                 for (int jx = 0; jx < numChildren; jx++) {
@@ -156,10 +150,30 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
                     }
                     lastBlock = currentBlock;
                 }
+            } else if (n.getImage().endsWith(".toString") || n.getImage().endsWith(".length")) {
+                // ignore toString and length, they do not change affect the content of the sb
+            } else {
+                // usage of the stringbuilder variable for any other purpose, including
+                // calling e.g. delete
+                checkForViolation(rootNode, data, concurrentCount);
+                concurrentCount = 0;
             }
         }
         checkForViolation(rootNode, data, concurrentCount);
         return data;
+    }
+
+    private List<NameOccurrence> determineUsages(ASTVariableDeclaratorId node) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope()
+                .getDeclarations(VariableNameDeclaration.class);
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
+            // find the first variable that matches
+            if (node.hasImageEqualTo(entry.getKey().getName())) {
+                return entry.getValue();
+            }
+        }
+
+        return Collections.emptyList();
     }
 
     /**
@@ -376,10 +390,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         return n instanceof ASTLiteral;
     }
 
-    private static boolean isStringBuffer(ASTVariableDeclaratorId node) {
-
+    private static boolean isStringBuilderOrBuffer(ASTVariableDeclaratorId node) {
         if (node.getType() != null) {
-            // return node.getType().equals(StringBuffer.class);
             return TypeHelper.isEither(node, StringBuffer.class, StringBuilder.class);
         }
         Node nn = node.getTypeNameNode();

@@ -25,12 +25,9 @@ Make sure code is up to date and everything is committed and pushed with git:
 
 ### The Release Notes and docs
 
-At a very minimum, the current date must be noted in the release notes and the download section. Also, the version
-must be adjusted. E.g. by removing "-SNAPSHOT".
-
 You can find the release notes here: `docs/pages/release_notes.md`.
 
-The date for the download section is to be entered in `docs/_config.yml`, e.g.
+The date and the version must be updated in `docs/_config.yml`,  e.g.
 
 ```
 pmd:
@@ -42,6 +39,9 @@ pmd:
 The release notes usual mention any new rules that have been added since the last release.
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
 that all new rules are listed.
+
+We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
+changes from the current release notes to this document: `docs/pages/next_major_development.md`.
 
 Check in all (version) changes to branch master or any other branch, from which the release takes place:
 
@@ -140,6 +140,7 @@ the following template:
 *   Move version/release info from **docs/pages/release_notes.md** to **docs/pages/release_notes_old.md**.
 *   Update version/release info in **docs/pages/release_notes.md**. Use the following template:
 
+{%raw%}
 ```
 ---
 title: PMD Release Notes
@@ -147,18 +148,13 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
-## ????? - ${DEVELOPMENT_VERSION}
+## {{ site.pmd.date }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD ${DEVELOPMENT_VERSION%-SNAPSHOT}.
+The PMD team is pleased to announce PMD {{ site.pmd.version }}.
 
-This is a bug fixing release.
+This is a {{ site.pmd.release_type }} release.
 
-### Table Of Contents
-
-* [New and noteworthy](#new-and-noteworthy)
-* [Fixed Issues](#fixed-issues)
-* [API Changes](#api-changes)
-* [External Contributions](#external-contributions)
+{% tocmaker %}
 
 ### New and noteworthy
 
@@ -168,7 +164,11 @@ This is a bug fixing release.
 
 ### External Contributions
 
+{% endtocmaker %}
+
 ```
+{%endraw%}
+
 
 Commit and push
 
