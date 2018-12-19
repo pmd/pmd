@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 public final class JavaLangSymbolTable extends AbstractSymbolTable {
 
-    private static final Map<String, JSymbolicClassReference> JAVA_8_LANG;
+    private static final Map<String, JResolvableClassDeclarationSymbol> JAVA_8_LANG;
 
     static {
         List<Class<?>> classes = Arrays.asList(
@@ -133,11 +133,11 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
                 java.lang.Void.class
         );
 
-        Map<String, JSymbolicClassReference> theJavaLang = new HashMap<>();
+        Map<String, JResolvableClassDeclarationSymbol> theJavaLang = new HashMap<>();
 
         for (Class<?> aClass : classes) {
 
-            JSymbolicClassReference reference = new JSymbolicClassReference(aClass);
+            JResolvableClassDeclarationSymbol reference = new JResolvableClassDeclarationSymbol(aClass);
 
             theJavaLang.put(aClass.getSimpleName(), reference);
             theJavaLang.put(aClass.getCanonicalName(), reference);
@@ -146,7 +146,7 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
 
     }
 
-    private final Map<String, JSymbolicClassReference> javaLangTypes;
+    private final Map<String, JResolvableClassDeclarationSymbol> javaLangTypes;
 
 
     /**
@@ -162,7 +162,7 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
 
 
     @Override
-    protected Optional<? extends JSimpleTypeReference<?>> resolveTypeNameImpl(String simpleName) {
+    protected Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeNameImpl(String simpleName) {
         if (javaLangTypes.containsKey(simpleName)) {
             return Optional.of(javaLangTypes.get(simpleName));
         }
@@ -171,18 +171,18 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
 
 
     @Override
-    protected Stream<JMethodReference> resolveMethodNameImpl(String simpleName) {
+    protected Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName) {
         return Stream.empty();
     }
 
 
     @Override
-    protected Optional<JVarReference> resolveValueNameImpl(String simpleName) {
+    protected Optional<JValueSymbol> resolveValueNameImpl(String simpleName) {
         return Optional.empty();
     }
 
 
-    private static Map<String, JSymbolicClassReference> getJavaLangForJdkVersion(int jdkVersion) {
+    private static Map<String, JResolvableClassDeclarationSymbol> getJavaLangForJdkVersion(int jdkVersion) {
         // TODO implement for other jdk versions
         return JAVA_8_LANG;
     }

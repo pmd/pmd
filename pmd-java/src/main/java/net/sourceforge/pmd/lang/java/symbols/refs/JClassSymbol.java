@@ -14,13 +14,14 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
 
 
 /**
- * A reference to a class or interface. This is not a type! Types are compile-time
- * constructs, whereas this corresponds more closely to a Class instance.
+ * Represents a class or interface declaration. This is not exactly a type! This corresponds more
+ * closely to a Class instance, meaning it can't be parameterized, etc. Type definitions will use
+ * this.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclaration> {
+public final class JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName fqcn;
 
@@ -31,7 +32,7 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
      *
      * @param clazz          Class represented by this reference
      */
-    public JClassReference(Class<?> clazz) {
+    public JClassSymbol(Class<?> clazz) {
         super(clazz.getModifiers(), clazz.getSimpleName());
         this.fqcn = QualifiedNameFactory.ofClass(clazz);
     }
@@ -42,7 +43,7 @@ public final class JClassReference extends JAccessibleReference<ASTAnyTypeDeclar
      *
      * @param node           Node of the declaration
      */
-    public JClassReference(ASTAnyTypeDeclaration node) {
+    public JClassSymbol(ASTAnyTypeDeclaration node) {
         super(node, getModifiers(node), node.getImage());
         this.fqcn = node.getQualifiedName();
     }

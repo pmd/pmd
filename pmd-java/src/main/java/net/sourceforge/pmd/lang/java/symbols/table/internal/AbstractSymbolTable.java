@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -40,32 +40,32 @@ abstract class AbstractSymbolTable implements JSymbolTable {
     }
 
 
-    protected abstract Optional<? extends JSimpleTypeReference<?>> resolveTypeNameImpl(String simpleName);
+    protected abstract Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeNameImpl(String simpleName);
 
 
-    protected abstract Stream<JMethodReference> resolveMethodNameImpl(String simpleName);
+    protected abstract Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName);
 
 
-    protected abstract Optional<JVarReference> resolveValueNameImpl(String simpleName);
+    protected abstract Optional<JValueSymbol> resolveValueNameImpl(String simpleName);
 
 
     @Override
-    public final Optional<? extends JSimpleTypeReference<?>> resolveTypeName(String simpleName) {
-        Optional<? extends JSimpleTypeReference<?>> result = resolveTypeNameImpl(simpleName);
+    public final Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeName(String simpleName) {
+        Optional<? extends JSimpleTypeDeclarationSymbol<?>> result = resolveTypeNameImpl(simpleName);
         return result.isPresent() ? result : parent.resolveTypeName(simpleName);
     }
 
 
     @Override
-    public final Optional<JVarReference> resolveValueName(String simpleName) {
-        Optional<JVarReference> result = resolveValueNameImpl(simpleName);
+    public final Optional<JValueSymbol> resolveValueName(String simpleName) {
+        Optional<JValueSymbol> result = resolveValueNameImpl(simpleName);
         return result.isPresent() ? result : parent.resolveValueName(simpleName);
     }
 
 
     @Override
-    public final Stream<JMethodReference> resolveMethodName(String simpleName) {
-        // TODO prevents methods with override-equivalent signatures to occur more than once in the stream
+    public final Stream<JMethodSymbol> resolveMethodName(String simpleName) {
+        // TODO prevents methods with override-equivalent signatures to occur more than once in the stream?
         return Stream.concat(resolveMethodNameImpl(simpleName), parent.resolveMethodName(simpleName));
     }
 

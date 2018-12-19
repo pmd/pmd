@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JMethodReference extends JAccessibleReference<ASTMethodDeclaration> {
+public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodDeclaration> {
 
     private final boolean isDefault;
 
@@ -26,7 +26,7 @@ public final class JMethodReference extends JAccessibleReference<ASTMethodDeclar
      *
      * @param method         Method for which to create a reference
      */
-    public JMethodReference(Method method) {
+    public JMethodSymbol(Method method) {
         super(method.getModifiers(), method.getName());
         this.isDefault = method.isDefault();
     }
@@ -37,7 +37,7 @@ public final class JMethodReference extends JAccessibleReference<ASTMethodDeclar
      *
      * @param node           Node representing the method declaration
      */
-    public JMethodReference(ASTMethodDeclaration node) {
+    public JMethodSymbol(ASTMethodDeclaration node) {
         super(node, getModifiers(node), node.getMethodName());
         this.isDefault = node.isDefault();
     }

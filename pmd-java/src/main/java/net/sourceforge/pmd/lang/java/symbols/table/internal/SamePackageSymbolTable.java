@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -45,7 +45,7 @@ public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
 
 
     @Override
-    protected Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName) {
+    protected Optional<JResolvableClassDeclarationSymbol> resolveTypeNameImpl(String simpleName) {
 
         // account for unnamed package
         String fqcn = thisPackage.isEmpty() ? simpleName : (thisPackage + "." + simpleName);
@@ -53,7 +53,7 @@ public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
         try {
             // We know it's accessible, since top-level classes are either public or package private,
             // and we're in the package
-            return Optional.ofNullable(classLoader.loadClass(fqcn)).map(JSymbolicClassReference::new);
+            return Optional.ofNullable(classLoader.loadClass(fqcn)).map(JResolvableClassDeclarationSymbol::new);
         } catch (ClassNotFoundException | LinkageError e2) {
             // ignore the exception. We don't know if the classpath is badly configured
             // or if the type was never in this package in the first place
@@ -63,13 +63,13 @@ public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
 
 
     @Override
-    protected Stream<JMethodReference> resolveMethodNameImpl(String simpleName) {
+    protected Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName) {
         return Stream.empty();
     }
 
 
     @Override
-    protected Optional<JVarReference> resolveValueNameImpl(String simpleName) {
+    protected Optional<JValueSymbol> resolveValueNameImpl(String simpleName) {
         return Optional.empty();
     }
 }

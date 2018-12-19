@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  * rules. It's mostly intended to unify the representation of type resolution
  * and symbol analysis. At least for now it's internal.
  *
- * <p>Code references have no reference to the scope they were found in, because
+ * <p>SymbolDeclarations have no reference to the scope they were found in, because
  * that would tie the code reference to the analysed file, preventing the garbage
  * collection of scopes and nodes. This is a major difference with {@link NameDeclaration}.
  * The declaring scope would also vary from file to file. E.g.
@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  * analysed project, allowing reflective resolution to be only done once.
  *
  * <p>TODO implement sharing of reflectively found code references across the analysed project
- * <p>References bound to an AST node cannot be shared.
+ * <p>References bound to an AST node cannot be shared though, unless we use a SoftReference somehow.
  *
  * @param <N> Type of AST node that can represent this type of declaration
  *
@@ -49,7 +49,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  */
 @Experimental
 @InternalApi
-public interface JCodeReference<N extends Node> {
+public interface JDeclarationSymbol<N extends Node> {
 
 
     /**

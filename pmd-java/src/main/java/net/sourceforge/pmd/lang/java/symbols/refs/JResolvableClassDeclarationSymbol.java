@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 
 /**
- * Symbolic version of {@link JClassReference}, which doesn't load a type
+ * Symbolic version of {@link JClassSymbol}, which doesn't load a type
  * but provides access to its FQCN. It can try building a full type reference,
  * but this may fail. This kind of reference may be used by functions like typeIs() or
  * TypeHelper to test the type, but cannot be used properly by type resolution since
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDeclaration> implements JSimpleTypeReference<ASTAnyTypeDeclaration> {
+public class JResolvableClassDeclarationSymbol extends AbstractDeclarationSymbol<ASTAnyTypeDeclaration> implements JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName qualifiedName;
 
@@ -32,7 +32,7 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
      *
      * @param fqcn           Fully-qualified class name
      */
-    public JSymbolicClassReference(JavaTypeQualifiedName fqcn) {
+    public JResolvableClassDeclarationSymbol(JavaTypeQualifiedName fqcn) {
         super(fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
     }
@@ -43,7 +43,7 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
      *
      * @param alreadyResolved Already resolved type
      */
-    public JSymbolicClassReference(Class<?> alreadyResolved) {
+    public JResolvableClassDeclarationSymbol(Class<?> alreadyResolved) {
         super(alreadyResolved.getSimpleName());
         this.qualifiedName = QualifiedNameFactory.ofClass(Objects.requireNonNull(alreadyResolved));
     }
@@ -60,18 +60,18 @@ public class JSymbolicClassReference extends AbstractCodeReference<ASTAnyTypeDec
 
 
     /**
-     * Attempts to convert this reference into the richer {@link JClassReference}
+     * Attempts to convert this reference into the richer {@link JClassSymbol}
      * by loading the class. If the class can't be resolved (incomplete classpath),
      * returns an empty optional.
      */
-    public Optional<JClassReference> loadClass() {
+    public Optional<JClassSymbol> loadClass() {
         Class<?> type = qualifiedName.getType();
 
         if (type == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new JClassReference(type));
+        return Optional.of(new JClassSymbol(type));
     }
 
 }
