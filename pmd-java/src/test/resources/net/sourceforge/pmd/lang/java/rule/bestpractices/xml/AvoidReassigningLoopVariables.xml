@@ -36,6 +36,21 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>violation: incremented 'for' loop variable, inline</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i++);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
         <description>no violation: incremented other variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -58,7 +73,7 @@ public class Foo {
     void foo(int bar) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
-            this.i++; // not OK
+            this.i++;
         }
     }
 }
@@ -82,7 +97,59 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>no violation: incremented 'for' loop variable</description>
+        <description>violation: unconditionally incremented 'for' loop variable</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            i++; // not OK
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: unconditionally incremented 'for' loop variable, inline</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i++); // not OK
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: unconditionally incremented 'for' loop variable</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        if (foo()) {
+            for (int i=0; i < 10; i++) {
+                doSomethingWith(i);
+                i++; // not OK
+            }
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: conditionally incremented 'for' loop variable</description>
         <rule-property name="forReassign">skip</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -90,6 +157,102 @@ public class Foo {
     void foo(int bar) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
+            if (foo()) i += 1;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inside if</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            if (foo()) i++;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inline inside if</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            if (foo()) doSomethingWith(i++);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inside while</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            while (foo()) i++;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inside do-while</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            do i++; while(foo());
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable inside nested for</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            for (int j=0; j < foo(); j++) i++;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: incremented 'for' loop variable after continue</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i);
+            if (foo()) continue;
             i++;
         }
     }
@@ -98,15 +261,17 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>no violation: incremented 'for' loop variable</description>
+        <description>violation: incremented 'for' loop variable before continue</description>
         <rule-property name="forReassign">skip</rule-property>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
         for (int i=0; i < 10; i++) {
+            i++;
+            if (foo()) continue;
             doSomethingWith(i);
-            i += 1;
         }
     }
 }
@@ -123,8 +288,24 @@ public class Foo {
     void foo(int bar) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
-            i += 1;
-            i = 5;
+            if (foo()) i += 1;
+            if (foo()) i = 5;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: inline-reassign 'for' loop variable, only skip allowed</description>
+        <rule-property name="forReassign">skip</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo(int bar) {
+        for (int i=0; i < 10; i++) {
+            doSomethingWith(i += 1);
         }
     }
 }
@@ -173,24 +354,28 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>violation: various reassignments of 'for' loop variable, skip allowed</description>
+        <description>violation: various conditional reassignments of 'for' loop variable, skip allowed</description>
         <rule-property name="forReassign">skip</rule-property>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>11,12,13</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>13,14,15,16</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
         for (int i=0; i < 10; i++) {
             doSomethingWith(i);
-            i++;
-            i--;
-            ++i;
-            --i;
-            i += 1;
-            i -= 1;
-            i *= 1; // not OK
-            i /= 1; // not OK
-            i = 5; // not OK
+            if (foo()) {
+                i++;
+                i--;
+                ++i;
+                --i;
+                i += 1;
+                i -= 1;
+                doSomethingWith(i++);
+                i *= 1; // not OK
+                i /= 1; // not OK
+                i = 5; // not OK
+                doSomethingWith(i = 5); // not OK
+            }
         }
     }
 }
@@ -204,10 +389,11 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            doSomethingWith(i);
-            i = 5; // not OK
+        String[] strings = getStrings();
+        for(String s : strings) {
+            doSomethingWith(s);
+            s = s.toUpper(); // not OK
+            doSomethingElseWith(s);
         }
     }
 }
@@ -215,17 +401,18 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>violation: increment 'foreach' loop variable, but not as first statement</description>
+        <description>violation: reassign 'foreach' loop variable, but not as first statement</description>
         <rule-property name="foreachReassign">firstOnly</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            doSomethingWith(i);
-            i += 1; // not OK
+        String[] strings = getStrings();
+        for(String s : strings) {
+            doSomethingWith(s);
+            s = s.toUpper(); // not OK
+            doSomethingElseWith(s);
         }
     }
 }
@@ -233,16 +420,16 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>no violation: increment 'foreach' loop variable as first statement</description>
+        <description>no violation: reassign 'foreach' loop variable as first statement</description>
         <rule-property name="foreachReassign">firstOnly</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            i++;
-            doSomethingWith(i);
+        String[] strings = getStrings();
+        for(String s : strings) {
+            s = s.trim();
+            doSomethingWith(s);
         }
     }
 }
@@ -250,35 +437,19 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>no violation: assign-increment 'foreach' loop variable as first statement</description>
-        <rule-property name="foreachReassign">firstOnly</rule-property>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            i += 1;
-            doSomethingWith(i);
-        }
-    }
-}
-     ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>violation: increment 'foreach' loop variable multiple times</description>
+        <description>violation: reassign 'foreach' loop variable multiple times, only first statement is allowed</description>
         <rule-property name="foreachReassign">firstOnly</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            i++;
-            doSomethingWith(i);
-            i++; // not OK
+        String[] strings = getStrings();
+        for(String s : strings) {
+            s = s.trim();
+            doSomethingWith(s);
+            s = s.toUpper(); // not OK
+            doSomethingElseWith(s);
         }
     }
 }
@@ -286,55 +457,18 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>violation: pre-increment 'foreach' loop variable multiple times</description>
-        <rule-property name="foreachReassign">firstOnly</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            ++i;
-            doSomethingWith(i);
-            ++i; // not OK
-        }
-    }
-}
-     ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>violation: assign-increment 'foreach' loop variable multiple times</description>
-        <rule-property name="foreachReassign">firstOnly</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
-        <code><![CDATA[
-public class Foo {
-    void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            i += 1;
-            doSomethingWith(i);
-            i += 1; // not OK
-        }
-    }
-}
-     ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>no violation: increment 'foreach' loop variable multiple times</description>
+        <description>no violation: reassign 'foreach' loop variable multiple times</description>
         <rule-property name="foreachReassign">allow</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
-        int[] ints = {1, 2, 3};
-        for (int i : ints) {
-            i += 1;
-            doSomethingWith(i);
-            i += 1; // not OK
+        String[] strings = getStrings();
+        for(String s : strings) {
+            s = s.trim();
+            doSomethingWith(s);
+            s = s.toUpper(); // not OK
+            doSomethingElseWith(s);
         }
     }
 }
