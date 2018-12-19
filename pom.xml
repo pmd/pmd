@@ -282,7 +282,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.2</pmd.build-tools.version>
+        <pmd.build-tools.version>1.3.0</pmd.build-tools.version>
 
     </properties>
 
@@ -488,6 +488,36 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${checkstyle.version}</version>
+                    <executions>
+                        <execution>
+                            <id>checkstyle-check</id>
+                            <phase>verify</phase>
+                            <goals>
+                              <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>8.12</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-build-tools-config</artifactId>
+                            <version>${pmd.build-tools.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
+                        <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <sourceDirectories>
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                        </sourceDirectories>
+                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -611,64 +641,13 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>true</inherited>
-                <executions>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated xdocs</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${src.xdocs.dir}/rules" includes="**/*.xml" />
-                                    <fileset dir="${src.xdocs.dir}/" includes="mergedruleset.xml" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <!-- configuration is in plugin management section -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>checkstyle-check</id>
-                        <phase>verify</phase>
-                        <goals>
-                          <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>8.8</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>net.sourceforge.pmd</groupId>
-                        <artifactId>pmd-build-tools-config</artifactId>
-                        <version>${pmd.build-tools.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
-                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                </configuration>
+                <!-- configuration is in plugin management section -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -744,14 +723,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${checkstyle.version}</version>
-                <configuration>
-                    <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
-                    <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                </configuration>
+                <!-- configuration is in plugin management section -->
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -842,12 +814,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
               <groupId>com.beust</groupId>
               <artifactId>jcommander</artifactId>
-              <version>1.48</version>
+              <version>1.72</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>6.2.1</version>
+                <version>7.0</version>
             </dependency>
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -935,6 +907,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-rules</artifactId>
                 <version>1.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.11.0</version>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -1150,9 +1127,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-go</module>
         <module>pmd-groovy</module>
         <module>pmd-java</module>
-        <module>pmd-java8</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>
+        <module>pmd-kotlin</module>
         <module>pmd-lang-test</module>
         <module>pmd-matlab</module>
         <module>pmd-objectivec</module>

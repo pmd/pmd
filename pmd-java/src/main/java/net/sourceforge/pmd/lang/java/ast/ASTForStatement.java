@@ -14,7 +14,6 @@ package net.sourceforge.pmd.lang.java.ast;
  *                | "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")" {@linkplain ASTStatement Statement}
  *
  * </pre>
- *
  */
 // TODO this should be split into two different nodes, otherwise
 // we can't enrich the API without returning null half the time
@@ -23,9 +22,11 @@ public class ASTForStatement extends AbstractJavaNode {
         super(id);
     }
 
+
     public ASTForStatement(JavaParser p, int id) {
         super(p, id);
     }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -36,6 +37,21 @@ public class ASTForStatement extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    /**
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
+     *
+     * <p>If this node represents a foreach loop, or if there is
+     * no specified guard, then returns null.
+     */
+    public ASTExpression getGuardExpressionNode() {
+        if (isForeach()) {
+            return null;
+        }
+        return getFirstChildOfType(ASTExpression.class);
     }
 
 

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -22,7 +23,8 @@ import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.properties.RegexProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
@@ -34,11 +36,11 @@ import net.sourceforge.pmd.properties.RegexProperty;
  */
 public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationRule {
 
-    private static final RegexProperty REGEX_DESCRIPTOR = RegexProperty.named("regex")
-            .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").uiOrder(1.0f).build();
+    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR = PropertyFactory.regexProperty("regex")
+                                                                                       .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").build();
     private static final String MESSAGE = "To avoid mistakes add a comment "
             + "at the beginning of the %s %s if you want a default access modifier";
-    private final Set<Integer> interestingLineNumberComments = new HashSet<Integer>();
+    private final Set<Integer> interestingLineNumberComments = new HashSet<>();
 
     public CommentDefaultAccessModifierRule() {
         definePropertyDescriptor(REGEX_DESCRIPTOR);

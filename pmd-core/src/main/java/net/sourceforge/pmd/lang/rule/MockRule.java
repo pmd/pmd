@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * This is a Rule implementation which can be used in scenarios where an actual
@@ -23,7 +26,7 @@ public class MockRule extends AbstractRule {
     public MockRule() {
         super();
         setLanguage(LanguageRegistry.getLanguage("Dummy"));
-        definePropertyDescriptor(IntegerProperty.named("testIntProperty").desc("testIntProperty").range(0, 100).defaultValue(1).uiOrder(0).build());
+        definePropertyDescriptor(PropertyFactory.intProperty("testIntProperty").desc("testIntProperty").require(inRange(1, 100)).defaultValue(1).build());
     }
 
     public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {

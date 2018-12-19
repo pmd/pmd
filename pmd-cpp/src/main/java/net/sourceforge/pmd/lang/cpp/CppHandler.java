@@ -10,7 +10,9 @@ import net.sourceforge.pmd.lang.ParserOptions;
 
 /**
  * Implementation of LanguageVersionHandler for the C++ Language.
+ * @deprecated There is no full PMD support for c++.
  */
+@Deprecated
 public class CppHandler extends AbstractCpdLanguageVersionHandler {
 
     @Override

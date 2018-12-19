@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,10 +20,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 /**
  * A rule that checks for illegal words in the comment text.
@@ -35,15 +36,13 @@ public class CommentContentRule extends AbstractCommentRule {
     private List<String> originalBadWords;
     private List<String> currentBadWords;
 
-    // FIXME need some better defaults (or none?)
-    private static final String[] BAD_WORDS = {"idiot", "jerk" };
-
     // ignored when property above == True
-    public static final BooleanProperty CASE_SENSITIVE_DESCRIPTOR = new BooleanProperty("caseSensitive",
-            "Case sensitive", false, 2.0f);
+    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive").defaultValue(false).desc("Case sensitive").build();
 
-    public static final StringMultiProperty DISSALLOWED_TERMS_DESCRIPTOR = new StringMultiProperty("disallowedTerms",
-            "Illegal terms or phrases", BAD_WORDS, 3.0f, '|');
+    public static final PropertyDescriptor<List<String>> DISSALLOWED_TERMS_DESCRIPTOR =
+            stringListProperty("disallowedTerms")
+                    .desc("Illegal terms or phrases")
+                    .defaultValues("idiot", "jerk").build(); // TODO make blank property? or add more defaults?
 
     private static final Set<PropertyDescriptor<?>> NON_REGEX_PROPERTIES;
 

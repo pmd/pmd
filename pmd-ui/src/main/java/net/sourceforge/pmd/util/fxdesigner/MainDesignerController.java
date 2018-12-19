@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -356,7 +356,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private void loadSourceFromFile(File file) {
         if (file != null) {
             try {
-                String source = IOUtils.toString(new FileInputStream(file), StandardCharsets.UTF_8);
+                String source = IOUtils.toString(Files.newInputStream(file.toPath()), StandardCharsets.UTF_8);
                 sourceEditorController.setText(source);
                 LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
                 if (guess != null) { // guess the language from the extension

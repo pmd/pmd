@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
@@ -69,10 +70,12 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
                                 .findDescendantsOfType(ASTLocalVariableDeclaration.class);
                         if (!lVarList.isEmpty()) {
                             for (ASTLocalVariableDeclaration localVar : lVarList) {
-                                localVarName = localVar.getVariableName();
-                                if (returnVariableName != null && returnVariableName.equals(localVarName)) {
-                                    violation = true;
-                                    break;
+                                for (ASTVariableDeclaratorId id : localVar) {
+                                    localVarName = id.getVariableName();
+                                    if (returnVariableName != null && returnVariableName.equals(localVarName)) {
+                                        violation = true;
+                                        break;
+                                    }
                                 }
                             }
                         }

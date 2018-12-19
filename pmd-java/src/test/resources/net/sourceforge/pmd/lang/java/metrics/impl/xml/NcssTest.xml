@@ -417,4 +417,47 @@
         </code>
     </test-code>
 
+
+    <test-code>
+        <description>Lambdas themselves don't count, only the code within</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Koo#bar()' has value 2.</message>
+            <message>'Koo#lambda$bar$0' has value 0.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public abstract class Koo {
+                void bar() {
+                    Consumer<Int> i = i -> {
+
+                    };
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Code inside lambdas is counted by default</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Koo#bar()' has value 4.</message>
+            <message>'Koo#lambda$bar$0' has value 2.</message>
+        </expected-messages>
+        <code>
+            <![CDATA[
+            public abstract class Koo {
+                void bar() {
+                    Consumer<Int> i = i -> {
+                        int j = 0;
+                        j = i;
+                    };
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
+
 </test-data>

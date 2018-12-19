@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +14,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
-import net.sourceforge.pmd.properties.StringMultiProperty;
 
 /**
  * The loose package coupling Rule can be used to ensure coupling outside of a
@@ -36,11 +38,11 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    public static final StringMultiProperty PACKAGES_DESCRIPTOR = new StringMultiProperty("packages",
-            "Restricted packages", new String[] {}, 1.0f, ',');
+    public static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
+            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().delim(',').build();
 
-    public static final StringMultiProperty CLASSES_DESCRIPTOR = new StringMultiProperty("classes", "Allowed classes",
-            new String[] {}, 2.0f, ',');
+    public static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
+            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().delim(',').build();
 
     // The package of this source file
     private String thisPackage;

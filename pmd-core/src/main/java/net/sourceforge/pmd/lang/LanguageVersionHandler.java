@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
@@ -16,6 +17,10 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 /**
  * Interface for obtaining the classes necessary for checking source files of a
  * specific language.
+ *
+ * Note: "façade" getters like {@link #getSymbolFacade()} will be removed with 7.0.0
+ * and replaced with a more extensible mechanism. They're now deprecated. See also
+ * https://github.com/pmd/pmd/pull/1426
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
@@ -60,18 +65,6 @@ public interface LanguageVersionHandler {
 
 
     /**
-     * Get the DumpFacade.
-     *
-     * @param writer The writer to dump to.
-     *
-     * @return VisitorStarter
-     */
-    // TODO should we deprecate? Not much use to it.
-    // Plus if it's not implemented, then it does nothing to the writer which is unexpected.
-    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
-
-
-    /**
      * Get the DataFlowHandler.
      */
     @Deprecated
@@ -82,6 +75,7 @@ public interface LanguageVersionHandler {
      * Get the DataFlowFacade.
      *
      * @return VisitorStarter
+     * @deprecated see note in the class description
      */
     @Deprecated
     VisitorStarter getDataFlowFacade();
@@ -91,6 +85,7 @@ public interface LanguageVersionHandler {
      * Get the SymbolFacade.
      *
      * @return VisitorStarter
+     * @deprecated see note in the class description
      */
     @Deprecated
     VisitorStarter getSymbolFacade();
@@ -102,6 +97,7 @@ public interface LanguageVersionHandler {
      * @param classLoader A ClassLoader to use for resolving Types.
      *
      * @return VisitorStarter
+     * @deprecated see note in the class description
      */
     @Deprecated
     VisitorStarter getSymbolFacade(ClassLoader classLoader);
@@ -113,15 +109,28 @@ public interface LanguageVersionHandler {
      * @param classLoader A ClassLoader to use for resolving Types.
      *
      * @return VisitorStarter
+     * @deprecated see note in the class description
      */
     @Deprecated
     VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
+
+    /**
+     * Get the DumpFacade.
+     *
+     * @param writer
+     *            The writer to dump to.
+     * @return VisitorStarter
+     * @deprecated The dump façade is not that useful and will be completely scrapped with PMD 7.0.0
+     */
+    @Deprecated
+    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
 
 
     /**
      * Gets the visitor that performs multifile data gathering.
      *
      * @return The visitor starter
+     * @deprecated see note in the class description
      */
     @Deprecated
     VisitorStarter getMultifileFacade();
@@ -134,11 +143,16 @@ public interface LanguageVersionHandler {
      * @param classLoader The classloader to use to resolve the types of type qualified names
      *
      * @return The visitor starter
+     * @deprecated see note in the class description
      */
     @Deprecated
     VisitorStarter getQualifiedNameResolutionFacade(ClassLoader classLoader);
 
 
+    /**
+     * @deprecated This is internal API
+     */
     @Deprecated
+    @InternalApi
     DFAGraphRule getDFAGraphRule();
 }

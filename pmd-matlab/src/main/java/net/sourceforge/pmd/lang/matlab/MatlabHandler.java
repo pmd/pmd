@@ -11,7 +11,10 @@ import net.sourceforge.pmd.lang.ParserOptions;
 
 /**
  * Implementation of LanguageVersionHandler for the Matlab Language.
+ *
+ * @deprecated There is no full PMD support for Matlab.
  */
+@Deprecated
 public class MatlabHandler extends AbstractCpdLanguageVersionHandler {
 
     @Override

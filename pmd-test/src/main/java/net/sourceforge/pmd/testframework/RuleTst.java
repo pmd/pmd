@@ -334,12 +334,8 @@ public abstract class RuleTst {
                 throw new RuntimeException("Couldn't find " + testXmlFileName);
             }
             doc = documentBuilder.parse(inputStream);
-        } catch (FactoryConfigurationError fce) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + fce, fce);
-        } catch (IOException ioe) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + ioe, ioe);
-        } catch (SAXException se) {
-            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + se, se);
+        } catch (FactoryConfigurationError | IOException | SAXException e) {
+            throw new RuntimeException("Couldn't parse " + testXmlFileName + ", due to: " + e, e);
         }
 
         return parseTests(rule, doc);

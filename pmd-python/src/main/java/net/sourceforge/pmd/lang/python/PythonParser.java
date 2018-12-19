@@ -16,7 +16,10 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Adapter for the Python Parser.
+ *
+ * @deprecated There is no full PMD support for Python.
  */
+@Deprecated
 public class PythonParser extends AbstractParser {
 
     /**

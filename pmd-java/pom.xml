@@ -70,23 +70,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>pmd-clean</id>
-                        <phase>clean</phase>
-                        <configuration>
-                            <target>
-                                <echo>PMD specific tasks: cleaning generated markdown</echo>
-                                <delete quiet="true">
-                                    <fileset dir="${basedir}/src/site/markdown/rules/" includes="**/*.md" />
-                                    <fileset dir="${basedir}/src/site/markdown/" includes="mergedruleset.xml" />
-                                    <fileset dir="${basedir}/src/site/" includes="site.xml" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
                 </executions>
             </plugin>
 
@@ -180,6 +163,11 @@
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-testutil</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

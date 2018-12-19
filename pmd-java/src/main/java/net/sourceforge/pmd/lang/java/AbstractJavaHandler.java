@@ -42,7 +42,7 @@ import net.sf.saxon.sxpath.IndependentContext;
  */
 public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHandler {
 
-    protected AbstractJavaHandler() {
+    AbstractJavaHandler() {
         super(JavaProcessingStage.class);
     }
 

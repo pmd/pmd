@@ -77,7 +77,8 @@ mkdir pmd.github.io
     git config user.email "andreas.dangel+pmd-bot@adangel.org"
     git config core.sparsecheckout true
     git remote add origin git@github.com:pmd/pmd.github.io.git
-    echo "latest/" > .git/info/sparse-checkout
+    echo "/latest/" > .git/info/sparse-checkout
+    echo "/sitemap.xml" >> .git/info/sparse-checkout
     git pull --depth=1 origin master
     log_info "Copying documentation from ../docs/pmd-doc-${RELEASE_VERSION}/ to pmd-${RELEASE_VERSION}/ ..."
     rsync -ah --stats ../docs/pmd-doc-${RELEASE_VERSION}/ pmd-${RELEASE_VERSION}/
@@ -116,7 +117,7 @@ mkdir pmd.github.io
 
     log_info "Uploading the new release to pmd.sourceforge.net which serves as an archive..."
 
-    travis_wait rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/
+    .travis/travis_wait "rsync -ah --stats docs/pmd-doc-${RELEASE_VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${RELEASE_VERSION}/"
 
     if [ $? -ne 0 ]; then
         log_error "Uploading documentation to pmd.sourceforge.net failed..."

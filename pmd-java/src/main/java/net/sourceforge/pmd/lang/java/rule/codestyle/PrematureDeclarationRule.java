@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -36,16 +37,19 @@ public class PrematureDeclarationRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        for (ASTBlockStatement block : statementsAfter(node)) {
-            if (hasReferencesIn(block, node.getVariableName())) {
-                break;
-            }
-            
-            if (hasExit(block)) {
-                addViolation(data, node);
-                break;
+        for (ASTVariableDeclaratorId id : node) {
+            for (ASTBlockStatement block : statementsAfter(node)) {
+                if (hasReferencesIn(block, id.getVariableName())) {
+                    break;
+                }
+
+                if (hasExit(block)) {
+                    addViolation(data, node);
+                    break;
+                }
             }
         }
+
 
         return super.visit(node, data);
     }

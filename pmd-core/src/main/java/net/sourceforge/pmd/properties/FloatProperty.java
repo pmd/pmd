@@ -13,8 +13,11 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
 /**
  * Defines a property type that supports single float property values within an upper and lower boundary.
  *
+ *
+ * @deprecated Use {@link PropertyFactory#doubleProperty(String)} instead. This class will be removed with 7.0.0.
  * @author Brian Remedios
  */
+@Deprecated
 public final class FloatProperty extends AbstractNumericProperty<Float> {
 
 
@@ -30,8 +33,9 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
-     * @deprecated will be removed in 7.0.0
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)} instead.
      */
+    @Deprecated
     public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                          float theUIOrder) {
         this(theName, theDescription, FLOAT_PARSER.valueOf(minStr),
@@ -57,7 +61,9 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)} instead.
      */
+    @Deprecated
     public FloatProperty(String theName, String theDescription, Float min, Float max, Float theDefault,
                          float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);
@@ -85,12 +91,17 @@ public final class FloatProperty extends AbstractNumericProperty<Float> {
         };
     }
 
-
+    /** @deprecated Use {@link PropertyFactory#doubleProperty(String)} instead. */
+    @Deprecated
     public static FloatPBuilder named(String name) {
         return new FloatPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)} instead.
+     */
+    @Deprecated
     public static final class FloatPBuilder extends SingleNumericPropertyBuilder<Float, FloatPBuilder> {
         private FloatPBuilder(String name) {
             super(name);

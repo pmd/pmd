@@ -6,9 +6,11 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -28,6 +30,7 @@ public interface Rule extends PropertySource {
      * The property descriptor to universally suppress violations with messages
      * matching a regular expression.
      */
+    // TODO 7.0.0 use PropertyDescriptor<Pattern>
     StringProperty VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = new StringProperty("violationSuppressRegex",
             "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
 
@@ -35,6 +38,7 @@ public interface Rule extends PropertySource {
      * Name of the property to universally suppress violations on nodes which
      * match a given relative XPath expression.
      */
+    // TODO 7.0.0 use PropertyDescriptor<String>
     StringProperty VIOLATION_SUPPRESS_XPATH_DESCRIPTOR = new StringProperty("violationSuppressXPath",
             "Suppress violations on nodes which match a given relative XPath expression.", null, Integer.MAX_VALUE - 2);
 
@@ -256,15 +260,42 @@ public interface Rule extends PropertySource {
      */
     ParserOptions getParserOptions();
 
+
+    /**
+     * Returns true if this rule depends on the given processing stage
+     * to run. If so, any ruleset including this rule, in which the rule
+     * is not misconfigured, will execute the analysis reified in the
+     * given stage before applying rules on the AST.
+     *
+     * <p>The default returns false. Each language should implement this
+     * method in its abstract rule base class, and probably mark its
+     * implementation as final for consistency within the language
+     * implementation. AST processing stages are language-specific, and
+     * any non-trivial implementation should throw an {@link IllegalArgumentException}
+     * when given a stage that isn't defined on the language of the rule.
+     *
+     * @param stage Processing stage for which to check for a dependency.
+     *
+     * @return True if this rule depends on the given processing stage.
+     *
+     * @since 7.0.0
+     */
+    @Experimental
+    default boolean dependsOn(AstProcessingStage<?> stage) {
+        return false;
+    }
+
+
     /**
      * Sets whether this Rule uses Data Flow Analysis.
-     * @deprecated Use {@link #setDfa(boolean)} instead.
+     * @deprecated See {@link #isDfa()}
      */
     @Deprecated // To be removed in PMD 7.0.0
     void setUsesDFA();
 
     /**
      * Sets whether this Rule uses Data Flow Analysis.
+     * @deprecated See {@link #isDfa()}
      */
     @Deprecated
     void setDfa(boolean isDfa);
@@ -273,7 +304,7 @@ public interface Rule extends PropertySource {
      * Gets whether this Rule uses Data Flow Analysis.
      *
      * @return <code>true</code> if Data Flow Analysis is used.
-     * @deprecated Use {@link #isDfa()} instead.
+     * @deprecated See {@link #isDfa()}
      */
     @Deprecated // To be removed in PMD 7.0.0
     boolean usesDFA();
@@ -282,19 +313,22 @@ public interface Rule extends PropertySource {
      * Gets whether this Rule uses Data Flow Analysis.
      *
      * @return <code>true</code> if Data Flow Analysis is used.
+     * @deprecated Optional AST processing stages will be reified in 7.0.0 to factorise common logic.
+     *             This method and the similar methods will be removed.
      */
     @Deprecated
     boolean isDfa();
 
     /**
      * Sets whether this Rule uses Type Resolution.
-     * @deprecated Use {@link #setTypeResolution(boolean)} instead.
+     * @deprecated See {@link #isTypeResolution()}
      */
     @Deprecated // To be removed in PMD 7.0.0
     void setUsesTypeResolution();
 
     /**
      * Sets whether this Rule uses Type Resolution.
+     * @deprecated See {@link #isTypeResolution()}
      */
     @Deprecated
     void setTypeResolution(boolean usingTypeResolution);
@@ -304,7 +338,7 @@ public interface Rule extends PropertySource {
      *
      * @return <code>true</code> if Type Resolution is used.
      *
-     * @deprecated Use {@link #isTypeResolution()} instead
+     * @deprecated See {@link #isTypeResolution()}
      */
     @Deprecated // To be removed in PMD 7.0.0
     boolean usesTypeResolution();
@@ -313,19 +347,22 @@ public interface Rule extends PropertySource {
      * Gets whether this Rule uses Type Resolution.
      *
      * @return <code>true</code> if Type Resolution is used.
+     * @deprecated Optional AST processing stages will be reified in 7.0.0 to factorise common logic.
+     *             This method and the similar methods will be removed.
      */
     @Deprecated
     boolean isTypeResolution();
 
     /**
      * Sets whether this Rule uses multi-file analysis.
-     * @deprecated use {@link #setMultifile(boolean)} instead.
+     * @deprecated See {@link #isMultifile()}
      */
     @Deprecated // To be removed in PMD 7.0.0
     void setUsesMultifile();
 
     /**
      * Sets whether this Rule uses multi-file analysis.
+     * @deprecated See {@link #isMultifile()}
      */
     @Deprecated
     void setMultifile(boolean multifile);
@@ -335,7 +372,7 @@ public interface Rule extends PropertySource {
      *
      * @return <code>true</code> if the multi file analysis is used.
      *
-     * @deprecated Use {@link #isMultifile()} instead.
+     * @deprecated See {@link #isMultifile()}
      */
     @Deprecated // To be removed in PMD 7.0.0
     boolean usesMultifile();
@@ -344,6 +381,8 @@ public interface Rule extends PropertySource {
      * Gets whether this Rule uses multi-file analysis.
      *
      * @return <code>true</code> if the multi file analysis is used.
+     * @deprecated Logic for multifile analysis is not implemented yet and probably
+     *             won't be implemented this way. Will be removed in 7.0.0.
      */
     @Deprecated
     boolean isMultifile();
@@ -415,7 +454,7 @@ public interface Rule extends PropertySource {
      *            the rule context
      */
     void end(RuleContext ctx);
-    
+
     /**
      * Creates a new copy of this rule.
      * @return A new exact copy of this rule
