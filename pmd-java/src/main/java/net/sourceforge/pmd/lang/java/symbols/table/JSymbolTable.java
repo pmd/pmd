@@ -11,12 +11,12 @@ import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.SymbolTableResolver;
-import net.sourceforge.pmd.lang.java.symbols.refs.JCodeReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JTypeVariableReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.EmptySymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
@@ -28,29 +28,47 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 
 // @formatter:off
 /**
- * A symbol table for a piece of Java code. Keeps track of the types, values, and
- * methods accessible from their simple name in their extent.
+ * A symbol table for a particular region of a Java program. Keeps track of the types,
+ * values, and methods accessible from their simple name in their extent.
  *
  * <p>Each symbol table is linked to a parent table, and keeps track of a particular set
  * of declarations having the same relative precedence. When a symbol table is asked for
  * the meaning of a name in a particular syntactic context (type name, method name, value name),
  * it first determines if it has a declaration with a matching name.
  * <ul>
- *      <li>If there is one, it returns the {@link JCodeReference} representing the entity
+ *      <li>If there is one, it returns the {@link JDeclarationSymbol} representing the entity
  *          the name stands for in the given context
  *      <li>If there is none, it asks the same question to its parent table recursively
- *          and returns its result.
+ *          and returns that result.
  * </ul>
  * This allows directly encoding shadowing and hiding mechanisms in the parent-child
  * relationships.
+ *
+ * <h2>Terminology</h3>
  *
  * <p>Each symbol table is only relevant to a set of program points, which it is said
  * to <i>dominate</i>. The set of program points a table dominates is referred-to
  * as the <i>scope</i> of that symbol table. The scope of a symbol table is a subset of
  * the scope of its parent. The declarations in a symbol table S are said to be
  * <i>in-scope</i> throughout the scope of S, which means they are accessible from their
- * simple name. (Although this terminology is based on JLS terminology, the JLS doesn't
- * care about symbol table implementations so that is not standard spec).
+ * simple name.
+ *
+ * <h3>Correspondence with JLS terminology</h4>
+ *
+ * <p>The JLS doesn't care about symbol table implementations so the above terminology is
+ * not standard spec. The JLS only defines the <i>scope of a declaration<i>:
+ *
+ * <blockquote cite="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-6.3">
+ *     The scope of a declaration is the region of the program within which
+ *     the entity declared by the declaration can be referred to using a
+ *     simple name, provided it is not shadowed.
+ * </blockquote>
+ *
+ * <p>For our purposes, a symbol table keeps track of a set of declarations having the
+ * same jls:scope, so that the pmd:scope of a symbol table is the jls:scope of any of its
+ * declarations.
+ *
+ * <h2>Implementation</h3>
  *
  * <p>In PMD, program points are modelled as AST nodes. Each node has {@linkplain JavaNode#getSymbolTable() a reference}
  * to the innermost enclosing symbol table which dominates it. Since each symbol table
@@ -77,8 +95,10 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *     <li>Symbol tables resolve names
  *     <li>Symbol tables don't index the AST like {@link Scope}s do.
  *     <li>Symbol tables don't store usages, a separate component could be used for that
- *     <li>{@link JCodeReference}s don't store a reference to their declaring SymbolTable
+ *     <li>{@link JDeclarationSymbol}s don't store a reference to their declaring SymbolTable
  *         like {@link NameDeclaration} does with {@link Scope}.
+ *     <li>This is for now considered Java-specific and won't be abstracted into pmd-core until it's
+ *     stable
  * </ul>
  *
  * <h2>Why not keep the current symbol table</h2>
@@ -90,15 +110,15 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *
  * <p>The biggest issue is that it was not designed to abstract over whether we
  * have a node to represent a declaration or not. It can't work on reflection
- * data, and thus cannot really help type resolution, even a good symbol table
+ * data, and thus cannot really help type resolution, even if a good symbol table
  * would take the burden of resolving references off a type checker. The
  * shortcomings of the current symbol table make the current typeres duplicate
  * logic, and ultimately perform tasks that are not its responsibility,
  * which is probably why {@link ClassTypeResolver} is so huge and nasty.
  *
- * <p>Having an abstraction layer to unify them would allow the AST analyses to
+ * <p>Having an abstraction layer to unify them allows the AST analyses to
  * be complementary, and rely on each other, instead of being so self-reliant.
- * The abstraction provided by {@link JCodeReference} may in the future be used
+ * The abstraction provided by {@link JDeclarationSymbol} may in the future be used
  * to build global indices of analysed projects to implement multifile analysis.
  *
  * <p>The goals of this rewrite should be:
@@ -114,8 +134,8 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * <p>The substack corresponding to a type declaration T will probably have the
  * following form:
  * <ul>
- *      <li> Superinterfaces: abstract and default methods inherited from
- *           the direct superinterfaces of T
+ *      <li> Superinterfaces: constants, member types, abstract and default methods
+ *           inherited from the direct superinterfaces of T
  *      <li> Superclass: methods, fields, and member types inherited from
  *           the direct superclass of T
  *      <li> Member types: Member types of T (their names are shadowed by
@@ -142,14 +162,15 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * will need to be taken into account. Probably we'll need two steps. Say we're building the symbol table
  * of a type T with supertype S:
  * <ul>
- *      <li>1. Resolve the declarations of S and organize them by access restrictions within a object shared
+ *      <li>1. Resolve the declarations of S and organize them by access restrictions within an object shared
  *          across the analysis
  *      <li>2. Build a "view" of that shared object based on where T is (its package), which filters out
  *          inaccessible declarations from S, and add it to the inherited tables of T
  * </ul>
  * We'll probably need to proceed depth-first. If you're wondering about the performance costs of exploring
  * a whole type hierarchy, I'd say this is exactly what MissingOverrideRule does for now. It can then be
- * rewritten to make use of this framework.
+ * rewritten to make use of this framework. Plus, type hierarchies are unlikely to be extremely deep and correct
+ * caching can make this ok performance wise. Ideally this data would be cached between runs.
  *
  * <p>Some other rules could directly use the symbol table stack, e.g. UnnecessaryQualifiedName, which could
  * simply be looking up whether a qualified name means the same as its simple name in the scope of
@@ -170,8 +191,8 @@ public interface JSymbolTable {
      */
     JSymbolTable getParent();
 
-    // note that types and value names can be obscured, but that depends on the context
-    // of the usage and is not relevant to the symbol table stack.
+    // note that types and value names can be obscured, but that depends on the syntactic
+    // context of the *usage* and is not relevant to the symbol table stack.
 
 
     /**
@@ -179,14 +200,14 @@ public interface JSymbolTable {
      * ie, parameterized types and array types are not available. Primitive types are
      * also not considered because it's probably not useful.
      *
-     * <p>The returned type reference may either be a {@link JSymbolicClassReference}
-     * or a {@link JTypeVariableReference}.
+     * <p>The returned type reference may either be a {@link JResolvableClassDeclarationSymbol}
+     * or a {@link JTypeParameterSymbol}.
      *
      * @param simpleName Simple name of the type to look for
      *
      * @return The type reference if it can be found, otherwise an empty optional
      */
-    Optional<? extends JSimpleTypeReference<?>> resolveTypeName(String simpleName);
+    Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeName(String simpleName);
 
 
     /**
@@ -197,7 +218,7 @@ public interface JSymbolTable {
      *
      * @return The reference to the variable if it can be found, otherwise an empty optional
      */
-    Optional<JVarReference> resolveValueName(String simpleName);
+    Optional<JValueSymbol> resolveValueName(String simpleName);
 
 
     /**
@@ -205,7 +226,7 @@ public interface JSymbolTable {
      * on an implicit receiver in the scope of this symbol table. The returned methods may
      * have different arity and parameter types.
      *
-     * <p>TODO We can probably encode the overriding and hiding rules for methods in
+     * <p>TODO We can possibly encode the overriding and hiding rules for methods in
      * the symbol table stack. We could have a way to filter out the override-equivalent methods
      * from the stream so that the returned methods are preselected for type resolution to use.
      *
@@ -213,6 +234,6 @@ public interface JSymbolTable {
      *
      * @return An iterator enumerating methods with that name accessible an applicable to the implicit receiver in the scope of this symbol table.
      */
-    Stream<JMethodReference> resolveMethodName(String simpleName);
+    Stream<JMethodSymbol> resolveMethodName(String simpleName);
 
 }

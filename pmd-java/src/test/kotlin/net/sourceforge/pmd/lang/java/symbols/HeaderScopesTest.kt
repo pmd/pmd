@@ -4,8 +4,8 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.java.ast.parserTest
-import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference
+import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable
@@ -32,13 +32,13 @@ class HeaderScopesTest : FunSpec({
     fun JSymbolTable.resolveSymbolic(s: String): Class<*> =
             resolveTypeName(s)
                     .shouldBePresent()
-                    .shouldBeA<JSymbolicClassReference>()
+                    .shouldBeA<JResolvableClassDeclarationSymbol>()
                     .loadClass()
                     .shouldBePresent()
                     .classObject
 
 
-    fun JSymbolTable.resolveField(s: String): JFieldReference =
+    fun JSymbolTable.resolveField(s: String): JFieldSymbol =
             resolveValueName(s)
                     .shouldBePresent()
                     .shouldBeA()

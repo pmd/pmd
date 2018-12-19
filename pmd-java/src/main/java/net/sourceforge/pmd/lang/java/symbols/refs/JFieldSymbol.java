@@ -14,12 +14,12 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 
 /**
- * Reference to a field.
+ * Represents a field declaration.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JFieldReference extends JAccessibleReference<ASTVariableDeclaratorId> implements JVarReference {
+public class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
 
 
     /**
@@ -27,7 +27,7 @@ public class JFieldReference extends JAccessibleReference<ASTVariableDeclaratorI
      *
      * @param field          Field for which to create a reference
      */
-    public JFieldReference(Field field) {
+    public JFieldSymbol(Field field) {
         super(field.getModifiers(), field.getName());
     }
 
@@ -37,7 +37,7 @@ public class JFieldReference extends JAccessibleReference<ASTVariableDeclaratorI
      *
      * @param node           Node representing the id of the field, must be from an ASTFieldDeclaration
      */
-    JFieldReference(ASTVariableDeclaratorId node) {
+    JFieldSymbol(ASTVariableDeclaratorId node) {
         super(node, getModifiers(node), node.getVariableName());
 
     }

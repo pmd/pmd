@@ -11,23 +11,23 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 
 /**
- * Reference having access modifiers common to {@link JFieldReference},
- * {@link JClassReference}, {@link JMethodReference}, and {@link JConstructorReference}.
+ * Represents declarations having access modifiers common to {@link JFieldSymbol},
+ * {@link JClassSymbol}, {@link JMethodSymbol}, and {@link JConstructorSymbol}.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public abstract class JAccessibleReference<N extends Node> extends AbstractCodeReference<N> {
+public abstract class JAccessibleDeclarationSymbol<N extends Node> extends AbstractDeclarationSymbol<N> {
     protected final int modifiers;
 
 
-    JAccessibleReference(int modifiers, String simpleName) {
+    JAccessibleDeclarationSymbol(int modifiers, String simpleName) {
         super(simpleName);
         this.modifiers = modifiers;
     }
 
 
-    JAccessibleReference(N node, int modifiers, String simpleName) {
+    JAccessibleDeclarationSymbol(N node, int modifiers, String simpleName) {
         super(simpleName);
         this.modifiers = modifiers;
     }

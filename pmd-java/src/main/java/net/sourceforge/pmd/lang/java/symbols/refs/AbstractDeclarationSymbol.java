@@ -10,23 +10,23 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
- * Base class for code references.
+ * Base class for {@link JDeclarationSymbol}.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractCodeReference<N extends Node> implements JCodeReference<N> {
+abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclarationSymbol<N> {
 
     private final String simpleName;
     private N boundNode;
 
 
-    AbstractCodeReference(String simpleName) {
+    AbstractDeclarationSymbol(String simpleName) {
         this.simpleName = simpleName;
     }
 
 
-    AbstractCodeReference(N node, String simpleName) {
+    AbstractDeclarationSymbol(N node, String simpleName) {
         this(simpleName);
         this.boundNode = node;
     }

@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -37,19 +37,19 @@ public final class EmptySymbolTable implements JSymbolTable {
 
 
     @Override
-    public Optional<? extends JSimpleTypeReference<?>> resolveTypeName(String simpleName) {
+    public Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeName(String simpleName) {
         return Optional.empty();
     }
 
 
     @Override
-    public Optional<JVarReference> resolveValueName(String simpleName) {
+    public Optional<JValueSymbol> resolveValueName(String simpleName) {
         return Optional.empty();
     }
 
 
     @Override
-    public Stream<JMethodReference> resolveMethodName(String simpleName) {
+    public Stream<JMethodSymbol> resolveMethodName(String simpleName) {
         return Stream.empty();
     }
 

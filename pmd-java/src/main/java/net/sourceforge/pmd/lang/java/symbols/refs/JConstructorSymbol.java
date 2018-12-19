@@ -10,19 +10,19 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 
 
 /**
- * Reference to a constructor.
+ * Represents a constructor declaration.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JConstructorReference extends JAccessibleReference<ASTConstructorDeclaration> {
+public class JConstructorSymbol extends JAccessibleDeclarationSymbol<ASTConstructorDeclaration> {
 
-    JConstructorReference(Constructor<?> constructor) {
+    JConstructorSymbol(Constructor<?> constructor) {
         super(constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName());
     }
 
 
-    JConstructorReference(ASTConstructorDeclaration node) {
+    JConstructorSymbol(ASTConstructorDeclaration node) {
         super(node, accessNodeToModifiers(node), node.getImage());
     }
 }

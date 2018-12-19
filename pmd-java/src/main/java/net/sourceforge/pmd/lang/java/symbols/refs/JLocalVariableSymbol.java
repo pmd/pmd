@@ -8,12 +8,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 
 /**
- * Reference to a local variable, method or lambda parameter.
+ * Represents a local variable declaration, method or lambda parameter.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JLocalVarReference extends AbstractCodeReference<ASTVariableDeclaratorId> implements JVarReference {
+public class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
 
     private final boolean isFinal;
 
@@ -23,7 +23,7 @@ public class JLocalVarReference extends AbstractCodeReference<ASTVariableDeclara
      * @param node           Node representing the id of the field, must be from an ASTLocalVariableDeclaration
      */
     // cannot be built from reflection, but a node is always available
-    public JLocalVarReference(ASTVariableDeclaratorId node) {
+    public JLocalVariableSymbol(ASTVariableDeclaratorId node) {
         super(node, node.getVariableName());
         this.isFinal = node.isFinal();
     }

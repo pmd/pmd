@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -62,24 +62,24 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
                 if (containerClass != null) {
                     // populate the inherited state
 
-                    Map<String, List<JMethodReference>> methods = Arrays.stream(containerClass.getDeclaredMethods())
-                                                                        .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                                        .filter(this::isAccessible)
-                                                                        .map(JMethodReference::new)
-                                                                        .collect(Collectors.groupingBy(JMethodReference::getSimpleName));
+                    Map<String, List<JMethodSymbol>> methods = Arrays.stream(containerClass.getDeclaredMethods())
+                                                                     .filter(m -> Modifier.isStatic(m.getModifiers()))
+                                                                     .filter(this::isAccessible)
+                                                                     .map(JMethodSymbol::new)
+                                                                     .collect(Collectors.groupingBy(JMethodSymbol::getSimpleName));
 
                     importedStaticMethods.putAll(methods);
 
                     Arrays.stream(containerClass.getDeclaredFields())
                           .filter(f -> Modifier.isStatic(f.getModifiers()))
                           .filter(this::isAccessible)
-                          .map(JFieldReference::new)
+                          .map(JFieldSymbol::new)
                           .forEach(f -> importedStaticFields.put(f.getSimpleName(), f));
 
                     Arrays.stream(containerClass.getDeclaredClasses())
                           .filter(t -> Modifier.isStatic(t.getModifiers()))
                           .filter(this::isAccessible)
-                          .map(JSymbolicClassReference::new)
+                          .map(JResolvableClassDeclarationSymbol::new)
                           .forEach(t -> importedTypes.put(t.getSimpleName(), t));
                 }
 
@@ -96,10 +96,10 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
 
     @Override
-    protected Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName) {
+    protected Optional<JResolvableClassDeclarationSymbol> resolveTypeNameImpl(String simpleName) {
 
         // Check for static import-on-demand
-        Optional<JSymbolicClassReference> typename = super.resolveTypeNameImpl(simpleName);
+        Optional<JResolvableClassDeclarationSymbol> typename = super.resolveTypeNameImpl(simpleName);
         if (typename.isPresent()) {
             return typename;
         }
@@ -121,7 +121,7 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
                                        })
                                        .filter(Objects::nonNull)
                                        .filter(this::isAccessible)
-                                       .map(JSymbolicClassReference::new)
+                                       .map(JResolvableClassDeclarationSymbol::new)
                                        .findAny();
     }
 

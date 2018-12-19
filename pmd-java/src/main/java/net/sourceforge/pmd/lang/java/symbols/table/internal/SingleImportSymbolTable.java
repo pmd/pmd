@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
-import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
@@ -61,12 +61,12 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                 Class<?> containerClass = loadClass(className);
                 if (containerClass != null) {
 
-                    List<JMethodReference> methods = Arrays.stream(containerClass.getDeclaredMethods())
-                                                           .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                           .filter(this::isAccessible)
-                                                           .filter(m -> m.getName().equals(simpleName))
-                                                           .map(JMethodReference::new)
-                                                           .collect(Collectors.toList());
+                    List<JMethodSymbol> methods = Arrays.stream(containerClass.getDeclaredMethods())
+                                                        .filter(m -> Modifier.isStatic(m.getModifiers()))
+                                                        .filter(this::isAccessible)
+                                                        .filter(m -> m.getName().equals(simpleName))
+                                                        .map(JMethodSymbol::new)
+                                                        .collect(Collectors.toList());
 
                     importedStaticMethods.put(simpleName, methods);
 
@@ -75,7 +75,7 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                     try {
                         Field field = containerClass.getDeclaredField(simpleName);
                         if (field != null && Modifier.isStatic(field.getModifiers())) {
-                            importedStaticFields.put(simpleName, new JFieldReference(field));
+                            importedStaticFields.put(simpleName, new JFieldSymbol(field));
                         }
                     } catch (NoSuchFieldException e) {
                         // ignore eh
@@ -87,7 +87,7 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
             } else {
                 // Single-Type-Import Declaration
 
-                importedTypes.put(simpleName, new JSymbolicClassReference(
+                importedTypes.put(simpleName, new JResolvableClassDeclarationSymbol(
                         // FIXME the qualifiedname resolver should resolve this itself
                         (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, classLoader)));
             }

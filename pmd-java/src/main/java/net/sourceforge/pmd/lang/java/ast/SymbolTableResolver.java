@@ -52,6 +52,9 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAn
         this.top = EmptySymbolTable.getInstance();
     }
 
+    // The AstAnalysisConfiguration is only used in the constructor
+    // The parameter on the visit methods is thus unnecessary
+    // TODO introduce another visitor
 
     @Override
     public void visit(ASTCompilationUnit node, AstAnalysisConfiguration data) {

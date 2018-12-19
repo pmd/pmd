@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JFieldReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSymbolicClassReference;
-import net.sourceforge.pmd.lang.java.symbols.refs.JVarReference;
+import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -31,9 +31,9 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  */
 abstract class AbstractImportSymbolTable extends AbstractExternalSymbolTable {
 
-    final Map<String, JSymbolicClassReference> importedTypes = new HashMap<>();
-    final Map<String, List<JMethodReference>> importedStaticMethods = new HashMap<>();
-    final Map<String, JFieldReference> importedStaticFields = new HashMap<>();
+    final Map<String, JResolvableClassDeclarationSymbol> importedTypes = new HashMap<>();
+    final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
+    final Map<String, JFieldSymbol> importedStaticFields = new HashMap<>();
 
 
     /**
@@ -49,19 +49,19 @@ abstract class AbstractImportSymbolTable extends AbstractExternalSymbolTable {
 
 
     @Override
-    protected Optional<JSymbolicClassReference> resolveTypeNameImpl(String simpleName) {
+    protected Optional<JResolvableClassDeclarationSymbol> resolveTypeNameImpl(String simpleName) {
         return Optional.ofNullable(importedTypes.get(simpleName));
     }
 
 
     @Override
-    protected Stream<JMethodReference> resolveMethodNameImpl(String simpleName) {
+    protected Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName) {
         return importedStaticMethods.getOrDefault(simpleName, Collections.emptyList()).stream();
     }
 
 
     @Override
-    protected Optional<JVarReference> resolveValueNameImpl(String simpleName) {
+    protected Optional<JValueSymbol> resolveValueNameImpl(String simpleName) {
         return Optional.ofNullable(importedStaticFields.get(simpleName));
     }
 }
