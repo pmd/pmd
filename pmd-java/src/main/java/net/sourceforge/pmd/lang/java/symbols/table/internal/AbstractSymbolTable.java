@@ -67,8 +67,8 @@ abstract class AbstractSymbolTable implements JSymbolTable {
         // ie not evaluated unless the stream contributed by this table runs out of values,
         // a behaviour that Stream.concat can't provide
         return Stream.<Supplier<Stream<JMethodSymbol>>>of(
-                () -> resolveMethodNameImpl(simpleName),
-                () -> myParent.resolveMethodName(simpleName)
+            () -> resolveMethodNameImpl(simpleName),
+            () -> myParent.resolveMethodName(simpleName)
         ).flatMap(Supplier::get);
     }
 

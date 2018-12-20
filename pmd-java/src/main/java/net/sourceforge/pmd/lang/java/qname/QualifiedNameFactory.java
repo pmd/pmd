@@ -105,13 +105,8 @@ public final class QualifiedNameFactory {
             return null;
         }
 
-        String name = clazz.getName();
-        if (name.indexOf('.') < 0) {
-            name = '.' + name; // unnamed package, marked by a full stop. See ofString's format below
-        }
-
         // We preserve the known type until within JTypeQualifiedName. It won't call a ClassLoader
-        return (JavaTypeQualifiedName) ofString(name, clazz, null);
+        return (JavaTypeQualifiedName) ofString(clazz.getName(), clazz, null);
     }
 
 

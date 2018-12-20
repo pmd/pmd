@@ -1,17 +1,21 @@
 package net.sourceforge.pmd.lang.java.symbols.table
 
+import io.kotlintest.matchers.collections.containExactly
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
+import javasymbols.testdata.StaticNameCollision
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.java.ast.parserTest
 import net.sourceforge.pmd.lang.java.symbols.*
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol
+import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol
 import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable
-
+import kotlin.streams.toList
 
 /**
  * Tests the scopes that dominate the whole compilation unit.
@@ -24,6 +28,7 @@ class HeaderScopesTest : FunSpec({
     val typesInTheSamePackage = "types in the same package"
     val javalangTypes = "types from java.lang"
     val singleTypeImports = "single-type imports"
+    val staticSingleMemberImports = "static single-member imports"
     val onDemandTypeImports = "on-demand type imports"
     val onDemandStaticImports = "on-demand static imports"
 
@@ -44,6 +49,7 @@ class HeaderScopesTest : FunSpec({
                     .shouldBePresent()
                     .shouldBeA()
 
+    fun JSymbolTable.resolveMethods(s: String): List<JMethodSymbol> = resolveMethodName(s).toList()
 
 
     parserTest("Test same-package scope") {
@@ -235,6 +241,20 @@ class HeaderScopesTest : FunSpec({
                     }
                 }
             }
+        }
+    }
+
+    parserTest("$staticSingleMemberImports should import types, fields and methods with the same name") {
+
+        val acu = javasymbols.testdata.deep.StaticCollisionImport::class.java.parse()
+        // import javasymbols.testdata.Statics.*;
+
+        acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
+
+            it.resolveField("Ola") shouldBe JFieldSymbol(StaticNameCollision::class.java.getDeclaredField("Ola"))
+            it.resolveMethods("Ola") should containExactly(StaticNameCollision::class.java.getMethodsByName("Ola").map(::JMethodSymbol))
+            // We can't directly use the FQCN of the Ola inner class because it's obscured by the Ola field lol
+            it.resolveClass("Ola") shouldBe StaticNameCollision::class.nestedClasses.first().java
         }
     }
 
