@@ -1809,6 +1809,33 @@ public class Foo {
         </example>
     </rule>
 
+
+    <rule name="UseDiamondOperator"
+          language="java"
+          message="Use diamond operator"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          minimumLanguageVersion="1.7">
+        <description>Use the diamond operator to let the type be inferred</description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//VariableInitializer
+//PrimaryExpression[not(PrimarySuffix)]
+[not(ancestor::ArgumentList)]
+/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+|
+//StatementExpression[AssignmentOperator][PrimaryExpression/PrimaryPrefix[not(Expression)]]
+//PrimaryExpression[not(PrimarySuffix)]
+[not(ancestor::ArgumentList)]
+/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
     <rule name="UnnecessaryFullyQualifiedName"
           language="java"
           since="5.0"
