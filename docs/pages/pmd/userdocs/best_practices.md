@@ -21,7 +21,7 @@ Then, run rules, that detect empty `if` statements and such-like. You can find t
 After that, look at all the categories and select the rules, that are useful for your project.
 You can find an overview of the rules on the [Rule Index](pmd_rules_java.html).
 
-Use the rules you like [via a custom ruleset](pmd_userdocs_understanding_rulesets.html).
+Use the rules you like [via a custom ruleset](pmd_userdocs_making_rulesets.html).
 
 ## PMD rules are not set in stone
 
