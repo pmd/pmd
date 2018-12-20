@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
 /**
@@ -37,12 +36,11 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
      * import on demand declarations.
      *
      * @param parent        Parent table
-     * @param loader        ClassLoader used to resolve static imports
+     * @param helper        Resolve helper
      * @param singleImports Import declarations, must not be on-demand!
-     * @param thisPackage   Package name of the current compilation unit, used to check for accessibility
      */
-    public SingleImportSymbolTable(JSymbolTable parent, PMDASMClassLoader loader, List<ASTImportDeclaration> singleImports, String thisPackage) {
-        super(parent, loader, thisPackage);
+    public SingleImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> singleImports) {
+        super(parent, helper);
 
         for (ASTImportDeclaration anImport : singleImports) {
             if (anImport.isImportOnDemand()) {
@@ -63,7 +61,7 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
                     List<JMethodSymbol> methods = Arrays.stream(containerClass.getDeclaredMethods())
                                                         .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                        .filter(this::isAccessible)
+                                                        .filter(myResolveHelper::isAccessible)
                                                         .filter(m -> m.getName().equals(simpleName))
                                                         .map(JMethodSymbol::new)
                                                         .collect(Collectors.toList());
@@ -89,7 +87,7 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
                 importedTypes.put(simpleName, new JResolvableClassDeclarationSymbol(
                         // FIXME the qualifiedname resolver should resolve this itself
-                        (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, classLoader)));
+                        (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, myResolveHelper.getClassLoader())));
             }
         }
     }

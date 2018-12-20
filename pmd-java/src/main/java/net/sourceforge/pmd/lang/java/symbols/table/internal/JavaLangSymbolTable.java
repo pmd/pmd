@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
@@ -26,6 +27,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  * @since 7.0.0
  */
 public final class JavaLangSymbolTable extends AbstractSymbolTable {
+
+    private static final Logger LOG = Logger.getLogger(SamePackageSymbolTable.class.getName());
 
     private static final Map<String, JResolvableClassDeclarationSymbol> JAVA_8_LANG;
 
@@ -152,12 +155,12 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
     /**
      * Constructor with just the parent table.
      *
-     * @param parent     Parent table
-     * @param jdkVersion Version of the JDK
+     * @param parent Parent table
+     * @param helper Resolve helper
      */
-    public JavaLangSymbolTable(JSymbolTable parent, int jdkVersion) {
-        super(parent);
-        this.javaLangTypes = getJavaLangForJdkVersion(jdkVersion);
+    public JavaLangSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+        super(parent, helper);
+        this.javaLangTypes = getJavaLangForJdkVersion(helper.getJdkVersion());
     }
 
 
@@ -179,6 +182,12 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
     @Override
     protected Optional<JValueSymbol> resolveValueNameImpl(String simpleName) {
         return Optional.empty();
+    }
+
+
+    @Override
+    protected Logger getLogger() {
+        return LOG;
     }
 
 
