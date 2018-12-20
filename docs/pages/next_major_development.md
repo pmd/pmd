@@ -389,6 +389,10 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 *   The Java rules `GuardDebugLogging` (ruleset `java-logging-jakarta-commons`) and `GuardLogStatementJavaUtil`
     (ruleset `java-logging-java`) have been deprecated. Use the rule {% rule java/bestpractices/GuardLogStatement %}, which covers all cases regardless of the logging framework.
 
+*   The Java rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general
+    {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
+
 
 
 

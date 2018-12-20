@@ -14,11 +14,23 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The Java rule {% rule "java/multithreading/UnsynchronizedStaticFormatter" %} (`java-multithreading`) detects
+    unsynchronized usages of static `java.text.Format` instances. This rule is a more generic replacement of the
+    rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} which focused just on DateFormat.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/codestyle/LocalVariableCouldBeFinal" %} (`java-codestyle`) has a new
     property `ignoreForEachDecl`, which is by default disabled. The new property allows for ignoring
     non-final loop variables in a for-each statement.
+
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general
+    {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
 
 ### Fixed Issues
 
@@ -28,6 +40,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1513](https://github.com/pmd/pmd/issues/1513): \[java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop
 *   java-errorprone
     *   [#1035](https://github.com/pmd/pmd/issues/1035): \[java] ReturnFromFinallyBlock: False positive on lambda expression in finally block
+*   java-multithreading
+    *   [#1533](https://github.com/pmd/pmd/issues/1533): \[java] New rule: UnsynchronizedStaticFormatter
 *   plsql
     *   [#1508](https://github.com/pmd/pmd/issues/1508): \[plsql] Parse Exception when using SELECT COUNT(*)
     *   [#1509](https://github.com/pmd/pmd/issues/1509): \[plsql] Parse Exception with OUTER/INNER Joins
