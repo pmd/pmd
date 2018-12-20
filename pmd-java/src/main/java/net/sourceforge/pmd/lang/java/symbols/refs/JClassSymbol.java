@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
@@ -24,6 +25,8 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
 public final class JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName fqcn;
+
+    // TODO this class should present member symbols
 
 
     /**
@@ -94,4 +97,22 @@ public final class JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeD
         return i;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        JClassSymbol that = (JClassSymbol) o;
+        return Objects.equals(fqcn, that.fqcn);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fqcn);
+    }
 }

@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  * Symbolic version of {@link JClassSymbol}, which doesn't load a type
  * but provides access to its FQCN. It can try building a full type reference,
  * but this may fail. This kind of reference may be used by functions like typeIs() or
- * TypeHelper to test the type, but cannot be used properly by type resolution since
- * it needs access to eg supertypes and members.
+ * TypeHelper to test the type in the absence of a complete auxclasspath, but cannot
+ * be used properly by type resolution since it needs access to eg supertypes and members.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -74,4 +74,22 @@ public class JResolvableClassDeclarationSymbol extends AbstractDeclarationSymbol
         return Optional.of(new JClassSymbol(type));
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        JResolvableClassDeclarationSymbol that = (JResolvableClassDeclarationSymbol) o;
+        return Objects.equals(qualifiedName, that.qualifiedName);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName);
+    }
 }

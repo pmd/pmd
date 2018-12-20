@@ -20,7 +20,7 @@ public class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVariableD
     /**
      * Constructor using the AST node.
      *
-     * @param node           Node representing the id of the field, must be from an ASTLocalVariableDeclaration
+     * @param node Node representing the id of the field, must be from an ASTLocalVariableDeclaration
      */
     // cannot be built from reflection, but a node is always available
     public JLocalVariableSymbol(ASTVariableDeclaratorId node) {

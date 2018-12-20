@@ -19,11 +19,11 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
 /**
- * Base class for import scopes.
+ * Base class for tables tracking import declarations.
  *
  * <p>Rules for shadowing of imports: bottom of https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.4.1
  *
- * <p>The simplest way to implement that is to layer the imports into several scopes.
+ * <p>The simplest way to implement that is to layer the imports into several tables.
  * See doc on {@link JSymbolTable} about the higher level scopes of the scope stacks.
  *
  * @author Clément Fournier
@@ -34,7 +34,6 @@ abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
     final Map<String, JResolvableClassDeclarationSymbol> importedTypes = new HashMap<>();
     final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
     final Map<String, JFieldSymbol> importedStaticFields = new HashMap<>();
-
 
     /**
      * Constructor with the parent table and the auxclasspath classloader.

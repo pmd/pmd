@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,5 +48,25 @@ abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclaration
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + getSimpleName() + ")";
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbstractDeclarationSymbol<?> that = (AbstractDeclarationSymbol<?>) o;
+        return Objects.equals(simpleName, that.simpleName) &&
+                Objects.equals(boundNode, that.boundNode);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(simpleName, boundNode);
     }
 }

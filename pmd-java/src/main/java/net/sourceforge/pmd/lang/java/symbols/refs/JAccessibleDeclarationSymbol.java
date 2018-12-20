@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.refs;
 
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
@@ -20,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 public abstract class JAccessibleDeclarationSymbol<N extends Node> extends AbstractDeclarationSymbol<N> {
     protected final int modifiers;
 
+    // TODO this class should present the owner class' symbol if any
 
     JAccessibleDeclarationSymbol(int modifiers, String simpleName) {
         super(simpleName);
@@ -28,7 +30,7 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node> extends Abstr
 
 
     JAccessibleDeclarationSymbol(N node, int modifiers, String simpleName) {
-        super(simpleName);
+        super(node, simpleName);
         this.modifiers = modifiers;
     }
 
@@ -75,8 +77,6 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node> extends Abstr
 
         // TODO AccessNode should use the conventions of the standard reflection API
 
-        int modifiers = accessNode.getModifiers();
-
         int result = 0;
         if (accessNode.isPublic()) {
             result |= Modifier.PUBLIC;
@@ -116,4 +116,24 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node> extends Abstr
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        JAccessibleDeclarationSymbol<?> that = (JAccessibleDeclarationSymbol<?>) o;
+        return modifiers == that.modifiers;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), modifiers);
+    }
 }

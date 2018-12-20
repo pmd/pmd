@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 
@@ -25,14 +26,14 @@ public final class SymbolTableResolveHelper {
     public SymbolTableResolveHelper(String thisPackage,
                                     ClassLoader classLoader,
                                     int jdkVersion) {
-        this.thisPackage = thisPackage;
-        this.classLoader = classLoader;
+        this.thisPackage = Objects.requireNonNull(thisPackage);
+        this.classLoader = Objects.requireNonNull(classLoader);
         this.jdkVersion = jdkVersion;
     }
 
 
     /** Analysed language version. */
-    public int getJdkVersion() {
+    int getJdkVersion() {
         return jdkVersion;
     }
 
@@ -42,6 +43,10 @@ public final class SymbolTableResolveHelper {
         return thisPackage;
     }
 
+
+    boolean isUnnamedPackage() {
+        return thisPackage.isEmpty();
+    }
 
     /** Classloader with analysis classpath. */
     public ClassLoader getClassLoader() {
@@ -80,7 +85,8 @@ public final class SymbolTableResolveHelper {
         }
     }
 
-    public Class<?> loadClass(String fqcn, Consumer<Throwable> failureHandler) {
+
+    Class<?> loadClass(String fqcn, Consumer<Throwable> failureHandler) {
         try {
             return getClassLoader().loadClass(fqcn);
             // ClassTypeResolver used to just ignore ClassNotFoundException, was there a reason for that?
