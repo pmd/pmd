@@ -52,7 +52,7 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
             if (anImport.isStatic()) {
                 // Single-Static-Import Declaration
-                // fields or methods having the same name
+                // types, fields or methods having the same name
 
                 String className = name.substring(0, name.lastIndexOf('.'));
 
@@ -79,13 +79,27 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                     } catch (NoSuchFieldException ignored) {
                         // we tried
                     }
+
+                    // check for member types
+
+                    // We don't use named directly, because if containerClass is itself an inner class then its
+                    // dot to dollar conversion would have already been handled
+                    Class<?> imported = loadClassIgnoreFailure(containerClass.getName() + "$" + simpleName);
+
+                    if (imported != null) {
+                        importedTypes.put(simpleName, new JResolvableClassDeclarationSymbol(imported));
+                    }
+
+                    // we're done
                 }
 
-                // containerClass==null, the imports cannot be found
+                // containerClass==null, the auxclasspath is wrong
+                // bc static imports can't import toplevel types
 
             } else {
                 // Single-Type-Import Declaration
 
+                // Here we pass along the ClassLoader to hit it as late as possible
                 importedTypes.put(simpleName, new JResolvableClassDeclarationSymbol(
                         // FIXME the qualifiedname resolver should resolve this itself
                         (JavaTypeQualifiedName) QualifiedNameFactory.ofString(name, myResolveHelper.getClassLoader())));

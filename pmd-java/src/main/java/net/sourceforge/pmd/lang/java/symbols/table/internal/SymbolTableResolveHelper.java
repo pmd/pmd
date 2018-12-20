@@ -9,6 +9,8 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.ClassUtils;
+
 
 /**
  * Object passing around config for {@link AbstractSymbolTable}.
@@ -88,7 +90,8 @@ public final class SymbolTableResolveHelper {
 
     Class<?> loadClass(String fqcn, Consumer<Throwable> failureHandler) {
         try {
-            return getClassLoader().loadClass(fqcn);
+            // This handles the conversion of dots to dollars (ie canonical vs binary name)
+            return ClassUtils.getClass(getClassLoader(), fqcn);
             // ClassTypeResolver used to just ignore ClassNotFoundException, was there a reason for that?
         } catch (ClassNotFoundException | LinkageError e2) {
             failureHandler.accept(e2);

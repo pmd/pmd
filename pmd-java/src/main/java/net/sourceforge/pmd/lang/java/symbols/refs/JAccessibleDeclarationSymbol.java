@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 public abstract class JAccessibleDeclarationSymbol<N extends Node> extends AbstractDeclarationSymbol<N> {
     protected final int modifiers;
 
-    // TODO this class should present the owner class' symbol if any
+    // TODO this class should present the owner class' symbol and include it in the equals/hashcode!
 
     JAccessibleDeclarationSymbol(int modifiers, String simpleName) {
         super(simpleName);

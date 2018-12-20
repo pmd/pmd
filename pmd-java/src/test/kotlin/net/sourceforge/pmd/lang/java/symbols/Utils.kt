@@ -11,9 +11,11 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule
 import net.sourceforge.pmd.lang.java.ParserTstUtil
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit
 import net.sourceforge.pmd.lang.java.ast.SymbolTableResolver
+import java.lang.reflect.Method
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
+import kotlin.streams.toList
 
 /** Testing utilities */
 
@@ -42,3 +44,7 @@ fun <T> Optional<T>.shouldBeEmpty() {
 fun Stream<*>.shouldBeEmpty() = collect(Collectors.toList()) should beEmpty()
 
 fun Stream<*>.shouldHaveSize(i: Int) = collect(Collectors.toList()) should haveSize(i)
+
+fun Class<*>.getMethodsByName(name: String): List<Method> = declaredMethods.stream().filter { it.name == name }.toList()
+
+fun <T> Array<T>.stream() = Arrays.stream(this)

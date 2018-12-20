@@ -547,7 +547,6 @@ public class ClassTypeResolverTest {
     public void testBinaryStringPromotion() throws JaxenException {
         List<ASTExpression> expressions = selectNodes(Promotion.class, ASTExpression.class,
                                                       "//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryStringPromotion']]//Expression");
-        ;
         int index = 0;
 
         assertEquals(String.class, expressions.get(index++).getType());
@@ -604,7 +603,7 @@ public class ClassTypeResolverTest {
     public void testUnaryNumericOperators() throws JaxenException {
         List<TypeNode> expressions = selectNodes(Operators.class, TypeNode.class,
                                                "//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]"
-                                                       +"//*[self::Expression or self::PostfixExpression or self::PreIncrementExpression or self::PreDecrementExpression]");
+                                                       + "//*[self::Expression or self::PostfixExpression or self::PreIncrementExpression or self::PreDecrementExpression]");
 
         int index = 0;
         assertEquals(Integer.TYPE, expressions.get(index++).getType());

@@ -13,9 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.reflect.MethodUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;

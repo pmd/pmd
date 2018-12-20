@@ -73,6 +73,7 @@ public interface JDeclarationSymbol<N extends Node> {
     // TODO annotations could be added to the API if we publish it
 
     // TODO implement hashcode and equals for every one of these (for now only those that are used are implemented)
+    // and test them!!!!
 
     // TODO add type information when TypeDefinitions are reviewed
     // We should be able to create a type definition from a java.lang.reflect.Type,

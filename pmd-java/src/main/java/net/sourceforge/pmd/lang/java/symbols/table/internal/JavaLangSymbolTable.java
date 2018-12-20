@@ -191,6 +191,7 @@ public final class JavaLangSymbolTable extends AbstractSymbolTable {
     }
 
 
+    @SuppressWarnings("PMD.UnusedFormalParameter")
     private static Map<String, JResolvableClassDeclarationSymbol> getJavaLangForJdkVersion(int jdkVersion) {
         // TODO implement for other jdk versions
         return JAVA_8_LANG;

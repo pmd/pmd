@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
+public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
 
 
     /**
@@ -72,5 +72,4 @@ public class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclar
             throw new IllegalArgumentException("Not a field id");
         }
     }
-
 }

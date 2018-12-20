@@ -60,8 +60,8 @@ abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclaration
             return false;
         }
         AbstractDeclarationSymbol<?> that = (AbstractDeclarationSymbol<?>) o;
-        return Objects.equals(simpleName, that.simpleName) &&
-                Objects.equals(boundNode, that.boundNode);
+        return Objects.equals(simpleName, that.simpleName)
+            && Objects.equals(boundNode, that.boundNode);
     }
 
 
