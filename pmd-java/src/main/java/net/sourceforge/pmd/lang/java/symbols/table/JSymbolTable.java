@@ -34,10 +34,10 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * <p>Each symbol table is linked to a parent table, and keeps track of a particular set
  * of declarations having the same relative precedence. When a symbol table is asked for
  * the meaning of a name in a particular syntactic context (type name, method name, value name),
- * it first determines if it has a declaration with a matching name.
+ * it first determines if it tracks a declaration with a matching name.
  * <ul>
  *      <li>If there is one, it returns the {@link JDeclarationSymbol} representing the entity
- *          the name stands for in the given context
+ *          the name stands for in the given context;
  *      <li>If there is none, it asks the same question to its parent table recursively
  *          and returns that result.
  * </ul>
@@ -46,10 +46,14 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *
  * <h2>Terminology</h3>
  *
+ * <p> If a symbol table S directly "knows about" a declaration D, then D is said
+ * to be <i>tracked</i> by S. A symbol table doesn't track the declarations tracked
+ * by its parents.
+ *
  * <p>Each symbol table is only relevant to a set of program points, which it is said
  * to <i>dominate</i>. The set of program points a table dominates is referred-to
  * as the <i>scope</i> of that symbol table. The scope of a symbol table is a subset of
- * the scope of its parent. The declarations in a symbol table S are said to be
+ * the scope of its parent. The declarations tracked by a symbol table S are said to be
  * <i>in-scope</i> throughout the scope of S, which means they are accessible from their
  * simple name.
  *
@@ -64,8 +68,8 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *     simple name, provided it is not shadowed.
  * </blockquote>
  *
- * <p>For our purposes, a symbol table keeps track of a set of declarations having the
- * same jls:scope, so that the pmd:scope of a symbol table is the jls:scope of any of its
+ * <p>For our purposes, a symbol table tracks a set of declarations having exactly the same
+ * jls:scope, so that the pmd:scope of a symbol table is the jls:scope of any of its tracked
  * declarations.
  *
  * <h2>Implementation</h3>
@@ -89,11 +93,16 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * </ul>
  * These dominate the whole compilation unit and thus are all linked to the {@link ASTCompilationUnit}.
  *
+ * <p>NOTE: this structure is not published API. Rule writers should not rely on it, and should only use this interface.
+ *
  * <h2>Main differences with the current symbol table framework</h2>
  *
  * <ul>
- *     <li>Symbol tables resolve names
- *     <li>Symbol tables don't index the AST like {@link Scope}s do.
+ *     <li>Symbol tables resolve names.
+ *     <li>Symbol tables don't index the AST like {@link Scope}s do. In fact, the structure of a scope
+ *     stack doesn't aim to reflect the syntactic structure of the compilation unit, but to reify part
+ *     of the semantics of name resolution.
+ *     <li>The structure of table stacks is internal API, contrary to the structure of {@link Scope} trees.
  *     <li>Symbol tables don't store usages, a separate component could be used for that
  *     <li>{@link JDeclarationSymbol}s don't store a reference to their declaring SymbolTable
  *         like {@link NameDeclaration} does with {@link Scope}.
@@ -131,7 +140,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *
  * <h2>TODO</h2>
  *
- * <p>The substack corresponding to a type declaration T will probably have the
+ * <p>The stack slice corresponding to a type declaration T will probably have the
  * following form:
  * <ul>
  *      <li> Superinterfaces: constants, member types, abstract and default methods
@@ -139,7 +148,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *      <li> Superclass: methods, fields, and member types inherited from
  *           the direct superclass of T
  *      <li> Member types: Member types of T (their names are shadowed by
- *           the type parameters of T)
+ *           the type parameters of T, but they shadow any import)
  *      <li> Type parameters of T
  *      <li> T's static members: static methods, fields and types defined by T.
  *      <li> T's non-static members: static methods, fields and types defined by T.
@@ -170,11 +179,12 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * We'll probably need to proceed depth-first. If you're wondering about the performance costs of exploring
  * a whole type hierarchy, I'd say this is exactly what MissingOverrideRule does for now. It can then be
  * rewritten to make use of this framework. Plus, type hierarchies are unlikely to be extremely deep and correct
- * caching can make this ok performance wise. Ideally this data would be cached between runs.
+ * caching can make this ok performance-wise. Ideally this data would be cached between runs, which would
+ * allow for multifile analysis. This can be scheduled as future work and could probably integrated into
+ * the framework, which is made possible by the abstraction provided by {@link JDeclarationSymbol}.
  *
- * <p>Some other rules could directly use the symbol table stack, e.g. UnnecessaryQualifiedName, which could
- * simply be looking up whether a qualified name means the same as its simple name in the scope of
- * its JSymbolTable.
+ * <p>Some other rules could use the symbol table stack, e.g. UnnecessaryQualifiedName, UnusedImports,
+ * MissingOverride, etc.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -212,7 +222,7 @@ public interface JSymbolTable {
 
     /**
      * Finds the variable or field to which the given simple name refers in the scope of
-     * this symbol table. TODO exclude non-static fields if we're in a static context, eg in a static nested class or in a static method.
+     * this symbol table.
      *
      * @param simpleName simple name of the value to find
      *
@@ -232,7 +242,8 @@ public interface JSymbolTable {
      *
      * @param simpleName Simple name of the method
      *
-     * @return An iterator enumerating methods with that name accessible an applicable to the implicit receiver in the scope of this symbol table.
+     * @return An iterator enumerating methods with the given name accessible and applicable to the
+     * implicit receiver in the scope of this symbol table.
      */
     Stream<JMethodSymbol> resolveMethodName(String simpleName);
 

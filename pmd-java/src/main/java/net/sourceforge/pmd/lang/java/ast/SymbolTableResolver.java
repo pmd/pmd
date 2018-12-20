@@ -80,11 +80,6 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAn
     }
 
 
-    private JSymbolTable getTopOfStack() {
-        return top;
-    }
-
-
     private void pushOnStack(JSymbolTable table) {
         if (!table.getParent().equals(peekStack())) {
             throw new IllegalStateException("Tried to push a table that is not linked to the current stack top");

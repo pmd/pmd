@@ -68,6 +68,8 @@ public interface JavaNode extends ScopedNode {
      *
      * @return A symbol table
      */
+    // the setter is implemented as package private on the abstract node class
+    // which is why the SymbolTableResolver is in the AST package
     @Experimental
     JSymbolTable getSymbolTable();
 
@@ -80,13 +82,41 @@ public interface JavaNode extends ScopedNode {
     void setScope(Scope scope);
 
 
-    default Node getLastChild() {
-        return jjtGetChild(jjtGetNumChildren() - 1);
+    // These could be moved to the Node interface
+    // Ideally they would be implemented as final on AbstractNode to allow inlining
+    // We could use an internal PMD rule to migrate usages, which are numerous
+
+    /**
+     * Returns true if this node has no children.
+     */
+    default boolean isLeaf() {
+        return jjtGetNumChildren() == 0;
     }
 
 
+    /**
+     * Returns true if this node has children.
+     */
+    default boolean hasChildren() {
+        return !isLeaf();
+    }
+
+
+    /**
+     * Returns the last child of this node, or null
+     * if it doesn't exist.
+     */
+    default Node getLastChild() {
+        return isLeaf() ? null : jjtGetChild(jjtGetNumChildren() - 1);
+    }
+
+
+    /**
+     * Returns the first child of this node, or null
+     * if it doesn't exist.
+     */
     default Node getFirstChild() {
-        return jjtGetChild(0);
+        return isLeaf() ? null : jjtGetChild(0);
     }
 
 }
