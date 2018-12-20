@@ -91,6 +91,7 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAn
     }
 
 
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private JSymbolTable popStack() {
         JSymbolTable curTop = this.myStackTop;
         this.myStackTop = curTop.getParent();

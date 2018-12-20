@@ -56,7 +56,8 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
 
                 String className = name.substring(0, name.lastIndexOf('.'));
 
-                Class<?> containerClass = loadClass(className);
+                Class<?> containerClass = loadClassIgnoreFailure(className);
+
                 if (containerClass != null) {
 
                     List<JMethodSymbol> methods = Arrays.stream(containerClass.getDeclaredMethods())
@@ -75,8 +76,8 @@ public final class SingleImportSymbolTable extends AbstractImportSymbolTable {
                         if (field != null && Modifier.isStatic(field.getModifiers())) {
                             importedStaticFields.put(simpleName, new JFieldSymbol(field));
                         }
-                    } catch (NoSuchFieldException e) {
-                        // ignore eh
+                    } catch (NoSuchFieldException ignored) {
+                        // we tried
                     }
                 }
 

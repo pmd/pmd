@@ -21,7 +21,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public interface JSimpleTypeDeclarationSymbol<N extends Node> extends JDeclarationSymbol<N> {
 
-
     /**
      * Returns true if this is a class reference, in
      * which case it can be safely downcast to {@link JResolvableClassDeclarationSymbol}.

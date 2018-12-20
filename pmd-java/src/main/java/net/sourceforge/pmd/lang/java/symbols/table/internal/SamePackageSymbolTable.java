@@ -47,7 +47,9 @@ public final class SamePackageSymbolTable extends AbstractSymbolTable {
     protected Optional<JResolvableClassDeclarationSymbol> resolveTypeNameImpl(String simpleName) {
 
         // account for unnamed package
-        String fqcn = myResolveHelper.getThisPackage().isEmpty() ? simpleName : (myResolveHelper.getThisPackage() + "." + simpleName);
+        String fqcn = myResolveHelper.getThisPackage().isEmpty()
+                      ? simpleName
+                      : myResolveHelper.getThisPackage() + "." + simpleName;
 
         // We know it's accessible, since top-level classes are either public or package private,
         // and we're in the package

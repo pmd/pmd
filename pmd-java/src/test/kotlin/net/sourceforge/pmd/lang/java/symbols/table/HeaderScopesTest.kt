@@ -1,12 +1,12 @@
-package net.sourceforge.pmd.lang.java.symbols
+package net.sourceforge.pmd.lang.java.symbols.table
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.Statics
 import net.sourceforge.pmd.lang.java.ast.parserTest
+import net.sourceforge.pmd.lang.java.symbols.*
 import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol
 import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable

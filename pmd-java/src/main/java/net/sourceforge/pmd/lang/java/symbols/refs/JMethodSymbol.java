@@ -24,7 +24,7 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
     /**
      * Constructor for methods found through reflection.
      *
-     * @param method         Method for which to create a reference
+     * @param method Method for which to create a reference
      */
     public JMethodSymbol(Method method) {
         super(method.getModifiers(), method.getName());
@@ -35,7 +35,7 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
     /**
      * Constructor using the AST node.
      *
-     * @param node           Node representing the method declaration
+     * @param node Node representing the method declaration
      */
     public JMethodSymbol(ASTMethodDeclaration node) {
         super(node, getModifiers(node), node.getMethodName());
@@ -77,10 +77,10 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
         return Modifier.isFinal(modifiers);
     }
 
+    // Modifier.TRANSIENT is identical to the bit mask used for varargs
+    // the reflect API uses that because they can never occur together I guess
 
     boolean isVarargs() {
-        // Modifier.TRANSIENT is identical to the bit mask used for varargs
-        // the reflect API uses that because they can never occur together I guess
         return (modifiers & Modifier.TRANSIENT) != 0;
     }
 

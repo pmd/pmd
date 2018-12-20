@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -46,15 +47,6 @@ abstract class AbstractSymbolTable implements JSymbolTable {
     }
 
 
-    protected abstract Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeNameImpl(String simpleName);
-
-
-    protected abstract Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName);
-
-
-    protected abstract Optional<JValueSymbol> resolveValueNameImpl(String simpleName);
-
-
     @Override
     public final Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeName(String simpleName) {
         Optional<? extends JSimpleTypeDeclarationSymbol<?>> result = resolveTypeNameImpl(simpleName);
@@ -71,8 +63,26 @@ abstract class AbstractSymbolTable implements JSymbolTable {
 
     @Override
     public final Stream<JMethodSymbol> resolveMethodName(String simpleName) {
-        return Stream.concat(resolveMethodNameImpl(simpleName), myParent.resolveMethodName(simpleName));
+        // This allows the stream contributed by the parent to be resolved lazily,
+        // ie not evaluated unless the stream contributed by this table runs out of values,
+        // a behaviour that Stream.concat can't provide
+        return Stream.<Supplier<Stream<JMethodSymbol>>>of(
+                () -> resolveMethodNameImpl(simpleName),
+                () -> myParent.resolveMethodName(simpleName)
+        ).flatMap(Supplier::get);
     }
+
+
+    /** Finds a type name among the declarations tracked by this table without asking the parent. */
+    protected abstract Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeNameImpl(String simpleName);
+
+
+    /** Finds the matching methods among the declarations tracked by this table without asking the parent. */
+    protected abstract Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName);
+
+
+    /** Finds a value among the declarations tracked by this table without asking the parent. */
+    protected abstract Optional<JValueSymbol> resolveValueNameImpl(String simpleName);
 
 
     /** Gets a logger, used to have a different logger for different scopes. */
