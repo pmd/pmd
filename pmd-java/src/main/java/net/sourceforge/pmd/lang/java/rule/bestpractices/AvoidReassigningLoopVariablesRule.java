@@ -21,8 +21,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -30,6 +32,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -70,18 +74,6 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             .defaultValue(ForReassignOption.DENY)
             .desc("how/if for control variables may be reassigned")
             .build();
-
-    private static final Set<Class<? extends Node>> CONTROL_FLOW_STATEMENTS;
-
-    static {
-        final Set<Class<? extends Node>> controlFlowStatements = new HashSet<>();
-        controlFlowStatements.add(ASTIfStatement.class);
-        controlFlowStatements.add(ASTSwitchStatement.class);
-        controlFlowStatements.add(ASTWhileStatement.class);
-        controlFlowStatements.add(ASTDoStatement.class);
-        controlFlowStatements.add(ASTForStatement.class);
-        CONTROL_FLOW_STATEMENTS = Collections.unmodifiableSet(controlFlowStatements);
-    }
 
     public AvoidReassigningLoopVariablesRule() {
         definePropertyDescriptor(FOREACH_REASSIGN);
@@ -154,7 +146,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
                 continue;
             }
 
-            checkVariable(data, loopVariables, expression.getFirstDescendantOfType(ASTName.class));
+            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
         }
 
         // ++ foo
@@ -163,7 +155,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
                 continue;
             }
 
-            checkVariable(data, loopVariables, expression.getFirstDescendantOfType(ASTName.class));
+            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
         }
 
         // -- foo
@@ -172,7 +164,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
                 continue;
             }
 
-            checkVariable(data, loopVariables, expression.getFirstDescendantOfType(ASTName.class));
+            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
         }
 
         // foo += x and foo -= x
@@ -202,8 +194,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
             }
 
             final ASTPrimaryExpression primaryExpression = operator.jjtGetParent().getFirstChildOfType(ASTPrimaryExpression.class);
-            final ASTName name = primaryExpression.getFirstDescendantOfType(ASTName.class);
-            checkVariable(data, loopVariables, name);
+            checkVariable(data, loopVariables, singleVariableName(primaryExpression));
         }
     }
 
@@ -223,6 +214,23 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
         final boolean ignoredConditional = ignoreFlagsList.contains(IgnoreFlags.IGNORE_CONDITIONAL) && isConditionallyExecuted(node, loopBody);
 
         return ignoredFirstStatement || ignoredConditional;
+    }
+
+    /**
+     * Extracts the variable name by traversing PrimaryExpression -> PrimaryPrefix -> Name.
+     * Also check if there is a PrimaryExpression -> PrimarySuffix which indicates a field or array access.
+     *
+     * @returns the Name or null if the PrimaryPrefix is "this" or "super"
+     */
+    private ASTName singleVariableName(ASTPrimaryExpression primaryExpression) {
+        final ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+        final ASTPrimarySuffix primarySuffix = primaryExpression.getFirstChildOfType(ASTPrimarySuffix.class);
+
+        if (primarySuffix != null || primaryPrefix == null) {
+            return null;
+        }
+
+        return primaryPrefix.getFirstChildOfType(ASTName.class);
     }
 
     /**
@@ -249,14 +257,27 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
      * This doesn't check
      */
     private boolean isConditionallyExecuted(Node node, ASTStatement loopBody) {
+        // starting at the assignment/increment node, traverse the tree up to
+        // check if we're inside the conditionally executed block of a control flow statement
+
         Node checkNode = node;
         while (checkNode.jjtGetParent() != null && !checkNode.jjtGetParent().equals(loopBody)) {
-            checkNode = checkNode.jjtGetParent();
-            if (CONTROL_FLOW_STATEMENTS.contains(checkNode.getClass())) {
-                return true;
+            final Node parent = checkNode.jjtGetParent();
+
+            // if/switch/while-statement, excluding the expression
+            if (parent instanceof ASTIfStatement || parent instanceof ASTSwitchStatement || parent instanceof ASTWhileStatement || parent instanceof ASTDoStatement) {
+                return !(checkNode instanceof ASTExpression);
             }
+
+            // for-statement, excluding the initializer, expression and update
+            if (parent instanceof ASTForStatement) {
+                return !(checkNode instanceof ASTForInit || checkNode instanceof ASTExpression || checkNode instanceof ASTForUpdate);
+            }
+            checkNode = parent;
         }
 
+        // iterating the statements of the loop body, check if there is a
+        // continue statement before the increment statement
         final ASTBlock block = loopBody.getFirstDescendantOfType(ASTBlock.class);
         if (block != null) {
             for (int i = 0; i < block.jjtGetNumChildren(); i++) {
