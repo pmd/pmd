@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
-import java.util.Set;
+import java.text.DateFormat;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -13,8 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Using a DateFormatter (SimpleDateFormatter) which is static can cause
@@ -32,8 +32,9 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
 
-    private static Set<String> targets = CollectionUtil.asSet(
-            new String[] { "DateFormat", "SimpleDateFormat", "java.text.DateFormat", "java.text.SimpleDateFormat" });
+    public UnsynchronizedStaticDateFormatterRule() {
+        addRuleChainVisit(ASTFieldDeclaration.class);
+    }
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -41,9 +42,10 @@ public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
             return data;
         }
         ASTClassOrInterfaceType cit = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (cit == null || !targets.contains(cit.getImage())) {
+        if (cit == null || !TypeHelper.isA(cit, DateFormat.class)) {
             return data;
         }
+
         ASTVariableDeclaratorId var = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         for (NameOccurrence occ : var.getUsages()) {
             Node n = occ.getLocation();
