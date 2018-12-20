@@ -6,6 +6,8 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.toIterable;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
@@ -288,12 +291,39 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             if (found != null) {
                 selectionModel.select(found);
             }
+
+            highlightFocusNodeParents(selectedTreeItem, found);
+
             selectedTreeItem = found;
 
             astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
             if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
                 astTreeView.scrollTo(selectionModel.getSelectedIndex());
             }
+        }
+    }
+
+
+    private void sideEffectParents(ASTTreeItem deepest, BiConsumer<ASTTreeItem, Integer> itemAndDepthConsumer) {
+
+        int depth = 0;
+        for (TreeItem<Node> item : toIterable(parentIterator(deepest, true))) {
+            // the depth is "reversed" here, i.e. the deepest node has depth 0
+            itemAndDepthConsumer.accept((ASTTreeItem) item, depth++);
+        }
+
+    }
+
+
+    private void highlightFocusNodeParents(ASTTreeItem oldSelection, ASTTreeItem newSelection) {
+        if (oldSelection != null) {
+            // remove highlighting on the cells of the item
+            sideEffectParents(oldSelection, (item, depth) -> item.setStyleClasses());
+        }
+
+        if (newSelection != null) {
+            // 0 is the deepest node, "depth" goes up as we get up the parents
+            sideEffectParents(newSelection, (item, depth) -> item.setStyleClasses("ast-parent", "depth-" + depth));
         }
     }
 
