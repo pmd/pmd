@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
@@ -72,6 +71,8 @@ public interface JavaNode extends ScopedNode {
      *
      * @return A symbol table
      */
+    // the setter is implemented as package private on the abstract node class
+    // which is why the SymbolTableResolver is in the AST package
     @Experimental
     JSymbolTable getSymbolTable();
 
@@ -84,6 +85,15 @@ public interface JavaNode extends ScopedNode {
     @Nullable
     default JavaNode getLastChild() {
         return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
+    }
+
+
+    /**
+     * Returns the first child of this node, or null
+     * if it doesn't exist.
+     */
+    default JavaNode getFirstChild() {
+        return jjtGetNumChildren() > 0 ? jjtGetChild(0) : null;
     }
 
 
@@ -125,6 +135,7 @@ public interface JavaNode extends ScopedNode {
 
     /**
      * Returns the root of the file in which this node is declared.
+     *
      * @since PMD 7.0.0
      */
     ASTCompilationUnit getRoot();

@@ -116,8 +116,10 @@ public final class QualifiedNameFactory {
 
 
     /**
-     * Parses a qualified name given in the format defined for this implementation. The format
-     * is specified by a regex pattern (see {@link #FORMAT}). Examples:
+     * Parses a qualified name given in the format defined for this implementation.
+     * This uses a default classloader, prefer {@link #ofString(String, ClassLoader)}.
+     *
+     * Examples:
      *
      * <p>{@code com.company.MyClass$Nested#myMethod(String, int)}
      * <ul>

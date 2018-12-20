@@ -20,37 +20,25 @@ import java.util.stream.Stream
 object DefaultAnalysisConfiguration : AstAnalysisConfiguration {
     override fun getTypeResolutionClassLoader(): ClassLoader = ParserTstUtil::class.java.classLoader
 
-    override fun getLanguageVersion(): LanguageVersion = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("11")
+    override fun getLanguageVersion(): LanguageVersion = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).defaultVersion
 }
 
-fun Class<*>.parse(): ASTCompilationUnit {
-    val acu = ParserTstUtil.parseJavaDefaultVersion(this)
-    SymbolTableResolver(DefaultAnalysisConfiguration, acu).visit(acu, DefaultAnalysisConfiguration)
+fun Class<*>.parse(): ASTCompilationUnit =
+        ParserTstUtil.parseJavaDefaultVersion(this).also { acu ->
+            SymbolTableResolver(DefaultAnalysisConfiguration, acu).visit(acu, DefaultAnalysisConfiguration)
+        }
 
-    return acu
-}
+/** Asserts that [this] is of type T, executes the given [assertions] on it, and returns it. */
+inline fun <reified T> Any?.shouldBeA(noinline assertions: (T) -> Unit = {}): T =
+        (this as? T)?.also(assertions)
+        ?: fail("Wrong type, expected ${T::class.simpleName}, actual ${this?.javaClass?.simpleName}")
 
-inline fun <reified T> Any?.shouldBeA(noinline assertions: (T) -> Unit = {}): T {
-    when (this) {
-        is T -> assertions(this)
-        else -> fail("Wrong type, expected ${T::class.simpleName}, actual ${this?.javaClass?.simpleName}")
-    }
-    return this
-}
-
-fun <T> Optional<T>.shouldBePresent(): T {
-    return when {
-        isPresent -> get()
-        else -> fail("Optional should have been present!")
-    }
-}
-
+fun <T> Optional<T>.shouldBePresent(): T = orElseGet { fail("Optional should have been present!") }
 
 fun <T> Optional<T>.shouldBeEmpty() {
     if (isPresent) fail("Optional should have been present!")
 }
 
 fun Stream<*>.shouldBeEmpty() = collect(Collectors.toList()) should beEmpty()
-
 
 fun Stream<*>.shouldHaveSize(i: Int) = collect(Collectors.toList()) should haveSize(i)

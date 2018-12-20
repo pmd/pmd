@@ -73,6 +73,8 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node> extends Abstr
 
         */
 
+        // TODO AccessNode should use the conventions of the standard reflection API
+
         int modifiers = accessNode.getModifiers();
 
         int result = 0;

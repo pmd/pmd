@@ -27,9 +27,10 @@ class HeaderScopesTest : FunSpec({
     val onDemandTypeImports = "on-demand type imports"
     val onDemandStaticImports = "on-demand static imports"
 
+    // The test data is placed in a short package to allow typing out FQCNs here for readability
 
     // expects a symbolic type
-    fun JSymbolTable.resolveSymbolic(s: String): Class<*> =
+    fun JSymbolTable.resolveClass(s: String): Class<*> =
             resolveTypeName(s)
                     .shouldBePresent()
                     .shouldBeA<JResolvableClassDeclarationSymbol>()
@@ -50,7 +51,7 @@ class HeaderScopesTest : FunSpec({
         val acu = javasymbols.testdata.TestCase1::class.java.parse()
 
         acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
-            it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
+            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
         }
     }
 
@@ -61,10 +62,10 @@ class HeaderScopesTest : FunSpec({
 
         acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
 
-            it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
+            it.resolveClass("Thread") shouldBe javasymbols.testdata.Thread::class.java
 
             it.parent.shouldBeA<JavaLangSymbolTable> {
-                it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
+                it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
             }
         }
     }
@@ -78,11 +79,11 @@ class HeaderScopesTest : FunSpec({
 
         acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
 
-            it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
+            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
 
             it.parent.shouldBeA<SamePackageSymbolTable> {
 
-                it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
+                it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
             }
         }
     }
@@ -95,13 +96,13 @@ class HeaderScopesTest : FunSpec({
 
         acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
 
-            it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
+            it.resolveClass("Thread") shouldBe javasymbols.testdata.Thread::class.java
 
             it.parent.shouldBeA<SamePackageSymbolTable> {
 
                 it.parent.shouldBeA<JavaLangSymbolTable> {
 
-                    it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
+                    it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
 
                 }
             }
@@ -116,30 +117,30 @@ class HeaderScopesTest : FunSpec({
 
         acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
             // from java.lang
-            it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
+            it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
             // from same package
-            it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
+            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
             // from the import-on-demand
-            it.resolveSymbolic("Statics") shouldBe Statics::class.java
+            it.resolveClass("Statics") shouldBe Statics::class.java
             // from the single type import
-            it.resolveSymbolic("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
+            it.resolveClass("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
 
 
 
             it.parent.shouldBeA<SamePackageSymbolTable> {
 
                 // shadowing javasymbols.testdata.SomeClassA
-                it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
+                it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.deep.SomeClassA::class.java
 
                 it.parent.shouldBeA<JavaLangSymbolTable> {
                     // shadows javasymbols.testdata.Thread
-                    it.resolveSymbolic("Thread") shouldBe java.lang.Thread::class.java
+                    it.resolveClass("Thread") shouldBe java.lang.Thread::class.java
 
                     it.parent.shouldBeA<ImportOnDemandSymbolTable> {
-                        it.resolveSymbolic("Thread") shouldBe javasymbols.testdata.Thread::class.java
-                        it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
-                        it.resolveSymbolic("Statics") shouldBe Statics::class.java
-                        it.resolveSymbolic("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
+                        it.resolveClass("Thread") shouldBe javasymbols.testdata.Thread::class.java
+                        it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
+                        it.resolveClass("Statics") shouldBe javasymbols.testdata.Statics::class.java
+                        it.resolveClass("TestCase1") shouldBe javasymbols.testdata.TestCase1::class.java
                     }
                 }
             }
@@ -203,13 +204,13 @@ class HeaderScopesTest : FunSpec({
 
         acu.symbolTable.shouldBeA<SamePackageSymbolTable> {
 
-            it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.deep.PublicShadowed::class.java
+            it.resolveClass("PublicShadowed") shouldBe javasymbols.testdata.deep.PublicShadowed::class.java
 
             it.parent.shouldBeA<JavaLangSymbolTable> {
                 it.parent.shouldBeA<ImportOnDemandSymbolTable> {
 
                     // static type member
-                    it.resolveSymbolic("PublicShadowed") shouldBe javasymbols.testdata.Statics.PublicShadowed::class.java
+                    it.resolveClass("PublicShadowed") shouldBe javasymbols.testdata.Statics.PublicShadowed::class.java
                 }
             }
         }
@@ -223,14 +224,14 @@ class HeaderScopesTest : FunSpec({
 
         acu.symbolTable.shouldBeA<SingleImportSymbolTable> {
 
-            it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
+            it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.SomeClassA::class.java
 
             it.parent.shouldBeA<SamePackageSymbolTable> {
                 it.parent.shouldBeA<JavaLangSymbolTable> {
                     it.parent.shouldBeA<ImportOnDemandSymbolTable> {
 
                         // static type member
-                        it.resolveSymbolic("SomeClassA") shouldBe javasymbols.testdata.Statics.SomeClassA::class.java
+                        it.resolveClass("SomeClassA") shouldBe javasymbols.testdata.Statics.SomeClassA::class.java
                     }
                 }
             }
