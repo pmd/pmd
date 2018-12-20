@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractImportSymbolTable extends AbstractExternalSymbolTable {
+abstract class AbstractImportSymbolTable extends AbstractSymbolTable {
 
     final Map<String, JResolvableClassDeclarationSymbol> importedTypes = new HashMap<>();
     final Map<String, List<JMethodSymbol>> importedStaticMethods = new HashMap<>();
@@ -40,11 +40,10 @@ abstract class AbstractImportSymbolTable extends AbstractExternalSymbolTable {
      * Constructor with the parent table and the auxclasspath classloader.
      *
      * @param parent      Parent table
-     * @param classLoader ClassLoader used to resolve e.g. import-on-demand
-     * @param thisPackage Package name of the current compilation unit, used to check for accessibility
+     * @param helper Resolve helper
      */
-    AbstractImportSymbolTable(JSymbolTable parent, ClassLoader classLoader, String thisPackage) {
-        super(parent, classLoader, thisPackage);
+    AbstractImportSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+        super(parent, helper);
     }
 
 

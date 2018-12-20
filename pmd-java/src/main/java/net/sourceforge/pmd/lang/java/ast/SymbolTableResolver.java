@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbol
 import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable;
+import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolveHelper;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 
@@ -29,11 +32,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
  */
 public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAnalysisConfiguration> {
 
-    private final String packageName;
-    private final PMDASMClassLoader classLoader;
-    private final int jdkVersion;
+    private final SymbolTableResolveHelper myResolveHelper;
     // current top of the stack
-    private JSymbolTable top;
+    private JSymbolTable myStackTop;
 
 
     /**
@@ -43,18 +44,22 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAn
      * @param root    The root node
      */
     public SymbolTableResolver(AstAnalysisConfiguration context, ASTCompilationUnit root) {
-        this.classLoader = PMDASMClassLoader.getInstance(context.getTypeResolutionClassLoader());
-        this.jdkVersion = ((JavaLanguageHandler) context.getLanguageVersion().getLanguageVersionHandler()).getJdkVersion();
+        ClassLoader classLoader = PMDASMClassLoader.getInstance(context.getTypeResolutionClassLoader());
+        int jdkVersion = ((JavaLanguageHandler) context.getLanguageVersion().getLanguageVersionHandler()).getJdkVersion();
 
-        packageName = Optional.ofNullable(root.getFirstChildOfType(ASTPackageDeclaration.class))
-                              .map(ASTPackageDeclaration::getPackageNameImage).orElse("");
+        String packageName = Optional.ofNullable(root.getFirstChildOfType(ASTPackageDeclaration.class))
+                                     .map(ASTPackageDeclaration::getPackageNameImage).orElse("");
 
-        this.top = EmptySymbolTable.getInstance();
+        myResolveHelper = new SymbolTableResolveHelper(packageName, classLoader, jdkVersion);
+        // this is the only place pushOnStack can be circumvented
+        myStackTop = EmptySymbolTable.getInstance();
+
     }
 
     // The AstAnalysisConfiguration is only used in the constructor
     // The parameter on the visit methods is thus unnecessary
-    // TODO introduce another visitor
+    // TODO introduce another visitor with `void visit(Node);` signature
+
 
     @Override
     public void visit(ASTCompilationUnit node, AstAnalysisConfiguration data) {
@@ -64,15 +69,15 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAn
 
         if (!isImportOnDemand.get(true).isEmpty()) {
             // there are on-demand imports
-            pushOnStack(new ImportOnDemandSymbolTable(peekStack(), classLoader, isImportOnDemand.get(true), packageName));
+            pushOnStack((p, h) -> new ImportOnDemandSymbolTable(p, h, isImportOnDemand.get(true)));
         }
 
-        pushOnStack(new JavaLangSymbolTable(peekStack(), jdkVersion));
-        pushOnStack(new SamePackageSymbolTable(peekStack(), classLoader, packageName));
+        pushOnStack(JavaLangSymbolTable::new);
+        pushOnStack(SamePackageSymbolTable::new);
 
         if (!isImportOnDemand.get(false).isEmpty()) {
             // there are single imports
-            pushOnStack(new SingleImportSymbolTable(peekStack(), classLoader, isImportOnDemand.get(false), packageName));
+            pushOnStack((p, h) -> new SingleImportSymbolTable(p, h, isImportOnDemand.get(false)));
         }
 
         // All of the header symbol tables belong to the CompilationUnit
@@ -80,23 +85,26 @@ public final class SymbolTableResolver extends SideEffectingVisitorAdapter<AstAn
     }
 
 
-    private void pushOnStack(JSymbolTable table) {
-        if (!table.getParent().equals(peekStack())) {
-            throw new IllegalStateException("Tried to push a table that is not linked to the current stack top");
-        }
-        this.top = table;
+    private void pushOnStack(TableLinker tableLinker) {
+        JSymbolTable parent = Objects.requireNonNull(peekStack(), "Cannot link to null parent");
+        this.myStackTop = tableLinker.apply(parent, myResolveHelper);
     }
 
 
     private JSymbolTable popStack() {
-        JSymbolTable curTop = this.top;
-        this.top = curTop.getParent();
+        JSymbolTable curTop = this.myStackTop;
+        this.myStackTop = curTop.getParent();
         return curTop;
     }
 
 
     private JSymbolTable peekStack() {
-        return this.top;
+        return this.myStackTop;
+    }
+
+
+    @FunctionalInterface
+    private interface TableLinker extends BiFunction<JSymbolTable, SymbolTableResolveHelper, JSymbolTable> {
     }
 
 }

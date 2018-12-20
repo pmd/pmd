@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
+public final class SamePackageSymbolTable extends AbstractSymbolTable {
 
     private static final Logger LOG = Logger.getLogger(SamePackageSymbolTable.class.getName());
 
@@ -30,11 +30,10 @@ public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
      * Builds a new SamePackageScope.
      *
      * @param parent      Parent table
-     * @param loader      ClassLoader used to resolve types from this package
-     * @param thisPackage Package name of the current compilation unit, used to check for accessibility
+     * @param helper Resolve helper
      */
-    public SamePackageSymbolTable(JSymbolTable parent, ClassLoader loader, String thisPackage) {
-        super(parent, loader, thisPackage);
+    public SamePackageSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper) {
+        super(parent, helper);
     }
 
 
@@ -48,17 +47,13 @@ public final class SamePackageSymbolTable extends AbstractExternalSymbolTable {
     protected Optional<JResolvableClassDeclarationSymbol> resolveTypeNameImpl(String simpleName) {
 
         // account for unnamed package
-        String fqcn = thisPackage.isEmpty() ? simpleName : (thisPackage + "." + simpleName);
+        String fqcn = myResolveHelper.getThisPackage().isEmpty() ? simpleName : (myResolveHelper.getThisPackage() + "." + simpleName);
 
-        try {
-            // We know it's accessible, since top-level classes are either public or package private,
-            // and we're in the package
-            return Optional.ofNullable(classLoader.loadClass(fqcn)).map(JResolvableClassDeclarationSymbol::new);
-        } catch (ClassNotFoundException | LinkageError e2) {
-            // ignore the exception. We don't know if the classpath is badly configured
-            // or if the type was never in this package in the first place
-            return Optional.empty();
-        }
+        // We know it's accessible, since top-level classes are either public or package private,
+        // and we're in the package
+        // We ignore load exceptions. We don't know if the classpath is badly configured
+        // or if the type was never in this package in the first place
+        return Optional.ofNullable(loadClassIgnoreFailure(fqcn)).map(JResolvableClassDeclarationSymbol::new);
     }
 
 

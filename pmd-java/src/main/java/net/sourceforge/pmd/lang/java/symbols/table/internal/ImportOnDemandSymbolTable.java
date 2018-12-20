@@ -41,12 +41,11 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
      * Creates a new import-on-demand scope. Automatically linked to the {@link JavaLangSymbolTable}.
      *
      * @param parent          Parent table
-     * @param classLoader     Analysis classloader
+     * @param helper          Resolve helper
      * @param importsOnDemand List of import-on-demand statements, mustn't be single imports!
-     * @param thisPackage     Package name of the current compilation unit, used to check for accessibility
      */
-    public ImportOnDemandSymbolTable(JSymbolTable parent, ClassLoader classLoader, List<ASTImportDeclaration> importsOnDemand, String thisPackage) {
-        super(parent, classLoader, thisPackage);
+    public ImportOnDemandSymbolTable(JSymbolTable parent, SymbolTableResolveHelper helper, List<ASTImportDeclaration> importsOnDemand) {
+        super(parent, helper);
 
         for (ASTImportDeclaration anImport : importsOnDemand) {
             if (!anImport.isImportOnDemand()) {
@@ -64,7 +63,7 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
                     Map<String, List<JMethodSymbol>> methods = Arrays.stream(containerClass.getDeclaredMethods())
                                                                      .filter(m -> Modifier.isStatic(m.getModifiers()))
-                                                                     .filter(this::isAccessible)
+                                                                     .filter(myResolveHelper::isAccessible)
                                                                      .map(JMethodSymbol::new)
                                                                      .collect(Collectors.groupingBy(JMethodSymbol::getSimpleName));
 
@@ -72,13 +71,13 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
 
                     Arrays.stream(containerClass.getDeclaredFields())
                           .filter(f -> Modifier.isStatic(f.getModifiers()))
-                          .filter(this::isAccessible)
+                          .filter(myResolveHelper::isAccessible)
                           .map(JFieldSymbol::new)
                           .forEach(f -> importedStaticFields.put(f.getSimpleName(), f));
 
                     Arrays.stream(containerClass.getDeclaredClasses())
                           .filter(t -> Modifier.isStatic(t.getModifiers()))
-                          .filter(this::isAccessible)
+                          .filter(myResolveHelper::isAccessible)
                           .map(JResolvableClassDeclarationSymbol::new)
                           .forEach(t -> importedTypes.put(t.getSimpleName(), t));
                 }
@@ -108,19 +107,13 @@ public final class ImportOnDemandSymbolTable extends AbstractImportSymbolTable {
         // We'll try to brute force it:
         return importedPackagesAndTypes.stream()
                                        // here 'pack' may be a package or a type name
+                                       // but can't be the unnamed package (you can't write "import .*;")
                                        .map(pack -> pack + "." + simpleName)
-                                       .map(fqcn -> {
-                                           try {
-                                               // the classloader remembers the types it has failed to load so that we need not care
-                                               return classLoader.loadClass(fqcn);
-                                           } catch (ClassNotFoundException | LinkageError e2) {
-                                               // ignore the exception. We don't know if the classpath is badly configured
-                                               // or if the type was never in this package in the first place
-                                               return null;
-                                           }
-                                       })
+                                       // ignore the exception. We don't know if the classpath is badly configured
+                                       // or if the type was never in this package in the first place
+                                       .map(this::loadClassIgnoreFailure)
                                        .filter(Objects::nonNull)
-                                       .filter(this::isAccessible)
+                                       .filter(myResolveHelper::isAccessible)
                                        .map(JResolvableClassDeclarationSymbol::new)
                                        .findAny();
     }
