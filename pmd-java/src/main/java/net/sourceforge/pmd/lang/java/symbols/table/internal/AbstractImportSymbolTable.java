@@ -11,11 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 

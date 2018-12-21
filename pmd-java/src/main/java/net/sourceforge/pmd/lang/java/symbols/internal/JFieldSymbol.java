@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.symbols.refs;
+package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -43,23 +43,23 @@ public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariable
     }
 
 
-    public final boolean isVolatile() {
+    public boolean isVolatile() {
         return Modifier.isVolatile(modifiers);
     }
 
 
-    public final boolean isTransient() {
+    public boolean isTransient() {
         return Modifier.isTransient(modifiers);
     }
 
 
-    public final boolean isStatic() {
+    public boolean isStatic() {
         return Modifier.isStatic(modifiers);
     }
 
 
     @Override
-    public final boolean isFinal() {
+    public boolean isFinal() {
         return Modifier.isFinal(modifiers);
     }
 
