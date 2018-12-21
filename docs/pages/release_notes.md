@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new Java rule {% rule "java/bestpractices/UseTryWithResources" %) (`java-bestpractices`) searches
+    for try-blocks, that could be changed to a try-with-resources statement. This statement ensures that
+    each resource is closed at the end of the statement and is available since Java 7.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/codestyle/LocalVariableCouldBeFinal" %} (`java-codestyle`) has a new
@@ -24,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-bestpractices
     *   [#658](https://github.com/pmd/pmd/issues/658): \[java] OneDeclarationPerLine: False positive for loops
+    *   [#1405](https://github.com/pmd/pmd/issues/1405): \[java] New Rule: UseTryWithResources - Replace close and IOUtils.closeQuietly with try-with-resources
 *   java-codestyle
     *   [#1513](https://github.com/pmd/pmd/issues/1513): \[java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop
 *   java-errorprone
