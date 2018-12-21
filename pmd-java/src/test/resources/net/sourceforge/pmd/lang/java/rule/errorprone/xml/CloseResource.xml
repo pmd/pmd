@@ -4,12 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-connection is closed, ok
-     ]]></description>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <description>connection is closed, ok</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Foo {
  void bar() {
   Connection c = pool.getConnection();
@@ -22,12 +22,10 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code>
 
-        <description><![CDATA[
-connection not closed, should have failed
-     ]]></description>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+    <test-code>
+        <description>connection not closed, should have failed</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -42,11 +40,8 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ResultSet not closed, should have failed
-     ]]></description>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
-
+        <description>ResultSet not closed, should have failed</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -60,12 +55,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Statement not closed, should have failed
-     ]]></description>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <description>Statement not closed, should have failed</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
-
         <code><![CDATA[
 import java.sql.*;
 public class Foo {
@@ -92,29 +84,22 @@ public class Foo {
 }
      ]]></code-fragment>
     <test-code>
-        <description><![CDATA[
-Bad, no closeTargets properties for statements
-     ]]></description>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <description>Bad, no closeTargets properties for statements</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>2</expected-problems>
         <code-ref id="executeQuery"/>
-
     </test-code>
     <test-code>
-        <description><![CDATA[
-Ok, closeTargets properties for statements
-     ]]></description>
+        <description>Ok, closeTargets properties for statements</description>
         <rule-property name="closeTargets">MyHelper.close,cleanup</rule-property>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="executeQuery"/>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[
-Add type param
-     ]]></description>
-        <rule-property name="types">ObjectInputStream</rule-property>
+        <description>Add type param</description>
+        <rule-property name="types">java.io.ObjectInputStream</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.io.*;
@@ -129,13 +114,11 @@ readExternal(aStream);
 }
      ]]></code>
     </test-code>
-    <test-code>
 
-        <description><![CDATA[
-OK
-     ]]></description>
+    <test-code>
+        <description>OK with custom closeTargets</description>
         <rule-property name="closeTargets">MyHelper.close</rule-property>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -151,11 +134,9 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-New use case
-     ]]></description>
+        <description>New use case: commit</description>
         <rule-property name="closeTargets">commit,close</rule-property>
-        <rule-property name="types">DAOTransaction,Connection,Statement,ResulSet</rule-property>
+        <rule-property name="types">DAOTransaction,java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
@@ -184,13 +165,10 @@ public class Foo {
      ]]></code>
     </test-code>
 
-
     <test-code>
-        <description><![CDATA[
-[1964798] 3 bugs in CloseResourceRule : Case failing with complete name
-     ]]></description>
+        <description>[1964798] 3 bugs in CloseResourceRule : Case failing with complete name</description>
         <rule-property name="closeTargets">MyHelper.MyClose</rule-property>
-        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -205,14 +183,11 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    
- 
+
     <test-code>
-        <description><![CDATA[
-[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (1)
-     ]]></description>
-        <rule-property	name="closeTargets">this.closeConnection</rule-property>
-        <rule-property	name="types">Connection,Statement,ResultSet</rule-property>
+        <description>[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (1)</description>
+        <rule-property name="closeTargets">this.closeConnection</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -227,13 +202,11 @@ public class Foo {
  }
 }
      ]]></code>
-    </test-code>  
+    </test-code>
    <test-code>
-        <description><![CDATA[
-[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (2)
-     ]]></description>
-        <rule-property	name="closeTargets">this.closeConnection</rule-property>
-        <rule-property	name="types">Connection,Statement,ResultSet</rule-property>
+        <description>[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (2)</description>
+        <rule-property name="closeTargets">this.closeConnection</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -248,11 +221,9 @@ public class Foo {
  }
 }
      ]]></code>
-    </test-code>        
-	<test-code>
-        <description><![CDATA[
-[1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.
-     ]]></description>
+    </test-code>
+    <test-code>
+        <description>[1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.</description>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -264,14 +235,10 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-        <test-code reinitializeRule="true">
-        <description><![CDATA[
-invoke an external method that close the resource
-bug 2920057
-     ]]></description>
-        <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion
-        </rule-property>
-        <rule-property name="types">PreparedStatement,Statement,ResultSet,Connection</rule-property>
+    <test-code reinitializeRule="true">
+        <description>invoke an external method that close the resource: bug 2920057</description>
+        <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet,java.sql.PreparedStatement</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -301,13 +268,9 @@ public class StructureFactory {
      ]]></code>
     </test-code>
     <test-code reinitializeRule="true">
-        <description><![CDATA[
-invoke an external method that closes the resource, but one is not the right method and an another is not the right variable
-see bug 2920057
-     ]]></description>
-        <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion
-        </rule-property>
-        <rule-property name="types">PreparedStatement,Statement,ResultSet,Connection</rule-property>
+        <description>invoke an external method that closes the resource, but one is not the right method and an another is not the right variable: see bug 2920057</description>
+        <rule-property name="closeTargets">closeStatement,closeStatement,closeResultSet,closeConnexion</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet,java.sql.PreparedStatement</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -341,6 +304,8 @@ public class StructureFactory {
         <description>#1011 CloseResource Rule ignores Constructors</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Test {
     public Test() {
         Connection c = pool.getConnection();
@@ -352,6 +317,8 @@ public class Test {
         <description>#1011 CloseResource Rule ignores Constructors - closed in finally</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Test {
     public Test() {
         Connection c;
@@ -368,6 +335,8 @@ public class Test {
         <description>#1011 CloseResource Rule ignores Constructors - not a problem - instance variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Test {
     Connection c;
     public Test() {
@@ -380,6 +349,8 @@ public class Test {
         <description>#1029 No instance level check in the close resource rule</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Test {
     Connection c;
     public void doIt() {
@@ -392,6 +363,10 @@ public class Test {
         <description>#947 CloseResource rule fails if field is marked with annotation</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class CloseResourceRuleBug {
   public void foo() {
     try {
@@ -427,9 +402,9 @@ public class Test {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
-        <description><![CDATA[Custom close method, should be ok]]></description>
+        <description>Custom close method, should be ok</description>
         <rule-property name="closeTargets">cleanup</rule-property>
         <rule-property name="types">MyClass</rule-property>
         <expected-problems>0</expected-problems>
@@ -449,9 +424,11 @@ public class Foo {
     </test-code>
     <test-code>
         <description>bug #1131 CloseResource should complain if code between declaration of resource and try: Code between declaration and try, should fail</description>
-        <rule-property name="types">Connection</rule-property>
+        <rule-property name="types">java.sql.Connection</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Foo {
     void bar() {
         String test = "";
@@ -470,9 +447,11 @@ public class Foo {
     </test-code>
     <test-code>
         <description>bug #1131 CloseResource should complain if code between declaration of resource and try: Creation inside try, ok</description>
-        <rule-property name="types">Connection</rule-property>
+        <rule-property name="types">java.sql.Connection</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Foo {
  void bar() {
   String test = "";
@@ -495,9 +474,11 @@ public class Foo {
     </test-code>
     <test-code>
         <description>bug #1131 CloseResource should complain if code between declaration of resource and try: No sentences between creation and try, ok</description>
-        <rule-property name="types">Connection</rule-property>
+        <rule-property name="types">java.sql.Connection</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Foo {
  void bar() {
   String test = "";
@@ -521,6 +502,8 @@ public class Foo {
         <description>#1259 CloseResource rule ignores conditionals within finally blocks</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+
 public class Bar {
     public void foo() {
         Connection c = pool.getConnection();
@@ -541,6 +524,9 @@ public class Bar {
         <description>#1375 CloseResource not detected properly - ok</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class Foo {
  void bar() {
   ResultSet rs;
@@ -561,6 +547,9 @@ public class Foo {
         <description>#1375 CloseResource not detected properly - false negative</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class Foo {
  void bar() {
   ResultSet rs = null;
@@ -579,11 +568,16 @@ public class Foo {
     </test-code>
     <test-code>
         <description>#1372 False Negative for CloseResource rule.</description>
-        <rule-property name="types">Connection,Statement,ResultSet,PreparedStatement</rule-property>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet,java.sql.PreparedStatement</rule-property>
         <rule-property name="closeTargets">closeLocalResources,closeResultSet</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>13</expected-linenumbers>
         <code><![CDATA[
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+
 public class CloseResourceTest {
     public Object selectOne(final int val, final int val2) {
         getCurrentSession().doWork(new Work() {
@@ -616,6 +610,10 @@ public class CloseResourceTest {
         <rule-property name="closeTargets">closeConnection,closeCloseable,closeReader,closeResource,closeResultSet,closeStream,closeStatement</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class CloseResource {
     public void querySomething(Connection connection) {
         Statement stmt = null; // it complains this is not closed
@@ -645,6 +643,9 @@ public class CloseResource {
         <rule-property name="closeAsDefaultTarget">false</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class CloseResource {
     public void doSomething() {
         Statement stmt = connection.createStatement();
@@ -670,6 +671,145 @@ public class Test {
     }
 
     static class Statement {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for input streams - not ok</description>
+        <rule-property name="types">java.io.InputStream</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(new File("/tmp/foo"));
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for file input streams - not ok</description>
+        <rule-property name="types">java.io.InputStream</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(new File("/tmp/foo"));
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for input streams - ok</description>
+        <rule-property name="types">java.io.InputStream</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        InputStream in = null;
+        try {
+            in = new FileInputStream(new File("/tmp/foo"));
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            in.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for input streams - ok try-with-resources</description>
+        <rule-property name="types">java.io.InputStream</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        try (InputStream in = new FileInputStream(new File("/tmp/foo"))) {
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for closable - not ok</description>
+        <rule-property name="types">java.io.Closeable</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        InputStream in = null;
+        OutputStream in2 = null;
+        try {
+            in = new FileInputStream(new File("/tmp/foo"));
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for closable by default - not ok</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,6,16</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        InputStream in = null;
+        OutputStream in2 = null;
+        try {
+            in = new FileInputStream(new File("/tmp/foo"));
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void bar() {
+        InputStream file = new FileInputStream(new File("/tmp/foo"));
+        try {
+            int c = file.in();
+        } catch (IOException e) {
+            // handle exception
+        } finally {
+            // TODO: close file
+        }
     }
 }
         ]]></code>

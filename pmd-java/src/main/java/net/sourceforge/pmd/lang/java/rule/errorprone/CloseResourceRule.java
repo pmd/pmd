@@ -36,6 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -69,7 +70,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
             stringListProperty("types")
                     .desc("Affected types")
-                    .defaultValues("java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
+                    .defaultValues("java.io.Closeable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
                     .delim(',').build();
 
     private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
@@ -136,7 +137,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
 
-                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
+                    if (isResourceTypeOrSubtype(clazz)
                             || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
                                     && !clazz.isReferenceToClassSameCompilationUnit()
                             || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
@@ -152,6 +153,17 @@ public class CloseResourceRule extends AbstractJavaRule {
         for (ASTVariableDeclaratorId x : ids) {
             ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
         }
+    }
+
+    private boolean isResourceTypeOrSubtype(ASTClassOrInterfaceType refType) {
+        if (refType.getType() != null) {
+            for (String type : types) {
+                if (TypeHelper.isA(refType, type)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean hasNullInitializer(ASTLocalVariableDeclaration var) {

@@ -44,6 +44,11 @@ datetime field.
 *   The Java rule {% rule "java/design/UseUtilityClass" %} (`java-design`) has a new property `ignoredAnnotations`.
     By default, classes that are annotated with Lombok's `@UtilityClass` are ignored now.
 
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now by default searches
+    for any unclosed `java.io.Closable` resource. This includes now the standard `java.io.*Stream` classes.
+    Previously only SQL-related resources were considered by this rule. The types can still be configured
+    via the `types` property.
+
 ### Fixed Issues
 
 *   java
@@ -53,6 +58,8 @@ datetime field.
     *   [#1845](https://github.com/pmd/pmd/issues/1845): \[java] Regression in MethodReturnsInternalArray not handling enums
 *   java-design
     *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
+*   java-errorprone
+    *   [#1000](https://github.com/pmd/pmd/issues/1000): \[java] The rule CloseResource should deal with IO stream as default
 *   java-multithreading
     *   [#1814](https://github.com/pmd/pmd/issues/1814): \[java] UnsynchronizedStaticFormatter documentation and implementation wrong
     *   [#1815](https://github.com/pmd/pmd/issues/1815): \[java] False negative in UnsynchronizedStaticFormatter
