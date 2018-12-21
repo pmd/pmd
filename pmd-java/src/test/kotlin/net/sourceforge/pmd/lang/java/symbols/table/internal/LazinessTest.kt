@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotlintest.specs.FunSpec
 import javasymbols.testdata.Statics
-import net.sourceforge.pmd.lang.java.symbols.refs.*
+import net.sourceforge.pmd.lang.java.symbols.internal.*
 import net.sourceforge.pmd.lang.java.symbols.shouldBePresent
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable
 import java.util.*

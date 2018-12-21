@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.lang.java.symbols.refs.JFieldSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JResolvableClassDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JResolvableClassDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 

@@ -10,9 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
-import net.sourceforge.pmd.lang.java.symbols.refs.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JSimpleTypeDeclarationSymbol;
-import net.sourceforge.pmd.lang.java.symbols.refs.JValueSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JValueSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 
@@ -73,13 +73,14 @@ abstract class AbstractSymbolTable implements JSymbolTable {
     }
 
 
-    /** Finds a type name among the declarations tracked by this table without asking the parent. */
-    protected abstract Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeNameImpl(String simpleName);
-
-
     /** Finds the matching methods among the declarations tracked by this table without asking the parent. */
     protected abstract Stream<JMethodSymbol> resolveMethodNameImpl(String simpleName);
 
+    // We could internally avoid using Optional to reduce the number of created optionals as an optimisation
+
+
+    /** Finds a type name among the declarations tracked by this table without asking the parent. */
+    protected abstract Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeNameImpl(String simpleName);
 
     /** Finds a value among the declarations tracked by this table without asking the parent. */
     protected abstract Optional<JValueSymbol> resolveValueNameImpl(String simpleName);
