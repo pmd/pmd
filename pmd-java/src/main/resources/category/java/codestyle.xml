@@ -787,34 +787,6 @@ for (int i = 0; i < 42; i++)
         </example>
     </rule>
 
-    <rule name="ForLoopVariableCount"
-          language="java"
-          since="6.11.0"
-          message="Too many control variables in the 'for' statement"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopvariablecount">
-        <description>
-Having a lot of control variables in a 'for' loop makes it harder to see what range of values
-the loop iterates over. By default this rule allows a regular 'for' loop with only one variable.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="maximumVariables" type="Integer"
-                      description="A regular for statement will have 1 control variable" min="0" max="100" value="1"/>
-            <property name="xpath">
-                <value>//ForInit/LocalVariableDeclaration[count(VariableDeclarator) > $maximumVariables]</value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-// this will be reported with the default setting of at most one control variable in a for loop
-for (int i = 0, j = 0; i < 10; i++, j += 2) {
-   foo();
-]]>
-        </example>
-    </rule>
-
-
     <rule name="FormalParameterNamingConventions"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
