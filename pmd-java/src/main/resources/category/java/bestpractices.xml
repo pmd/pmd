@@ -387,7 +387,7 @@ public class MyClass {
           since="6.11.0"
           message="Too many control variables in the 'for' statement"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopvariablecount">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#forloopvariablecount">
         <description>
 Having a lot of control variables in a 'for' loop makes it harder to see what range of values
 the loop iterates over. By default this rule allows a regular 'for' loop with only one variable.
