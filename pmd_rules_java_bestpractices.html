@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseVarargs">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -480,6 +480,12 @@
                         
                         
                         <li><a href="pmd_rules_apex_design.html">Design</a></li>
+                        
+                        
+                        
+                        
+                        
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
                         
                         
                         
@@ -1429,6 +1435,88 @@ This prevents future changes from the user from affecting the original array.</p
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/AvoidPrintStackTrace"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoidreassigningloopvariables">AvoidReassigningLoopVariables</h2>
+
+<p><strong>Since:</strong> PMD 6.11.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Reassigning loop variables can lead to hard-to-find bugs. Prevent or limit how these variables can be changed.</p>
+
+<p>In foreach-loops, configured by the <code class="highlighter-rouge">foreachReassign</code> property:</p>
+<ul>
+  <li><code class="highlighter-rouge">deny</code>: Report any reassignment of the loop variable in the loop body. <em>This is the default.</em></li>
+  <li><code class="highlighter-rouge">allow</code>: Don’t check the loop variable.</li>
+  <li><code class="highlighter-rouge">firstOnly</code>: Report any reassignments of the loop variable, except as the first statement in the loop body.
+          <em>This is useful if some kind of normalization or clean-up of the value before using is permitted, but any other change of the variable is not.</em></li>
+</ul>
+
+<p>In for-loops, configured by the <code class="highlighter-rouge">forReassign</code> property:</p>
+<ul>
+  <li><code class="highlighter-rouge">deny</code>: Report any reassignment of the control variable in the loop body. <em>This is the default.</em></li>
+  <li><code class="highlighter-rouge">allow</code>: Don’t check the control variable.</li>
+  <li><code class="highlighter-rouge">skip</code>: Report any reassignments of the control variable, except conditional increments/decrements (<code class="highlighter-rouge">++</code>, <code class="highlighter-rouge">--</code>, <code class="highlighter-rouge">+=</code>, <code class="highlighter-rouge">-=</code>).
+          <em>This prevents accidental reassignments or unconditional increments of the control variable.</em></li>
+</ul>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/AvoidReassigningLoopVariablesRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidReassigningLoopVariablesRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">s</span> <span class="o">:</span> <span class="n">listOfStrings</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">trim</span><span class="o">();</span> <span class="c1">// OK, when foreachReassign is "firstOnly" or "allow"</span>
+      <span class="n">doSomethingWith</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+
+      <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">toUpper</span><span class="o">();</span> <span class="c1">// OK, when foreachReassign is "allow"</span>
+      <span class="n">doSomethingElseWith</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">check</span><span class="o">(</span><span class="n">i</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">i</span><span class="o">++;</span> <span class="c1">// OK, when forReassign is "skip" or "allow"</span>
+      <span class="o">}</span>
+
+      <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>  <span class="c1">// OK, when forReassign is "allow"</span>
+
+      <span class="n">doSomethingWith</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foreachReassign</td>
+      <td>deny</td>
+      <td>how/if foreach control variables may be reassigned</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>forReassign</td>
+      <td>deny</td>
+      <td>how/if for control variables may be reassigned</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/AvoidReassigningLoopVariables"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="avoidreassigningparameters">AvoidReassigningParameters</h2>
 
 <p><strong>Since:</strong> PMD 1.0</p>
@@ -1678,6 +1766,51 @@ element of the list or array left to right.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ForLoopCanBeForeach"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="forloopvariablecount">ForLoopVariableCount</h2>
+
+<p><strong>Since:</strong> PMD 6.11.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Having a lot of control variables in a ‘for’ loop makes it harder to see what range of values
+the loop iterates over. By default this rule allows a regular ‘for’ loop with only one variable.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ForInit</span><span class="o">/</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$maximumVariables</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// this will be reported with the default setting of at most one control variable in a for loop</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++,</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+   <span class="n">foo</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>maximumVariables</td>
+      <td>1</td>
+      <td>A regular for statement will have 1 control variable</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/ForLoopVariableCount"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="guardlogstatement">GuardLogStatement</h2>

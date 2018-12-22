@@ -485,6 +485,12 @@
                         
                         
                         
+                        <li><a href="pmd_rules_apex_documentation.html">Documentation</a></li>
+                        
+                        
+                        
+                        
+                        
                         <li><a href="pmd_rules_apex_errorprone.html">Error Prone</a></li>
                         
                         
@@ -1285,6 +1291,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#accessormethodgeneration">AccessorMethodGeneration</a>: When accessing a private field / method from another class, the Java compiler will generate a acc…</li>
   <li><a href="pmd_rules_java_bestpractices.html#arrayisstoreddirectly">ArrayIsStoredDirectly</a>: Constructors and methods receiving arrays should clone objects and store the copy.This prevents f…</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidprintstacktrace">AvoidPrintStackTrace</a>: Avoid printStackTrace(); use a logger call instead.</li>
+  <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningloopvariables">AvoidReassigningLoopVariables</a>: Reassigning loop variables can lead to hard-to-find bugs. Prevent or limit how these variables ca…</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidreassigningparameters">AvoidReassigningParameters</a>: Reassigning values to incoming parameters is not recommended.  Use temporary local variables inst…</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidstringbufferfield">AvoidStringBufferField</a>: StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaksif …</li>
   <li><a href="pmd_rules_java_bestpractices.html#avoidusinghardcodedip">AvoidUsingHardCodedIP</a>: Application with hard-coded IP addresses can become impossible to deploy in some cases.Externaliz…</li>
@@ -1292,6 +1299,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_bestpractices.html#constantsininterface">ConstantsInInterface</a>: Avoid constants in interfaces. Interfaces should define types, constants are implementation detai…</li>
   <li><a href="pmd_rules_java_bestpractices.html#defaultlabelnotlastinswitchstmt">DefaultLabelNotLastInSwitchStmt</a>: By convention, the default label should be the last label in a switch statement.</li>
   <li><a href="pmd_rules_java_bestpractices.html#forloopcanbeforeach">ForLoopCanBeForeach</a>: Reports loops that can be safely replaced with the foreach syntax. The rule considers loops overl…</li>
+  <li><a href="pmd_rules_java_bestpractices.html#forloopvariablecount">ForLoopVariableCount</a>: Having a lot of control variables in a ‘for’ loop makes it harder to see what range of valuesthe …</li>
   <li><a href="pmd_rules_java_bestpractices.html#guardlogstatement">GuardLogStatement</a>: Whenever using a log level, one should check if the loglevel is actually enabled, orotherwise ski…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junit4suitesshouldusesuiteannotation">JUnit4SuitesShouldUseSuiteAnnotation</a>: In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicatedthro…</li>
   <li><a href="pmd_rules_java_bestpractices.html#junit4testshoulduseafterannotation">JUnit4TestShouldUseAfterAnnotation</a>: In JUnit 3, the tearDown method was used to clean up all data entities required in running tests….</li>
