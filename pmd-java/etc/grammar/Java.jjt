@@ -2429,7 +2429,7 @@ void InstanceOfExpression() #void:
     ("instanceof"
         AnnotatedRefType() #TypeExpression
         {jjtThis.setOp(BinaryOp.INSTANCEOF);}
-    ) #InfixExpression(2) 
+    ) #InfixExpression(2)
   ]
 }
 

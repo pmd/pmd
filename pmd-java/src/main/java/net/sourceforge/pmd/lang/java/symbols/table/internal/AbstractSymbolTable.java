@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 abstract class AbstractSymbolTable implements JSymbolTable {
 
     /** Additional info about the context. */
-    protected final SymbolTableResolveHelper myResolveHelper;
+    final SymbolTableResolveHelper myResolveHelper;
     private final JSymbolTable myParent;
 
 
@@ -97,7 +97,7 @@ abstract class AbstractSymbolTable implements JSymbolTable {
      *
      * @return The class, or null if it couldn't be resolved
      */
-    protected final Class<?> loadClass(String fqcn) {
+    final Class<?> loadClass(String fqcn) {
         return myResolveHelper.loadClass(fqcn, e -> getLogger().log(Level.FINE, e, () -> "Failed loading class " + fqcn + "with an incomplete classpath."));
     }
 
@@ -109,7 +109,7 @@ abstract class AbstractSymbolTable implements JSymbolTable {
      *
      * @return The class, or null if it couldn't be resolved
      */
-    protected final Class<?> loadClassIgnoreFailure(String fqcn) {
+    final Class<?> loadClassIgnoreFailure(String fqcn) {
         return myResolveHelper.loadClass(fqcn, e -> {
         });
     }
