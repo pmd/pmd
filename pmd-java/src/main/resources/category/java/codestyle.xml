@@ -1812,8 +1812,10 @@ public class Foo {
 
     <rule name="UseDiamondOperator"
           language="java"
-          message="Use diamond operator"
+          since="6.11.0"
+          message="Explicit type arguments can be replaced by Diamond Operator "
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
           minimumLanguageVersion="1.7">
         <description>Use the diamond operator to let the type be inferred</description>
         <priority>1</priority>
