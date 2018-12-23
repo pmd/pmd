@@ -70,7 +70,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
             stringListProperty("types")
                     .desc("Affected types")
-                    .defaultValues("java.io.Closeable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
+                    .defaultValues("java.lang.AutoCloseable")
                     .delim(',').build();
 
     private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
