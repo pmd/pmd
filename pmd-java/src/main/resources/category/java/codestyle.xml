@@ -1813,11 +1813,14 @@ public class Foo {
     <rule name="UseDiamondOperator"
           language="java"
           since="6.11.0"
-          message="Explicit type arguments can be replaced by Diamond Operator "
+          message="Explicit type arguments can be replaced by Diamond Operator"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
           minimumLanguageVersion="1.7">
-        <description>Use the diamond operator to let the type be inferred</description>
+        <description>Use the diamond operator to let the type be inferred With the Diamond operator it is possible to avoid duplication of the type parameters.
+            Instead, the compiler is now able to infer the parameter types for constructor calls,
+            which makes the code also more readable.
+        </description>
         <priority>1</priority>
         <properties>
             <property name="xpath">
@@ -1836,6 +1839,12 @@ public class Foo {
                 </value>
             </property>
         </properties>
+        <example>
+            <![CDATA[
+List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
+]]>
+        </example>
     </rule>
 
     <rule name="UnnecessaryFullyQualifiedName"
