@@ -105,7 +105,7 @@ Additionally, the following options, are specified most of the time even though 
 
 {% include note.html
    content="CPD supports Java, JSP, C, C++, C#, Fortran and PHP source code, among other languages.
-            For the full list, see [Supported Languages](pmd_userdocs_cpd#supported-languages)." %}
+            For the full list, see [Supported Languages](pmd_userdocs_cpd.html#supported-languages)." %}
 
 Like for PMD, CPD is started on Unix by `run.sh cpd` and on Windows by `cpd.bat`.
 
