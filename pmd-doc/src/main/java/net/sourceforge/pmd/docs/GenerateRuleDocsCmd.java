@@ -41,6 +41,9 @@ public final class GenerateRuleDocsCmd {
         generator.generate(registeredRuleSets, additionalRulesets);
 
         System.out.println("Generated docs in " + (System.currentTimeMillis() - start) + " ms");
+
+        DeadLinksChecker deadLinksChecker = new DeadLinksChecker();
+        deadLinksChecker.checkDeadLinks(output.resolve("docs/pages"));
     }
 
     public static List<String> findAdditionalRulesets(Path basePath) {
