@@ -25,6 +25,10 @@ This is a {{ site.pmd.release_type }} release.
     for loop variables that are reassigned. Changing the loop variables additionally to the loop itself can lead to
     hard-to-find bugs.
 
+*   The new Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) looks for constructor
+    calls with explicit type parameters. Since Java 1.7, these type parameters are not necessary anymore, as they
+    can be inferred now.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/codestyle/LocalVariableCouldBeFinal" %} (`java-codestyle`) has a new
@@ -41,6 +45,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1519](https://github.com/pmd/pmd/issues/1519): \[java] New rule: ForLoopVariableCount
 *   java-codestyle
     *   [#1513](https://github.com/pmd/pmd/issues/1513): \[java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop
+    *   [#1517](https://github.com/pmd/pmd/issues/1517): \[java] New Rule: UseDiamondOperator
 *   java-errorprone
     *   [#1035](https://github.com/pmd/pmd/issues/1035): \[java] ReturnFromFinallyBlock: False positive on lambda expression in finally block
 *   plsql
@@ -58,6 +63,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1520](https://github.com/pmd/pmd/pull/1520): \[java] New rule: ForLoopVariableCount: check the number of control variables in a for loop - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#1521](https://github.com/pmd/pmd/pull/1521): \[java] Upgrade to ASM7 for JDK 11 support - [Mark Pritchard](https://github.com/markpritchard)
 *   [#1530](https://github.com/pmd/pmd/pull/1530): \[java] New rule: AvoidReassigningLoopVariables - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#1534](https://github.com/pmd/pmd/pull/1534): \[java] This is the change regarding the usediamondoperator #1517 - [hemanshu070](https://github.com/hemanshu070)
 
 {% endtocmaker %}
 
