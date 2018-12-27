@@ -1924,7 +1924,7 @@ to avoid duplication of the type parameters.
 Instead, the compiler is now able to infer the parameter types for constructor calls,
 which makes the code also more readable.
         </description>
-        <priority>1</priority>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
