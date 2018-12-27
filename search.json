@@ -1556,6 +1556,15 @@
 ,
 
 {
+"title": "UseDiamondOperator (Java, Code Style)",
+"tags": "",
+"keywords": "UseDiamondOperator",
+"url": "pmd_rules_java_codestyle.html#usediamondoperator",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "UselessParentheses (Java, Code Style)",
 "tags": "",
 "keywords": "UselessParentheses",
