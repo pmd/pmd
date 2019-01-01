@@ -13,7 +13,7 @@ author: Tom Copeland <tom@infoether.org>
         to PMD (in French)](http://connect.ed-diamond.com/GNU-Linux-Magazine/GLMF-105/Verifier-votre-code-Java-avec-PMD)
 
 *   May 2008 - Alan Berg's article on
-    [Free Software Magazine](http://www.freesoftwaremagazine.com/columns/destroy_annoying_bugs_part_1)
+    [Free Software Magazine](http://freesoftwaremagazine.com/articles/destroy_annoying_bugs_part_1/)
     discusses FindBugs, PMD, and TFTP.
 
 *   July 2007 - Ryan Slobojan's article on [InfoQ](http://www.infoq.com/news/2007/07/pmd)

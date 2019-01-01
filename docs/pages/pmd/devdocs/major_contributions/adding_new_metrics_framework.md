@@ -100,5 +100,5 @@ build a `Signature<N>` from a `N` are a good idea.
  the Java framework, you can build a `JavaOperationSigMask` that matches all method signatures with visibility
  `public`. A sigmask implements `SigMask<S>`, where `S` is the type of signature your mask handles.
 * Create utility methods in your abstract class metric class to count signatures matching a specific mask.
-[Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/AbstractJavaClassMetric.java#L50)
+[Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/AbstractJavaClassMetric.java#L52)
 
