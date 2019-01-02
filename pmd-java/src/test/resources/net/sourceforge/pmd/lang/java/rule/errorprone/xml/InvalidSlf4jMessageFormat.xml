@@ -370,10 +370,10 @@ public final class Main {
             public enum LoggerHelper {
                 INSTANCE;
 
-                private final Logger logger = LoggerFactory.getLogger(loggerName);
+                private static final String pattern = "log: {}";
 
                 public static void main(String[] args) {
-                    final String pattern = "log: {}";
+                    final Logger logger = LoggerFactory.getLogger(LoggerHelper.class);
 
                     logger.info(pattern, 1, 2);
                 }
