@@ -13,15 +13,16 @@ BEGIN
   default_week.Fri := '0900-1800';
   default_week.Sat := '0900-1800';
   default_week.Sun := 'Day Off';
- 
+
   FOR i IN 1..3 LOOP
     default_week.week    := i;
-  
+
     UPDATE schedule
-    SET ROW = default_week
+    SET ROW = default_week,
+     Whatever = default_week
     WHERE week = i;
   END LOOP;
 END;
 /
- 
+
 SELECT * FROM schedule;
