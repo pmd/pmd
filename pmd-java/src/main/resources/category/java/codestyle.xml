@@ -787,7 +787,6 @@ for (int i = 0; i < 42; i++)
         </example>
     </rule>
 
-
     <rule name="FormalParameterNamingConventions"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
@@ -1908,6 +1907,45 @@ public class Foo {
         return;
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseDiamondOperator"
+          language="java"
+          since="6.11.0"
+          message="Explicit type arguments can be replaced by Diamond Operator"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
+          minimumLanguageVersion="1.7">
+        <description>
+Use the diamond operator to let the type be inferred automatically. With the Diamond operator it is possible
+to avoid duplication of the type parameters.
+Instead, the compiler is now able to infer the parameter types for constructor calls,
+which makes the code also more readable.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//VariableInitializer
+//PrimaryExpression[not(PrimarySuffix)]
+[not(ancestor::ArgumentList)]
+/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+|
+//StatementExpression[AssignmentOperator][PrimaryExpression/PrimaryPrefix[not(Expression)]]
+//PrimaryExpression[not(PrimarySuffix)]
+[not(ancestor::ArgumentList)]
+/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
 ]]>
         </example>
     </rule>

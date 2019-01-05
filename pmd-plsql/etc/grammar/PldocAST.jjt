@@ -1448,7 +1448,7 @@ void FromClauseEntry() #void :
  |
      // using lookahead to avoid misinterpreting the token after the identifier
      // as a table alias rather than as a keyword
-     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>)) JoinClause()
+     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
  |
      LOOKAHEAD(3) TableReference()
  |
@@ -1486,7 +1486,7 @@ void SelectListEntry() #void :
 ASTColumnAlias ColumnAlias() :
 {}
 {
-    <IDENTIFIER> { jjtThis.setImage(token.image); }
+    ( <IDENTIFIER> | <QUOTED_LITERAL> ) { jjtThis.setImage(token.image); }
     { return jjtThis; }
 }
 
@@ -1549,7 +1549,7 @@ ASTTableReference TableReference() :
         "(" Subquery() ")"
     )
 
-    [ TableAlias() ]
+    [ LOOKAHEAD(2) TableAlias() ]
     
     { return jjtThis; }
 }
@@ -1574,7 +1574,8 @@ ASTTableReference TableReferenceInJoin() #TableReference :
         && getToken(1).kind != CROSS
         && getToken(1).kind != ON
         && getToken(1).kind != PARTITION
-        && getToken(1).kind != RIGHT})
+        && getToken(1).kind != RIGHT
+        && getToken(1).kind != FULL})
 
         TableAlias() ]
 
@@ -2650,7 +2651,7 @@ ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
 { PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {
   (
-    LOOKAHEAD(<IDENTIFIER> <IS> [<NOT>] <NULL>)
+    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>)
     (
 		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
 	)
@@ -2983,9 +2984,8 @@ ASTArguments Arguments() :
 }
 {
   //"(" [ ArgumentList() ] ")"
-  ("(")   
-  [ (ArgumentList())  ] 
-  (")")   
+
+  "(" [ [<ALL> | <DISTINCT> | <UNIQUE>] ("*" | ArgumentList()) ] ")"
  { 
  return jjtThis ; 
  }
@@ -3362,7 +3362,7 @@ ASTTypeSpecification TypeSpecification()  :
 		( 
 		    <UNDER> ObjectNameDeclaration()  //SUBTYPE
 		  | LOOKAHEAD(2) (<IS> | <AS> )   <OBJECT>  // OBJECT TYPE
-		  | LOOKAHEAD(2) (<IS> | <AS> )   <OPAQUE> <VARYING> "(*)" // OPAQUE TYPE
+		  | LOOKAHEAD(2) (<IS> | <AS> )   <OPAQUE> <VARYING> "(" "*" ")" // OPAQUE TYPE
 		                                                                <USING> <LIBRARY>  (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() )
 			                                                                             [ "." (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() ) ]
 		  | LOOKAHEAD(2) (<IS> | <AS> ) CollectionTypeName() <OF> Datatype() 
