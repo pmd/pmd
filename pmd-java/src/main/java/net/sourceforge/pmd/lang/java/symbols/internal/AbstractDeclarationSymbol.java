@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclarationSymbol<N> {
 
     private final String simpleName;
-    private N boundNode;
+    private N boundNode; // todo use (Soft|Weak)Reference if we cache symbols globally
 
 
     AbstractDeclarationSymbol(String simpleName) {
@@ -60,8 +60,15 @@ abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclaration
             return false;
         }
         AbstractDeclarationSymbol<?> that = (AbstractDeclarationSymbol<?>) o;
-        return Objects.equals(simpleName, that.simpleName)
-            && Objects.equals(boundNode, that.boundNode);
+        if (!simpleName.equals(that.simpleName)) {
+            return false;
+        }
+
+        // if either of the nodes is null, node equality is not checked
+        // this enforces equivalence between a symbol obtained from reflection or st else
+        // and a symbol obtained from an AST, provided they represent the same code entity
+        return (boundNode == null || that.boundNode == null)
+            || Objects.equals(boundNode, that.boundNode);
     }
 
 

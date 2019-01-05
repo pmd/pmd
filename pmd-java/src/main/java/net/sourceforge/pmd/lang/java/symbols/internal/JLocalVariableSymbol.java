@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -29,9 +30,20 @@ public final class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVar
     // cannot be built from reflection, but a node is always available
     public JLocalVariableSymbol(ASTVariableDeclaratorId node) {
         super(node, node.getVariableName());
+
+        if (node.isField()) {
+            throw new IllegalArgumentException("Fields are represented by JFieldSymbol");
+        }
+
         this.isFinal = node.isFinal();
     }
 
+
+    /** Constructor for a reflected method or constructor parameter. */
+    public JLocalVariableSymbol(java.lang.reflect.Parameter reflected) {
+        super(reflected.getName());
+        this.isFinal = Modifier.isFinal(reflected.getModifiers());
+    }
 
     @Override
     public boolean isFinal() {

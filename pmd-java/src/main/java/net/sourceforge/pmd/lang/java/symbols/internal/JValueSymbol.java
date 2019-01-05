@@ -35,7 +35,7 @@ public interface JValueSymbol extends JDeclarationSymbol<ASTVariableDeclaratorId
      * which case it can be safely downcast to {@link JLocalVariableSymbol}.
      */
     default boolean isLocalVar() {
-        return this instanceof JFieldSymbol;
+        return !isField();
     }
 
 }

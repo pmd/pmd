@@ -6,8 +6,16 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 
@@ -20,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodDeclaration> {
 
     private final boolean isDefault;
+    private final List<JLocalVariableSymbol> parameterSymbols;
 
 
     /**
@@ -30,6 +39,7 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
     public JMethodSymbol(Method method) {
         super(method.getModifiers(), method.getName());
         this.isDefault = method.isDefault();
+        this.parameterSymbols = Arrays.stream(method.getParameters()).map(JLocalVariableSymbol::new).collect(Collectors.toList());
     }
 
 
@@ -39,8 +49,22 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
      * @param node Node representing the method declaration
      */
     public JMethodSymbol(ASTMethodDeclaration node) {
-        super(node, getModifiers(node), node.getMethodName());
+        super(Objects.requireNonNull(node), getModifiers(node), node.getMethodName());
         this.isDefault = node.isDefault();
+        this.parameterSymbols =
+            iteratorToStream(node.getFormalParameters().iterator())
+                .map(ASTFormalParameter::getVariableDeclaratorId)
+                .map(JLocalVariableSymbol::new)
+                .collect(Collectors.toList());
+    }
+
+
+    // TODO create util for iterators... so fkn annoying
+    private <T> Stream<T> iteratorToStream(Iterator<T> iterator) {
+        return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(iterator, 0),
+            false
+        );
     }
 
 
@@ -108,7 +132,8 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
             return false;
         }
         JMethodSymbol that = (JMethodSymbol) o;
-        return isDefault == that.isDefault;
+        return isDefault == that.isDefault
+            && Objects.equals(parameterSymbols, that.parameterSymbols);
     }
 
 
