@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
 
 
 /**
@@ -31,7 +30,7 @@ public final class JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeD
 
     /**
      * Constructor using a class, used to create a reference for a class
-     * found by reflection, or a class known at compile-time (eg in {@link JavaLangSymbolTable}).
+     * found by reflection, or a class known at compile-time.
      *
      * @param clazz          Class represented by this reference
      */

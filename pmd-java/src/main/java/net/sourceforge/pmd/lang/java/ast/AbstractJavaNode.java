@@ -103,12 +103,6 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
 
     @Override
-    public JSymbolTable getSymbolTable() {
-        return symbolTable == null ? jjtGetParent().getSymbolTable() : symbolTable;
-    }
-
-
-    @Override
     public Scope getScope() {
         if (scope == null) {
             return ((JavaNode) parent).getScope();

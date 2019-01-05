@@ -8,23 +8,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.symbols.internal.JDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JResolvableClassDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JValueSymbol;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.EmptySymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.ImportOnDemandSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.JavaLangSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SamePackageSymbolTable;
-import net.sourceforge.pmd.lang.java.symbols.table.internal.SingleImportSymbolTable;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.Scope;
 
 // @formatter:off
 /**
@@ -43,72 +33,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * </ul>
  * This allows directly encoding shadowing and hiding mechanisms in the parent-child
  * relationships.
- *
- * <h2>Terminology</h3>
- *
- * <p> If a symbol table S directly "knows about" a declaration D, then D is said
- * to be <i>tracked</i> by S. A symbol table doesn't track the declarations tracked
- * by its parents.
- *
- * <p>Each symbol table is only relevant to a set of program points, which it is said
- * to <i>dominate</i>. The set of program points a table dominates is referred-to
- * as the <i>scope</i> of that symbol table. The scope of a symbol table is a subset of
- * the scope of its parent. The declarations tracked by a symbol table S are said to be
- * <i>in-scope</i> throughout the scope of S, which means they are accessible from their
- * simple name.
- *
- * <h3>Correspondence with JLS terminology</h4>
- *
- * <p>The JLS doesn't care about symbol table implementations so the above terminology is
- * not standard spec. The JLS only defines the <i>scope of a declaration<i>:
- *
- * <blockquote cite="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-6.3">
- *     The scope of a declaration is the region of the program within which
- *     the entity declared by the declaration can be referred to using a
- *     simple name, provided it is not shadowed.
- * </blockquote>
- *
- * <p>For our purposes, a symbol table tracks a set of declarations having exactly the same
- * jls:scope, so that the pmd:scope of a symbol table is the jls:scope of any of its tracked
- * declarations.
- *
- * <h2>Implementation</h3>
- *
- * <p>In PMD, program points are modelled as AST nodes. Each node has {@linkplain JavaNode#getSymbolTable() a reference}
- * to the innermost enclosing symbol table which dominates it. Since each symbol table
- * has a reference to its parent, an AST node has in fact a reference to a whole <i>table stack</i>.
- * These references are resolved by a {@link SymbolTableResolver} after parsing the file.
- *
- * <p>The following describes the most general form of the bottom part of any stack
- * (before the top-level type declaration), in increasing order of precedence:
- * <ul>
- *      <li>{@link EmptySymbolTable}: Contains nothing. This is the shared root of all symbol table stacks, for
- *          implementation simplicity.
- *      <li>{@link ImportOnDemandSymbolTable}: Types imported from a package or type by an import-on-demand,
- *          and static method or field names imported from a type by a static-import-on-demand;
- *      <li>{@link JavaLangSymbolTable}: Top-level types implicitly imported from {@literal java.lang};
- *      <li>{@link SamePackageSymbolTable}: Top-level types from the same package, which are implicitly imported
- *      <li>{@link SingleImportSymbolTable}: types imported by single-type-imports, and static methods and
- *          fields imported by a single-static-import.
- * </ul>
- * These dominate the whole compilation unit and thus are all linked to the {@link ASTCompilationUnit}.
- *
- * <p>NOTE: this structure is not published API. Rule writers should not rely on it, and should only use this interface.
- *
- * <h2>Main differences with the current symbol table framework</h2>
- *
- * <ul>
- *     <li>Symbol tables resolve names.
- *     <li>Symbol tables don't index the AST like {@link Scope}s do. In fact, the structure of a scope
- *     stack doesn't aim to reflect the syntactic structure of the compilation unit, but to reify part
- *     of the semantics of name resolution.
- *     <li>The structure of table stacks is internal API, contrary to the structure of {@link Scope} trees.
- *     <li>Symbol tables don't store usages, a separate component could be used for that
- *     <li>{@link JDeclarationSymbol}s don't store a reference to their declaring SymbolTable
- *         like {@link NameDeclaration} does with {@link Scope}.
- *     <li>This is for now considered Java-specific and won't be abstracted into pmd-core until it's
- *     stable
- * </ul>
  *
  * <h2>Why not keep the current symbol table</h2>
  *
@@ -137,55 +61,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *      <li>To modularize the system so that it's more easily testable and documentable
  * </ul>
  *
- *
- * <h2>TODO</h2>
- *
- * <p>The stack slice corresponding to a type declaration T will probably have the
- * following form:
- * <ul>
- *      <li> Superinterfaces: constants, member types, abstract and default methods
- *           inherited from the direct superinterfaces of T
- *      <li> Superclass: methods, fields, and member types inherited from
- *           the direct superclass of T
- *      <li> Member types: Member types of T (their names are shadowed by
- *           the type parameters of T, but they shadow any import)
- *      <li> Type parameters of T
- *      <li> T's static members: static methods, fields and types defined by T.
- *      <li> T's non-static members: static methods, fields and types defined by T.
- *      <li> Children symbol tables of T's body:
- *          <ul>
- *              <li>Each class initializer, lambda, anonymous class, member class,
- *                  constructor, or method declaration gets its own symbol table, which can
- *                  contain local classes, anonymous classes, etc, and the cycle continues
- *              <li>Static contexts (initializers, static methods, static nested classes)
- *                  have as parent the static members symbol table of T, because they can't access
- *                  T's non-static members. Non-static contexts are children to the non-static table,
- *                  which is itself child of the static table, so they can use all declarations.
- *          </ul>
- * </ul>
- *
- * <p>The trickiest point is the symbol tables for the supertypes of T. Obviously these also can inherit
- * members, and hence we'll have to resolve them recursively based on reflection data.
- *
- * <p>We can probably ruse to be able to share them across all analysed classes, but access control
- * will need to be taken into account. Probably we'll need two steps. Say we're building the symbol table
- * of a type T with supertype S:
- * <ul>
- *      <li>1. Resolve the declarations of S and organize them by access restrictions within an object shared
- *          across the analysis
- *      <li>2. Build a "view" of that shared object based on where T is (its package), which filters out
- *          inaccessible declarations from S, and add it to the inherited tables of T
- * </ul>
- * We'll probably need to proceed depth-first. If you're wondering about the performance costs of exploring
- * a whole type hierarchy, I'd say this is exactly what MissingOverrideRule does for now. It can then be
- * rewritten to make use of this framework. Plus, type hierarchies are unlikely to be extremely deep and correct
- * caching can make this ok performance-wise. Ideally this data would be cached between runs, which would
- * allow for multifile analysis. This can be scheduled as future work and could probably integrated into
- * the framework, which is made possible by the abstraction provided by {@link JDeclarationSymbol}.
- *
- * <p>Some other rules could use the symbol table stack, e.g. UnnecessaryQualifiedName, UnusedImports,
- * MissingOverride, etc.
- *
  * @author Clément Fournier
  * @since 7.0.0
  */
@@ -197,12 +72,9 @@ public interface JSymbolTable {
      * Returns the parent of this table, that is, the symbol table that will be
      * delegated to if this table doesn't find a declaration.
      *
-     * @return a symbol table, or null if this is the {@linkplain EmptySymbolTable top-level symbol table}
+     * @return a symbol table, or null if this is the top-level symbol table
      */
     JSymbolTable getParent();
-
-    // note that types and value names can be obscured, but that depends on the syntactic
-    // context of the *usage* and is not relevant to the symbol table stack.
 
 
     /**
@@ -236,13 +108,9 @@ public interface JSymbolTable {
      * on an implicit receiver in the scope of this symbol table. The returned methods may
      * have different arity and parameter types.
      *
-     * <p>TODO We can possibly encode the overriding and hiding rules for methods in
-     * the symbol table stack. We could have a way to filter out the override-equivalent methods
-     * from the stream so that the returned methods are preselected for type resolution to use.
-     *
      * @param simpleName Simple name of the method
      *
-     * @return An iterator enumerating methods with the given name accessible and applicable to the
+     * @return A stream yielding all methods with the given name accessible and applicable to the
      * implicit receiver in the scope of this symbol table.
      */
     Stream<JMethodSymbol> resolveMethodName(String simpleName);

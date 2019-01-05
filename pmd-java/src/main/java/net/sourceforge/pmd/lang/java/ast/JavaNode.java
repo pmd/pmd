@@ -65,18 +65,6 @@ public interface JavaNode extends ScopedNode {
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
 
-    /**
-     * Gets the symbol table keeping track of the names at the program point
-     * this node represents.
-     *
-     * @return A symbol table
-     */
-    // the setter is implemented as package private on the abstract node class
-    // which is why the SymbolTableResolver is in the AST package
-    @Experimental
-    JSymbolTable getSymbolTable();
-
-
 
     void setScope(Scope scope);
 
