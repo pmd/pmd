@@ -39,6 +39,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
+*   java
+    * [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
 *   java-bestpractices
     *   [#658](https://github.com/pmd/pmd/issues/658): \[java] OneDeclarationPerLine: False positive for loops
     *   [#1518](https://github.com/pmd/pmd/issues/1518): \[java] New rule: AvoidReassigningLoopVariable
