@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ParserTstUtil
 import io.kotlintest.should as kotlintestShould
 
-
 /**
  * Represents the different Java language versions.
  */
@@ -129,7 +128,7 @@ fun AbstractFunSpec.testGroup(name: String,
 class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: String, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
 
     infix fun String.should(matcher: Matcher<String>) {
-        funspec.parserTest("$groupName: '$this'") {
+        funspec.parserTest("$groupName: '$this'", javaVersion = javaVersion) {
             this@should kotlintestShould matcher
         }
     }
@@ -173,10 +172,12 @@ class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: 
  * @property javaVersion The java version that will be used for parsing.
  * @property importedTypes Types to import at the beginning of parsing contexts
  * @property otherImports Other imports, without the `import` and semicolon
+ * @property genClassHeader Header of the enclosing class used in parsing contexts like parseExpression, etc. E.g. "class Foo"
  */
 open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                          val importedTypes: MutableList<Class<*>> = mutableListOf(),
-                         val otherImports: MutableList<String> = mutableListOf()) {
+                         val otherImports: MutableList<String> = mutableListOf(),
+                         var genClassHeader: String = "class Foo") {
 
     /** Imports to add to the top of the parsing contexts. */
     internal val imports: List<String>
@@ -218,6 +219,25 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                                             noinline nodeSpec: NWrapper<N>.() -> Unit) =
             makeMatcher(TypeParsingCtx(this), ignoreChildren, nodeSpec)
 
+    /**
+     * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
+     * type param [N], then matches it against the [nodeSpec] using [matchNode].
+     */
+    inline fun <reified N : ASTAnyTypeDeclaration> matchToplevelType(
+            ignoreChildren: Boolean = false,
+            noinline nodeSpec: NWrapper<N>.() -> Unit) =
+            makeMatcher(TopLevelTypeDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
+
+    /**
+     * Returns a String matcher that parses the node using [parseBodyDeclaration] with
+     * type param [N], then matches it against the [nodeSpec] using [matchNode].
+     *
+     * Note that the enclosing type declaration can be customized by changing [genClassHeader].
+     */
+    inline fun <reified N : Node> matchDeclaration(
+            ignoreChildren: Boolean = false,
+            noinline nodeSpec: NWrapper<N>.() -> Unit) = makeMatcher(EnclosedDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
+
 
     /**
      * Expect a parse exception to be thrown by [block].
@@ -239,6 +259,11 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     fun parseAstType(type: String): ASTType = TypeParsingCtx(this).parseNode(type)
 
+    fun parseToplevelAnyTypeDeclaration(type: String): ASTAnyTypeDeclaration = TopLevelTypeDeclarationParsingCtx(this).parseNode(type)
+
+    fun parseBodyDeclaration(type: String): ASTAnyTypeBodyDeclaration = EnclosedDeclarationParsingCtx(this).parseNode(type)
+
+    // reified shorthands, fetching the node
 
     inline fun <reified N : Node> parseExpression(expr: String): N = ExpressionParsingCtx(this).parseAndFind(expr)
 
@@ -247,6 +272,9 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     inline fun <reified N : Node> parseType(type: String): N = TypeParsingCtx(this).parseAndFind(type)
 
+    inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N = TopLevelTypeDeclarationParsingCtx(this).parseAndFind(decl)
+
+    inline fun <reified N : Node> parseDeclaration(decl: String): N = EnclosedDeclarationParsingCtx(this).parseAndFind(decl)
 
     companion object {
 
@@ -261,11 +289,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
          */
         fun <N : Node> Node.findFirstNodeOnStraightLine(klass: Class<N>): N? {
             return when {
-                klass.isInstance(this) -> {
-                    @Suppress("UNCHECKED_CAST")
-                    val n = this as N
-                    n
-                }
+                klass.isInstance(this) -> klass.cast(this)
                 this.numChildren == 1 -> getChild(0).findFirstNodeOnStraightLine(klass)
                 else -> null
             }
@@ -326,7 +350,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             override fun getTemplate(construct: String): String =
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
-                class Foo {
+                ${ctx.genClassHeader} {
                     {
                         Object o = $construct;
                     }
@@ -342,7 +366,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             override fun getTemplate(construct: String): String =
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
-                class Foo {
+                ${ctx.genClassHeader} {
                     {
                         $construct
                     }
@@ -353,11 +377,34 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             override fun retrieveNode(acu: ASTCompilationUnit): ASTBlockStatement = acu.getFirstDescendantOfType(ASTBlockStatement::class.java)
         }
 
+        class EnclosedDeclarationParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTAnyTypeBodyDeclaration>("enclosed declaration", ctx) {
+
+            override fun getTemplate(construct: String): String = """
+                ${ctx.imports.joinToString(separator = "\n")}
+                ${ctx.genClassHeader} {
+                    $construct
+                }
+                """.trimIndent()
+
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeBodyDeclaration =
+                    acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java)!!
+        }
+
+        class TopLevelTypeDeclarationParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration", ctx) {
+
+            override fun getTemplate(construct: String): String = """
+            ${ctx.imports.joinToString(separator = "\n")}
+            $construct
+            """.trimIndent()
+
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeDeclaration = acu.getFirstDescendantOfType(ASTAnyTypeDeclaration::class.java)!!
+        }
+
         class TypeParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTType>("type", ctx) {
             override fun getTemplate(construct: String): String =
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
-                class Foo {
+                ${ctx.genClassHeader} {
                     $construct foo;
                 }
                 """.trimIndent()
