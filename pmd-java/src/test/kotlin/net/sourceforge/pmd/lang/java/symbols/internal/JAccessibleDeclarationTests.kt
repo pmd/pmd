@@ -1,10 +1,11 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration
-import net.sourceforge.pmd.lang.java.symbols.groupByUnique
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeFields
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeMethodsNoOverloads
 import net.sourceforge.pmd.lang.java.symbols.parse
@@ -14,6 +15,14 @@ import net.sourceforge.pmd.lang.java.symbols.parse
  * @since 7.0.0
  */
 class JAccessibleDeclarationTests : FunSpec({
+
+    fun <T, K> List<T>.groupByUnique(keySelector: (T) -> K): Map<K, T> =
+            groupBy(keySelector).mapValues { (_, vs) ->
+                vs should haveSize(1)
+                vs.first()
+            }
+
+
 
     test("Test field declaration symbol equivalence") {
         // test equivalence between the representation obtained from the AST,
@@ -121,7 +130,6 @@ class JAccessibleDeclarationTests : FunSpec({
             it.isAbstract shouldBe false
         }
 
-        // FIXME default methods are considered abstract by PMD.
         // default int defaultMethod() {
         onMethodSymbol("defaultMethod") {
             it.isPrivate shouldBe false
