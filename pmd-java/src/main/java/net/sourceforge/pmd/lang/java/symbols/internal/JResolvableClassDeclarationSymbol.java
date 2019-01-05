@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JResolvableClassDeclarationSymbol extends AbstractDeclarationSymbol<ASTAnyTypeDeclaration> implements JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
+public final class JResolvableClassDeclarationSymbol extends AbstractDeclarationSymbol<ASTAnyTypeDeclaration> implements JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName qualifiedName;
 

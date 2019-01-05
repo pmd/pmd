@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 
 /**
  * Represents a local variable declaration, method or lambda parameter.
+ * TODO do we need to split those into their own type of reference? This is e.g. done in INRIA/Spoon,
+ * but for now doesn't appear to be an interesting tradeoff
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
+public final class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
 
     private final boolean isFinal;
 
@@ -32,5 +36,27 @@ public class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVariableD
     @Override
     public boolean isFinal() {
         return isFinal;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        JLocalVariableSymbol that = (JLocalVariableSymbol) o;
+        return isFinal == that.isFinal;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isFinal);
     }
 }

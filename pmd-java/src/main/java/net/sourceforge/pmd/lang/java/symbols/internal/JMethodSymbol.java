@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
@@ -94,4 +95,25 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
         return i;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        JMethodSymbol that = (JMethodSymbol) o;
+        return isDefault == that.isDefault;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isDefault);
+    }
 }

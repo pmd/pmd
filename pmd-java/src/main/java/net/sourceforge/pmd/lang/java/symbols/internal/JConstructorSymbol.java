@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class JConstructorSymbol extends JAccessibleDeclarationSymbol<ASTConstructorDeclaration> {
+public final class JConstructorSymbol extends JAccessibleDeclarationSymbol<ASTConstructorDeclaration> {
 
     JConstructorSymbol(Constructor<?> constructor) {
         super(constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName());
