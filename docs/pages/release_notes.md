@@ -37,6 +37,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#1496](https://github.com/pmd/pmd/issues/1496) \[core] Refactor metrics to be dealt with generically from pmd-core
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
 *   java-bestpractices
