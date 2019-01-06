@@ -1,0 +1,93 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.metrics.internal;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.QualifiableNode;
+import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import net.sourceforge.pmd.lang.metrics.MetricResult;
+import net.sourceforge.pmd.lang.metrics.MetricsComputer;
+import net.sourceforge.pmd.lang.metrics.ResultOption;
+
+
+/**
+ * Base implementation for {@link LanguageMetricsProvider}.
+ *
+ * @author Clément Fournier
+ * @since 7.0.0
+ */
+public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> implements LanguageMetricsProvider<T, O> {
+
+    private final Class<T> tClass;
+    private final Class<O> oClass;
+    private final MetricsComputer<T, O> myComputer;
+
+
+    AbstractLanguageMetricsProvider(Class<T> tClass,
+                                    Class<O> oClass,
+                                    MetricsComputer<T, O> computer) {
+        this.tClass = tClass;
+        this.oClass = oClass;
+        this.myComputer = computer;
+    }
+
+
+    @Override
+    public T asTypeNode(Node anyNode) {
+        return tClass.isInstance(anyNode) ? tClass.cast(anyNode) : null;
+    }
+
+
+    @Override
+    public O asOperationNode(Node anyNode) {
+        return oClass.isInstance(anyNode) ? oClass.cast(anyNode) : null;
+    }
+
+    // une vraie arnaque
+
+
+    @Override
+    public double computeForType(MetricKey<T> key, T node, MetricOptions options) {
+        return myComputer.computeForType(key, node, true, options, DummyMetricMemoizer.<T>getInstance());
+    }
+
+
+    @Override
+    public double computeForOperation(MetricKey<O> key, O node, MetricOptions options) {
+        return myComputer.computeForOperation(key, node, true, options, DummyMetricMemoizer.<O>getInstance());
+    }
+
+
+    @Override
+    public double computeWithResultOption(MetricKey<O> key, T node, MetricOptions options, ResultOption option) {
+        return myComputer.computeWithResultOption(key, node, true, options, option, DummyProjectMemoizer.<T, O>getInstance());
+    }
+
+
+    @Override
+    public List<MetricResult> computeAllMetricsFor(Node node) {
+        List<MetricResult> results = new ArrayList<>();
+        T t = asTypeNode(node);
+        if (t != null) {
+            for (MetricKey<T> tkey : getAvailableTypeMetrics()) {
+                results.add(new MetricResult(tkey, computeForType(tkey, t, MetricOptions.emptyOptions())));
+            }
+        }
+        O o = asOperationNode(node);
+        if (o != null) {
+            for (MetricKey<O> tkey : getAvailableOperationMetrics()) {
+                results.add(new MetricResult(tkey, computeForOperation(tkey, o, MetricOptions.emptyOptions())));
+            }
+        }
+
+        return results;
+    }
+
+}

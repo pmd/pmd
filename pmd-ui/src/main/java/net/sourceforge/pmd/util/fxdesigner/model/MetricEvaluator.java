@@ -18,6 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
+import net.sourceforge.pmd.lang.metrics.MetricResult;
+
 
 /**
  * Evaluates metrics.

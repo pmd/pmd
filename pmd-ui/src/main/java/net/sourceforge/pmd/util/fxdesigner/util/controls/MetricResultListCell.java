@@ -6,7 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 import java.util.Locale;
 
-import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
+import net.sourceforge.pmd.lang.metrics.MetricResult;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
