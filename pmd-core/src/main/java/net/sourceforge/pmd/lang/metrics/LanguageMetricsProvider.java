@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.metrics;
 
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  * on a node, e.g. to build GUI applications like the designer.
  *
  * Note: this is experimental, ie unstable until 7.0.0, after which it will probably
- * be promoted to a real API. It also exposes some internal API.
+ * be promoted to a real API.
  *
  * @param <T> Type of type declaration nodes of the language
  * @param <O> Type of operation declaration nodes of the language
@@ -82,7 +83,7 @@ public interface LanguageMetricsProvider<T extends QualifiableNode, O extends Qu
      *
      * @param node Node to inspect
      *
-     * @return A list of metric results, possibly empty, but with no null element
+     * @return A map of metric key to their result, possibly empty, but with no null value
      */
-    List<MetricResult> computeAllMetricsFor(Node node);
+    Map<MetricKey<?>, Double> computeAllMetricsFor(Node node);
 }

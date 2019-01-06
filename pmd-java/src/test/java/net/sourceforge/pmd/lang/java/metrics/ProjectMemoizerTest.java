@@ -74,7 +74,7 @@ public class ProjectMemoizerTest {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
                 MetricMemoizer<MethodLikeNode> op = toplevel.getOperationMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.INSTANCE.computeForOperation(opMetricKey, node, force,
+                result.add((int) JavaMetricsComputer.getInstance().computeForOperation(opMetricKey, node, force,
                                                                                   MetricOptions.emptyOptions(), op));
                 return super.visit(node, data);
             }
@@ -83,7 +83,7 @@ public class ProjectMemoizerTest {
             @Override
             public Object visit(ASTAnyTypeDeclaration node, Object data) {
                 MetricMemoizer<ASTAnyTypeDeclaration> clazz = toplevel.getClassMemoizer(node.getQualifiedName());
-                result.add((int) JavaMetricsComputer.INSTANCE.computeForType(classMetricKey, node, force,
+                result.add((int) JavaMetricsComputer.getInstance().computeForType(classMetricKey, node, force,
                                                                              MetricOptions.emptyOptions(), clazz));
                 return super.visit(node, data);
             }

@@ -4,15 +4,14 @@
 
 package net.sourceforge.pmd.lang.metrics.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-import net.sourceforge.pmd.lang.metrics.MetricResult;
 import net.sourceforge.pmd.lang.metrics.MetricsComputer;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 
@@ -30,7 +29,7 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
     private final MetricsComputer<T, O> myComputer;
 
 
-    AbstractLanguageMetricsProvider(Class<T> tClass,
+    protected AbstractLanguageMetricsProvider(Class<T> tClass,
                                     Class<O> oClass,
                                     MetricsComputer<T, O> computer) {
         this.tClass = tClass;
@@ -72,18 +71,18 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
 
 
     @Override
-    public List<MetricResult> computeAllMetricsFor(Node node) {
-        List<MetricResult> results = new ArrayList<>();
+    public Map<MetricKey<?>, Double> computeAllMetricsFor(Node node) {
+        Map<MetricKey<?>, Double> results = new HashMap<>();
         T t = asTypeNode(node);
         if (t != null) {
             for (MetricKey<T> tkey : getAvailableTypeMetrics()) {
-                results.add(new MetricResult(tkey, computeForType(tkey, t, MetricOptions.emptyOptions())));
+                results.put(tkey, computeForType(tkey, t, MetricOptions.emptyOptions()));
             }
         }
         O o = asOperationNode(node);
         if (o != null) {
-            for (MetricKey<O> tkey : getAvailableOperationMetrics()) {
-                results.add(new MetricResult(tkey, computeForOperation(tkey, o, MetricOptions.emptyOptions())));
+            for (MetricKey<O> okey : getAvailableOperationMetrics()) {
+                results.put(okey, computeForOperation(okey, o, MetricOptions.emptyOptions()));
             }
         }
 
