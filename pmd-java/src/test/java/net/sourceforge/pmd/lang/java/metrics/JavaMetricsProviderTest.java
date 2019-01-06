@@ -54,7 +54,7 @@ public class JavaMetricsProviderTest {
 
 
     @Test
-    public void testTheresNoMemoisation() {
+    public void testThereIsNoMemoisation() {
 
         LanguageMetricsProvider<?, ?> provider = ParserTstUtil.getLanguageVersionHandler("1.8").getLanguageMetricsProvider();
 

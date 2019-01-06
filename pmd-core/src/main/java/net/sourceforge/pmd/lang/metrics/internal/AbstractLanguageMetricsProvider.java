@@ -49,8 +49,6 @@ public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode,
         return oClass.isInstance(anyNode) ? oClass.cast(anyNode) : null;
     }
 
-    // une vraie arnaque
-
 
     @Override
     public double computeForType(MetricKey<T> key, T node, MetricOptions options) {

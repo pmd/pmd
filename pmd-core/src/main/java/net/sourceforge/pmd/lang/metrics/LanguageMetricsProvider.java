@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 
 
 /**
- * Language-independent provider for metrics. Can be used to know applicable metrics
- * on a node, e.g. to build GUI applications like the designer.
+ * Language-specific provider for metrics. Knows about all the metrics
+ * defined for a language. Can be used e.g. to build GUI applications
+ * like the designer, in a language independent way. Accessible through
+ * {@link LanguageVersionHandler#getLanguageMetricsProvider()}.
  *
  * Note: this is experimental, ie unstable until 7.0.0, after which it will probably
  * be promoted to a real API.
