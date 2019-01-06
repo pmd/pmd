@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -42,31 +38,7 @@ public class ScopeHierarchyTreeCell extends TreeCell<Object> {
 
 
     private String getTextForDeclaration(NameDeclaration declaration) {
-
-        StringBuilder sb = new StringBuilder();
-        if (declaration instanceof MethodNameDeclaration
-            || declaration instanceof net.sourceforge.pmd.lang.plsql.symboltable.MethodNameDeclaration) {
-            sb.append("Method ");
-        } else if (declaration instanceof VariableNameDeclaration
-                   || declaration instanceof net.sourceforge.pmd.lang.plsql.symboltable.VariableNameDeclaration) {
-            sb.append("Variable ");
-        } else if (declaration instanceof ClassNameDeclaration
-                   || declaration instanceof net.sourceforge.pmd.lang.plsql.symboltable.ClassNameDeclaration) {
-            sb.append("Class ");
-        }
-
-        Class<?> type = declaration.getNode() instanceof TypeNode ? ((TypeNode) declaration.getNode()).getType()
-                                                                  : null;
-
-        sb.append(declaration.getName());
-
-        if (type != null) {
-            sb.append(" : ").append(type.getSimpleName());
-        }
-
-        sb.append(" (l. ").append(declaration.getNode().getBeginLine()).append(")");
-
-        return sb.toString();
+        return declaration.toString(); // that's nice enough for now
     }
 
 }

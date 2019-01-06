@@ -7,16 +7,18 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.reactfx.EventStreams;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.metrics.MetricKey;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
@@ -58,7 +60,6 @@ public class NodeInfoPanelController implements Initializable {
     private Label metricsTitleLabel;
     @FXML
     private TreeView<Object> scopeHierarchyTreeView;
-    private MetricEvaluator metricEvaluator = new MetricEvaluator();
     private Node selectedNode;
 
     public NodeInfoPanelController(MainDesignerController mainController) {
@@ -125,11 +126,9 @@ public class NodeInfoPanelController implements Initializable {
 
 
     private ObservableList<MetricResult> evaluateAllMetrics(Node n) {
-        try {
-            return FXCollections.observableArrayList(metricEvaluator.evaluateAllMetrics(n));
-        } catch (UnsupportedOperationException e) {
-            return FXCollections.emptyObservableList();
-        }
+        Map<MetricKey<?>, Double> results = parent.getLanguageVersion().getLanguageVersionHandler().getLanguageMetricsProvider().computeAllMetricsFor(n);
+        List<MetricResult> resultList = results.entrySet().stream().map(e -> new MetricResult(e.getKey(), e.getValue())).collect(Collectors.toList());
+        return FXCollections.observableArrayList(resultList);
     }
 
 
@@ -146,9 +145,10 @@ public class NodeInfoPanelController implements Initializable {
                                + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
         }
 
-        if (node instanceof TypeNode) {
-            result.add("typeIs() = " + ((TypeNode) node).getType());
-        }
+        // TODO maybe put some equivalent to TypeNode inside pmd-core
+        //        if (node instanceof TypeNode) {
+        //            result.add("typeIs() = " + ((TypeNode) node).getType());
+        //        }
         Collections.sort(result);
         return result;
     }
