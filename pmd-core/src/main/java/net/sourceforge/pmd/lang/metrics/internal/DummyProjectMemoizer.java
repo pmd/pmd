@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.metrics.ProjectMemoizer;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class DummyProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> implements ProjectMemoizer<T, O> {
+public final class DummyProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> implements ProjectMemoizer<T, O> {
 
     private static final DummyProjectMemoizer<? extends QualifiableNode, ? extends QualifiableNode> INSTANCE = new DummyProjectMemoizer<>();
 

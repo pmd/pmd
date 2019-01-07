@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class DummyMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
+public final class DummyMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
 
     private static final DummyMetricMemoizer<Node> INSTANCE = new DummyMetricMemoizer<>();
 
@@ -33,7 +33,7 @@ public class DummyMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
 
     @Override
     public void memoize(ParameterizedMetricKey<N> key, double value) {
-
+        // do nothing
     }
 
 
