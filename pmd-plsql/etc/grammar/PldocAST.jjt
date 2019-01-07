@@ -1414,7 +1414,7 @@ ASTSqlExpression SqlExpression() :
  |
     LOOKAHEAD(2) <ROWNUM>
  |
-    LOOKAHEAD(2) Literal()
+    LOOKAHEAD(2) AdditiveExpression() // this can be a literal or a simple expression, but no conditional
  )
     { return jjtThis; }
 }
