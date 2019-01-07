@@ -340,13 +340,13 @@ public interface Node {
      * Returns a node stream containing all the children of
      * this node. The return type uses a wildcard to make it
      * possible to override it with some more specific type,
-     * for nodes that always have the same type of children.
+     * for {@link SingleChildNode}.
      */
     NodeStream<? extends Node> childrenStream();
 
 
     /**
-     * Returns a node stream containing the all the descendants
+     * Returns a node stream containing all the descendants
      * of this node.
      */
     NodeStream<Node> descendantStream();

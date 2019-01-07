@@ -225,7 +225,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
-                boolean leftMatches =
+                boolean leftIsIndexVarName =
                     guardCondition
                         .children(ASTRelationalExpression.class)
                         .children(ASTPrimaryExpression.class)
@@ -233,6 +233,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                         .children(ASTName.class)
                         .withImage(itName)
                         .any();
+
+                if (!leftIsIndexVarName) {
+                    return Optional.empty();
+                }
 
                 NodeStream<ASTName> right1 =
                     guardCondition
@@ -264,7 +268,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
                 Optional<ASTName> right = NodeStream.union(right1, right2).findFirst();
 
-                return right.map(astName -> astName.getImage().split("\\.")[0]).filter(s -> leftMatches);
+                return right.map(astName -> astName.getImage().split("\\.")[0]);
 
             }
         }
