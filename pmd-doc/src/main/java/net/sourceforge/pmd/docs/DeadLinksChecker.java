@@ -144,20 +144,13 @@ public class DeadLinksChecker {
                         checkedExternalLinks++;
                         linkOk = true;
 
-                        CompletableFuture<Integer> futureResponse;
-                        if (urlResponseCache.containsKey(linkTarget)) {
-                            LOG.info("response: HTTP " + urlResponseCache.get(linkTarget) + " (CACHED) on " + linkTarget);
-                            futureResponse = urlResponseCache.get(linkTarget);
-                        } else {
-                            futureResponse = CompletableFuture.supplyAsync(() -> responseCode(linkTarget), executorService);
-                            urlResponseCache.put(linkTarget, futureResponse);
-                        }
+                        Future<String> futureMessage =
+                            getCachedFutureResponse(linkTarget)
+                                .thenApply(c -> c >= 400)
+                                // It's important not to use the matcher in this mapper!
+                                // It may be exhausted at the time of execution
+                                .thenApply(dead -> dead ? String.format("%8d: %s", lineNo, linkText) : null);
 
-                        Future<String> futureMessage = futureResponse.thenApply(c -> c >= 400).thenApply(dead -> dead ? String.format("%8d: %s", lineNo, linkText) : null);
-
-                        // process in parallel
-                        // It's important not to use the matcher in the callable!
-                        // It may be exhausted at the time of execution
                         addDeadLink(fileToDeadLinks, mdFile, futureMessage);
 
                     } else {
@@ -291,7 +284,20 @@ public class DeadLinksChecker {
     }
 
 
-    private int responseCode(String url) {
+    private CompletableFuture<Integer> getCachedFutureResponse(String url) {
+        if (urlResponseCache.containsKey(url)) {
+            LOG.info("response: HTTP " + urlResponseCache.get(url) + " (CACHED) on " + url);
+            return urlResponseCache.get(url);
+        } else {
+            // process asynchronously
+            CompletableFuture<Integer> futureResponse = CompletableFuture.supplyAsync(() -> computeHttpResponse(url), executorService);
+            urlResponseCache.put(url, futureResponse);
+            return futureResponse;
+        }
+    }
+
+
+    private int computeHttpResponse(String url) {
         try {
             final HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
             httpURLConnection.setRequestMethod("GET");
