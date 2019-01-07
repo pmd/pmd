@@ -25,7 +25,7 @@ Use the rules you like [via a custom ruleset](pmd_userdocs_making_rulesets.html)
 
 ## PMD rules are not set in stone
 
-Generally, pick the ones you like, and ignore or [suppress](pmd_userdocs_suppressing.html)
+Generally, pick the ones you like, and ignore or [suppress](pmd_userdocs_suppressing_warnings.html)
 the warnings you don't like. It's just a tool.
 
 ## PMD IDE plugins are nice

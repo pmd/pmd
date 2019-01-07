@@ -50,7 +50,7 @@ Rules which use the RuleChain to visit the AST are faster than rules which perfo
 
 ## Adding test cases
 
-See [Test Framework](pmd_devdocs_testing.html) for the general documentation
+See [Testing your rules](pmd_userdocs_extending_testing.html) for the general documentation
 
 ### … for a rule I want to submit (in a patch)
 
@@ -59,7 +59,7 @@ the category and add the XML test data in the correct xml subpackage.
 
 ### … for something too specific, that I won’t be able to submit
 
-See [Using the test framework externally](pmd_devdocs_testing.html#using-the-test-framework-externally)
+See [Using the test framework externally](pmd_userdocs_extending_testing.html#using-the-test-framework-externally)
 
 ## Code quality
 
