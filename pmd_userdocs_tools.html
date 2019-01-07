@@ -1439,35 +1439,6 @@ being used by a getResourceAsStream() call to load it out of the PMD jar files.<
 the <a href="http://sourceforge.net/projects/pmd/files/pmd-bluej/pmd-bluej-1.0/">PMDExtension jar file</a>
 and place it in your <code class="highlighter-rouge">bluej/lib/extensions/</code> directory.</p>
 
-<h3 id="code-guide">Code Guide</h3>
-
-<p>Here’s how to set up PMD with Omnicore’s CodeGuide:</p>
-
-<ul>
-  <li>Download the PMD zip file from <a href="http://sourceforge.net/projects/pmd/files/pmd/">here</a></li>
-  <li>Unpack the zip file to your local disk. I put it in /Applications/</li>
-  <li>Add the following tool to CodeGuide (Tools-&gt;Configure Tools-&gt;New):
-    <ul>
-      <li>Name: PMD</li>
-      <li>Kind: Tool for directories</li>
-      <li>Executable: /Applications/pmd-bin-/bin/run.sh</li>
-      <li>Arguments: pmd -d $DIRECTORY_PATH$ -f emacs $USER_ARGUMENTS$</li>
-    </ul>
-  </li>
-</ul>
-
-<p>Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
-Type in the name of a rule set (e.g. unusedcode). PMD is then executed on the directory you
-selected with the rule set you specified. Since CodeGuide understands the emacs syntax you can
-click on the file name and CodeGuide will jump to that file and line number.</p>
-
-<p>Note: I set this up on Mac OS X. It should work on other unix variations just the same.
-Of course you need to change the “Executable” setting above to where your PMD is installed.
-On Windows you need to use the pmd.bat file instead of pmd.sh.</p>
-
-<p>If you haven’t heard of CodeGuide before, <a href="http://www.omnicore.com/">check it out</a>.
-It’s a great IDE.</p>
-
 <h3 id="eclipse">Eclipse</h3>
 
 <p>To install the PMD plugin for Eclipse:</p>
@@ -1785,7 +1756,7 @@ the (blank Command Results) document, and then confirming that, “yes, I do rea
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 6, 2019 <br />
+ Site last generated: Jan 7, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

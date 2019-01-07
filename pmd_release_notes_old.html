@@ -2149,8 +2149,8 @@ parameters and lambda parameters (considering whether they are explicitly typed 
 <h4 id="modified-rules-3">Modified Rules</h4>
 
 <ul>
-  <li>The Java rules <a href="pmd_rules_java_bestpracices.html#accessorclassgeneration"><code class="highlighter-rouge">AccessorClassGeneration</code></a> and
-<a href="pmd_rules_java_bestpracices.html#accessormethodgeneration"><code class="highlighter-rouge">AccessorMethodGeneration</code></a> (both in category
+  <li>The Java rules <a href="pmd_rules_java_bestpractices.html#accessorclassgeneration"><code class="highlighter-rouge">AccessorClassGeneration</code></a> and
+<a href="pmd_rules_java_bestpractices.html#accessormethodgeneration"><code class="highlighter-rouge">AccessorMethodGeneration</code></a> (both in category
 <code class="highlighter-rouge">java-bestpractices</code>) have been modified to be only valid up until Java 10. Java 11 adds support for
 <a href="http://openjdk.java.net/jeps/181">JEP 181: Nest-Based Access Control</a> which avoids the generation of
 accessor classes / methods altogether.</li>
@@ -2789,7 +2789,7 @@ See <a href="#naming-rules-enhancements">Naming rules enhancements</a>.</li>
 
 <h4 id="disable-incremental-analysis">Disable Incremental Analysis</h4>
 
-<p>Some time ago, we added support for <a href="pmd_userdocs_getting_started.html">Incremental Analysis</a>. On PMD 6.0.0, we
+<p>Some time ago, we added support for <a href="pmd_userdocs_incremental_analysis.html">Incremental Analysis</a>. On PMD 6.0.0, we
 started to add warns when not using it, as we strongly believe it’s a great improvement to our user’s experience as
 analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
 scenarios don’t benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.</p>
@@ -3587,7 +3587,7 @@ when using/setting values for rules, there are adjustments necessary when declar
 rules.</p>
 
 <p>Rule properties can be declared both for Java based rules and XPath rules.
-This is now very well documented in <a href="pmd_devdocs_working_with_properties.html">Working with properties</a>.</p>
+This is now very well documented in <a href="pmd_userdocs_extending_defining_properties.html">Working with properties</a>.</p>
 
 <p>With PMD 6.0.0, multivalued properties are now also possible with XPath rules.</p>
 
@@ -9182,7 +9182,7 @@ Added new HTML report format
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 6, 2019 <br />
+ Site last generated: Jan 7, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
