@@ -9,16 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.stream.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
@@ -79,14 +84,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
 
         String itName = index.getName();
-        String iterableName = getIterableNameOrNullToAbort(guardCondition, itName);
+        Optional<String> iterableName = getIterableNameOrEmptyToAbort(guardCondition, itName);
 
 
-        if (!isForUpdateSimpleEnough(update, itName) || iterableName == null) {
+        if (!isForUpdateSimpleEnough(update, itName) || iterableName.isEmpty()) {
             return data;
         }
 
-        Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = findDeclaration(iterableName, node.getScope());
+        Entry<VariableNameDeclaration, List<NameOccurrence>> iterableInfo = findDeclaration(iterableName.get(), node.getScope());
         VariableNameDeclaration iterableDeclaration = iterableInfo == null ? null : iterableInfo.getKey();
 
         if (iterableDeclaration == null) {
@@ -210,7 +215,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
      *
      * @return The name, or null if it couldn't be found or the guard condition is not safe to refactor (then abort)
      */
-    private String getIterableNameOrNullToAbort(ASTExpression guardCondition, String itName) {
+    private Optional<String> getIterableNameOrEmptyToAbort(ASTExpression guardCondition, String itName) {
 
 
         if (guardCondition.jjtGetNumChildren() > 0
@@ -220,32 +225,50 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
-                try {
-                    List<Node> left = guardCondition.findChildNodesWithXPath(
-                        "./RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='" + itName + "']");
+                boolean leftMatches =
+                    guardCondition
+                        .children(ASTRelationalExpression.class)
+                        .children(ASTPrimaryExpression.class)
+                        .children(ASTPrimaryPrefix.class)
+                        .children(ASTName.class)
+                        .withImage(itName)
+                        .any();
 
-                    List<Node> right = guardCondition.findChildNodesWithXPath(
-                        "./RelationalExpression[@Image='<']/PrimaryExpression/PrimaryPrefix"
-                            + "/Name[matches(@Image,'\\w+\\.(size|length)')]"
-                            + "|"
-                            + "./RelationalExpression[@Image='<=']/AdditiveExpression[count(*)=2 and "
-                            + "@Image='-' and PrimaryExpression/PrimaryPrefix/Literal[@Image='1']]"
-                            + "/PrimaryExpression/PrimaryPrefix/Name[matches(@Image,'\\w+\\.(size|length)')]");
+                NodeStream<ASTName> right1 =
+                    guardCondition
+                        .children(ASTRelationalExpression.class)
+                        .withImage("<")
+                        .children(ASTPrimaryExpression.class)
+                        .children(ASTPrimaryPrefix.class)
+                        .children(ASTName.class)
+                        .imageMatching("\\w+\\.(size|length)");
 
-                    if (left.isEmpty()) {
-                        return null;
-                    } else if (!right.isEmpty()) {
-                        return right.get(0).getImage().split("\\.")[0];
-                    } else {
-                        return null;
-                    }
+                NodeStream<ASTName> right2 =
+                    guardCondition
+                        .children(ASTRelationalExpression.class)
+                        .withImage("<=")
+                        .children(ASTAdditiveExpression.class)
+                        .filter(expr ->
+                                    expr.jjtGetNumChildren() == 2
+                                        && expr.getOperator().equals("-")
+                                        && expr.children(ASTPrimaryExpression.class)
+                                               .children(ASTPrimaryPrefix.class)
+                                               .children(ASTLiteral.class)
+                                               .withImage("1")
+                                               .any()
+                        )
+                        .children(ASTPrimaryExpression.class)
+                        .children(ASTPrimaryPrefix.class)
+                        .children(ASTName.class)
+                        .imageMatching("\\w+\\.(size|length)");
 
-                } catch (JaxenException je) {
-                    throw new RuntimeException(je);
-                }
+                Optional<ASTName> right = NodeStream.union(right1, right2).findFirst();
+
+                return right.map(astName -> astName.getImage().split("\\.")[0]).filter(s -> leftMatches);
+
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 

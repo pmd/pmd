@@ -11,6 +11,7 @@ import java.util.List;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.lang.ast.stream.NodeStream;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
@@ -334,4 +335,29 @@ public interface Node {
      */
     Iterator<Attribute> getXPathAttributesIterator();
 
+
+    /**
+     * Returns a node stream containing all the children of
+     * this node. The return type uses a wildcard to make it
+     * possible to override it with some more specific type,
+     * for nodes that always have the same type of children.
+     */
+    NodeStream<? extends Node> childrenStream();
+
+
+    /**
+     * Returns a node stream containing the all the descendants
+     * of this node.
+     */
+    NodeStream<Node> descendantStream();
+
+
+    default <R extends Node> NodeStream<R> children(Class<R> childClass) {
+        return childrenStream().filterIs(childClass);
+    }
+
+
+    default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
+        return descendantStream().filterIs(childClass);
+    }
 }

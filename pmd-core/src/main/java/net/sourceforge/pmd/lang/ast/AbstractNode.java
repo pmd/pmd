@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.ast.stream.NodeStream;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -521,5 +523,26 @@ public abstract class AbstractNode implements Node {
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);
+    }
+
+
+    @Override
+    public NodeStream<? extends Node> childrenStream() {
+        return NodeStream.of(Arrays.stream(children));
+    }
+
+    // TODO benchmark and select the better implementation
+    // descendantStream may either be implemented with streams (like this) relative to childrenStream
+    // or with a lazy AST traversal.
+
+
+    @Override
+    public NodeStream<Node> descendantStream() {
+        return childrenStream().flatMap(AbstractNode::meAndMyChildrenStream);
+    }
+
+
+    private static NodeStream<Node> meAndMyChildrenStream(Node n) {
+        return NodeStream.union(NodeStream.of(n), n.childrenStream());
     }
 }
