@@ -173,8 +173,6 @@ public class DeadLinksChecker {
 
         executorService.shutdown();
 
-        // all appenders have been pushed
-
         System.out.println("Scanned " + scannedFiles + " files for dead links.");
         System.out.println("  Found " + foundExternalLinks + " external links, " + checkedExternalLinks + " of those where checked.");
 

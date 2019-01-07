@@ -15,7 +15,7 @@ sidebar: pmd_sidebar
 *   A zip archiver, e.g.:
     
     * For Windows: [Winzip](http://winzip.com) or the free [7-zip](http://www.7-zip.org/)
-    * For Linux / Unix: [InfoZip](http://www.info-zip.org/pub/infozip/)
+    * For Linux / Unix: [InfoZip](http://infozip.sourceforge.net/)
 
 {% include note.html content="For executing the Designer (./run.sh designer) using [OpenJDK](http://jdk.java.net) or Java 11, you need additionally [OpenJFX](http://jdk.java.net). Download it, extract it and set the environment variable JAVAFX_HOME." %}
 

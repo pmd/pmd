@@ -203,3 +203,8 @@ public class Foo {
     public void bar() { System.out.println("x"); }
 }
 ```
+
+## Checking for dead links
+
+`mvn verify -pl pmd-doc`. This only checks links within the site. HTTP links can be checked
+by specifying `-Dpmd.doc.checkExternalLinks=true` on the command line.
