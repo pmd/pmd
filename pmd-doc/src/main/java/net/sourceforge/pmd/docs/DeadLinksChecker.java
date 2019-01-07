@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -69,7 +70,7 @@ public class DeadLinksChecker {
     ));
 
     // prevent checking the same link multiple times
-    private final Map<String, Integer> linkResultCache = new ConcurrentHashMap<>();
+    private final Map<String, CompletableFuture<Integer>> urlResponseCache = new ConcurrentHashMap<>();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -143,12 +144,21 @@ public class DeadLinksChecker {
                         checkedExternalLinks++;
                         linkOk = true;
 
+                        CompletableFuture<Integer> futureResponse;
+                        if (urlResponseCache.containsKey(linkTarget)) {
+                            LOG.info("response: HTTP " + urlResponseCache.get(linkTarget) + " (CACHED) on " + linkTarget);
+                            futureResponse = urlResponseCache.get(linkTarget);
+                        } else {
+                            futureResponse = CompletableFuture.supplyAsync(() -> responseCode(linkTarget), executorService);
+                            urlResponseCache.put(linkTarget, futureResponse);
+                        }
+
+                        Future<String> futureMessage = futureResponse.thenApply(c -> c >= 400).thenApply(dead -> dead ? String.format("%8d: %s", lineNo, linkText) : null);
+
                         // process in parallel
                         // It's important not to use the matcher in the callable!
                         // It may be exhausted at the time of execution
-                        addDeadLink(fileToDeadLinks, mdFile, executorService.submit(() -> externalLinkIsDead(linkTarget)
-                                                                         ? String.format("%8d: %s", lineNo, linkText)
-                                                                         : null));
+                        addDeadLink(fileToDeadLinks, mdFile, futureMessage);
 
                     } else {
                         // ignore local anchors
@@ -173,22 +183,22 @@ public class DeadLinksChecker {
 
         executorService.shutdown();
 
-        System.out.println("Scanned " + scannedFiles + " files for dead links.");
-        System.out.println("  Found " + foundExternalLinks + " external links, " + checkedExternalLinks + " of those where checked.");
+        LOG.info("Scanned " + scannedFiles + " files for dead links.");
+        LOG.info("  Found " + foundExternalLinks + " external links, " + checkedExternalLinks + " of those where checked.");
 
         if (!CHECK_EXTERNAL_LINKS) {
-            System.out.println("External links weren't checked, set -D" + CHECK_EXTERNAL_LINKS_PROPERTY + "=true to enable it.");
+            LOG.info("External links weren't checked, set -D" + CHECK_EXTERNAL_LINKS_PROPERTY + "=true to enable it.");
         }
 
         Map<Path, List<String>> joined = joinFutures(fileToDeadLinks);
 
         if (joined.isEmpty()) {
-            System.out.println("No errors found!");
+            LOG.info("No errors found!");
         } else {
-            System.err.println("Found dead link(s):");
+            LOG.warning("Found dead link(s):");
             for (Path file : joined.keySet()) {
                 System.err.println(rootDirectory.relativize(file).toString());
-                joined.get(file).forEach(System.err::println);
+                joined.get(file).forEach(LOG::warning);
             }
             throw new AssertionError("Dead links detected");
         }
@@ -281,13 +291,7 @@ public class DeadLinksChecker {
     }
 
 
-    private boolean externalLinkIsDead(String url) {
-        LOG.fine("checking url: " + url + " ...");
-        if (linkResultCache.containsKey(url)) {
-            LOG.fine("response: HTTP " + linkResultCache.get(url) + " (CACHED) on " + url);
-            return linkResultCache.get(url) >= 400;
-        }
-
+    private int responseCode(String url) {
         try {
             final HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
             httpURLConnection.setRequestMethod("GET");
@@ -302,15 +306,13 @@ public class DeadLinksChecker {
             }
 
             LOG.fine("response: " + response + " on " + url);
-            linkResultCache.put(url, responseCode);
 
             // success (HTTP 2xx) or redirection (HTTP 3xx)
-            return responseCode >= 400;
+            return responseCode;
 
         } catch (IOException ex) {
             LOG.fine("response: " + ex.getClass().getName() + " on " + url + " : " + ex.getMessage());
-            linkResultCache.put(url, 599);
-            return true;
+            return 599;
         }
     }
 
