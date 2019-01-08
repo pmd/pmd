@@ -12,6 +12,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
  */
 public interface JMaybeStaticSymbol {
 
+    /**
+     * Returns true if this declaration is static.
+     */
     boolean isStatic();
 
 }

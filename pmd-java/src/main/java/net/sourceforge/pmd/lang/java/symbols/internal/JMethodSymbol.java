@@ -37,12 +37,12 @@ public final class JMethodSymbol
     public JMethodSymbol(Method method) {
         super(method.getModifiers(), method.getName(), method.getDeclaringClass());
         this.isDefault = method.isDefault();
-        this.myFormalParameters = new Lazy<>(
+        this.myFormalParameters = Lazy.lazy(
             () -> Arrays.stream(method.getParameters())
                         .map(JLocalVariableSymbol::new)
                         .collect(Collectors.toList()));
 
-        this.myTypeParameters = new Lazy<>(
+        this.myTypeParameters = Lazy.lazy(
             () -> Arrays.stream(method.getTypeParameters())
                         .map(tv -> new JTypeParameterSymbol(this, tv))
                         .collect(Collectors.toList()));
@@ -58,7 +58,7 @@ public final class JMethodSymbol
         super(Objects.requireNonNull(node), getModifiers(node), node.getMethodName());
         this.isDefault = node.isDefault();
         this.myFormalParameters =
-            new Lazy<>(
+            Lazy.lazy(
                 () -> node.getFormalParameters()
                           .asList()
                           .stream()
@@ -67,7 +67,7 @@ public final class JMethodSymbol
                           .collect(Collectors.toList()));
 
         this.myTypeParameters =
-            new Lazy<>(
+            Lazy.lazy(
                 () -> node.getTypeParameters().stream()
                           .map(tp -> new JTypeParameterSymbol(this, tp))
                           .collect(Collectors.toList())

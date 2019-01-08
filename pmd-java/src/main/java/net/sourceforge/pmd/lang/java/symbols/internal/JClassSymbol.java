@@ -36,8 +36,11 @@ public final class JClassSymbol
     // TODO this class should present supertype symbols, but that wouldn't work without reflection
     // unless we have a global symbol cache persisted between runs.
 
-    // Also, it needs the qualified name resolver to be resolve the FQCN of the supertypes so we have
-    // to be smart w.r.t. the scheduling of the analysis passes.
+    // Also, it needs the symbol table to resolve the supertypes on AST nodes so we have
+    // to be smart w.r.t. the scheduling and the interaction of the analysis passes.
+    // That also means that this is going to wait for symbol tables to be merged.
+
+    // TODO add isEnum and stuff
 
     /**
      * Constructor using a class, used to create a reference for a class
@@ -50,8 +53,8 @@ public final class JClassSymbol
               clazz.getSimpleName(),
               clazz.getEnclosingClass());
         this.fqcn = QualifiedNameFactory.ofClass(clazz);
-        this.myTypeParameters = new Lazy<>(() -> Arrays.stream(clazz.getTypeParameters()).map(tv -> new JTypeParameterSymbol(this, tv)).collect(Collectors.toList()));
-        this.myMemberClasses = new Lazy<>(() -> Arrays.stream(clazz.getDeclaredClasses()).map(JClassSymbol::new).collect(Collectors.toList()));
+        this.myTypeParameters = Lazy.lazy(() -> Arrays.stream(clazz.getTypeParameters()).map(tv -> new JTypeParameterSymbol(this, tv)).collect(Collectors.toList()));
+        this.myMemberClasses = Lazy.lazy(() -> Arrays.stream(clazz.getDeclaredClasses()).map(JClassSymbol::new).collect(Collectors.toList()));
     }
 
     /**
@@ -62,8 +65,8 @@ public final class JClassSymbol
     private JClassSymbol(ASTAnyTypeDeclaration node) {
         super(node, getModifiers(node), node.getImage());
         this.fqcn = Objects.requireNonNull(node.getQualifiedName());
-        this.myTypeParameters = new Lazy<>(() -> node.getTypeParameters().stream().map(tp -> new JTypeParameterSymbol(this, tp)).collect(Collectors.toList()));
-        this.myMemberClasses = new Lazy<>(
+        this.myTypeParameters = Lazy.lazy(() -> node.getTypeParameters().stream().map(tp -> new JTypeParameterSymbol(this, tp)).collect(Collectors.toList()));
+        this.myMemberClasses = Lazy.lazy(
             () -> node.findDescendantsOfType(ASTAnyTypeDeclaration.class).stream()
                       // exclude local classes
                       .filter(ASTAnyTypeDeclaration::isNested)

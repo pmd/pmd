@@ -39,8 +39,32 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  * <p>By storing no reference, we ensure that code references can be shared across the
  * analysed project, allowing reflective resolution to be only done once.
  *
+ * <h1>About global caching</h1>
+ *
  * <p>TODO implement sharing of reflectively found code references across the analysed project
- * <p>References bound to an AST node cannot be shared though, unless we use a SoftReference somehow.
+ * It would be sufficient to cache JClassSymbols, since from there, all their members would
+ * be cached too. {@link JLocalVariableSymbol} doesn't need to be cached since you can't refer to
+ * it from another file.
+ *
+ * <p>That global cache could be used as a basis for multifile analysis, probably whose logic can probably
+ * be merged with {@link net.sourceforge.pmd.lang.java.multifile.ProjectMirror}.
+ *
+ *
+ * <p>TODO with global caching, use a (Weak|SoftReference) on the node to avoid memory leaks.
+ * Also, {@link Lazy} may cause memory leaks by holding strong references to nodes in the lambdas.
+ * This is no problem for now, because without global caching, symbols referring to the
+ * same entity are duplicated across analysed classes, and only the symbols created in the
+ * class where they're defined hold a node. So the symbols are garbage collected with the
+ * AST anyway.
+ *
+ * A global caching will probably be enough to mitigate the cost of creating symbols,
+ * and we can make those potential memory leaks strict.
+ *
+ * In the current state of affairs (no persistent analysis cache, incremental analysis),
+ * a global cache would *heavily* use reflection. So analysis without auxclasspath will be
+ * severely limited (like now tbh). There would be no access to classes that are in the
+ * analysed project which lack compiled classes.
+ *
  *
  * @param <N> Type of AST node that can represent this type of declaration
  *

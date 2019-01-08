@@ -4,10 +4,10 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration
+import net.sourceforge.pmd.lang.java.symbols.getAst
 import net.sourceforge.pmd.lang.java.symbols.groupByUnique
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.IdenticalToSomeFields
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeMethodsNoOverloads
-import net.sourceforge.pmd.lang.java.symbols.getAst
 
 /**
  * @author Clément Fournier
@@ -16,7 +16,8 @@ import net.sourceforge.pmd.lang.java.symbols.getAst
 class JMethodSymbolTest : WordSpec({
 
     // Add method tests
-    // The test data here can't have overloads, there's a separate test case for that
+    // The test data here can't have overloads because of the map..
+    // TODO add a separate test case for that
     run {
 
         fun Class<*>.getAstMethodsByName(): Map<String, ASTMethodDeclaration> {

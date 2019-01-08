@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeFields
  */
 class JFieldSymbolTests : WordSpec({
 
-    // Add field tests
     run {
 
         fun Class<*>.getAstFieldsByName(): Map<String, ASTVariableDeclaratorId> {

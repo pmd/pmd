@@ -34,7 +34,7 @@ public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTA
     public JResolvableClassSymbol(JavaTypeQualifiedName fqcn) {
         super(fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
-        this.myResolvedSymbol = new Lazy<>(() -> Optional.ofNullable(fqcn.getType()).map(JClassSymbol::create));
+        this.myResolvedSymbol = Lazy.lazy(() -> Optional.ofNullable(fqcn.getType()).map(JClassSymbol::create));
     }
 
 
@@ -56,7 +56,7 @@ public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTA
     public JResolvableClassSymbol(JClassSymbol alreadyResolved) {
         super(alreadyResolved.getSimpleName());
         this.qualifiedName = alreadyResolved.getFqcn();
-        this.myResolvedSymbol = new Lazy<>(Optional.of(alreadyResolved));
+        this.myResolvedSymbol = Lazy.strict(Optional.of(alreadyResolved));
     }
 
 

@@ -18,15 +18,14 @@ final class Lazy<T> {
 
     private final Supplier<T> mySupplier;
     private T myT;
-    // todo maybe make this thread safe when we cache symbols globally
 
 
-    Lazy(Supplier<T> mySupplier) {
+    private Lazy(Supplier<T> mySupplier) {
         this.mySupplier = Objects.requireNonNull(mySupplier);
     }
 
 
-    Lazy(T alreadyResolved) {
+    private Lazy(T alreadyResolved) {
         this.mySupplier = null;
         this.myT = alreadyResolved;
     }
@@ -42,5 +41,15 @@ final class Lazy<T> {
             myT = Objects.requireNonNull(mySupplier.get());
         }
         return myT;
+    }
+
+
+    static <T> Lazy<T> lazy(Supplier<T> mySupplier) {
+        return new Lazy<>(mySupplier);
+    }
+
+
+    static <T> Lazy<T> strict(T alreadyResolved) {
+        return new Lazy<>(alreadyResolved);
     }
 }
