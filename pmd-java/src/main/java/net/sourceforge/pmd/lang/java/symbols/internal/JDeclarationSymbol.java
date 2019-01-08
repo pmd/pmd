@@ -13,8 +13,8 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 
 /**
- * Represents a declaration. Abstracts over whether the declaration is in
- * the analysed file or not, using reflection when it's not.
+ * Represents a declaration that can be referred to by simple name. Abstracts over
+ * whether the declaration is in the analysed file or not, using reflection when it's not.
  *
  * <p>This type hierarchy is probably not directly relevant to users writing
  * rules. It's mostly intended to unify the representation of type resolution
@@ -72,11 +72,10 @@ public interface JDeclarationSymbol<N extends Node> {
 
     // TODO annotations could be added to the API if we publish it
 
-    // TODO implement hashcode and equals for every one of these (for now only those that are used are implemented)
-    // and test them!!!!
+    // TODO tests
 
     // TODO add type information when TypeDefinitions are reviewed
     // We should be able to create a type definition from a java.lang.reflect.Type,
     // paying attention to type variables of enclosing methods and types.
-    // We should also be able to do so from an ASTType, with support from a JScope.
+    // We should also be able to do so from an ASTType, with support from a JSymbolTable.
 }

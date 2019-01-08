@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 
 /**
@@ -45,9 +44,7 @@ public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTA
      * @param alreadyResolved Already resolved type
      */
     public JResolvableClassSymbol(Class<?> alreadyResolved) {
-        super(alreadyResolved.getSimpleName());
-        this.qualifiedName = QualifiedNameFactory.ofClass(Objects.requireNonNull(alreadyResolved));
-        this.myResolvedSymbol = new Lazy<>(() -> Optional.of(alreadyResolved).map(JClassSymbol::new));
+        this(new JClassSymbol(alreadyResolved));
     }
 
 

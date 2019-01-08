@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
+import java.lang.ref.WeakReference;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclarationSymbol<N> {
 
     private final String simpleName;
-    private N boundNode; // todo use (Soft|Weak)Reference if we cache symbols globally
+    private WeakReference<N> boundNode; // use a SoftReference?
 
 
     AbstractDeclarationSymbol(String simpleName) {
@@ -29,13 +30,13 @@ abstract class AbstractDeclarationSymbol<N extends Node> implements JDeclaration
 
     AbstractDeclarationSymbol(N node, String simpleName) {
         this(simpleName);
-        this.boundNode = node;
+        this.boundNode = new WeakReference<>(node);
     }
 
 
     @Override
     public final Optional<N> getBoundNode() {
-        return Optional.ofNullable(boundNode);
+        return Optional.ofNullable(boundNode.get());
     }
 
 
