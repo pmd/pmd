@@ -37,7 +37,7 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
      * @param method Method for which to create a reference
      */
     public JMethodSymbol(Method method) {
-        super(method.getModifiers(), method.getName());
+        super(method.getModifiers(), method.getName(), toResolvable(method.getDeclaringClass()));
         this.isDefault = method.isDefault();
         this.parameterSymbols = Arrays.stream(method.getParameters()).map(JLocalVariableSymbol::new).collect(Collectors.toList());
     }

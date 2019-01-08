@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * A reference type that can be referred to using a simple name.
- * These include references to {@linkplain JResolvableClassDeclarationSymbol class or interfaces}
+ * These include references to {@linkplain JResolvableClassSymbol class or interfaces}
  * and references to {@linkplain JTypeParameterSymbol type parameters},
  * but not array types or parameterized types. Primitive types are excluded
  * as well because that wouldn't be useful.
@@ -23,10 +23,10 @@ public interface JSimpleTypeDeclarationSymbol<N extends Node> extends JDeclarati
 
     /**
      * Returns true if this is a class reference, in
-     * which case it can be safely downcast to {@link JResolvableClassDeclarationSymbol}.
+     * which case it can be safely downcast to {@link JResolvableClassSymbol}.
      */
     default boolean isSymbolicClass() {
-        return this instanceof JResolvableClassDeclarationSymbol;
+        return this instanceof JResolvableClassSymbol;
     }
 
 

@@ -28,7 +28,7 @@ public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariable
      * @param field          Field for which to create a reference
      */
     public JFieldSymbol(Field field) {
-        super(field.getModifiers(), field.getName());
+        super(field.getModifiers(), field.getName(), toResolvable(field.getDeclaringClass()));
     }
 
 

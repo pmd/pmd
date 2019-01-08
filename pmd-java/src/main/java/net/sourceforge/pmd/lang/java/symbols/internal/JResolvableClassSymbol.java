@@ -22,17 +22,17 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JResolvableClassDeclarationSymbol extends AbstractDeclarationSymbol<ASTAnyTypeDeclaration> implements JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
+public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTAnyTypeDeclaration> implements JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName qualifiedName;
-
+    private JClassSymbol myResolvedSymbol;
 
     /**
      * Builds a symbolic reference to a type using its qualified name.
      *
      * @param fqcn           Fully-qualified class name
      */
-    public JResolvableClassDeclarationSymbol(JavaTypeQualifiedName fqcn) {
+    public JResolvableClassSymbol(JavaTypeQualifiedName fqcn) {
         super(fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
     }
@@ -43,9 +43,17 @@ public final class JResolvableClassDeclarationSymbol extends AbstractDeclaration
      *
      * @param alreadyResolved Already resolved type
      */
-    public JResolvableClassDeclarationSymbol(Class<?> alreadyResolved) {
+    public JResolvableClassSymbol(Class<?> alreadyResolved) {
         super(alreadyResolved.getSimpleName());
         this.qualifiedName = QualifiedNameFactory.ofClass(Objects.requireNonNull(alreadyResolved));
+        this.myResolvedSymbol = null;
+    }
+
+
+    public JResolvableClassSymbol(JClassSymbol alreadyResolved) {
+        super(alreadyResolved.getSimpleName());
+        this.qualifiedName = QualifiedNameFactory.ofClass(alreadyResolved.getClassObject());
+        this.myResolvedSymbol = alreadyResolved;
     }
 
 
@@ -65,13 +73,18 @@ public final class JResolvableClassDeclarationSymbol extends AbstractDeclaration
      * returns an empty optional.
      */
     public Optional<JClassSymbol> loadClass() {
+        if (myResolvedSymbol != null) {
+            return Optional.of(myResolvedSymbol);
+        }
+
         Class<?> type = qualifiedName.getType();
 
         if (type == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new JClassSymbol(type));
+        myResolvedSymbol = new JClassSymbol(type);
+        return Optional.of(myResolvedSymbol);
     }
 
 
@@ -83,7 +96,7 @@ public final class JResolvableClassDeclarationSymbol extends AbstractDeclaration
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        JResolvableClassDeclarationSymbol that = (JResolvableClassDeclarationSymbol) o;
+        JResolvableClassSymbol that = (JResolvableClassSymbol) o;
         return Objects.equals(qualifiedName, that.qualifiedName);
     }
 

@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 
@@ -20,18 +22,32 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  */
 public abstract class JAccessibleDeclarationSymbol<N extends Node> extends AbstractDeclarationSymbol<N> {
     protected final int modifiers;
+    private final JResolvableClassSymbol ownerClass;
 
     // TODO this class should present the owner class' symbol and include it in the equals/hashcode!
 
-    JAccessibleDeclarationSymbol(int modifiers, String simpleName) {
+
+    JAccessibleDeclarationSymbol(int modifiers, String simpleName, JResolvableClassSymbol ownerClass) {
         super(simpleName);
         this.modifiers = modifiers;
+        this.ownerClass = ownerClass;
     }
 
 
     JAccessibleDeclarationSymbol(N node, int modifiers, String simpleName) {
         super(node, simpleName);
         this.modifiers = modifiers;
+        this.ownerClass = getEnclosingClass(node);
+    }
+
+
+    /**
+     * Returns the class that directly encloses this declaration.
+     * This is equivalent to {@link Class#getEnclosingClass()}.
+     * Returns null if this is a top-level type declaration.
+     */
+    public JResolvableClassSymbol getEnclosingClass() {
+        return ownerClass;
     }
 
 
@@ -128,12 +144,28 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node> extends Abstr
             return false;
         }
         JAccessibleDeclarationSymbol<?> that = (JAccessibleDeclarationSymbol<?>) o;
-        return modifiers == that.modifiers;
+        return modifiers == that.modifiers && ownerClass.equals(that.ownerClass);
     }
 
 
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), modifiers);
+    }
+
+
+    protected static JResolvableClassSymbol toResolvable(Class<?> clazz) {
+        return Optional.ofNullable(clazz)
+                       .map(JClassSymbol::new)
+                       .map(JResolvableClassSymbol::new)
+                       .orElse(null);
+    }
+
+
+    protected static JResolvableClassSymbol getEnclosingClass(Node node) {
+        return Optional.ofNullable(node.getFirstParentOfType(ASTAnyTypeDeclaration.class))
+                       .map(ASTAnyTypeDeclaration::getQualifiedName)
+                       .map(JResolvableClassSymbol::new)
+                       .orElse(null);
     }
 }

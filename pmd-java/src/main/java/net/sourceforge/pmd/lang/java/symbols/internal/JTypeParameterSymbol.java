@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 /**
  * Represents the declaration of a type variable, ie a type parameter. Type variables are reference
  * types, but not class or interface types. They're also not declared with the same node. For those
- * reasons this type of references is distinct from {@link JResolvableClassDeclarationSymbol}.
+ * reasons this type of references is distinct from {@link JResolvableClassSymbol}.
  *
  * @author Clément Fournier
  * @since 7.0.0

@@ -35,7 +35,7 @@ public final class JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeD
      * @param clazz          Class represented by this reference
      */
     public JClassSymbol(Class<?> clazz) {
-        super(clazz.getModifiers(), clazz.getSimpleName());
+        super(clazz.getModifiers(), clazz.getSimpleName(), toResolvable(clazz.getEnclosingClass()));
         this.fqcn = QualifiedNameFactory.ofClass(clazz);
     }
 

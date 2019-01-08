@@ -64,7 +64,7 @@ public interface JDeclarationSymbol<N extends Node> {
 
     /**
      * Gets the simple name with which this declaration may be referred to
-     * when unqualified, eg the simple name of the class or name of the method.
+     * when unqualified, eg the simple name of the class, or the name of the method.
      *
      * @return the simple name
      */
