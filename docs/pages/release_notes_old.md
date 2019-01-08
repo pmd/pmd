@@ -669,8 +669,8 @@ extended for lambda parameters with Java 11 via
 
 #### Modified Rules
 
-*   The Java rules [`AccessorClassGeneration`](pmd_rules_java_bestpracices.html#accessorclassgeneration) and
-    [`AccessorMethodGeneration`](pmd_rules_java_bestpracices.html#accessormethodgeneration) (both in category
+*   The Java rules [`AccessorClassGeneration`](pmd_rules_java_bestpractices.html#accessorclassgeneration) and
+    [`AccessorMethodGeneration`](pmd_rules_java_bestpractices.html#accessormethodgeneration) (both in category
     `java-bestpractices`) have been modified to be only valid up until Java 10. Java 11 adds support for
     [JEP 181: Nest-Based Access Control](http://openjdk.java.net/jeps/181) which avoids the generation of
     accessor classes / methods altogether.
@@ -1143,7 +1143,7 @@ Both are bugfixing releases.
 
 #### Disable Incremental Analysis
 
-Some time ago, we added support for [Incremental Analysis](pmd_userdocs_getting_started.html). On PMD 6.0.0, we
+Some time ago, we added support for [Incremental Analysis](pmd_userdocs_incremental_analysis.html). On PMD 6.0.0, we
 started to add warns when not using it, as we strongly believe it's a great improvement to our user's experience as
 analysis time is greatly reduced; and in the future we plan to have it enabled by default. However, we realize some
 scenarios don't benefit from it (ie: CI jobs), and having the warning logged can be noisy and cause confusion.
@@ -1767,7 +1767,7 @@ when using/setting values for rules, there are adjustments necessary when declar
 rules.
 
 Rule properties can be declared both for Java based rules and XPath rules.
-This is now very well documented in [Working with properties](pmd_devdocs_working_with_properties.html).
+This is now very well documented in [Working with properties](pmd_userdocs_extending_defining_properties.html).
 
 With PMD 6.0.0, multivalued properties are now also possible with XPath rules.
 
