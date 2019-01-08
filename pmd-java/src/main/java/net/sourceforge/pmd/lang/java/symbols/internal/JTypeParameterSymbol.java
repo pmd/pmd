@@ -37,6 +37,11 @@ public final class JTypeParameterSymbol extends AbstractDeclarationSymbol<ASTTyp
     }
 
 
+    public JTypeParameterOwnerSymbol getOwnerSymbol() {
+        return myOwnerSymbol;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
