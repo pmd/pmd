@@ -20,12 +20,11 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public abstract class JAccessibleDeclarationSymbol<N extends Node> extends AbstractDeclarationSymbol<N> {
+public abstract class JAccessibleDeclarationSymbol<N extends Node>
+    extends AbstractDeclarationSymbol<N> {
+
     protected final int modifiers;
     private final JResolvableClassSymbol ownerClass;
-
-    // TODO this class should present the owner class' symbol and include it in the equals/hashcode!
-
 
     JAccessibleDeclarationSymbol(int modifiers, String simpleName, JResolvableClassSymbol ownerClass) {
         super(simpleName);

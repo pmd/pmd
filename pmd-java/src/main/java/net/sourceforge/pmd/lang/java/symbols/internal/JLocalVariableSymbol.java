@@ -22,6 +22,10 @@ public final class JLocalVariableSymbol extends AbstractDeclarationSymbol<ASTVar
 
     private final boolean isFinal;
 
+    // TODO how to decide whether two of those are equal without
+    // storing somehow the context where they were found? maybe it
+    // should be a documented limitation
+
     /**
      * Constructor using the AST node.
      *

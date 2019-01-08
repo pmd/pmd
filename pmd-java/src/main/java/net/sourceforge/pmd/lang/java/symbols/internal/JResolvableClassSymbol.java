@@ -25,7 +25,7 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTAnyTypeDeclaration> implements JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
 
     private final JavaTypeQualifiedName qualifiedName;
-    private JClassSymbol myResolvedSymbol;
+    private final Lazy<Optional<JClassSymbol>> myResolvedSymbol;
 
     /**
      * Builds a symbolic reference to a type using its qualified name.
@@ -35,6 +35,7 @@ public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTA
     public JResolvableClassSymbol(JavaTypeQualifiedName fqcn) {
         super(fqcn.getClassSimpleName());
         this.qualifiedName = fqcn;
+        this.myResolvedSymbol = new Lazy<>(() -> Optional.ofNullable(fqcn.getType()).map(JClassSymbol::new));
     }
 
 
@@ -46,14 +47,19 @@ public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTA
     public JResolvableClassSymbol(Class<?> alreadyResolved) {
         super(alreadyResolved.getSimpleName());
         this.qualifiedName = QualifiedNameFactory.ofClass(Objects.requireNonNull(alreadyResolved));
-        this.myResolvedSymbol = null;
+        this.myResolvedSymbol = new Lazy<>(() -> Optional.of(alreadyResolved).map(JClassSymbol::new));
     }
 
 
+    /**
+     * Builds a resolvable symbol for something that was already resolved.
+     *
+     * @param alreadyResolved Already resolved symbol
+     */
     public JResolvableClassSymbol(JClassSymbol alreadyResolved) {
         super(alreadyResolved.getSimpleName());
-        this.qualifiedName = QualifiedNameFactory.ofClass(alreadyResolved.getClassObject());
-        this.myResolvedSymbol = alreadyResolved;
+        this.qualifiedName = alreadyResolved.getFqcn();
+        this.myResolvedSymbol = new Lazy<>(Optional.of(alreadyResolved));
     }
 
 
@@ -73,18 +79,7 @@ public final class JResolvableClassSymbol extends AbstractDeclarationSymbol<ASTA
      * returns an empty optional.
      */
     public Optional<JClassSymbol> loadClass() {
-        if (myResolvedSymbol != null) {
-            return Optional.of(myResolvedSymbol);
-        }
-
-        Class<?> type = qualifiedName.getType();
-
-        if (type == null) {
-            return Optional.empty();
-        }
-
-        myResolvedSymbol = new JClassSymbol(type);
-        return Optional.of(myResolvedSymbol);
+        return myResolvedSymbol.getValue();
     }
 
 

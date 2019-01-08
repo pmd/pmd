@@ -19,7 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclaratorId> implements JValueSymbol {
+public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclaratorId>
+    implements JValueSymbol, JMaybeStaticSymbol {
 
 
     /**
@@ -53,6 +54,7 @@ public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariable
     }
 
 
+    @Override
     public boolean isStatic() {
         return Modifier.isStatic(modifiers);
     }

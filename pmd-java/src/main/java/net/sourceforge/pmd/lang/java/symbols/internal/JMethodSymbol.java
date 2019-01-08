@@ -7,13 +7,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Spliterators;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -25,11 +21,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodDeclaration> {
+public final class JMethodSymbol
+    extends JAccessibleDeclarationSymbol<ASTMethodDeclaration>
+    implements JTypeParameterOwnerSymbol, JMaybeStaticSymbol, JMaybeFinalSymbol {
 
     private final boolean isDefault;
-    private final List<JLocalVariableSymbol> parameterSymbols;
-
+    private final Lazy<List<JLocalVariableSymbol>> myFormalParameters;
+    private final Lazy<List<JTypeParameterSymbol>> myTypeParameters;
 
     /**
      * Constructor for methods found through reflection.
@@ -39,7 +37,15 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
     public JMethodSymbol(Method method) {
         super(method.getModifiers(), method.getName(), toResolvable(method.getDeclaringClass()));
         this.isDefault = method.isDefault();
-        this.parameterSymbols = Arrays.stream(method.getParameters()).map(JLocalVariableSymbol::new).collect(Collectors.toList());
+        this.myFormalParameters = new Lazy<>(
+            () -> Arrays.stream(method.getParameters())
+                        .map(JLocalVariableSymbol::new)
+                        .collect(Collectors.toList()));
+
+        this.myTypeParameters = new Lazy<>(
+            () -> Arrays.stream(method.getTypeParameters())
+                        .map(tv -> new JTypeParameterSymbol(this, tv))
+                        .collect(Collectors.toList()));
     }
 
 
@@ -51,22 +57,22 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
     public JMethodSymbol(ASTMethodDeclaration node) {
         super(Objects.requireNonNull(node), getModifiers(node), node.getMethodName());
         this.isDefault = node.isDefault();
-        this.parameterSymbols =
-            iteratorToStream(node.getFormalParameters().iterator())
-                .map(ASTFormalParameter::getVariableDeclaratorId)
-                .map(JLocalVariableSymbol::new)
-                .collect(Collectors.toList());
+        this.myFormalParameters =
+            new Lazy<>(
+                () -> node.getFormalParameters()
+                          .asList()
+                          .stream()
+                          .map(ASTFormalParameter::getVariableDeclaratorId)
+                          .map(JLocalVariableSymbol::new)
+                          .collect(Collectors.toList()));
+
+        this.myTypeParameters =
+            new Lazy<>(
+                () -> node.getTypeParameters().stream()
+                          .map(tp -> new JTypeParameterSymbol(this, tp))
+                          .collect(Collectors.toList())
+            );
     }
-
-
-    // TODO create util for iterators... so fkn annoying
-    private <T> Stream<T> iteratorToStream(Iterator<T> iterator) {
-        return StreamSupport.stream(
-            Spliterators.spliteratorUnknownSize(iterator, 0),
-            false
-        );
-    }
-
 
     boolean isSynchronized() {
         return Modifier.isSynchronized(modifiers);
@@ -93,11 +99,13 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
     }
 
 
+    @Override
     public boolean isStatic() {
         return Modifier.isStatic(modifiers);
     }
 
 
+    @Override
     public boolean isFinal() {
         return Modifier.isFinal(modifiers);
     }
@@ -107,6 +115,17 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
 
     boolean isVarargs() {
         return (modifiers & Modifier.TRANSIENT) != 0;
+    }
+
+
+    @Override
+    public List<JTypeParameterSymbol> getTypeParameters() {
+        return myTypeParameters.getValue();
+    }
+
+
+    public List<JLocalVariableSymbol> getFormalParameters() {
+        return myFormalParameters.getValue();
     }
 
 
@@ -133,7 +152,7 @@ public final class JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodD
         }
         JMethodSymbol that = (JMethodSymbol) o;
         return isDefault == that.isDefault
-            && Objects.equals(parameterSymbols, that.parameterSymbols);
+            && Objects.equals(myFormalParameters, that.myFormalParameters);
     }
 
 

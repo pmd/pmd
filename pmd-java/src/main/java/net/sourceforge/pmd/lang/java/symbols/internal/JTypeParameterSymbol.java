@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
+import java.lang.reflect.TypeVariable;
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 
 
@@ -17,13 +20,41 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
  */
 public final class JTypeParameterSymbol extends AbstractDeclarationSymbol<ASTTypeParameter> implements JSimpleTypeDeclarationSymbol<ASTTypeParameter> {
 
+    // TODO add bounds information
 
-    JTypeParameterSymbol(String simpleName) {
-        super(simpleName);
+    private final JTypeParameterOwnerSymbol myOwnerSymbol;
+
+
+    JTypeParameterSymbol(JTypeParameterOwnerSymbol owner, TypeVariable<?> reflected) {
+        super(reflected.getName());
+        this.myOwnerSymbol = owner;
     }
 
 
-    JTypeParameterSymbol(ASTTypeParameter node, String simpleName) {
-        super(node, simpleName);
+    JTypeParameterSymbol(JTypeParameterOwnerSymbol owner, ASTTypeParameter node) {
+        super(node, node.getParameterName());
+        this.myOwnerSymbol = owner;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        JTypeParameterSymbol that = (JTypeParameterSymbol) o;
+        return Objects.equals(myOwnerSymbol, that.myOwnerSymbol);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), myOwnerSymbol);
     }
 }

@@ -13,12 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JValueSymbol extends JDeclarationSymbol<ASTVariableDeclaratorId> {
-
-    /**
-     * Returns true if this field or variable is declared final.
-     */
-    boolean isFinal();
+public interface JValueSymbol extends JDeclarationSymbol<ASTVariableDeclaratorId>, JMaybeFinalSymbol {
 
 
     /**
