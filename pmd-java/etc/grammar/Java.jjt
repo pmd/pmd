@@ -147,7 +147,7 @@
  *
  * Andreas Dangel 01/2013
  * ===================================================================
- * Fix wrong consumption of myModifiers (e.g. "final") in a for-each loop.
+ * Fix wrong consumption of modifiers (e.g. "final") in a for-each loop.
  * Check for wrong java usage when catching multiple exceptions.
  *
  * Andreas Dangel 12/2012
@@ -1776,7 +1776,7 @@ void ImportDeclaration() :
 }
 
 /*
- * Modifiers. We match all myModifiers in a single rule to reduce the chances of
+ * Modifiers. We match all modifiers in a single rule to reduce the chances of
  * syntax errors for simple modifier mistakes. It will also enable us to give
  * better error messages.
  */

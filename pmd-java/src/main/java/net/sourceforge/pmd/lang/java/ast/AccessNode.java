@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * This interface captures Java access myModifiers.
+ * This interface captures Java access modifiers.
  */
 public interface AccessNode extends Annotatable {
 

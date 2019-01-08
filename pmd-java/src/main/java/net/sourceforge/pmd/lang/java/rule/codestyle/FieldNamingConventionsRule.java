@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @since 6.7.0
  */
 public class FieldNamingConventionsRule extends AbstractNamingConventionRule<ASTVariableDeclaratorId> {
-    // TODO we need a more powerful scheme to match some fields, e.g. include myModifiers/type
+    // TODO we need a more powerful scheme to match some fields, e.g. include modifiers/type
     // We could define a new property, but specifying property values as a single string doesn't scale
     private static final PropertyDescriptor<List<String>> EXCLUDED_NAMES =
             PropertyFactory.stringListProperty("exclusions")

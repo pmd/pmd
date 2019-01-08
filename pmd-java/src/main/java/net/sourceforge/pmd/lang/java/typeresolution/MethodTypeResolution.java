@@ -572,11 +572,11 @@ public final class MethodTypeResolution {
 
 
     /**
-     * Given a class, the myModifiers of on of it's member and the class that is trying to access that member,
+     * Given a class, the modifiers of on of it's member and the class that is trying to access that member,
      * returns true is the member is accessible from the accessingClass Class.
      *
      * @param classWithMember The Class with the member.
-     * @param modifiers       The myModifiers of that member.
+     * @param modifiers       The modifiers of that member.
      * @param accessingClass  The Class trying to access the member.
      * @return True if the member is visible from the accessingClass Class.
      */

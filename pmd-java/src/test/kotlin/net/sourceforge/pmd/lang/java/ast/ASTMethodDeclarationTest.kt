@@ -74,7 +74,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::isAbstract shouldBe false
         }
 
-        // default abstract is an invalid combination of myModifiers so we won't encounter it in real analysis
+        // default abstract is an invalid combination of modifiers so we won't encounter it in real analysis
     }
 
     parserTest("Throws list") {
