@@ -29,7 +29,7 @@ public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariable
      * @param field          Field for which to create a reference
      */
     public JFieldSymbol(Field field) {
-        super(field.getModifiers(), field.getName(), toResolvable(field.getDeclaringClass()));
+        super(field.getModifiers(), field.getName(), field.getDeclaringClass());
     }
 
 
@@ -45,24 +45,24 @@ public final class JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariable
 
 
     public boolean isVolatile() {
-        return Modifier.isVolatile(modifiers);
+        return Modifier.isVolatile(myModifiers);
     }
 
 
     public boolean isTransient() {
-        return Modifier.isTransient(modifiers);
+        return Modifier.isTransient(myModifiers);
     }
 
 
     @Override
     public boolean isStatic() {
-        return Modifier.isStatic(modifiers);
+        return Modifier.isStatic(myModifiers);
     }
 
 
     @Override
     public boolean isFinal() {
-        return Modifier.isFinal(modifiers);
+        return Modifier.isFinal(myModifiers);
     }
 
 

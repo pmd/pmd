@@ -45,26 +45,27 @@ public final class JClassSymbol
      *
      * @param clazz          Class represented by this reference
      */
-    public JClassSymbol(Class<?> clazz) {
-        super(clazz.getModifiers(), clazz.getSimpleName(), toResolvable(clazz.getEnclosingClass()));
+    private JClassSymbol(Class<?> clazz) {
+        super(Objects.requireNonNull(clazz, "Null class is not allowed").getModifiers(),
+              clazz.getSimpleName(),
+              clazz.getEnclosingClass());
         this.fqcn = QualifiedNameFactory.ofClass(clazz);
         this.myTypeParameters = new Lazy<>(() -> Arrays.stream(clazz.getTypeParameters()).map(tv -> new JTypeParameterSymbol(this, tv)).collect(Collectors.toList()));
         this.myMemberClasses = new Lazy<>(() -> Arrays.stream(clazz.getDeclaredClasses()).map(JClassSymbol::new).collect(Collectors.toList()));
     }
-
 
     /**
      * Constructor using an AST node, probably to be used during scope resolution AST visit.
      *
      * @param node           Node of the declaration
      */
-    public JClassSymbol(ASTAnyTypeDeclaration node) {
+    private JClassSymbol(ASTAnyTypeDeclaration node) {
         super(node, getModifiers(node), node.getImage());
         this.fqcn = Objects.requireNonNull(node.getQualifiedName());
         this.myTypeParameters = new Lazy<>(() -> node.getTypeParameters().stream().map(tp -> new JTypeParameterSymbol(this, tp)).collect(Collectors.toList()));
         this.myMemberClasses = new Lazy<>(
             () -> node.findDescendantsOfType(ASTAnyTypeDeclaration.class).stream()
-                      // exclude local and anonymous classes
+                      // exclude local classes
                       .filter(ASTAnyTypeDeclaration::isNested)
                       .map(JClassSymbol::new)
                       .collect(Collectors.toList())
@@ -88,29 +89,29 @@ public final class JClassSymbol
 
 
     boolean isStrict() {
-        return Modifier.isStrict(modifiers);
+        return Modifier.isStrict(myModifiers);
     }
 
 
     boolean isAbstract() {
-        return Modifier.isAbstract(modifiers);
+        return Modifier.isAbstract(myModifiers);
     }
 
 
     @Override
     public boolean isStatic() {
-        return Modifier.isStatic(modifiers);
+        return Modifier.isStatic(myModifiers);
     }
 
 
     @Override
     public boolean isFinal() {
-        return Modifier.isFinal(modifiers);
+        return Modifier.isFinal(myModifiers);
     }
 
 
     public boolean isInterface() {
-        return Modifier.isInterface(modifiers);
+        return Modifier.isInterface(myModifiers);
     }
 
 
@@ -152,5 +153,16 @@ public final class JClassSymbol
     @Override
     public int hashCode() {
         return Objects.hash(fqcn);
+    }
+
+    // these are candidates for
+
+    public static JClassSymbol create(ASTAnyTypeDeclaration node) {
+        return new JClassSymbol(node);
+    }
+
+
+    public static JClassSymbol create(Class<?> clazz) {
+        return new JClassSymbol(clazz);
     }
 }

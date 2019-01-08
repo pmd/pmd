@@ -5,17 +5,16 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId
+import net.sourceforge.pmd.lang.java.symbols.getAst
 import net.sourceforge.pmd.lang.java.symbols.groupByUnique
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.IdenticalToSomeFields
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeFields
-import net.sourceforge.pmd.lang.java.symbols.getAst
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
 class JFieldSymbolTests : WordSpec({
-
 
     // Add field tests
     run {
@@ -40,12 +39,11 @@ class JFieldSymbolTests : WordSpec({
 
         fun onFieldSymbol(fieldName: String, behaviourTest: (JFieldSymbol) -> Unit) {
             val fromAst = JFieldSymbol(fieldNodes[fieldName])
-            val fromOtherAst = JFieldSymbol(sameFieldsInOtherClass[fieldName])
             val fromReflect = JFieldSymbol(reflectedFields[fieldName])
-            val fromOtherReflected = JFieldSymbol(reflectedFieldsInOtherClass[fieldName])
 
-            // test that a field with the exact same declaration but not in the same class is
-            // not equivalent
+            // test that a field with the exact same declaration but not in the same class is not equivalent
+            val fromOtherAst = JFieldSymbol(sameFieldsInOtherClass[fieldName])
+            val fromOtherReflected = JFieldSymbol(reflectedFieldsInOtherClass[fieldName])
 
             "A field symbol ($fieldName) obtained from an AST" should {
 
@@ -65,7 +63,7 @@ class JFieldSymbolTests : WordSpec({
                     testBehaviour(fromReflect)
                 }
 
-                "not be equivalent to an identical field symbol belonging to another class" {
+                "not be equivalent to an identical field symbol declared in another class" {
                     fromAst shouldNotBe fromOtherAst
                     fromAst shouldNotBe fromOtherReflected
                 }

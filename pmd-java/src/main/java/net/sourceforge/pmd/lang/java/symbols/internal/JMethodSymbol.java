@@ -35,7 +35,7 @@ public final class JMethodSymbol
      * @param method Method for which to create a reference
      */
     public JMethodSymbol(Method method) {
-        super(method.getModifiers(), method.getName(), toResolvable(method.getDeclaringClass()));
+        super(method.getModifiers(), method.getName(), method.getDeclaringClass());
         this.isDefault = method.isDefault();
         this.myFormalParameters = new Lazy<>(
             () -> Arrays.stream(method.getParameters())
@@ -75,12 +75,12 @@ public final class JMethodSymbol
     }
 
     boolean isSynchronized() {
-        return Modifier.isSynchronized(modifiers);
+        return Modifier.isSynchronized(myModifiers);
     }
 
 
     boolean isNative() {
-        return Modifier.isNative(modifiers);
+        return Modifier.isNative(myModifiers);
     }
 
 
@@ -90,31 +90,31 @@ public final class JMethodSymbol
 
 
     boolean isStrict() {
-        return Modifier.isStrict(modifiers);
+        return Modifier.isStrict(myModifiers);
     }
 
 
     boolean isAbstract() {
-        return Modifier.isAbstract(modifiers);
+        return Modifier.isAbstract(myModifiers);
     }
 
 
     @Override
     public boolean isStatic() {
-        return Modifier.isStatic(modifiers);
+        return Modifier.isStatic(myModifiers);
     }
 
 
     @Override
     public boolean isFinal() {
-        return Modifier.isFinal(modifiers);
+        return Modifier.isFinal(myModifiers);
     }
 
     // Modifier.TRANSIENT is identical to the bit mask used for varargs
     // the reflect API uses that because they can never occur together I guess
 
     boolean isVarargs() {
-        return (modifiers & Modifier.TRANSIENT) != 0;
+        return (myModifiers & Modifier.TRANSIENT) != 0;
     }
 
 

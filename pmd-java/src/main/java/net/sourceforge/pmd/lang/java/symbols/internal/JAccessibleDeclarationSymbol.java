@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 
 
 /**
- * Represents declarations having access modifiers common to {@link JFieldSymbol},
+ * Represents declarations having access myModifiers common to {@link JFieldSymbol},
  * {@link JClassSymbol}, {@link JMethodSymbol}, and {@link JConstructorSymbol}.
  *
  * @author Clément Fournier
@@ -23,20 +23,26 @@ import net.sourceforge.pmd.lang.java.ast.AccessNode;
 public abstract class JAccessibleDeclarationSymbol<N extends Node>
     extends AbstractDeclarationSymbol<N> {
 
-    protected final int modifiers;
-    private final JResolvableClassSymbol ownerClass;
+    protected final int myModifiers;
+    private final JClassSymbol myEnclosingClass;
 
-    JAccessibleDeclarationSymbol(int modifiers, String simpleName, JResolvableClassSymbol ownerClass) {
+
+    JAccessibleDeclarationSymbol(int modifiers, String simpleName, Class<?> enclosingClass) {
         super(simpleName);
-        this.modifiers = modifiers;
-        this.ownerClass = ownerClass;
+        this.myModifiers = modifiers;
+        this.myEnclosingClass = enclosingClass == null ? null
+                                                       : JClassSymbol.create(enclosingClass);
     }
 
 
     JAccessibleDeclarationSymbol(N node, int modifiers, String simpleName) {
         super(node, simpleName);
-        this.modifiers = modifiers;
-        this.ownerClass = getEnclosingClass(node);
+        this.myModifiers = modifiers;
+        this.myEnclosingClass =
+            // doesn't handle anonymous type declaration until we handle #905
+            Optional.ofNullable(node.getFirstParentOfType(ASTAnyTypeDeclaration.class))
+                    .map(JClassSymbol::create)
+                    .orElse(null);
     }
 
 
@@ -44,29 +50,34 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node>
      * Returns the class that directly encloses this declaration.
      * This is equivalent to {@link Class#getEnclosingClass()}.
      * Returns null if this is a top-level type declaration.
+     *
+     * This is necessarily an already resolved symbol, because
+     * 1. if it's obtained from reflection, then the enclosing class is available, in all likelyhood
+     * 2. if it's obtained from an AST, then the enclosing class is in the same source file so we can
+     *    know about it
      */
-    public JResolvableClassSymbol getEnclosingClass() {
-        return ownerClass;
+    public JClassSymbol getEnclosingClass() {
+        return myEnclosingClass;
     }
 
 
     public final boolean isPublic() {
-        return Modifier.isPublic(modifiers);
+        return Modifier.isPublic(myModifiers);
     }
 
 
     public final boolean isPrivate() {
-        return Modifier.isPrivate(modifiers);
+        return Modifier.isPrivate(myModifiers);
     }
 
 
     public final boolean isProtected() {
-        return Modifier.isProtected(modifiers);
+        return Modifier.isProtected(myModifiers);
     }
 
 
     public final boolean isPackagePrivate() {
-        return (modifiers & (Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC)) == 0;
+        return (myModifiers & (Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC)) == 0;
     }
 
 
@@ -143,28 +154,19 @@ public abstract class JAccessibleDeclarationSymbol<N extends Node>
             return false;
         }
         JAccessibleDeclarationSymbol<?> that = (JAccessibleDeclarationSymbol<?>) o;
-        return modifiers == that.modifiers && ownerClass.equals(that.ownerClass);
+        return myModifiers == that.myModifiers && myEnclosingClass.equals(that.myEnclosingClass);
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), modifiers);
+        return Objects.hash(super.hashCode(), myModifiers);
     }
 
 
-    protected static JResolvableClassSymbol toResolvable(Class<?> clazz) {
-        return Optional.ofNullable(clazz)
-                       .map(JClassSymbol::new)
-                       .map(JResolvableClassSymbol::new)
-                       .orElse(null);
+    protected static JClassSymbol toResolvable(Class<?> clazz) {
+        return JClassSymbol.create(clazz);
     }
 
 
-    protected static JResolvableClassSymbol getEnclosingClass(Node node) {
-        return Optional.ofNullable(node.getFirstParentOfType(ASTAnyTypeDeclaration.class))
-                       .map(ASTAnyTypeDeclaration::getQualifiedName)
-                       .map(JResolvableClassSymbol::new)
-                       .orElse(null);
-    }
 }
