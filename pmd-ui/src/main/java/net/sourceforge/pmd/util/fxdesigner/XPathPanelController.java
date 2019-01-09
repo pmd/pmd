@@ -40,7 +40,6 @@ import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
-import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows;
@@ -64,6 +63,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -77,7 +77,8 @@ import javafx.stage.StageStyle;
 
 
 /**
- * XPath panel controller.
+ * XPath panel controller. One such controller is a presenter for an {@link ObservableXPathRuleBuilder},
+ * which stores all data about one currently edited rule.
  *
  * @author Clément Fournier
  * @see ExportXPathWizardController
@@ -90,6 +91,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private final MainDesignerController parent;
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
+    public Button exportButton;
+    public ToggleButton xpath20ToggleButton;
 
     @FXML
     private PropertyTableView propertyTableView;
@@ -105,6 +108,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private ChoiceBox<String> xpathVersionChoiceBox;
 
 
+    private Var<String> myXpathVersion = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
+
+
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
         this.designerRoot = owner;
         parent = mainController;
@@ -118,6 +124,18 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
+
+        Var<String> xpathVersionUIProp = DesignerUtil.booleanVar(xpath20ToggleButton.selectedProperty())
+                                                     .mapBidirectional(
+                                                         is20 -> is20 ? "2.0" : "1.0",
+                                                         "2.0"::equals
+                                                     );
+
+        DesignerUtil.rewireInit(xpathVersionProperty(), xpathVersionUIProp);
+
+        Var<String> xpathExprUIProp = Var.fromVal(xpathExpressionArea.textProperty(), xpathExpressionArea::replaceText);
+
+        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExprUIProp);
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
@@ -268,8 +286,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         DesignerUtil.rewire(getRuleBuilder().xpathVersionProperty(), parent.xpathVersionProperty());
         DesignerUtil.rewire(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
 
-        DesignerUtil.rewire(getRuleBuilder().rulePropertiesProperty(),
-                            propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
+        DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
+                                propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
     }
 
 
@@ -356,23 +374,21 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    @PersistentProperty
     public String getXpathExpression() {
-        return xpathExpressionArea.getText();
+        return getRuleBuilder().getXpathExpression();
     }
 
 
     public void setXpathExpression(String expression) {
-        xpathExpressionArea.replaceText(expression);
+        getRuleBuilder().setXpathExpression(expression);
     }
 
 
-    public Val<String> xpathExpressionProperty() {
-        return Val.wrap(xpathExpressionArea.textProperty());
+    public Var<String> xpathExpressionProperty() {
+        return Var.fromVal(xpathExpressionArea.textProperty(), this::setXpathExpression);
     }
 
 
-    @PersistentProperty
     public String getXpathVersion() {
         return getRuleBuilder().getXpathVersion();
     }

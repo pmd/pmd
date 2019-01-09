@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 
 
 /**
@@ -22,6 +23,7 @@ public class ObservableXPathRuleBuilder extends ObservableRuleBuilder {
     private final Var<String> xpathExpression = Var.newSimpleVar("");
 
 
+    @PersistentProperty
     public String getXpathVersion() {
         return xpathVersion.getValue();
     }
@@ -32,6 +34,7 @@ public class ObservableXPathRuleBuilder extends ObservableRuleBuilder {
     }
 
 
+    @PersistentProperty
     public Var<String> xpathVersionProperty() {
         return xpathVersion;
     }
@@ -39,6 +42,11 @@ public class ObservableXPathRuleBuilder extends ObservableRuleBuilder {
 
     public String getXpathExpression() {
         return xpathExpression.getValue();
+    }
+
+
+    public void setXpathExpression(String value) {
+        xpathExpression.setValue(value);
     }
 
 

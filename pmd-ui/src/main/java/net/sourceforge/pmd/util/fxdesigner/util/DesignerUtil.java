@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ListCell;
@@ -172,20 +174,27 @@ public final class DesignerUtil {
     }
 
 
+    /** Like the other overload, using the setter of the ui property. */
+    public static <T> void rewireInit(Property<T> underlying, Property<T> ui) {
+        rewireInit(underlying, ui, ui::setValue);
+    }
+
     /**
-     * Binds the underlying property to a source of values. The source property is also initialised using the setter.
+     * Binds the underlying property to a source of values (UI property). The UI
+     * property is also initialised using a setter.
      *
      * @param underlying The underlying property
      * @param ui         The property exposed to the user (the one in this wizard)
      * @param setter     Setter to initialise the UI value
      * @param <T>        Type of values
      */
-    public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> ui, Consumer<? super T> setter) {
+    public static <T> void rewireInit(Property<T> underlying, ObservableValue<? extends T> ui, Consumer<? super T> setter) {
         setter.accept(underlying.getValue());
         rewire(underlying, ui);
     }
-    
-    /** Like rewire, with no initialisation. */
+
+
+    /** Like rewireInit, with no initialisation. */
     public static <T> void rewire(Property<T> underlying, ObservableValue<? extends T> source) {
         underlying.unbind();
         underlying.bind(source); // Bindings are garbage collected after the popup dies
@@ -229,5 +238,10 @@ public final class DesignerUtil {
      */
     public static Optional<String> stackTraceToXPath(Throwable e) {
         return stackTraceToXPath(ExceptionUtils.getStackTrace(e));
+    }
+
+
+    public static Var<Boolean> booleanVar(BooleanProperty p) {
+        return Var.mapBidirectional(p, Boolean::booleanValue, Function.identity());
     }
 }

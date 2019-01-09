@@ -123,7 +123,6 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
     // Properties
     private Val<LanguageVersion> languageVersion = Val.constant(DesignerUtil.defaultLanguageVersion());
-    private Val<String> xpathVersion = Val.constant(DesignerUtil.defaultXPathVersion());
 
 
     public MainDesignerController(DesignerRoot owner) {
@@ -147,13 +146,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         xpathPanelController.initialiseVersionChoiceBox(xpathVersionChoiceBox);
 
         languageVersion = Val.wrap(languageChoiceBox.getSelectionModel().selectedItemProperty());
-        DesignerUtil.rewire(sourceEditorController.languageVersionProperty(),
-                            languageVersion, this::setLanguageVersion);
-
-        xpathVersion = Val.wrap(xpathVersionChoiceBox.getSelectionModel().selectedItemProperty());
-        DesignerUtil.rewire(xpathPanelController.xpathVersionProperty(),
-                            xpathVersion, this::setXpathVersion);
-
+        DesignerUtil.rewireInit(sourceEditorController.languageVersionProperty(),
+                                languageVersion, this::setLanguageVersion);
 
         licenseMenuItem.setOnAction(e -> showLicensePopup());
         openFileMenuItem.setOnAction(e -> onOpenFileClicked());
@@ -434,19 +428,19 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public String getXpathVersion() {
-        return xpathVersion.getValue();
+        return xpathPanelController.getXpathVersion();
     }
 
 
     public void setXpathVersion(String version) {
-        if (xpathVersionChoiceBox.getItems().contains(version)) {
-            xpathVersionChoiceBox.getSelectionModel().select(version);
+        if ("1.0".equals(version) || "2.0".equals(version)) {
+            xpathPanelController.setXpathVersion(version);
         }
     }
 
 
     public Val<String> xpathVersionProperty() {
-        return xpathVersion;
+        return xpathPanelController.xpathVersionProperty();
     }
 
 
