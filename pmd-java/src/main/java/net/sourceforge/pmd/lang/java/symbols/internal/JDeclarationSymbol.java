@@ -9,6 +9,7 @@ import java.util.Optional;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JLocalVariableSymbolImpl;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 
@@ -43,7 +44,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  *
  * <p>TODO implement sharing of reflectively found code references across the analysed project
  * It would be sufficient to cache JClassSymbols, since from there, all their members would
- * be cached too. {@link JLocalVariableSymbol} doesn't need to be cached since you can't refer to
+ * be cached too. {@link JLocalVariableSymbolImpl} doesn't need to be cached since you can't refer to
  * it from another file.
  *
  * <p>That global cache could be used as a basis for multifile analysis, probably whose logic can probably

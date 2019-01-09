@@ -4,14 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 
@@ -21,143 +15,39 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JMethodSymbol
-    extends JAccessibleDeclarationSymbol<ASTMethodDeclaration>
-    implements JTypeParameterOwnerSymbol, JMaybeStaticSymbol, JMaybeFinalSymbol {
+public interface JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodDeclaration>, JTypeParameterOwnerSymbol {
 
-    private final boolean isDefault;
-    private final Lazy<List<JLocalVariableSymbol>> myFormalParameters;
-    private final Lazy<List<JTypeParameterSymbol>> myTypeParameters;
 
-    /**
-     * Constructor for methods found through reflection.
-     *
-     * @param method Method for which to create a reference
-     */
-    public JMethodSymbol(Method method) {
-        super(method.getModifiers(), method.getName(), method.getDeclaringClass());
-        this.isDefault = method.isDefault();
-        this.myFormalParameters = Lazy.lazy(
-            () -> Arrays.stream(method.getParameters())
-                        .map(JLocalVariableSymbol::new)
-                        .collect(Collectors.toList()));
-
-        this.myTypeParameters = Lazy.lazy(
-            () -> Arrays.stream(method.getTypeParameters())
-                        .map(tv -> new JTypeParameterSymbol(this, tv))
-                        .collect(Collectors.toList()));
-    }
+    List<JLocalVariableSymbol> getFormalParameters();
 
 
     /**
-     * Constructor using the AST node.
-     *
-     * @param node Node representing the method declaration
+     * Returns true if this declaration is declared final.
      */
-    public JMethodSymbol(ASTMethodDeclaration node) {
-        super(Objects.requireNonNull(node), getModifiers(node), node.getMethodName());
-        this.isDefault = node.isDefault();
-        this.myFormalParameters =
-            Lazy.lazy(
-                () -> node.getFormalParameters()
-                          .asList()
-                          .stream()
-                          .map(ASTFormalParameter::getVariableDeclaratorId)
-                          .map(JLocalVariableSymbol::new)
-                          .collect(Collectors.toList()));
-
-        this.myTypeParameters =
-            Lazy.lazy(
-                () -> node.getTypeParameters().stream()
-                          .map(tp -> new JTypeParameterSymbol(this, tp))
-                          .collect(Collectors.toList())
-            );
-    }
-
-    boolean isSynchronized() {
-        return Modifier.isSynchronized(myModifiers);
-    }
+    boolean isFinal();
 
 
-    boolean isNative() {
-        return Modifier.isNative(myModifiers);
-    }
+    boolean isStrict();
 
 
-    boolean isDefault() {
-        return isDefault;
-    }
+    boolean isAbstract();
 
 
-    boolean isStrict() {
-        return Modifier.isStrict(myModifiers);
-    }
+    boolean isVarargs();
 
 
-    boolean isAbstract() {
-        return Modifier.isAbstract(myModifiers);
-    }
+    /**
+     * Returns true if this declaration is static.
+     */
+    boolean isStatic();
 
 
-    @Override
-    public boolean isStatic() {
-        return Modifier.isStatic(myModifiers);
-    }
+    boolean isSynchronized();
 
 
-    @Override
-    public boolean isFinal() {
-        return Modifier.isFinal(myModifiers);
-    }
-
-    // Modifier.TRANSIENT is identical to the bit mask used for varargs
-    // the reflect API uses that because they can never occur together I guess
-
-    boolean isVarargs() {
-        return (myModifiers & Modifier.TRANSIENT) != 0;
-    }
+    boolean isNative();
 
 
-    @Override
-    public List<JTypeParameterSymbol> getTypeParameters() {
-        return myTypeParameters.getValue();
-    }
+    boolean isDefault();
 
-
-    public List<JLocalVariableSymbol> getFormalParameters() {
-        return myFormalParameters.getValue();
-    }
-
-
-    private static int getModifiers(ASTMethodDeclaration declaration) {
-        int i = accessNodeToModifiers(declaration);
-
-        if (declaration.isVarargs()) {
-            i |= Modifier.TRANSIENT;
-        }
-        return i;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        JMethodSymbol that = (JMethodSymbol) o;
-        return isDefault == that.isDefault
-            && Objects.equals(myFormalParameters, that.myFormalParameters);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), isDefault);
-    }
 }

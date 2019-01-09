@@ -6,6 +6,7 @@ import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration
 import net.sourceforge.pmd.lang.java.symbols.getAst
 import net.sourceforge.pmd.lang.java.symbols.groupByUnique
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JMethodSymbolImpl
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.IdenticalToSomeFields
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeMethodsNoOverloads
 
@@ -39,11 +40,11 @@ class JMethodSymbolTest : WordSpec({
         val methodNodes = SomeMethodsNoOverloads::class.java.getAstMethodsByName()
         val sameNodesInOtherClass = IdenticalToSomeFields::class.java.getAstMethodsByName()
 
-        fun onMethodSymbol(methodName: String, behaviourTest: (JMethodSymbol) -> Unit) {
-            val fromAst = JMethodSymbol(methodNodes[methodName])
-            val fromOtherAst = JMethodSymbol(sameNodesInOtherClass[methodName])
-            val fromReflect = JMethodSymbol(reflectedMethods[methodName])
-            val fromOtherReflected = JMethodSymbol(sameReflectedMethodsInOtherClass[methodName])
+        fun onMethodSymbol(methodName: String, behaviourTest: (JMethodSymbolImpl) -> Unit) {
+            val fromAst = JMethodSymbolImpl(methodNodes[methodName])
+            val fromOtherAst = JMethodSymbolImpl(sameNodesInOtherClass[methodName])
+            val fromReflect = JMethodSymbolImpl(reflectedMethods[methodName])
+            val fromOtherReflected = JMethodSymbolImpl(sameReflectedMethodsInOtherClass[methodName])
 
             fromAst shouldBe fromReflect
 

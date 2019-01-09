@@ -63,6 +63,21 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
         public String getPrintableName() {
             return name().toLowerCase(Locale.ROOT);
         }
+
+
+        public static TypeKind ofClass(Class<?> clazz) {
+
+            if (clazz.isInterface()) {
+                return INTERFACE;
+            } else if (clazz.isEnum()) {
+                return ENUM;
+            } else if (clazz.isAnnotation()) {
+                return ANNOTATION;
+            } else {
+                return CLASS;
+            }
+
+        }
     }
 
 }

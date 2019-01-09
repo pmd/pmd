@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.lang.reflect.Constructor;
-
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 
 
@@ -15,14 +13,5 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JConstructorSymbol extends JAccessibleDeclarationSymbol<ASTConstructorDeclaration> {
-
-    JConstructorSymbol(Constructor<?> constructor) {
-        super(constructor.getModifiers(), constructor.getDeclaringClass().getSimpleName(), constructor.getDeclaringClass());
-    }
-
-
-    JConstructorSymbol(ASTConstructorDeclaration node) {
-        super(node, accessNodeToModifiers(node), node.getImage());
-    }
+public interface JConstructorSymbol extends JAccessibleDeclarationSymbol<ASTConstructorDeclaration> {
 }

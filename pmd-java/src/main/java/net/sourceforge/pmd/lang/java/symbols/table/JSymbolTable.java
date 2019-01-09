@@ -10,9 +10,9 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.internal.JDeclarationSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JResolvableClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JResolvableClassSymbolImpl;
 import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeDeclarationSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JTypeParameterSymbolImpl;
 import net.sourceforge.pmd.lang.java.symbols.internal.JValueSymbol;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
@@ -82,8 +82,8 @@ public interface JSymbolTable {
      * ie, parameterized types and array types are not available. Primitive types are
      * also not considered because it's probably not useful.
      *
-     * <p>The returned type reference may either be a {@link JResolvableClassSymbol}
-     * or a {@link JTypeParameterSymbol}.
+     * <p>The returned type reference may either be a {@link JResolvableClassSymbolImpl}
+     * or a {@link JTypeParameterSymbolImpl}.
      *
      * @param simpleName Simple name of the type to look for
      *

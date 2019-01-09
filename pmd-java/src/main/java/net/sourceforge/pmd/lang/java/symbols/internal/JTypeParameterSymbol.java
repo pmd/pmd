@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.lang.reflect.TypeVariable;
-import java.util.Objects;
-
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JTypeParameterOwnerSymbol;
 
 
 /**
@@ -18,48 +17,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JTypeParameterSymbol extends AbstractDeclarationSymbol<ASTTypeParameter> implements JSimpleTypeDeclarationSymbol<ASTTypeParameter> {
+public interface JTypeParameterSymbol extends JSimpleTypeDeclarationSymbol<ASTTypeParameter> {
 
-    // TODO add bounds information
-
-    private final JTypeParameterOwnerSymbol myOwnerSymbol;
-
-
-    JTypeParameterSymbol(JTypeParameterOwnerSymbol owner, TypeVariable<?> reflected) {
-        super(reflected.getName());
-        this.myOwnerSymbol = owner;
-    }
-
-
-    JTypeParameterSymbol(JTypeParameterOwnerSymbol owner, ASTTypeParameter node) {
-        super(node, node.getParameterName());
-        this.myOwnerSymbol = owner;
-    }
-
-
-    public JTypeParameterOwnerSymbol getOwnerSymbol() {
-        return myOwnerSymbol;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        JTypeParameterSymbol that = (JTypeParameterSymbol) o;
-        return Objects.equals(myOwnerSymbol, that.myOwnerSymbol);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), myOwnerSymbol);
-    }
+    /**
+     * Returns the {@link JClassSymbol} or {@link JMethodSymbol} which declared
+     * this type parameter.
+     */
+    JTypeParameterOwnerSymbol getDeclaringSymbol();
 }

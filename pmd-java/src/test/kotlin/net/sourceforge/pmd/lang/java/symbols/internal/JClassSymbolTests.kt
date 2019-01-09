@@ -11,11 +11,12 @@ import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.java.symbols.TestClassesGen
 import net.sourceforge.pmd.lang.java.symbols.getTypeDeclaration
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JClassSymbolImpl
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.GenericClass
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.IdenticalToSomeFields
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeMethodsNoOverloads
 import kotlin.reflect.KClass
-import net.sourceforge.pmd.lang.java.symbols.internal.JClassSymbol.create as classSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JClassSymbolImpl.create as classSymbol
 
 /**
  * @author Clément Fournier
@@ -38,7 +39,7 @@ class JClassSymbolTests : WordSpec({
             classSymbol(IdenticalToSomeFields::class.java) shouldNotBe classSymbol(SomeMethodsNoOverloads::class.java)
         }
 
-        fun String.onClass(clazz: KClass<*>, assertions: (JClassSymbol) -> Unit) {
+        fun String.onClass(clazz: KClass<*>, assertions: (JClassSymbolImpl) -> Unit) {
 
             val fromReflect = classSymbol(clazz.java)
             val fromAst = classSymbol(clazz.java.getTypeDeclaration())
@@ -56,7 +57,7 @@ class JClassSymbolTests : WordSpec({
         "be bound to its type parameters".onClass(GenericClass::class) { classSym ->
             classSym.typeParameters should haveSize(2)
             classSym.typeParameters.forAll {
-                it.ownerSymbol shouldBe classSym
+                it.declaringSymbol shouldBe classSym
             }
 
         }

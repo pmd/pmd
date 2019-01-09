@@ -7,6 +7,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId
 import net.sourceforge.pmd.lang.java.symbols.getAst
 import net.sourceforge.pmd.lang.java.symbols.groupByUnique
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JFieldSymbolImpl
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.IdenticalToSomeFields
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.SomeFields
 
@@ -35,14 +36,13 @@ class JFieldSymbolTests : WordSpec({
         val sameFieldsInOtherClass =
                 IdenticalToSomeFields::class.java.getAstFieldsByName()
 
-
-        fun onFieldSymbol(fieldName: String, behaviourTest: (JFieldSymbol) -> Unit) {
-            val fromAst = JFieldSymbol(fieldNodes[fieldName])
-            val fromReflect = JFieldSymbol(reflectedFields[fieldName])
+        fun onFieldSymbol(fieldName: String, behaviourTest: (JFieldSymbolImpl) -> Unit) {
+            val fromAst = JFieldSymbolImpl(fieldNodes[fieldName])
+            val fromReflect = JFieldSymbolImpl(reflectedFields[fieldName])
 
             // test that a field with the exact same declaration but not in the same class is not equivalent
-            val fromOtherAst = JFieldSymbol(sameFieldsInOtherClass[fieldName])
-            val fromOtherReflected = JFieldSymbol(reflectedFieldsInOtherClass[fieldName])
+            val fromOtherAst = JFieldSymbolImpl(sameFieldsInOtherClass[fieldName])
+            val fromOtherReflected = JFieldSymbolImpl(reflectedFieldsInOtherClass[fieldName])
 
             "A field symbol ($fieldName) obtained from an AST" should {
 
@@ -51,7 +51,7 @@ class JFieldSymbolTests : WordSpec({
                     fromReflect shouldBe fromAst
 
 
-                    fun testBehaviour(it: JFieldSymbol) {
+                    fun testBehaviour(it: JFieldSymbolImpl) {
                         it.isField shouldBe true
                         it.isLocalVar shouldBe false
                         behaviourTest(it)

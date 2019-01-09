@@ -4,17 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
 
 
 /**
@@ -25,147 +20,56 @@ import net.sourceforge.pmd.lang.java.qname.QualifiedNameFactory;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class JClassSymbol
-    extends JAccessibleDeclarationSymbol<ASTAnyTypeDeclaration>
-    implements JTypeParameterOwnerSymbol, JMaybeStaticSymbol, JMaybeFinalSymbol {
+public interface JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeDeclaration>, JTypeParameterOwnerSymbol {
 
-    private final JavaTypeQualifiedName fqcn;
-    private final Lazy<List<JTypeParameterSymbol>> myTypeParameters;
-    private final Lazy<List<JClassSymbol>> myMemberClasses;
 
-    // TODO this class should present supertype symbols, but that wouldn't work without reflection
-    // unless we have a global symbol cache persisted between runs.
+    JavaTypeQualifiedName getFqcn();
 
-    // Also, it needs the symbol table to resolve the supertypes on AST nodes so we have
-    // to be smart w.r.t. the scheduling and the interaction of the analysis passes.
-    // That also means that this is going to wait for symbol tables to be merged.
 
-    // TODO add isEnum and stuff
+    Optional<Class<?>> getClassObject();
+
+
+    List<JClassSymbol> getDeclaredClasses();
+
+
+    boolean isStrict();
+
+
+    boolean isAbstract();
+
+
+    default boolean isInterface() {
+        return getTypeKind() == TypeKind.INTERFACE;
+    }
+
+
+    default boolean isEnum() {
+        return getTypeKind() == TypeKind.ENUM;
+    }
+
+
+    default boolean isAnnotation() {
+        return getTypeKind() == TypeKind.ANNOTATION;
+    }
+
+
+    default boolean isClass() {
+        return getTypeKind() == TypeKind.CLASS;
+    }
+
+
+
+    ASTAnyTypeDeclaration.TypeKind getTypeKind();
+
 
     /**
-     * Constructor using a class, used to create a reference for a class
-     * found by reflection, or a class known at compile-time.
-     *
-     * @param clazz          Class represented by this reference
+     * Returns true if this declaration is declared final.
      */
-    private JClassSymbol(Class<?> clazz) {
-        super(Objects.requireNonNull(clazz, "Null class is not allowed").getModifiers(),
-              clazz.getSimpleName(),
-              clazz.getEnclosingClass());
-        this.fqcn = QualifiedNameFactory.ofClass(clazz);
-        this.myTypeParameters = Lazy.lazy(() -> Arrays.stream(clazz.getTypeParameters()).map(tv -> new JTypeParameterSymbol(this, tv)).collect(Collectors.toList()));
-        this.myMemberClasses = Lazy.lazy(() -> Arrays.stream(clazz.getDeclaredClasses()).map(JClassSymbol::new).collect(Collectors.toList()));
-    }
+    boolean isFinal();
+
 
     /**
-     * Constructor using an AST node, probably to be used during scope resolution AST visit.
-     *
-     * @param node           Node of the declaration
+     * Returns true if this declaration is static.
      */
-    private JClassSymbol(ASTAnyTypeDeclaration node) {
-        super(node, getModifiers(node), node.getImage());
-        this.fqcn = Objects.requireNonNull(node.getQualifiedName());
-        this.myTypeParameters = Lazy.lazy(() -> node.getTypeParameters().stream().map(tp -> new JTypeParameterSymbol(this, tp)).collect(Collectors.toList()));
-        this.myMemberClasses = Lazy.lazy(
-            () -> node.findDescendantsOfType(ASTAnyTypeDeclaration.class).stream()
-                      // exclude local classes
-                      .filter(ASTAnyTypeDeclaration::isNested)
-                      .map(JClassSymbol::new)
-                      .collect(Collectors.toList())
-        );
-    }
-
-
-    JavaTypeQualifiedName getFqcn() {
-        return fqcn;
-    }
-
-
-    public Optional<Class<?>> getClassObject() {
-        return Optional.ofNullable(fqcn.getType());
-    }
-
-
-    public List<JClassSymbol> getDeclaredClasses() {
-        return myMemberClasses.getValue();
-    }
-
-
-    boolean isStrict() {
-        return Modifier.isStrict(myModifiers);
-    }
-
-
-    boolean isAbstract() {
-        return Modifier.isAbstract(myModifiers);
-    }
-
-
-    @Override
-    public boolean isStatic() {
-        return Modifier.isStatic(myModifiers);
-    }
-
-
-    @Override
-    public boolean isFinal() {
-        return Modifier.isFinal(myModifiers);
-    }
-
-
-    public boolean isInterface() {
-        return Modifier.isInterface(myModifiers);
-    }
-
-
-    @Override
-    public String toString() {
-        return "JClassSymbol(" + fqcn.getBinaryName() + ")";
-    }
-
-
-    @Override
-    public List<JTypeParameterSymbol> getTypeParameters() {
-        return myTypeParameters.getValue();
-    }
-
-
-    private static int getModifiers(ASTAnyTypeDeclaration declaration) {
-        int i = accessNodeToModifiers(declaration);
-
-        if (declaration.getTypeKind().equals(TypeKind.INTERFACE)) {
-            i |= Modifier.INTERFACE;
-        }
-        return i;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        JClassSymbol that = (JClassSymbol) o;
-        return Objects.equals(fqcn, that.fqcn);
-    }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fqcn);
-    }
-
-    // these are candidates for
-
-    public static JClassSymbol create(ASTAnyTypeDeclaration node) {
-        return new JClassSymbol(node);
-    }
-
-
-    public static JClassSymbol create(Class<?> clazz) {
-        return new JClassSymbol(clazz);
-    }
+    boolean isStatic();
 }

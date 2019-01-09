@@ -1,14 +1,13 @@
 package net.sourceforge.pmd.lang.java.symbols.internal
 
 import io.kotlintest.properties.forAll
-import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.WordSpec
 import net.sourceforge.pmd.lang.java.symbols.TestClassesGen
 import net.sourceforge.pmd.lang.java.symbols.getTypeDeclaration
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.GenericClass
 import net.sourceforge.pmd.lang.java.symbols.internal.testdata.GenericClassCopy
-import net.sourceforge.pmd.lang.java.symbols.internal.JClassSymbol.create as classSymbol
-import net.sourceforge.pmd.lang.java.symbols.internal.JClassSymbol.create as classSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JClassSymbolImpl.create as classSymbol
+import net.sourceforge.pmd.lang.java.symbols.internal.impl.JClassSymbolImpl.create as classSymbol
 
 /**
  * @author Clément Fournier
