@@ -6,8 +6,8 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.toIterable;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.toIterable;
 
 import java.io.File;
 import java.io.IOException;

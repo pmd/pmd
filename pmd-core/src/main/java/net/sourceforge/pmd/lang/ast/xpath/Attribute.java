@@ -19,8 +19,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Attributes know their name, the node they wrap,
  * and have access to their value.
  *
- * Two attributes are equal iff their parent node is
- * equal and they have the same name.
+ * Two attributes are equal iff they have the same name
+ * and their parent nodes are equal.
  *
  * @author daniels
  */
@@ -48,7 +48,10 @@ public class Attribute {
     }
 
 
-    /** Creates a new attribute belonging to the given node using its accessor. */
+    /**
+     * Creates a new attribute belonging to the given node using an accessor
+     * for the given bean.
+     */
     public Attribute(Node parent, Object bean, String name, Method m) {
         this.parent = parent;
         this.name = name;
@@ -118,8 +121,8 @@ public class Attribute {
             return false;
         }
         Attribute attribute = (Attribute) o;
-        return Objects.equals(parent, attribute.parent) &&
-            Objects.equals(name, attribute.name);
+        return Objects.equals(parent, attribute.parent)
+            && Objects.equals(name, attribute.name);
     }
 
 

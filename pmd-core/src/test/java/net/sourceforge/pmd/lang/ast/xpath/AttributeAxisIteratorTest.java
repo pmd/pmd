@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -52,6 +53,18 @@ public class AttributeAxisIteratorTest {
         assertTrue(atts.containsKey("EndLine"));
     }
 
+    @Test
+    public void testAttributeAxisIteratorOnBean() {
+        DummyNode dummyNode = new DummyNode(1);
+
+        AttributeAxisIterator it = new AttributeAxisIterator(dummyNode, new MyBean());
+        Map<String, Attribute> atts = toMap(it);
+        Assert.assertEquals(2, atts.size());
+        assertTrue(atts.containsKey("Enum"));
+        assertEquals(MyEnum.FOO, atts.get("Enum").getValue());
+        assertTrue(atts.containsKey("XPath"));
+    }
+
 
     private Map<String, Attribute> toMap(AttributeAxisIterator it) {
         Map<String, Attribute> atts = new HashMap<>();
@@ -60,5 +73,21 @@ public class AttributeAxisIteratorTest {
             atts.put(attribute.getName(), attribute);
         }
         return atts;
+    }
+
+    private static class MyBean {
+
+
+        public String getXPath() {
+            return "";
+        }
+
+        public MyEnum getEnum() {
+            return MyEnum.FOO;
+        }
+    }
+
+    private enum MyEnum {
+        FOO, BAR
     }
 }

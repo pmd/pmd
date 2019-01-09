@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -57,6 +56,14 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         this(contextNode, contextNode);
     }
 
+
+    /**
+     * Creates a new iterator creating attributes belonging to the
+     * context node, but taken from the given bean.
+     *
+     * @param contextNode Owner of the attributes (from the point of view of XPath)
+     * @param bean        Source of the attributes
+     */
     public AttributeAxisIterator(Node contextNode, Object bean) {
         this.node = contextNode;
         this.bean = bean;
