@@ -4,24 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-
-
 /**
  * Represents a field declaration.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JFieldSymbol extends JAccessibleDeclarationSymbol<ASTVariableDeclaratorId>, JValueSymbol {
+public interface JFieldSymbol extends JAccessibleElementSymbol, JValueSymbol {
+    /** Returns true if this field is volatile. */
     boolean isVolatile();
 
 
+    /** Returns true if this field is transient. */
     boolean isTransient();
 
 
-    /**
-     * Returns true if this declaration is static.
-     */
+    /** Returns true if this field is static. */
     boolean isStatic();
 }

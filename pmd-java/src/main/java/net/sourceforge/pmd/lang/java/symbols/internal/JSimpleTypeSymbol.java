@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
  * A reference type that can be referred to using a simple name.
  * These include references to class or interfaces (be they
@@ -15,12 +12,14 @@ import net.sourceforge.pmd.lang.ast.Node;
  * but not array types or parameterized types. Primitive types are
  * excluded as well because that wouldn't be useful.
  *
- * @param <N> Type of AST node that can represent this type of declaration
+ * This can probably be unified with types symbols (including array types,
+ * intersection types, wildcard types) in a later stage to make type
+ * resolution depend only on this abstract representation.
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JSimpleTypeDeclarationSymbol<N extends Node> extends JDeclarationSymbol<N> {
+public interface JSimpleTypeSymbol extends JElementSymbol {
 
 
     /**

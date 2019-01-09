@@ -13,5 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JConstructorSymbol extends JAccessibleDeclarationSymbol<ASTConstructorDeclaration> {
+public interface JConstructorSymbol extends JFormalParameterOwnerSymbol, BoundToNode<ASTConstructorDeclaration> {
+
 }

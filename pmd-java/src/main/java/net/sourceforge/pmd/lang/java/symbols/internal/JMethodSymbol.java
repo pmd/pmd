@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 
@@ -15,15 +13,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodDeclaration>, JTypeParameterOwnerSymbol {
+public interface JMethodSymbol extends JTypeParameterOwnerSymbol,
+                                       JFormalParameterOwnerSymbol,
+                                       BoundToNode<ASTMethodDeclaration> {
+    // FIXME should also represent annotation methods. We need another interface
+    // between ASTMethodDeclaration and ASTMethodOrConstructorDeclaration
 
 
-    List<JLocalVariableSymbol> getFormalParameters();
-
-
-    /**
-     * Returns true if this declaration is declared final.
-     */
+    /** Returns true if this declaration is declared final. */
     boolean isFinal();
 
 
@@ -36,9 +33,7 @@ public interface JMethodSymbol extends JAccessibleDeclarationSymbol<ASTMethodDec
     boolean isVarargs();
 
 
-    /**
-     * Returns true if this declaration is static.
-     */
+    /** Returns true if this declaration is static. */
     boolean isStatic();
 
 

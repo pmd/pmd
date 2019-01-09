@@ -20,7 +20,9 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JResolvableClassSymbol extends JSimpleTypeDeclarationSymbol<ASTAnyTypeDeclaration> {
+public interface JResolvableClassSymbol extends JSimpleTypeSymbol, BoundToNode<ASTAnyTypeDeclaration> {
+
+
     /**
      * Returns the qualified name representing this class.
      *

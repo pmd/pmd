@@ -14,8 +14,8 @@ import java.util.List;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
+public interface JFormalParameterOwnerSymbol extends JAccessibleElementSymbol {
 
-    List<JTypeParameterSymbol> getTypeParameters();
+    List<JLocalVariableSymbol> getFormalParameters();
 
 }

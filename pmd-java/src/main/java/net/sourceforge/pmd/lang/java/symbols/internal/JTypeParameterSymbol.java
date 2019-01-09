@@ -15,7 +15,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JTypeParameterSymbol extends JSimpleTypeDeclarationSymbol<ASTTypeParameter> {
+public interface JTypeParameterSymbol extends JSimpleTypeSymbol, BoundToNode<ASTTypeParameter> {
+
 
     /**
      * Returns the {@link JClassSymbol} or {@link JMethodSymbol} which declared

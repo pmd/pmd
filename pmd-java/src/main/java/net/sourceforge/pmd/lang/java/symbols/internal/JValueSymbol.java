@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JValueSymbol extends JDeclarationSymbol<ASTVariableDeclaratorId> {
+public interface JValueSymbol extends BoundToNode<ASTVariableDeclaratorId> {
 
 
     /**
@@ -34,8 +34,6 @@ public interface JValueSymbol extends JDeclarationSymbol<ASTVariableDeclaratorId
     }
 
 
-    /**
-     * Returns true if this declaration is declared final.
-     */
+    /** Returns true if this declaration is declared final. */
     boolean isFinal();
 }

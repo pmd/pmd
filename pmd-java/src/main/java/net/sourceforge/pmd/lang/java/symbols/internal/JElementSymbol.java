@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 
 /**
- * Represents a declaration that can be referred to by simple name. Abstracts over
+ * Represents a named program element that can be referred to by simple name. Abstracts over
  * whether the declaration is in the analysed file or not, using reflection when it's not.
  *
  * <p>This type hierarchy is probably not directly relevant to users writing
@@ -66,24 +66,22 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
  * analysed project which lack compiled classes.
  *
  *
- * @param <N> Type of AST node that can represent this type of declaration
- *
  * @author Clément Fournier
  * @since 7.0.0
  */
 @Experimental
 @InternalApi
-public interface JDeclarationSymbol<N extends Node> {
+public interface JElementSymbol {
 
 
     /**
-     * Returns the node corresponding to this declaration, if it exists.
-     * Some references are references to pieces of source outside of the
-     * analysed file and as such, their AST isn't available.
+     * Returns the node declaring this program element, if it is available.
+     * If the element was declared outside of the analysed sources (considering
+     * incremental analysis), its AST is not available.
      *
-     * @return the AST node representing the declaration, or an empty optional if it doesn't exist
+     * @return the AST node representing the declaration, or an empty optional if it can't be found
      */
-    Optional<N> getBoundNode();
+    Optional<? extends Node> getDeclaration();
 
 
     /**
@@ -94,7 +92,7 @@ public interface JDeclarationSymbol<N extends Node> {
      */
     String getSimpleName();
 
-    // TODO annotations could be added to the API if we publish it
+    // TODO access to annotations could be added to the API if we publish it
 
     // TODO tests
 

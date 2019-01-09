@@ -8,10 +8,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.annotation.Experimental;
-import net.sourceforge.pmd.lang.java.symbols.internal.JDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JResolvableClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeDeclarationSymbol;
+import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.JValueSymbol;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
  * the meaning of a name in a particular syntactic context (type name, method name, value name),
  * it first determines if it tracks a declaration with a matching name.
  * <ul>
- *      <li>If there is one, it returns the {@link JDeclarationSymbol} representing the entity
+ *      <li>If there is one, it returns the {@link JElementSymbol} representing the entity
  *          the name stands for in the given context;
  *      <li>If there is none, it asks the same question to its parent table recursively
  *          and returns that result.
@@ -51,7 +52,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
  *
  * <p>Having an abstraction layer to unify them allows the AST analyses to
  * be complementary, and rely on each other, instead of being so self-reliant.
- * The abstraction provided by {@link JDeclarationSymbol} may in the future be used
+ * The abstraction provided by {@link JElementSymbol} may in the future be used
  * to build global indices of analysed projects to implement multifile analysis.
  *
  * <p>The goals of this rewrite should be:
@@ -82,14 +83,16 @@ public interface JSymbolTable {
      * ie, parameterized types and array types are not available. Primitive types are
      * also not considered because it's probably not useful.
      *
-     * <p>The returned type reference may either be a {@link JResolvableClassSymbol}
-     * or a {@link JTypeParameterSymbol}.
+     * <p>The returned type reference may be a {@link JResolvableClassSymbol}, a
+     * {@link JClassSymbol} if the type was already resolved, or a {@link JTypeParameterSymbol}.
+     *
+     * <p>Doesn't handle primitive types (there's no symbol for them).
      *
      * @param simpleName Simple name of the type to look for
      *
      * @return The type reference if it can be found, otherwise an empty optional
      */
-    Optional<? extends JSimpleTypeDeclarationSymbol<?>> resolveTypeName(String simpleName);
+    Optional<? extends JSimpleTypeSymbol> resolveTypeName(String simpleName);
 
 
     /**

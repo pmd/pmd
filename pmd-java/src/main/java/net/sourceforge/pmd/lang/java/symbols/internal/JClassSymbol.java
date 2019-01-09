@@ -20,16 +20,31 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface JClassSymbol extends JAccessibleDeclarationSymbol<ASTAnyTypeDeclaration>, JTypeParameterOwnerSymbol {
+public interface JClassSymbol extends JSimpleTypeSymbol,
+                                      JTypeParameterOwnerSymbol,
+                                      BoundToNode<ASTAnyTypeDeclaration> {
 
-
+    /**
+     * Returns the fully qualified name of this class.
+     */
     JavaTypeQualifiedName getFqcn();
 
 
+    /**
+     * Returns the reflected class this node represents, if it's on the auxclasspath.
+     * Ideally this shouldn't be used, and the symbol API should reflect everything
+     * there is to know about a class
+     */
     Optional<Class<?>> getClassObject();
 
 
     List<JClassSymbol> getDeclaredClasses();
+
+
+    List<JMethodSymbol> getDeclaredMethods();
+
+
+    List<JConstructorSymbol> getConstructors();
 
 
     boolean isStrict();
