@@ -28,7 +28,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
-import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 
@@ -95,8 +94,6 @@ public class MainDesignerController extends AbstractController {
     @FXML
     private ChoiceBox<LanguageVersion> languageChoiceBox;
     @FXML
-    private ChoiceBox<String> xpathVersionChoiceBox;
-    @FXML
     private ToggleButton bottomTabsToggle;
     /* Bottom panel */
     @FXML
@@ -139,8 +136,6 @@ public class MainDesignerController extends AbstractController {
 
         initializeLanguageVersionMenu();
         initializeViewAnimation();
-
-        xpathPanelController.initialiseVersionChoiceBox(xpathVersionChoiceBox);
 
         languageVersion = Val.wrap(languageChoiceBox.getSelectionModel().selectedItemProperty());
         DesignerUtil.rewireInit(sourceEditorController.languageVersionProperty(),

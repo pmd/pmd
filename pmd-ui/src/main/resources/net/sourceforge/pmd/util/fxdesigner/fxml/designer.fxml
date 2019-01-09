@@ -83,12 +83,6 @@
                                                           </padding>
                                                       </ChoiceBox>
                                           <Pane prefWidth="10.0" HBox.hgrow="NEVER" />
-                                                      <Label text="XPath Version:" />
-                                                      <ChoiceBox maxWidth="115.0" prefWidth="115.0" fx:id="xpathVersionChoiceBox">
-                                                          <padding>
-                                                              <Insets bottom="-3.0" left="-3.0" right="-3.0" top="-3.0" />
-                                                          </padding>
-                                                      </ChoiceBox>
                                        </children>
                                     </HBox>
                                                 <Pane HBox.hgrow="ALWAYS" />
