@@ -1291,6 +1291,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p>Abstract classes should be named ‘AbstractXXX’.</p>
 
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by <a href="pmd_rules_java_codestyle.html#classnamingconventions"><code class="highlighter-rouge">ClassNamingConventions</code></a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="w">
  </span><span class="p">[</span><span class="na">@Abstract</span><span class="err">=</span><span class="s1">'true'</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="na">@Interface</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
@@ -1443,6 +1446,9 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
 <p>Prefixing parameters by ‘in’ or ‘out’ pollutes the name of the parameters and reduces code readability.
 To indicate whether or not a parameter will be modify in a method, its better to document method
 behavior with Javadoc.</p>
+
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule <a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">MethodDeclarator</span><span class="o">/</span><span class="nt">FormalParameters</span><span class="o">/</span><span class="nt">FormalParameter</span><span class="o">/</span><span class="nt">VariableDeclaratorId</span><span class="p">[</span><span class="w">
@@ -2309,6 +2315,9 @@ convention for constants and enum constants.</p>
 indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.</p>
 
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="highlighter-rouge">ControlStatementBraces</code></a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ForStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">Block</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
@@ -2490,6 +2499,9 @@ branch.</p>
 or indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.</p>
 
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="highlighter-rouge">ControlStatementBraces</code></a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Statement</span><span class="w">
  </span><span class="p">[</span><span class="kn">parent::</span><span class="nt">IfStatement</span><span class="p">[</span><span class="na">@Else</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]]</span><span class="w">
@@ -2524,6 +2536,9 @@ from the rest.</p>
 <p>Avoid using if statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.</p>
+
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="highlighter-rouge">ControlStatementBraces</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfStatement</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="err">*</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">3</span><span class="p">][</span><span class="ow">not</span><span class="p">(</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">Block</span><span class="p">)]</span><span class="w">
@@ -3063,6 +3078,10 @@ configured through properties.</p>
 
 <p>Detects when a non-field has a name starting with ‘m_’.  This usually denotes a field and could be confusing.</p>
 
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule
+<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">VariableDeclaratorId</span><span class="w">
 </span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="w"> </span><span class="s1">'m_'</span><span class="p">)]</span><span class="w">
@@ -3419,6 +3438,9 @@ configured through properties.</p>
 
 <p>Field names using all uppercase characters - Sun’s Java naming conventions indicating constants - should
 be declared as final.</p>
+
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
@@ -3960,6 +3982,11 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.</p>
 
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rules <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>,
+<a href="pmd_rules_java_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>, and
+<a href="pmd_rules_java_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/VariableNamingConventionsRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.VariableNamingConventionsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -4074,6 +4101,9 @@ that should not include underscores.</p>
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.</p>
 
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code class="highlighter-rouge">ControlStatementBraces</code></a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">WhileStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">Statement</span><span class="o">/</span><span class="nt">Block</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
@@ -4108,7 +4138,7 @@ controlled from the rest.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 8, 2019 <br />
+ Site last generated: Jan 9, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
