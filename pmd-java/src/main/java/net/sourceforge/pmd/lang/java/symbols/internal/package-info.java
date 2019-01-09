@@ -1,13 +1,5 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- *
- * @author Clément Fournier
- * @since 7.0.0
- */
-
-/**
- * @author Clément Fournier
- * @since 7.0.0
  */
 
 /**

@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
-import net.sourceforge.pmd.lang.java.symbols.internal.JSimpleTypeDeclarationSymbol;
-import net.sourceforge.pmd.lang.java.symbols.internal.JTypeParameterOwnerSymbol;
 
 
 /**
