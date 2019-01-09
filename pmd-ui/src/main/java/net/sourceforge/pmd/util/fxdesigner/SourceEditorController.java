@@ -11,7 +11,6 @@ import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.toIterable;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -38,8 +36,8 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
-import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
@@ -51,7 +49,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
@@ -64,7 +61,7 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class SourceEditorController implements Initializable, SettingsOwner {
+public class SourceEditorController extends AbstractController {
 
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
@@ -100,8 +97,7 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
+    protected void beforeParentInit() {
         treeViewWrapper = new TreeViewWrapper<>(astTreeView);
         astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
 

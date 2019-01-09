@@ -6,14 +6,12 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +35,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathSuggestions;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
@@ -51,7 +50,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -64,6 +62,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -84,7 +83,7 @@ import javafx.stage.StageStyle;
  * @see ExportXPathWizardController
  * @since 6.0.0
  */
-public class XPathPanelController implements Initializable, SettingsOwner {
+public class XPathPanelController extends AbstractController {
 
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final DesignerRoot designerRoot;
@@ -118,24 +117,20 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         getRuleBuilder().setClazz(XPathRule.class);
     }
 
-
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    protected void beforeParentInit() {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
 
-        Var<String> xpathVersionUIProp = DesignerUtil.booleanVar(xpath20ToggleButton.selectedProperty())
-                                                     .mapBidirectional(
-                                                         is20 -> is20 ? "2.0" : "1.0",
-                                                         "2.0"::equals
-                                                     );
+        myXpathVersion = DesignerUtil.booleanVar(xpath20ToggleButton.selectedProperty())
+                                     .mapBidirectional(
+                                         is20 -> is20 ? "2.0" : "1.0",
+                                         "2.0"::equals
+                                     );
 
-        DesignerUtil.rewireInit(xpathVersionProperty(), xpathVersionUIProp);
-
-        Var<String> xpathExprUIProp = Var.fromVal(xpathExpressionArea.textProperty(), xpathExpressionArea::replaceText);
-
-        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExprUIProp);
+        Val<Tooltip> tooltipVar = xpathVersionProperty().map(v -> "Using XPath " + v).map(Tooltip::new);
+        xpath20ToggleButton.tooltipProperty().bind(tooltipVar);
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
@@ -144,8 +139,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     .filter(Objects::nonNull)
                     .map(TextAwareNodeWrapper::getNode)
                     .subscribe(parent::onNodeItemSelected);
-
-        Platform.runLater(this::bindToParent);
 
         xpathExpressionArea.richChanges()
                            .filter(t -> !t.isIdentity())
@@ -156,6 +149,16 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         initialiseAutoCompletion();
     }
+
+
+    @Override
+    protected void afterParentInit() {
+
+        DesignerUtil.rewireInit(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
+        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
+        bindToParent();
+    }
+
 
     private void initialiseAutoCompletion() {
 
@@ -224,17 +227,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    private static TextFlow highlightXPathSuggestion(String text, String match) {
-        int filterIndex = text.toLowerCase(Locale.ROOT).indexOf(match.toLowerCase(Locale.ROOT));
-
-        Text textBefore = new Text(text.substring(0, filterIndex));
-        Text textAfter = new Text(text.substring(filterIndex + match.length()));
-        Text textFilter = new Text(text.substring(filterIndex, filterIndex + match.length())); //instead of "filter" to keep all "case sensitive"
-        textFilter.setFill(Color.ORANGE);
-        return new TextFlow(textBefore, textFilter, textAfter);
-    }
-
-
     private void initGenerateXPathFromStackTrace() {
 
         ContextMenu menu = new ContextMenu();
@@ -283,7 +275,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         DesignerUtil.rewire(getRuleBuilder().languageProperty(),
                             Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
 
-        DesignerUtil.rewire(getRuleBuilder().xpathVersionProperty(), parent.xpathVersionProperty());
+        DesignerUtil.rewire(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
         DesignerUtil.rewire(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
 
         DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
@@ -323,11 +315,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             }
 
             ObservableList<Node> results
-                    = FXCollections.observableArrayList(xpathEvaluator.evaluateQuery(compilationUnit,
-                                                                                     version,
-                                                                                     getXpathVersion(),
-                                                                                     xpath,
-                                                                                     ruleBuilder.getRuleProperties()));
+                = FXCollections.observableArrayList(xpathEvaluator.evaluateQuery(compilationUnit,
+                                                                                 version,
+                                                                                 getXpathVersion(),
+                                                                                 xpath,
+                                                                                 ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
             parent.highlightXPathResults(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
@@ -356,7 +348,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     public void showExportXPathToRuleWizard() throws IOException {
         ExportXPathWizardController wizard
-                = new ExportXPathWizardController(xpathExpressionProperty());
+            = new ExportXPathWizardController(xpathExpressionProperty());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/xpath-export-wizard.fxml"));
         loader.setController(wizard);
@@ -375,12 +367,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     public String getXpathExpression() {
-        return getRuleBuilder().getXpathExpression();
+        return xpathExpressionArea.getText();
     }
 
 
     public void setXpathExpression(String expression) {
-        getRuleBuilder().setXpathExpression(expression);
+        xpathExpressionArea.replaceText(expression);
     }
 
 
@@ -390,17 +382,17 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     public String getXpathVersion() {
-        return getRuleBuilder().getXpathVersion();
+        return xpathVersionProperty().getValue();
     }
 
 
     public void setXpathVersion(String xpathVersion) {
-        getRuleBuilder().setXpathVersion(xpathVersion);
+        xpathVersionProperty().setValue(xpathVersion);
     }
 
 
     public Var<String> xpathVersionProperty() {
-        return getRuleBuilder().xpathVersionProperty();
+        return myXpathVersion;
     }
 
 
@@ -412,5 +404,16 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @Override
     public List<SettingsOwner> getChildrenSettingsNodes() {
         return Collections.singletonList(getRuleBuilder());
+    }
+
+
+    private static TextFlow highlightXPathSuggestion(String text, String match) {
+        int filterIndex = text.toLowerCase(Locale.ROOT).indexOf(match.toLowerCase(Locale.ROOT));
+
+        Text textBefore = new Text(text.substring(0, filterIndex));
+        Text textAfter = new Text(text.substring(filterIndex + match.length()));
+        Text textFilter = new Text(text.substring(filterIndex, filterIndex + match.length())); //instead of "filter" to keep all "case sensitive"
+        textFilter.setFill(Color.ORANGE);
+        return new TextFlow(textBefore, textFilter, textAfter);
     }
 }

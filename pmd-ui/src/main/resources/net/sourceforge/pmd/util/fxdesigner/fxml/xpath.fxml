@@ -49,7 +49,7 @@
                                                  AnchorPane.rightAnchor="30.0"
                                                  AnchorPane.topAnchor="0.0">
                                             <items>
-                                                <ToggleButton mnemonicParsing="false" styleClass="icon-button" fx:id="xpath20ToggleButton"/>
+                                                <ToggleButton mnemonicParsing="false" styleClass="icon-button" fx:id="xpath20ToggleButton" text="2.0"/>
                                                 <Button fx:id="exportButton" mnemonicParsing="false" styleClass="icon-button">
                                                     <graphic>
                                                         <FontIcon iconLiteral="fa-sign-out" />

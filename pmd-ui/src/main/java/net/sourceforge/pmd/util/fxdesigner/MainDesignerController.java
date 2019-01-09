@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -26,6 +24,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
@@ -39,7 +38,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceBox;
@@ -70,7 +68,7 @@ import javafx.util.Duration;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class MainDesignerController implements Initializable, SettingsOwner {
+public class MainDesignerController extends AbstractController {
 
     /**
      * Callback to the owner.
@@ -129,9 +127,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
         this.designerRoot = owner;
     }
 
-
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    protected void beforeParentInit() {
         try {
             SettingsPersistenceUtil.restoreProperties(this, DesignerUtil.getSettingsFile());
         } catch (Exception e) {
@@ -490,7 +487,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     @Override
-    public List<SettingsOwner> getChildrenSettingsNodes() {
-        return Arrays.asList(xpathPanelController, sourceEditorController);
+    public List<AbstractController> getChildren() {
+        return Arrays.asList(xpathPanelController, sourceEditorController, nodeInfoPanelController, eventLogPanelController);
     }
 }
