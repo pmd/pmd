@@ -10,7 +10,6 @@ public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
 
     public ASTBooleanExpression(BooleanExpression booleanExpression) {
         super(booleanExpression);
-        booleanExpression.getOp();
     }
 
     @Override
