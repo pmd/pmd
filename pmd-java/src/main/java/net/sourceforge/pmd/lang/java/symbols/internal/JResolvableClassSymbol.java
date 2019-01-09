@@ -8,11 +8,10 @@ import java.util.Optional;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-import net.sourceforge.pmd.lang.java.symbols.internal.impl.JClassSymbolImpl;
 
 
 /**
- * Symbolic version of {@link JClassSymbolImpl}, which doesn't load a type
+ * Symbolic version of {@link JClassSymbol}, which doesn't load a type
  * but provides access to its FQCN. It can try building a full type reference,
  * but this may fail. This kind of reference may be used by functions like typeIs() or
  * TypeHelper to test the type in the absence of a complete auxclasspath, but cannot
@@ -31,9 +30,9 @@ public interface JResolvableClassSymbol extends JSimpleTypeDeclarationSymbol<AST
 
 
     /**
-     * Attempts to convert this reference into the richer {@link JClassSymbolImpl}
+     * Attempts to convert this reference into the richer {@link JClassSymbol}
      * by loading the class. If the class can't be resolved (incomplete classpath),
      * returns an empty optional.
      */
-    Optional<JClassSymbolImpl> loadClass();
+    Optional<JClassSymbol> loadClass();
 }
