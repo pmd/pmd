@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -44,6 +45,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private MethodWrapper[] methodWrappers;
     private int position;
     private Node node;
+    private final Object bean;
 
 
     /**
@@ -52,23 +54,27 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      * use instead the overridable {@link Node#getXPathAttributesIterator()}.
      */
     public AttributeAxisIterator(Node contextNode) {
+        this(contextNode, contextNode);
+    }
+
+    public AttributeAxisIterator(Node contextNode, Object bean) {
         this.node = contextNode;
-        if (!METHOD_CACHE.containsKey(contextNode.getClass())) {
-            Method[] preFilter = contextNode.getClass().getMethods();
+        this.bean = bean;
+        if (!METHOD_CACHE.containsKey(bean.getClass())) {
+            Method[] preFilter = bean.getClass().getMethods();
             List<MethodWrapper> postFilter = new ArrayList<>();
             for (Method element : preFilter) {
                 if (isAttributeAccessor(element)) {
                     postFilter.add(new MethodWrapper(element));
                 }
             }
-            METHOD_CACHE.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[0]));
+            METHOD_CACHE.putIfAbsent(bean.getClass(), postFilter.toArray(new MethodWrapper[0]));
         }
-        this.methodWrappers = METHOD_CACHE.get(contextNode.getClass());
+        this.methodWrappers = METHOD_CACHE.get(bean.getClass());
 
         this.position = 0;
         this.currObj = getNextAttribute();
     }
-
 
     /**
      * Returns whether the given method is an attribute accessor,
@@ -80,10 +86,14 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     protected boolean isAttributeAccessor(Method method) {
         String methodName = method.getName();
 
-        return CONSIDERED_RETURN_TYPES.contains(method.getReturnType())
+        return isConsideredReturnType(method.getReturnType())
                 && method.getParameterTypes().length == 0
                 && !methodName.startsWith("jjt")
                 && !FILTERED_OUT_NAMES.contains(methodName);
+    }
+
+    private boolean isConsideredReturnType(Class<?> klass) {
+        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
     }
 
 
@@ -115,7 +125,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             return null;
         }
         MethodWrapper m = methodWrappers[position++];
-        return new Attribute(node, m.name, m.method);
+        return new Attribute(node, bean, m.name, m.method);
     }
 
 

@@ -4,7 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Iterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
@@ -56,5 +63,21 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         } else {
             return "no location";
         }
+    }
+
+
+    @Override
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        // Attributes of this node have precedence over same-name attributes of the underlying node
+        return Stream.concat(iteratorToStream(new AttributeAxisIterator(this)),
+                             iteratorToStream(new AttributeAxisIterator(this, node)))
+                     .distinct()
+                     .iterator();
+
+    }
+
+
+    private static <T> Stream<T> iteratorToStream(Iterator<? extends T> it) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, 0), false);
     }
 }
