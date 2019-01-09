@@ -39,6 +39,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
+    *   [#1568](https://github.com/pmd/pmd/pull/1568): \[apex] AST node attribute @Image not usable / always null in XPath rule / Designer
 *   java
     * [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
 *   java-bestpractices
@@ -57,6 +58,10 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1511](https://github.com/pmd/pmd/issues/1511): \[plsql] Parse Exception with IS NOT NULL
 
 ### API Changes
+
+
+* {% jdoc core::properties.PropertySource#setProperty(core::properties.MultiValuePropertyDescriptor, Object[]) %} is deprecated,
+because {% jdoc core::properties.MultiValuePropertyDescriptor %} is deprecated as well
 
 ### External Contributions
 
