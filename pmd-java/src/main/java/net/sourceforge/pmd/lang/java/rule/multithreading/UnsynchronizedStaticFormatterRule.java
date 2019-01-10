@@ -33,6 +33,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
     }
 
     UnsynchronizedStaticFormatterRule(Class<?> formatterClassToCheck) {
+        this();
         this.formatterClassToCheck = formatterClassToCheck;
     }
 
