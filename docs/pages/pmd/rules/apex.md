@@ -44,6 +44,12 @@ folder: pmd/rules
 *   [StdCyclomaticComplexity](pmd_rules_apex_design.html#stdcyclomaticcomplexity): Complexity directly affects maintenance costs is determined by the number of decision points in a...
 *   [TooManyFields](pmd_rules_apex_design.html#toomanyfields): Classes that have too many fields can become unwieldy and could be redesigned to have fewer field...
 
+## Documentation
+
+{% include callout.html content="Rules that are related to code documentation." %}
+
+*   [ApexDoc](pmd_rules_apex_documentation.html#apexdoc): This rule validates that: ApexDoc comments are present for classes, methods, and properties that ...
+
 ## Error Prone
 
 {% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}

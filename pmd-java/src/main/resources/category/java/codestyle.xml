@@ -17,7 +17,10 @@
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#abstractnaming">
         <description>
-            Abstract classes should be named 'AbstractXXX'.
+Abstract classes should be named 'AbstractXXX'.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by {% rule java/codestyle/ClassNamingConventions %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -134,6 +137,9 @@ public class MyClass {
 Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability.
 To indicate whether or not a parameter will be modify in a method, its better to document method
 behavior with Javadoc.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule java/codestyle/FormalParameterNamingConventions %}.
         </description>
         <priority>4</priority>
         <properties>
@@ -772,6 +778,9 @@ public class Foo {
 Avoid using 'for' statements without using curly braces. If the code formatting or 
 indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -786,7 +795,6 @@ for (int i = 0; i < 42; i++)
 ]]>
         </example>
     </rule>
-
 
     <rule name="FormalParameterNamingConventions"
           since="6.6.0"
@@ -915,6 +923,9 @@ try {
 Avoid using if..else statements without using surrounding braces. If the code formatting 
 or indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -954,6 +965,9 @@ if (foo)
 Avoid using if statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -1304,6 +1318,10 @@ public class Foo {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#misleadingvariablename">
         <description>
 Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule
+{% rule java/codestyle/LocalVariableNamingConventions %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -1682,6 +1700,9 @@ public class Something {
         <description>
 Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
 be declared as final.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
         </description>
         <priority>3</priority>
         <properties>
@@ -1912,6 +1933,45 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseDiamondOperator"
+          language="java"
+          since="6.11.0"
+          message="Explicit type arguments can be replaced by Diamond Operator"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#usediamondoperator"
+          minimumLanguageVersion="1.7">
+        <description>
+Use the diamond operator to let the type be inferred automatically. With the Diamond operator it is possible
+to avoid duplication of the type parameters.
+Instead, the compiler is now able to infer the parameter types for constructor calls,
+which makes the code also more readable.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//VariableInitializer
+//PrimaryExpression[not(PrimarySuffix)]
+[not(ancestor::ArgumentList)]
+/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+|
+//StatementExpression[AssignmentOperator][PrimaryExpression/PrimaryPrefix[not(Expression)]]
+//PrimaryExpression[not(PrimarySuffix)]
+[not(ancestor::ArgumentList)]
+/PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
+]]>
+        </example>
+    </rule>
+
     <rule name="UselessParentheses"
           language="java"
           since="5.0"
@@ -2062,6 +2122,11 @@ public class Foo {
 A variable naming conventions rule - customize this to your liking.  Currently, it
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rules {% rule java/codestyle/FieldNamingConventions %},
+{% rule java/codestyle/FormalParameterNamingConventions %}, and
+{% rule java/codestyle/LocalVariableNamingConventions %}.
         </description>
         <priority>1</priority>
         <example>
@@ -2086,6 +2151,9 @@ public class Foo {
 Avoid using 'while' statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
         </description>
         <priority>3</priority>
         <properties>

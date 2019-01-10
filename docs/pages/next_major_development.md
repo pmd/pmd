@@ -369,10 +369,10 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 *   The Java rule {% rule java/codestyle/AbstractNaming %} is deprecated
     in favour of {% rule java/codestyle/ClassNamingConventions %}.
 
-*   The Java rules {% rule java/codestyle/WhileLoopsMustUseBraces %}, {% rule java/codestyle/ForLoopMustUseBraces %}, {% rule java/codestyle/IfStmtMustUseBraces %}, and {% rule java/codestyle/IfElseStmtMustUseBraces %}
-    are deprecated. They will be replaced by the new rule {% rule java/codestyle/ControlStatementBraces %}
+*   The Java rules {% rule java/codestyle/WhileLoopsMustUseBraces %}, {% rule java/codestyle/ForLoopsMustUseBraces %}, {% rule java/codestyle/IfStmtsMustUseBraces %}, and {% rule java/codestyle/IfElseStmtsMustUseBraces %}
+    are deprecated. They will be replaced by the new rule {% rule java/codestyle/ControlStatementBraces %}.
 
-*   The Java rules {% rule java/codestyle/NcssConstructorCount %}, {% rule java/codestyle/NcssMethodCount %}, and {% rule java/codestyle/NcssTypeCount %} have been
+*   The Java rules {% rule java/design/NcssConstructorCount %}, {% rule java/design/NcssMethodCount %}, and {% rule java/design/NcssTypeCount %} have been
     deprecated. They will be replaced by the new rule {% rule java/design/NcssCount %} in the category `design`.
 
 *   The Java rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from category `bestpractices` instead.

@@ -873,6 +873,9 @@ plus one for the method entry.  The decision points include 'if', 'while', 'for'
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
 decision point.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/CyclomaticComplexity %}.
         </description>
         <priority>3</priority>
         <example>
@@ -927,6 +930,9 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1000,6 +1006,9 @@ class Foo {                         // +1, total Ncss = 12
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1031,6 +1040,9 @@ public class Foo extends Bar {
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/NcssCount %}.
         </description>
         <priority>3</priority>
         <example>
@@ -1387,6 +1399,9 @@ Complexity directly affects maintenance costs is determined by the number of dec
 plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/CyclomaticComplexity %}.
         </description>
         <priority>3</priority>
         <example>

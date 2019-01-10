@@ -187,7 +187,7 @@ author: Tom Copeland <tom@infoether.org>
     bug report 1376760 for InefficientStringBuffering
 *   Isaac Babsky - tweak for pmd.bat
 *   Hendrik Maryns - reported bug 1375290 for SuppressWarnings facility
-*   [Wim Deblauwe](http://www.jroller.com/page/Fester) - suggested UseAssertNullInsteadOfAssertTrue,
+*   Wim Deblauwe - suggested UseAssertNullInsteadOfAssertTrue,
     bug report 1373510 for UseAssertSameInsteadOfAssertTrue, suggested putting property names/values in generated docs,
     UselessOverridingMethod, reported bug in JUnitTestsShouldContainAsserts,
     front page and "how to make a ruleset" patches, noted problems with web site rule index,
@@ -221,7 +221,7 @@ author: Tom Copeland <tom@infoether.org>
 *   Sivakumar Mambakkam - bug report 1314086 for missing name in SimpleRuleSetNameMapper
 *   Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for
     pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields
-*   [Lori Olson](http://blogs.teamb.com/LoriOlson/) - JBuilder plugin suggestions and prerelease tests,
+*   Lori Olson - JBuilder plugin suggestions and prerelease tests,
     found copy/paste bug in rule descriptions
 *   Thomas Dudziak - bug report 1304739 for StringInstantiation
 *   Pieter Bloemendaal - reported JDK 1.3 parsing bug 1292609, command line docs bug report,
@@ -275,7 +275,7 @@ author: Tom Copeland <tom@infoether.org>
 *   Matthias Kerkhoff - CPD suggestions, several bug reports
 *   Chris Riesbeck - identified some dead code in RuleSet
 *   Lars Gregori - reported a bug in the Ant task docs
-*   [Todd Wright](http://freshmeat.net/~toddwright/) - reported bug in EmptyStatementNotInLoop, XPath port of
+*   Todd Wright - reported bug in EmptyStatementNotInLoop, XPath port of
     AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes
 *   [Conrad Roche](http://derupe.blogspot.com/) - UnusedModifier bug report, other bug reports
 *   Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion
@@ -320,7 +320,7 @@ author: Tom Copeland <tom@infoether.org>
 *   [Slava Pestov](http://factor-language.blogspot.com/) -  Suggestions for jEdit plugin enhancements.
 *   Olivier Mengué - Diagnosed and patched XML report character encoding problems
 *   Hariolf Häfele - PMD-JDeveloper plugin bug reports
-*   [Vladimir Bossicard](http://www.bossicard.com/) - suggested AbstractNamingRule, test package
+*   Vladimir Bossicard - suggested AbstractNamingRule, test package
     organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions
     derived from [JUnit-Addons](http://junit-addons.sf.net/), evangelism :-)
 *   Ken Foskey - noticed bad link
@@ -428,7 +428,7 @@ author: Tom Copeland <tom@infoether.org>
 *   Mat Booth - #1109 Patch to build with Javacc 5.0
 *   Stuart Turton - for PLSQL support. See also [pldoc](http://pldoc.sourceforge.net/)
 *   Andrey Utis - for adding Apache Velocity as a new language and writing up a
-    [howto for adding new languages](../customizing/new-language.html).
+    [howto for adding new languages](pmd_devdocs_major_adding_new_language.html).
 *   Alan Hohn - for adding Standard and modified cyclomatic complexity rules
 *   Jan van Nunen - for adding CPD support for Matlab, Objective-C, Python, Scala and various bug fixes
 *   Juan Martín Sotuyo Dodero - for many bugfixes/pull requests improving Java grammar and performance

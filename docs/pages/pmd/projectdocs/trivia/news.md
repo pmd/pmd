@@ -12,16 +12,8 @@ author: Tom Copeland <tom@infoether.org>
 *   May 2008 - Romain Pelisse's article in LinuxMagazin: [An introduction
         to PMD (in French)](http://connect.ed-diamond.com/GNU-Linux-Magazine/GLMF-105/Verifier-votre-code-Java-avec-PMD)
 
-*   May 2008 - Alan Berg's article on
-    [Free Software Magazine](http://www.freesoftwaremagazine.com/columns/destroy_annoying_bugs_part_1)
-    discusses FindBugs, PMD, and TFTP.
-
 *   July 2007 - Ryan Slobojan's article on [InfoQ](http://www.infoq.com/news/2007/07/pmd)
     discusses the PMD 4.0 release.
-
-*   October 2006 -Alan Berg's article "Light On Java Code" in
-    [Software Testing and Performance Magazine [link broken]](http://www.stpmag.com/issues/stp-2006-10.pdf)
-    discusses static code analysis using FindBugs and PMD.
 
 *   July 2006 - Paul Duvall's article "Automation for the people: Continuous Inspection" on
     [developerWorks](http://www-128.ibm.com/developerworks/java/library/j-ap08016/index.html) discusses CPD.
@@ -75,9 +67,6 @@ author: Tom Copeland <tom@infoether.org>
 
 *   November 2003 - [JavaWorld: "Bug patrol"](http://www.javaworld.com/javaworld/jw-11-2003/jw-1121-quality.html) -
     Various code inspection tools
-
-*   [JJGuidelines - Java and J2EE Conventions, Guidelines and Best Practices [link broken]](https://jjguidelines.dev.java.net/index.html) -
-    a project sponsored by the Belgian government to codify coding practices; uses PMD as the compliance checking utility
 
 *   June 2003 - [Software Development Times [link broken]](http://www.sdtimes.com/news/080/story15.htm) - PMD
     is embedded in QStudio.
