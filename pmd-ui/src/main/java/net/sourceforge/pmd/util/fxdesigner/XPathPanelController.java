@@ -9,15 +9,16 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
@@ -50,28 +51,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -107,13 +102,11 @@ public class XPathPanelController extends AbstractController {
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
+    @FXML
+    ToggleGroup xpathVersionToggleGroup;
 
-    // Actually a child of the main view toolbar, but this controller is responsible for it
-    @SuppressWarnings("PMD.SingularField")
-    private ChoiceBox<String> xpathVersionChoiceBox;
-
-
-    private Var<String> myXpathVersion = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
+    // ui property
+    private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
 
 
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
@@ -129,14 +122,17 @@ public class XPathPanelController extends AbstractController {
 
         initGenerateXPathFromStackTrace();
 
-//        myXpathVersion = DesignerUtil.booleanVar(xpath20ToggleButton.selectedProperty())
-//                                     .mapBidirectional(
-//                                         is20 -> is20 ? "2.0" : "1.0",
-//                                         "2.0"::equals
-//                                     );
+        Map<String, Toggle> stringToButton = new HashMap<>();
 
-        Val<Tooltip> tooltipVar = xpathVersionProperty().map(v -> "Using XPath " + v).map(Tooltip::new);
-//        xpath20ToggleButton.tooltipProperty().bind(tooltipVar);
+        xpathVersionUIProperty = Var.fromVal(xpathVersionToggleGroup.selectedToggleProperty(), xpathVersionToggleGroup::selectToggle)
+                                    .mapBidirectional(
+                                        toggle -> toggle.getUserData().toString(),
+                                        str -> xpathVersionToggleGroup.getToggles()
+                                                                      .stream()
+                                                                      .filter(t -> t.getUserData().equals(str))
+                                                                      .findFirst()
+                                                                      .orElseThrow(() -> new IllegalArgumentException("Unknown XPath version"))
+                                    );
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
@@ -290,19 +286,6 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-    public void initialiseVersionChoiceBox(ChoiceBox<String> choiceBox) {
-        this.xpathVersionChoiceBox = choiceBox;
-
-        ObservableList<String> versionItems = choiceBox.getItems();
-        versionItems.add(XPathRuleQuery.XPATH_1_0);
-        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        versionItems.add(XPathRuleQuery.XPATH_2_0);
-
-        xpathVersionChoiceBox.getSelectionModel().select(XPathRuleQuery.XPATH_2_0);
-        choiceBox.setConverter(DesignerUtil.stringConverter(s -> "XPath " + s, s -> s.substring(6)));
-    }
-
-
     /**
      * Evaluate the contents of the XPath expression area
      * on the given compilation unit. This updates the xpath
@@ -399,7 +382,7 @@ public class XPathPanelController extends AbstractController {
 
 
     public Var<String> xpathVersionProperty() {
-        return myXpathVersion;
+        return xpathVersionUIProperty;
     }
 
 

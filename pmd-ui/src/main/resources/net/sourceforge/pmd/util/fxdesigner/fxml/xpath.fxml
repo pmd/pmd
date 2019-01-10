@@ -8,9 +8,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane minHeight="0.0"
@@ -78,7 +79,17 @@
                                             <FontIcon iconLiteral="fa-cog" />
                                         </graphic>
                                         <items>
-                                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                                            <fx:define>
+                                                <ToggleGroup fx:id="xpathVersionToggleGroup" />
+                                            </fx:define>
+                                            <RadioMenuItem mnemonicParsing="false"
+                                                           text="XPath 1.0"
+                                                           userData="1.0"
+                                                           toggleGroup="$xpathVersionToggleGroup" />
+                                            <RadioMenuItem mnemonicParsing="false"
+                                                           text="XPath 2.0"
+                                                           userData="2.0"
+                                                           toggleGroup="$xpathVersionToggleGroup" />
                                         </items>
                                     </MenuButton>
                                     <padding>
