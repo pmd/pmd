@@ -39,7 +39,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -92,8 +91,6 @@ public class MainDesignerController extends AbstractController {
     private Menu fileMenu;
     /* Center toolbar */
     @FXML
-    private ChoiceBox<LanguageVersion> languageChoiceBox;
-    @FXML
     private ToggleButton bottomTabsToggle;
     /* Bottom panel */
     @FXML
@@ -116,8 +113,6 @@ public class MainDesignerController extends AbstractController {
 
     // Other fields
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
-    // Properties
-    private Val<LanguageVersion> languageVersion = Val.constant(DesignerUtil.defaultLanguageVersion());
 
 
     public MainDesignerController(DesignerRoot owner) {
@@ -134,12 +129,7 @@ public class MainDesignerController extends AbstractController {
             e.printStackTrace();
         }
 
-        initializeLanguageVersionMenu();
         initializeViewAnimation();
-
-        languageVersion = Val.wrap(languageChoiceBox.getSelectionModel().selectedItemProperty());
-        DesignerUtil.rewireInit(sourceEditorController.languageVersionProperty(),
-                                languageVersion, this::setLanguageVersion);
 
         licenseMenuItem.setOnAction(e -> showLicensePopup());
         openFileMenuItem.setOnAction(e -> onOpenFileClicked());
@@ -160,23 +150,8 @@ public class MainDesignerController extends AbstractController {
         Platform.runLater(this::refreshAST); // initial refreshing
 
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
-        Platform.runLater(() -> { // fixes choicebox bad rendering on first opening
-            languageChoiceBox.show();
-            languageChoiceBox.hide();
-        });
     }
 
-
-    private void initializeLanguageVersionMenu() {
-        List<LanguageVersion> supported = DesignerUtil.getSupportedLanguageVersions();
-        supported.sort(LanguageVersion::compareTo);
-        languageChoiceBox.getItems().addAll(supported);
-
-        languageChoiceBox.setConverter(DesignerUtil.languageVersionStringConverter());
-
-        languageChoiceBox.getSelectionModel().select(DesignerUtil.defaultLanguageVersion());
-        languageChoiceBox.show();
-    }
 
 
     private void initializeViewAnimation() {
@@ -346,7 +321,7 @@ public class MainDesignerController extends AbstractController {
                 sourceEditorController.setText(source);
                 LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
                 if (guess != null) { // guess the language from the extension
-                    languageChoiceBox.getSelectionModel().select(guess);
+                    sourceEditorController.setLanguageVersion(guess);
                     refreshAST();
                 }
 
@@ -403,19 +378,17 @@ public class MainDesignerController extends AbstractController {
 
 
     public LanguageVersion getLanguageVersion() {
-        return languageVersion.getValue();
+        return sourceEditorController.getLanguageVersion();
     }
 
 
     public void setLanguageVersion(LanguageVersion version) {
-        if (languageChoiceBox.getItems().contains(version)) {
-            languageChoiceBox.getSelectionModel().select(version);
-        }
+        sourceEditorController.setLanguageVersion(version);
     }
 
 
     public Val<LanguageVersion> languageVersionProperty() {
-        return languageVersion;
+        return sourceEditorController.languageVersionProperty();
     }
 
 

@@ -36,6 +36,7 @@ import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -125,6 +126,24 @@ public final class DesignerUtil {
                 return fromString.apply(string);
             }
         };
+    }
+
+
+    /**
+     * Given a toggle group whose toggles all have user data of type T,
+     * maps the selected toggle property to a Var&lt;T>
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Var<T> mapToggleGroupToUserData(ToggleGroup toggleGroup) {
+        return Var.fromVal(toggleGroup.selectedToggleProperty(), toggleGroup::selectToggle)
+                  .mapBidirectional(
+                      item -> (T) item.getUserData(),
+                      t -> toggleGroup.getToggles()
+                                      .stream()
+                                      .filter(toggle -> toggle.getUserData().equals(t))
+                                      .findFirst()
+                                      .orElseThrow(() -> new IllegalStateException("Unknown toggle " + t))
+                  );
     }
 
 

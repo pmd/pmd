@@ -2,42 +2,80 @@
 
 <!-- One editor, ie source + ast view -->
 
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="500.0" styleClass="accent-header" stylesheets="@../css/designer.css" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.SourceEditorController">
+<SplitPane dividerPositions="0.5, 0.5"
+           prefHeight="400.0"
+           prefWidth="500.0"
+           styleClass="accent-header"
+           stylesheets="@../css/designer.css"
+           BorderPane.alignment="CENTER"
+           xmlns="http://javafx.com/javafx/8.0.172-ea"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="net.sourceforge.pmd.util.fxdesigner.SourceEditorController">
     <items>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <AnchorPane>
             <children>
-                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <center>
-                        <HighlightLayerCodeArea fx:id="codeEditorArea" idEnum="net.sourceforge.pmd.util.fxdesigner.SourceEditorController$StyleLayerIds"
-                                                prefHeight="346.0" prefWidth="445.0" stylesheets="@../css/editor-theme.css" BorderPane.alignment="CENTER">
+                <TitledPane fx:id="centerTitledPane"
+                            collapsible="false"
+                            styleClass="accent-header,tool-bar-title"
+                            AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="0.0">
+                    <graphic>
+                        <ToolBar styleClass="title-toolbar"
+                                 AnchorPane.bottomAnchor="0.0"
+                                 AnchorPane.leftAnchor="0.0"
+                                 AnchorPane.rightAnchor="0.0"
+                                 AnchorPane.topAnchor="0.0">
+                            <Label prefHeight="20.0" text="Source Code" fx:id="sourceCodeTitleLabel">
+                                <padding>
+                                    <Insets bottom="-2.0" />
+                                </padding>
+                            </Label>
+                            <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button"
+                                        fx:id="languageSelectionMenuButton">
+                                <graphic>
+                                    <FontIcon iconLiteral="fa-cog" />
+                                </graphic>
+                                <items>
+
+                                </items>
+                            </MenuButton>
+                            <padding>
+                                <Insets bottom="-3.0" />
+                            </padding>
+                        </ToolBar>
+                    </graphic>
+                    <content>
+                        <HighlightLayerCodeArea fx:id="codeEditorArea"
+                                                idEnum="net.sourceforge.pmd.util.fxdesigner.SourceEditorController$StyleLayerIds"
+                                                stylesheets="@../css/editor-theme.css"
+                                                BorderPane.alignment="CENTER">
                             <BorderPane.margin>
                                 <Insets />
                             </BorderPane.margin>
                         </HighlightLayerCodeArea>
-                    </center>
-                    <top>
-                        <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">
-                            <items>
-                                <Label text="Source code" />
-                            </items>
-                        </ToolBar>
-                    </top>
-                </BorderPane>
+                        <!--<TextArea />-->
+                    </content>
+                </TitledPane>
             </children>
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <center>
-                        <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+                        <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                     </center>
                     <top>
                         <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">
