@@ -9,9 +9,12 @@ import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
 import org.controlsfx.control.BreadCrumbBar;
+import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil;
 
+import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
@@ -48,6 +51,12 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
             }
             nodeToDisplayedButton.put(item.getValue(), button);
             button.setUserData(item);
+            Val.wrap(button.focusedProperty())
+               .values()
+               .distinct()
+               .filter(Boolean::booleanValue)
+               // will change the node in the treeview on <- -> key presses
+               .subscribe(b -> getOnCrumbAction().handle(new BreadCrumbActionEvent<>(item)));
             return button;
         });
 
@@ -79,10 +88,10 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
      */
     public void setFocusNode(Node node) {
 
-        Iterable<Button> children = () -> getChildren().stream().map(c -> (Button) c).iterator();
 
         boolean found = false;
-        for (Button button : children) {
+
+        for (javafx.scene.Node button : IteratorUtil.asReversed(getChildren())) {
             Node n = (Node) ((TreeItem<?>) button.getUserData()).getValue();
             // set the focus on the one being selected
             button.pseudoClassStateChanged(PseudoClass.getPseudoClass("focused"), n == node);
@@ -92,6 +101,12 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
         }
         if (!found) {
             setDeepestNode(node);
+            // set the deepest as focused
+            Platform.runLater(() ->
+                                  getChildren()
+                                      .get(getChildren().size() - 1)
+                                      .pseudoClassStateChanged(PseudoClass.getPseudoClass("focused"), true)
+            );
         }
     }
 

@@ -1,0 +1,22 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+/*
+ * Sheet for the AST crumb bar.
+ */
+@import "constants";
+
+.bread-crumb-bar {
+
+  -fx-border-color: transparent;
+  .button {
+    -fx-background-color: @fx-base;
+    -fx-border-color: transparent;
+    -fx-border-width: 1;
+  }
+
+  .button:focused {
+    -fx-background-color: @selection-focus-color;
+  }
+
+}

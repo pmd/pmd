@@ -71,7 +71,9 @@
                                         <fx:include fx:id="sourceEditor" source="editor.fxml" />
                                     </center>
                                     <bottom>
-                                        <NodeParentageBreadCrumbBar fx:id="focusNodeParentageBreadCrumbBar" prefHeight="30" id="main-toolbar" />
+                                        <NodeParentageBreadCrumbBar
+                                                stylesheets="@../css/crumbbar.css"
+                                                fx:id="focusNodeParentageBreadCrumbBar" prefHeight="30" id="main-toolbar" />
                                         <!--<ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
                                             <!--<items>-->
                                                 <!--<Pane HBox.hgrow="ALWAYS" />-->

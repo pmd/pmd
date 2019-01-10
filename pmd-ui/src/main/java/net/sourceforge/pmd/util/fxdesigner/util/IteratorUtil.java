@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -45,6 +46,26 @@ public final class IteratorUtil {
         return () -> it;
     }
 
+
+    public static <T> Iterable<T> asReversed(List<T> lst) {
+
+        return () -> new Iterator<T>() {
+
+            ListIterator<T> li = lst.listIterator(lst.size());
+
+
+            @Override
+            public boolean hasNext() {
+                return li.hasPrevious();
+            }
+
+
+            @Override
+            public T next() {
+                return li.previous();
+            }
+        };
+    }
 
     public static boolean isParent(Node parent, Node child) {
         return any(parentIterator(child, false), p -> parent == p);
