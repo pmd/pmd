@@ -14,6 +14,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <AnchorPane minHeight="0.0"
             minWidth="0.0"
             prefHeight="180.0"
@@ -56,51 +57,38 @@
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <TitledPane fx:id="centerTitledPane"
-                                    collapsible="false"
-                                    styleClass="accent-header,tool-bar-title"
-                                    AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0"
-                                    AnchorPane.topAnchor="0.0">
-                            <graphic>
-                                <ToolBar styleClass="title-toolbar"
-                                         AnchorPane.bottomAnchor="0.0"
-                                         AnchorPane.leftAnchor="0.0"
-                                         AnchorPane.rightAnchor="0.0"
-                                         AnchorPane.topAnchor="0.0">
-                                    <Label prefHeight="20.0" text="XPath Expression">
-                                        <padding>
-                                            <Insets bottom="-2.0" />
-                                        </padding>
-                                    </Label>
-                                    <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button">
-                                        <graphic>
-                                            <FontIcon iconLiteral="fa-cog" />
-                                        </graphic>
-                                        <items>
-                                            <fx:define>
-                                                <ToggleGroup fx:id="xpathVersionToggleGroup" />
-                                            </fx:define>
-                                            <RadioMenuItem mnemonicParsing="false"
-                                                           text="XPath 1.0"
-                                                           userData="1.0"
-                                                           toggleGroup="$xpathVersionToggleGroup" />
-                                            <RadioMenuItem mnemonicParsing="false"
-                                                           text="XPath 2.0"
-                                                           userData="2.0"
-                                                           toggleGroup="$xpathVersionToggleGroup" />
-                                        </items>
-                                    </MenuButton>
-                                    <padding>
-                                        <Insets bottom="-3.0" />
-                                    </padding>
-                                </ToolBar>
-                            </graphic>
+                        <ToolbarTitledPane fx:id="centerTitledPane"
+                                           styleClass="accent-header"
+                                           collapsible="false"
+                                           title="XPath Expression"
+                                           AnchorPane.bottomAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.topAnchor="0.0">
+                            <toolbarItems>
+                                <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button">
+                                    <graphic>
+                                        <FontIcon iconLiteral="fa-cog" />
+                                    </graphic>
+                                    <items>
+                                        <fx:define>
+                                            <ToggleGroup fx:id="xpathVersionToggleGroup" />
+                                        </fx:define>
+                                        <RadioMenuItem mnemonicParsing="false"
+                                                       text="XPath 1.0"
+                                                       userData="1.0"
+                                                       toggleGroup="$xpathVersionToggleGroup" />
+                                        <RadioMenuItem mnemonicParsing="false"
+                                                       text="XPath 2.0"
+                                                       userData="2.0"
+                                                       toggleGroup="$xpathVersionToggleGroup" />
+                                    </items>
+                                </MenuButton>
+                            </toolbarItems>
                             <content>
                                 <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css" fx:id="xpathExpressionArea" />
                             </content>
-                        </TitledPane>
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
                 <AnchorPane>

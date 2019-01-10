@@ -4,11 +4,11 @@
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -25,24 +25,16 @@
     <items>
         <AnchorPane>
             <children>
-                <TitledPane fx:id="centerTitledPane"
-                            collapsible="false"
-                            styleClass="accent-header,tool-bar-title,full-size-title"
-                            AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0">
-                    <graphic>
-                        <ToolBar styleClass="title-toolbar"
-                                 AnchorPane.bottomAnchor="0.0"
-                                 AnchorPane.leftAnchor="0.0"
-                                 AnchorPane.rightAnchor="0.0"
-                                 AnchorPane.topAnchor="0.0">
-                            <Label prefHeight="20.0" text="Source Code" fx:id="sourceCodeTitleLabel">
-                                <padding>
-                                    <Insets bottom="-2.0" />
-                                </padding>
-                            </Label>
+                <ToolbarTitledPane
+                        collapsible="false"
+                        fx:id="editorTitledPane"
+                        styleClass="accent-header,full-size-title"
+                        title="Source Code"
+                        AnchorPane.bottomAnchor="0.0"
+                        AnchorPane.leftAnchor="0.0"
+                        AnchorPane.rightAnchor="0.0"
+                        AnchorPane.topAnchor="0.0">
+                    <toolbarItems>
                             <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button"
                                         fx:id="languageSelectionMenuButton">
                                 <graphic>
@@ -52,11 +44,7 @@
 
                                 </items>
                             </MenuButton>
-                            <padding>
-                                <Insets bottom="-3.0" />
-                            </padding>
-                        </ToolBar>
-                    </graphic>
+                    </toolbarItems>
                     <content>
                         <HighlightLayerCodeArea fx:id="codeEditorArea"
                                                 idEnum="net.sourceforge.pmd.util.fxdesigner.SourceEditorController$StyleLayerIds"
@@ -68,7 +56,7 @@
                         </HighlightLayerCodeArea>
                         <!--<TextArea />-->
                     </content>
-                </TitledPane>
+                </ToolbarTitledPane>
             </children>
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">

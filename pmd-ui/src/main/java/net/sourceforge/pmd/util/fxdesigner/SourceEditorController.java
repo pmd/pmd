@@ -45,6 +45,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
 import javafx.application.Platform;
@@ -69,6 +70,8 @@ public class SourceEditorController extends AbstractController {
 
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
+    @FXML
+    private ToolbarTitledPane editorTitledPane;
     @FXML
     private MenuButton languageSelectionMenuButton;
     @FXML
@@ -123,7 +126,7 @@ public class SourceEditorController extends AbstractController {
                                  .filter(Objects::nonNull)
                                  .map(LanguageVersion::getShortName)
                                  .map(lang -> "Source Code (" + lang + ")")
-                                 .subscribe(sourceCodeTitleLabel::setText);
+                                 .subscribe(editorTitledPane::setTitle);
 
         EventStreams.valuesOf(astTreeView.getSelectionModel().selectedItemProperty())
                     .filterMap(Objects::nonNull, TreeItem::getValue)
