@@ -123,8 +123,6 @@ public class XPathPanelController extends AbstractController {
 
         initGenerateXPathFromStackTrace();
 
-        Map<String, Toggle> stringToButton = new HashMap<>();
-
         xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
 
         expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (XPath " + v + ")"));

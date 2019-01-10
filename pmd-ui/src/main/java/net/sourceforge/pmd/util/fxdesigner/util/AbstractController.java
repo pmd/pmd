@@ -44,7 +44,7 @@ public class AbstractController implements Initializable, SettingsOwner {
      * Always executed once.
      */
     protected void beforeParentInit() {
-
+        // by default do nothing
     }
 
 
@@ -54,7 +54,7 @@ public class AbstractController implements Initializable, SettingsOwner {
      * parent, then this is never executed.
      */
     protected void afterParentInit() {
-
+        // by default do nothing
     }
 
 
