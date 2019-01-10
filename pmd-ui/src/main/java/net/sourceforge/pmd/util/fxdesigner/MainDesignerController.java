@@ -392,23 +392,6 @@ public class MainDesignerController extends AbstractController {
     }
 
 
-    public String getXpathVersion() {
-        return xpathPanelController.getXpathVersion();
-    }
-
-
-    public void setXpathVersion(String version) {
-        if ("1.0".equals(version) || "2.0".equals(version)) {
-            xpathPanelController.setXpathVersion(version);
-        }
-    }
-
-
-    public Val<String> xpathVersionProperty() {
-        return xpathPanelController.xpathVersionProperty();
-    }
-
-
     @PersistentProperty
     public String getRecentFiles() {
         return recentFiles.stream().map(File::getAbsolutePath).collect(Collectors.joining(File.pathSeparator));

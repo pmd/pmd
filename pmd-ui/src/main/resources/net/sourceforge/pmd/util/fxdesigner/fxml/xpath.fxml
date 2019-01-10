@@ -57,7 +57,7 @@
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <ToolbarTitledPane fx:id="centerTitledPane"
+                        <ToolbarTitledPane fx:id="expressionTitledPane"
                                            styleClass="accent-header"
                                            collapsible="false"
                                            title="XPath Expression"

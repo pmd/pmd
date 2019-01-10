@@ -45,6 +45,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeA
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
 import javafx.collections.FXCollections;
@@ -93,7 +94,7 @@ public class XPathPanelController extends AbstractController {
 
 
     @FXML
-    public TitledPane centerTitledPane;
+    public ToolbarTitledPane expressionTitledPane;
     @FXML
     private PropertyTableView propertyTableView;
     @FXML
@@ -124,15 +125,9 @@ public class XPathPanelController extends AbstractController {
 
         Map<String, Toggle> stringToButton = new HashMap<>();
 
-        xpathVersionUIProperty = Var.fromVal(xpathVersionToggleGroup.selectedToggleProperty(), xpathVersionToggleGroup::selectToggle)
-                                    .mapBidirectional(
-                                        toggle -> toggle.getUserData().toString(),
-                                        str -> xpathVersionToggleGroup.getToggles()
-                                                                      .stream()
-                                                                      .filter(t -> t.getUserData().equals(str))
-                                                                      .findFirst()
-                                                                      .orElseThrow(() -> new IllegalArgumentException("Unknown XPath version"))
-                                    );
+        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
+
+        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (XPath " + v + ")"));
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
