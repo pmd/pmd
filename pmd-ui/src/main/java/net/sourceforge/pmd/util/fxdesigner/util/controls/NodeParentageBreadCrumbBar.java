@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.controlsfx.control.BreadCrumbBar;
 import org.reactfx.value.Val;
@@ -17,7 +16,9 @@ import net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Button;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TreeItem;
+import javafx.scene.layout.Region;
 import javafx.util.Callback;
 
 
@@ -27,14 +28,9 @@ import javafx.util.Callback;
  */
 public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
 
-    private static final int MAX_PATH_LENGTH_BEFORE_ELLIPSIS = 300;
     /** Special item used to truncate paths when they're too long. */
     private final TreeItem<Node> ellipsisCrumb = new TreeItem<>(null);
 
-    private final Map<Node, Button> nodeToDisplayedButton = new WeakHashMap<>();
-
-    // Current number of crumbs being displayed (discounting the ellipsis)
-    private int currentDisplayedNodes = 0;
 
 
     public NodeParentageBreadCrumbBar() {
@@ -49,7 +45,6 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
             if (item == ellipsisCrumb) {
                 button.setText("...");
             }
-            nodeToDisplayedButton.put(item.getValue(), button);
             button.setUserData(item);
             Val.wrap(button.focusedProperty())
                .values()
@@ -91,16 +86,34 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
 
         boolean found = false;
 
+        // We're trying to estimate the ratio of px/crumb,
+        // to make an educated guess about how many crumbs we can fit
+        // in case we need to call setDeepestNode
+        int totalNumChar = 0;
+        int totalNumCrumbs = 0;
+        // the sum of children width is the actual width with overflow
+        double totalChildrenWidth = 0;
+
         for (javafx.scene.Node button : IteratorUtil.asReversed(getChildren())) {
             Node n = (Node) ((TreeItem<?>) button.getUserData()).getValue();
-            // set the focus on the one being selected
+
+            // set the focus on the one being selected, remove on the others
+            // calling requestFocus would switch the focus from eg the treeview to the crumb bar (unusable)
             button.pseudoClassStateChanged(PseudoClass.getPseudoClass("focused"), n == node);
+
+            // update counters
+            totalNumChar += ((Labeled) button).getText().length();
+            totalChildrenWidth += ((Region) button).getWidth();
+            totalNumCrumbs++;
+
             if (n == node) {
                 found = true;
             }
         }
+
         if (!found) {
-            setDeepestNode(node);
+
+            setDeepestNode(node, getWidthEstimator(totalNumChar, totalChildrenWidth, totalNumCrumbs));
             // set the deepest as focused
             Platform.runLater(() ->
                                   getChildren()
@@ -111,70 +124,48 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
     }
 
 
-    private void setDeepestNode(Node node) {
+    /**
+     * Sets the given node to the selected (deepest) crumb. Parent crumbs are
+     * added until they are estimated to overflow the visual space, after
+     * which they are hidden into the ellipsis crumb.
+     *
+     * @param node           Node to set
+     * @param widthEstimator Estimates the visual width of the crumb for one node
+     */
+    private void setDeepestNode(Node node, Function<Node, Double> widthEstimator) {
         TreeItem<Node> deepest = new TreeItem<>(node);
         TreeItem<Node> current = deepest;
         Node parent = node.jjtGetParent();
-        int pathLength = getBreadCrumbLengthEstimate(node);
-        int pathLengthInNodes = 1;
+        double pathLength = widthEstimator.apply(node);
 
-        while (parent != null && pathLength < MAX_PATH_LENGTH_BEFORE_ELLIPSIS) {
+        final double maxPathLength = getWidth() - 150;
+
+        while (parent != null && pathLength < maxPathLength) {
             TreeItem<Node> newItem = new TreeItem<>(parent);
             newItem.getChildren().add(current);
             current = newItem;
-            pathLength += getBreadCrumbLengthEstimate(parent);
+            pathLength += widthEstimator.apply(parent);
             parent = current.getValue().jjtGetParent();
-            pathLengthInNodes++;
         }
 
-        if (pathLength >= MAX_PATH_LENGTH_BEFORE_ELLIPSIS) {
+        if (pathLength >= maxPathLength
+            // if parent == null then it's the root, no need for ellipsis
+            && parent != null) {
             // the rest are children of the ellipsis
             ellipsisCrumb.getChildren().setAll(current);
         }
-
-        currentDisplayedNodes = pathLengthInNodes;
 
         setSelectedCrumb(deepest);
     }
 
 
-    // This is arbitrary
-    private int getBreadCrumbLengthEstimate(Node n) {
-        return n.getXPathNodeName().length() + 10/* separator constant */;
-    }
+    private static Function<Node, Double> getWidthEstimator(int totalNumDisplayedChars, double totalChildrenWidth, int totalNumCrumbs) {
+        double pxByChar = totalNumDisplayedChars == 0
+                          ? 5.0 // we have no data, too bad
+                          // there's a ~19px constant padding per button (on my machine)
+                          : (totalChildrenWidth - 19.0 * totalNumCrumbs) / totalNumDisplayedChars;
 
-    //
-    //    private static class BreadCrumbPathLengthEstimator<T> {
-    //        private final BreadCrumbBar<T> lengthEstimationCrumbBar = new BreadCrumbBar<>();
-    //        private final Scene dummyScene;
-    //        private final Supplier<Integer> maxWidthSupplier;
-    //
-    //        private TreeItem<T> currentTop;
-    //
-    //
-    //        BreadCrumbPathLengthEstimator(List<String> styleSheets, Supplier<Integer> maxWidthSupplier) {
-    //            this.maxWidthSupplier = maxWidthSupplier;
-    //            AnchorPane dummyPane = new AnchorPane();
-    //            dummyPane.getChildren().add(lengthEstimationCrumbBar);
-    //
-    //            Scene scene = new Scene(dummyPane);
-    //            scene.getStylesheets().addAll(styleSheets);
-    //            dummyScene = scene;
-    //        }
-    //
-    //
-    //        boolean tryAddNode(T n) {
-    //            TreeItem<T> item = new TreeItem<>(n);
-    //
-    //            if (currentTop != null) {
-    //                item.getChildren().add(currentTop);
-    //                currentTop = item;
-    //            }
-    //
-    //            lengthEstimationCrumbBar.setSelectedCrumb(item);
-    //
-    //            // TODO
-    //        }
-    //    }
+        return node -> node.getXPathNodeName().length() * pxByChar + 19.0;
+    }
 
 }
