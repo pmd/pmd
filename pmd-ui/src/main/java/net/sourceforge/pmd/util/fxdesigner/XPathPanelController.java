@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
@@ -45,11 +46,11 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -58,15 +59,19 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -90,9 +95,10 @@ public class XPathPanelController extends AbstractController {
     private final MainDesignerController parent;
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
-    public Button exportButton;
-    public ToggleButton xpath20ToggleButton;
 
+
+    @FXML
+    public TitledPane centerTitledPane;
     @FXML
     private PropertyTableView propertyTableView;
     @FXML
@@ -123,14 +129,14 @@ public class XPathPanelController extends AbstractController {
 
         initGenerateXPathFromStackTrace();
 
-        myXpathVersion = DesignerUtil.booleanVar(xpath20ToggleButton.selectedProperty())
-                                     .mapBidirectional(
-                                         is20 -> is20 ? "2.0" : "1.0",
-                                         "2.0"::equals
-                                     );
+//        myXpathVersion = DesignerUtil.booleanVar(xpath20ToggleButton.selectedProperty())
+//                                     .mapBidirectional(
+//                                         is20 -> is20 ? "2.0" : "1.0",
+//                                         "2.0"::equals
+//                                     );
 
         Val<Tooltip> tooltipVar = xpathVersionProperty().map(v -> "Using XPath " + v).map(Tooltip::new);
-        xpath20ToggleButton.tooltipProperty().bind(tooltipVar);
+//        xpath20ToggleButton.tooltipProperty().bind(tooltipVar);
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
@@ -149,6 +155,7 @@ public class XPathPanelController extends AbstractController {
 
         initialiseAutoCompletion();
     }
+
 
 
     @Override

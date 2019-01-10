@@ -5,30 +5,46 @@
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.ToggleButton?>
 <AnchorPane minHeight="0.0"
             minWidth="0.0"
             prefHeight="180.0"
             prefWidth="1200.0"
             stylesheets="@../css/designer.css"
-            xmlns="http://javafx.com/javafx/10.0.1"
+            xmlns="http://javafx.com/javafx/8.0.172-ea"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
     <children>
-        <SplitPane dividerPositions="0.2, 0.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.2, 0.8"
+                   AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane>
                     <children>
-                        <TitledPane animated="false" collapsible="false" styleClass="accent-header" text="Properties" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TitledPane animated="false"
+                                    collapsible="false"
+                                    styleClass="accent-header"
+                                    text="Properties"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
                             <content>
                                 <AnchorPane>
-                                    <PropertyTableView fx:id="propertyTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <PropertyTableView fx:id="propertyTableView"
+                                                       AnchorPane.bottomAnchor="0.0"
+                                                       AnchorPane.leftAnchor="0.0"
+                                                       AnchorPane.rightAnchor="0.0"
+                                                       AnchorPane.topAnchor="0.0" />
                                     <padding>
                                         <Insets bottom="-0.5" left="-0.5" right="-0.5" top="-0.5" />
                                     </padding>
@@ -39,32 +55,39 @@
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <TitledPane collapsible="false" styleClass="accent-header" text="XPath Expression" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TitledPane fx:id="centerTitledPane"
+                                    collapsible="false"
+                                    styleClass="accent-header,tool-bar-title"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
+                            <graphic>
+                                <ToolBar styleClass="title-toolbar"
+                                         AnchorPane.bottomAnchor="0.0"
+                                         AnchorPane.leftAnchor="0.0"
+                                         AnchorPane.rightAnchor="0.0"
+                                         AnchorPane.topAnchor="0.0">
+                                    <Label prefHeight="20.0" text="XPath Expression">
+                                        <padding>
+                                            <Insets bottom="-2.0" />
+                                        </padding>
+                                    </Label>
+                                    <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button">
+                                        <graphic>
+                                            <FontIcon iconLiteral="fa-cog" />
+                                        </graphic>
+                                        <items>
+                                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                                        </items>
+                                    </MenuButton>
+                                    <padding>
+                                        <Insets bottom="-3.0" />
+                                    </padding>
+                                </ToolBar>
+                            </graphic>
                             <content>
-                                <AnchorPane>
-                                    <children>
-                                        <ToolBar orientation="VERTICAL"
-                                                 AnchorPane.bottomAnchor="0.0"
-                                                 AnchorPane.leftAnchor="0.0"
-                                                 AnchorPane.rightAnchor="30.0"
-                                                 AnchorPane.topAnchor="0.0">
-                                            <items>
-                                                <ToggleButton mnemonicParsing="false" styleClass="icon-button" fx:id="xpath20ToggleButton" text="2.0"/>
-                                                <Button fx:id="exportButton" mnemonicParsing="false" styleClass="icon-button">
-                                                    <graphic>
-                                                        <FontIcon iconLiteral="fa-sign-out" />
-                                                    </graphic>
-                                                </Button>
-                                            </items>
-                                        </ToolBar>
-                                        <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css"
-                                                                    fx:id="xpathExpressionArea"
-                                                                    AnchorPane.bottomAnchor="0.0"
-                                                                    AnchorPane.leftAnchor="30.0"
-                                                                    AnchorPane.rightAnchor="0.0"
-                                                                    AnchorPane.topAnchor="0.0" />
-                                    </children>
-                               </AnchorPane>
+                                <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css" fx:id="xpathExpressionArea" />
                             </content>
                         </TitledPane>
                     </children>

@@ -388,7 +388,7 @@ public class SourceEditorController extends AbstractController {
 
 
     /** Style layers for the code area. */
-    private enum StyleLayerIds implements LayerId {
+    public enum StyleLayerIds implements LayerId {
         // caution, the name of the constants are used as style classes
 
         /** For the currently selected node. */

@@ -127,6 +127,57 @@
 
 }
 
+.titled-pane.tool-bar-title > .title > .tool-bar {
+  -fx-background-color: transparent;
+
+  & > .container {
+
+    .fix-height(12);
+
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-image-insets: 0;
+
+    -fx-padding: 0 0 -12 0;
+
+    & > .label {
+      -fx-background-color: transparent;
+      -fx-font-size: 9pt;
+    }
+
+    .menu-bar {
+      -fx-background-color: transparent;
+    }
+  }
+}
+
+
+.menu-button.menu-button-no-arrow {
+  .arrow-button {
+    -fx-padding: 0;
+  }
+
+  .arrow-button > .arrow {
+    -fx-padding: 0;
+  }
+}
+
+.menu-button.icon-menu-button {
+  -fx-background-color: transparent;
+  -fx-border-width: 0;
+  -fx-border-insets: 0;
+  -fx-padding: 0;
+
+  &:showing, &:hover {
+    -fx-background-color: @selection-focus-color;
+  }
+
+  .label {
+    -fx-background-color: transparent;
+    //-fx-padding: 0;
+  }
+}
+
 #main-horizontal-split-pane > .split-pane-divider {
     -fx-background-color: @darker-accent-focus;
 }

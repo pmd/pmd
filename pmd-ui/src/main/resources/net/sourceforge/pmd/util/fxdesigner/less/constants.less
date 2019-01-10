@@ -57,6 +57,11 @@
   -fx-max-height: @height;
 }
 
+.force-square(@side) {
+  .fix-width(@side);
+  .fix-height(@side);
+}
+
 // Mixin to iterate over the range [0, @i]
 // * The selector in which the mixin is called is appended with a class depth-x,
 //   where x is the index of the color in the stack
