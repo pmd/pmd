@@ -115,7 +115,7 @@
 
 .titled-pane .title,
 .info-title-bar {
-    -fx-font-size: 9pt;
+    -fx-font-size: @smaller-font-size;
     -fx-pref-height: 24.0;
     -fx-border-radius: 0.0;
     -fx-background-radius: 0.0;
@@ -124,7 +124,22 @@
     &.info-title-bar .label {
         -fx-padding: 0 0 0 6;
     }
+}
 
+.titled-pane.full-size-title {
+
+  & > .title {
+    .fix-height(30);
+  }
+
+  &.tool-bar-title > .title > .tool-bar > .container {
+    -fx-padding: 0 0 -4 0;
+
+    & > .label {
+      -fx-font-size: @smaller-font-size; // TODO
+      -fx-padding: 0 0 1 0;
+    }
+  }
 }
 
 // Titled panes that have a toolbar in their header region
@@ -143,7 +158,7 @@
 
     & > .label {
       -fx-background-color: transparent;
-      -fx-font-size: 9pt;
+      -fx-font-size: @smaller-font-size;
     }
 
     .menu-bar {
@@ -307,3 +322,4 @@
 .corner {
     -fx-background-color: white;
 }
+

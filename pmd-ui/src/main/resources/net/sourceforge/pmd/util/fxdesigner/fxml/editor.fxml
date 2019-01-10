@@ -27,7 +27,7 @@
             <children>
                 <TitledPane fx:id="centerTitledPane"
                             collapsible="false"
-                            styleClass="accent-header,tool-bar-title"
+                            styleClass="accent-header,tool-bar-title,full-size-title"
                             AnchorPane.bottomAnchor="0.0"
                             AnchorPane.leftAnchor="0.0"
                             AnchorPane.rightAnchor="0.0"
