@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.codearea;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,11 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
     /** Contains the highlighting layers. */
     private final Map<K, StyleLayer> layersById;
 
+    // TODO REMOVE
+    public HighlightLayerCodeArea() {
+        layersById = new HashMap<>();
+
+    }
 
     /**
      * Builds a new code area with the given enum type as layer id provider.

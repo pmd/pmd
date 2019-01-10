@@ -45,6 +45,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
@@ -82,6 +83,8 @@ public class SourceEditorController extends AbstractController {
     private TreeView<Node> astTreeView;
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
+    // actually a child of the main controller, set during parent initialization
+    NodeParentageBreadCrumbBar focusNodeParentageCrumbBar;
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
@@ -109,6 +112,7 @@ public class SourceEditorController extends AbstractController {
         astManager = new ASTManager(owner);
 
     }
+
 
     @Override
     protected void beforeParentInit() {
@@ -145,6 +149,21 @@ public class SourceEditorController extends AbstractController {
                       });
 
         codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
+
+    }
+
+
+    @Override
+    protected void afterParentInit() {
+        DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
+
+        // Focus the crumb
+        focusNodeParentageCrumbBar.setOnRegularCrumbAction(treeitem -> {
+            if (treeitem != null && treeitem.getValue() != null) {
+
+                focusNodeInTreeView(treeitem.getValue());
+            }
+        });
     }
 
 
@@ -169,10 +188,6 @@ public class SourceEditorController extends AbstractController {
     }
 
 
-    @Override
-    protected void afterParentInit() {
-        DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
-    }
 
 
     private IntFunction<javafx.scene.Node> lineNumberFactory() {
@@ -326,6 +341,7 @@ public class SourceEditorController extends AbstractController {
     }
 
 
+    // TODO see if you can hide that into setFocusNode
     public void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
 
@@ -346,6 +362,8 @@ public class SourceEditorController extends AbstractController {
                 astTreeView.scrollTo(selectionModel.getSelectedIndex());
             }
         }
+
+        focusNodeParentageCrumbBar.setFocusNode(node);
     }
 
 
@@ -461,5 +479,7 @@ public class SourceEditorController extends AbstractController {
         public String getStyleClass() {
             return styleClass;
         }
+
     }
+
 }

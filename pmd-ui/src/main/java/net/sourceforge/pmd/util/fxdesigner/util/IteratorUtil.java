@@ -46,6 +46,21 @@ public final class IteratorUtil {
     }
 
 
+    public static boolean isParent(Node parent, Node child) {
+        return any(parentIterator(child, false), p -> parent == p);
+    }
+
+
+    public static <T> boolean any(Iterator<? extends T> it, Predicate<? super T> predicate) {
+        for (T t : toIterable(it)) {
+            if (predicate.test(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Returns an iterator over the parents of the given node, in innermost to outermost order.
      */

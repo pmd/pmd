@@ -17,6 +17,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.controlsfx.control.BreadCrumbBar;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -30,12 +31,9 @@ import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -52,7 +50,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
 
 
 /**
@@ -101,6 +98,10 @@ public class MainDesignerController extends AbstractController {
     private Tab xpathEditorTab;
     @FXML
     private SplitPane mainHorizontalSplitPane;
+    @FXML
+    private NodeParentageBreadCrumbBar focusNodeParentageBreadCrumbBar;
+
+
     /* Children */
     @FXML
     private NodeInfoPanelController nodeInfoPanelController;
@@ -146,6 +147,9 @@ public class MainDesignerController extends AbstractController {
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
+        // the editor controller will initialize this after this controller
+        sourceEditorController.focusNodeParentageCrumbBar = focusNodeParentageBreadCrumbBar;
+
         Platform.runLater(this::updateRecentFilesMenu);
         Platform.runLater(this::refreshAST); // initial refreshing
 
@@ -161,21 +165,22 @@ public class MainDesignerController extends AbstractController {
                 = mainHorizontalSplitPane.getDividerPositions()[0];
 
 
-        // show/ hide bottom pane
-        bottomTabsToggle.selectedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
-            KeyValue keyValue = null;
-            DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
-            if (wasExpanded && !isNowExpanded) {
-                keyValue = new KeyValue(divPosition, 1);
-            } else if (!wasExpanded && isNowExpanded) {
-                keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
-            }
 
-            if (keyValue != null) {
-                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), keyValue));
-                timeline.play();
-            }
-        });
+        // show/ hide bottom pane
+//        bottomTabsToggle.selectedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
+//            KeyValue keyValue = null;
+//            DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
+//            if (wasExpanded && !isNowExpanded) {
+//                keyValue = new KeyValue(divPosition, 1);
+//            } else if (!wasExpanded && isNowExpanded) {
+//                keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
+//            }
+//
+//            if (keyValue != null) {
+//                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), keyValue));
+//                timeline.play();
+//            }
+//        });
     }
 
 
@@ -370,6 +375,9 @@ public class MainDesignerController extends AbstractController {
     }
 
 
+    /**
+     * Called when the AST is updated to update all parts of the UI.
+     */
     public void invalidateAst() {
         nodeInfoPanelController.invalidateInfo();
         xpathPanelController.invalidateResults(false);
@@ -413,17 +421,17 @@ public class MainDesignerController extends AbstractController {
         designerRoot.getMainStage().setMaximized(!b); // trigger change listener anyway
         designerRoot.getMainStage().setMaximized(b);
     }
-
-
-    @PersistentProperty
-    public boolean isBottomTabExpanded() {
-        return bottomTabsToggle.isSelected();
-    }
-
-
-    public void setBottomTabExpanded(boolean b) {
-        bottomTabsToggle.setSelected(b);
-    }
+//
+//
+//    @PersistentProperty
+//    public boolean isBottomTabExpanded() {
+//        return bottomTabsToggle.isSelected();
+//    }
+//
+//
+//    public void setBottomTabExpanded(boolean b) {
+//        bottomTabsToggle.setSelected(b);
+//    }
 
 
     @PersistentProperty

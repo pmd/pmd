@@ -19,6 +19,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
+<?import org.controlsfx.control.BreadCrumbBar?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar?>
 <AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -69,15 +71,16 @@
                                         <fx:include fx:id="sourceEditor" source="editor.fxml" />
                                     </center>
                                     <bottom>
-                                        <ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                            <items>
-                                                <Pane HBox.hgrow="ALWAYS" />
-                                                <ToggleButton fx:id="bottomTabsToggle" mnemonicParsing="false" selected="true" styleClass="expand-toggle" />
-                                            </items>
-                                            <padding>
-                                                <Insets left="20.0" right="20.0" />
-                                            </padding>
-                                        </ToolBar>
+                                        <NodeParentageBreadCrumbBar fx:id="focusNodeParentageBreadCrumbBar" prefHeight="30" id="main-toolbar" />
+                                        <!--<ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
+                                            <!--<items>-->
+                                                <!--<Pane HBox.hgrow="ALWAYS" />-->
+                                                <!--<ToggleButton fx:id="bottomTabsToggle" mnemonicParsing="false" selected="true" styleClass="expand-toggle" />-->
+                                            <!--</items>-->
+                                            <!--<padding>-->
+                                                <!--<Insets left="20.0" right="20.0" />-->
+                                            <!--</padding>-->
+                                        <!--</ToolBar>-->
                                     </bottom>
                                 </BorderPane>
                             </center>
