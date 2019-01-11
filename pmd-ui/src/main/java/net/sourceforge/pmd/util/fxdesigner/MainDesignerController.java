@@ -17,7 +17,6 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
-import org.controlsfx.control.BreadCrumbBar;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -163,7 +162,7 @@ public class MainDesignerController extends AbstractController {
         // gets captured in the closure
         final double defaultMainHorizontalSplitPaneDividerPosition
                 = mainHorizontalSplitPane.getDividerPositions()[0];
-        
+
     }
 
 
