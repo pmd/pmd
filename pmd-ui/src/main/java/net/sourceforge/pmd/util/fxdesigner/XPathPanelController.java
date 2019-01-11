@@ -156,18 +156,14 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         EventStreams.merge(keyCombo, changesEventStream)
                     .map(searchPoint -> {
-                        int insertionPoint = xpathExpressionArea.getText().lastIndexOf("/", searchPoint) + 1; // + "/".length
-                        insertionPoint = Math.max(insertionPoint,
-                                                  // also look for eg self::
-                                                  xpathExpressionArea.getText().lastIndexOf("::", searchPoint) + 2); // + "::".length
-
                         String input = xpathExpressionArea.getText();
+
+                        int insertionPoint = getInsertionPoint(searchPoint, input);
+
                         if (searchPoint > input.length()) {
                             searchPoint = input.length();
                         }
-                        if (insertionPoint < 0) {
-                            insertionPoint = 0;
-                        }
+
                         input = input.substring(insertionPoint, searchPoint);
 
                         return Tuples.t(insertionPoint, input.trim());
@@ -184,6 +180,18 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                     .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
 
 
+    }
+
+
+    private int getInsertionPoint(int searchPoint, String text) {
+
+        int slashIdx = text.lastIndexOf("/", searchPoint);
+        int colonIdx = text.lastIndexOf("::", searchPoint);
+
+        slashIdx = slashIdx < 0 ? 0 : slashIdx + 1; // "/".length
+        colonIdx = colonIdx < 0 ? 0 : colonIdx + 2; // "::".length
+
+        return Math.max(slashIdx, colonIdx);
     }
 
 

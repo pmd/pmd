@@ -200,7 +200,7 @@ class ResultSelectionStrategy {
 
         // end of loop
 
-        if (curMatchStart != -1 && candIdx < candidate.length()) {
+        if (curMatchStart != -1 && candIdx <= candidate.length()) {
             // the query ends inside a match, we must complete the current match
 
             String before = candidate.substring(lastMatchEnd, curMatchStart);
