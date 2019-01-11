@@ -8,10 +8,8 @@ package net.sourceforge.pmd.util.fxdesigner;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -35,10 +33,10 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
-import net.sourceforge.pmd.util.fxdesigner.model.XPathSuggestions;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathSuggestionMaker;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
@@ -68,9 +66,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -156,18 +151,19 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         // captured in the closure
         final ContextMenu autoCompletePopup = new ContextMenuWithNoArrows();
         autoCompletePopup.setId("xpathAutocomplete");
+        autoCompletePopup.getStyleClass().add("autocomplete-menu");
         autoCompletePopup.setHideOnEscape(true);
 
         EventStreams.merge(keyCombo, changesEventStream)
                     .map(searchPoint -> {
-                        int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1) + 1;
+                        int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint ) + 1;
                         String input = xpathExpressionArea.getText();
                         if (searchPoint > input.length()) {
                             searchPoint = input.length();
                         }
                         input = input.substring(indexOfSlash, searchPoint);
 
-                        return Tuples.t(indexOfSlash, input);
+                        return Tuples.t(indexOfSlash, input.trim());
                     })
                     .filter(t -> StringUtils.isAlpha(t._2))
                     .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
@@ -178,42 +174,30 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
     private void autoComplete(int slashPosition, String input, ContextMenu autoCompletePopup) {
 
-        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
-        List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.trim());
+        XPathSuggestionMaker suggestionMaker = XPathSuggestionMaker.forLanguage(parent.getLanguageVersion().getLanguage());
 
-        List<CustomMenuItem> resultToDisplay = new ArrayList<>();
-        if (!suggestions.isEmpty()) {
+        List<MenuItem> suggestions =
+            suggestionMaker.getSortedMatches(input)
+                           .limit(5)
+                           .map(result -> {
 
-            for (int i = 0; i < suggestions.size() && i < 5; i++) {
-                final String searchResult = suggestions.get(i);
+                               Label entryLabel = new Label();
+                               entryLabel.setGraphic(result.getTextFlow());
+                               entryLabel.setPrefHeight(5);
+                               CustomMenuItem item = new CustomMenuItem(entryLabel, true);
+                               item.setOnAction(e -> {
+                                   xpathExpressionArea.replaceText(slashPosition, slashPosition + input.length(), result.getNodeName());
+                                   autoCompletePopup.hide();
+                               });
 
-                Label entryLabel = new Label();
-                entryLabel.setGraphic(highlightXPathSuggestion(suggestions.get(i), input));
-                entryLabel.setPrefHeight(5);
-                CustomMenuItem item = new CustomMenuItem(entryLabel, true);
-                resultToDisplay.add(item);
+                               return item;
+                           })
+                           .collect(Collectors.toList());
 
-                item.setOnAction(e -> {
-                    xpathExpressionArea.replaceText(slashPosition, slashPosition + input.length(), searchResult);
-                    autoCompletePopup.hide();
-                });
-            }
-        }
-        autoCompletePopup.getItems().setAll(resultToDisplay);
+        autoCompletePopup.getItems().setAll(suggestions);
 
         xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length())
                            .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
-    }
-
-
-    private static TextFlow highlightXPathSuggestion(String text, String match) {
-        int filterIndex = text.toLowerCase(Locale.ROOT).indexOf(match.toLowerCase(Locale.ROOT));
-
-        Text textBefore = new Text(text.substring(0, filterIndex));
-        Text textAfter = new Text(text.substring(filterIndex + match.length()));
-        Text textFilter = new Text(text.substring(filterIndex, filterIndex + match.length())); //instead of "filter" to keep all "case sensitive"
-        textFilter.setFill(Color.ORANGE);
-        return new TextFlow(textBefore, textFilter, textAfter);
     }
 
 
@@ -397,4 +381,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     public List<SettingsOwner> getChildrenSettingsNodes() {
         return Collections.singletonList(getRuleBuilder());
     }
+
+
 }

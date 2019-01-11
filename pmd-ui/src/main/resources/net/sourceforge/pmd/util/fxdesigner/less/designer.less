@@ -254,3 +254,19 @@
 .corner {
     -fx-background-color: white;
 }
+
+.autocomplete-menu {
+
+  .menu-item:focused {
+
+    -fx-background-color: @selection-focus-color;
+
+    .autocomplete-match {
+      -fx-fill: white;
+    }
+  }
+
+  .autocomplete-match {
+    -fx-fill: orange;
+  }
+}
