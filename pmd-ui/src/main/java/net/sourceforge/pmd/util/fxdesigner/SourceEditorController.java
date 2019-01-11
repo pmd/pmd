@@ -292,6 +292,7 @@ public class SourceEditorController extends AbstractController {
         }
 
         currentFocusNode.setValue(node);
+        Platform.runLater(() -> focusNodeInTreeView(node));
     }
 
 
@@ -341,13 +342,14 @@ public class SourceEditorController extends AbstractController {
     }
 
 
-    // TODO see if you can hide that into setFocusNode
-    public void focusNodeInTreeView(Node node) {
+    private void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
 
-        // node is different from the old one
         if (selectedTreeItem == null && node != null
             || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
+            // node is different from the old one
+            // && node is not null
+
             ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
             if (found != null) {
                 selectionModel.select(found);

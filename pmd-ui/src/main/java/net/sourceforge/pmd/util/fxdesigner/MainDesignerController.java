@@ -233,7 +233,6 @@ public class MainDesignerController extends AbstractController {
     public void onNodeItemSelected(Node selectedValue) {
         nodeInfoPanelController.displayInfo(selectedValue);
         sourceEditorController.setFocusNode(selectedValue);
-        sourceEditorController.focusNodeInTreeView(selectedValue);
     }
 
 

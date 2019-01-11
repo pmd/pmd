@@ -89,9 +89,12 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
     /**
      * If the node is already displayed on the crumbbar, only
      * sets the focus on it. Otherwise, sets the node to be
-     * the deepest one of the crumb bar.
+     * the deepest one of the crumb bar. Noop if node is null.
      */
     public void setFocusNode(Node node) {
+        if (node == null) {
+            return;
+        }
 
         boolean found = false;
 
