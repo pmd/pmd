@@ -156,23 +156,35 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         EventStreams.merge(keyCombo, changesEventStream)
                     .map(searchPoint -> {
-                        int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint ) + 1;
+                        int insertionPoint = xpathExpressionArea.getText().lastIndexOf("/", searchPoint) + 1; // + "/".length
+                        insertionPoint = Math.max(insertionPoint,
+                                                  // also look for eg self::
+                                                  xpathExpressionArea.getText().lastIndexOf("::", searchPoint) + 2); // + "::".length
+
                         String input = xpathExpressionArea.getText();
                         if (searchPoint > input.length()) {
                             searchPoint = input.length();
                         }
-                        input = input.substring(indexOfSlash, searchPoint);
+                        input = input.substring(insertionPoint, searchPoint);
 
-                        return Tuples.t(indexOfSlash, input.trim());
+                        return Tuples.t(insertionPoint, input.trim());
                     })
-                    .filter(t -> StringUtils.isAlpha(t._2))
+                    .map(t -> {
+                        if (StringUtils.isAlpha(t._2)) {
+                            return t;
+                        } else {
+                            autoCompletePopup.hide();
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
                     .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
 
 
     }
 
 
-    private void autoComplete(int slashPosition, String input, ContextMenu autoCompletePopup) {
+    private void autoComplete(int insertionIndex, String input, ContextMenu autoCompletePopup) {
 
         XPathSuggestionMaker suggestionMaker = XPathSuggestionMaker.forLanguage(parent.getLanguageVersion().getLanguage());
 
@@ -185,7 +197,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                                entryLabel.setPrefHeight(5);
                                CustomMenuItem item = new CustomMenuItem(entryLabel, true);
                                item.setOnAction(e -> {
-                                   xpathExpressionArea.replaceText(slashPosition, slashPosition + input.length(), result.getNodeName());
+                                   xpathExpressionArea.replaceText(insertionIndex, insertionIndex + input.length(), result.getNodeName());
                                    autoCompletePopup.hide();
                                });
 
@@ -195,7 +207,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
         autoCompletePopup.getItems().setAll(suggestions);
 
-        xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length())
+        xpathExpressionArea.getCharacterBoundsOnScreen(insertionIndex, insertionIndex + input.length())
                            .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
     }
 
