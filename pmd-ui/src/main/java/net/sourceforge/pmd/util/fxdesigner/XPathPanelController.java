@@ -12,15 +12,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
-import org.reactfx.util.Tuples;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -36,12 +35,12 @@ import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CodeAreaAutocompleteProvider;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathSuggestionMaker;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
@@ -56,14 +55,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -131,96 +126,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-        initialiseAutoCompletion();
-    }
+        Supplier<XPathSuggestionMaker> suggestionMaker = () -> XPathSuggestionMaker.forLanguage(parent.getLanguageVersion().getLanguage());
 
-    private void initialiseAutoCompletion() {
-
-        EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges()
-                                                                     .map(characterChanges -> {
-                                                                         if (characterChanges.getRemoved().length() > 0) {
-                                                                             return characterChanges.getRemovalEnd() - 1;
-                                                                         }
-                                                                         return characterChanges.getInsertionEnd();
-                                                                     });
-
-        EventStream<Integer> keyCombo = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED)
-                                                    .filter(key -> key.isControlDown() && key.getCode().equals(KeyCode.SPACE))
-                                                    .map(searchPoint -> xpathExpressionArea.getCaretPosition());
-
-        // captured in the closure
-        final ContextMenu autoCompletePopup = new ContextMenuWithNoArrows();
-        autoCompletePopup.setId("xpathAutocomplete");
-        autoCompletePopup.getStyleClass().add("autocomplete-menu");
-        autoCompletePopup.setHideOnEscape(true);
-
-        EventStreams.merge(keyCombo, changesEventStream)
-                    .map(searchPoint -> {
-                        String input = xpathExpressionArea.getText();
-
-                        int insertionPoint = getInsertionPoint(searchPoint, input);
-
-                        if (searchPoint > input.length()) {
-                            searchPoint = input.length();
-                        }
-
-                        input = input.substring(insertionPoint, searchPoint);
-
-                        return Tuples.t(insertionPoint, input.trim());
-                    })
-                    .map(t -> {
-                        if (StringUtils.isAlpha(t._2)) {
-                            return t;
-                        } else {
-                            autoCompletePopup.hide();
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
-
-
+        new CodeAreaAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
     }
 
 
-    private int getInsertionPoint(int searchPoint, String text) {
-
-        int slashIdx = text.lastIndexOf("/", searchPoint);
-        int colonIdx = text.lastIndexOf("::", searchPoint);
-
-        slashIdx = slashIdx < 0 ? 0 : slashIdx + 1; // "/".length
-        colonIdx = colonIdx < 0 ? 0 : colonIdx + 2; // "::".length
-
-        return Math.max(slashIdx, colonIdx);
-    }
-
-
-    private void autoComplete(int insertionIndex, String input, ContextMenu autoCompletePopup) {
-
-        XPathSuggestionMaker suggestionMaker = XPathSuggestionMaker.forLanguage(parent.getLanguageVersion().getLanguage());
-
-        List<MenuItem> suggestions =
-            suggestionMaker.getSortedMatches(input, 5)
-                           .map(result -> {
-
-                               Label entryLabel = new Label();
-                               entryLabel.setGraphic(result.getTextFlow());
-                               entryLabel.setPrefHeight(5);
-                               CustomMenuItem item = new CustomMenuItem(entryLabel, true);
-                               item.setOnAction(e -> {
-                                   xpathExpressionArea.replaceText(insertionIndex, insertionIndex + input.length(), result.getNodeName());
-                                   autoCompletePopup.hide();
-                               });
-
-                               return item;
-                           })
-                           .collect(Collectors.toList());
-
-        autoCompletePopup.getItems().setAll(suggestions);
-
-        xpathExpressionArea.getCharacterBoundsOnScreen(insertionIndex, insertionIndex + input.length())
-                           .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
-    }
 
 
     private void initGenerateXPathFromStackTrace() {
