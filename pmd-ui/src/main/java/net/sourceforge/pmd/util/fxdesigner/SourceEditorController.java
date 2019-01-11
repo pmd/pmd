@@ -6,8 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.toIterable;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,13 +16,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.reactfx.EventStreams;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -43,22 +39,17 @@ import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.Pe
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
 
 
 /**
@@ -72,27 +63,23 @@ public class SourceEditorController extends AbstractController {
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     @FXML
+    private ToolbarTitledPane astTitledPane;
+    @FXML
     private ToolbarTitledPane editorTitledPane;
     @FXML
     private MenuButton languageSelectionMenuButton;
     @FXML
-    private Label sourceCodeTitleLabel;
-    @FXML
-    private Label astTitleLabel;
-    @FXML
-    private TreeView<Node> astTreeView;
+    private ASTTreeView astTreeView;
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
     // actually a child of the main controller, set during parent initialization
     NodeParentageBreadCrumbBar focusNodeParentageCrumbBar;
 
     private ASTManager astManager;
-    private TreeViewWrapper<Node> treeViewWrapper;
 
     private final MainDesignerController parent;
 
     private Var<Node> currentFocusNode = Var.newSimpleVar(null);
-    private ASTTreeItem selectedTreeItem;
 
     private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
@@ -116,8 +103,6 @@ public class SourceEditorController extends AbstractController {
 
     @Override
     protected void beforeParentInit() {
-        treeViewWrapper = new TreeViewWrapper<>(astTreeView);
-        astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
 
         initializeLanguageSelector(); // languageVersionProperty() must be initialized
 
@@ -132,9 +117,6 @@ public class SourceEditorController extends AbstractController {
                                  .map(lang -> "Source Code (" + lang + ")")
                                  .subscribe(editorTitledPane::setTitle);
 
-        EventStreams.valuesOf(astTreeView.getSelectionModel().selectedItemProperty())
-                    .filterMap(Objects::nonNull, TreeItem::getValue)
-                    .subscribe(parent::onNodeItemSelected);
 
         codeEditorArea.plainTextChanges()
                       .filter(t -> !t.isIdentity())
@@ -150,6 +132,8 @@ public class SourceEditorController extends AbstractController {
 
         codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
 
+        astTreeView.onNodeClickedHandlerProperty().setValue(parent::onNodeItemSelected);
+
     }
 
 
@@ -160,8 +144,7 @@ public class SourceEditorController extends AbstractController {
         // Focus the crumb
         focusNodeParentageCrumbBar.setOnRegularCrumbAction(treeitem -> {
             if (treeitem != null && treeitem.getValue() != null) {
-
-                focusNodeInTreeView(treeitem.getValue());
+                astTreeView.focusNode(treeitem.getValue());
             }
         });
     }
@@ -229,7 +212,7 @@ public class SourceEditorController extends AbstractController {
         try {
             current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
-            astTitleLabel.setText("Abstract syntax tree (error)");
+            astTitledPane.setTitle("Abstract syntax tree (error)");
             return Optional.empty();
         }
 
@@ -246,7 +229,7 @@ public class SourceEditorController extends AbstractController {
 
     private void setUpToDateCompilationUnit(Node node) {
         parent.invalidateAst();
-        astTitleLabel.setText("Abstract syntax tree");
+        astTitledPane.setTitle("Abstract syntax tree");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }
@@ -258,15 +241,15 @@ public class SourceEditorController extends AbstractController {
     }
 
 
-    /** Clears the name occurences. */
+    /** Clears the error nodes. */
     public void clearErrorNodes() {
         codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
     }
 
 
-    /** Clears the name occurences. */
+    /** Clears the name occurrences. */
     public void clearNameOccurences() {
-        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
+        codeEditorArea.clearStyleLayer(StyleLayerIds.NAME_OCCURENCE);
     }
 
 
@@ -292,7 +275,8 @@ public class SourceEditorController extends AbstractController {
         }
 
         currentFocusNode.setValue(node);
-        Platform.runLater(() -> focusNodeInTreeView(node));
+        Platform.runLater(() -> astTreeView.focusNode(node));
+        focusNodeParentageCrumbBar.setFocusNode(node);
     }
 
 
@@ -342,55 +326,7 @@ public class SourceEditorController extends AbstractController {
     }
 
 
-    private void focusNodeInTreeView(Node node) {
-        SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
 
-        if (selectedTreeItem == null && node != null
-            || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
-            // node is different from the old one
-            // && node is not null
-
-            ASTTreeItem found = ((ASTTreeItem) astTreeView.getRoot()).findItem(node);
-            if (found != null) {
-                selectionModel.select(found);
-            }
-
-            highlightFocusNodeParents(selectedTreeItem, found);
-
-            selectedTreeItem = found;
-
-            astTreeView.getFocusModel().focus(selectionModel.getSelectedIndex());
-            if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
-                astTreeView.scrollTo(selectionModel.getSelectedIndex());
-            }
-        }
-
-        focusNodeParentageCrumbBar.setFocusNode(node);
-    }
-
-
-    private void sideEffectParents(ASTTreeItem deepest, BiConsumer<ASTTreeItem, Integer> itemAndDepthConsumer) {
-
-        int depth = 0;
-        for (TreeItem<Node> item : toIterable(parentIterator(deepest, true))) {
-            // the depth is "reversed" here, i.e. the deepest node has depth 0
-            itemAndDepthConsumer.accept((ASTTreeItem) item, depth++);
-        }
-
-    }
-
-
-    private void highlightFocusNodeParents(ASTTreeItem oldSelection, ASTTreeItem newSelection) {
-        if (oldSelection != null) {
-            // remove highlighting on the cells of the item
-            sideEffectParents(oldSelection, (item, depth) -> item.setStyleClasses());
-        }
-
-        if (newSelection != null) {
-            // 0 is the deepest node, "depth" goes up as we get up the parents
-            sideEffectParents(newSelection, (item, depth) -> item.setStyleClasses("ast-parent", "depth-" + depth));
-        }
-    }
 
 
     /** Moves the caret to a position and makes the view follow it. */
