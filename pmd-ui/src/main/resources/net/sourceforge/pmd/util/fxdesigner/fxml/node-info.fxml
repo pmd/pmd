@@ -2,6 +2,8 @@
 
 <!-- Left pane of the designer. Displays node information. -->
 
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
@@ -11,9 +13,11 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell?>
-
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.CheckMenuItem?>
 <TabPane fx:id="nodeInfoTabPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" side="LEFT" stylesheets="@../css/designer.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController">
 
     <tabs>
@@ -21,22 +25,28 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <top>
-                                <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
+                        <ToolbarTitledPane
+                                title="XPath Attributes"
+                                styleClass="accent-header,full-size-title"
+                                collapsible="false"
+                                AnchorPane.bottomAnchor="0.0"
+                                AnchorPane.leftAnchor="0.0"
+                                AnchorPane.rightAnchor="0.0"
+                                AnchorPane.topAnchor="0.0">
+                            <toolbarItems>
+                                <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button">
+                                    <graphic>
+                                        <FontIcon iconLiteral="fa-cog" />
+                                    </graphic>
                                     <items>
-                                        <Label text="XPath Attributes">
-                                            <tooltip>
-                                                <Tooltip text="Those attributes can be accessed via XPath" />
-                                            </tooltip>
-                                        </Label>
+                                        <CheckMenuItem fx:id="showAllAttributesMenuItem" text="Show common attributes" mnemonicParsing="false" />
                                     </items>
-                                </ToolBar>
-                            </top>
-                            <center>
-                                <ListView BorderPane.alignment="CENTER" fx:id="xpathAttributesListView" />
-                            </center>
-                        </BorderPane>
+                                </MenuButton>
+                            </toolbarItems>
+
+                            <ListView BorderPane.alignment="CENTER" fx:id="xpathAttributesListView"  />
+
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
             </content>

@@ -226,7 +226,7 @@ public class MainDesignerController extends AbstractController {
      * Executed when the user selects a node in a treeView or listView.
      */
     public void onNodeItemSelected(Node selectedValue) {
-        nodeInfoPanelController.displayInfo(selectedValue);
+        nodeInfoPanelController.setFocusNode(selectedValue);
         sourceEditorController.setFocusNode(selectedValue);
         sourceEditorController.focusNodeInTreeView(selectedValue);
     }
@@ -371,7 +371,7 @@ public class MainDesignerController extends AbstractController {
 
 
     public void invalidateAst() {
-        nodeInfoPanelController.invalidateInfo();
+        nodeInfoPanelController.setFocusNode(null);
         xpathPanelController.invalidateResults(false);
         sourceEditorController.setFocusNode(null);
     }

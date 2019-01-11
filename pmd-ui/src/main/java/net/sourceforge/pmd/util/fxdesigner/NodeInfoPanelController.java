@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 import org.reactfx.EventStreams;
+import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -17,12 +20,14 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
@@ -42,6 +47,12 @@ public class NodeInfoPanelController extends AbstractController {
 
     private final MainDesignerController parent;
 
+    /** List of attribute names that are ignored if {@link #isShowAllAttributes()} is false. */
+    private static final List<String> IGNORABLE_ATTRIBUTES =
+        Arrays.asList("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine");
+
+    @FXML
+    private CheckMenuItem showAllAttributesMenuItem;
     @FXML
     private TabPane nodeInfoTabPane;
     @FXML
@@ -65,6 +76,9 @@ public class NodeInfoPanelController extends AbstractController {
 
     @Override
     protected void beforeParentInit() {
+
+        xpathAttributesListView.setPlaceholder(new Label("No available attributes"));
+
         EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty())
                     .filter(Objects::nonNull)
                     .map(TreeItem::getValue)
@@ -72,37 +86,59 @@ public class NodeInfoPanelController extends AbstractController {
                     .subscribe(parent::onNameDeclarationSelected);
 
         scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
+
+        showAllAttributesProperty()
+            .values()
+            .distinct()
+            .subscribe(show -> displayAttributes(selectedNode));
+
     }
 
 
     /**
-     * Displays info about a node.
+     * Displays info about a node. If null, the panels are reset.
      *
      * @param node Node to inspect
      */
-    public void displayInfo(Node node) {
-        Objects.requireNonNull(node, "Node cannot be null");
+    public void setFocusNode(Node node) {
+        if (node == null) {
+            invalidateInfo();
+            return;
+        }
 
         if (node.equals(selectedNode)) {
             return;
         }
+        selectedNode = node;
 
+        displayAttributes(node);
+        displayMetrics(node);
+        displayScopes(node);
+    }
+
+
+    private void displayAttributes(Node node) {
         ObservableList<String> atts = getAttributes(node);
         xpathAttributesListView.setItems(atts);
+    }
 
+
+    private void displayMetrics(Node node) {
         ObservableList<MetricResult> metrics = evaluateAllMetrics(node);
         metricResultsListView.setItems(metrics);
         notifyMetricsAvailable(metrics.stream()
                                       .map(MetricResult::getValue)
                                       .filter(result -> !result.isNaN())
                                       .count());
+    }
 
+
+    private void displayScopes(Node node) {
         // TODO maybe a better way would be to build all the scope TreeItem hierarchy once
         // and only expand the ascendants of the node.
         TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(node);
         scopeHierarchyTreeView.setRoot(rootScope);
     }
-
 
     /**
      * Invalidates the info being displayed.
@@ -130,17 +166,40 @@ public class NodeInfoPanelController extends AbstractController {
     }
 
 
+    @PersistentProperty
+    public boolean isShowAllAttributes() {
+        return showAllAttributesMenuItem.isSelected();
+    }
+
+
+    public void setShowAllAttributes(boolean bool) {
+        showAllAttributesMenuItem.setSelected(bool);
+    }
+
+
+    public Var<Boolean> showAllAttributesProperty() {
+        return Var.fromVal(showAllAttributesMenuItem.selectedProperty(), showAllAttributesMenuItem::setSelected);
+    }
+
+
     /**
      * Gets the XPath attributes of the node for display within a listview.
      */
-    private static ObservableList<String> getAttributes(Node node) {
+    private ObservableList<String> getAttributes(Node node) {
+        if (node == null) {
+            return FXCollections.emptyObservableList();
+        }
+
         ObservableList<String> result = FXCollections.observableArrayList();
         Iterator<Attribute> attributeAxisIterator = node.getXPathAttributesIterator();
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
-            // TODO the display should be handled in a ListCell
-            result.add(attribute.getName() + " = "
+
+            if (isShowAllAttributes() || !IGNORABLE_ATTRIBUTES.contains(attribute.getName())) {
+                // TODO the display should be handled in a ListCell
+                result.add(attribute.getName() + " = "
                                + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
+            }
         }
 
         if (node instanceof TypeNode) {
