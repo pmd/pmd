@@ -177,8 +177,7 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         XPathSuggestionMaker suggestionMaker = XPathSuggestionMaker.forLanguage(parent.getLanguageVersion().getLanguage());
 
         List<MenuItem> suggestions =
-            suggestionMaker.getSortedMatches(input)
-                           .limit(5)
+            suggestionMaker.getSortedMatches(input, 5)
                            .map(result -> {
 
                                Label entryLabel = new Label();

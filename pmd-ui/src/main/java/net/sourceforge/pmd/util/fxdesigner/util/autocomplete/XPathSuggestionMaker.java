@@ -28,9 +28,10 @@ public final class XPathSuggestionMaker {
 
     /**
      * Returns a stream of pre-built TextFlows sorted by relevance.
+     * The stream will contain at most "limit" elements.
      */
-    public Stream<MatchResult> getSortedMatches(String input) {
-        return mySelectionStrategy.filterResults(myNameFinder.getNodeNames(), input);
+    public Stream<MatchResult> getSortedMatches(String input, int limit) {
+        return mySelectionStrategy.filterResults(myNameFinder.getNodeNames(), input, limit);
     }
 
     /**

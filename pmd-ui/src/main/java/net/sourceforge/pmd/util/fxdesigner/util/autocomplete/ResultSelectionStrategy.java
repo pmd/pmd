@@ -29,17 +29,41 @@ class ResultSelectionStrategy {
     private static final int MIN_QUERY_LENGTH = 1;
 
 
-    Stream<MatchResult> filterResults(List<String> candidates, String query) {
+    Stream<MatchResult> filterResults(List<String> candidates, String query, int limit) {
         if (query.length() < MIN_QUERY_LENGTH) {
             return Stream.empty();
         }
 
         return candidates.stream()
-                         .map(cand -> computeMatchingSegments(cand, query))
+                         .map(cand -> computeMatchingSegments(cand, query, false))
                          .sorted(Comparator.comparingInt(MatchResult::getScore).reversed())
-                         .limit(15);
+                         // second pass is done only on those we know we'll keep
+                         .limit(limit)
+                         .map(prev -> {
+                             // try to break ties between the top results, e.g.
+                             //
+                             // without second pass, we have a tie:
+                             //      query       coit
+                             //      candidate   ClassOrInterfaceType            : 32
+                             //      candidate   ClassOrInterfaceBodyDeclaration : 32
+                             //                  ^    ^ ^ ^
+                             // with second pass:
+                             //
+                             //      query       coit
+                             //      candidate   ClassOrInterfaceType            : 40 -> and indeed it's the best match
+                             //                  ^    ^ ^        ^
+                             //      candidate   ClassOrInterfaceDeclaration     : 32
+                             //                  ^    ^ ^ ^
+
+                             MatchResult refined = computeMatchingSegments(prev.getNodeName(), query, true);
+                             // keep the best
+                             return refined.getScore() > prev.getScore() ? refined : prev;
+                         })
+                         .sorted(Comparator.comparingInt(MatchResult::getScore).reversed());
+
 
     }
+
 
 
     private Text makeHighlightedText(String match) {
@@ -49,9 +73,15 @@ class ResultSelectionStrategy {
     }
 
 
-    // ok it's ugly and is not relevant in all cases
-    // but given that we don't have many candidates to choose from I think it works great
-    private MatchResult computeMatchingSegments(String candidate, String query) {
+    /**
+     * Computes a match result with its score for the candidate and query.
+     *
+     * @param candidate           Candidate string
+     * @param query               Query
+     * @param matchOnlyWordStarts Whether to only match word starts. This is a more unfair strategy
+     *                            that can be used to break ties.
+     */
+    private MatchResult computeMatchingSegments(String candidate, String query, boolean matchOnlyWordStarts) {
 
         int candIdx = 0;
         int queryIdx = 0;
@@ -62,6 +92,7 @@ class ResultSelectionStrategy {
         // length of the continuous match
         int matchLength = 0;
 
+        // whether the current match is the start of a camelcase word
         boolean isStartOfWord = true;
 
         TextFlow flow = new TextFlow();
@@ -78,6 +109,14 @@ class ResultSelectionStrategy {
 
                 if (curMatchStart == -1) {
                     // start of a match
+
+                    if (matchOnlyWordStarts && !isStartOfWord && !Character.isUpperCase(candChar)) {
+                        // not the start of a word, don't record it as a match
+                        candIdx++;
+                        continue;
+                    }
+
+                    // set match start to current
                     curMatchStart = candIdx;
 
                     if (Character.isUpperCase(candChar)) {
@@ -121,7 +160,6 @@ class ResultSelectionStrategy {
                 candIdx++;
                 queryIdx++;
 
-
             } else {
                 // the current chars don't match
 
@@ -148,6 +186,7 @@ class ResultSelectionStrategy {
                 // reset match
                 curMatchStart = -1;
                 matchLength = 0;
+                isStartOfWord = false;
             }
         }
 
