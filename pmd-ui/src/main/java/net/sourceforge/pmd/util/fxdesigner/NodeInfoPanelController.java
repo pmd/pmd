@@ -23,6 +23,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,6 +53,8 @@ public class NodeInfoPanelController extends AbstractController {
         Arrays.asList("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine");
 
     @FXML
+    private ToolbarTitledPane metricsTitledPane;
+    @FXML
     private CheckMenuItem showAllAttributesMenuItem;
     @FXML
     private TabPane nodeInfoTabPane;
@@ -63,8 +66,6 @@ public class NodeInfoPanelController extends AbstractController {
     private Tab metricResultsTab;
     @FXML
     private ListView<MetricResult> metricResultsListView;
-    @FXML
-    private Label metricsTitleLabel;
     @FXML
     private TreeView<Object> scopeHierarchyTreeView;
     private MetricEvaluator metricEvaluator = new MetricEvaluator();
@@ -152,7 +153,7 @@ public class NodeInfoPanelController extends AbstractController {
 
     private void notifyMetricsAvailable(long numMetrics) {
         metricResultsTab.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + ")");
-        metricsTitleLabel.setText("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
+        metricsTitledPane.setTitle("Metrics\t(" + (numMetrics == 0 ? "none" : numMetrics) + " available)");
         metricResultsTab.setDisable(numMetrics == 0);
     }
 

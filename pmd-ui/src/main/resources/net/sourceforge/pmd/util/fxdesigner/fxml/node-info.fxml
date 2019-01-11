@@ -2,22 +2,17 @@
 
 <!-- Left pane of the designer. Displays node information. -->
 
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.MetricResultListCell?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.RadioMenuItem?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.CheckMenuItem?>
 <TabPane fx:id="nodeInfoTabPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" side="LEFT" stylesheets="@../css/designer.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController">
 
     <tabs>
@@ -55,22 +50,21 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <center>
-                                <ListView fx:id="metricResultsListView" BorderPane.alignment="CENTER">
-                                    <cellFactory>
-                                        <MetricResultListCell fx:factory="callback" />
-                                    </cellFactory>
-                                </ListView>
-                            </center>
-                            <top>
-                                <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
-                                    <items>
-                                        <Label fx:id="metricsTitleLabel" text="Metrics" />
-                                    </items>
-                                </ToolBar>
-                            </top>
-                        </BorderPane>
+                        <ToolbarTitledPane
+                                title="Metrics"
+                                styleClass="accent-header,full-size-title"
+                                collapsible="false"
+                                fx:id="metricsTitledPane"
+                                AnchorPane.bottomAnchor="0.0"
+                                AnchorPane.leftAnchor="0.0"
+                                AnchorPane.rightAnchor="0.0"
+                                AnchorPane.topAnchor="0.0">
+                            <ListView fx:id="metricResultsListView">
+                                <cellFactory>
+                                    <MetricResultListCell fx:factory="callback" />
+                                </cellFactory>
+                            </ListView>
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
             </content>
@@ -79,19 +73,16 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                     <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <center>
-                                <TreeView fx:id="scopeHierarchyTreeView"
-                                          BorderPane.alignment="CENTER"/>
-                            </center>
-                            <top>
-                                <ToolBar styleClass="info-title-bar" BorderPane.alignment="CENTER">
-                                    <items>
-                                        <Label text="Scope hierarchy" />
-                                    </items>
-                                </ToolBar>
-                            </top>
-                        </BorderPane>
+                        <ToolbarTitledPane
+                                title="Scope hierarchy"
+                                styleClass="accent-header,full-size-title"
+                                collapsible="false"
+                                AnchorPane.bottomAnchor="0.0"
+                                AnchorPane.leftAnchor="0.0"
+                                AnchorPane.rightAnchor="0.0"
+                                AnchorPane.topAnchor="0.0">
+                            <TreeView fx:id="scopeHierarchyTreeView" />
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
             </content>
