@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -75,23 +74,6 @@ public final class CodeAreaAutocompleteProvider {
                     })
                     .filter(Objects::nonNull)
                     .subscribe(s -> showAutocompletePopup(s._1, s._2));
-
-        initTabCompletion();
-    }
-
-
-    private void initTabCompletion() {
-        // enable tab or enter completion
-        EventStreams.eventsOf(myCodeArea, KeyEvent.KEY_PRESSED)
-                    .filter(key -> key.getCode().equals(KeyCode.TAB) || key.getCode().equals(KeyCode.ENTER))
-                    .conditionOn(autoCompletePopup.showingProperty())
-                    .map(event -> myCodeArea.getCaretPosition())
-                    .map(this::getInsertionPointAndQuery)
-                    .filter(Objects::nonNull)
-                    .subscribe(t -> {
-                        Optional<MatchResult> focusedResult = getFocusedResult();
-                        focusedResult.ifPresent(r -> applySuggestion(t._1, t._2, r.getNodeName()));
-                    });
     }
 
 
@@ -142,24 +124,9 @@ public final class CodeAreaAutocompleteProvider {
 
         autoCompletePopup.getItems().setAll(suggestions);
 
-        if (autoCompletePopup.getItems().size() > 0) {
-            //            ((CustomMenuItem) autoCompletePopup.getItems().get(0))
-            //                .getContent()
-            //                .getPseudoClassStates().add(PseudoClass.getPseudoClass("focused"));
-        }
 
         myCodeArea.getCharacterBoundsOnScreen(insertionIndex, insertionIndex + input.length())
                   .ifPresent(bounds -> autoCompletePopup.show(myCodeArea, bounds.getMinX(), bounds.getMaxY()));
-    }
-
-
-    private Optional<MatchResult> getFocusedResult() {
-
-        if (autoCompletePopup.getItems().size() > 0) {
-            return Optional.of((MatchResult) autoCompletePopup.getItems().get(0).getUserData());
-        }
-
-        return Optional.empty();
     }
 
 
