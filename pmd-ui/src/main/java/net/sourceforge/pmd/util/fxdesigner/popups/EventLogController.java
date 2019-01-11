@@ -2,8 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner;
+package net.sourceforge.pmd.util.fxdesigner.popups;
 
+import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -14,22 +16,32 @@ import java.util.Objects;
 
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
+import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 
 /**
@@ -60,6 +72,10 @@ public class EventLogController extends AbstractController {
 
     private Var<List<Node>> selectedErrorNodes = Var.newSimpleVar(Collections.emptyList());
 
+
+    private SoftReferenceCache<Stage> popupStageCache = new SoftReferenceCache<>(this::createStage);
+
+    private Var<Integer> numLogEntries = Var.newSimpleVar(0);
 
     public EventLogController(DesignerRoot owner, MainDesignerController mediator) {
         this.designerRoot = owner;
@@ -100,6 +116,7 @@ public class EventLogController extends AbstractController {
                                                             .filter(y -> y.getCategory() != Category.XPATH_EVALUATION_EXCEPTION);
 
         EventStreams.merge(onlyParseException, otherExceptions, onlyXPathException)
+                    .hook(e -> numLogEntries.setValue(numLogEntries.getValue() + 1))
                     .subscribe(t -> eventLogTableView.getItems().add(t));
 
         eventLogTableView.getSelectionModel()
@@ -154,6 +171,16 @@ public class EventLogController extends AbstractController {
     }
 
 
+    public void showPopup() {
+        popupStageCache.getValue().show();
+    }
+
+
+    public void hidePopup() {
+        popupStageCache.getValue().hide();
+    }
+
+
     private void onExceptionSelectionChanges(LogEntry oldVal, LogEntry newVal) {
         logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
 
@@ -161,4 +188,33 @@ public class EventLogController extends AbstractController {
             handleSelectedEntry(newVal);
         }
     }
+
+
+    public Val<Integer> numLogEntriesProperty() {
+        return numLogEntries;
+    }
+
+
+    private Stage createStage() {
+        FXMLLoader loader = new FXMLLoader(DesignerUtil.getFxml("event-log.fxml"));
+        loader.setController(this);
+
+        final Stage dialog = new Stage();
+        dialog.initOwner(designerRoot.getMainStage().getScene().getWindow());
+        dialog.initModality(Modality.WINDOW_MODAL);
+        // dialog.initStyle(StageStyle.UNDECORATED);
+
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        Scene scene = new Scene(root);
+        dialog.setTitle("Event log");
+        dialog.setScene(scene);
+        return dialog;
+    }
+
 }

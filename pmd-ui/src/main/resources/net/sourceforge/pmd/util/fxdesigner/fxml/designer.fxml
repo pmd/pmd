@@ -37,6 +37,15 @@
                                     </items>
                                 </Menu>
 
+
+                                <Menu mnemonicParsing="false" text="View">
+                                    <items>
+                                        <MenuItem fx:id="openEventLogMenuItem" mnemonicParsing="false"
+                                                  text="Open event log...">
+                                        </MenuItem>
+                                    </items>
+                                </Menu>
+
                                 <Menu mnemonicParsing="false" text="Configuration">
                                     <items>
                                         <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false" text="Set up the auxclasspath">
@@ -91,11 +100,6 @@
                                                 <Tab text="XPath Editor" fx:id="xpathEditorTab">
                                                     <content>
                                                         <fx:include source="xpath.fxml" fx:id="xpathPanel" />
-                                                    </content>
-                                                </Tab>
-                                                <Tab fx:id="eventLogTab" text="Exception Log">
-                                                    <content>
-                                                        <fx:include fx:id="eventLogPanel" source="event-log.fxml" />
                                                     </content>
                                                 </Tab>
                                                 <Tab disable="true">

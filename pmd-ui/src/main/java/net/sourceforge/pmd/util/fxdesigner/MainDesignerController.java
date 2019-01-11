@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
@@ -78,6 +79,8 @@ public class MainDesignerController extends AbstractController {
     @FXML
     private MenuItem setupAuxclasspathMenuItem;
     @FXML
+    public MenuItem openEventLogMenuItem;
+    @FXML
     private MenuItem openFileMenuItem;
     @FXML
     private MenuItem licenseMenuItem;
@@ -96,8 +99,6 @@ public class MainDesignerController extends AbstractController {
     @FXML
     private TabPane bottomTabPane;
     @FXML
-    private Tab eventLogTab;
-    @FXML
     private Tab xpathEditorTab;
     @FXML
     private SplitPane mainHorizontalSplitPane;
@@ -108,8 +109,7 @@ public class MainDesignerController extends AbstractController {
     private XPathPanelController xpathPanelController;
     @FXML
     private SourceEditorController sourceEditorController;
-    @FXML
-    private EventLogController eventLogPanelController;
+    private final EventLogController eventLogController;
 
     // Other fields
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
@@ -117,6 +117,7 @@ public class MainDesignerController extends AbstractController {
 
     public MainDesignerController(DesignerRoot owner) {
         this.designerRoot = owner;
+        eventLogController = new EventLogController(designerRoot, this);
     }
 
     @Override
@@ -145,6 +146,11 @@ public class MainDesignerController extends AbstractController {
         });
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
+
+        openEventLogMenuItem.setOnAction(e -> eventLogController.showPopup());
+        openEventLogMenuItem.textProperty().bind(
+            eventLogController.numLogEntriesProperty()
+                              .map(i -> "Open event log (" + i + " entries)"));
 
         Platform.runLater(this::updateRecentFilesMenu);
         Platform.runLater(this::refreshAST); // initial refreshing
@@ -202,7 +208,6 @@ public class MainDesignerController extends AbstractController {
             xpathPanelController.invalidateResults(true);
         }
     }
-
 
     /**
      * Refreshes the XPath results if the compilation unit is valid.
@@ -433,12 +438,14 @@ public class MainDesignerController extends AbstractController {
 
 
     public void setBottomTabIndex(int i) {
-        bottomTabPane.getSelectionModel().select(i);
+        if (i >= 0 && i < bottomTabPane.getTabs().size()) {
+            bottomTabPane.getSelectionModel().select(i);
+        }
     }
 
 
     @Override
     public List<AbstractController> getChildren() {
-        return Arrays.asList(xpathPanelController, sourceEditorController, nodeInfoPanelController, eventLogPanelController);
+        return Arrays.asList(xpathPanelController, sourceEditorController, nodeInfoPanelController);
     }
 }
