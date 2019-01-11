@@ -165,6 +165,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                         if (searchPoint > input.length()) {
                             searchPoint = input.length();
                         }
+                        if (insertionPoint < 0) {
+                            insertionPoint = 0;
+                        }
                         input = input.substring(insertionPoint, searchPoint);
 
                         return Tuples.t(insertionPoint, input.trim());

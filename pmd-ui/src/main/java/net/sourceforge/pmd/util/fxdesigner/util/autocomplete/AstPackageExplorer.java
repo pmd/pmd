@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -29,7 +30,8 @@ class AstPackageExplorer implements NodeNameFinder {
         availableNodeNames =
             getClasses("net.sourceforge.pmd.lang."
                            + language.getTerseName() + ".ast")
-                .filter(files -> files.getSimpleName().startsWith("AST"))
+                .filter(clazz -> clazz.getSimpleName().startsWith("AST"))
+                .filter(clazz -> !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()))
                 .map(m -> m.getSimpleName().substring("AST".length()))
                 .collect(Collectors.toList());
 
