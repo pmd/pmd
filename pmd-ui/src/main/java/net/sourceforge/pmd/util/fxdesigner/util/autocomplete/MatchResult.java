@@ -26,7 +26,7 @@ public class MatchResult {
     }
 
 
-    /** Node name. */
+    /** Suggested node name. */
     public String getNodeName() {
         return suggestion;
     }

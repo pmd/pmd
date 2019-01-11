@@ -392,6 +392,4 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     public List<SettingsOwner> getChildrenSettingsNodes() {
         return Collections.singletonList(getRuleBuilder());
     }
-
-
 }

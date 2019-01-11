@@ -91,8 +91,6 @@ class AstPackageExplorer implements NodeNameFinder {
                 }
             }
         }
-
-        return;
     }
 
 

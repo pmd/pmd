@@ -6,10 +6,8 @@ package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Stream;
 
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -50,7 +48,7 @@ class ResultSelectionStrategy {
                              // with second pass:
                              //
                              //      query       coit
-                             //      candidate   ClassOrInterfaceType            : 40 -> and indeed it's the best match
+                             //      candidate   ClassOrInterfaceType            : 40 -> and indeed it's a better match
                              //                  ^    ^ ^        ^
                              //      candidate   ClassOrInterfaceDeclaration     : 32
                              //                  ^    ^ ^ ^
@@ -82,20 +80,31 @@ class ResultSelectionStrategy {
      *                            that can be used to break ties.
      */
     private MatchResult computeMatchingSegments(String candidate, String query, boolean matchOnlyWordStarts) {
+        // Performs a left-to-right scan of the candidate string,
+        // trying to assign each of the chars of the query to a
+        // location in the string (also left-to-right)
 
-        int candIdx = 0;
-        int queryIdx = 0;
+        // Score is computed a bit ad-hoc:
+        // +2 for a lonely char
+        // +10 for a character matching the start of a camelcase word (an uppercase char)
+        // the longer the submatch, the higher the match counts
+        // submatches occurring at the beginning of a word count more than in other places
+        // chars from the query that remain at the end penalise the score
+
+        // This algorithm is greedy and doesn't always select the best possible match result
+        // The second pass is even more unfair and allows to break ties
+
+        int candIdx = 0;  // current index in the candidate
+        int queryIdx = 0; // current index in the query
         int score = 0;
 
+        // these are reset when a submatch ends
         int lastMatchEnd = 0;
         int curMatchStart = -1;
-        // length of the continuous match
         int matchLength = 0;
+        boolean isStartOfWord = true; // whether the current submatch is at the start of a camelcase word
 
-        // whether the current match is the start of a camelcase word
-        boolean isStartOfWord = true;
-
-        TextFlow flow = new TextFlow();
+        TextFlow flow = new TextFlow(); // result
 
         while (candIdx < candidate.length() && queryIdx < query.length()) {
 
@@ -165,8 +174,7 @@ class ResultSelectionStrategy {
 
                 if (curMatchStart != -1) {
                     // end of a match
-
-                    assert matchLength > 0;
+                    // assert matchLength > 0;
 
                     String before = candidate.substring(lastMatchEnd, curMatchStart);
                     String match = candidate.substring(curMatchStart, curMatchStart + matchLength);
@@ -181,7 +189,7 @@ class ResultSelectionStrategy {
                 }
 
                 candIdx++;
-                // don't shift query
+                // stay on same query index
 
                 // reset match
                 curMatchStart = -1;
@@ -190,8 +198,10 @@ class ResultSelectionStrategy {
             }
         }
 
+        // end of loop
+
         if (curMatchStart != -1 && candIdx < candidate.length()) {
-            // the query ends inside a match, we must complete the candidate
+            // the query ends inside a match, we must complete the current match
 
             String before = candidate.substring(lastMatchEnd, curMatchStart);
             String match = candidate.substring(curMatchStart, candIdx);
@@ -202,9 +212,10 @@ class ResultSelectionStrategy {
 
             flow.getChildren().add(makeHighlightedText(match));
 
-            lastMatchEnd = candIdx;
+            lastMatchEnd = candIdx; // shift
         }
 
+        // add the rest of the candidate
         String rest = candidate.substring(lastMatchEnd);
         if (!rest.isEmpty()) {
             flow.getChildren().add(new Text(rest));
@@ -219,17 +230,5 @@ class ResultSelectionStrategy {
 
         return new MatchResult(score, candidate, flow);
     }
-
-
-    private static TextFlow highlightXPathSuggestion(String text, String match) {
-        int filterIndex = text.toLowerCase(Locale.ROOT).indexOf(match.toLowerCase(Locale.ROOT));
-
-        Text textBefore = new Text(text.substring(0, filterIndex));
-        Text textAfter = new Text(text.substring(filterIndex + match.length()));
-        Text textFilter = new Text(text.substring(filterIndex, filterIndex + match.length())); //instead of "filter" to keep all "case sensitive"
-        textFilter.setFill(Color.ORANGE);
-        return new TextFlow(textBefore, textFilter, textAfter);
-    }
-
 
 }
