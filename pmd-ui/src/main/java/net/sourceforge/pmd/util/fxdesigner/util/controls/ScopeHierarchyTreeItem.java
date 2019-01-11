@@ -6,6 +6,8 @@ package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
@@ -25,6 +27,33 @@ public final class ScopeHierarchyTreeItem extends TreeItem<Object> {
     private ScopeHierarchyTreeItem(Object scopeOrDecl) {
         super(scopeOrDecl);
         setExpanded(true);
+    }
+
+
+    /**
+     * Tries to find a node in the descendants of this node that has
+     * the same toString as the given value.
+     */
+    public Optional<ScopeHierarchyTreeItem> tryFindNode(Object searched, int maxDepth) {
+        if (searched == null || maxDepth == 0) {
+            return Optional.empty();
+        }
+
+        if (Objects.equals(searched.toString(), this.getValue().toString())) {
+            return Optional.of(this);
+        }
+
+        for (TreeItem<Object> child : getChildren()) {
+
+            Optional<ScopeHierarchyTreeItem> childResult =
+                ((ScopeHierarchyTreeItem) child).tryFindNode(searched, maxDepth - 1);
+
+            if (childResult.isPresent()) {
+                return childResult;
+            }
+        }
+
+        return Optional.empty();
     }
 
 

@@ -232,16 +232,27 @@ public class MainDesignerController extends AbstractController {
     }
 
 
+    /**
+     * Callback for {@link NodeInfoPanelController}. This method should
+     * not forward a focus request back to the {@link NodeInfoPanelController},
+     * it takes care itself of calling itself.
+     */
     public void onNameDeclarationSelected(NameDeclaration declaration) {
-        sourceEditorController.clearNameOccurences();
 
-        List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
+        Platform.runLater(() -> {
+            sourceEditorController.clearNameOccurences();
 
-        if (occurrences != null) {
-            sourceEditorController.highlightNameOccurrences(occurrences);
-        }
+            List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
 
-        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
+            if (occurrences != null) {
+                sourceEditorController.highlightNameOccurrences(occurrences);
+            }
+        });
+
+        Platform.runLater(() -> {
+            sourceEditorController.setFocusNode(declaration.getNode());
+            sourceEditorController.focusNodeInTreeView(declaration.getNode());
+        });
     }
 
     /**

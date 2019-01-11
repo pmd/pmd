@@ -20,11 +20,13 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -84,7 +86,10 @@ public class NodeInfoPanelController extends AbstractController {
                     .filter(Objects::nonNull)
                     .map(TreeItem::getValue)
                     .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
-                    .subscribe(parent::onNameDeclarationSelected);
+                    .subscribe(declaration -> {
+                        Platform.runLater(() -> setFocusNode(declaration.getNode(), true));
+                        parent.onNameDeclarationSelected(declaration);
+                    });
 
         scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
 
@@ -102,6 +107,11 @@ public class NodeInfoPanelController extends AbstractController {
      * @param node Node to inspect
      */
     public void setFocusNode(Node node) {
+        setFocusNode(node, false);
+    }
+
+
+    private void setFocusNode(Node node, boolean focusScopeView) {
         if (node == null) {
             invalidateInfo();
             return;
@@ -114,9 +124,8 @@ public class NodeInfoPanelController extends AbstractController {
 
         displayAttributes(node);
         displayMetrics(node);
-        displayScopes(node);
+        displayScopes(node, focusScopeView);
     }
-
 
     private void displayAttributes(Node node) {
         ObservableList<String> atts = getAttributes(node);
@@ -134,17 +143,26 @@ public class NodeInfoPanelController extends AbstractController {
     }
 
 
-    private void displayScopes(Node node) {
-        // TODO maybe a better way would be to build all the scope TreeItem hierarchy once
-        // and only expand the ascendants of the node.
-        TreeItem<Object> rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(node);
+    private void displayScopes(Node node, boolean focusScopeView) {
+
+        // current selection
+        TreeItem<Object> previousSelection = scopeHierarchyTreeView.getSelectionModel().getSelectedItem();
+
+        ScopeHierarchyTreeItem rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(node);
         scopeHierarchyTreeView.setRoot(rootScope);
+
+        if (focusScopeView && previousSelection != null) {
+            int maxDepth = IteratorUtil.count(IteratorUtil.parentIterator(previousSelection, true));
+
+            rootScope.tryFindNode(previousSelection.getValue(), maxDepth)
+                     .ifPresent(scopeHierarchyTreeView.getSelectionModel()::select);
+        }
     }
 
     /**
      * Invalidates the info being displayed.
      */
-    public void invalidateInfo() {
+    private void invalidateInfo() {
         metricResultsListView.setItems(FXCollections.emptyObservableList());
         xpathAttributesListView.setItems(FXCollections.emptyObservableList());
         scopeHierarchyTreeView.setRoot(null);
