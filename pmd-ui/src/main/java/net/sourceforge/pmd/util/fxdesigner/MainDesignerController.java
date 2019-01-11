@@ -163,24 +163,7 @@ public class MainDesignerController extends AbstractController {
         // gets captured in the closure
         final double defaultMainHorizontalSplitPaneDividerPosition
                 = mainHorizontalSplitPane.getDividerPositions()[0];
-
-
-
-        // show/ hide bottom pane
-//        bottomTabsToggle.selectedProperty().addListener((observable, wasExpanded, isNowExpanded) -> {
-//            KeyValue keyValue = null;
-//            DoubleProperty divPosition = mainHorizontalSplitPane.getDividers().get(0).positionProperty();
-//            if (wasExpanded && !isNowExpanded) {
-//                keyValue = new KeyValue(divPosition, 1);
-//            } else if (!wasExpanded && isNowExpanded) {
-//                keyValue = new KeyValue(divPosition, defaultMainHorizontalSplitPaneDividerPosition);
-//            }
-//
-//            if (keyValue != null) {
-//                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), keyValue));
-//                timeline.play();
-//            }
-//        });
+        
     }
 
 
@@ -420,17 +403,6 @@ public class MainDesignerController extends AbstractController {
         designerRoot.getMainStage().setMaximized(!b); // trigger change listener anyway
         designerRoot.getMainStage().setMaximized(b);
     }
-//
-//
-//    @PersistentProperty
-//    public boolean isBottomTabExpanded() {
-//        return bottomTabsToggle.isSelected();
-//    }
-//
-//
-//    public void setBottomTabExpanded(boolean b) {
-//        bottomTabsToggle.setSelected(b);
-//    }
 
 
     @PersistentProperty
