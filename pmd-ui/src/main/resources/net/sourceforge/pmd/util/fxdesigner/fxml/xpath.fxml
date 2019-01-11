@@ -94,7 +94,7 @@
                                 </MenuButton>
                                 <Button fx:id="exportXpathToRuleButton" mnemonicParsing="false" styleClass="icon-button">
                                     <graphic>
-                                        <FontIcon iconLiteral="fa-sign-out" />
+                                        <FontIcon iconLiteral="fa-share" />
                                     </graphic>
                                     <tooltip>
                                         <Tooltip>
