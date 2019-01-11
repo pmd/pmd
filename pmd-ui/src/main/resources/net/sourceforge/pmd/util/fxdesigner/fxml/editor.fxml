@@ -35,7 +35,7 @@
                         AnchorPane.rightAnchor="0.0"
                         AnchorPane.topAnchor="0.0">
                     <toolbarItems>
-                            <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button"
+                            <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-button"
                                         fx:id="languageSelectionMenuButton">
                                 <graphic>
                                     <FontIcon iconLiteral="fa-cog" />

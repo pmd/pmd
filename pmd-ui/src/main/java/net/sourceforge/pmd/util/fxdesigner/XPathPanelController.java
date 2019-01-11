@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -62,7 +60,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -96,6 +93,8 @@ public class XPathPanelController extends AbstractController {
     @FXML
     public ToolbarTitledPane expressionTitledPane;
     @FXML
+    public Button exportXpathToRuleButton;
+    @FXML
     private PropertyTableView propertyTableView;
     @FXML
     private SyntaxHighlightingCodeArea xpathExpressionArea;
@@ -125,9 +124,11 @@ public class XPathPanelController extends AbstractController {
 
         xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
 
-        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (XPath " + v + ")"));
+        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (" + v + ")"));
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
+
+        exportXpathToRuleButton.setOnAction(e -> showExportXPathToRuleWizard());
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
@@ -329,7 +330,7 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-    public void showExportXPathToRuleWizard() throws IOException {
+    public void showExportXPathToRuleWizard() {
         ExportXPathWizardController wizard
             = new ExportXPathWizardController(xpathExpressionProperty());
 
@@ -341,7 +342,12 @@ public class XPathPanelController extends AbstractController {
         dialog.setOnCloseRequest(e -> wizard.shutdown());
         dialog.initModality(Modality.WINDOW_MODAL);
 
-        Parent root = loader.load();
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Scene scene = new Scene(root);
         //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
         dialog.setScene(scene);

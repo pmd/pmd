@@ -4,17 +4,18 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <AnchorPane minHeight="0.0"
             minWidth="0.0"
             prefHeight="180.0"
@@ -66,10 +67,17 @@
                                            AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
                             <toolbarItems>
-                                <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-menu-button">
+                                <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-button">
                                     <graphic>
                                         <FontIcon iconLiteral="fa-cog" />
                                     </graphic>
+                                    <tooltip>
+                                        <Tooltip>
+                                            <text>
+                                                <String fx:value="Configure XPath version" />
+                                            </text>
+                                        </Tooltip>
+                                    </tooltip>
                                     <items>
                                         <fx:define>
                                             <ToggleGroup fx:id="xpathVersionToggleGroup" />
@@ -84,6 +92,18 @@
                                                        toggleGroup="$xpathVersionToggleGroup" />
                                     </items>
                                 </MenuButton>
+                                <Button fx:id="exportXpathToRuleButton" mnemonicParsing="false" styleClass="icon-button">
+                                    <graphic>
+                                        <FontIcon iconLiteral="fa-sign-out" />
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip>
+                                            <text>
+                                                <String fx:value="Export XPath to XML rule" />
+                                            </text>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Button>
                             </toolbarItems>
                             <content>
                                 <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css" fx:id="xpathExpressionArea" />
