@@ -27,14 +27,14 @@ class ResultSelectionStrategy {
     private static final int MIN_QUERY_LENGTH = 1;
 
 
-    Stream<MatchResult> filterResults(List<String> candidates, String query, int limit) {
+    Stream<CompletionResult> filterResults(List<String> candidates, String query, int limit) {
         if (query.length() < MIN_QUERY_LENGTH) {
             return Stream.empty();
         }
 
         return candidates.stream()
                          .map(cand -> computeMatchingSegments(cand, query, false))
-                         .sorted(Comparator.comparingInt(MatchResult::getScore).reversed())
+                         .sorted(Comparator.comparingInt(CompletionResult::getScore).reversed())
                          // second pass is done only on those we know we'll keep
                          .limit(limit)
                          .map(prev -> {
@@ -53,11 +53,11 @@ class ResultSelectionStrategy {
                              //      candidate   ClassOrInterfaceDeclaration     : 32
                              //                  ^    ^ ^ ^
 
-                             MatchResult refined = computeMatchingSegments(prev.getNodeName(), query, true);
+                             CompletionResult refined = computeMatchingSegments(prev.getNodeName(), query, true);
                              // keep the best
                              return refined.getScore() > prev.getScore() ? refined : prev;
                          })
-                         .sorted(Comparator.comparingInt(MatchResult::getScore).reversed());
+                         .sorted(Comparator.comparingInt(CompletionResult::getScore).reversed());
 
 
     }
@@ -79,7 +79,7 @@ class ResultSelectionStrategy {
      * @param matchOnlyWordStarts Whether to only match word starts. This is a more unfair strategy
      *                            that can be used to break ties.
      */
-    private MatchResult computeMatchingSegments(String candidate, String query, boolean matchOnlyWordStarts) {
+    private CompletionResult computeMatchingSegments(String candidate, String query, boolean matchOnlyWordStarts) {
         // Performs a left-to-right scan of the candidate string,
         // trying to assign each of the chars of the query to a
         // location in the string (also left-to-right)
@@ -228,7 +228,7 @@ class ResultSelectionStrategy {
             score -= remainingChars * 2;
         }
 
-        return new MatchResult(score, candidate, flow);
+        return new CompletionResult(score, candidate, flow);
     }
 
 }

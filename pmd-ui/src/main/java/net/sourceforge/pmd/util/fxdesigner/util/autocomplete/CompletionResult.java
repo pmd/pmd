@@ -13,13 +13,13 @@ import javafx.scene.text.TextFlow;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class MatchResult {
+public class CompletionResult {
     private final int score;
     private final String suggestion;
     private final TextFlow textFlow;
 
 
-    MatchResult(int score, String suggestion, TextFlow textFlow) {
+    CompletionResult(int score, String suggestion, TextFlow textFlow) {
         this.score = score;
         this.suggestion = suggestion;
         this.textFlow = textFlow;

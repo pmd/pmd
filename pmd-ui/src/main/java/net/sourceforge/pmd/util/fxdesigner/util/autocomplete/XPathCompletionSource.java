@@ -14,14 +14,14 @@ import net.sourceforge.pmd.lang.Language;
 /**
  * Language specific tool to suggest auto-completion results.
  */
-public final class XPathSuggestionMaker {
+public final class XPathCompletionSource implements CompletionResultSource {
 
     private final NodeNameFinder myNameFinder;
     private final ResultSelectionStrategy mySelectionStrategy = new ResultSelectionStrategy();
     // if we don't cache them the classpath exploration is done on each character typed
-    private static Map<Language, XPathSuggestionMaker> byLanguage = new HashMap<>();
+    private static Map<Language, XPathCompletionSource> byLanguage = new HashMap<>();
 
-    private XPathSuggestionMaker(NodeNameFinder nodeNameFinder) {
+    private XPathCompletionSource(NodeNameFinder nodeNameFinder) {
         this.myNameFinder = nodeNameFinder;
     }
 
@@ -30,14 +30,15 @@ public final class XPathSuggestionMaker {
      * Returns a stream of pre-built TextFlows sorted by relevance.
      * The stream will contain at most "limit" elements.
      */
-    public Stream<MatchResult> getSortedMatches(String input, int limit) {
+    @Override
+    public Stream<CompletionResult> getSortedMatches(String input, int limit) {
         return mySelectionStrategy.filterResults(myNameFinder.getNodeNames(), input, limit);
     }
 
     /**
      * Gets a suggestion tool suited to the given language.
      */
-    public static XPathSuggestionMaker forLanguage(Language language) {
-        return byLanguage.computeIfAbsent(language, l -> new XPathSuggestionMaker(NodeNameFinder.forLanguage(l)));
+    public static XPathCompletionSource forLanguage(Language language) {
+        return byLanguage.computeIfAbsent(language, l -> new XPathCompletionSource(NodeNameFinder.forLanguage(l)));
     }
 }

@@ -35,8 +35,9 @@ import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
-import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CodeAreaAutocompleteProvider;
-import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathSuggestionMaker;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathAutocompleteProvider;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CompletionResultSource;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathCompletionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
@@ -126,9 +127,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-        Supplier<XPathSuggestionMaker> suggestionMaker = () -> XPathSuggestionMaker.forLanguage(parent.getLanguageVersion().getLanguage());
+        Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
 
-        new CodeAreaAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
+        new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
     }
 
 

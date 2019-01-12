@@ -45,14 +45,14 @@ import javafx.scene.input.KeyEvent;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public final class CodeAreaAutocompleteProvider {
+public final class XPathAutocompleteProvider {
 
     private final StyledTextArea<?, ?> myCodeArea;
-    private final Supplier<XPathSuggestionMaker> mySuggestionProvider;
+    private final Supplier<CompletionResultSource> mySuggestionProvider;
     private final ContextMenu autoCompletePopup = new ContextMenuWithNoArrows();
 
 
-    public CodeAreaAutocompleteProvider(StyledTextArea<?, ?> codeArea, Supplier<XPathSuggestionMaker> suggestionProvider) {
+    public XPathAutocompleteProvider(StyledTextArea<?, ?> codeArea, Supplier<CompletionResultSource> suggestionProvider) {
         myCodeArea = codeArea;
         this.mySuggestionProvider = suggestionProvider;
 
@@ -118,7 +118,7 @@ public final class CodeAreaAutocompleteProvider {
 
         int curFocusIdx = getFocusIdx();
 
-        XPathSuggestionMaker suggestionMaker = mySuggestionProvider.get();
+        CompletionResultSource suggestionMaker = mySuggestionProvider.get();
 
         List<MenuItem> suggestions =
             suggestionMaker.getSortedMatches(input, 5)
