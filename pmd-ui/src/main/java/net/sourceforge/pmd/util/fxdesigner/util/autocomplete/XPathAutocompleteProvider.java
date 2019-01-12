@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 
-import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_UP;
-
-import java.awt.AWTException;
-import java.awt.Robot;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -29,18 +27,20 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows
 import javafx.application.Platform;
 import javafx.collections.ObservableSet;
 import javafx.css.PseudoClass;
+import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Skin;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 
 /**
- * Wraps a codearea to provide autocompletion support for it.
+ * Wraps a CodeArea to provide auto completion support for it.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -62,6 +62,27 @@ public final class XPathAutocompleteProvider {
 
 
     public void initialiseAutoCompletion() {
+
+        Set<String> completionTriggers = new HashSet<>(Arrays.asList("\r", "\r\n", "\n", "\t"));
+
+        // allows tab/enter completion
+        autoCompletePopup.addEventHandler(KeyEvent.KEY_TYPED, e -> {
+
+            // for some reason using KeyEvent.KEY_PRESSED didn't work with the ENTER key,
+            // which is why we use KeyEvent.KEY_TYPED
+            if (!e.isConsumed() && completionTriggers.contains(e.getCharacter())) {
+                int focusIdx = getFocusIdx();
+                if (focusIdx == -1) {
+                    focusIdx = 0;
+                }
+
+                if (focusIdx < autoCompletePopup.getItems().size()) {
+                    autoCompletePopup.getItems().get(focusIdx).getOnAction().handle(new ActionEvent());
+                }
+                e.consume();
+            }
+
+        });
 
         EventStream<Integer> changesEventStream = myCodeArea.plainTextChanges()
                                                             .map(characterChanges -> {
@@ -119,8 +140,6 @@ public final class XPathAutocompleteProvider {
 
     private void showAutocompletePopup(int insertionIndex, String input) {
 
-        int curFocusIdx = getFocusIdx();
-
         CompletionResultSource suggestionMaker = mySuggestionProvider.get();
 
         List<MenuItem> suggestions =
@@ -143,53 +162,19 @@ public final class XPathAutocompleteProvider {
         myCodeArea.getCharacterBoundsOnScreen(insertionIndex, insertionIndex + input.length())
                   .ifPresent(bounds -> autoCompletePopup.show(myCodeArea, bounds.getMinX(), bounds.getMaxY()));
 
-        Platform.runLater(() -> focusFirstItem(curFocusIdx));
+        Skin<?> skin = autoCompletePopup.getSkin();
+        if (skin != null) {
+            Node fstItem = skin.getNode().lookup(".menu-item");
+            if (fstItem != null) {
+                fstItem.requestFocus();
+            }
+        }
     }
 
 
     private void applySuggestion(int insertionIndex, String toReplace, String replacement) {
         myCodeArea.replaceText(insertionIndex, insertionIndex + toReplace.length(), replacement);
         Platform.runLater(autoCompletePopup::hide);
-    }
-
-
-    /**
-     * Programmatically focuses the node at index 0. Doing it with key presses is
-     * the only reliable way, because we're replacing the items.
-     *
-     * That allows using ENTER to insert the first completion without pressing DOWN first.
-     */
-    private void focusFirstItem(int curFocusIdx) {
-
-        Robot r;
-        try {
-            r = new Robot();
-        } catch (AWTException e) {
-            return;
-        }
-
-        if (curFocusIdx == 0) {
-            // the first item was previously focused
-            // For some reason there's a bug where we can't be sure that the 0th
-            // idx will stay focused when changing items unless we do the following:
-
-            r.keyPress(VK_DOWN);
-            r.keyRelease(VK_DOWN);
-            r.keyPress(VK_UP);
-            r.keyRelease(VK_UP);
-
-            return;
-        }
-
-        int diff = Math.abs(curFocusIdx); // so if curFocusIdx was -1 we have to go 1 down
-        boolean goUp = curFocusIdx > 0;
-
-        while (diff-- > 0) {
-            int key = goUp ? VK_UP : VK_DOWN;
-
-            r.keyPress(key);
-            r.keyRelease(key);
-        }
     }
 
 

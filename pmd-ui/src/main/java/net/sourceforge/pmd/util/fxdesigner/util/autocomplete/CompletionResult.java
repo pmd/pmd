@@ -14,12 +14,12 @@ import javafx.scene.text.TextFlow;
  * @since 7.0.0
  */
 public class CompletionResult implements Comparable<CompletionResult> {
-    private final double score;
+    private final int score;
     private final String suggestion;
     private final TextFlow textFlow;
 
 
-    CompletionResult(double score, String suggestion, TextFlow textFlow) {
+    CompletionResult(int score, String suggestion, TextFlow textFlow) {
         this.score = score;
         this.suggestion = suggestion;
         this.textFlow = textFlow;
@@ -41,13 +41,13 @@ public class CompletionResult implements Comparable<CompletionResult> {
 
 
     /** Relevance score of this result. */
-    double getScore() {
+    int getScore() {
         return score;
     }
 
 
     @Override
     public int compareTo(CompletionResult o) {
-        return Double.compare(score, o.score);
+        return Integer.compare(score, o.score);
     }
 }

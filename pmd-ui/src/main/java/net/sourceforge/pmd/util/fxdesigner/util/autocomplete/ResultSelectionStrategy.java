@@ -40,8 +40,9 @@ class ResultSelectionStrategy {
         return candidates.stream().filter(s -> !s.isEmpty())
                          .map(cand -> computeMatchingSegments(cand, query, false))
                          .sorted(Comparator.<CompletionResult>naturalOrder().reversed())
-                         // second pass is done only on those we know we'll keep
+                         .filter(it -> it.getScore() > 0)
                          .limit(limit)
+                         // second pass is done only on those we know we'll keep
                          .map(prev -> {
                              // try to break ties between the top results, e.g.
                              //
@@ -92,7 +93,7 @@ class ResultSelectionStrategy {
         if (candidate.equalsIgnoreCase(query)) {
             // perfect match
             TextFlow flow = new TextFlow(makeHighlightedText(candidate));
-            return new CompletionResult(Double.MAX_VALUE, candidate, flow);
+            return new CompletionResult(Integer.MAX_VALUE, candidate, flow);
         }
 
         // Performs a left-to-right scan of the candidate string,
