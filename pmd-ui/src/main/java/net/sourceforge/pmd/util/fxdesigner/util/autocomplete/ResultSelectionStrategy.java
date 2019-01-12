@@ -26,15 +26,20 @@ class ResultSelectionStrategy {
 
     private static final int MIN_QUERY_LENGTH = 1;
 
+    private static final Comparator<CompletionResult> DISPLAY_ORDER =
+        Comparator.<CompletionResult>naturalOrder()
+            .reversed()
+            // shorter results are displayed first when there's a tie
+            .thenComparing(CompletionResult::getNodeName, Comparator.comparing(String::length));
 
     Stream<CompletionResult> filterResults(List<String> candidates, String query, int limit) {
         if (query.length() < MIN_QUERY_LENGTH) {
             return Stream.empty();
         }
 
-        return candidates.stream()
+        return candidates.stream().filter(s -> !s.isEmpty())
                          .map(cand -> computeMatchingSegments(cand, query, false))
-                         .sorted(Comparator.comparingInt(CompletionResult::getScore).reversed())
+                         .sorted(Comparator.<CompletionResult>naturalOrder().reversed())
                          // second pass is done only on those we know we'll keep
                          .limit(limit)
                          .map(prev -> {
@@ -57,7 +62,7 @@ class ResultSelectionStrategy {
                              // keep the best
                              return refined.getScore() > prev.getScore() ? refined : prev;
                          })
-                         .sorted(Comparator.comparingInt(CompletionResult::getScore).reversed());
+                         .sorted(DISPLAY_ORDER);
 
 
     }
@@ -71,6 +76,10 @@ class ResultSelectionStrategy {
     }
 
 
+    private boolean isWordStart(String pascalCased, int idx) {
+        return idx == 0 || Character.isUpperCase(pascalCased.charAt(idx)) && Character.isLowerCase(pascalCased.charAt(idx - 1));
+    }
+
     /**
      * Computes a match result with its score for the candidate and query.
      *
@@ -80,6 +89,12 @@ class ResultSelectionStrategy {
      *                            that can be used to break ties.
      */
     private CompletionResult computeMatchingSegments(String candidate, String query, boolean matchOnlyWordStarts) {
+        if (candidate.equalsIgnoreCase(query)) {
+            // perfect match
+            TextFlow flow = new TextFlow(makeHighlightedText(candidate));
+            return new CompletionResult(Double.MAX_VALUE, candidate, flow);
+        }
+
         // Performs a left-to-right scan of the candidate string,
         // trying to assign each of the chars of the query to a
         // location in the string (also left-to-right)
@@ -119,7 +134,7 @@ class ResultSelectionStrategy {
                 if (curMatchStart == -1) {
                     // start of a match
 
-                    if (matchOnlyWordStarts && !isStartOfWord && !Character.isUpperCase(candChar)) {
+                    if (matchOnlyWordStarts && !isStartOfWord && !isWordStart(candidate, candIdx)) {
                         // not the start of a word, don't record it as a match
                         candIdx++;
                         continue;
@@ -128,7 +143,7 @@ class ResultSelectionStrategy {
                     // set match start to current
                     curMatchStart = candIdx;
 
-                    if (Character.isUpperCase(candChar)) {
+                    if (isWordStart(candidate, candIdx)) {
                         // start of a match on the start of a word
                         // e.g. query       coit
                         //      candidate   ClassOrInterfaceType

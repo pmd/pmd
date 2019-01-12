@@ -95,6 +95,9 @@ public final class XPathAutocompleteProvider {
         if (searchPoint > input.length()) {
             searchPoint = input.length();
         }
+        if (insertionPoint > searchPoint) {
+            throw new StringIndexOutOfBoundsException("Cannot extract query from subtext \"" + input.substring(0, insertionPoint) + "\"");
+        }
 
         input = input.substring(insertionPoint, searchPoint).trim();
 
