@@ -223,7 +223,7 @@ public final class XPathAutocompleteProvider {
         try {
             // Only since jdk 9 unfortunately
             return (Node) MethodUtils.invokeMethod(item, "getStyleableNode");
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
             // then we're on jdk 8, in which case we do the work ourselves
         }
 
