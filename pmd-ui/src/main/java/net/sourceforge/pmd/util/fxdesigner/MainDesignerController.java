@@ -129,8 +129,6 @@ public class MainDesignerController extends AbstractController {
             e.printStackTrace();
         }
 
-        initializeViewAnimation();
-
         licenseMenuItem.setOnAction(e -> showLicensePopup());
         openFileMenuItem.setOnAction(e -> onOpenFileClicked());
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
@@ -153,16 +151,6 @@ public class MainDesignerController extends AbstractController {
         Platform.runLater(this::refreshAST); // initial refreshing
 
         Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
-    }
-
-
-
-    private void initializeViewAnimation() {
-
-        // gets captured in the closure
-        final double defaultMainHorizontalSplitPaneDividerPosition
-                = mainHorizontalSplitPane.getDividerPositions()[0];
-
     }
 
 

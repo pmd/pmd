@@ -84,7 +84,8 @@ public final class IteratorUtil {
     /** Counts the items in this iterator, exhausting it. */
     public static int count(Iterator<?> it) {
         int count = 0;
-        for (Object o : toIterable(it)) {
+        while (it.hasNext()) {
+            it.next();
             count++;
         }
         return count;

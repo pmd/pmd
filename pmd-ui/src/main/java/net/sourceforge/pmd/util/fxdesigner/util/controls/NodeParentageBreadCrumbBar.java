@@ -111,14 +111,14 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
 
             // set the focus on the one being selected, remove on the others
             // calling requestFocus would switch the focus from eg the treeview to the crumb bar (unusable)
-            button.pseudoClassStateChanged(PseudoClass.getPseudoClass("focused"), n == node);
+            button.pseudoClassStateChanged(PseudoClass.getPseudoClass("focused"), node.equals(n));
 
             // update counters
             totalNumChar += ((Labeled) button).getText().length();
             totalChildrenWidth += ((Region) button).getWidth();
             totalNumCrumbs++;
 
-            if (n == node) {
+            if (node.equals(n)) {
                 found = true;
             }
         }
