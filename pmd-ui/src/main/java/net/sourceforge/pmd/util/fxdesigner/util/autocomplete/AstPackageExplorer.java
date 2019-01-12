@@ -33,7 +33,7 @@ class AstPackageExplorer implements NodeNameFinder {
                 .filter(clazz -> clazz.getSimpleName().startsWith("AST"))
                 .filter(clazz -> !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()))
                 .map(m -> m.getSimpleName().substring("AST".length()))
-                .collect(Collectors.toList());
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
 
     }
 
