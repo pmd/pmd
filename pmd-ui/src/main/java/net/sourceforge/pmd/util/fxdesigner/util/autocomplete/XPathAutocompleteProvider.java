@@ -192,6 +192,10 @@ public final class XPathAutocompleteProvider {
 
     /** Gets the index of the currently focused item. */
     private int getFocusIdx() {
+        if (!autoCompletePopup.isShowing()) {
+            return -1;
+        }
+
         List<ObservableSet<PseudoClass>> collect =
             autoCompletePopup.getItems()
                              .stream()
@@ -222,6 +226,11 @@ public final class XPathAutocompleteProvider {
 
         ContextMenu parentPopup = item.getParentPopup();
         if (parentPopup == null) {
+            return null;
+        }
+
+        if (parentPopup.getSkin() == null) {
+            // popup not showing
             return null;
         }
 
