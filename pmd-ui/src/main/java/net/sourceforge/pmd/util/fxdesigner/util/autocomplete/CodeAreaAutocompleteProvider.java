@@ -4,12 +4,20 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_UP;
+
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.fxmisc.richtext.StyledTextArea;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
@@ -19,6 +27,10 @@ import org.reactfx.util.Tuples;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableSet;
+import javafx.css.PseudoClass;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
@@ -46,8 +58,6 @@ public final class CodeAreaAutocompleteProvider {
 
         autoCompletePopup.getStyleClass().add("autocomplete-menu");
         autoCompletePopup.setHideOnEscape(true);
-
-
     }
 
 
@@ -106,6 +116,8 @@ public final class CodeAreaAutocompleteProvider {
 
     private void showAutocompletePopup(int insertionIndex, String input) {
 
+        int curFocusIdx = getFocusIdx();
+
         XPathSuggestionMaker suggestionMaker = mySuggestionProvider.get();
 
         List<MenuItem> suggestions =
@@ -127,12 +139,114 @@ public final class CodeAreaAutocompleteProvider {
 
         myCodeArea.getCharacterBoundsOnScreen(insertionIndex, insertionIndex + input.length())
                   .ifPresent(bounds -> autoCompletePopup.show(myCodeArea, bounds.getMinX(), bounds.getMaxY()));
+
+        Platform.runLater(() -> focusFirstItem(curFocusIdx));
     }
 
 
     private void applySuggestion(int insertionIndex, String toReplace, String replacement) {
         myCodeArea.replaceText(insertionIndex, insertionIndex + toReplace.length(), replacement);
         Platform.runLater(autoCompletePopup::hide);
+    }
+
+
+    /**
+     * Programmatically focuses the node at index 0. Doing it with key presses is
+     * the only reliable way, because we're replacing the items.
+     *
+     * That allows using ENTER to insert the first completion without pressing DOWN first.
+     */
+    private void focusFirstItem(int curFocusIdx) {
+
+        Robot r;
+        try {
+            r = new Robot();
+        } catch (AWTException e) {
+            return;
+        }
+
+        if (curFocusIdx == 0) {
+            // the first item was previously focused
+            // For some reason there's a bug where we can't be sure that the 0th
+            // idx will stay focused when changing items unless we do the following:
+
+            r.keyPress(VK_DOWN);
+            r.keyRelease(VK_DOWN);
+            r.keyPress(VK_UP);
+            r.keyRelease(VK_UP);
+
+            return;
+        }
+
+        int diff = Math.abs(curFocusIdx); // so if curFocusIdx was -1 we have to go 1 down
+        boolean goUp = curFocusIdx > 0;
+
+        while (diff-- > 0) {
+            int key = goUp ? VK_UP : VK_DOWN;
+
+            r.keyPress(key);
+            r.keyRelease(key);
+        }
+    }
+
+
+    /** Gets the index of the currently focused item. */
+    private int getFocusIdx() {
+        List<ObservableSet<PseudoClass>> collect =
+            autoCompletePopup.getItems()
+                             .stream()
+                             .map(this::getStyleableNode)
+                             .filter(Objects::nonNull)
+                             .map(Node::getPseudoClassStates)
+                             .collect(Collectors.toList());
+
+        for (int i = 0; i < collect.size(); i++) {
+            if (collect.get(i).contains(PseudoClass.getPseudoClass("focused"))) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+
+    /** Gets the index of the node. */
+    private Node getStyleableNode(MenuItem item) {
+
+        try {
+            // Only since jdk 9 unfortunately
+            return (Node) MethodUtils.invokeMethod(item, "getStyleableNode");
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            // then we're on jdk 8, in which case we do the work ourselves
+        }
+
+        ContextMenu parentPopup = item.getParentPopup();
+        if (parentPopup == null) {
+            return null;
+        }
+
+        Parent nodes;
+        try {
+            nodes = (Parent) FieldUtils.readDeclaredField(parentPopup.getSkin().getNode(), "itemsContainer", true);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        for (Node child : nodes.getChildrenUnmodifiable()) {
+
+            // we can't check for instanceof bc that would not be cross-jdk
+            try {
+                Object childItem = MethodUtils.invokeExactMethod(child, "getItem");
+                if (item.equals(childItem)) {
+                    return child;
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
 }
