@@ -146,7 +146,7 @@ public class XPathPanelController extends AbstractController {
         bindToParent();
 
         // init autocompletion only after binding to parent and settings restore
-        // otherwise the popup shows
+        // otherwise the popup is shown on startup
         Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
         new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
     }
