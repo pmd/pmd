@@ -9,11 +9,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.RadioMenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.SVGPath?>
@@ -68,7 +65,9 @@
                                            AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
                             <toolbarItems>
-                                <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-button">
+                                <MenuButton mnemonicParsing="false"
+                                            styleClass="menu-button-no-arrow,icon-button"
+                                            fx:id="xpathVersionMenuButton">
                                     <graphic>
                                         <FontIcon iconLiteral="fas-cog" />
                                     </graphic>
@@ -80,17 +79,7 @@
                                         </Tooltip>
                                     </tooltip>
                                     <items>
-                                        <fx:define>
-                                            <ToggleGroup fx:id="xpathVersionToggleGroup" />
-                                        </fx:define>
-                                        <RadioMenuItem mnemonicParsing="false"
-                                                       text="XPath 1.0"
-                                                       userData="1.0"
-                                                       toggleGroup="$xpathVersionToggleGroup" />
-                                        <RadioMenuItem mnemonicParsing="false"
-                                                       text="XPath 2.0"
-                                                       userData="2.0"
-                                                       toggleGroup="$xpathVersionToggleGroup" />
+                                        <!-- Populated in the controller -->
                                     </items>
                                 </MenuButton>
                                 <Button fx:id="exportXpathToRuleButton" mnemonicParsing="false" styleClass="icon-button">

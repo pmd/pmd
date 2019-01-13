@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
@@ -58,7 +57,9 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -96,6 +97,8 @@ public class XPathPanelController extends AbstractController {
     @FXML
     public Button exportXpathToRuleButton;
     @FXML
+    private MenuButton xpathVersionMenuButton;
+    @FXML
     private PropertyTableView propertyTableView;
     @FXML
     private SyntaxHighlightingCodeArea xpathExpressionArea;
@@ -103,8 +106,6 @@ public class XPathPanelController extends AbstractController {
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
-    @FXML
-    ToggleGroup xpathVersionToggleGroup;
 
     // ui property
     private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
@@ -122,8 +123,7 @@ public class XPathPanelController extends AbstractController {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
-
-        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
+        initialiseVersionSelection();
 
         expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (" + v + ")"));
 
@@ -151,9 +151,6 @@ public class XPathPanelController extends AbstractController {
 
     @Override
     protected void afterParentInit() {
-
-        DesignerUtil.rewireInit(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
-        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
         bindToParent();
     }
 
@@ -190,6 +187,28 @@ public class XPathPanelController extends AbstractController {
                     })
                     .filter(t -> StringUtils.isAlpha(t._2))
                     .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
+    }
+
+
+    private void initialiseVersionSelection() {
+
+        ToggleGroup xpathVersionToggleGroup = new ToggleGroup();
+
+        List<String> versionItems = new ArrayList<>();
+        versionItems.add(XPathRuleQuery.XPATH_1_0);
+        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        versionItems.add(XPathRuleQuery.XPATH_2_0);
+
+        versionItems.forEach(v -> {
+            RadioMenuItem item = new RadioMenuItem("XPath " + v);
+            item.setUserData(v);
+            item.setToggleGroup(xpathVersionToggleGroup);
+            xpathVersionMenuButton.getItems().add(item);
+        });
+
+        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
+
+        setXpathVersion(XPathRuleQuery.XPATH_2_0);
     }
 
 
