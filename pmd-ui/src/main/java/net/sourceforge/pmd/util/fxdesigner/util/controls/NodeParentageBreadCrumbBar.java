@@ -60,8 +60,8 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
                .values()
                .distinct()
                .filter(Boolean::booleanValue)
-               // will change the node in the treeview on <- -> key presses
-               .subscribe(b -> getOnCrumbAction().handle(new BreadCrumbActionEvent<>(item)));
+                // will change the node in the treeview on <- -> key presses
+                .subscribe(b -> getOnCrumbAction().handle(new BreadCrumbActionEvent<>(item)));
             return button;
         });
 
