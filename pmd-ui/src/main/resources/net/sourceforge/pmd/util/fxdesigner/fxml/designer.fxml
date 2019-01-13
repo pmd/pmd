@@ -30,21 +30,22 @@
                                 <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                                     <items>
                                         <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open..." />
-                                        <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..." />
+                                        <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent" />
                                     </items>
                                 </Menu>
 
                                 <Menu mnemonicParsing="false" text="Configuration">
                                     <items>
-                                        <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false" text="Set up the auxclasspath">
+                                        <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false" text="Set up the auxclasspath...">
                                         </MenuItem>
                                     </items>
                                 </Menu>
 
                                 <Menu mnemonicParsing="false" text="About">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" text="About" />
-                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
+                                        <!-- TODO add link to doc pages -->
+                                        <!--<MenuItem mnemonicParsing="false" text="About" />-->
+                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License..." />
                                     </items>
                                 </Menu>
 
