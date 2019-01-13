@@ -135,13 +135,15 @@ public class MainDesignerController extends AbstractController {
 
         // the editor controller will initialize this after this controller
         sourceEditorController.focusNodeParentageCrumbBar = focusNodeParentageBreadCrumbBar;
-
-        Platform.runLater(this::updateRecentFilesMenu);
-        Platform.runLater(this::refreshAST); // initial refreshing
-
-        Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
     }
 
+
+    @Override
+    protected void afterChildrenInit() {
+        updateRecentFilesMenu();
+        refreshAST(); // initial refreshing
+        sourceEditorController.moveCaret(0, 0);
+    }
 
     public void shutdown() {
         try {
