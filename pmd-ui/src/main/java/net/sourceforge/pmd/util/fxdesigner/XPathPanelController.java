@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -53,7 +54,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
@@ -84,6 +87,10 @@ public class XPathPanelController extends AbstractController {
     @FXML
     public ToolbarTitledPane expressionTitledPane;
     @FXML
+    public Button exportXpathToRuleButton;
+    @FXML
+    private MenuButton xpathVersionMenuButton;
+    @FXML
     private PropertyTableView propertyTableView;
     @FXML
     private SyntaxHighlightingCodeArea xpathExpressionArea;
@@ -91,8 +98,6 @@ public class XPathPanelController extends AbstractController {
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
-    @FXML
-    ToggleGroup xpathVersionToggleGroup;
 
     // ui property
     private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
@@ -105,17 +110,19 @@ public class XPathPanelController extends AbstractController {
         getRuleBuilder().setClazz(XPathRule.class);
     }
 
+
     @Override
     protected void beforeParentInit() {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
+        initialiseVersionSelection();
 
-        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
-
-        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (XPath " + v + ")"));
+        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (" + v + ")"));
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
+
+        exportXpathToRuleButton.setOnAction(e -> showExportXPathToRuleWizard());
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
@@ -130,18 +137,37 @@ public class XPathPanelController extends AbstractController {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
+        // init autocompletion
         Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
-
         new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
+
     }
 
 
     @Override
     protected void afterParentInit() {
-
-        DesignerUtil.rewireInit(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
-        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
         bindToParent();
+    }
+
+
+    private void initialiseVersionSelection() {
+        ToggleGroup xpathVersionToggleGroup = new ToggleGroup();
+
+        List<String> versionItems = new ArrayList<>();
+        versionItems.add(XPathRuleQuery.XPATH_1_0);
+        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        versionItems.add(XPathRuleQuery.XPATH_2_0);
+
+        versionItems.forEach(v -> {
+            RadioMenuItem item = new RadioMenuItem("XPath " + v);
+            item.setUserData(v);
+            item.setToggleGroup(xpathVersionToggleGroup);
+            xpathVersionMenuButton.getItems().add(item);
+        });
+
+        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
+
+        setXpathVersion(XPathRuleQuery.XPATH_2_0);
     }
 
 
@@ -251,7 +277,7 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-    public void showExportXPathToRuleWizard() throws IOException {
+    public void showExportXPathToRuleWizard() {
         ExportXPathWizardController wizard
             = new ExportXPathWizardController(xpathExpressionProperty());
 
@@ -263,7 +289,12 @@ public class XPathPanelController extends AbstractController {
         dialog.setOnCloseRequest(e -> wizard.shutdown());
         dialog.initModality(Modality.WINDOW_MODAL);
 
-        Parent root = loader.load();
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Scene scene = new Scene(root);
         //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
         dialog.setScene(scene);

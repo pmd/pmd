@@ -33,9 +33,6 @@
                                     <items>
                                         <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open..." />
                                         <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent..." />
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="exportToTestCodeMenuItem" mnemonicParsing="false" text="Export code to test code" />
-                                        <MenuItem fx:id="exportXPathMenuItem" mnemonicParsing="false" text="Export XPath to rule" />
                                     </items>
                                 </Menu>
 
