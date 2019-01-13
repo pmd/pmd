@@ -259,12 +259,42 @@ public static Foo getFoo() {
 
     <rule name="UnsynchronizedStaticDateFormatter"
           since="3.6"
+          deprecated="true"
           message="Static DateFormatter objects should be accessed in a synchronized manner"
           class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter">
         <description>
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
+synchronized either on method or block level.
+
+This rule has been deprecated in favor of the rule {% rule UnsynchronizedStaticFormatter %}.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    void bar() {
+        sdf.format(); // poor, no thread-safety
+    }
+    synchronized void foo() {
+        sdf.format(); // preferred
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnsynchronizedStaticFormatter"
+          since="6.11.0"
+          message="Static Formatter objects should be accessed in a synchronized manner"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#unsynchronizedstaticformatter">
+        <description>
+Instances of `java.text.Format` are generally not synchronized.
+Sun recommends using separate format instances for each thread.
+If multiple threads must access a static formatter, the formatter must be
 synchronized either on method or block level.
         </description>
         <priority>3</priority>
