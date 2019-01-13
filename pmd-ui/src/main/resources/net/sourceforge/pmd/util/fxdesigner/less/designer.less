@@ -16,6 +16,9 @@
 #d62c49,
 #ff6a7a;
 
+.ikonli-font-icon {
+  -fx-icon-size: 14;
+}
 
 .list-view, .tree-view, .table-view {
     -fx-selection-bar: @selection-focus-color;
@@ -193,13 +196,12 @@
   }
 }
 
-.menu-button.menu-button-no-arrow {
-  .arrow-button {
-    -fx-padding: 0;
-  }
+.menu-button.menu-button-no-arrow .arrow-button {
 
-  .arrow-button > .arrow {
+  &, * {
     -fx-padding: 0;
+    .fix-height(0);
+    .fix-width(0);
   }
 }
 
@@ -215,7 +217,12 @@
     -fx-graphic-text-gap: 0;
   }
 
-  .ikonli-font-icon {
+  &.menu-button .ikonli-font-icon {
+    // Fixes a bug where the cog icon is misplaced to the right
+    // Probably needs to be synced with icon size
+    -fx-translate-x: -4;
+  }
+  .ikonli-font-icon, .svg-icon {
     -fx-fill: @fx-text-fill;
   }
 
