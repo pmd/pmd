@@ -4248,6 +4248,15 @@
 ,
 
 {
+"title": "UnsynchronizedStaticFormatter (Java, Multithreading)",
+"tags": "",
+"keywords": "UnsynchronizedStaticFormatter",
+"url": "pmd_rules_java_multithreading.html#unsynchronizedstaticformatter",
+"summary": "Rules that flag issues when dealing with multiple threads of execution."
+}
+,
+
+{
 "title": "UseConcurrentHashMap (Java, Multithreading)",
 "tags": "",
 "keywords": "UseConcurrentHashMap",

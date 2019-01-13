@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag issues when dealing with multiple threads of execution.">
-<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
+<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticDateFormatter, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
 <title>Multithreading | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1548,6 +1548,8 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 
 <h2 id="unsynchronizedstaticdateformatter">UnsynchronizedStaticDateFormatter</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.6</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -1555,6 +1557,8 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 <p>SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
 synchronized either on method or block level.</p>
+
+<p>This rule has been deprecated in favor of the rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticDateFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticDateFormatterRule</a></p>
 
@@ -1573,6 +1577,36 @@ synchronized either on method or block level.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</h2>
+
+<p><strong>Since:</strong> PMD 6.11.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Instances of <code class="highlighter-rouge">java.text.Format</code> are generally not synchronized.
+Sun recommends using separate format instances for each thread.
+If multiple threads must access a static formatter, the formatter must be
+synchronized either on method or block level.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">SimpleDateFormat</span> <span class="n">sdf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">();</span>
+    <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
+    <span class="o">}</span>
+    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// preferred</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticFormatter"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="useconcurrenthashmap">UseConcurrentHashMap</h2>

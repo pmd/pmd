@@ -1582,7 +1582,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_multithreading.html#dontcallthreadrun">DontCallThreadRun</a>: Explicitly calling Thread.run() method will execute in the caller’s thread of control.  Instead, …</li>
   <li><a href="pmd_rules_java_multithreading.html#doublecheckedlocking">DoubleCheckedLocking</a>: Partially created objects can be returned by the Double Checked Locking pattern when used in Java…</li>
   <li><a href="pmd_rules_java_multithreading.html#nonthreadsafesingleton">NonThreadSafeSingleton</a>: Non-thread safe singletons can result in bad state changes. Eliminatestatic singletons if possibl…</li>
-  <li><a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter">UnsynchronizedStaticDateFormatter</a>: SimpleDateFormat instances are not synchronized. Sun recommends using separate format instancesfo…</li>
+  <li><a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter">UnsynchronizedStaticDateFormatter</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> SimpleDateFormat instances are not synchronized. Sun recommends using separate format instancesfo…</li>
+  <li><a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</a>: Instances of ‘java.text.Format’ are generally not synchronized.Sun recommends using separate form…</li>
   <li><a href="pmd_rules_java_multithreading.html#useconcurrenthashmap">UseConcurrentHashMap</a>: Since Java5 brought a new implementation of the Map designed for multi-threaded access, you canpe…</li>
   <li><a href="pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify">UseNotifyAllInsteadOfNotify</a>: Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, th…</li>
 </ul>
