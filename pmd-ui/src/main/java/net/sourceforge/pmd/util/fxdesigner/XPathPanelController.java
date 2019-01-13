@@ -137,9 +137,6 @@ public class XPathPanelController extends AbstractController {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-        // init autocompletion
-        Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
-        new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
 
     }
 
@@ -147,8 +144,24 @@ public class XPathPanelController extends AbstractController {
     @Override
     protected void afterParentInit() {
         bindToParent();
+
+        // init autocompletion only after binding to parent and settings restore
+        // otherwise the popup shows
+        Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
+        new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
     }
 
+
+    // Binds the underlying rule parameters to the parent UI, disconnecting it from the wizard if need be
+    private void bindToParent() {
+        DesignerUtil.rewire(getRuleBuilder().languageProperty(), Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
+
+        DesignerUtil.rewireInit(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
+        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
+
+        DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
+                                propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
+    }
 
     private void initialiseVersionSelection() {
         ToggleGroup xpathVersionToggleGroup = new ToggleGroup();
@@ -214,17 +227,6 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-    // Binds the underlying rule parameters to the parent UI, disconnecting it from the wizard if need be
-    private void bindToParent() {
-        DesignerUtil.rewire(getRuleBuilder().languageProperty(),
-                            Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
-
-        DesignerUtil.rewire(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
-        DesignerUtil.rewire(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
-
-        DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
-                                propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
-    }
 
 
     /**

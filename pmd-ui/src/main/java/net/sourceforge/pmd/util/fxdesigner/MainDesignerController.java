@@ -134,13 +134,15 @@ public class MainDesignerController extends AbstractController {
         fileMenu.setOnShowing(e -> onFileMenuShowing());
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
-
-        Platform.runLater(this::updateRecentFilesMenu);
-        Platform.runLater(this::refreshAST); // initial refreshing
-
-        Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
     }
 
+
+    @Override
+    protected void afterChildrenInit() {
+        updateRecentFilesMenu();
+        refreshAST(); // initial refreshing
+        sourceEditorController.moveCaret(0, 0);
+    }
 
 
     private void initializeViewAnimation() {
