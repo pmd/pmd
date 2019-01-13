@@ -166,7 +166,7 @@ class ResultSelectionStrategy {
                     //                  ^^^
                     //      candidate   BratWurst
                     //                      ^^^
-                    //      score       40 = 4 + 8 + 16 + (start of word : 10)
+                    //      score       38 = 4 + 8 + 16 + (start of word : 10)
                     //------------------
                     //      query       wur
                     //      candidate   Bratwurst

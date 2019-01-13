@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ import net.sourceforge.pmd.lang.Language;
  * is ok for Java, Apex, etc. but not e.g. for XML.
  */
 class AstPackageExplorer implements NodeNameFinder {
-    private List<String> availableNodeNames = new ArrayList<>();
+    private final List<String> availableNodeNames;
 
 
     AstPackageExplorer(Language language) {
