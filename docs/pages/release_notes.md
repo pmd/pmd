@@ -16,6 +16,10 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New Rules
 
+*   The new Java rule {% rule "java/multithreading/UnsynchronizedStaticFormatter" %} (`java-multithreading`) detects
+    unsynchronized usages of static `java.text.Format` instances. This rule is a more generic replacement of the
+    rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} which focused just on `DateFormat`.
+
 *   The new Java rule {% rule "java/bestpractices/ForLoopVariableCount" %} (`java-bestpractices`) checks for
     the number of control variables in a for-loop. Having a lot of control variables makes it harder to understand
     what the loop does. The maximum allowed number of variables is by default 1 and can be configured by a
@@ -35,6 +39,12 @@ This is a {{ site.pmd.release_type }} release.
     property `ignoreForEachDecl`, which is by default disabled. The new property allows for ignoring
     non-final loop variables in a for-each statement.
 
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general
+    {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
+
 ### Fixed Issues
 
 *   apex
@@ -52,6 +62,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#1035](https://github.com/pmd/pmd/issues/1035): \[java] ReturnFromFinallyBlock: False positive on lambda expression in finally block
     *   [#1549](https://github.com/pmd/pmd/issues/1549): \[java] NPE in PMD 6.8.0 InvalidSlf4jMessageFormat
+*   java-multithreading
+    *   [#1533](https://github.com/pmd/pmd/issues/1533): \[java] New rule: UnsynchronizedStaticFormatter
 *   plsql
     *   [#1507](https://github.com/pmd/pmd/issues/1507): \[plsql] Parse Exception when using '||' operator in where clause
     *   [#1508](https://github.com/pmd/pmd/issues/1508): \[plsql] Parse Exception when using SELECT COUNT(\*)
