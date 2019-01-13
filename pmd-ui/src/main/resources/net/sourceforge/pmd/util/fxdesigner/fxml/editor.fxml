@@ -38,7 +38,7 @@
                             <MenuButton mnemonicParsing="false" styleClass="menu-button-no-arrow,icon-button"
                                         fx:id="languageSelectionMenuButton">
                                 <graphic>
-                                    <FontIcon iconLiteral="fa-cog" />
+                                    <FontIcon iconLiteral="fas-cog" />
                                 </graphic>
                                 <items>
 

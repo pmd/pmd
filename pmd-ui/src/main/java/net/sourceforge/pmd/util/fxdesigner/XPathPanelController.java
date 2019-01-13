@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
@@ -189,8 +190,6 @@ public class XPathPanelController extends AbstractController {
                     })
                     .filter(t -> StringUtils.isAlpha(t._2))
                     .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
-
-
     }
 
 

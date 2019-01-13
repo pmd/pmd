@@ -133,7 +133,7 @@
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
             <version>2.3.0</version>
         </dependency>
 
