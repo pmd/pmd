@@ -101,7 +101,7 @@ public class DeadLinksChecker {
             scannedFiles++;
 
             // iterate line-by-line for better reporting the line numbers
-            final String[] lines = pageContent.split("\r?\n|\n");
+            final String[] lines = pageContent.split("\r?\n");
             for (int index = 0; index < lines.length; index++) {
                 final String line = lines[index];
                 final int lineNo = index + 1;
@@ -262,16 +262,14 @@ public class DeadLinksChecker {
 
 
     private List<Path> listMdFiles(Path pagesDirectory) {
-        final List<Path> mdFiles = new ArrayList<>();
         try {
-            Files.walk(pagesDirectory)
+            return Files.walk(pagesDirectory)
                  .filter(Files::isRegularFile)
                  .filter(path -> path.toString().endsWith(".md"))
-                 .forEach(mdFiles::add);
+                 .collect(Collectors.toList());
         } catch (IOException ex) {
             throw new RuntimeException("error listing files in " + pagesDirectory, ex);
         }
-        return mdFiles;
     }
 
 
@@ -300,7 +298,7 @@ public class DeadLinksChecker {
     private int computeHttpResponse(String url) {
         try {
             final HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
-            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestMethod("HEAD");
             httpURLConnection.setConnectTimeout(5000);
             httpURLConnection.setReadTimeout(15000);
             httpURLConnection.connect();
