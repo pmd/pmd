@@ -110,6 +110,7 @@ public class XPathPanelController extends AbstractController {
         getRuleBuilder().setClazz(XPathRule.class);
     }
 
+
     @Override
     protected void beforeParentInit() {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
@@ -143,12 +144,10 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-
     @Override
     protected void afterParentInit() {
         bindToParent();
     }
-
 
 
     private void initialiseVersionSelection() {
@@ -170,8 +169,6 @@ public class XPathPanelController extends AbstractController {
 
         setXpathVersion(XPathRuleQuery.XPATH_2_0);
     }
-
-
 
 
     private void initGenerateXPathFromStackTrace() {
