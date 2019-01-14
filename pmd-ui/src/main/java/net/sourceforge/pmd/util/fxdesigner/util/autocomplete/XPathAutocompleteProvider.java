@@ -66,6 +66,7 @@ public final class XPathAutocompleteProvider {
         Set<String> completionTriggers = new HashSet<>(Arrays.asList("\r", "\r\n", "\n", "\t"));
 
         // allows tab/enter completion
+        // FIXME doesn't work on java 9
         autoCompletePopup.addEventHandler(KeyEvent.KEY_TYPED, e -> {
 
             // for some reason using KeyEvent.KEY_PRESSED didn't work with the ENTER key,
