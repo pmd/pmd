@@ -124,8 +124,15 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         if (getNthParent(2) instanceof ASTEnumBody) {
             return false;
         }
-        ASTClassOrInterfaceDeclaration n = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        return n != null && n.isInterface();
+        ASTClassOrInterfaceBody classOrInterfaceBody = getFirstParentOfType(ASTClassOrInterfaceBody.class);
+        if (classOrInterfaceBody == null || classOrInterfaceBody.isAnonymousInnerClass()) {
+            return false;
+        }
+        if (classOrInterfaceBody.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
+            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.jjtGetParent();
+            return n.isInterface();
+        }
+        return false;
     }
 
     @Override

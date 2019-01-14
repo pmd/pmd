@@ -987,6 +987,9 @@ Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate c
 high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
 decision point.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/CyclomaticComplexity %}.
+
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.ModifiedCyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/ModifiedCyclomaticComplexityRule.java)
 
 **Example(s):**
@@ -1054,6 +1057,9 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/NcssCount %}.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NcssConstructorCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssConstructorCountRule.java)
 
@@ -1155,6 +1161,9 @@ This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determin
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/NcssCount %}.
+
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NcssMethodCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssMethodCountRule.java)
 
 **Example(s):**
@@ -1199,6 +1208,9 @@ public class Foo extends Bar {
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/NcssCount %}.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NcssTypeCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssTypeCountRule.java)
 
@@ -1598,6 +1610,9 @@ Complexity directly affects maintenance costs is determined by the number of dec
 plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/design/CyclomaticComplexity %}.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.StdCyclomaticComplexityRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/StdCyclomaticComplexityRule.java)
 

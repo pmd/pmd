@@ -34,12 +34,12 @@ public class ObservableXPathRuleBuilder extends ObservableRuleBuilder {
     }
 
 
-    @PersistentProperty
     public Var<String> xpathVersionProperty() {
         return xpathVersion;
     }
 
 
+    @PersistentProperty
     public String getXpathExpression() {
         return xpathExpression.getValue();
     }

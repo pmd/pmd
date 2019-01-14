@@ -19,6 +19,9 @@ language: Java
 
 Abstract classes should be named 'AbstractXXX'.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by {% rule java/codestyle/ClassNamingConventions %}.
+
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ClassOrInterfaceDeclaration
@@ -151,6 +154,9 @@ public class MyClass {
 Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability.
 To indicate whether or not a parameter will be modify in a method, its better to document method
 behavior with Javadoc.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule java/codestyle/FormalParameterNamingConventions %}.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -859,6 +865,9 @@ Avoid using 'for' statements without using curly braces. If the code formatting 
 indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
+
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ForStatement[not(Statement/Block)]
@@ -1020,6 +1029,9 @@ Avoid using if..else statements without using surrounding braces. If the code fo
 or indentation is lost then it becomes difficult to separate the code being controlled 
 from the rest.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
+
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //Statement
@@ -1057,6 +1069,9 @@ if (foo)
 Avoid using if statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -1466,6 +1481,10 @@ public class Foo {
 
 Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule
+{% rule java/codestyle/LocalVariableNamingConventions %}.
+
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //VariableDeclaratorId
@@ -1805,6 +1824,9 @@ public class Something {
 
 Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
 be declared as final.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -2316,6 +2338,11 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.
 
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rules {% rule java/codestyle/FieldNamingConventions %},
+{% rule java/codestyle/FormalParameterNamingConventions %}, and
+{% rule java/codestyle/LocalVariableNamingConventions %}.
+
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.codestyle.VariableNamingConventionsRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/VariableNamingConventionsRule.java)
 
 **Example(s):**
@@ -2361,6 +2388,9 @@ public class Foo {
 Avoid using 'while' statements without using braces to surround the code block. If the code 
 formatting or indentation is lost then it becomes difficult to separate the code being
 controlled from the rest.
+
+This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the rule {% rule java/codestyle/ControlStatementBraces %}.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath

@@ -34,14 +34,16 @@ public class AbstractController implements Initializable, SettingsOwner {
     public final void initialize(URL url, ResourceBundle resourceBundle) {
         beforeParentInit();
         for (AbstractController child : getChildren()) {
-            Platform.runLater(child::afterParentInit);
+            child.afterParentInit();
         }
+        afterChildrenInit();
     }
 
 
     /**
      * Executed before the parent's initialization.
-     * Always executed once.
+     * Always executed once at the start of the initialization
+     * of this controller.
      */
     protected void beforeParentInit() {
         // by default do nothing
@@ -49,11 +51,21 @@ public class AbstractController implements Initializable, SettingsOwner {
 
 
     /**
-     * Executed after the parent's initialization. This also means,
-     * after persistent settings restoration. If this node has no
+     * Executed after the parent's initialization (so after {@link #afterChildrenInit()}).
+     * This also means, after persistent settings restoration. If this node has no
      * parent, then this is never executed.
      */
     protected void afterParentInit() {
+        // by default do nothing
+    }
+
+
+    /**
+     * Runs once after every child has finished their initialization.
+     * This will be run in all cases. It's only useful if the children
+     * do something useful in their {@link #afterParentInit()}.
+     */
+    protected void afterChildrenInit() {
         // by default do nothing
     }
 

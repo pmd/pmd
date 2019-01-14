@@ -9,20 +9,16 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
-import org.reactfx.util.Tuples;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -35,15 +31,16 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
-import net.sourceforge.pmd.util.fxdesigner.model.XPathSuggestions;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CompletionResultSource;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathAutocompleteProvider;
+import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathCompletionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.ContextMenuWithNoArrows;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
@@ -56,21 +53,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -96,6 +87,10 @@ public class XPathPanelController extends AbstractController {
     @FXML
     public ToolbarTitledPane expressionTitledPane;
     @FXML
+    public Button exportXpathToRuleButton;
+    @FXML
+    private MenuButton xpathVersionMenuButton;
+    @FXML
     private PropertyTableView propertyTableView;
     @FXML
     private SyntaxHighlightingCodeArea xpathExpressionArea;
@@ -103,8 +98,6 @@ public class XPathPanelController extends AbstractController {
     private TitledPane violationsTitledPane;
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
-    @FXML
-    ToggleGroup xpathVersionToggleGroup;
 
     // ui property
     private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
@@ -117,17 +110,19 @@ public class XPathPanelController extends AbstractController {
         getRuleBuilder().setClazz(XPathRule.class);
     }
 
+
     @Override
     protected void beforeParentInit() {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
+        initialiseVersionSelection();
 
-        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
-
-        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (XPath " + v + ")"));
+        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (" + v + ")"));
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
+
+        exportXpathToRuleButton.setOnAction(e -> showExportXPathToRuleWizard());
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
@@ -142,84 +137,50 @@ public class XPathPanelController extends AbstractController {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-        initialiseAutoCompletion();
-    }
 
+    }
 
 
     @Override
     protected void afterParentInit() {
+        bindToParent();
+
+        // init autocompletion only after binding to parent and settings restore
+        // otherwise the popup is shown on startup
+        Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
+        new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
+    }
+
+
+    // Binds the underlying rule parameters to the parent UI, disconnecting it from the wizard if need be
+    private void bindToParent() {
+        DesignerUtil.rewire(getRuleBuilder().languageProperty(), Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
 
         DesignerUtil.rewireInit(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
         DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
-        bindToParent();
+
+        DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
+                                propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
     }
 
+    private void initialiseVersionSelection() {
+        ToggleGroup xpathVersionToggleGroup = new ToggleGroup();
 
-    private void initialiseAutoCompletion() {
+        List<String> versionItems = new ArrayList<>();
+        versionItems.add(XPathRuleQuery.XPATH_1_0);
+        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        versionItems.add(XPathRuleQuery.XPATH_2_0);
 
-        EventStream<Integer> changesEventStream = xpathExpressionArea.plainTextChanges()
-                                                                     .map(characterChanges -> {
-                                                                         if (characterChanges.getRemoved().length() > 0) {
-                                                                             return characterChanges.getRemovalEnd() - 1;
-                                                                         }
-                                                                         return characterChanges.getInsertionEnd();
-                                                                     });
+        versionItems.forEach(v -> {
+            RadioMenuItem item = new RadioMenuItem("XPath " + v);
+            item.setUserData(v);
+            item.setToggleGroup(xpathVersionToggleGroup);
+            xpathVersionMenuButton.getItems().add(item);
+        });
 
-        EventStream<Integer> keyCombo = EventStreams.eventsOf(xpathExpressionArea, KeyEvent.KEY_PRESSED)
-                                                    .filter(key -> key.isControlDown() && key.getCode().equals(KeyCode.SPACE))
-                                                    .map(searchPoint -> xpathExpressionArea.getCaretPosition());
+        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
 
-        // captured in the closure
-        final ContextMenu autoCompletePopup = new ContextMenuWithNoArrows();
-        autoCompletePopup.setId("xpathAutocomplete");
-        autoCompletePopup.setHideOnEscape(true);
-
-        EventStreams.merge(keyCombo, changesEventStream)
-                    .map(searchPoint -> {
-                        int indexOfSlash = xpathExpressionArea.getText().lastIndexOf("/", searchPoint - 1) + 1;
-                        String input = xpathExpressionArea.getText();
-                        if (searchPoint > input.length()) {
-                            searchPoint = input.length();
-                        }
-                        input = input.substring(indexOfSlash, searchPoint);
-
-                        return Tuples.t(indexOfSlash, input);
-                    })
-                    .filter(t -> StringUtils.isAlpha(t._2))
-                    .subscribe(s -> autoComplete(s._1, s._2, autoCompletePopup));
-
-
-    }
-
-
-    private void autoComplete(int slashPosition, String input, ContextMenu autoCompletePopup) {
-
-        XPathSuggestions xPathSuggestions = new XPathSuggestions(parent.getLanguageVersion().getLanguage());
-        List<String> suggestions = xPathSuggestions.getXPathSuggestions(input.trim());
-
-        List<CustomMenuItem> resultToDisplay = new ArrayList<>();
-        if (!suggestions.isEmpty()) {
-
-            for (int i = 0; i < suggestions.size() && i < 5; i++) {
-                final String searchResult = suggestions.get(i);
-
-                Label entryLabel = new Label();
-                entryLabel.setGraphic(highlightXPathSuggestion(suggestions.get(i), input));
-                entryLabel.setPrefHeight(5);
-                CustomMenuItem item = new CustomMenuItem(entryLabel, true);
-                resultToDisplay.add(item);
-
-                item.setOnAction(e -> {
-                    xpathExpressionArea.replaceText(slashPosition, slashPosition + input.length(), searchResult);
-                    autoCompletePopup.hide();
-                });
-            }
-        }
-        autoCompletePopup.getItems().setAll(resultToDisplay);
-
-        xpathExpressionArea.getCharacterBoundsOnScreen(slashPosition, slashPosition + input.length())
-                           .ifPresent(bounds -> autoCompletePopup.show(xpathExpressionArea, bounds.getMinX(), bounds.getMaxY()));
+        setXpathVersion(XPathRuleQuery.XPATH_2_0);
     }
 
 
@@ -266,17 +227,6 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-    // Binds the underlying rule parameters to the parent UI, disconnecting it from the wizard if need be
-    private void bindToParent() {
-        DesignerUtil.rewire(getRuleBuilder().languageProperty(),
-                            Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
-
-        DesignerUtil.rewire(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
-        DesignerUtil.rewire(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
-
-        DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
-                                propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
-    }
 
 
     /**
@@ -329,7 +279,7 @@ public class XPathPanelController extends AbstractController {
     }
 
 
-    public void showExportXPathToRuleWizard() throws IOException {
+    public void showExportXPathToRuleWizard() {
         ExportXPathWizardController wizard
             = new ExportXPathWizardController(xpathExpressionProperty());
 
@@ -341,7 +291,12 @@ public class XPathPanelController extends AbstractController {
         dialog.setOnCloseRequest(e -> wizard.shutdown());
         dialog.initModality(Modality.WINDOW_MODAL);
 
-        Parent root = loader.load();
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Scene scene = new Scene(root);
         //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
         dialog.setScene(scene);
@@ -387,16 +342,5 @@ public class XPathPanelController extends AbstractController {
     @Override
     public List<SettingsOwner> getChildrenSettingsNodes() {
         return Collections.singletonList(getRuleBuilder());
-    }
-
-
-    private static TextFlow highlightXPathSuggestion(String text, String match) {
-        int filterIndex = text.toLowerCase(Locale.ROOT).indexOf(match.toLowerCase(Locale.ROOT));
-
-        Text textBefore = new Text(text.substring(0, filterIndex));
-        Text textAfter = new Text(text.substring(filterIndex + match.length()));
-        Text textFilter = new Text(text.substring(filterIndex, filterIndex + match.length())); //instead of "filter" to keep all "case sensitive"
-        textFilter.setFill(Color.ORANGE);
-        return new TextFlow(textBefore, textFilter, textAfter);
     }
 }
