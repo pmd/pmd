@@ -12,6 +12,11 @@ import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper;
 import net.sourceforge.pmd.stat.DataPoint;
 
+
+/**
+ * @deprecated see {@link StatisticalRule}
+ */
+@Deprecated
 public abstract class AbstractStatisticalPLSQLRule extends AbstractPLSQLRule implements StatisticalRule {
 
     private final StatisticalRuleHelper helper = new StatisticalRuleHelper(this);
