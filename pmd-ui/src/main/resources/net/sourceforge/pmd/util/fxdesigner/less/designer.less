@@ -222,18 +222,56 @@
     -fx-graphic-text-gap: 0;
   }
 
-  &.menu-button .ikonli-font-icon {
+  &.menu-button, &.toggle-button {
+    .ikonli-font-icon {
     // Fixes a bug where the cog icon is misplaced to the right
     // Probably needs to be synced with icon size
     -fx-translate-x: -4;
+    }
   }
+
   .ikonli-font-icon, .svg-icon {
     -fx-fill: @fx-text-fill;
   }
 
-  &:showing, &:hover {
-    -fx-background-color: @selection-focus-color;
+  &.toggle-button:selected {
+    -fx-background-color: -fx-shadow-highlight-color,
+    linear-gradient(to bottom, derive(-fx-outer-border, -20%), -fx-outer-border),
+    linear-gradient(to bottom,
+            derive(-fx-color, -22%) 0%,
+            derive(-fx-color, -13%) 20%,
+            derive(-fx-color, -11%) 50%);
+
+    -fx-background-insets: 0 0 -1 0, 0, 1;
   }
+
+
+  .toggle-button-background(@base) {
+    -fx-background-color: -fx-focus-color,
+    linear-gradient(to bottom,
+            derive(@base, -22%) 0%,
+            derive(@base, -13%) 20%,
+            derive(@base, -11%) 50%),
+    -fx-faint-focus-color,
+    linear-gradient(to bottom,
+            derive(@base, -22%) 0%,
+            derive(@base, -13%) 20%,
+            derive(@base, -11%) 50%);
+  }
+
+  .toggle-button:selected {
+    -fx-background-insets: -0.2, 1, -1.4, 2.6;
+    -fx-background-radius: 3, 2, 4, 0;
+
+    &:focused {
+      .toggle-button-background(-fx-color);
+    }
+
+    &:hover {
+      .toggle-button-background(darken(@selection-focus-color, 10%));
+    }
+  }
+
 
   .label {
     -fx-background-color: transparent;

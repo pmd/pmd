@@ -30,11 +30,11 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -55,9 +55,9 @@ public class NodeInfoPanelController extends AbstractController {
         Arrays.asList("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine");
 
     @FXML
-    private ToolbarTitledPane metricsTitledPane;
+    private ToggleButton hideCommonAttributesToggle;
     @FXML
-    private CheckMenuItem showAllAttributesMenuItem;
+    private ToolbarTitledPane metricsTitledPane;
     @FXML
     private TabPane nodeInfoTabPane;
     @FXML
@@ -93,7 +93,7 @@ public class NodeInfoPanelController extends AbstractController {
 
         scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
 
-        showAllAttributesProperty()
+        hideCommonAttributesProperty()
             .values()
             .distinct()
             .subscribe(show -> displayAttributes(selectedNode));
@@ -186,18 +186,18 @@ public class NodeInfoPanelController extends AbstractController {
 
 
     @PersistentProperty
-    public boolean isShowAllAttributes() {
-        return showAllAttributesMenuItem.isSelected();
+    public boolean isHideCommonAttributes() {
+        return hideCommonAttributesToggle.isSelected();
     }
 
 
-    public void setShowAllAttributes(boolean bool) {
-        showAllAttributesMenuItem.setSelected(bool);
+    public void setHideCommonAttributes(boolean bool) {
+        hideCommonAttributesToggle.setSelected(bool);
     }
 
 
-    public Var<Boolean> showAllAttributesProperty() {
-        return Var.fromVal(showAllAttributesMenuItem.selectedProperty(), showAllAttributesMenuItem::setSelected);
+    public Var<Boolean> hideCommonAttributesProperty() {
+        return Var.fromVal(hideCommonAttributesToggle.selectedProperty(), hideCommonAttributesToggle::setSelected);
     }
 
 
@@ -214,7 +214,7 @@ public class NodeInfoPanelController extends AbstractController {
         while (attributeAxisIterator.hasNext()) {
             Attribute attribute = attributeAxisIterator.next();
 
-            if (isShowAllAttributes() || !IGNORABLE_ATTRIBUTES.contains(attribute.getName())) {
+            if (!(isHideCommonAttributes() && IGNORABLE_ATTRIBUTES.contains(attribute.getName()))) {
                 // TODO the display should be handled in a ListCell
                 result.add(attribute.getName() + " = "
                                + ((attribute.getValue() != null) ? attribute.getStringValue() : "null"));
