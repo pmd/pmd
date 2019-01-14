@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -12,7 +11,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
@@ -21,11 +19,11 @@ import org.reactfx.value.Var;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
@@ -38,7 +36,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class EventLogController implements Initializable {
+public class EventLogController extends AbstractController {
 
     /**
      * Exceptions from XPath evaluation or parsing are never emitted
@@ -70,7 +68,8 @@ public class EventLogController implements Initializable {
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    protected void beforeParentInit() {
+
         logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
