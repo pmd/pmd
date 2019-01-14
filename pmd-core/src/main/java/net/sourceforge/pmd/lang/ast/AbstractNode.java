@@ -533,7 +533,7 @@ public abstract class AbstractNode implements Node {
 
     // TODO benchmark and select the better implementation
     // descendantStream may either be implemented with streams (like this) relative to childrenStream
-    // or with a lazy AST traversal.
+    // or with a lazy AST traversal. I'd wager that the stream implementation is faster.
 
 
     @Override

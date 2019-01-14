@@ -38,7 +38,7 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
 
     @Override
     public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> nodeStreamGetter) {
-        return new NodeStreamImpl<>(myStream.flatMap(nodeStreamGetter.andThen(NodeStream::getStream)));
+        return new NodeStreamImpl<>(myStream.<R>flatMap(nodeStreamGetter.andThen(NodeStream::getStream)));
     }
 
 

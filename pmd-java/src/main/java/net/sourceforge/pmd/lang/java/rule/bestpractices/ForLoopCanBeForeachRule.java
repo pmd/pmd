@@ -87,7 +87,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         Optional<String> iterableName = getIterableNameOrEmptyToAbort(guardCondition, itName);
 
 
-        if (!isForUpdateSimpleEnough(update, itName) || iterableName.isEmpty()) {
+        if (!isForUpdateSimpleEnough(update, itName) || iterableName.map(String::isEmpty).orElse(true)) {
             return data;
         }
 
