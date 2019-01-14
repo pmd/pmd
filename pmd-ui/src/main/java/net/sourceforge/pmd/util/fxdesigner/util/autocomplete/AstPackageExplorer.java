@@ -7,21 +7,24 @@ package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.FileVisitOption;
-import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -39,8 +42,7 @@ class AstPackageExplorer implements NodeNameFinder {
 
     AstPackageExplorer(Language language) {
         availableNodeNames =
-            getClasses("net.sourceforge.pmd.lang."
-                           + language.getTerseName() + ".ast")
+            getClassesInPackage("net.sourceforge.pmd.lang." + language.getTerseName() + ".ast")
                 .filter(clazz -> clazz.getSimpleName().startsWith("AST"))
                 .filter(clazz -> !clazz.isInterface() && !Modifier.isAbstract(clazz.getModifiers()))
                 .map(m -> m.getSimpleName().substring("AST".length()))
@@ -54,60 +56,103 @@ class AstPackageExplorer implements NodeNameFinder {
         return availableNodeNames;
     }
 
+    // TODO move to some global Util
+
 
     /** Finds the classes in the given package by looking in the classpath directories. */
-    private static Stream<Class<?>> getClasses(String packageName) {
-
+    private static Stream<Class<?>> getClassesInPackage(String packageName) {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         assert classLoader != null;
 
-
-        Enumeration<URL> resources;
+        Stream<URL> resources;
 
         try {
             String path = packageName.replace('.', '/');
-            resources = classLoader.getResources(path);
+            resources = enumerationAsStream(classLoader.getResources(path));
         } catch (IOException e) {
             return Stream.empty();
         }
 
-        final List<Class<?>> result = new ArrayList<>();
-
-        while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
+        return resources.flatMap(resource -> {
             try {
-                Files.walkFileTree(new File(resource.getFile()).toPath(),
-                                   EnumSet.noneOf(FileVisitOption.class),
-                                   1,
-                                   getClassFileVisitor(packageName, result));
-
-            } catch (IOException e) {
-                // continue
+                return getClasses(resource, packageName);
+            } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
+                return Stream.empty();
             }
-        }
-
-        return result.stream();
+        });
     }
 
 
-    private static FileVisitor<Path> getClassFileVisitor(String packageName, List<Class<?>> accumulator) {
-        return new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) {
-                final String extension = FilenameUtils.getExtension(file.toString());
-                if ("class".equalsIgnoreCase(extension)) {
-                    try {
-                        accumulator.add(Class.forName(packageName + "." + FilenameUtils.getBaseName(file.getFileName().toString())));
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+    /** Maps paths to classes. */
+    private static Stream<Class<?>> getClasses(URL url, String packageName) throws IOException, URISyntaxException {
+        return getPathsInDir(url)
+            .stream()
+            .filter(path -> "class".equalsIgnoreCase(FilenameUtils.getExtension(path.toString())))
+            .<Class<?>>map(path -> {
+                try {
+                    return Class.forName(packageName + "." + FilenameUtils.getBaseName(path.getFileName().toString()));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    return null;
                 }
-                return FileVisitResult.CONTINUE;
-            }
-        };
+            })
+            .filter(Objects::nonNull);
+    }
 
+
+    private static List<Path> getPathsInDir(URL url) throws URISyntaxException, IOException {
+
+        URI uri = url.toURI();
+
+        if ("jar".equals(uri.getScheme())) {
+            // we have to do this to look inside a jar
+            try (FileSystem fs = getFileSystem(uri)) {
+                // we have to cut out the path to the jar + '!'
+                // to get a path that's relative to the root of the jar filesystem
+                // This is equivalent to a packageName.replace('.', '/') but more reusable
+                String schemeSpecific = uri.getSchemeSpecificPart();
+                String fsRelativePath = schemeSpecific.substring(schemeSpecific.indexOf('!') + 1);
+                return Files.walk(fs.getPath(fsRelativePath), 1)
+                            .collect(Collectors.toList()); // buffer everything, before closing the filesystem
+
+            }
+        } else {
+            try (Stream<Path> paths = Files.walk(new File(url.getFile()).toPath(), 1)) {
+                return paths.collect(Collectors.toList()); // buffer everything, before closing the original stream
+            }
+        }
+    }
+
+
+    private static FileSystem getFileSystem(URI uri) throws IOException {
+
+        try {
+            return FileSystems.getFileSystem(uri);
+        } catch (FileSystemNotFoundException e) {
+            return FileSystems.newFileSystem(uri, Collections.<String, String>emptyMap());
+        }
+    }
+
+
+    // TODO move to IteratorUtil
+    private static <T> Stream<T> enumerationAsStream(Enumeration<T> e) {
+        return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(
+                new Iterator<T>() {
+                    @Override
+                    public T next() {
+                        return e.nextElement();
+                    }
+
+
+                    @Override
+                    public boolean hasNext() {
+                        return e.hasMoreElements();
+                    }
+                },
+                Spliterator.ORDERED), false);
     }
 
 

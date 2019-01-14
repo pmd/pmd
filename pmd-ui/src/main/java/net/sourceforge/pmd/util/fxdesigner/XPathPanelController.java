@@ -236,9 +236,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
         }
 
-        xpathResultListView.refresh();
-
-
     }
 
 
