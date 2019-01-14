@@ -84,10 +84,6 @@ public class MainDesignerController extends AbstractController {
     @FXML
     private Menu openRecentMenu;
     @FXML
-    private MenuItem exportToTestCodeMenuItem;
-    @FXML
-    private MenuItem exportXPathMenuItem;
-    @FXML
     private Menu fileMenu;
     /* Center toolbar */
     @FXML
@@ -136,22 +132,17 @@ public class MainDesignerController extends AbstractController {
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
         openRecentMenu.setOnShowing(e -> updateRecentFilesMenu());
         fileMenu.setOnShowing(e -> onFileMenuShowing());
-        exportXPathMenuItem.setOnAction(e -> {
-            try {
-                xpathPanelController.showExportXPathToRuleWizard();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
-
-        Platform.runLater(this::updateRecentFilesMenu);
-        Platform.runLater(this::refreshAST); // initial refreshing
-
-        Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
     }
 
+
+    @Override
+    protected void afterChildrenInit() {
+        updateRecentFilesMenu();
+        refreshAST(); // initial refreshing
+        sourceEditorController.moveCaret(0, 0);
+    }
 
 
     private void initializeViewAnimation() {

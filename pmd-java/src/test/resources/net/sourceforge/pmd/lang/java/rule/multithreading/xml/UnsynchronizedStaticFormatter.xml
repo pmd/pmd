@@ -105,4 +105,34 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NumberFormatters should be detected</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.text.DecimalFormat;
+
+public class Foo {
+    private static final DecimalFormat decimalFormat = new DecimalFormat();
+    void bar() {
+        decimalFormat.format();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MessageFormatters should be detected</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.text.MessageFormat;
+
+public class Foo {
+    private static final MessageFormat messageFormat = new MessageFormat();
+    void bar() {
+        messageFormat.format();
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

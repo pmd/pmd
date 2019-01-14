@@ -10,9 +10,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.java.ParserTstUtil;
+import net.sourceforge.pmd.lang.java.ast.testdata.InterfaceWithNestedClass;
 
 public class ASTFieldDeclarationTest {
 
@@ -84,5 +88,18 @@ public class ASTFieldDeclarationTest {
 
         assertEquals("foo", n.getVariableName());
 
+    }
+
+    @Test
+    public void testPrivateFieldInNestedClassInsideInterface() {
+        ASTCompilationUnit cu = ParserTstUtil.parseJava10(InterfaceWithNestedClass.class);
+        List<ASTFieldDeclaration> fields = cu.findDescendantsOfType(ASTFieldDeclaration.class, true);
+        assertEquals(2, fields.size());
+        assertEquals("MAPPING", fields.get(0).getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage());
+        assertTrue(fields.get(0).isPublic());
+        assertFalse(fields.get(0).isPrivate());
+        assertEquals("serialVersionUID", fields.get(1).getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage());
+        assertFalse(fields.get(1).isPublic());
+        assertTrue(fields.get(1).isPrivate());
     }
 }

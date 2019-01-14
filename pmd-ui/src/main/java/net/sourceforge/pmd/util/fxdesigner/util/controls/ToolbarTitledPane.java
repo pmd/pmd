@@ -53,19 +53,19 @@ public final class ToolbarTitledPane extends TitledPane {
         // centered unless we bind the height, like follows
 
         Val.wrap(toolBar.parentProperty())
-           .values()
-           .filter(Objects::nonNull)
-           .subscribe(parent -> {
-               // The title region is provided by the skin,
-               // this is the only way to access it outside of css
-               StackPane titleRegion = (StackPane) parent;
-               toolBar.maxHeightProperty().unbind();
-               toolBar.maxHeightProperty().bind(titleRegion.heightProperty());
-               toolBar.minHeightProperty().unbind();
-               toolBar.minHeightProperty().bind(titleRegion.heightProperty());
-               toolBar.prefHeightProperty().unbind();
-               toolBar.prefHeightProperty().bind(titleRegion.heightProperty());
-           });
+            .values()
+            .filter(Objects::nonNull)
+            .subscribe(parent -> {
+                // The title region is provided by the skin,
+                // this is the only way to access it outside of css
+                StackPane titleRegion = (StackPane) parent;
+                toolBar.maxHeightProperty().unbind();
+                toolBar.maxHeightProperty().bind(titleRegion.heightProperty());
+                toolBar.minHeightProperty().unbind();
+                toolBar.minHeightProperty().bind(titleRegion.heightProperty());
+                toolBar.prefHeightProperty().unbind();
+                toolBar.prefHeightProperty().bind(titleRegion.heightProperty());
+            });
 
     }
 

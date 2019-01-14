@@ -16,6 +16,9 @@
 #d62c49,
 #ff6a7a;
 
+.ikonli-font-icon {
+  -fx-icon-size: 14;
+}
 
 .list-view, .tree-view, .table-view {
     -fx-selection-bar: @selection-focus-color;
@@ -108,6 +111,22 @@
     }
 }
 
+// XPath autocomplete
+.autocomplete-menu {
+
+  .menu-item:focused {
+
+    -fx-background-color: @selection-focus-color;
+
+    .autocomplete-match {
+      -fx-fill: white;
+    }
+  }
+
+  .autocomplete-match {
+    -fx-fill: orange;
+  }
+}
 
 #nodeInfoPanel {
     .fix-width(300);
@@ -124,6 +143,11 @@
     &.info-title-bar .label {
         -fx-padding: 0 0 0 6;
     }
+}
+
+// TODO convert every header to ToolbarTitledPane and get rid of info-title-bar
+.info-title-bar {
+  .fix-height(30);
 }
 
 .titled-pane.full-size-title {
@@ -157,6 +181,19 @@
         -fx-font-size: @smaller-font-size;
       }
 
+      .separator {
+        //-fx-background-color: transparent;
+
+        -fx-padding: 4 2 4 2;
+
+        .line {
+          -fx-border-style: none solid none none;
+          -fx-border-width: 0.5px;
+          -fx-border-color: @fx-text-fill;
+        }
+      }
+
+
       .menu-bar {
         -fx-background-color: transparent;
       }
@@ -164,21 +201,35 @@
   }
 }
 
-.menu-button.menu-button-no-arrow {
-  .arrow-button {
-    -fx-padding: 0;
-  }
+.menu-button.menu-button-no-arrow .arrow-button {
 
-  .arrow-button > .arrow {
+  &, * {
     -fx-padding: 0;
+    .fix-height(0);
+    .fix-width(0);
   }
 }
 
-.menu-button.icon-menu-button {
+// This is used for buttons that have just an icon and no text
+.icon-button {
+
   -fx-background-color: transparent;
   -fx-border-width: 0;
   -fx-border-insets: 0;
-  -fx-padding: 0;
+  .force-square(24);
+
+  &, * {
+    -fx-graphic-text-gap: 0;
+  }
+
+  &.menu-button .ikonli-font-icon {
+    // Fixes a bug where the cog icon is misplaced to the right
+    // Probably needs to be synced with icon size
+    -fx-translate-x: -4;
+  }
+  .ikonli-font-icon, .svg-icon {
+    -fx-fill: @fx-text-fill;
+  }
 
   &:showing, &:hover {
     -fx-background-color: @selection-focus-color;
@@ -194,34 +245,15 @@
     -fx-background-color: @darker-accent-focus;
 }
 
+// TODO use ToolbarTitledPane everywhere and simplify stylesheets
+
 #main-toolbar,
 .tool-bar.accent-header,
 .split-pane.accent-header > .split-pane-divider {
+    .fix-height(30);
     -fx-background-color: @app-darker-slate-color;
 }
 
-.tool-bar {
-    .fix-height(30);
-    -fx-border-color: transparent;
-    -fx-border-width: .6;
-
-    .button, .choice-box {
-        -fx-background-color: @app-base-color;
-        -fx-border-color: @darker-accent-border;
-        -fx-border-radius: 3;
-    }
-
-    .button {
-        -fx-padding: -3 5 -3 5;
-    }
-}
-
-// This is used for buttons that have just an icon and no text
-.button.icon-button {
-  .fix-width(20);
-  .fix-height(20);
-  -fx-padding: 3;
-}
 
 /* This is the special button to reduce the lower split pane. */
 .toggle-button.expand-toggle {
