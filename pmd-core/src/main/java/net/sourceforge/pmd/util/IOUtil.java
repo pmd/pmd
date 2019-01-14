@@ -5,13 +5,14 @@
 package net.sourceforge.pmd.util;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.Closeable;
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,8 @@ public final class IOUtil {
 
     public static Writer createWriter(String reportFile) {
         try {
-            return StringUtils.isBlank(reportFile) ? createWriter() : new BufferedWriter(new FileWriter(reportFile));
+            return StringUtils.isBlank(reportFile) ? createWriter()
+                    : Files.newBufferedWriter(new File(reportFile).toPath(), Charset.defaultCharset());
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

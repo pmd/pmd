@@ -394,4 +394,27 @@
         </code>
     </test-code>
 
+    <!-- Guard of for statements were previously wrongly counted. -->
+    <!-- See https://github.com/pmd/pmd/blob/0c1afc426debff979b25219dbc8f4e07c76645b5/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/visitors/CycloPathAwareDecorator.java#L53 -->
+    <!-- The method fetches the first descendant as the guard expression, though it should be the first child -->
+    <!-- This causes the method to fetch the initializer of 'i' in the following for statement ('0') -->
+    <!-- instead of the more complex boolean expression. -->
+
+    <test-code>
+        <description>The guard of a ForStatement should be counted correctly (spotted #1437)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#compareImports(String, String)' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo {
+                private static int compareImports(String import1, String import2) {
+                    for (int i = 0; i != import1Tokens.length && i != import2Tokens.length; i++) {
+                    }
+                }
+            }
+            ]]>
+        </code>
+    </test-code>
+
 </test-data>

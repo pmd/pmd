@@ -15,7 +15,10 @@ import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<Boolean>} instead. A builder is available from {@link PropertyFactory#booleanProperty(String)} and its overloads.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> {
 
     /**
@@ -26,8 +29,9 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
      * @param defaultBoolStr String representing the default value.
      * @param theUIOrder     UI order
      *
-     * @deprecated will be removed in 7.0.0
+     * @deprecated Use {@link PropertyFactory#booleanProperty(String)} or its overloads.
      */
+    @Deprecated
     public BooleanProperty(String theName, String theDescription, String defaultBoolStr, float theUIOrder) {
         this(theName, theDescription, Boolean.valueOf(defaultBoolStr), theUIOrder, false);
     }
@@ -46,7 +50,10 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
      * @param theDescription Description
      * @param defaultValue   Default value
      * @param theUIOrder     UI order
+     *
+     * @deprecated Use {@link PropertyFactory#booleanProperty(String)} or its overloads.
      */
+    @Deprecated
     public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
         this(theName, theDescription, defaultValue, theUIOrder, false);
     }
@@ -74,11 +81,19 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#booleanProperty(String)} or its overloads.
+     */
+    @Deprecated
     public static BooleanPBuilder named(String name) {
         return new BooleanPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#booleanProperty(String)} or its overloads.
+     */
+    @Deprecated
     public static final class BooleanPBuilder extends SingleValuePropertyBuilder<Boolean, BooleanPBuilder> {
         private BooleanPBuilder(String name) {
             super(name);

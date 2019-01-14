@@ -17,9 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.RegexProperty;
-import net.sourceforge.pmd.properties.RegexProperty.RegexPBuilder;
 
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
@@ -31,11 +30,11 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
                                                                                                "deprecated! Check native methods", true, 1.0f);
 
 
-    private final RegexProperty instanceRegex = defaultProp("", "instance").build();
-    private final RegexProperty staticRegex = defaultProp("static").build();
-    private final RegexProperty nativeRegex = defaultProp("native").build();
-    private final RegexProperty junit3Regex = defaultProp("JUnit 3 test").defaultValue("test[A-Z0-9][a-zA-Z0-9]*").build();
-    private final RegexProperty junit4Regex = defaultProp("JUnit 4 test").build();
+    private final PropertyDescriptor<Pattern> instanceRegex = defaultProp("", "instance").build();
+    private final PropertyDescriptor<Pattern> staticRegex = defaultProp("static").build();
+    private final PropertyDescriptor<Pattern> nativeRegex = defaultProp("native").build();
+    private final PropertyDescriptor<Pattern> junit3Regex = defaultProp("JUnit 3 test").defaultValue("test[A-Z0-9][a-zA-Z0-9]*").build();
+    private final PropertyDescriptor<Pattern> junit4Regex = defaultProp("JUnit 4 test").build();
 
 
     public MethodNamingConventionsRule() {
@@ -110,9 +109,9 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     }
 
     @Override
-    RegexPBuilder defaultProp(String name, String displayName) {
+    RegexPropertyBuilder defaultProp(String name, String displayName) {
         String display = (displayName + " method").trim();
-        RegexPBuilder prop = super.defaultProp(name.isEmpty() ? "method" : name, display);
+        RegexPropertyBuilder prop = super.defaultProp(name.isEmpty() ? "method" : name, display);
 
         DESCRIPTOR_TO_DISPLAY_NAME.put(prop.getName(), display);
 

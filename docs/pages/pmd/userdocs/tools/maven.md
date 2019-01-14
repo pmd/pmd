@@ -109,7 +109,7 @@ The value of the 'ruleset' element can either be a relative address, an absolute
 A clean strategy for customizing which rules to use for a project is to write a ruleset file.
 In this file you can define which rules to use, add custom rules, and
 customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found [here](pmd_userdocs_understanding_rulesets.html).
+writing a ruleset can be found [here](pmd_userdocs_making_rulesets.html).
 Note that if you include other rulesets in your own rulesets, you have to be sure that the plugin
 will be able to resolve those other ruleset references.
 
@@ -198,7 +198,7 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:
 
 For more information, please see the well documented PMD plugin project page here:
 <http://maven.apache.org/plugins/maven-pmd-plugin/index.html>.
-Also, the bug tracker for this plugin is [here](http://jira.codehaus.org/browse/MPMD).
+Also, the bug tracker for this plugin is [here](https://issues.apache.org/jira/browse/MPMD).
 
 
 ## Maven 1
@@ -236,7 +236,7 @@ To specify a set of official, built-in rulesets to be used set them in the prope
 A clean strategy for customizing which rules to use for a project is to write a ruleset file.
 In this file you can define which rules to use, add custom rules, and
 customizing which rules to include/exclude from official rulesets. More information on
-writing a ruleset can be found [here](/pmd_userdocs_understanding_rulesets.html).
+writing a ruleset can be found [here](pmd_userdocs_making_rulesets.html).
 
 Add to the root of your Maven project a pmd.xml file which contains the ruleset mentioned in
 the previous paragraph. Add the following property to your project now:

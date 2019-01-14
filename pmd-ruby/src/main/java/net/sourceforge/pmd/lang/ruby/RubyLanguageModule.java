@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language module for Ruby.
+ *
+ * @deprecated There is no full PMD support for Ruby.
  */
+@Deprecated
 public class RubyLanguageModule extends BaseLanguageModule {
 
     /** The name. */

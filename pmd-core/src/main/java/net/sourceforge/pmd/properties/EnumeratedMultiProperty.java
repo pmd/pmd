@@ -22,7 +22,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @author Brian Remedios
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<List<E>>} instead. A builder is available from {@link PropertyFactory#enumListProperty(String, Map)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty<E>
     implements EnumeratedPropertyDescriptor<E, List<E>> {
 
@@ -42,8 +45,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param valueType      Type of the values
      * @param theUIOrder     UI order
      *
-     * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
-     *     7.0.0
+     * @deprecated Use {@link PropertyFactory#enumListProperty(String, Map)}
      */
     @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -64,8 +66,7 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param choiceIndices  Indices of the default values
      * @param theUIOrder     UI order
      *
-     * @deprecated Use {@link #EnumeratedMultiProperty(String, String, Map, List, Class, float)}. Will be removed in
-     *     7.0.0
+     * @deprecated Use {@link PropertyFactory#enumListProperty(String, Map)}
      */
     @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices,
@@ -84,7 +85,9 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
      * @param defaultValues  List of default values
      * @param valueType      Type of the values
      * @param theUIOrder     UI order
+     * @deprecated Use {@link PropertyFactory#enumListProperty(String, Map)}
      */
+    @Deprecated
     public EnumeratedMultiProperty(String theName, String theDescription, Map<String, E> choices,
                                    List<E> defaultValues, Class<E> valueType, float theUIOrder) {
         this(theName, theDescription, choices, defaultValues, valueType, theUIOrder, false);
@@ -156,11 +159,19 @@ public final class EnumeratedMultiProperty<E> extends AbstractMultiValueProperty
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#enumListProperty(String, Map)}
+     */
+    @Deprecated
     public static <E> EnumMultiPBuilder<E> named(String name) {
         return new EnumMultiPBuilder<>(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#enumListProperty(String, Map)}
+     */
+    @Deprecated
     public static final class EnumMultiPBuilder<E> extends MultiValuePropertyBuilder<E, EnumMultiPBuilder<E>> {
 
         private Class<E> valueType;

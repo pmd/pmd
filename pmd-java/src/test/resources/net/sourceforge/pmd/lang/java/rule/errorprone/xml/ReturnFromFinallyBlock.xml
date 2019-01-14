@@ -4,9 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description><![CDATA[
-throw exception but return from finally
-     ]]></description>
+        <description>throw exception but return from finally</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -23,9 +21,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-lots of returns
-     ]]></description>
+        <description>lots of returns</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -42,9 +38,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-ok
-     ]]></description>
+        <description>ok</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -56,5 +50,94 @@ public class Foo {
  }
 }
      ]]></code>
+    </test-code>
+    <test-code>
+        <description>#1035 [java] ReturnFromFinallyBlock: False positive on lambda expression in finally block</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String bar() {
+    try {
+    } finally {
+        Object o = new Object() {
+            @Override
+            public String toString() {
+                return "";
+            }
+        };
+    }
+  }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return from Lambda in Finally</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String getBar() {
+   try {
+   } finally {
+    Collection<ServiceExecutionEntry> untracked = serviceExecutionTracker.untrackMatchingEntries(e -> {
+        ServiceExecutionIdentifiers ids = e.getIdentifiers();
+        Long execBqiId = (ids == null) ? null : ids.getBqiId();
+        return Objects.equals(bqiId, execBqiId);
+    });
+    untracked.forEach(e -> logger.info("overwriteLastBqi(bqId={}, bqiId={}) untracked {}", bqId, bqiId, e));
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>return from a lambda should not cause issues</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void printSomething() {
+        try {
+            System.out.println("Integers: ");
+        } finally {
+            Arrays.asList(0, 1, 2).map(i -> { return i + 1; }).forEach(i -> System.out.println(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return in finally should give error but not in lambda</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    String printSomething() {
+        try {
+            System.out.println("Integers: ");
+        } finally {
+            Arrays.asList(0, 1, 2).map(i -> { return i + 1; }).forEach(i -> System.out.println(i));
+            return "foo";
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return from anonyous class should not give any error</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void printSomething() {
+        try {
+            System.out.println("Integers: ");
+        } finally {
+            Arrays.asList(0, 1, 2).map(new Function<Integer, Integer>() {
+               @Override
+               public Integer apply(Integer i) {
+                   return i + 1;
+               }
+           }).forEach(i -> System.out.println(i));
+        }
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>

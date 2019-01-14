@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ast.xpath;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -15,6 +16,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @author daniels
  */
+@Deprecated
+@InternalApi
 public abstract class NodeIterator implements Iterator<Node> {
 
     private Node node;

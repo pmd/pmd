@@ -10,10 +10,8 @@ import java.io.StringReader;
 
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.matlab.MatlabLanguageModule;
+import net.sourceforge.pmd.lang.matlab.MatlabTokenManager;
 import net.sourceforge.pmd.lang.matlab.ast.Token;
 import net.sourceforge.pmd.util.IOUtil;
 
@@ -26,12 +24,7 @@ public class MatlabTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         try (Reader reader = IOUtil.skipBOM(new StringReader(buffer.toString()))) {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(MatlabLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(languageVersionHandler
-                    .getParser(languageVersionHandler.getDefaultParserOptions())
-                    .getTokenManager(sourceCode.getFileName(), reader));
+            final TokenFilter tokenFilter = new JavaCCTokenFilter(new MatlabTokenManager(reader));
             Token currentToken = (Token) tokenFilter.getNextToken();
             while (currentToken != null) {
                 tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));

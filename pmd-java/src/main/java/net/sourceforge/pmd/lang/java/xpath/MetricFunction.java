@@ -15,6 +15,7 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -32,6 +33,8 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
  * @author Clément Fournier
  * @since 6.0.0
  */
+@InternalApi
+@Deprecated
 public class MetricFunction implements Function {
 
 

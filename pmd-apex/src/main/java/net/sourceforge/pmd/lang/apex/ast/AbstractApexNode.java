@@ -44,11 +44,8 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
             return loc != null && Locations.isReal(loc);
         } catch (UnexpectedCodePathException e) {
             return false;
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
             // bug in apex-jorje? happens on some ReferenceExpression nodes
-            return false;
-        } catch (NullPointerException e) {
-            // bug in apex-jorje?
             return false;
         }
     }

@@ -74,11 +74,8 @@ public class RuleChain {
         if (visitor == null) {
             if (language.getRuleChainVisitorClass() != null) {
                 try {
-                    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().newInstance();
-                } catch (InstantiationException e) {
-                    throw new IllegalStateException(
-                            "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
-                } catch (IllegalAccessException e) {
+                    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().getConstructor().newInstance();
+                } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
                     throw new IllegalStateException(
                             "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
                 }

@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Implementation of the Matlab Language Module.
+ *
+ * @deprecated There is no full PMD support for Matlab.
  */
+@Deprecated
 public class MatlabLanguageModule extends BaseLanguageModule {
 
     /** The name, that can be used to display the language in UI. */

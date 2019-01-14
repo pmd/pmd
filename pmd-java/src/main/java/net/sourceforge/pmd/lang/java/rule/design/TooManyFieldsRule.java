@@ -4,19 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 public class TooManyFieldsRule extends AbstractJavaRule {
 
     private static final int DEFAULT_MAXFIELDS = 15;
 
-    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty("maxfields",
-            "Max allowable fields", 1, 300, DEFAULT_MAXFIELDS, 1.0f);
+    private static final PropertyDescriptor<Integer> MAX_FIELDS_DESCRIPTOR
+            = PropertyFactory.intProperty("maxfields")
+                             .desc("Max allowable fields")
+                             .defaultValue(DEFAULT_MAXFIELDS)
+                             .require(positive())
+                             .build();
 
     public TooManyFieldsRule() {
         definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);

@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.Comment;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -21,15 +24,15 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class CommentSizeRule extends AbstractCommentRule {
 
-    public static final IntegerProperty MAX_LINES
-            = IntegerProperty.named("maxLines")
+    public static final PropertyDescriptor<Integer> MAX_LINES
+            = PropertyFactory.intProperty("maxLines")
                              .desc("Maximum lines")
-                             .range(2, 200).defaultValue(6).uiOrder(2.0f).build();
+                             .require(positive()).defaultValue(6).build();
     
-    public static final IntegerProperty MAX_LINE_LENGTH
-            = IntegerProperty.named("maxLineLength")
+    public static final PropertyDescriptor<Integer> MAX_LINE_LENGTH
+            = PropertyFactory.intProperty("maxLineLength")
                              .desc("Maximum line length")
-                             .range(1, 200).defaultValue(80).uiOrder(2.0f).build();
+                             .require(positive()).defaultValue(80).build();
 
     private static final String CR = "\n";
 

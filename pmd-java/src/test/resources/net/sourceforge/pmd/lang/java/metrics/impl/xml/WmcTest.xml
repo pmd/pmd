@@ -125,4 +125,32 @@
         </code>
     </test-code>
 
+    <code-fragment id="nested-class">
+        <![CDATA[
+        class Outer {
+          void foo() { // 1
+              return;
+          }
+
+          class Inner {
+              void foo() { // 1
+                  return;
+              }
+          }
+
+
+        }
+        ]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Classes should not factor in the complexity of nested classes</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Outer' has value 1.</message>
+            <message>'Outer$Inner' has value 1.</message>
+        </expected-messages>
+        <code-ref id="nested-class"/>
+    </test-code>
+
 </test-data>

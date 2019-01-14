@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -22,7 +24,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * @author Eric Olander
@@ -35,10 +38,9 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
      * Restore old behavior by setting both properties to true, which will
      * result in many false positives
      */
-    private static final BooleanProperty CHECK_INNER_CLASSES = new BooleanProperty("checkInnerClasses",
-            "Check inner classes", false, 1.0f);
-    private static final BooleanProperty DISALLOW_NOT_ASSIGNMENT = new BooleanProperty("disallowNotAssignment",
-            "Disallow violations where the first usage is not an assignment", false, 2.0f);
+    private static final PropertyDescriptor<Boolean> CHECK_INNER_CLASSES = booleanProperty("checkInnerClasses").defaultValue(false).desc("Check inner classes").build();
+    private static final PropertyDescriptor<Boolean> DISALLOW_NOT_ASSIGNMENT = booleanProperty("disallowNotAssignment").defaultValue(false).desc("Disallow violations where the first usage is not an assignment").build();
+
 
     public SingularFieldRule() {
         definePropertyDescriptor(CHECK_INNER_CLASSES);

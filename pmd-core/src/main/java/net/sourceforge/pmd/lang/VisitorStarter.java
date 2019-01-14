@@ -4,13 +4,18 @@
 
 package net.sourceforge.pmd.lang;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Interface for starting an implementation of the visitors for ASTs.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ *
+ * @deprecated Is internal API, and is now only used on methods deprecated for removal.
  */
+@Deprecated
+@InternalApi
 public interface VisitorStarter {
 
     /**

@@ -10,7 +10,10 @@ import java.util.Arrays;
 /**
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated see {@link net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder}
  */
+@Deprecated
 public abstract class MultiPackagedPropertyBuilder<V, T extends MultiPackagedPropertyBuilder<V, T>>
         extends MultiValuePropertyBuilder<V, T> {
 

@@ -108,7 +108,7 @@ public class BinaryDistributionIT {
 
         result = CpdExecutor.runCpd(tempDir, "-h");
 
-        result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
+        result.assertExecutionResult(1, "Supported languages: [apex, cpp, cs, ecmascript, fortran, go, groovy, java, jsp, kotlin, matlab, objectivec, perl, php, plsql, python, ruby, scala, swift, vf]");
 
         result = CpdExecutor.runCpd(tempDir, "--minimum-tokens", "10", "--format", "text", "--files", srcDir);
         result.assertExecutionResult(4, "Found a 10 line (55 tokens) duplication in the following files:");

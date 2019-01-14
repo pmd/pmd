@@ -14,12 +14,16 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 
+
 /**
  * Decorator which counts imports.
  *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
  */
+@Deprecated
 public class NcssCountImportsDecorator extends JavaParserVisitorDecorator {
 
 

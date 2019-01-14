@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -14,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
@@ -23,19 +25,26 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class AssignmentInOperandRule extends AbstractJavaRule {
 
-    private static final BooleanProperty ALLOW_IF_DESCRIPTOR = new BooleanProperty("allowIf",
-            "Allow assignment within the conditional expression of an if statement", false, 1.0f);
+    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR =
+            booleanProperty("allowIf")
+                    .desc("Allow assignment within the conditional expression of an if statement")
+                    .defaultValue(false).build();
 
-    private static final BooleanProperty ALLOW_FOR_DESCRIPTOR = new BooleanProperty("allowFor",
-            "Allow assignment within the conditional expression of a for statement", false, 2.0f);
+    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR =
+            booleanProperty("allowFor")
+                    .desc("Allow assignment within the conditional expression of a for statement")
+                    .defaultValue(false).build();
 
-    private static final BooleanProperty ALLOW_WHILE_DESCRIPTOR = new BooleanProperty("allowWhile",
-            "Allow assignment within the conditional expression of a while statement", false, 3.0f);
+    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR =
+            booleanProperty("allowWhile")
+                    .desc("Allow assignment within the conditional expression of a while statement")
+                    .defaultValue(false).build();
 
-    private static final BooleanProperty ALLOW_INCREMENT_DECREMENT_DESCRIPTOR = new BooleanProperty(
-            "allowIncrementDecrement",
-            "Allow increment or decrement operators within the conditional expression of an if, for, or while statement",
-            false, 4.0f);
+    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR =
+            booleanProperty("allowIncrementDecrement")
+                    .desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement")
+                    .defaultValue(false).build();
+
 
     public AssignmentInOperandRule() {
         definePropertyDescriptor(ALLOW_IF_DESCRIPTOR);

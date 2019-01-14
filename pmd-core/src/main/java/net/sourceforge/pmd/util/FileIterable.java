@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 /**
@@ -26,10 +26,9 @@ public class FileIterable implements Iterable<String> {
     private LineNumberReader lineReader = null;
 
     public FileIterable(File file) {
-
         try {
-            lineReader = new LineNumberReader(new FileReader(file));
-        } catch (FileNotFoundException e) {
+            lineReader = new LineNumberReader(Files.newBufferedReader(file.toPath(), Charset.defaultCharset()));
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }

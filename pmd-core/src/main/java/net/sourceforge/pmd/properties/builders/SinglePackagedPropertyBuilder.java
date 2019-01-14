@@ -11,7 +11,9 @@ import java.util.Collection;
 /**
  * @author Clément Fournier
  * @since 6.0.0
+   * @deprecated see {@link net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder}
  */
+@Deprecated
 public abstract class SinglePackagedPropertyBuilder<V, T extends SinglePackagedPropertyBuilder<V, T>>
     extends SingleValuePropertyBuilder<V, T> {
 

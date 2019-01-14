@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 public abstract class STBBaseTst {
 
     protected ASTCompilationUnit acu;
-    protected SymbolFacade stb;
 
     protected void parseCode(final String code) {
         parseCode(code, LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion());
@@ -34,8 +33,9 @@ public abstract class STBBaseTst {
         final LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
         acu = (ASTCompilationUnit) languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
                 .parse(null, new StringReader(code));
-        stb = new SymbolFacade();
-        stb.initializeWith(acu);
+        languageVersionHandler.getQualifiedNameResolutionFacade(STBBaseTst.class.getClassLoader()).start(acu);
+        languageVersionHandler.getSymbolFacade(STBBaseTst.class.getClassLoader()).start(acu);
+        languageVersionHandler.getTypeResolutionFacade(STBBaseTst.class.getClassLoader()).start(acu);
     }
 
     // Note: If you're using Eclipse or some other IDE to run this test, you

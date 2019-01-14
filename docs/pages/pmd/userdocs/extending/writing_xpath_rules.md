@@ -16,7 +16,7 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 
 ## Introduction
 
-PMD provides a very handy method for writing rules by writing an XPath query. When the XPath query finds a match, a violation is added to the report. This document focuses on XPath rules. You can go [here](howtowritearule.html) for more information about writing a rule.
+PMD provides a very handy method for writing rules by writing an XPath query. When the XPath query finds a match, a violation is added to the report. This document focuses on XPath rules. You can go [here](pmd_userdocs_extending_writing_pmd_rules.html) for more information about writing a rule.
 
 ## What is the Abstract Syntax Tree (AST)?
 

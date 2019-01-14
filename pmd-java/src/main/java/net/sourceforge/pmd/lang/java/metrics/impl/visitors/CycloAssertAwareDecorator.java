@@ -9,10 +9,15 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorDecorator;
 
+
 /**
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ *
  */
+@Deprecated
 public class CycloAssertAwareDecorator extends JavaParserVisitorDecorator {
 
     @Override

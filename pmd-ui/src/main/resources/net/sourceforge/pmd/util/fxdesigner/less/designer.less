@@ -8,11 +8,36 @@
 
 @import "constants";
 
+// Each color in this stack corresponds to the color of a parent
+// in the tree view
+@ast-tree-color-stack: @selection-focus-color,
+#454555,
+#aaaabc,
+#d62c49,
+#ff6a7a;
+
 
 .list-view, .tree-view, .table-view {
     -fx-selection-bar: @selection-focus-color;
     -fx-selection-bar-non-focused: @darker-accent-border;
 }
+
+.tree-cell.ast-parent {
+
+    @foreach-i: {
+        -fx-background-color: linear-gradient(to right, fade(@selection-focus-color, percentage(1- (@i / 5))) 0%, darken(white, 5%) 10%);
+    };
+
+    .make-depth-classes(4, @foreach-i);
+
+    // This is the focused node
+    &.depth-0:focused {
+        -fx-font-weight: bold;
+        -fx-background-color: @selection-focus-color;
+    }
+
+}
+
 
 .table-view {
     -fx-border-color: @darker-accent;
@@ -83,6 +108,22 @@
     }
 }
 
+// XPath autocomplete
+.autocomplete-menu {
+
+  .menu-item:focused {
+
+    -fx-background-color: @selection-focus-color;
+
+    .autocomplete-match {
+      -fx-fill: white;
+    }
+  }
+
+  .autocomplete-match {
+    -fx-fill: orange;
+  }
+}
 
 #nodeInfoPanel {
     .fix-width(300);
@@ -229,3 +270,4 @@
 .corner {
     -fx-background-color: white;
 }
+

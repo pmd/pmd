@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -15,7 +17,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * <code>if (x != y) { diff(); } else { same(); }</code> and<br>
@@ -51,8 +54,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  * </pre>
  */
 public class ConfusingTernaryRule extends AbstractJavaRule {
-    private static BooleanProperty ignoreElseIfProperty = new BooleanProperty("ignoreElseIf",
-            "Ignore conditions with an else-if case", Boolean.FALSE, 0);
+    private static PropertyDescriptor<Boolean> ignoreElseIfProperty = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super();

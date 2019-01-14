@@ -160,7 +160,7 @@ public class Report implements Iterable<RuleViolation> {
         }
 
         public String getMsg() {
-            return error.getMessage();
+            return error.getClass().getSimpleName() + ": " + error.getMessage();
         }
         
         public String getDetail() {

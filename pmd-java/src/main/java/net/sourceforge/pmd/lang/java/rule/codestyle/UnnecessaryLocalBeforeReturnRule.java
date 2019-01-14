@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,14 +25,13 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
-    private static final BooleanProperty STATEMENT_ORDER_MATTERS = new BooleanProperty("statementOrderMatters",
-            "If set to false this rule no longer requires the variable declaration and return statement to be "
-            + "on consecutive lines. Any variable that is used solely in a return statement will be reported.",
-            true, 1.0f);
+    private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
+
 
     public UnnecessaryLocalBeforeReturnRule() {
         definePropertyDescriptor(STATEMENT_ORDER_MATTERS);

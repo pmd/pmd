@@ -150,7 +150,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRule {
     private Set<String> determineTopLevelCloneableClasses(final ASTClassOrInterfaceDeclaration currentClass) {
         final List<ASTClassOrInterfaceDeclaration> classes = currentClass.getFirstParentOfType(ASTCompilationUnit.class)
                 .findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
-        final Set<String> classesNames = new HashSet<String>();
+        final Set<String> classesNames = new HashSet<>();
         for (final ASTClassOrInterfaceDeclaration c : classes) {
             if (!Objects.equals(c, currentClass) && extendsOrImplementsCloneable(c)) {
                 classesNames.add(c.getImage());

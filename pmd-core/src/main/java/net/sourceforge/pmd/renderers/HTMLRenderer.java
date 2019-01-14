@@ -28,6 +28,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 
+    // TODO 7.0.0 use PropertyDescriptor<String>
     public static final StringProperty LINE_PREFIX = new StringProperty("linePrefix",
             "Prefix for line number anchor in the source file.", null, 1);
     public static final StringProperty LINK_PREFIX = new StringProperty("linkPrefix", "Path to HTML source.", null, 0);

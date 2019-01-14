@@ -15,7 +15,11 @@ import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ *
+ * @deprecated Use a {@code PropertyDescriptor<Double>} instead. A builder is available from {@link PropertyFactory#doubleProperty(String)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
 
@@ -31,8 +35,9 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
-     * @deprecated will be removed in 7.0.0
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)}.
      */
+    @Deprecated
     public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr,
                           float theUIOrder) {
         this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder, false);
@@ -57,7 +62,9 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)}.
      */
+    @Deprecated
     public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault,
                           float theUIOrder) {
         this(theName, theDescription, min, max, theDefault, theUIOrder, false);
@@ -98,11 +105,19 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)}.
+     */
+    @Deprecated
     public static DoublePBuilder named(String name) {
         return new DoublePBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#doubleProperty(String)}.
+     */
+    @Deprecated
     public static final class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
         private DoublePBuilder(String name) {
             super(name);

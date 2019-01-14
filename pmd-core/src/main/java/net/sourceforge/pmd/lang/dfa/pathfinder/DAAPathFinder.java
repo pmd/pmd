@@ -30,17 +30,27 @@ public class DAAPathFinder {
     private CurrentPath currentPath = new CurrentPath();
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
     private int maxPaths;
+    private int maxLoops;
 
     public DAAPathFinder(DataFlowNode rootNode, Executable shim) {
         this.rootNode = rootNode;
         this.shim = shim;
         this.maxPaths = MAX_PATHS;
+        this.maxLoops = MAX_LOOPS;
     }
 
     public DAAPathFinder(DataFlowNode rootNode, Executable shim, int maxPaths) {
         this.rootNode = rootNode;
         this.shim = shim;
         this.maxPaths = maxPaths;
+        this.maxLoops = MAX_LOOPS;
+    }
+
+    public DAAPathFinder(DataFlowNode rootNode, Executable shim, int maxPaths, int maxLoops) {
+        this.rootNode = rootNode;
+        this.shim = shim;
+        this.maxPaths = maxPaths;
+        this.maxLoops = maxLoops;
     }
 
     public void run() {
@@ -69,7 +79,7 @@ public class DAAPathFinder {
      */
     private void phase2(boolean flag) {
         int i = 0;
-        while (!currentPath.isEndNode() && i < MAX_LOOPS) {
+        while (!currentPath.isEndNode() && i < this.maxLoops) {
             i++;
             if (currentPath.isBranch() || currentPath.isFirstDoStatement()) {
                 if (flag) {

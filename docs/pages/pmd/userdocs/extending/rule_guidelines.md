@@ -27,9 +27,12 @@ For instance, let’s take the ExplicitCallToGC rule (“Do not explicitly trigg
 
 ## Code formatting
 
-We try to keep a consistent code formatting through out PMD code base to ensure an easier maintenance and also make the diff send to the mailing list as readable as possible.
+We try to keep a consistent code formatting through out PMD code base to ensure an easier maintenance and also make
+the pull request as readable as possible.
 
-In order to ensure this, we use a PMD specific Eclipse formatter configuration: **tools/config/eclipse-code-formatter-settings.xml**. Please do not forget to uses it before committing or any source code!
+In order to ensure this, we use a PMD specific Eclipse formatter configuration, which is maintained in a
+separate project - "build-tools": [eclipse-code-formatter.xml](https://github.com/pmd/build-tools/blob/master/eclipse/pmd-eclipse-code-formatter.xml).
+Please do not forget to use it before committing or any source code!
 
 ## Correctness
 
@@ -47,7 +50,7 @@ Rules which use the RuleChain to visit the AST are faster than rules which perfo
 
 ## Adding test cases
 
-See [Test Framework](pmd_devdocs_testing.html) for the general documentation
+See [Testing your rules](pmd_userdocs_extending_testing.html) for the general documentation
 
 ### … for a rule I want to submit (in a patch)
 
@@ -56,7 +59,7 @@ the category and add the XML test data in the correct xml subpackage.
 
 ### … for something too specific, that I won’t be able to submit
 
-See [Using the test framework externally](pmd_devdocs_testing.html#using-the-test-framework-externally)
+See [Using the test framework externally](pmd_userdocs_extending_testing.html#using-the-test-framework-externally)
 
 ## Code quality
 

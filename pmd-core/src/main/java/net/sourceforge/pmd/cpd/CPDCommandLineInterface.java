@@ -173,12 +173,8 @@ public final class CPDCommandLineInterface {
             LOGGER.fine(
                     String.format("Adding DBURI=%s with DBType=%s", dburi.toString(), dburi.getDbType().toString()));
             cpd.add(dburi);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException("uri=" + uri, e);
-        } catch (URISyntaxException ex) {
-            throw new IllegalStateException("uri=" + uri, ex);
-        } catch (Exception ex) {
-            throw new IllegalStateException("uri=" + uri, ex);
         }
     }
 

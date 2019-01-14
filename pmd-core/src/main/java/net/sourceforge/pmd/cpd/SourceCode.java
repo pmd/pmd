@@ -6,11 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.ref.SoftReference;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +102,7 @@ public class SourceCode {
 
         @Override
         public Reader getReader() throws Exception {
-            BOMInputStream inputStream = new BOMInputStream(new FileInputStream(file), ByteOrderMark.UTF_8,
+            BOMInputStream inputStream = new BOMInputStream(Files.newInputStream(file.toPath()), ByteOrderMark.UTF_8,
                     ByteOrderMark.UTF_16BE, ByteOrderMark.UTF_16LE);
 
             if (inputStream.hasBOM()) {

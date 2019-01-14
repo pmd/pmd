@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,13 +36,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Makes sure you close your database connections. It does this by looking for
  * code patterned like this:
- * 
+ *
  * <pre>
  *  Connection c = X;
  *  try {
@@ -48,7 +50,7 @@ import net.sourceforge.pmd.properties.StringMultiProperty;
  *   c.close();
  *  }
  * </pre>
- * 
+ *
  *  @author original author unknown
  *  @author Contribution from Pierre Mathien
  */
@@ -58,14 +60,22 @@ public class CloseResourceRule extends AbstractJavaRule {
     private Set<String> simpleTypes = new HashSet<>();
 
     private Set<String> closeTargets = new HashSet<>();
-    private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
-            "Methods which may close this resource", new String[] {}, 1.0f, ',');
+    private static final PropertyDescriptor<List<String>> CLOSE_TARGETS_DESCRIPTOR =
+            stringListProperty("closeTargets")
+                           .desc("Methods which may close this resource")
+                           .emptyDefaultValue()
+                           .delim(',').build();
 
-    private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types", "Affected types",
-            new String[] { "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet" }, 2.0f, ',');
+    private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
+            stringListProperty("types")
+                    .desc("Affected types")
+                    .defaultValues("java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
+                    .delim(',').build();
 
-    private static final BooleanProperty USE_CLOSE_AS_DEFAULT_TARGET = new BooleanProperty("closeAsDefaultTarget",
-            "Consider 'close' as a target by default", true, 3.0f);
+    private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
+            booleanProperty("closeAsDefaultTarget")
+                    .desc("Consider 'close' as a target by default").defaultValue(true).build();
+
 
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);

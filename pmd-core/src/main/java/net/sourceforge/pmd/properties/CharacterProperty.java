@@ -15,7 +15,10 @@ import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<Character>}. A builder is available from {@link PropertyFactory#charProperty(String)}.
+ * This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class CharacterProperty extends AbstractSingleValueProperty<Character> {
 
     /**
@@ -27,8 +30,9 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * @param theUIOrder     float
      *
      * @throws IllegalArgumentException
-     * @deprecated will be removed in 7.0.0
+     * @deprecated Use {@link PropertyFactory#charProperty(String)}
      */
+    @Deprecated
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
         this(theName, theDescription, charFrom(defaultStr), theUIOrder, false);
     }
@@ -47,7 +51,9 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
      * @param theDescription Description
      * @param theDefault     Default value
      * @param theUIOrder     UI order
+     * @deprecated Use {@link PropertyFactory#charProperty(String)}
      */
+    @Deprecated
     public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
         this(theName, theDescription, theDefault, theUIOrder, false);
     }
@@ -88,11 +94,19 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#charProperty(String)}
+     */
+    @Deprecated
     public static CharacterPBuilder named(String name) {
         return new CharacterPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#charProperty(String)}
+     */
+    @Deprecated
     public static final class CharacterPBuilder extends SingleValuePropertyBuilder<Character, CharacterPBuilder> {
         private CharacterPBuilder(String name) {
             super(name);

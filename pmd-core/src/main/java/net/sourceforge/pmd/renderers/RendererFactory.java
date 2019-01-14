@@ -80,13 +80,12 @@ public final class RendererFactory {
                     }
                 }
             }
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("Unable to construct report renderer class: " + e.getLocalizedMessage());
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Unable to construct report renderer class: " + e.getLocalizedMessage());
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException(
+                    "Unable to construct report renderer class: " + e.getLocalizedMessage(), e);
         } catch (InvocationTargetException e) {
             throw new IllegalArgumentException(
-                    "Unable to construct report renderer class: " + e.getTargetException().getLocalizedMessage());
+                    "Unable to construct report renderer class: " + e.getTargetException().getLocalizedMessage(), e);
         }
         // Warn about legacy report format usages
         if (REPORT_FORMAT_TO_RENDERER.containsKey(reportFormat) && !reportFormat.equals(renderer.getName())) {

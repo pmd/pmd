@@ -19,7 +19,10 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<List<String>>}. A builder is available from {@link PropertyFactory#stringListProperty(String)}.
+ * This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class StringMultiProperty extends AbstractMultiValueProperty<String> {
 
 
@@ -34,7 +37,9 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
+     * @deprecated Use {@link PropertyFactory#stringListProperty(String)}
      */
+    @Deprecated
     public StringMultiProperty(String theName, String theDescription, String[] defaultValues, float theUIOrder,
                                char delimiter) {
         this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter);
@@ -52,7 +57,9 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
      *
      * @throws IllegalArgumentException if a default value contains the delimiter
      * @throws NullPointerException     if the defaults array is null
+     * @deprecated Use {@link PropertyFactory#stringListProperty(String)}
      */
+    @Deprecated
     public StringMultiProperty(String theName, String theDescription, List<String> defaultValues, float theUIOrder,
                                char delimiter) {
         this(theName, theDescription, defaultValues, theUIOrder, delimiter, false);
@@ -147,11 +154,19 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#stringListProperty(String)}
+     */
+    @Deprecated
     public static StringMultiPBuilder named(String name) {
         return new StringMultiPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#stringListProperty(String)}
+     */
+    @Deprecated
     public static final class StringMultiPBuilder extends MultiValuePropertyBuilder<String, StringMultiPBuilder> {
         private StringMultiPBuilder(String name) {
             super(name);

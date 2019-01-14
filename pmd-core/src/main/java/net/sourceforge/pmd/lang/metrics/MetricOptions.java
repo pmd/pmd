@@ -82,6 +82,16 @@ public class MetricOptions {
     }
 
 
+    /**
+     * Returns true if this bundle contains the given option.
+     *
+     * @param option Option to look for
+     */
+    public boolean contains(MetricOption option) {
+        return options.contains(option);
+    }
+
+
     @Override
     public String toString() {
         return "MetricOptions{"

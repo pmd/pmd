@@ -5,9 +5,10 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import net.sourceforge.pmd.properties.StringProperty;
 public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
+    // TODO 7.0.0 use PropertyDescriptor<Optional<File>> with a constraint that the file is an existing directory
     public static final StringProperty OUTPUT_DIR = new StringProperty("outputDir", "Output directory.", null, 0);
 
     private SortedMap<String, ReportNode> reportNodesByPackage = new TreeMap<>();
@@ -98,9 +100,11 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private void renderIndex(String outputDir) throws IOException {
-        try (PrintWriter out = new PrintWriter(new FileWriter(new File(outputDir, "index.html")))) {
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(new File(outputDir, "index.html").toPath(), StandardCharsets.UTF_8))) {
+            out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("    <head>");
+            out.println("        <meta charset=\"UTF-8\">");
             out.println("        <title>PMD</title>");
             out.println("    </head>");
             out.println("    <body>");
@@ -137,9 +141,11 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     private void renderClasses(String outputDir) throws IOException {
         for (ReportNode node : reportNodesByPackage.values()) {
             if (node.hasViolations()) {
-                try (PrintWriter out = new PrintWriter(new FileWriter(new File(outputDir, node.getClassName() + ".html")))) {
+                try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(new File(outputDir, node.getClassName() + ".html").toPath(), StandardCharsets.UTF_8))) {
+                    out.println("<!DOCTYPE html>");
                     out.println("<html>");
                     out.println("    <head>");
+                    out.println("        <meta charset=\"UTF-8\">");
                     out.print("        <title>PMD - ");
                     out.print(node.getClassName());
                     out.println("</title>");

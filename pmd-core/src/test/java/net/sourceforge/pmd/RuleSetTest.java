@@ -530,7 +530,7 @@ public class RuleSetTest {
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "Test exception while applying rule", errors.get(0).getMsg());
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
     }
 
@@ -577,7 +577,7 @@ public class RuleSetTest {
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "Test exception while applying rule", errors.get(0).getMsg());
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
         assertEquals("There should be a violation", 1, context.getReport().size());
@@ -617,7 +617,7 @@ public class RuleSetTest {
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = CollectionUtil.toList(context.getReport().errors());
         assertEquals("Errors expected", 1, errors.size());
-        assertEquals("Wrong error message", "Test exception while applying rule", errors.get(0).getMsg());
+        assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
         assertEquals("There should be a violation", 1, context.getReport().size());

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import net.sf.saxon.om.Navigator;
@@ -15,6 +16,8 @@ import net.sf.saxon.om.SequenceIterator;
  * An adapter over our {@link net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator}
  * for the Saxon model.
  */
+@Deprecated
+@InternalApi
 public class AttributeAxisIterator extends Navigator.BaseEnumeration {
 
     protected final ElementNode startNodeInfo;

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.xpath;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.saxon.ElementNode;
 
@@ -12,6 +13,8 @@ import net.sf.saxon.expr.XPathContext;
 /**
  * Exposes all Java Language specific functions for Saxon use.
  */
+@InternalApi
+@Deprecated
 public final class JavaFunctions {
 
     private JavaFunctions() {

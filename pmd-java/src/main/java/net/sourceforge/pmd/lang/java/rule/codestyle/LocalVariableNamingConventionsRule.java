@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.RegexProperty;
 
 
 /**
@@ -21,10 +20,10 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
     // These are not exhaustive, but are chosen to be the most useful, for a start
 
-    private final RegexProperty localVarRegex = defaultProp("localVar", "non-final local variable").build();
-    private final RegexProperty finalVarRegex = defaultProp("finalVar", "final local variable").build();
+    private final PropertyDescriptor<Pattern> localVarRegex = defaultProp("localVar", "non-final local variable").build();
+    private final PropertyDescriptor<Pattern> finalVarRegex = defaultProp("finalVar", "final local variable").build();
 
-    private final RegexProperty exceptionBlockParameterRegex = defaultProp("catchParameter", "exception block parameter").build();
+    private final PropertyDescriptor<Pattern> exceptionBlockParameterRegex = defaultProp("catchParameter", "exception block parameter").build();
 
 
     public LocalVariableNamingConventionsRule() {

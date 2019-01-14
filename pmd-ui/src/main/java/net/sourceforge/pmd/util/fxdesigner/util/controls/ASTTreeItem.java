@@ -4,9 +4,19 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
+import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.reverse;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+import org.reactfx.value.Var;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
-import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -18,27 +28,80 @@ import javafx.scene.control.TreeItem;
 public final class ASTTreeItem extends TreeItem<Node> {
 
 
+    private Var<ASTTreeCell> treeCell = Var.newSimpleVar(null);
+
+    /**
+     * Latent style classes are style classes that logically belong to this tree item (i.e. the node it wraps).
+     * The TreeItem must sync them to the TreeCell that currently displays it. The value is never null.
+     */
+    private Var<List<String>> latentStyleClasses = Var.newSimpleVar(Collections.emptyList());
+
     private ASTTreeItem(Node n) {
         super(n);
         setExpanded(true);
+
+        treeCellProperty().changes().subscribe(change -> {
+
+            if (change.getOldValue() != null) {
+                change.getOldValue().getStyleClass().removeAll(latentStyleClasses.getValue());
+            }
+
+            if (change.getNewValue() != null) {
+                change.getNewValue().getStyleClass().addAll(latentStyleClasses.getValue());
+            }
+
+        });
+
+        latentStyleClasses.changes()
+                          // .conditionOn(treeCellProperty().map(Objects::nonNull))
+                          .subscribe(change -> {
+                              if (treeCellProperty().isPresent()) {
+                                  treeCellProperty().getValue().getStyleClass().removeAll(change.getOldValue());
+                                  treeCellProperty().getValue().getStyleClass().addAll(change.getNewValue());
+                              }
+                          });
     }
 
 
+    /**
+     * Finds the tree item corresponding to the given node
+     * among the descendants of this item. This method assumes
+     * this item is the root node.
+     *
+     * @param node The node to find
+     *
+     * @return The found item, or null if this item doesn't wrap the
+     *         root of the tree to which the parameter belongs
+     */
     public ASTTreeItem findItem(Node node) {
-        if (this.getValue().equals(node)) {
-            return this;
+        // This is an improvement over the previous algorithm which performed a greedy
+        // depth-first traversal over all the tree (was at worst O(size of the tree),
+        // now it's at worst O(number of parents of the searched node))
+
+        Objects.requireNonNull(node, "Cannot find a null item");
+
+        Iterator<Node> pathToNode = reverse(parentIterator(node, true));
+
+        if (pathToNode.next() != getValue()) {
+            // this node is not the root of the tree
+            // to which the node we're looking for belongs
+            return null;
         }
 
-        ObservableList<TreeItem<Node>> children = this.getChildren();
-        ASTTreeItem found;
-        for (TreeItem<Node> child : children) {
-            found = ((ASTTreeItem) child).findItem(node);
-            if (found != null) {
-                return found;
-            }
+        ASTTreeItem current = this;
+
+        while (pathToNode.hasNext()) {
+            Node currentNode = pathToNode.next();
+
+            current = current.getChildren().stream()
+                             .filter(item -> item.getValue() == currentNode)
+                             .findAny()
+                             .map(ASTTreeItem.class::cast)
+                             .get(); // theoretically, this cannot fail, since we use reference identity
+
         }
 
-        return null;
+        return current;
     }
 
 
@@ -51,6 +114,22 @@ public final class ASTTreeItem extends TreeItem<Node> {
             }
         }
         return item;
+    }
+
+
+    public void setStyleClasses(List<String> classes) {
+        latentStyleClasses.setValue(classes == null ? Collections.emptyList() : classes);
+    }
+
+
+    public void setStyleClasses(String... classes) {
+        setStyleClasses(Arrays.asList(classes));
+    }
+
+
+    // Only for ASTTreeCell
+    Var<ASTTreeCell> treeCellProperty() {
+        return treeCell;
     }
 
 

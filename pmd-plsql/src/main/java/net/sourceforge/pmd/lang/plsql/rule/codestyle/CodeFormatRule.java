@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -23,12 +25,14 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTSubqueryOperation;
 import net.sourceforge.pmd.lang.plsql.ast.ASTUnqualifiedID;
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclarator;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 public class CodeFormatRule extends AbstractPLSQLRule {
 
-    private static final IntegerProperty INDENTATION_PROPERTY = IntegerProperty.named("indentation")
-            .desc("Indentation to be used for blocks").defaultValue(2).range(0, 20).build();
+    private static final PropertyDescriptor<Integer> INDENTATION_PROPERTY = PropertyFactory.intProperty("indentation")
+                                                                                           .desc("Indentation to be used for blocks").defaultValue(2).require(inRange(0, 32)).build();
 
     private int indentation = INDENTATION_PROPERTY.defaultValue();
 

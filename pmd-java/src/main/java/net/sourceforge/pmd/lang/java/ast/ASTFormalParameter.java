@@ -103,6 +103,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
      * This includes varargs parameters.
      */
     @Override
+    @Deprecated
     public boolean isArray() {
         return isVarargs()
                 || getTypeNode() != null && getTypeNode().isArray()
@@ -110,6 +111,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     }
 
     @Override
+    @Deprecated
     public int getArrayDepth() {
         if (!isArray()) {
             return 0;

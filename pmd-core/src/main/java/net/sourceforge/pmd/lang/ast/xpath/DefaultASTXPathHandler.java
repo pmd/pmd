@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast.xpath;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 import net.sf.saxon.sxpath.IndependentContext;
 
+
+@Deprecated
+@InternalApi
 public class DefaultASTXPathHandler extends AbstractASTXPathHandler {
     @Override
     public void initialize() {

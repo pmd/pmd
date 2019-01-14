@@ -16,7 +16,11 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ *
+ * @deprecated Use a {@code PropertyDescriptor<List<Long>>} instead. A builder is available from {@link PropertyFactory#longIntListProperty(String)}.
+ *             This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> {
 
 
@@ -31,7 +35,9 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated Use {@link PropertyFactory#longIntListProperty(String)}
      */
+    @Deprecated
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              Long[] defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, Arrays.asList(defaultValues), theUIOrder, false);
@@ -56,7 +62,9 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
      * @param theUIOrder     UI order
      *
      * @throws IllegalArgumentException if {@literal min > max} or one of the defaults is not between the bounds
+     * @deprecated Use {@link PropertyFactory#longIntListProperty(String)}
      */
+    @Deprecated
     public LongMultiProperty(String theName, String theDescription, Long min, Long max,
                              List<Long> defaultValues, float theUIOrder) {
         this(theName, theDescription, min, max, defaultValues, theUIOrder, false);
@@ -85,11 +93,15 @@ public final class LongMultiProperty extends AbstractMultiNumericProperty<Long> 
     }
 
 
+    /** @deprecated Use {@link PropertyFactory#longIntListProperty(String)} */
+    @Deprecated
     public static LongMultiPBuilder named(String name) {
         return new LongMultiPBuilder(name);
     }
 
 
+    /** @deprecated Use {@link PropertyFactory#longIntListProperty(String)} */
+    @Deprecated
     public static final class LongMultiPBuilder
         extends MultiNumericPropertyBuilder<Long, LongMultiPBuilder> {
 

@@ -18,10 +18,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -269,7 +269,7 @@ public class GUI implements CPDListener {
             }
 
             if (!f.canWrite()) {
-                try (PrintWriter pw = new PrintWriter(new FileOutputStream(f))) {
+                try (PrintWriter pw = new PrintWriter(Files.newOutputStream(f.toPath()))) {
                     renderer.render(matches.iterator(), pw);
                     pw.flush();
                     JOptionPane.showMessageDialog(frame, "Saved " + matches.size() + " matches");
@@ -706,10 +706,7 @@ public class GUI implements CPDListener {
             } else {
                 resultsTextArea.setText(report);
             }
-        } catch (IOException t) {
-            t.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
-        } catch (RuntimeException t) {
+        } catch (IOException | RuntimeException t) {
             t.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
         }

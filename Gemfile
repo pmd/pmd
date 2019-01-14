@@ -9,6 +9,7 @@ gem 'danger', '~> 5.6', '>= 5.6'
 group :release_notes_preprocessing do
   gem 'liquid', '>=4.0.0'
   gem 'safe_yaml', '>=1.0'
+  gem 'rouge', '>= 1.7', '< 4'
 end
 
 # vim: syntax=ruby

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
 import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,8 @@ import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.NumericConstants;
 
 public class TooManyFieldsRule extends AbstractApexRule {
@@ -25,8 +27,13 @@ public class TooManyFieldsRule extends AbstractApexRule {
     private Map<String, Integer> stats;
     private Map<String, ASTUserClass> nodes;
 
-    private static final IntegerProperty MAX_FIELDS_DESCRIPTOR = new IntegerProperty("maxfields",
-            "Max allowable fields", 1, 300, DEFAULT_MAXFIELDS, 1.0f);
+    private static final PropertyDescriptor<Integer> MAX_FIELDS_DESCRIPTOR
+            = PropertyFactory.intProperty("maxfields")
+                             .desc("Max allowable fields")
+                             .defaultValue(DEFAULT_MAXFIELDS)
+                             .require(positive())
+                             .build();
+
 
     public TooManyFieldsRule() {
         definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
@@ -71,7 +78,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
             stats.put(key, NumericConstants.ZERO);
             nodes.put(key, clazz);
         }
-        Integer i = Integer.valueOf(stats.get(key) + 1);
+        Integer i = stats.get(key) + 1;
         stats.put(key, i);
     }
 }

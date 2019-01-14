@@ -6,12 +6,11 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 
 import net.sourceforge.pmd.cpd.renderer.CPDRenderer;
 
@@ -45,7 +44,7 @@ public class FileReporter {
         }
     }
 
-    private OutputStream getOutputStream() throws FileNotFoundException {
-        return reportFile == null ? System.out : new FileOutputStream(reportFile);
+    private OutputStream getOutputStream() throws IOException {
+        return reportFile == null ? System.out : Files.newOutputStream(reportFile.toPath());
     }
 }

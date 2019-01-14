@@ -13,11 +13,9 @@ import java.util.Properties;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
+import net.sourceforge.pmd.lang.cpp.CppTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
 
 /**
@@ -55,11 +53,7 @@ public class CPPTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         try (Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString())))) {
-            LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(CppLanguageModule.NAME)
-                    .getDefaultVersion().getLanguageVersionHandler();
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(
-                languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
-                    .getTokenManager(sourceCode.getFileName(), reader));
+            final TokenFilter tokenFilter = new JavaCCTokenFilter(new CppTokenManager(reader));
             
             GenericToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {

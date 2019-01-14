@@ -54,23 +54,29 @@ public final class TypeHelper {
     
     private static Class<?> loadClassWithNodeClassloader(final TypeNode n, final String clazzName) {
         if (n.getType() != null) {
-            try {
-                ClassLoader classLoader = n.getType().getClassLoader();
-                if (classLoader == null) {
-                    // Using the system classloader then
-                    classLoader = ClassLoader.getSystemClassLoader();
-                }
-    
-                // If the requested type is in the classpath, using the same classloader should work
-                return ClassUtils.getClass(classLoader, clazzName);
-            } catch (final ClassNotFoundException ignored) {
-                // The requested type is not on the auxclasspath. This might happen, if the type node
-                // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
-                // Failing to resolve clazzName does not necessarily indicate an incomplete auxclasspath.
-            } catch (final LinkageError expected) {
-                // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
-                // if it was a NoClassDefFoundError. TODO : Report it?
+            return loadClass(n.getType().getClassLoader(), clazzName);
+        }
+
+        return null;
+    }
+
+    private static Class<?> loadClass(final ClassLoader nullableClassLoader, final String clazzName) {
+        try {
+            ClassLoader classLoader = nullableClassLoader;
+            if (classLoader == null) {
+                // Using the system classloader then
+                classLoader = ClassLoader.getSystemClassLoader();
             }
+
+            // If the requested type is in the classpath, using the same classloader should work
+            return ClassUtils.getClass(classLoader, clazzName);
+        } catch (ClassNotFoundException ignored) {
+            // The requested type is not on the auxclasspath. This might happen, if the type node
+            // is probed for a specific type (e.g. is is a JUnit5 Test Annotation class).
+            // Failing to resolve clazzName does not necessarily indicate an incomplete auxclasspath.
+        } catch (final LinkageError expected) {
+            // We found the class but it's invalid / incomplete. This may be an incomplete auxclasspath
+            // if it was a NoClassDefFoundError. TODO : Report it?
         }
         
         return null;
@@ -132,5 +138,16 @@ public final class TypeHelper {
         }
 
         return clazz.isAssignableFrom(type);
+    }
+
+    public static boolean isA(TypedNameDeclaration vnd, String className) {
+        Class<?> type = vnd.getType();
+        if (type != null) {
+            Class<?> clazz = loadClass(type.getClassLoader(), className);
+            if (clazz != null) {
+                return clazz.isAssignableFrom(type);
+            }
+        }
+        return false;
     }
 }

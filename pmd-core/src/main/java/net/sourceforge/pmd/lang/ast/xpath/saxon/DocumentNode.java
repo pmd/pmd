@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 import net.sf.saxon.om.Axis;
@@ -21,6 +22,8 @@ import net.sf.saxon.type.Type;
 /**
  * A Saxon OM Document node for an AST Node.
  */
+@Deprecated
+@InternalApi
 public class DocumentNode extends AbstractNodeInfo implements DocumentInfo {
 
     /**

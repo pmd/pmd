@@ -254,4 +254,25 @@ public class CommentDefaultAccessModifier {
 }
         ]]></code>
     </test-code>
+
+    <code-fragment id="constructor-with-default-access-modifier-rule"><![CDATA[
+public class Foo {
+   Foo() {} // should be reported
+
+   Foo(final String str) {} // should be reported
+
+   /* default */ Foo(final String str1, final String str2) {}  // should not be reported
+}
+    ]]>
+    </code-fragment>
+    <test-code>
+        <description>Add a comment to the constructors with default access modifiers to avoid mistakes</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,4</expected-linenumbers>
+        <expected-messages>
+            <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
+                <message>To avoid mistakes add a comment at the beginning of the Foo constructor if you want a default access modifier</message>
+            </expected-messages>
+        <code-ref id="constructor-with-default-access-modifier-rule"/>
+    </test-code>
 </test-data>

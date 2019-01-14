@@ -51,6 +51,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  */
 public class GenericClassCounterRule extends AbstractJavaRule {
 
+    // Class is unused, properties won't be converted
     private static final StringMultiProperty NAME_MATCH_DESCRIPTOR = new StringMultiProperty("nameMatch",
             "A series of regex, separated by ',' to match on the classname", new String[] { "" }, 1.0f, ',');
 

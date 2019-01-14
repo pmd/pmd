@@ -12,6 +12,7 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -24,6 +25,8 @@ import net.sourceforge.pmd.lang.java.ast.Comment;
  *
  * @author Andy Throgmorton
  */
+@InternalApi
+@Deprecated
 public class GetCommentOnFunction implements Function {
 
     public static void registerSelfInSimpleContext() {

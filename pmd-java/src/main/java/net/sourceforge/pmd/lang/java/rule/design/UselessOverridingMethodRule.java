@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +31,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * @author Romain Pelisse, bugfix for [ 1522517 ] False +:
@@ -41,8 +44,10 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     private static final String CLONE = "clone";
     private static final String OBJECT = "Object";
 
-    private static final BooleanProperty IGNORE_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("ignoreAnnotations",
-            "Ignore annotations", false, 1.0f);
+    // TODO extend AbstractIgnoredAnnotationsRule node
+    // TODO ignore if there is javadoc
+    private static final PropertyDescriptor<Boolean> IGNORE_ANNOTATIONS_DESCRIPTOR = booleanProperty("ignoreAnnotations").defaultValue(false).desc("Ignore annotations").build();
+
 
     public UselessOverridingMethodRule() {
         definePropertyDescriptor(IGNORE_ANNOTATIONS_DESCRIPTOR);

@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cache;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Adler32;
@@ -38,7 +38,7 @@ public class AnalysisResult {
     private static long computeFileChecksum(final File sourceFile) {
         try (
             CheckedInputStream stream = new CheckedInputStream(
-                new BufferedInputStream(new FileInputStream(sourceFile)), new Adler32());
+                new BufferedInputStream(Files.newInputStream(sourceFile.toPath())), new Adler32());
         ) {
             // Just read it, the CheckedInputStream will update the checksum on it's own
             IOUtils.skipFully(stream, sourceFile.length());

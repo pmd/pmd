@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Language Module for Scala
+ *
+ * @deprecated There is no full PMD support for Scala.
  */
+@Deprecated
 public class ScalaLanguageModule extends BaseLanguageModule {
 
     /** The name. */

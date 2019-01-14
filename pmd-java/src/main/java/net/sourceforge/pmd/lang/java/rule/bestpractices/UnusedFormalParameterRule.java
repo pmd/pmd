@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
+
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.util.List;
@@ -25,12 +27,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
 
-    private static final BooleanProperty CHECKALL_DESCRIPTOR = new BooleanProperty("checkAll",
-            "Check all methods, including non-private ones", false, 1.0f);
+    private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").desc("Check all methods, including non-private ones").defaultValue(false).build();
 
     public UnusedFormalParameterRule() {
         definePropertyDescriptor(CHECKALL_DESCRIPTOR);

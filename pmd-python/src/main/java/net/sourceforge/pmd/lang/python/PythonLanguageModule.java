@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Implementation of the Python Language Module.
+ *
+ * @deprecated There is no full PMD support for Python.
  */
+@Deprecated
 public class PythonLanguageModule extends BaseLanguageModule {
 
     /** The name, that can be used to display the language in UI. */

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 import net.sf.saxon.om.Axis;
@@ -19,6 +20,8 @@ import net.sf.saxon.type.Type;
 /**
  * A Saxon OM Element type node for an AST Node.
  */
+@Deprecated
+@InternalApi
 public class ElementNode extends AbstractNodeInfo {
 
     protected final DocumentNode document;

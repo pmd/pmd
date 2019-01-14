@@ -19,6 +19,7 @@ import net.sourceforge.pmd.properties.modules.NumericPropertyModule;
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
+@Deprecated
 /* default */ abstract class AbstractMultiNumericProperty<T extends Number> extends AbstractMultiValueProperty<T>
     implements NumericPropertyDescriptor<List<T>> {
 

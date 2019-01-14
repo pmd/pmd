@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.inRange;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +35,9 @@ import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
@@ -72,10 +76,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
     }
 
-    private static final IntegerProperty THRESHOLD_DESCRIPTOR 
-            = IntegerProperty.named("threshold")
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = PropertyFactory.intProperty("threshold")
                              .desc("Max consecutive appends")
-                             .range(1, 10).defaultValue(1).uiOrder(1.0f).build();
+                             .require(inRange(1, 10)).defaultValue(1).build();
 
     private int threshold = 1;
 

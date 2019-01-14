@@ -9,9 +9,12 @@ package net.sourceforge.pmd.properties;
  *
  * @param <T> type of the property value
  *
+ * @deprecated Will be removed with 7.0.0. In the future this interface won't exist,
+ * but numeric properties will still be around
  * @author Brian Remedios
  * @author Clément Fournier
  */
+@Deprecated
 public interface NumericPropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     /**

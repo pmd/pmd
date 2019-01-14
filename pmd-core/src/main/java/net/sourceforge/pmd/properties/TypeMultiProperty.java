@@ -15,9 +15,10 @@ import net.sourceforge.pmd.properties.modules.TypePropertyModule;
  * Defines a property that supports multiple class types, even for primitive values!
  *
  * TODO - untested for array types
- *
+ * @deprecated Will be removed with 7.0.0 with no scheduled replacement yet
  * @author Brian Remedios
  */
+@Deprecated
 public final class TypeMultiProperty extends AbstractMultiPackagedProperty<Class> {
 
 

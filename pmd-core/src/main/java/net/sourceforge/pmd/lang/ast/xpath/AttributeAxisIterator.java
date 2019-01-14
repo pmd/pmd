@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -22,7 +23,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  * attributes. This is the default way the attributes of a node
  * are made accessible to XPath rules, and defines an important
  * piece of PMD's XPath support.
+ *
+ * @deprecated Use {@link Node#getXPathAttributesIterator()}
  */
+@Deprecated
+@InternalApi
 public class AttributeAxisIterator implements Iterator<Attribute> {
 
     /** Caches the precomputed attribute accessors of a given class. */

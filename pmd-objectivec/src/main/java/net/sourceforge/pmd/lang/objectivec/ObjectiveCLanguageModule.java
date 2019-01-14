@@ -8,7 +8,10 @@ import net.sourceforge.pmd.lang.BaseLanguageModule;
 
 /**
  * Implementation of the Objective-C Language Module.
+ *
+ * @deprecated There is no full PMD support for Objective-C.
  */
+@Deprecated
 public class ObjectiveCLanguageModule extends BaseLanguageModule {
 
     /** The name, that can be used to display the language in UI. */

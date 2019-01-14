@@ -15,9 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
+
 
 /**
  * Renderer the results to a comma-delimited text format. All available columns
@@ -33,7 +35,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     private static final String DEFAULT_SEPARATOR = ",";
 
-    private static final Map<String, BooleanProperty> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<>();
+    private static final Map<String, PropertyDescriptor<Boolean>> PROPERTY_DESCRIPTORS_BY_ID = new HashMap<>();
 
     public static final String NAME = "csv";
 
@@ -96,14 +98,14 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         this(ALL_COLUMNS, DEFAULT_SEPARATOR, PMD.EOL);
     }
 
-    private static BooleanProperty booleanPropertyFor(String id, String label) {
+    private static PropertyDescriptor<Boolean> booleanPropertyFor(String id, String label) {
 
-        BooleanProperty prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
+        PropertyDescriptor<Boolean> prop = PROPERTY_DESCRIPTORS_BY_ID.get(id);
         if (prop != null) {
             return prop;
         }
 
-        prop = new BooleanProperty(id, "Include " + label + " column", true, 1.0f);
+        prop = PropertyFactory.booleanProperty(id).defaultValue(true).desc("Include " + label + " column").build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }
@@ -113,12 +115,11 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<>();
 
         for (ColumnDescriptor<RuleViolation> desc : ALL_COLUMNS) {
-            BooleanProperty prop = booleanPropertyFor(desc.id, null);
+            PropertyDescriptor<Boolean> prop = booleanPropertyFor(desc.id, null);
             if (getProperty(prop)) {
                 actives.add(desc);
-            } else {
-                // System.out.println("disabled: " + prop);
             }
+
         }
         return actives;
     }

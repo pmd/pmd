@@ -248,7 +248,7 @@ Note that access modifiers are held as attributes, so, for example,
 
 `//FieldDeclaration[@Private='true']`
 
-finds all private fields. You can see the code that determines all the attributes [here](pmd-core/xref/net/sourceforge/pmd/lang/ast/xpath/AttributeAxisIterator.html)
+finds all private fields. You can see the code that determines all the attributes [here](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/xpath/AttributeAxisIterator.java)
 
 More information about writing XPath rules is [available here](pmd_userdocs_extending_writing_xpath_rules.html).
 

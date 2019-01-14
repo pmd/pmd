@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 
@@ -18,6 +19,8 @@ import net.sf.saxon.value.Value;
  * Belongs to an {@link ElementNode}, and wraps an
  * {@link Attribute}.
  */
+@Deprecated
+@InternalApi
 public class AttributeNode extends AbstractNodeInfo {
     protected final Attribute attribute;
     protected final int id;

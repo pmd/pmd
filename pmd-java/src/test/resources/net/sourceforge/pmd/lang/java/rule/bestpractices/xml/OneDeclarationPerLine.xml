@@ -89,4 +89,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Don't report multiple variables in a for statement, see #658</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        for (int i = 0, j = 0; i < 10; i++, j +=2) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

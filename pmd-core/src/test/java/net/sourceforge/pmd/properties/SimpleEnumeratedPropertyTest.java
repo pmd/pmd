@@ -24,6 +24,7 @@ import net.sourceforge.pmd.properties.SimpleEnumeratedPropertyTest.Foo;
  *
  * @author Brian Remedios
  */
+@Deprecated
 public class SimpleEnumeratedPropertyTest extends AbstractPropertyDescriptorTester<Foo> {
 
     private static final String[] KEYS = {"bar", "na", "bee", "coo"};

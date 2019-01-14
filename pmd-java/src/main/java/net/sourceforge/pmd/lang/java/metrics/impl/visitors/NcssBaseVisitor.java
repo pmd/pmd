@@ -35,12 +35,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserControllessVisitorAdapter;
 
+
 /**
  * Default visitor for the calculation of Ncss.
  *
  * @author Clément Fournier
  * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
+ *
+ * @deprecated Visitor decorators are deprecated because they lead to fragile code.
+ *
  */
+@Deprecated
 public class NcssBaseVisitor extends JavaParserControllessVisitorAdapter {
 
     /** Instance. */

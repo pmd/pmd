@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,29 +26,29 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.StringMultiProperty;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
  * some test expression on log.isDebugEnabled() or log.isTraceEnabled().
- * 
+ *
  * @author Romain Pelisse - &lt;belaran@gmail.com&gt;
  * @author Heiko Rupp - &lt;hwr@pilhuhn.de&gt;
  * @author Tammo van Lessen - provided original XPath expression
- * 
+ *
  */
 public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
     /*
      * guard methods and log levels:
-     * 
+     *
      * log4j + apache commons logging (jakarta):
      * trace -> isTraceEnabled
      * debug -> isDebugEnabled
      * info  -> isInfoEnabled
      * warn  -> isWarnEnabled
      * error -> isErrorEnabled
-     * 
-     * 
+     *
+     *
      * java util:
      * log(Level.FINE) ->  isLoggable
      * finest ->  isLoggable
@@ -56,14 +58,19 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
      * warning -> isLoggable
      * severe  -> isLoggable
      */
-    private static final StringMultiProperty LOG_LEVELS = new StringMultiProperty("logLevels", "LogLevels to guard",
-            new String[] {"trace", "debug", "info", "warn", "error",
-                "log", "finest", "finer", "fine", "info", "warning", "severe", }, 1.0f, ',');
+    private static final PropertyDescriptor<List<String>> LOG_LEVELS =
+            stringListProperty("logLevels")
+                    .desc("LogLevels to guard")
+                    .defaultValues("trace", "debug", "info", "warn", "error",
+                                   "log", "finest", "finer", "fine", "info", "warning", "severe")
+                    .delim(',')
+                    .build();
 
-    private static final StringMultiProperty GUARD_METHODS = new StringMultiProperty("guardsMethods",
-            "method use to guard the log statement",
-            new String[] {"isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled",
-                "isLoggable", }, 2.0f, ',');
+    private static final PropertyDescriptor<List<String>> GUARD_METHODS =
+            stringListProperty("guardsMethods")
+                    .desc("Method use to guard the log statement")
+                    .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
+                    .delim(',').build();
 
     private Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 

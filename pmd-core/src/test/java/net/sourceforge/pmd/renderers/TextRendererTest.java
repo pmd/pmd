@@ -32,7 +32,12 @@ public class TextRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedError(ProcessingError error) {
-        return "file\t-\tError" + PMD.EOL;
+        return "file\t-\tRuntimeException: Error" + PMD.EOL;
+    }
+
+    @Override
+    public String getExpectedErrorWithoutMessage(ProcessingError error) {
+        return "file\t-\tNullPointerException: null" + PMD.EOL;
     }
 
     @Override

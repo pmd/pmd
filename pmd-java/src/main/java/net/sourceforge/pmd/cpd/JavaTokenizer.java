@@ -211,7 +211,7 @@ public class JavaTokenizer implements Tokenizer {
             this.ignoreIdentifiers = ignoreIdentifiers;
 
             currentNestingLevel = 0;
-            classMembersIndentations = new LinkedList<TypeDeclaration>();
+            classMembersIndentations = new LinkedList<>();
         }
 
         public void processToken(Token currentToken) {

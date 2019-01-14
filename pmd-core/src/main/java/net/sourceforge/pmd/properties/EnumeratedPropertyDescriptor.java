@@ -15,7 +15,10 @@ import java.util.Map;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ * @deprecated Will be removed with 7.0.0. In the future this interface won't exist,
+ * but enumerated properties will still be around
  */
+@Deprecated
 public interface EnumeratedPropertyDescriptor<E, T> extends PropertyDescriptor<T> {
 
     /**

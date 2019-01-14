@@ -19,7 +19,10 @@ import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversi
  *
  * @author Brian Remedios
  * @version Refactored June 2017 (6.0.0)
+ * @deprecated Use a {@code PropertyDescriptor<List<Character>>}. A builder is available from {@link PropertyFactory#charListProperty(String)}.
+ * This class will be removed in 7.0.0.
  */
+@Deprecated
 public final class CharacterMultiProperty extends AbstractMultiValueProperty<Character> {
 
 
@@ -33,7 +36,9 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      * @param delimiter      The delimiter to use
      *
      * @throws IllegalArgumentException if the delimiter is in the default values
+     * @deprecated Use {@link PropertyFactory#charListProperty(String)}
      */
+    @Deprecated
     public CharacterMultiProperty(String theName, String theDescription, Character[] defaultValues, float theUIOrder, char delimiter) {
         this(theName, theDescription, Arrays.asList(defaultValues), theUIOrder, delimiter, false);
     }
@@ -64,7 +69,9 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
      * @param delimiter      The delimiter to use
      *
      * @throws IllegalArgumentException if the delimiter is in the default values
+     * @deprecated Use {@link PropertyFactory#charListProperty(String)}
      */
+    @Deprecated
     public CharacterMultiProperty(String theName, String theDescription, List<Character> defaultValues, float theUIOrder, char delimiter) {
         this(theName, theDescription, defaultValues, theUIOrder, delimiter, false);
     }
@@ -104,11 +111,19 @@ public final class CharacterMultiProperty extends AbstractMultiValueProperty<Cha
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#charListProperty(String)}
+     */
+    @Deprecated
     public static CharacterMultiPBuilder named(String name) {
         return new CharacterMultiPBuilder(name);
     }
 
 
+    /**
+     * @deprecated Use {@link PropertyFactory#charListProperty(String)}
+     */
+    @Deprecated
     public static final class CharacterMultiPBuilder extends MultiValuePropertyBuilder<Character, CharacterMultiPBuilder> {
         private CharacterMultiPBuilder(String name) {
             super(name);

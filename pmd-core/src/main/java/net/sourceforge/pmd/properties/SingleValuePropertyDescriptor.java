@@ -12,9 +12,13 @@ package net.sourceforge.pmd.properties;
  *
  * @author Clément Fournier
  * @since 6.0.0
+ *
+ * @deprecated The hard divide between multi- and single-value properties will be removed with 7.0.0
  */
+@Deprecated
 public interface SingleValuePropertyDescriptor<T> extends PropertyDescriptor<T> {
 
     @Override
+    @Deprecated
     Class<T> type();
 }

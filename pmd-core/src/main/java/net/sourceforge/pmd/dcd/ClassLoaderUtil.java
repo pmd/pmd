@@ -31,9 +31,7 @@ public final class ClassLoaderUtil {
     public static Class<?> getClass(String name) {
         try {
             return ClassLoaderUtil.class.getClassLoader().loadClass(name);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             throw new RuntimeException(e);
         }
     }

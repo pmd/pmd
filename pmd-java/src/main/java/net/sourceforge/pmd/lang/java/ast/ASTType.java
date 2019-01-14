@@ -41,6 +41,8 @@ public class ASTType extends AbstractJavaTypeNode {
         return getFirstDescendantOfType(ASTPrimitiveType.class).getImage();
     }
 
+
+    @Deprecated
     public int getArrayDepth() {
         if (jjtGetNumChildren() != 0
                 && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
@@ -49,7 +51,22 @@ public class ASTType extends AbstractJavaTypeNode {
         return 0; // this is not an array
     }
 
+
+    /**
+     *
+     * @deprecated Use {@link #isArrayType()}
+     */
+    @Deprecated
     public boolean isArray() {
+        return isArrayType();
+    }
+
+
+    /**
+     * Returns true if this type is an array type.
+     *
+     */
+    public boolean isArrayType() {
         return getArrayDepth() > 0;
     }
 }

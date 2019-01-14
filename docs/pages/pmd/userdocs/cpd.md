@@ -17,7 +17,7 @@ It can also be run with Maven by using the `cpd-check` goal on the [Maven PMD Pl
 
 
 Your own language is missing?
-See how to add it [here](/pmd_devdocs_adding_new_cpd_language.html).
+See how to add it [here](/pmd_devdocs_major_adding_new_cpd_language.html).
 
 
 ### Why should you care about duplicates?

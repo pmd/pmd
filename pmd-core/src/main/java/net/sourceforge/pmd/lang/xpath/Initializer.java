@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.xpath;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -16,7 +17,11 @@ import net.sf.saxon.sxpath.IndependentContext;
  * initialization. For example, initializing custom Jaxen Functions.
  * Initialization should be performed before any XPath related operations are
  * performed.
+ *
+ * @deprecated Is internal API
  */
+@InternalApi
+@Deprecated
 public final class Initializer {
 
     private Initializer() { }

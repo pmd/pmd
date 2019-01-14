@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner.util.beans;
 
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.ElementType;
@@ -14,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -92,7 +92,7 @@ public final class SettingsPersistenceUtil {
      */
     private static Optional<Document> getDocument(File file) {
         if (file.exists()) {
-            try (InputStream stream = new FileInputStream(file)) {
+            try (InputStream stream = Files.newInputStream(file.toPath())) {
                 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 Document document = builder.parse(stream);
                 return Optional.of(document);

@@ -11,7 +11,10 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the Python Language.
+ *
+ * @deprecated There is no full PMD support for Python.
  */
+@Deprecated
 public class PythonHandler extends AbstractLanguageVersionHandler {
 
     @Override

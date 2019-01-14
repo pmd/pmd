@@ -14,9 +14,12 @@ import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 // FIXME Can this function be extended to work on non-AST attributes?
+@InternalApi
+@Deprecated
 public class MatchesFunction implements Function {
 
     public static void registerSelfInSimpleContext() {

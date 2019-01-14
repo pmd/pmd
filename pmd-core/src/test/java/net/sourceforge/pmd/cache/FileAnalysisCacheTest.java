@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -254,7 +255,51 @@ public class FileAnalysisCacheTest {
         assertFalse("Cache believes cache is up to date when a classpath file changed",
                 reloadedCache.isUpToDate(sourceFile));
     }
-    
+
+    @Test
+    public void testWildcardClasspath() throws MalformedURLException, IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final ClassLoader cl = mock(ClassLoader.class);
+        setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
+
+        // Prepare two jar files
+        final File classpathJar1 = tempFolder.newFile("mylib1.jar");
+        Files.write(classpathJar1.toPath(), "content of mylib1.jar".getBytes(StandardCharsets.UTF_8));
+        final File classpathJar2 = tempFolder.newFile("mylib2.jar");
+        Files.write(classpathJar2.toPath(), "content of mylib2.jar".getBytes(StandardCharsets.UTF_8));
+
+        System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + tempFolder.getRoot().getAbsolutePath() + "/*");
+
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(rs, cl);
+        assertFalse("Cache believes cache is up to date when the classpath changed",
+                reloadedCache.isUpToDate(sourceFile));
+    }
+
+    @Test
+    public void testWildcardClasspathContentsChangeInvalidatesCache() throws MalformedURLException, IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final ClassLoader cl = mock(ClassLoader.class);
+
+        // Prepare two jar files
+        final File classpathJar1 = tempFolder.newFile("mylib1.jar");
+        Files.write(classpathJar1.toPath(), "content of mylib1.jar".getBytes(StandardCharsets.UTF_8));
+        final File classpathJar2 = tempFolder.newFile("mylib2.jar");
+        Files.write(classpathJar2.toPath(), "content of mylib2.jar".getBytes(StandardCharsets.UTF_8));
+
+        System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator + tempFolder.getRoot().getAbsolutePath() + "/*");
+
+        setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
+
+        // Change one file's contents
+        Files.write(Paths.get(classpathJar2.getAbsolutePath()), "some other text".getBytes(StandardCharsets.UTF_8));
+
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(rs, cl);
+        assertFalse("Cache believes cache is up to date when the classpath changed",
+                reloadedCache.isUpToDate(sourceFile));
+    }
+
     @Test
     public void testUnknownFileIsNotUpToDate() throws IOException {
         final FileAnalysisCache cache = new FileAnalysisCache(newCacheFile);
