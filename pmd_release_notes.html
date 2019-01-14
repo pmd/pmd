@@ -1388,6 +1388,16 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="deprecated-api">Deprecated API</h4>
+
+<ul>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/rule/stat/StatisticalRule.html#"><code class="highlighter-rouge">StatisticalRule</code></a> and the related helper classes and base rule classes
+are deprecated for removal in 7.0.0. This includes all of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/stat/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.stat</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/rule/stat/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.stat</code></a>,
+and also <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/rule/AbstractStatisticalJavaRule.html#"><code class="highlighter-rouge">AbstractStatisticalJavaRule</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.11.0/net/sourceforge/pmd/lang/apex/rule/AbstractStatisticalApexRule.html#"><code class="highlighter-rouge">AbstractStatisticalApexRule</code></a> and the like.
+The methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/Report.html#addMetric(net.sourceforge.pmd.stat.Metric)"><code class="highlighter-rouge">Report#addMetric</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/ThreadSafeReportListener.html#metricAdded(net.sourceforge.pmd.stat.Metric)"><code class="highlighter-rouge">metricAdded</code></a>
+will also be removed.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1400,6 +1410,8 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general
   <li><a href="https://github.com/pmd/pmd/pull/1534">#1534</a>: [java] This is the change regarding the usediamondoperator #1517 - <a href="https://github.com/hemanshu070">hemanshu070</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1545">#1545</a>: [doc] fixing dead links + tool to check for dead links automatically - <a href="https://github.com/kris-scheibe">Kris Scheibe</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1551">#1551</a>: [java] InvalidSlf4jMessageFormatRule should not throw NPE for enums - <a href="https://github.com/rmartinus">Robbie Martinus</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1552">#1552</a>: [core] Upgrading Google Gson from 2.5 to 2.8.5 - <a href="https://github.com/Thunderforge">Thunderforge</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1553">#1553</a>: [core] Upgrading System Rules dependency from 1.8.0 to 1.19.0 - <a href="https://github.com/Thunderforge">Thunderforge</a></li>
 </ul>
 
 
@@ -1418,7 +1430,7 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 13, 2019 <br />
+ Site last generated: Jan 14, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
