@@ -6,12 +6,11 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -33,33 +32,34 @@ import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CompletionResultSource;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathAutocompleteProvider;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathCompletionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
-import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.XPathSyntaxHighlighter;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.XpathViolationListCell;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -68,13 +68,14 @@ import javafx.stage.StageStyle;
 
 
 /**
- * XPath panel controller.
+ * XPath panel controller. One such controller is a presenter for an {@link ObservableXPathRuleBuilder},
+ * which stores all data about one currently edited rule.
  *
  * @author Clément Fournier
  * @see ExportXPathWizardController
  * @since 6.0.0
  */
-public class XPathPanelController implements Initializable, SettingsOwner {
+public class XPathPanelController extends AbstractController {
 
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final DesignerRoot designerRoot;
@@ -82,6 +83,13 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
 
+
+    @FXML
+    public ToolbarTitledPane expressionTitledPane;
+    @FXML
+    public Button exportXpathToRuleButton;
+    @FXML
+    private MenuButton xpathVersionMenuButton;
     @FXML
     private PropertyTableView propertyTableView;
     @FXML
@@ -91,9 +99,8 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
 
-    // Actually a child of the main view toolbar, but this controller is responsible for it
-    @SuppressWarnings("PMD.SingularField")
-    private ChoiceBox<String> xpathVersionChoiceBox;
+    // ui property
+    private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
 
 
     public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
@@ -105,20 +112,23 @@ public class XPathPanelController implements Initializable, SettingsOwner {
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    protected void beforeParentInit() {
         xpathExpressionArea.setSyntaxHighlighter(new XPathSyntaxHighlighter());
 
         initGenerateXPathFromStackTrace();
+        initialiseVersionSelection();
+
+        expressionTitledPane.titleProperty().bind(xpathVersionUIProperty.map(v -> "XPath Expression (" + v + ")"));
 
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
+
+        exportXpathToRuleButton.setOnAction(e -> showExportXPathToRuleWizard());
 
         EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
                     .conditionOn(xpathResultListView.focusedProperty())
                     .filter(Objects::nonNull)
                     .map(TextAwareNodeWrapper::getNode)
                     .subscribe(parent::onNodeItemSelected);
-
-        Platform.runLater(this::bindToParent);
 
         xpathExpressionArea.richChanges()
                            .filter(t -> !t.isIdentity())
@@ -127,12 +137,51 @@ public class XPathPanelController implements Initializable, SettingsOwner {
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-        Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
 
+    }
+
+
+    @Override
+    protected void afterParentInit() {
+        bindToParent();
+
+        // init autocompletion only after binding to parent and settings restore
+        // otherwise the popup is shown on startup
+        Supplier<CompletionResultSource> suggestionMaker = () -> XPathCompletionSource.forLanguage(parent.getLanguageVersion().getLanguage());
         new XPathAutocompleteProvider(xpathExpressionArea, suggestionMaker).initialiseAutoCompletion();
     }
 
 
+    // Binds the underlying rule parameters to the parent UI, disconnecting it from the wizard if need be
+    private void bindToParent() {
+        DesignerUtil.rewire(getRuleBuilder().languageProperty(), Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
+
+        DesignerUtil.rewireInit(getRuleBuilder().xpathVersionProperty(), xpathVersionProperty());
+        DesignerUtil.rewireInit(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
+
+        DesignerUtil.rewireInit(getRuleBuilder().rulePropertiesProperty(),
+                                propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
+    }
+
+    private void initialiseVersionSelection() {
+        ToggleGroup xpathVersionToggleGroup = new ToggleGroup();
+
+        List<String> versionItems = new ArrayList<>();
+        versionItems.add(XPathRuleQuery.XPATH_1_0);
+        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
+        versionItems.add(XPathRuleQuery.XPATH_2_0);
+
+        versionItems.forEach(v -> {
+            RadioMenuItem item = new RadioMenuItem("XPath " + v);
+            item.setUserData(v);
+            item.setToggleGroup(xpathVersionToggleGroup);
+            xpathVersionMenuButton.getItems().add(item);
+        });
+
+        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
+
+        setXpathVersion(XPathRuleQuery.XPATH_2_0);
+    }
 
 
     private void initGenerateXPathFromStackTrace() {
@@ -178,30 +227,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    // Binds the underlying rule parameters to the parent UI, disconnecting it from the wizard if need be
-    private void bindToParent() {
-        DesignerUtil.rewire(getRuleBuilder().languageProperty(),
-                            Val.map(parent.languageVersionProperty(), LanguageVersion::getLanguage));
-
-        DesignerUtil.rewire(getRuleBuilder().xpathVersionProperty(), parent.xpathVersionProperty());
-        DesignerUtil.rewire(getRuleBuilder().xpathExpressionProperty(), xpathExpressionProperty());
-
-        DesignerUtil.rewire(getRuleBuilder().rulePropertiesProperty(),
-                            propertyTableView.rulePropertiesProperty(), propertyTableView::setRuleProperties);
-    }
-
-
-    public void initialiseVersionChoiceBox(ChoiceBox<String> choiceBox) {
-        this.xpathVersionChoiceBox = choiceBox;
-
-        ObservableList<String> versionItems = choiceBox.getItems();
-        versionItems.add(XPathRuleQuery.XPATH_1_0);
-        versionItems.add(XPathRuleQuery.XPATH_1_0_COMPATIBILITY);
-        versionItems.add(XPathRuleQuery.XPATH_2_0);
-
-        xpathVersionChoiceBox.getSelectionModel().select(XPathRuleQuery.XPATH_2_0);
-        choiceBox.setConverter(DesignerUtil.stringConverter(s -> "XPath " + s, s -> s.substring(6)));
-    }
 
 
     /**
@@ -223,11 +248,11 @@ public class XPathPanelController implements Initializable, SettingsOwner {
             }
 
             ObservableList<Node> results
-                    = FXCollections.observableArrayList(xpathEvaluator.evaluateQuery(compilationUnit,
-                                                                                     version,
-                                                                                     getXpathVersion(),
-                                                                                     xpath,
-                                                                                     ruleBuilder.getRuleProperties()));
+                = FXCollections.observableArrayList(xpathEvaluator.evaluateQuery(compilationUnit,
+                                                                                 version,
+                                                                                 getXpathVersion(),
+                                                                                 xpath,
+                                                                                 ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
             parent.highlightXPathResults(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
@@ -256,9 +281,9 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    public void showExportXPathToRuleWizard() throws IOException {
+    public void showExportXPathToRuleWizard() {
         ExportXPathWizardController wizard
-                = new ExportXPathWizardController(xpathExpressionProperty());
+            = new ExportXPathWizardController(xpathExpressionProperty());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/xpath-export-wizard.fxml"));
         loader.setController(wizard);
@@ -268,7 +293,12 @@ public class XPathPanelController implements Initializable, SettingsOwner {
         dialog.setOnCloseRequest(e -> wizard.shutdown());
         dialog.initModality(Modality.WINDOW_MODAL);
 
-        Parent root = loader.load();
+        Parent root;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Scene scene = new Scene(root);
         //stage.setTitle("PMD Rule Designer (v " + PMD.VERSION + ')');
         dialog.setScene(scene);
@@ -276,7 +306,6 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    @PersistentProperty
     public String getXpathExpression() {
         return xpathExpressionArea.getText();
     }
@@ -287,24 +316,23 @@ public class XPathPanelController implements Initializable, SettingsOwner {
     }
 
 
-    public Val<String> xpathExpressionProperty() {
-        return Val.wrap(xpathExpressionArea.textProperty());
+    public Var<String> xpathExpressionProperty() {
+        return Var.fromVal(xpathExpressionArea.textProperty(), this::setXpathExpression);
     }
 
 
-    @PersistentProperty
     public String getXpathVersion() {
-        return getRuleBuilder().getXpathVersion();
+        return xpathVersionProperty().getValue();
     }
 
 
     public void setXpathVersion(String xpathVersion) {
-        getRuleBuilder().setXpathVersion(xpathVersion);
+        xpathVersionProperty().setValue(xpathVersion);
     }
 
 
     public Var<String> xpathVersionProperty() {
-        return getRuleBuilder().xpathVersionProperty();
+        return xpathVersionUIProperty;
     }
 
 

@@ -27,6 +27,8 @@ public interface ThreadSafeReportListener {
      *
      * @param metric
      *            the metric
+     * @deprecated see {@link net.sourceforge.pmd.lang.rule.stat.StatisticalRule}
      */
+    @Deprecated
     void metricAdded(Metric metric);
 }

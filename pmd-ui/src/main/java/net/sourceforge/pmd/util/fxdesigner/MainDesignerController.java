@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -26,10 +24,10 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
-import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 
@@ -39,10 +37,8 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -70,7 +66,7 @@ import javafx.util.Duration;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class MainDesignerController implements Initializable, SettingsOwner {
+public class MainDesignerController extends AbstractController {
 
     /**
      * Callback to the owner.
@@ -88,16 +84,8 @@ public class MainDesignerController implements Initializable, SettingsOwner {
     @FXML
     private Menu openRecentMenu;
     @FXML
-    private MenuItem exportToTestCodeMenuItem;
-    @FXML
-    private MenuItem exportXPathMenuItem;
-    @FXML
     private Menu fileMenu;
     /* Center toolbar */
-    @FXML
-    private ChoiceBox<LanguageVersion> languageChoiceBox;
-    @FXML
-    private ChoiceBox<String> xpathVersionChoiceBox;
     @FXML
     private ToggleButton bottomTabsToggle;
     /* Bottom panel */
@@ -121,18 +109,14 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
     // Other fields
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
-    // Properties
-    private Val<LanguageVersion> languageVersion = Val.constant(DesignerUtil.defaultLanguageVersion());
-    private Val<String> xpathVersion = Val.constant(DesignerUtil.defaultXPathVersion());
 
 
     public MainDesignerController(DesignerRoot owner) {
         this.designerRoot = owner;
     }
 
-
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    protected void beforeParentInit() {
         try {
             SettingsPersistenceUtil.restoreProperties(this, DesignerUtil.getSettingsFile());
         } catch (Exception e) {
@@ -141,55 +125,23 @@ public class MainDesignerController implements Initializable, SettingsOwner {
             e.printStackTrace();
         }
 
-        initializeLanguageVersionMenu();
         initializeViewAnimation();
-
-        xpathPanelController.initialiseVersionChoiceBox(xpathVersionChoiceBox);
-
-        languageVersion = Val.wrap(languageChoiceBox.getSelectionModel().selectedItemProperty());
-        DesignerUtil.rewire(sourceEditorController.languageVersionProperty(),
-                            languageVersion, this::setLanguageVersion);
-
-        xpathVersion = Val.wrap(xpathVersionChoiceBox.getSelectionModel().selectedItemProperty());
-        DesignerUtil.rewire(xpathPanelController.xpathVersionProperty(),
-                            xpathVersion, this::setXpathVersion);
-
 
         licenseMenuItem.setOnAction(e -> showLicensePopup());
         openFileMenuItem.setOnAction(e -> onOpenFileClicked());
         openRecentMenu.setOnAction(e -> updateRecentFilesMenu());
         openRecentMenu.setOnShowing(e -> updateRecentFilesMenu());
         fileMenu.setOnShowing(e -> onFileMenuShowing());
-        exportXPathMenuItem.setOnAction(e -> {
-            try {
-                xpathPanelController.showExportXPathToRuleWizard();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
-
-        Platform.runLater(this::updateRecentFilesMenu);
-        Platform.runLater(this::refreshAST); // initial refreshing
-
-        Platform.runLater(() -> sourceEditorController.moveCaret(0, 0));
-        Platform.runLater(() -> { // fixes choicebox bad rendering on first opening
-            languageChoiceBox.show();
-            languageChoiceBox.hide();
-        });
     }
 
 
-    private void initializeLanguageVersionMenu() {
-        List<LanguageVersion> supported = DesignerUtil.getSupportedLanguageVersions();
-        supported.sort(LanguageVersion::compareTo);
-        languageChoiceBox.getItems().addAll(supported);
-
-        languageChoiceBox.setConverter(DesignerUtil.languageVersionStringConverter());
-
-        languageChoiceBox.getSelectionModel().select(DesignerUtil.defaultLanguageVersion());
-        languageChoiceBox.show();
+    @Override
+    protected void afterChildrenInit() {
+        updateRecentFilesMenu();
+        refreshAST(); // initial refreshing
+        sourceEditorController.moveCaret(0, 0);
     }
 
 
@@ -360,7 +312,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
                 sourceEditorController.setText(source);
                 LanguageVersion guess = DesignerUtil.getLanguageVersionFromExtension(file.getName());
                 if (guess != null) { // guess the language from the extension
-                    languageChoiceBox.getSelectionModel().select(guess);
+                    sourceEditorController.setLanguageVersion(guess);
                     refreshAST();
                 }
 
@@ -417,36 +369,17 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     public LanguageVersion getLanguageVersion() {
-        return languageVersion.getValue();
+        return sourceEditorController.getLanguageVersion();
     }
 
 
     public void setLanguageVersion(LanguageVersion version) {
-        if (languageChoiceBox.getItems().contains(version)) {
-            languageChoiceBox.getSelectionModel().select(version);
-        }
+        sourceEditorController.setLanguageVersion(version);
     }
 
 
     public Val<LanguageVersion> languageVersionProperty() {
-        return languageVersion;
-    }
-
-
-    public String getXpathVersion() {
-        return xpathVersion.getValue();
-    }
-
-
-    public void setXpathVersion(String version) {
-        if (xpathVersionChoiceBox.getItems().contains(version)) {
-            xpathVersionChoiceBox.getSelectionModel().select(version);
-        }
-    }
-
-
-    public Val<String> xpathVersionProperty() {
-        return xpathVersion;
+        return sourceEditorController.languageVersionProperty();
     }
 
 
@@ -496,7 +429,7 @@ public class MainDesignerController implements Initializable, SettingsOwner {
 
 
     @Override
-    public List<SettingsOwner> getChildrenSettingsNodes() {
-        return Arrays.asList(xpathPanelController, sourceEditorController);
+    public List<AbstractController> getChildren() {
+        return Arrays.asList(xpathPanelController, sourceEditorController, nodeInfoPanelController, eventLogPanelController);
     }
 }
