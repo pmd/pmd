@@ -34,14 +34,15 @@ import javafx.util.Callback;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
+public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
 
     /** Special item used to truncate paths when they're too long. */
     private final TreeItem<Node> ellipsisCrumb = new TreeItem<>(null);
     /** number of nodes currently behind the ellipsis */
     private int numElidedNodes = 0;
 
-    public NodeParentageBreadCrumbBar() {
+
+    public NodeParentageCrumbBar() {
         // This allows to click on a parent crumb and keep the children crumb
         setAutoNavigationEnabled(false);
 
@@ -104,7 +105,11 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
         int totalNumChar = 0;
         int totalNumCrumbs = 0;
         // the sum of children width is the actual width with overflow
+        // the width of this control is the max acceptable width *without* overflow
         double totalChildrenWidth = 0;
+        // constant padding around the graphic of a BreadCrumbButton
+        // (difference between width of a BreadCrumbButton and that of its graphic)
+        double constantPadding = Double.NaN;
 
         for (javafx.scene.Node button : asReversed(getChildren())) {
             Node n = (Node) ((TreeItem<?>) button.getUserData()).getValue();
@@ -115,8 +120,15 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
 
             // update counters
             totalNumChar += ((Labeled) button).getText().length();
-            totalChildrenWidth += ((Region) button).getWidth();
+            double childWidth = ((Region) button).getWidth();
+            totalChildrenWidth += childWidth;
             totalNumCrumbs++;
+            if (Double.isNaN(constantPadding)) {
+                Region graphic = (Region) ((Labeled) button).getGraphic();
+                if (graphic != null) {
+                    constantPadding = childWidth - graphic.getWidth();
+                }
+            }
 
             if (node.equals(n)) {
                 found = true;
@@ -126,7 +138,7 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
         if (!found) {
             // Then we reset the deepest node.
 
-            setDeepestNode(node, getWidthEstimator(totalNumChar, totalChildrenWidth, totalNumCrumbs));
+            setDeepestNode(node, getWidthEstimator(totalNumChar, totalChildrenWidth, totalNumCrumbs, constantPadding));
             // set the deepest as focused
             Platform.runLater(() ->
                                   getChildren()
@@ -151,7 +163,7 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
         Node parent = node.jjtGetParent();
         double pathLength = widthEstimator.apply(node);
 
-        final double maxPathLength = getWidth() - 150;
+        final double maxPathLength = getWidth() * 0.9;
 
         while (parent != null && pathLength < maxPathLength) {
             TreeItem<Node> newItem = new TreeItem<>(parent);
@@ -176,13 +188,17 @@ public class NodeParentageBreadCrumbBar extends BreadCrumbBar<Node> {
     }
 
 
-    private static Function<Node, Double> getWidthEstimator(int totalNumDisplayedChars, double totalChildrenWidth, int totalNumCrumbs) {
-        double pxByChar = totalNumDisplayedChars == 0
-                          ? 5.0 // we have no data, too bad
-                          // there's a ~19px constant padding per button (on my machine)
-                          : (totalChildrenWidth - 19.0 * totalNumCrumbs) / totalNumDisplayedChars;
+    private Function<Node, Double> getWidthEstimator(int totalNumDisplayedChars, double totalChildrenWidth, int totalNumCrumbs, double constantPadding) {
 
-        return node -> node.getXPathNodeName().length() * pxByChar + 19.0;
+        double safeConstantPadding = Double.isNaN(constantPadding)
+                                     ? 19 // that's the value on my machine
+                                     : constantPadding;
+
+        double thisPxByChar = totalNumDisplayedChars == 0
+                              ? 5.0 // we have no data, too bad
+                              : (totalChildrenWidth - safeConstantPadding * totalNumCrumbs) / totalNumDisplayedChars;
+
+        return node -> node.getXPathNodeName().length() * thisPxByChar + safeConstantPadding;
     }
 
 }

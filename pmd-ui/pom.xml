@@ -112,7 +112,7 @@
                             <Main-Class>net.sourceforge.pmd.util.fxdesigner.DesignerStarter</Main-Class>
                         </manifestEntries>
                     </archive>
-                    <finalName>pmd-ui</finalName>
+                    <finalName>pmd-ui-${project.version}</finalName>
                 </configuration>
             </plugin>
         </plugins>

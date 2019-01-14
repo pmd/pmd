@@ -45,7 +45,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
@@ -84,7 +84,7 @@ public class SourceEditorController extends AbstractController {
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
     @FXML
-    private NodeParentageBreadCrumbBar focusNodeParentageBreadCrumbBar;
+    private NodeParentageCrumbBar focusNodeParentageBreadCrumbBar;
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
