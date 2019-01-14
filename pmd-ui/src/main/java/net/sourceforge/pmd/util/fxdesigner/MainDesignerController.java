@@ -30,7 +30,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -93,8 +92,6 @@ public class MainDesignerController extends AbstractController {
     private Tab xpathEditorTab;
     @FXML
     private SplitPane mainHorizontalSplitPane;
-    @FXML
-    private NodeParentageBreadCrumbBar focusNodeParentageBreadCrumbBar;
 
 
     /* Children */
@@ -133,8 +130,6 @@ public class MainDesignerController extends AbstractController {
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
-        // the editor controller will initialize this after this controller
-        sourceEditorController.focusNodeParentageCrumbBar = focusNodeParentageBreadCrumbBar;
     }
 
 

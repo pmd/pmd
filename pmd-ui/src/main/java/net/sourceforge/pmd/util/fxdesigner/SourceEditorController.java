@@ -83,8 +83,8 @@ public class SourceEditorController extends AbstractController {
     private TreeView<Node> astTreeView;
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
-    // actually a child of the main controller, set during parent initialization
-    NodeParentageBreadCrumbBar focusNodeParentageCrumbBar;
+    @FXML
+    private NodeParentageBreadCrumbBar focusNodeParentageBreadCrumbBar;
 
     private ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
@@ -158,7 +158,7 @@ public class SourceEditorController extends AbstractController {
         DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
 
         // Focus the crumb
-        focusNodeParentageCrumbBar.setOnRegularCrumbAction(treeitem -> {
+        focusNodeParentageBreadCrumbBar.setOnRegularCrumbAction(treeitem -> {
             if (treeitem != null && treeitem.getValue() != null) {
 
                 focusNodeInTreeView(treeitem.getValue());
@@ -365,7 +365,7 @@ public class SourceEditorController extends AbstractController {
             }
         }
 
-        focusNodeParentageCrumbBar.setFocusNode(node);
+        focusNodeParentageBreadCrumbBar.setFocusNode(node);
     }
 
 

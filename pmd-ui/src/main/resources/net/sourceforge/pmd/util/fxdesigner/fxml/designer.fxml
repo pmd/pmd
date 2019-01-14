@@ -2,25 +2,14 @@
 
 <!--suppress JavaFxDefaultTag -->
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-
-<?import org.controlsfx.control.BreadCrumbBar?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageBreadCrumbBar?>
 <AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -64,25 +53,7 @@
                                 <fx:include fx:id="nodeInfoPanel" source="node-info.fxml" />
                             </left>
                             <center>
-                                <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                    <center>
-                                        <fx:include fx:id="sourceEditor" source="editor.fxml" />
-                                    </center>
-                                    <bottom>
-                                        <NodeParentageBreadCrumbBar
-                                                stylesheets="@../css/crumbbar.css"
-                                                fx:id="focusNodeParentageBreadCrumbBar" prefHeight="30" id="main-toolbar" />
-                                        <!--<ToolBar id="main-toolbar" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
-                                            <!--<items>-->
-                                                <!--<Pane HBox.hgrow="ALWAYS" />-->
-                                                <!--<ToggleButton fx:id="bottomTabsToggle" mnemonicParsing="false" selected="true" styleClass="expand-toggle" />-->
-                                            <!--</items>-->
-                                            <!--<padding>-->
-                                                <!--<Insets left="20.0" right="20.0" />-->
-                                            <!--</padding>-->
-                                        <!--</ToolBar>-->
-                                    </bottom>
-                                </BorderPane>
+                                <fx:include fx:id="sourceEditor" source="editor.fxml" prefHeight="200.0" prefWidth="200.0" />
                             </center>
                         </BorderPane>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
