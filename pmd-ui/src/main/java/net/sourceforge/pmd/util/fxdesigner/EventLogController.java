@@ -4,11 +4,17 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_EXCEPTION;
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_OK;
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_EVALUATION_EXCEPTION;
+import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_OK;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -88,16 +94,21 @@ public class EventLogController extends AbstractController {
         });
 
         EventStream<LogEntry> onlyParseException = designerRoot.getLogger().getLog()
-                                                               .filter(x -> x.getCategory() == Category.PARSE_EXCEPTION)
-                                                               .successionEnds(PARSE_EXCEPTION_DELAY);
+                                                               .filter(x -> x.getCategory() == PARSE_EXCEPTION || x.getCategory() == PARSE_OK)
+                                                               .successionEnds(PARSE_EXCEPTION_DELAY)
+                                                               // don't output anything when the last state recorded was OK
+                                                               .filter(x -> x.getCategory() != PARSE_OK);
 
         EventStream<LogEntry> onlyXPathException = designerRoot.getLogger().getLog()
-                                                               .filter(x -> x.getCategory() == Category.XPATH_EVALUATION_EXCEPTION)
-                                                               .successionEnds(PARSE_EXCEPTION_DELAY);
+                                                               .filter(x -> x.getCategory() == XPATH_EVALUATION_EXCEPTION || x.getCategory() == XPATH_OK)
+                                                               .successionEnds(PARSE_EXCEPTION_DELAY)
+                                                               // don't output anything when the last state recorded was OK
+                                                               .filter(x -> x.getCategory() != XPATH_OK);
+
+        EnumSet<Category> otherExceptionSet = EnumSet.complementOf(EnumSet.of(PARSE_EXCEPTION, XPATH_EVALUATION_EXCEPTION, PARSE_OK, XPATH_OK));
 
         EventStream<LogEntry> otherExceptions = designerRoot.getLogger().getLog()
-                                                            .filter(x -> x.getCategory() != Category.PARSE_EXCEPTION)
-                                                            .filter(y -> y.getCategory() != Category.XPATH_EVALUATION_EXCEPTION);
+                                                            .filter(x -> otherExceptionSet.contains(x.getCategory()));
 
         EventStreams.merge(onlyParseException, otherExceptions, onlyXPathException)
                     .subscribe(t -> eventLogTableView.getItems().add(t));

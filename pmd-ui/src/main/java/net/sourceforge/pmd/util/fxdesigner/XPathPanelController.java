@@ -256,13 +256,12 @@ public class XPathPanelController extends AbstractController {
             xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
             parent.highlightXPathResults(results);
             violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
+            // Notify that everything went OK so we can avoid logging very recent exceptions
+            designerRoot.getLogger().logEvent(new LogEntry(null, Category.XPATH_OK));
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
             designerRoot.getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
         }
-
-        xpathResultListView.refresh();
-
 
     }
 
