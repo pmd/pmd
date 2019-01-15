@@ -345,8 +345,8 @@ public class SourceEditorController extends AbstractController {
     private void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
 
-        if (selectedTreeItem == null && node != null
-            || selectedTreeItem != null && !Objects.equals(node, selectedTreeItem.getValue())) {
+        if (node != null
+            && (selectedTreeItem == null || !Objects.equals(node, selectedTreeItem.getValue()))) {
             // node is different from the old one
             // && node is not null
 
@@ -363,9 +363,9 @@ public class SourceEditorController extends AbstractController {
             if (!treeViewWrapper.isIndexVisible(selectionModel.getSelectedIndex())) {
                 astTreeView.scrollTo(selectionModel.getSelectedIndex());
             }
-        }
 
-        focusNodeParentageBreadCrumbBar.setFocusNode(node);
+            focusNodeParentageBreadCrumbBar.setFocusNode(node);
+        }
     }
 
 
