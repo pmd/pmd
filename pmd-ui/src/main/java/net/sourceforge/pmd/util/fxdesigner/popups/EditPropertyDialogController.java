@@ -50,10 +50,10 @@ public class EditPropertyDialogController implements Initializable {
 
     private final Var<PropertyTypeId> typeId = Var.newSimpleVar(PropertyTypeId.STRING);
     private final Var<Runnable> commitHandler = Var.newSimpleVar(null);
-    private Var<PropertyDescriptorSpec> backingDescriptor = Var.newSimpleVar(null);
-    private Var<ObservableList<PropertyDescriptorSpec>> backingDescriptorList = Var.newSimpleVar(null);
+    private final Var<PropertyDescriptorSpec> backingDescriptor = Var.newSimpleVar(null);
+    private final Var<ObservableList<PropertyDescriptorSpec>> backingDescriptorList = Var.newSimpleVar(null);
 
-    private ValidationSupport validationSupport = new ValidationSupport();
+    private final ValidationSupport validationSupport = new ValidationSupport();
     @FXML
     private TextField nameField;
     @FXML

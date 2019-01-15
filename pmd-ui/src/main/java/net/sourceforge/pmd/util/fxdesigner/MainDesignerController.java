@@ -110,7 +110,7 @@ public class MainDesignerController extends AbstractController {
     private final SoftReferenceCache<EventLogController> eventLogController;
 
     // Other fields
-    private Stack<File> recentFiles = new LimitedSizeStack<>(5);
+    private final Stack<File> recentFiles = new LimitedSizeStack<>(5);
 
 
     public MainDesignerController(DesignerRoot owner) {

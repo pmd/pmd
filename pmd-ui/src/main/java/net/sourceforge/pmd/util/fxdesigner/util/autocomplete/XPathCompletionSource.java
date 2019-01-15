@@ -19,7 +19,7 @@ public final class XPathCompletionSource implements CompletionResultSource {
     private final NodeNameFinder myNameFinder;
     private final ResultSelectionStrategy mySelectionStrategy = new ResultSelectionStrategy();
     // if we don't cache them the classpath exploration is done on each character typed
-    private static Map<Language, XPathCompletionSource> byLanguage = new HashMap<>();
+    private static final Map<Language, XPathCompletionSource> BY_LANGUAGE = new HashMap<>();
 
     private XPathCompletionSource(NodeNameFinder nodeNameFinder) {
         this.myNameFinder = nodeNameFinder;
@@ -39,6 +39,6 @@ public final class XPathCompletionSource implements CompletionResultSource {
      * Gets a suggestion tool suited to the given language.
      */
     public static XPathCompletionSource forLanguage(Language language) {
-        return byLanguage.computeIfAbsent(language, l -> new XPathCompletionSource(NodeNameFinder.forLanguage(l)));
+        return BY_LANGUAGE.computeIfAbsent(language, l -> new XPathCompletionSource(NodeNameFinder.forLanguage(l)));
     }
 }

@@ -22,7 +22,7 @@ public class LogEntry implements Comparable<LogEntry> {
     private final Throwable throwable;
     private final Category category;
     private final Date timestamp;
-    private Var<Boolean> wasExamined = Var.newSimpleVar(false);
+    private final Var<Boolean> wasExamined = Var.newSimpleVar(false);
 
     public LogEntry(Throwable thrown, Category cat) {
         this.throwable = thrown;

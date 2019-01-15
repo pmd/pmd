@@ -55,11 +55,6 @@ import javafx.stage.Stage;
  */
 public final class EventLogController extends AbstractController {
 
-    /**
-     * Exceptions from XPath evaluation or parsing are never emitted
-     * within less than that time interval to keep them from flooding the tableview.
-     */
-    private static final Duration PARSE_EXCEPTION_DELAY = Duration.ofMillis(3000);
     private static final PseudoClass NEW_ENTRY = PseudoClass.getPseudoClass("new-entry");
 
     private final DesignerRoot designerRoot;
@@ -76,7 +71,7 @@ public final class EventLogController extends AbstractController {
     @FXML
     private TextArea logDetailsTextArea;
 
-    private Var<List<Node>> selectedErrorNodes = Var.newSimpleVar(Collections.emptyList());
+    private final Var<List<Node>> selectedErrorNodes = Var.newSimpleVar(Collections.emptyList());
 
 
     private final Stage myPopupStage;

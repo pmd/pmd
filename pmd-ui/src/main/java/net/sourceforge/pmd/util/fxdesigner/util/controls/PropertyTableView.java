@@ -52,13 +52,13 @@ import javafx.util.StringConverter;
  */
 public class PropertyTableView extends TableView<PropertyDescriptorSpec> {
 
-    private TableColumn<PropertyDescriptorSpec, String> propertyNameColumn = new TableColumn<>("Name");
-    private TableColumn<PropertyDescriptorSpec, PropertyTypeId> propertyTypeColumn = new TableColumn<>("Type");
-    private TableColumn<PropertyDescriptorSpec, String> propertyValueColumn = new TableColumn<>("Value");
+    private final TableColumn<PropertyDescriptorSpec, String> propertyNameColumn = new TableColumn<>("Name");
+    private final TableColumn<PropertyDescriptorSpec, PropertyTypeId> propertyTypeColumn = new TableColumn<>("Type");
+    private final TableColumn<PropertyDescriptorSpec, String> propertyValueColumn = new TableColumn<>("Value");
 
-    private SoftReferenceCache<Stage> editPropertyDialogCache = new SoftReferenceCache<>(this::createEditPropertyDialog);
+    private final SoftReferenceCache<Stage> editPropertyDialogCache = new SoftReferenceCache<>(this::createEditPropertyDialog);
 
-    private Var<Consumer<? super PropertyDescriptorSpec>> onEditCommit = Var.newSimpleVar(null);
+    private final Var<Consumer<? super PropertyDescriptorSpec>> onEditCommit = Var.newSimpleVar(null);
 
     public PropertyTableView() {
         initialize();

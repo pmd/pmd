@@ -101,8 +101,8 @@ class NodeStyleSpan {
      * Snapshot of the node's absolute position in the code area.
      */
     class PositionSnapshot implements TextAwareNodeWrapper {
-        private int beginIndex;
-        private int endIndex;
+        private final int beginIndex;
+        private final int endIndex;
 
 
         PositionSnapshot(int beginIndex, int endIndex) {
