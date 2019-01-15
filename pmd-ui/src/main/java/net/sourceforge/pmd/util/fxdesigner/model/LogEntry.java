@@ -7,6 +7,8 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 import java.util.Date;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.reactfx.value.Var;
+
 
 /**
  * Log entry of an {@link EventLogger}.
@@ -20,12 +22,26 @@ public class LogEntry {
     private final Throwable throwable;
     private final Category category;
     private final Date timestamp;
-
+    private Var<Boolean> wasExamined = Var.newSimpleVar(false);
 
     public LogEntry(Throwable thrown, Category cat) {
         this.throwable = thrown;
         this.category = cat;
         timestamp = new Date();
+    }
+
+
+    public boolean isWasExamined() {
+        return wasExamined.getValue();
+    }
+
+
+    public void setExamined(boolean wasExamined) {
+        this.wasExamined.setValue(wasExamined);
+    }
+
+    public Var<Boolean> wasExaminedProperty() {
+        return wasExamined;
     }
 
 

@@ -23,6 +23,10 @@ public class SoftReferenceCache<T> {
     }
 
 
+    public boolean hasValue() {
+        return myRef != null && myRef.get() != null;
+    }
+
     public T getValue() {
         if (myRef == null || myRef.get() == null) {
             T val = mySupplier.get();

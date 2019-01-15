@@ -15,14 +15,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.reactfx.EventStream;
+import org.reactfx.EventStreams;
+import org.reactfx.collection.LiveList;
+import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.Language;
@@ -34,6 +41,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleGroup;
@@ -262,5 +270,42 @@ public final class DesignerUtil {
 
     public static Var<Boolean> booleanVar(BooleanProperty p) {
         return Var.mapBidirectional(p, Boolean::booleanValue, Function.identity());
+    }
+
+
+    // Creating a real function Val<LiveList<T>> => LiveList<T> or LiveList<Val<T>> => LiveList<T> would
+    // allow implementing LiveList.flatMap, which is a long-standing feature request in ReactFX
+    // These utilities are very inefficient, but sufficient for our use case...
+    public static <T> Val<LiveList<T>> flatMapChanges(ObservableList<? extends ObservableValue<T>> listOfObservables) {
+
+        // every time an element changes an invalidation stream
+        EventStream<?> invalidations =
+            LiveList.map(listOfObservables, EventStreams::valuesOf)
+                    .reduce(EventStreams::merge)
+                    .values()
+                    .filter(Objects::nonNull)
+                    .flatMap(Function.identity());
+
+        return Val.create(() -> LiveList.map(listOfObservables, ObservableValue::getValue), invalidations);
+    }
+
+
+    public static <T, U> Val<U> reduceWElts(ObservableList<? extends ObservableValue<T>> list, U zero, BiFunction<U, T, U> mapper) {
+        return flatMapChanges(list).map(l -> l.stream().reduce(zero, mapper, (u, v) -> v));
+    }
+
+
+    public static <T> Val<Integer> countMatching(ObservableList<? extends ObservableValue<T>> list, Predicate<? super T> predicate) {
+        return reduceWElts(list, 0, (cur, t) -> predicate.test(t) ? cur + 1 : cur);
+    }
+
+
+    public static Val<Integer> countMatching(ObservableList<? extends ObservableValue<Boolean>> list) {
+        return countMatching(list, b -> b);
+    }
+
+
+    public static Val<Integer> countNotMatching(ObservableList<? extends ObservableValue<Boolean>> list) {
+        return countMatching(list, b -> !b);
     }
 }

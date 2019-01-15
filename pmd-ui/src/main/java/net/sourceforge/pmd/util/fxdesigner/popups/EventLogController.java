@@ -4,24 +4,16 @@
 
 package net.sourceforge.pmd.util.fxdesigner.popups;
 
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_EXCEPTION;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_OK;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_EVALUATION_EXCEPTION;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_OK;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 
-import org.reactfx.EventStream;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStreams;
-import org.reactfx.value.Val;
+import org.reactfx.Subscription;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -34,6 +26,9 @@ import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -41,6 +36,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,6 +45,8 @@ import javafx.stage.Stage;
 
 
 /**
+ * A presenter over the {@link net.sourceforge.pmd.util.fxdesigner.model.EventLogger}.
+ *
  * @author Clément Fournier
  * @since 6.0.0
  */
@@ -59,6 +57,7 @@ public class EventLogController extends AbstractController {
      * within less than that time interval to keep them from flooding the tableview.
      */
     private static final Duration PARSE_EXCEPTION_DELAY = Duration.ofMillis(3000);
+    private static final PseudoClass NEW_ENTRY = PseudoClass.getPseudoClass("new-entry");
 
     private final DesignerRoot designerRoot;
     private final MainDesignerController mediator;
@@ -66,7 +65,7 @@ public class EventLogController extends AbstractController {
     @FXML
     private TableView<LogEntry> eventLogTableView;
     @FXML
-    private TableColumn<LogEntry, Date> logDateColumn;
+    private TableColumn<LogEntry, LogEntry> logDateColumn;
     @FXML
     private TableColumn<LogEntry, Category> logCategoryColumn;
     @FXML
@@ -79,7 +78,9 @@ public class EventLogController extends AbstractController {
 
     private SoftReferenceCache<Stage> popupStageCache = new SoftReferenceCache<>(this::createStage);
 
-    private Var<Integer> numLogEntries = Var.newSimpleVar(0);
+    // subscription allowing to unbind from the popup. If that's not done,
+    // the popup fxml is always bound to the controller we have a memory leak
+    private Subscription popupBinding = () -> {};
 
     public EventLogController(DesignerRoot owner, MainDesignerController mediator) {
         this.designerRoot = owner;
@@ -87,65 +88,40 @@ public class EventLogController extends AbstractController {
     }
 
 
+    // this is only called each time a popup is created
     @Override
     protected void beforeParentInit() {
+
+        popupBinding.unsubscribe();
 
         logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue().getTimestamp()));
-        logDateColumn.setCellFactory(column -> new TableCell<LogEntry, Date>() {
+        logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue()));
+        logDateColumn.setCellFactory(column -> new TableCell<LogEntry, LogEntry>() {
+
+            Subscription sub = null;
+
+
             @Override
-            protected void updateItem(Date item, boolean empty) {
+            protected void updateItem(LogEntry item, boolean empty) {
                 super.updateItem(item, empty);
+
+                if (sub != null) {
+                    sub.unsubscribe();
+                }
                 if (item == null || empty) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(dateFormat.format(item));
+                    setText(dateFormat.format(item.getTimestamp()));
+                    sub = item.wasExaminedProperty()
+                              .map(wasExamined -> wasExamined ? null : new FontIcon("fas-exclamation-circle"))
+                              .values()
+                              .subscribe(graphicProperty()::setValue);
                 }
             }
         });
-
-        EventStream<LogEntry> onlyParseException = designerRoot.getLogger().getLog()
-                                                               .filter(x -> x.getCategory() == PARSE_EXCEPTION || x.getCategory() == PARSE_OK)
-                                                               .successionEnds(PARSE_EXCEPTION_DELAY)
-                                                               // don't output anything when the last state recorded was OK
-                                                               .filter(x -> x.getCategory() != PARSE_OK);
-
-        EventStream<LogEntry> onlyXPathException = designerRoot.getLogger().getLog()
-                                                               .filter(x -> x.getCategory() == XPATH_EVALUATION_EXCEPTION || x.getCategory() == XPATH_OK)
-                                                               .successionEnds(PARSE_EXCEPTION_DELAY)
-                                                               // don't output anything when the last state recorded was OK
-                                                               .filter(x -> x.getCategory() != XPATH_OK);
-
-        EnumSet<Category> otherExceptionSet = EnumSet.complementOf(EnumSet.of(PARSE_EXCEPTION, XPATH_EVALUATION_EXCEPTION, PARSE_OK, XPATH_OK));
-
-        EventStream<LogEntry> otherExceptions = designerRoot.getLogger().getLog()
-                                                            .filter(x -> otherExceptionSet.contains(x.getCategory()));
-
-        EventStreams.merge(onlyParseException, otherExceptions, onlyXPathException)
-                    .hook(e -> numLogEntries.setValue(numLogEntries.getValue() + 1))
-                    .subscribe(t -> eventLogTableView.getItems().add(t));
-
-        eventLogTableView.getSelectionModel()
-                         .selectedItemProperty()
-                         .addListener((obs, oldVal, newVal) -> onExceptionSelectionChanges(oldVal, newVal));
-
-        EventStreams.combine(EventStreams.changesOf(eventLogTableView.focusedProperty()),
-                             EventStreams.changesOf(selectedErrorNodes));
-
-        EventStreams.valuesOf(eventLogTableView.focusedProperty())
-                    .successionEnds(Duration.ofMillis(100))
-                    .subscribe(b -> {
-                        if (b) {
-                            mediator.handleSelectedNodeInError(selectedErrorNodes.getValue());
-                        } else {
-                            mediator.resetSelectedErrorNodes();
-                        }
-                    });
-
-        selectedErrorNodes.values().subscribe(mediator::handleSelectedNodeInError);
 
         eventLogTableView.resizeColumn(logMessageColumn, -1);
 
@@ -156,6 +132,55 @@ public class EventLogController extends AbstractController {
                                                .subtract(2)); // makes it work
         logDateColumn.setSortType(SortType.DESCENDING);
 
+        eventLogTableView.setRowFactory(tv -> {
+            TableRow<LogEntry> row = new TableRow<>();
+            ChangeListener<Boolean> examinedListener = (obs, oldVal, newVal) -> row.pseudoClassStateChanged(NEW_ENTRY, !newVal);
+            row.itemProperty().addListener((obs, previousEntry, currentEntry) -> {
+                if (previousEntry != null) {
+                    previousEntry.wasExaminedProperty().removeListener(examinedListener);
+                }
+                if (currentEntry != null) {
+                    currentEntry.wasExaminedProperty().addListener(examinedListener);
+                    row.pseudoClassStateChanged(NEW_ENTRY, !currentEntry.isWasExamined());
+                } else {
+                    row.pseudoClassStateChanged(NEW_ENTRY, false);
+                }
+            });
+            return row;
+        });
+
+    }
+
+
+    private Subscription bindPopupToController() {
+        Subscription binding =
+            EventStreams.valuesOf(eventLogTableView.getSelectionModel().selectedItemProperty())
+                        .distinct()
+                        .subscribe(this::onExceptionSelectionChanges);
+
+        binding = binding.and(
+            EventStreams.valuesOf(eventLogTableView.focusedProperty())
+                        .successionEnds(Duration.ofMillis(100))
+                        .subscribe(b -> {
+                            if (b) {
+                                mediator.handleSelectedNodeInError(selectedErrorNodes.getValue());
+                            } else {
+                                mediator.resetSelectedErrorNodes();
+                            }
+                        })
+        );
+
+        binding = binding.and(
+            selectedErrorNodes.values().subscribe(mediator::handleSelectedNodeInError)
+        );
+
+        eventLogTableView.itemsProperty().setValue(designerRoot.getLogger().getLog());
+
+        binding = binding.and(
+            () -> eventLogTableView.itemsProperty().setValue(FXCollections.emptyObservableList())
+        );
+
+        return binding;
     }
 
 
@@ -164,6 +189,9 @@ public class EventLogController extends AbstractController {
             selectedErrorNodes.setValue(Collections.emptyList());
             return;
         }
+
+        entry.setExamined(true);
+
         switch (entry.getCategory()) {
         case OTHER:
             break;
@@ -182,25 +210,22 @@ public class EventLogController extends AbstractController {
 
     public void showPopup() {
         popupStageCache.getValue().show();
+        popupBinding = bindPopupToController();
     }
 
 
     public void hidePopup() {
-        popupStageCache.getValue().hide();
-    }
-
-
-    private void onExceptionSelectionChanges(LogEntry oldVal, LogEntry newVal) {
-        logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
-
-        if (!Objects.equals(newVal, oldVal)) {
-            handleSelectedEntry(newVal);
+        if (popupStageCache.hasValue()) {
+            popupStageCache.getValue().hide();
+            popupBinding.unsubscribe();
+            popupBinding = () -> {};
         }
     }
 
 
-    public Val<Integer> numLogEntriesProperty() {
-        return numLogEntries;
+    private void onExceptionSelectionChanges(LogEntry newVal) {
+        logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
+        handleSelectedEntry(newVal);
     }
 
 

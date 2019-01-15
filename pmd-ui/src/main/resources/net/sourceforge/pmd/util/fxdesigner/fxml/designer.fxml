@@ -19,6 +19,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <AnchorPane prefHeight="750.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.MainDesignerController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -27,7 +28,7 @@
                     <children>
                         <MenuBar layoutX="-11.0" maxHeight="20.0" prefHeight="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="0.0">
                             <menus>
-                                <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
+                                <Menu fx:id="fileMenu" text="File">
                                     <items>
                                         <MenuItem fx:id="openFileMenuItem" mnemonicParsing="false" text="Open..." />
                                         <Menu fx:id="openRecentMenu" mnemonicParsing="false" text="Open recent" />
@@ -35,26 +36,30 @@
                                 </Menu>
 
 
-                                <Menu mnemonicParsing="false" text="View">
+                                <Menu text="View">
                                     <items>
-                                        <MenuItem fx:id="openEventLogMenuItem" mnemonicParsing="false"
-                                                  text="Open event log...">
+                                        <MenuItem fx:id="openEventLogMenuItem" mnemonicParsing="false">
+                                            <graphic>
+                                                <!-- Font awesome 5.5.0 -->
+                                                <!--<FontIcon iconLiteral="fas-bolt" />-->
+                                            </graphic>
+                                        </MenuItem>
+                                        <MenuItem fx:id="setupAuxclasspathMenuItem"
+                                                  mnemonicParsing="false"
+                                                  text="Analysis classpath">
+                                            <graphic>
+                                                <!-- TODO Font awesome 5.0.1 (apparently not supported) -->
+                                                <!--<FontIcon iconLiteral="fab-java"/>-->
+                                            </graphic>
                                         </MenuItem>
                                     </items>
                                 </Menu>
 
-                                <Menu mnemonicParsing="false" text="Configuration">
-                                    <items>
-                                        <MenuItem fx:id="setupAuxclasspathMenuItem" mnemonicParsing="false" text="Set up the auxclasspath...">
-                                        </MenuItem>
-                                    </items>
-                                </Menu>
-
-                                <Menu mnemonicParsing="false" text="About">
+                                <Menu text="About">
                                     <items>
                                         <!-- TODO add link to doc pages -->
                                         <!--<MenuItem mnemonicParsing="false" text="About" />-->
-                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License..." />
+                                        <MenuItem fx:id="licenseMenuItem" mnemonicParsing="false" text="License" />
                                     </items>
                                 </Menu>
 

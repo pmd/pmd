@@ -138,8 +138,8 @@ public class MainDesignerController extends AbstractController {
 
         openEventLogMenuItem.setOnAction(e -> eventLogController.showPopup());
         openEventLogMenuItem.textProperty().bind(
-            eventLogController.numLogEntriesProperty()
-                              .map(i -> "Open event log (" + i + " entries)"));
+            designerRoot.getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)")
+        );
 
     }
 
