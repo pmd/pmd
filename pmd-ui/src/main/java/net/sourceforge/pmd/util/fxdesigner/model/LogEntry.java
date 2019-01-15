@@ -16,7 +16,7 @@ import org.reactfx.value.Var;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class LogEntry {
+public class LogEntry implements Comparable<LogEntry> {
 
 
     private final Throwable throwable;
@@ -66,6 +66,12 @@ public class LogEntry {
 
     public Date getTimestamp() {
         return timestamp;
+    }
+
+
+    @Override
+    public int compareTo(LogEntry o) {
+        return getTimestamp().compareTo(o.getTimestamp());
     }
 
 

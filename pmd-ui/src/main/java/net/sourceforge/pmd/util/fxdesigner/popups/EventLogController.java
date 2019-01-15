@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.SortedList;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,7 +37,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -99,6 +100,8 @@ public final class EventLogController extends AbstractController {
 
         logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+        logMessageColumn.setSortable(false);
+
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue()));
         logDateColumn.setCellFactory(column -> new TableCell<LogEntry, LogEntry>() {
@@ -133,7 +136,6 @@ public final class EventLogController extends AbstractController {
                                                .subtract(logCategoryColumn.getPrefWidth())
                                                .subtract(logDateColumn.getPrefWidth())
                                                .subtract(2)); // makes it work
-        logDateColumn.setSortType(SortType.DESCENDING);
 
         eventLogTableView.setRowFactory(tv -> {
             TableRow<LogEntry> row = new TableRow<>();
@@ -184,8 +186,8 @@ public final class EventLogController extends AbstractController {
             selectedErrorNodes.values().subscribe(mediator::handleSelectedNodeInError)
         );
 
-        eventLogTableView.itemsProperty().setValue(designerRoot.getLogger().getLog());
-
+        SortedList<LogEntry> logEntries = new SortedList<>(designerRoot.getLogger().getLog(), Comparator.reverseOrder());
+        eventLogTableView.itemsProperty().setValue(logEntries);
         binding = binding.and(
             () -> eventLogTableView.itemsProperty().setValue(FXCollections.emptyObservableList())
         );
