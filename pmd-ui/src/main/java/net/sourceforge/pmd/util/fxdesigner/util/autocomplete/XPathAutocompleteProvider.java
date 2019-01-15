@@ -5,11 +5,8 @@
 package net.sourceforge.pmd.util.fxdesigner.util.autocomplete;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -63,26 +60,32 @@ public final class XPathAutocompleteProvider {
 
     public void initialiseAutoCompletion() {
 
-        Set<String> completionTriggers = new HashSet<>(Arrays.asList("\r", "\r\n", "\n", "\t"));
-
         // allows tab/enter completion
-        autoCompletePopup.addEventHandler(KeyEvent.KEY_TYPED, e -> {
+        EventStreams.eventsOf(autoCompletePopup, KeyEvent.ANY)
+                    .filter(e -> !e.isConsumed())
+                    .filter(e ->
+                                // For some reason this has to be asymmetric
+                                // Delivered events vary between JREs, as well as their properties
+                                // This is the common denominator I found for JREs 8..10
 
-            // for some reason using KeyEvent.KEY_PRESSED didn't work with the ENTER key,
-            // which is why we use KeyEvent.KEY_TYPED
-            if (!e.isConsumed() && completionTriggers.contains(e.getCharacter())) {
-                int focusIdx = getFocusIdx();
-                if (focusIdx == -1) {
-                    focusIdx = 0;
-                }
+                                // Only KEY_RELEASED events are delivered for ENTER
+                                e.getEventType().equals(KeyEvent.KEY_RELEASED) && e.getCode() == KeyCode.ENTER
+                                    // All KEY_TYPED, KEY_PRESSED, and KEY_RELEASED are delivered for TAB,
+                                    // but we have to handle it before it inserts a \t so we catch KEY_PRESSED
+                                    || e.getEventType().equals(KeyEvent.KEY_PRESSED) && e.getCode() == KeyCode.TAB
 
-                if (focusIdx < autoCompletePopup.getItems().size()) {
-                    autoCompletePopup.getItems().get(focusIdx).getOnAction().handle(new ActionEvent());
-                }
-                e.consume();
-            }
+                    )
+                    .subscribe(e -> {
+                        int focusIdx = getFocusIdx();
+                        if (focusIdx == -1) {
+                            focusIdx = 0;
+                        }
 
-        });
+                        if (focusIdx < autoCompletePopup.getItems().size()) {
+                            autoCompletePopup.getItems().get(focusIdx).getOnAction().handle(new ActionEvent());
+                        }
+                        e.consume();
+                    });
 
         EventStream<Integer> changesEventStream = myCodeArea.plainTextChanges()
                                                             .map(characterChanges -> {
