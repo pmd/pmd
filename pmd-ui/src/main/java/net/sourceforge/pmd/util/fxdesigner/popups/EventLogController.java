@@ -41,6 +41,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -93,10 +94,6 @@ public final class EventLogController extends AbstractController {
 
         popupBinding.unsubscribe();
 
-        logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
-        logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
-        logMessageColumn.setSortable(false);
-
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue()));
         logDateColumn.setCellFactory(column -> new TableCell<LogEntry, LogEntry>() {
@@ -104,6 +101,7 @@ public final class EventLogController extends AbstractController {
             Subscription sub = null;
 
 
+            // adds an icon to the date for new entries
             @Override
             protected void updateItem(LogEntry item, boolean empty) {
                 super.updateItem(item, empty);
@@ -124,6 +122,22 @@ public final class EventLogController extends AbstractController {
             }
         });
 
+        logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+        logMessageColumn.setSortable(false);
+
+        // wrap message text
+        logMessageColumn.setCellFactory(col -> {
+            TableCell<LogEntry, String> cell = new TableCell<>();
+            Text text = new Text();
+            text.wrappingWidthProperty().bind(cell.widthProperty());
+            text.textProperty().bind(cell.itemProperty());
+            cell.setGraphic(text);
+            return cell;
+        });
+
+        // sizing
+
         eventLogTableView.resizeColumn(logMessageColumn, -1);
 
         logMessageColumn.prefWidthProperty()
@@ -132,6 +146,7 @@ public final class EventLogController extends AbstractController {
                                                .subtract(logDateColumn.getPrefWidth())
                                                .subtract(2)); // makes it work
 
+        // add a "new-entry" pseudo-class to rows for new log entries, styling is done in CSS
         eventLogTableView.setRowFactory(tv -> {
             TableRow<LogEntry> row = new TableRow<>();
             ChangeListener<Boolean> examinedListener = (obs, oldVal, newVal) -> row.pseudoClassStateChanged(NEW_ENTRY, !newVal);
