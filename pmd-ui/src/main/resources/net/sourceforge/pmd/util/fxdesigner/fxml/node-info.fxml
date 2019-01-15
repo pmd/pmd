@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
 <TabPane fx:id="nodeInfoTabPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" side="LEFT" stylesheets="@../css/designer.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController">
 
     <tabs>
@@ -30,7 +31,10 @@
                                 AnchorPane.rightAnchor="0.0"
                                 AnchorPane.topAnchor="0.0">
                             <toolbarItems>
-                                <ToggleButton fx:id="hideCommonAttributesToggle" text="Hide common attributes" selected="true" styleClass="icon-button" mnemonicParsing="false">
+                                <ToggleButton fx:id="hideCommonAttributesToggle" selected="true" styleClass="icon-button" mnemonicParsing="false">
+                                    <tooltip>
+                                        <Tooltip text="Hide common attributes" />
+                                    </tooltip>
                                     <graphic>
                                         <FontIcon iconLiteral="fas-eye-slash" />
                                     </graphic>

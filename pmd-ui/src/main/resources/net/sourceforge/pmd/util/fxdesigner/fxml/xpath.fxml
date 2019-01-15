@@ -65,7 +65,9 @@
                                            AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
                             <toolbarItems>
+                                <!-- For some reason setting "text", even if it's not displayed, makes the padding of the icon work properly -->
                                 <MenuButton mnemonicParsing="false"
+                                            text="spacer"
                                             styleClass="menu-button-no-arrow,icon-button"
                                             fx:id="xpathVersionMenuButton">
                                     <graphic>
@@ -93,7 +95,7 @@
                                     <tooltip>
                                         <Tooltip>
                                             <text>
-                                                <String fx:value="Export XPath to XML rule" />
+                                                <String fx:value="Export XPath to XML rule..." />
                                             </text>
                                         </Tooltip>
                                     </tooltip>

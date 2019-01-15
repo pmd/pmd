@@ -162,6 +162,12 @@
     }
 }
 
+.titled-pane > .title:hover {
+  // modena uses the rule -fx-color: -fx-hover-base;
+  // which causes an obnoxious flickering
+  -fx-color: -fx-base;
+}
+
 // Supports the ToolbarTitledPane
 .titled-pane.tool-bar-title > .title {
 
@@ -214,7 +220,10 @@
 .icon-button {
 
   -fx-background-color: transparent;
+
+  -fx-content-display: CENTER;
   -fx-border-width: 0;
+  -fx-background-insets: 0;
   -fx-border-insets: 0;
   .force-square(24);
 
@@ -222,12 +231,10 @@
     -fx-graphic-text-gap: 0;
   }
 
-  &.menu-button, &.toggle-button {
-    .ikonli-font-icon {
+  &.menu-button .ikonli-font-icon {
     // Fixes a bug where the cog icon is misplaced to the right
     // Probably needs to be synced with icon size
-    -fx-translate-x: -4;
-    }
+    -fx-translate-x: -3;
   }
 
   .ikonli-font-icon, .svg-icon {
@@ -235,47 +242,30 @@
   }
 
   &.toggle-button:selected {
-    -fx-background-color: -fx-shadow-highlight-color,
-    linear-gradient(to bottom, derive(-fx-outer-border, -20%), -fx-outer-border),
-    linear-gradient(to bottom,
-            derive(-fx-color, -22%) 0%,
-            derive(-fx-color, -13%) 20%,
-            derive(-fx-color, -11%) 50%);
 
-    -fx-background-insets: 0 0 -1 0, 0, 1;
-  }
+    &, &:focused {
 
+      @grad: linear-gradient(to bottom,
+      derive(-fx-color, -22%) 0%,
+      derive(-fx-color, -13%) 20%,
+      derive(-fx-color, -11%) 50%);
 
-  .toggle-button-background(@base) {
-    -fx-background-color: -fx-focus-color,
-    linear-gradient(to bottom,
-            derive(@base, -22%) 0%,
-            derive(@base, -13%) 20%,
-            derive(@base, -11%) 50%),
-    -fx-faint-focus-color,
-    linear-gradient(to bottom,
-            derive(@base, -22%) 0%,
-            derive(@base, -13%) 20%,
-            derive(@base, -11%) 50%);
-  }
+      -fx-background-color: -fx-shadow-highlight-color, linear-gradient(to bottom, derive(-fx-outer-border, -20%), -fx-outer-border), @grad;
 
-  .toggle-button:selected {
-    -fx-background-insets: -0.2, 1, -1.4, 2.6;
-    -fx-background-radius: 3, 2, 4, 0;
-
-    &:focused {
-      .toggle-button-background(-fx-color);
+      -fx-background-insets: 0 0 -1 0, 0, 1;
     }
 
     &:hover {
-      .toggle-button-background(darken(@selection-focus-color, 10%));
+      -fx-hover-base: @selection-focus-color;
     }
   }
 
+  &.menu-button:showing, &:hover {
+    -fx-background-color: @selection-focus-color;
+  }
 
   .label {
     -fx-background-color: transparent;
-    //-fx-padding: 0;
   }
 }
 
