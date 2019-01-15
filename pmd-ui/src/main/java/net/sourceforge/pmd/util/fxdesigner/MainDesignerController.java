@@ -28,6 +28,7 @@ import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
+import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
@@ -105,7 +106,8 @@ public class MainDesignerController extends AbstractController {
     private XPathPanelController xpathPanelController;
     @FXML
     private SourceEditorController sourceEditorController;
-    private final EventLogController eventLogController;
+    // we cache it but if it's not used the FXML is not created, etc
+    private final SoftReferenceCache<EventLogController> eventLogController;
 
     // Other fields
     private Stack<File> recentFiles = new LimitedSizeStack<>(5);
@@ -113,7 +115,7 @@ public class MainDesignerController extends AbstractController {
 
     public MainDesignerController(DesignerRoot owner) {
         this.designerRoot = owner;
-        eventLogController = new EventLogController(designerRoot, this);
+        eventLogController = new SoftReferenceCache<>(() -> new EventLogController(owner, this));
     }
 
     @Override
@@ -136,7 +138,7 @@ public class MainDesignerController extends AbstractController {
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
 
-        openEventLogMenuItem.setOnAction(e -> eventLogController.showPopup());
+        openEventLogMenuItem.setOnAction(e -> eventLogController.getValue().showPopup());
         openEventLogMenuItem.textProperty().bind(
             designerRoot.getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)")
         );

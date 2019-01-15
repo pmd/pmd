@@ -14,6 +14,7 @@ import java.util.List;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStreams;
 import org.reactfx.Subscription;
+import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -23,7 +24,6 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -46,11 +46,13 @@ import javafx.stage.Stage;
 
 /**
  * A presenter over the {@link net.sourceforge.pmd.util.fxdesigner.model.EventLogger}.
+ * There's not necessarily one in the app, it can be garbage collected and recreated.
+ * Each of these necessarily has a live UI component though.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class EventLogController extends AbstractController {
+public final class EventLogController extends AbstractController {
 
     /**
      * Exceptions from XPath evaluation or parsing are never emitted
@@ -76,15 +78,16 @@ public class EventLogController extends AbstractController {
     private Var<List<Node>> selectedErrorNodes = Var.newSimpleVar(Collections.emptyList());
 
 
-    private SoftReferenceCache<Stage> popupStageCache = new SoftReferenceCache<>(this::createStage);
+    private final Stage myPopupStage;
 
-    // subscription allowing to unbind from the popup. If that's not done,
-    // the popup fxml is always bound to the controller we have a memory leak
+    // subscription allowing to unbind from the popup.
     private Subscription popupBinding = () -> {};
 
     public EventLogController(DesignerRoot owner, MainDesignerController mediator) {
         this.designerRoot = owner;
         this.mediator = mediator;
+        // the FXML fields are injected and initialize is called in createStage
+        this.myPopupStage = createStage(owner.getMainStage());
     }
 
 
@@ -152,7 +155,14 @@ public class EventLogController extends AbstractController {
     }
 
 
-    private Subscription bindPopupToController() {
+    /**
+     * Binds the popup to the rest of the app. Necessarily performed after the initialization
+     * of the controller (ie @FXML fields are non-null). All bindings must be revocable
+     * with the returned subscription, that way no processing is done when the popup is not
+     * shown.
+     */
+    private Subscription bindPopupToThisController() {
+
         Subscription binding =
             EventStreams.valuesOf(eventLogTableView.getSelectionModel().selectedItemProperty())
                         .distinct()
@@ -178,6 +188,11 @@ public class EventLogController extends AbstractController {
 
         binding = binding.and(
             () -> eventLogTableView.itemsProperty().setValue(FXCollections.emptyObservableList())
+        );
+
+        myPopupStage.titleProperty().bind(this.titleProperty());
+        binding = binding.and(
+            () -> myPopupStage.titleProperty().unbind()
         );
 
         return binding;
@@ -209,17 +224,16 @@ public class EventLogController extends AbstractController {
 
 
     public void showPopup() {
-        popupStageCache.getValue().show();
-        popupBinding = bindPopupToController();
+        myPopupStage.show();
+        popupBinding = bindPopupToThisController();
     }
 
 
     public void hidePopup() {
-        if (popupStageCache.hasValue()) {
-            popupStageCache.getValue().hide();
-            popupBinding.unsubscribe();
-            popupBinding = () -> {};
-        }
+        myPopupStage.hide();
+        popupBinding.unsubscribe();
+        popupBinding = () -> {};
+
     }
 
 
@@ -229,14 +243,18 @@ public class EventLogController extends AbstractController {
     }
 
 
-    private Stage createStage() {
+    private Val<String> titleProperty() {
+        return designerRoot.getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)");
+    }
+
+
+    private Stage createStage(Stage mainStage) {
         FXMLLoader loader = new FXMLLoader(DesignerUtil.getFxml("event-log.fxml"));
         loader.setController(this);
 
         final Stage dialog = new Stage();
-        dialog.initOwner(designerRoot.getMainStage().getScene().getWindow());
-        dialog.initModality(Modality.WINDOW_MODAL);
-        // dialog.initStyle(StageStyle.UNDECORATED);
+        dialog.initOwner(mainStage.getScene().getWindow());
+        dialog.initModality(Modality.NONE);
 
         Parent root;
         try {
@@ -246,7 +264,6 @@ public class EventLogController extends AbstractController {
         }
 
         Scene scene = new Scene(root);
-        dialog.setTitle("Event log");
         dialog.setScene(scene);
         return dialog;
     }
