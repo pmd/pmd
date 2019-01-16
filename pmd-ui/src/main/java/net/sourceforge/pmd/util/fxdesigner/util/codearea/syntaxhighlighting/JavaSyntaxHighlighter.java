@@ -10,6 +10,7 @@ import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighti
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.BRACKET;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.CHAR;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.CLASS_IDENTIFIER;
+import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.IDENTIFIER;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.KEYWORD;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.MULTIL_COMMENT;
 import static net.sourceforge.pmd.util.fxdesigner.util.codearea.syntaxhighlighting.HighlightClasses.NULL;
@@ -62,6 +63,7 @@ public final class JavaSyntaxHighlighter extends SimpleRegexSyntaxHighlighter {
         .or(BOOLEAN.css, asWord("true|false"))
         .or(ANNOTATION.css, "@[\\w]+")
         .or(CLASS_IDENTIFIER.css, asWord("[A-Z][\\w_$]*"))
+        .or(IDENTIFIER.css, asWord("[\\w_$]+"))
         .create(Pattern.DOTALL);
 
 
