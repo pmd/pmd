@@ -21,7 +21,6 @@ import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
@@ -217,43 +216,29 @@ public class MainDesignerController extends AbstractController {
      * Executed when the user selects a node in a treeView or listView.
      */
     public void onNodeItemSelected(Node selectedValue) {
+        onNodeItemSelected(selectedValue, false);
+    }
+
+
+    /**
+     * Executed when the user selects a node in a treeView or listView.
+     *
+     * @param isFromNameDecl Whether the node was selected in the scope hierarchy treeview
+     */
+    public void onNodeItemSelected(Node selectedValue, boolean isFromNameDecl) {
         // doing that in parallel speeds it up
-        Platform.runLater(() -> nodeInfoPanelController.setFocusNode(selectedValue));
+        Platform.runLater(() -> nodeInfoPanelController.setFocusNode(selectedValue, isFromNameDecl));
         Platform.runLater(() -> sourceEditorController.setFocusNode(selectedValue));
     }
 
 
     /**
-     * Callback for {@link NodeInfoPanelController}. This method should
-     * not forward a focus request back to the {@link NodeInfoPanelController},
-     * it takes care itself of calling itself.
+     * Highlight a list of name occurrences.
+     *
+     * @param occurrences May be empty but never null.
      */
-    public void onNameDeclarationSelected(NameDeclaration declaration) {
-
-        Platform.runLater(() -> {
-            // TODO highlight usages of regular node selection and move that logic to nodeInfoPanelController.setFocusNode
-            // In fact I think the current symbol table is too low level for that. You
-            // can map a NameDeclaration to its node but not the reverse...
-            sourceEditorController.clearNameOccurences();
-
-            List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
-
-            if (occurrences == null) {
-                // For MethodNameDeclaration the scope is the method scope, which is not the scope it is declared
-                // in but the scope it declares! That means that getDeclarations().get(declaration) returns null
-                // and no name occurrences are found. We thus look in the parent, but ultimately the name occurrence
-                // finder is broken since it can't find e.g. the use of a method in another scope. Plus in case of
-                // overloads both overloads are reported to have a usage.
-                // Plus this is some serious law of Demeter breaking there...
-                occurrences = declaration.getNode().getScope().getParent().getDeclarations().get(declaration);
-            }
-
-            if (occurrences != null) {
-                sourceEditorController.highlightNameOccurrences(occurrences);
-            }
-        });
-
-        Platform.runLater(() -> sourceEditorController.setFocusNode(declaration.getNode()));
+    public void highlightAsNameOccurences(List<NameOccurrence> occurrences) {
+        sourceEditorController.highlightNameOccurrences(occurrences);
     }
 
     /**

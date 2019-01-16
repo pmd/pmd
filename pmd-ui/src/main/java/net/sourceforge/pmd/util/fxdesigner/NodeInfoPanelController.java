@@ -6,9 +6,13 @@ package net.sourceforge.pmd.util.fxdesigner;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import org.reactfx.EventStreams;
 import org.reactfx.value.Var;
@@ -17,6 +21,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
@@ -86,10 +93,8 @@ public class NodeInfoPanelController extends AbstractController {
                     .filter(Objects::nonNull)
                     .map(TreeItem::getValue)
                     .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
-                    .subscribe(declaration -> {
-                        Platform.runLater(() -> setFocusNode(declaration.getNode(), true));
-                        parent.onNameDeclarationSelected(declaration);
-                    });
+                    .filter(nd -> !Objects.equals(nd.getNode(), selectedNode))
+                    .subscribe(declaration -> Platform.runLater(() -> parent.onNodeItemSelected(declaration.getNode(), true)));
 
         scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
 
@@ -101,17 +106,20 @@ public class NodeInfoPanelController extends AbstractController {
     }
 
 
-    /**
-     * Displays info about a node. If null, the panels are reset.
-     *
-     * @param node Node to inspect
-     */
+    /** <pre>{@linkplain #setFocusNode(Node, boolean) setFocusNode}(node, false)</pre> */
     public void setFocusNode(Node node) {
         setFocusNode(node, false);
     }
 
 
-    private void setFocusNode(Node node, boolean focusScopeView) {
+    /**
+     * Displays info about a node. If null, the panels are reset.
+     *
+     * @param node           Node to inspect
+     * @param isFromNameDecl Whether the node was selected in the scope hierarchy treeview.
+     *                       If so we'll attempt to preserve that selection.
+     */
+    public void setFocusNode(Node node, boolean isFromNameDecl) {
         if (node == null) {
             invalidateInfo();
             return;
@@ -124,8 +132,53 @@ public class NodeInfoPanelController extends AbstractController {
 
         displayAttributes(node);
         displayMetrics(node);
-        displayScopes(node, focusScopeView);
+        displayScopes(node, isFromNameDecl);
+
+        if (node instanceof ScopedNode) {
+            // not null as well
+            highlightNameOccurences((ScopedNode) node);
+        }
+
     }
+
+
+    private void highlightNameOccurences(ScopedNode node) {
+
+        // For MethodNameDeclaration the scope is the method scope, which is not the scope it is declared
+        // in but the scope it declares! That means that getDeclarations().get(declaration) returns null
+        // and no name occurrences are found. We thus look in the parent, but ultimately the name occurrence
+        // finder is broken since it can't find e.g. the use of a method in another scope. Plus in case of
+        // overloads both overloads are reported to have a usage.
+
+        // Plus this is some serious law of Demeter breaking there...
+
+        Set<NameDeclaration> candidates = new HashSet<>(node.getScope().getDeclarations().keySet());
+
+        Optional.ofNullable(node.getScope().getParent())
+                .map(Scope::getDeclarations)
+                .map(Map::keySet)
+                .ifPresent(candidates::addAll);
+
+        List<NameOccurrence> occurrences =
+            candidates.stream()
+                      .filter(nd -> node.equals(nd.getNode()))
+                      .findFirst()
+                      .map(nd -> {
+                          // nd.getScope() != nd.getNode().getScope()?? wtf?
+
+                          List<NameOccurrence> usages = nd.getNode().getScope().getDeclarations().get(nd);
+
+                          if (usages == null) {
+                              usages = nd.getNode().getScope().getParent().getDeclarations().get(nd);
+                          }
+
+                          return usages;
+                      })
+                      .orElse(Collections.emptyList());
+
+        parent.highlightAsNameOccurences(occurrences);
+    }
+
 
     private void displayAttributes(Node node) {
         ObservableList<String> atts = getAttributes(node);
