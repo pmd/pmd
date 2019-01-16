@@ -51,7 +51,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionModel;
@@ -249,7 +248,7 @@ public class SourceEditorController extends AbstractController {
 
     /** Clears the name occurences. */
     public void clearNameOccurences() {
-        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
+        codeEditorArea.clearStyleLayer(StyleLayerIds.NAME_OCCURENCE);
     }
 
 
@@ -267,6 +266,8 @@ public class SourceEditorController extends AbstractController {
         if (Objects.equals(node, currentFocusNode.getValue())) {
             return;
         }
+
+        Platform.runLater(() -> focusNodeInTreeView(node));
 
         codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true);
 
@@ -324,7 +325,7 @@ public class SourceEditorController extends AbstractController {
     }
 
 
-    public void focusNodeInTreeView(Node node) {
+    private void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
 
         // node is different from the old one

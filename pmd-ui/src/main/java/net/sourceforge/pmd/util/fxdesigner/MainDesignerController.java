@@ -217,9 +217,9 @@ public class MainDesignerController extends AbstractController {
      * Executed when the user selects a node in a treeView or listView.
      */
     public void onNodeItemSelected(Node selectedValue) {
-        nodeInfoPanelController.setFocusNode(selectedValue);
-        sourceEditorController.setFocusNode(selectedValue);
-        sourceEditorController.focusNodeInTreeView(selectedValue);
+        // doing that in parallel speeds it up
+        Platform.runLater(()-> nodeInfoPanelController.setFocusNode(selectedValue));
+        Platform.runLater(()-> sourceEditorController.setFocusNode(selectedValue));
     }
 
 
@@ -231,19 +231,29 @@ public class MainDesignerController extends AbstractController {
     public void onNameDeclarationSelected(NameDeclaration declaration) {
 
         Platform.runLater(() -> {
+            // TODO highlight usages of regular node selection and move that logic to nodeInfoPanelController.setFocusNode
+            // In fact I think the current symbol table is too low level for that. You
+            // can map a NameDeclaration to its node but not the reverse...
             sourceEditorController.clearNameOccurences();
 
             List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
+
+            if (occurrences == null) {
+                // For MethodNameDeclaration the scope is the method scope, which is not the scope it is declared
+                // in but the scope it declares! That means that getDeclarations().get(declaration) returns null
+                // and no name occurrences are found. We thus look in the parent, but ultimately the name occurrence
+                // finder is broken since it can't find e.g. the use of a method in another scope. Plus in case of
+                // overloads both overloads are reported to have a usage.
+                // Plus this is some serious law of Demeter breaking there...
+                occurrences = declaration.getNode().getScope().getParent().getDeclarations().get(declaration);
+            }
 
             if (occurrences != null) {
                 sourceEditorController.highlightNameOccurrences(occurrences);
             }
         });
 
-        Platform.runLater(() -> {
-            sourceEditorController.setFocusNode(declaration.getNode());
-            sourceEditorController.focusNodeInTreeView(declaration.getNode());
-        });
+        Platform.runLater(() -> sourceEditorController.setFocusNode(declaration.getNode()));
     }
 
     /**

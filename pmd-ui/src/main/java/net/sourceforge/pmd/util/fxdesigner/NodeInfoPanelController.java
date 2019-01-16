@@ -17,6 +17,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
@@ -152,7 +154,7 @@ public class NodeInfoPanelController extends AbstractController {
         scopeHierarchyTreeView.setRoot(rootScope);
 
         if (focusScopeView && previousSelection != null) {
-            // Try to find the node that was previously selected and focus it in the new ascendant hierarchy
+            // Try to find the node that was previously selected and focus it in the new ascendant hierarchy.
             // Otherwise, when you select a node in the scope tree, since focus of the app is shifted to that
             // node, the scope hierarchy is reset and you lose the selection - even though obviously the node
             // you selected is in its own scope hierarchy so it looks buggy.
