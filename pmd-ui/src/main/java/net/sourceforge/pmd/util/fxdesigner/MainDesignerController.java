@@ -218,8 +218,8 @@ public class MainDesignerController extends AbstractController {
      */
     public void onNodeItemSelected(Node selectedValue) {
         // doing that in parallel speeds it up
-        Platform.runLater(()-> nodeInfoPanelController.setFocusNode(selectedValue));
-        Platform.runLater(()-> sourceEditorController.setFocusNode(selectedValue));
+        Platform.runLater(() -> nodeInfoPanelController.setFocusNode(selectedValue));
+        Platform.runLater(() -> sourceEditorController.setFocusNode(selectedValue));
     }
 
 
