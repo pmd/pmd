@@ -50,7 +50,7 @@ public class NodeInfoPanelController extends AbstractController {
 
     private final MainDesignerController parent;
 
-    /** List of attribute names that are ignored if {@link #isShowAllAttributes()} is false. */
+    /** List of attribute names that are ignored if {@link #isHideCommonAttributes()} is true. */
     private static final List<String> IGNORABLE_ATTRIBUTES =
         Arrays.asList("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine");
 
@@ -152,8 +152,11 @@ public class NodeInfoPanelController extends AbstractController {
         scopeHierarchyTreeView.setRoot(rootScope);
 
         if (focusScopeView && previousSelection != null) {
+            // Try to find the node that was previously selected and focus it in the new ascendant hierarchy
+            // Otherwise, when you select a node in the scope tree, since focus of the app is shifted to that
+            // node, the scope hierarchy is reset and you lose the selection - even though obviously the node
+            // you selected is in its own scope hierarchy so it looks buggy.
             int maxDepth = IteratorUtil.count(IteratorUtil.parentIterator(previousSelection, true));
-
             rootScope.tryFindNode(previousSelection.getValue(), maxDepth)
                      .ifPresent(scopeHierarchyTreeView.getSelectionModel()::select);
         }

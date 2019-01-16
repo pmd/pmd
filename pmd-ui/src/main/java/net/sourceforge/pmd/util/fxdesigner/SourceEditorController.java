@@ -71,11 +71,11 @@ public class SourceEditorController extends AbstractController {
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     @FXML
+    private MenuButton languageSelectionMenuButton;
+    @FXML
     private ToolbarTitledPane editorTitledPane;
     @FXML
     private ToolbarTitledPane astViewTitledPane;
-    @FXML
-    private MenuButton languageSelectionMenuButton;
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
