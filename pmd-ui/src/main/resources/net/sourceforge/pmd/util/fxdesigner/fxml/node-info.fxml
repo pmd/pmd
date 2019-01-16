@@ -24,7 +24,7 @@
                     <children>
                         <ToolbarTitledPane
                                 title="XPath Attributes"
-                                styleClass="accent-header,full-size-title"
+                                styleClass="full-size-title"
                                 collapsible="false"
                                 AnchorPane.bottomAnchor="0.0"
                                 AnchorPane.leftAnchor="0.0"
@@ -54,7 +54,7 @@
                     <children>
                         <ToolbarTitledPane
                                 title="Metrics"
-                                styleClass="accent-header,full-size-title"
+                                styleClass="full-size-title"
                                 collapsible="false"
                                 fx:id="metricsTitledPane"
                                 AnchorPane.bottomAnchor="0.0"
@@ -77,7 +77,7 @@
                     <children>
                         <ToolbarTitledPane
                                 title="Scope hierarchy"
-                                styleClass="accent-header,full-size-title"
+                                styleClass="full-size-title"
                                 collapsible="false"
                                 AnchorPane.bottomAnchor="0.0"
                                 AnchorPane.leftAnchor="0.0"

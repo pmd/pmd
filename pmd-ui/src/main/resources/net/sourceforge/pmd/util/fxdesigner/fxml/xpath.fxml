@@ -23,7 +23,6 @@
             fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
     <children>
         <SplitPane dividerPositions="0.2, 0.8"
-                   styleClass="accent-header"
                    AnchorPane.bottomAnchor="0.0"
                    AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0"
@@ -33,7 +32,6 @@
                     <children>
                         <ToolbarTitledPane animated="false"
                                     collapsible="false"
-                                    styleClass="accent-header"
                                     title="Properties"
                                     AnchorPane.bottomAnchor="0.0"
                                     AnchorPane.leftAnchor="0.0"
@@ -57,7 +55,6 @@
                 <AnchorPane>
                     <children>
                         <ToolbarTitledPane fx:id="expressionTitledPane"
-                                           styleClass="accent-header"
                                            collapsible="false"
                                            title="XPath Expression"
                                            AnchorPane.bottomAnchor="0.0"
@@ -112,7 +109,6 @@
                         <ToolbarTitledPane fx:id="violationsTitledPane"
                                     animated="false"
                                     collapsible="false"
-                                    styleClass="accent-header"
                                     title="Matched Nodes"
                                     AnchorPane.bottomAnchor="0.0"
                                     AnchorPane.leftAnchor="0.0"

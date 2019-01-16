@@ -107,7 +107,7 @@
     .split-pane-divider {
         -fx-padding: 0;
         -fx-border-color: transparent;
-        -fx-background-color: @darker-accent;
+      -fx-background-color: @app-darker-slate-color;
     }
 }
 
@@ -132,36 +132,6 @@
     .fix-width(300);
 }
 
-.titled-pane .title,
-.info-title-bar {
-    -fx-font-size: @smaller-font-size;
-    -fx-pref-height: 24.0;
-    -fx-border-radius: 0.0;
-    -fx-background-radius: 0.0;
-    -fx-background-color: @app-darker-slate-color;
-
-    &.info-title-bar .label {
-        -fx-padding: 0 0 0 6;
-    }
-}
-
-// TODO convert every header to ToolbarTitledPane and get rid of info-title-bar
-.info-title-bar {
-  .fix-height(30);
-}
-
-.titled-pane.full-size-title {
-
-  & > .title {
-    .fix-height(30);
-  }
-
-  &.tool-bar-title > .title > .tool-bar > .container > .label {
-      // TODO we can make that bigger when all titled panes rely on ToolbarTitledPane
-      -fx-font-size: @smaller-font-size;
-    }
-}
-
 .titled-pane > .title:hover {
   // modena uses the rule -fx-color: -fx-hover-base;
   // which causes an obnoxious flickering
@@ -169,39 +139,52 @@
 }
 
 // Supports the ToolbarTitledPane
-.titled-pane.tool-bar-title > .title {
+.titled-pane.tool-bar-title {
 
-  -fx-padding: 0 6 0 6;
+  &.full-size-title > .title {
+    .fix-height(30);
+  }
 
-  & > .tool-bar {
-    -fx-background-color: transparent;
+  & > .title {
 
-    & > .container {
+    -fx-padding: 0 6 0 6;
+    -fx-background-color: @app-darker-slate-color;
+    -fx-pref-height: 24; // TODO make the default at least 30 and prop up font size, maybe remove .full-size-title
 
-      -fx-background-insets: 0;
-      -fx-border-insets: 0;
-      -fx-border-image-insets: 0;
+    & > .tool-bar {
+      -fx-background-color: transparent;
 
-      & > .label {
-        -fx-background-color: transparent;
-        -fx-font-size: @smaller-font-size;
-      }
+      & > .container {
 
-      .separator {
-        //-fx-background-color: transparent;
+        -fx-background-insets: 0;
+        -fx-border-insets: 0;
+        -fx-border-image-insets: 0;
 
-        -fx-padding: 4 2 4 2;
+        & > .label {
+          -fx-background-color: transparent;
+          -fx-font-size: @smaller-font-size;
 
-        .line {
-          -fx-border-style: none solid none none;
-          -fx-border-width: 0.5px;
-          -fx-border-color: @fx-text-fill;
+          // This is the title label of the pane
+          &.title-label {
+            -fx-padding: 0 0 0 6;
+          }
         }
-      }
 
+        .separator {
+          //-fx-background-color: transparent;
 
-      .menu-bar {
-        -fx-background-color: transparent;
+          -fx-padding: 4 2 4 2;
+
+          .line {
+            -fx-border-style: none solid none none;
+            -fx-border-width: 0.5px;
+            -fx-border-color: @fx-text-fill;
+          }
+        }
+
+        .menu-bar {
+          -fx-background-color: transparent;
+        }
       }
     }
   }
@@ -234,7 +217,7 @@
   &.menu-button .ikonli-font-icon {
     // Fixes a bug where the cog icon is misplaced to the right
     // Probably needs to be synced with icon size
-    -fx-translate-x: -3;
+    -fx-translate-x: -4;
   }
 
   .ikonli-font-icon, .svg-icon {
@@ -273,11 +256,7 @@
     -fx-background-color: @darker-accent-focus;
 }
 
-// TODO use ToolbarTitledPane everywhere and simplify stylesheets
-
-#main-toolbar,
-.tool-bar.accent-header,
-.split-pane.accent-header > .split-pane-divider {
+#main-toolbar {
     .fix-height(30);
     -fx-background-color: @app-darker-slate-color;
 }
@@ -302,7 +281,7 @@
 .tab {
     -fx-background-insets: 0.0;
     -fx-background-radius: 0.0;
-    -fx-padding: 0 30 0 30;
+  -fx-padding: 0 20 0 20;
     -fx-border-color: transparent;
     -fx-background-color: transparent;
 

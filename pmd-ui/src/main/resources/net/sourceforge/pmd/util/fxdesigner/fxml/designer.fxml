@@ -84,7 +84,7 @@
                             <center>
                                 <AnchorPane BorderPane.alignment="CENTER">
                                     <children>
-                                        <TabPane fx:id="bottomTabPane" minHeight="20.0" styleClass="bottom-pane-tab-pane" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="10000.0" tabMaxWidth="10000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TabPane fx:id="bottomTabPane" minHeight="20.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="10000.0" tabMaxWidth="10000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <tabs>
                                                 <Tab text="XPath Editor" fx:id="xpathEditorTab">
                                                     <content>

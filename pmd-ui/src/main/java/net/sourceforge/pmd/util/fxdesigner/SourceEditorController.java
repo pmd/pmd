@@ -73,11 +73,9 @@ public class SourceEditorController extends AbstractController {
     @FXML
     private ToolbarTitledPane editorTitledPane;
     @FXML
+    private ToolbarTitledPane astViewTitledPane;
+    @FXML
     private MenuButton languageSelectionMenuButton;
-    @FXML
-    private Label sourceCodeTitleLabel;
-    @FXML
-    private Label astTitleLabel;
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
@@ -214,7 +212,7 @@ public class SourceEditorController extends AbstractController {
         try {
             current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
-            astTitleLabel.setText("Abstract syntax tree (error)");
+            astViewTitledPane.setTitle("Abstract syntax tree (error)");
             return Optional.empty();
         }
 
@@ -231,7 +229,7 @@ public class SourceEditorController extends AbstractController {
 
     private void setUpToDateCompilationUnit(Node node) {
         parent.invalidateAst();
-        astTitleLabel.setText("Abstract syntax tree");
+        astViewTitledPane.setTitle("Abstract syntax tree");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }

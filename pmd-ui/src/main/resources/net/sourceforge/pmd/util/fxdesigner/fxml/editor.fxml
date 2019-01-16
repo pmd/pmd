@@ -16,7 +16,6 @@
 <SplitPane dividerPositions="0.5, 0.5"
            prefHeight="400.0"
            prefWidth="500.0"
-           styleClass="accent-header"
            stylesheets="@../css/designer.css"
            BorderPane.alignment="CENTER"
            xmlns="http://javafx.com/javafx/8.0.172-ea"
@@ -26,9 +25,8 @@
         <AnchorPane>
             <children>
                 <ToolbarTitledPane
-                        collapsible="false"
                         fx:id="editorTitledPane"
-                        styleClass="accent-header,full-size-title"
+                        styleClass="full-size-title"
                         title="Source Code"
                         AnchorPane.bottomAnchor="0.0"
                         AnchorPane.leftAnchor="0.0"
@@ -61,18 +59,20 @@
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
             <children>
-                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <center>
+                <ToolbarTitledPane
+                        fx:id="astViewTitledPane"
+                        prefHeight="200.0"
+                        prefWidth="200.0"
+                        styleClass="full-size-title"
+                        title="Abstract Syntax Tree"
+                        AnchorPane.bottomAnchor="0.0"
+                        AnchorPane.leftAnchor="0.0"
+                        AnchorPane.rightAnchor="0.0"
+                        AnchorPane.topAnchor="0.0">
+                    <content>
                         <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-                    </center>
-                    <top>
-                        <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">
-                            <items>
-                                <Label fx:id="astTitleLabel" text="Abstract Syntax Tree" />
-                            </items>
-                        </ToolBar>
-                    </top>
-                </BorderPane>
+                    </content>
+                </ToolbarTitledPane>
             </children>
         </AnchorPane>
     </items>
