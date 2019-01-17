@@ -220,9 +220,10 @@ ASTInput Input() : {}
 	 | LOOKAHEAD(6) Global()
          | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
 	 | LOOKAHEAD(2) SqlPlusCommand()
-	 | LOOKAHEAD(2) UpdateStatement()
-	 | LOOKAHEAD(2) DeleteStatement()
-	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
+	 | UpdateStatement()
+	 | DeleteStatement()
+	 | InsertStatement()
+	 |(<SELECT>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )
 	 ("/")*
 	)*
@@ -1542,14 +1543,39 @@ ASTHostArrayName HostArrayName() :
 ASTTableReference TableReference() :
 {}
 {
-    // QueryTableExpression
-    (
-        [ LOOKAHEAD(2) SchemaName() "." ] TableName()
-    |
-        "(" Subquery() ")"
-    )
+    QueryTableExpression()
 
     [ LOOKAHEAD(2) TableAlias() ]
+
+    { return jjtThis; }
+}
+
+void QueryTableExpression() #void :
+{}
+{
+  (
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+  |
+    LOOKAHEAD(2) TableName()
+  |
+    TableCollectionExpression()
+  |
+    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  )
+}
+
+ASTSubqueryRestrictionClause SubqueryRestrictionClause() :
+{}
+{
+    <WITH> ( <READ> <ONLY> | <CHECK> <OPTION> ) [ <CONSTRAINT> ID() ]
+
+    { return jjtThis; }
+}
+
+ASTTableCollectionExpression TableCollectionExpression() :
+{}
+{
+    <TABLE> "(" (LOOKAHEAD(3) Subquery() | Expression()) ")" [ "(" "+" ")" ]
 
     { return jjtThis; }
 }
@@ -1563,12 +1589,7 @@ ASTTableReference TableReference() :
 ASTTableReference TableReferenceInJoin() #TableReference :
 {}
 {
-    // QueryTableExpression
-    (
-        [ LOOKAHEAD(2) SchemaName() "." ] TableName()
-    |
-        "(" Subquery() ")"
-    )
+    QueryTableExpression()
 
     [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
         && getToken(1).kind != CROSS
@@ -1762,6 +1783,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
        SelectIntoStatement() ";" |
        UpdateStatement() ";" |
        DeleteStatement() ";" |
+       InsertStatement() ";" |
 	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"]
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
@@ -1871,6 +1893,52 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
     { return jjtThis ; }
 }
 
+ASTInsertStatement InsertStatement() :
+{}
+{
+    <INSERT> ( SingleTableInsert() | MultiTableInsert() )
+    { return jjtThis; }
+}
+
+ASTSingleTableInsert SingleTableInsert() :
+{}
+{
+    InsertIntoClause() ( ValuesClause() | Subquery() )
+    { return jjtThis; }
+}
+
+ASTInsertIntoClause InsertIntoClause() :
+{}
+{
+    <INTO> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ] [ LOOKAHEAD(2) "(" Column() ( "," Column() )* ")" ]
+    { return jjtThis; }
+}
+
+ASTValuesClause ValuesClause() :
+{}
+{
+    <VALUES> "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
+    { return jjtThis; }
+}
+ASTMultiTableInsert MultiTableInsert() :
+{}
+{
+  (
+    LOOKAHEAD(2) <ALL> ( InsertIntoClause() [ ValuesClause() ] )+ Subquery()
+  |
+    ConditionalInsertClause()
+  )
+    { return jjtThis; }
+}
+
+ASTConditionalInsertClause ConditionalInsertClause() :
+{}
+{
+    [ <ALL> | <FIRST> ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
+        [ <ELSE> ( InsertIntoClause() [ ValuesClause() ] )+ ]
+    { return jjtThis; }
+}
+
 ASTSelectStatement SelectStatement() :
 {}
 {
@@ -1892,10 +1960,26 @@ ASTSelectStatement SelectStatement() :
 ASTUpdateStatement UpdateStatement() :
 {}
 {
-    <UPDATE> SqlExpression()
+    <UPDATE> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ]
     UpdateSetClause()
     [ WhereClause() ]
     { return jjtThis; }
+}
+
+ASTDMLTableExpressionClause DMLTableExpressionClause() :
+{}
+{
+  (
+    LOOKAHEAD(2) TableName()
+  |
+    TableCollectionExpression()
+  |
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+  |
+    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  )
+
+  { return jjtThis; }
 }
 
 ASTUpdateSetClause UpdateSetClause() :
@@ -1903,10 +1987,10 @@ ASTUpdateSetClause UpdateSetClause() :
 {
     <SET>
     (
-        <ROW> "=" ID()
+        LOOKAHEAD(3) <ROW> "=" ID()
     |
-        Column() "=" ( Expression() | <_DEFAULT> )
-        ( "," Column() "=" ( Expression() | <_DEFAULT> )*)*
+        [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( Expression() | <_DEFAULT> )
+        ( "," [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( Expression() | <_DEFAULT> ) )*
     )
     { return jjtThis; }
 }
@@ -4405,6 +4489,9 @@ TOKEN [IGNORE_CASE]:
 | <SHARED : "SHARED">
 | <DIRECTORY : "DIRECTORY">
 | <USER : "USER">
+
+| <READ : "READ">
+| <LATERAL : "LATERAL">
 }
 
 /**
@@ -4991,7 +5078,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <KILL>
 | <LANGUAGE>
 | <LAST>
-//| <LATERAL>
+| <LATERAL>
 //| <LAYER>
 //| <LDAP_REG_SYNC_INTERVAL>
 //| <LDAP_REGISTRATION>
@@ -5342,7 +5429,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RAPIDLY>
 //| <RBA>
 //| <RBO_OUTLINE>
-//| <READ>
+| <READ>
 //| <READS>
 | <REAL>
 //| <REBALANCE>
@@ -5447,7 +5534,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SESSIONS_PER_USER>
 | <SESSIONTIMEZONE>
 //| <SESSIONTZNAME>
-| <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a Pragma parameter
+//| <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a Pragma parameter
 //| <SET_TO_JOIN>
 | <SETS>
 //| <SETTINGS>
@@ -5833,7 +5920,7 @@ ASTID ID(): {}
 		| <SUM>
 		| <SYNONYM>  //RESERVED WORD
 		| <SYSDATE>
-		| <TABLE>  //RESERVED WORD
+		//| <TABLE>  //RESERVED WORD
 		| <THEN> //SYNTAX  //RESERVED WORD
 		//<SPACE> | <TIME> | <TIMESTAMP> | <TIMEZONE_REGION> | <TIMEZONE_ABBR> | <TIMEZONE_MINUTE> | <TIMEZONE_HOUR> |
 		| <TO>  //RESERVED WORD
