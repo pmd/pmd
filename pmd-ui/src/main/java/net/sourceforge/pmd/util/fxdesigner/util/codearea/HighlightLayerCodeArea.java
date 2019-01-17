@@ -40,11 +40,6 @@ public class HighlightLayerCodeArea<K extends Enum<K> & LayerId> extends SyntaxH
     /** Contains the highlighting layers. */
     private final Map<K, StyleLayer> layersById;
 
-    // TODO REMOVE
-    public HighlightLayerCodeArea() {
-        layersById = new HashMap<>();
-
-    }
 
     /**
      * Builds a new code area with the given enum type as layer id provider.
