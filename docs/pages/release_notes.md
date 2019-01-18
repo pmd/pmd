@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+### Updatex Apex Support
+
+*   The Apex language support has been bumped to version 45 (Spring '19). All new language features are now properly
+    parsed and processed.
+
 #### New Rules
 
 *   The new Java rule {% rule "java/bestpractices/ForLoopVariableCount" %} (`java-bestpractices`) checks for
