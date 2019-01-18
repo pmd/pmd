@@ -10,6 +10,11 @@ URL=https://raw.githubusercontent.com/forcedotcom/salesforcedx-vscode/${LAST_COM
 FILENAME=apex-jorje-lsp-${VERSION}.jar
 FILENAME_MINIMIZED=apex-jorje-lsp-minimized-${VERSION}.jar
 
+REPOPATH=$(dirname $0)
+
+function deleteoldrepo() {
+    git rm -r ${REPOPATH}/apex/apex-jorje-lsp-minimized/*
+}
 
 function install() {
     mvn install:install-file -Dfile=${FILENAME_MINIMIZED} \
@@ -17,7 +22,8 @@ function install() {
                              -DartifactId=apex-jorje-lsp-minimized \
                              -Dversion=${VERSION} \
                              -Dpackaging=jar \
-                             -DlocalRepositoryPath=$(dirname $0)
+                             -DlocalRepositoryPath=${REPOPATH}
+    git add ${REPOPATH}
 }
 
 function download() {
@@ -47,11 +53,21 @@ function cleanup() {
     rm ${FILENAME_MINIMIZED}
 }
 
+function updateversion() {
+    sed -i -e "s/\(<apex\.jorje\.version>\).*\(<\/apex\.jorje\.version>\)/\1${VERSION}\2/" $(dirname $0)/../pom.xml
+    git add $(dirname $0)/../pom.xml
+}
+
+function diffstat() {
+    echo "Ready to commit:"
+    git diff --cached --stat
+}
 
 download
 minimize
+deleteoldrepo
 install
+updateversion
 cleanup
-
-
+diffstat
 
