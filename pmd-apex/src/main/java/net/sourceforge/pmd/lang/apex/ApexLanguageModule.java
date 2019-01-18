@@ -15,6 +15,6 @@ public class ApexLanguageModule extends BaseLanguageModule {
 
     public ApexLanguageModule() {
         super(NAME, null, TERSE_NAME, ApexRuleChainVisitor.class, EXTENSIONS);
-        addVersion("35", new ApexHandler(), true);
+        addVersion("45", new ApexHandler(), true);
     }
 }

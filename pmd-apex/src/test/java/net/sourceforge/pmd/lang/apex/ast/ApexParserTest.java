@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -119,6 +120,18 @@ public class ApexParserTest {
                 Assert.assertNotNull(rootNode);
             }
         }
+    }
+
+    /**
+     * See github issue #1546
+     * @see <a href="https://github.com/pmd/pmd/issues/1546">[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword</a>
+     */
+    @Test
+    public void parseInheritedSharingClass() throws IOException {
+        String source = IOUtils.toString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
+                StandardCharsets.UTF_8);
+        ApexNode<Compilation> rootNode = parse(source);
+        Assert.assertNotNull(rootNode);
     }
 
     /**

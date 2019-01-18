@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+### Updatex Apex Support
+
+*   The Apex language support has been bumped to version 45 (Spring '19). All new language features are now properly
+    parsed and processed.
+
 #### New Rules
 
 *   The new Java rule {% rule "java/multithreading/UnsynchronizedStaticFormatter" %} (`java-multithreading`) detects
@@ -49,6 +54,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
+    *   [#1546](https://github.com/pmd/pmd/issues/1546): \[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword
 *   java
     * [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
     *   [#1578](https://github.com/pmd/pmd/issues/1578): \[java] Private field is detected as public inside nested classes in interfaces
