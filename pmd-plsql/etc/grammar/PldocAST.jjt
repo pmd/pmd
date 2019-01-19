@@ -1304,9 +1304,9 @@ void Condition2() #void :
  |
     LOOKAHEAD(9) FloatingPointCondition()
  |
-    LOOKAHEAD(4) InCondition()
+    LOOKAHEAD(9) InCondition()
  |
-    LOOKAHEAD(4) LikeCondition()
+    LOOKAHEAD(9) LikeCondition()
  |
     LOOKAHEAD(4) BetweenCondition()
  |
@@ -1341,11 +1341,11 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-    LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) Condition() )*
+    LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
-    LOOKAHEAD(3) <NOT> Condition()
+    LOOKAHEAD(3) <NOT> { jjtThis.setType(token.getImage()); } Condition()
  |
-    LOOKAHEAD(3) Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) Condition() )*
+    LOOKAHEAD(3) Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  )
     { return jjtThis; }
 }
