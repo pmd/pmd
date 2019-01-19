@@ -37,6 +37,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   all
+    *   [#1196](https://github.com/pmd/pmd/issues/1196): \[core] CPD results not consistent between runs
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
 *   java
@@ -70,6 +72,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1534](https://github.com/pmd/pmd/pull/1534): \[java] This is the change regarding the usediamondoperator #1517 - [hemanshu070](https://github.com/hemanshu070)
 *   [#1545](https://github.com/pmd/pmd/pull/1545): \[doc] fixing dead links + tool to check for dead links automatically - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#1551](https://github.com/pmd/pmd/pull/1551): \[java] InvalidSlf4jMessageFormatRule should not throw NPE for enums - [Robbie Martinus](https://github.com/rmartinus)
+*   [#1584](https://github.com/pmd/pmd/pull/1584): \[core] Fixes 1196: inconsistencies of clones returned by different CPD executions for the same files  - [Bruno Ferreira](https://github.com/bmbferreira)
 
 {% endtocmaker %}
 
