@@ -83,15 +83,15 @@ public class SourceEditorController extends AbstractController {
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
 
-    private ASTManager astManager;
+    private final ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
 
     private final MainDesignerController parent;
 
-    private Var<Node> currentFocusNode = Var.newSimpleVar(null);
+    private final Var<Node> currentFocusNode = Var.newSimpleVar(null);
     private ASTTreeItem selectedTreeItem;
 
-    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
+    private final Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
         try {
             return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());

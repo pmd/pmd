@@ -34,28 +34,28 @@ import javafx.collections.ObservableList;
  */
 public class ObservableRuleBuilder implements SettingsOwner {
 
-    private Var<Language> language = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage());
-    private Var<String> name = Var.newSimpleVar("");
-    private Var<Class<?>> clazz = Var.newSimpleVar(null);
+    private final Var<Language> language = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage());
+    private final Var<String> name = Var.newSimpleVar("");
+    private final Var<Class<?>> clazz = Var.newSimpleVar(null);
 
     // doesn't contain the "xpath" and "version" properties for XPath rules
-    private ListProperty<PropertyDescriptorSpec> ruleProperties = new SimpleListProperty<>(FXCollections.observableArrayList(PropertyDescriptorSpec.extractor()));
-    private Var<ObservableList<String>> examples = Var.newSimpleVar(new LiveArrayList<>());
+    private final ListProperty<PropertyDescriptorSpec> ruleProperties = new SimpleListProperty<>(FXCollections.observableArrayList(PropertyDescriptorSpec.extractor()));
+    private final Var<ObservableList<String>> examples = Var.newSimpleVar(new LiveArrayList<>());
 
-    private Var<LanguageVersion> minimumVersion = Var.newSimpleVar(null);
-    private Var<LanguageVersion> maximumVersion = Var.newSimpleVar(null);
+    private final Var<LanguageVersion> minimumVersion = Var.newSimpleVar(null);
+    private final Var<LanguageVersion> maximumVersion = Var.newSimpleVar(null);
 
-    private Var<String> since = Var.newSimpleVar("");
+    private final Var<String> since = Var.newSimpleVar("");
 
-    private Var<String> message = Var.newSimpleVar("");
-    private Var<String> externalInfoUrl = Var.newSimpleVar("");
-    private Var<String> description = Var.newSimpleVar("");
+    private final Var<String> message = Var.newSimpleVar("");
+    private final Var<String> externalInfoUrl = Var.newSimpleVar("");
+    private final Var<String> description = Var.newSimpleVar("");
 
-    private Var<RulePriority> priority = Var.newSimpleVar(RulePriority.MEDIUM);
-    private Var<Boolean> deprecated = Var.newSimpleVar(false);
-    private Var<Boolean> usesDfa = Var.newSimpleVar(false);
-    private Var<Boolean> usesMultifile = Var.newSimpleVar(false);
-    private Var<Boolean> usesTypeResolution = Var.newSimpleVar(false);
+    private final Var<RulePriority> priority = Var.newSimpleVar(RulePriority.MEDIUM);
+    private final Var<Boolean> deprecated = Var.newSimpleVar(false);
+    private final Var<Boolean> usesDfa = Var.newSimpleVar(false);
+    private final Var<Boolean> usesMultifile = Var.newSimpleVar(false);
+    private final Var<Boolean> usesTypeResolution = Var.newSimpleVar(false);
 
 
     public Language getLanguage() {

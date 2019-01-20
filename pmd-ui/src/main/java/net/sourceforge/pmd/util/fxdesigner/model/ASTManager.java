@@ -40,11 +40,11 @@ public class ASTManager {
     /**
      * Most up-to-date compilation unit. Is null if the current source cannot be parsed.
      */
-    private Var<Node> compilationUnit = Var.newSimpleVar(null);
+    private final Var<Node> compilationUnit = Var.newSimpleVar(null);
     /**
      * Selected language version.
      */
-    private Var<LanguageVersion> languageVersion = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage().getDefaultVersion());
+    private final Var<LanguageVersion> languageVersion = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage().getDefaultVersion());
 
 
     public ASTManager(DesignerRoot owner) {

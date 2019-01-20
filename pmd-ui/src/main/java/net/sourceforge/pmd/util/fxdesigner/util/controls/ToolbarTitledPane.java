@@ -29,8 +29,8 @@ import javafx.scene.layout.StackPane;
 public final class ToolbarTitledPane extends TitledPane {
 
 
-    private ToolBar toolBar = new ToolBar();
-    private Var<String> title = Var.newSimpleVar("Title");
+    private final ToolBar toolBar = new ToolBar();
+    private final Var<String> title = Var.newSimpleVar("Title");
 
 
     public ToolbarTitledPane() {
