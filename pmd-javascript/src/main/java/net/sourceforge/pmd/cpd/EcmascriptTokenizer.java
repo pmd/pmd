@@ -12,7 +12,6 @@ import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptLanguageModule;
 import net.sourceforge.pmd.lang.ecmascript5.ast.Ecmascript5ParserConstants;
 import net.sourceforge.pmd.lang.ecmascript5.ast.Token;
@@ -37,14 +36,10 @@ public class EcmascriptTokenizer implements Tokenizer {
                         new TokenEntry(getTokenImage(currentToken), sourceCode.getFileName(), currentToken.beginLine));
                 currentToken = (Token) tokenFilter.getNextToken();
             }
-            tokenEntries.add(TokenEntry.getEOF());
-            System.err.println("Added " + sourceCode.getFileName());
-        } catch (TokenMgrError err) {
-            err.printStackTrace();
-            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-            tokenEntries.add(TokenEntry.getEOF());
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            tokenEntries.add(TokenEntry.getEOF());
         }
     }
 

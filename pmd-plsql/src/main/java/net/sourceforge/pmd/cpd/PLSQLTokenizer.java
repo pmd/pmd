@@ -11,7 +11,10 @@ import java.util.logging.Logger;
 
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
-import net.sourceforge.pmd.lang.plsql.PLSQLTokenManager;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLParserConstants;
 import net.sourceforge.pmd.lang.plsql.ast.Token;
 
@@ -72,9 +75,8 @@ public class PLSQLTokenizer implements Tokenizer {
         }
 
         String fileName = sourceCode.getFileName();
-        StringBuilder sb = sourceCode.getCodeBuffer();
 
-        TokenFilter tokenFilter = new JavaCCTokenFilter(new PLSQLTokenManager(new StringReader(sb.toString())));
+        TokenFilter tokenFilter = createTokenFilter(sourceCode);
         Token currentToken = (Token) tokenFilter.getNextToken();
         while (currentToken != null) {
             String image = currentToken.image;
@@ -103,6 +105,15 @@ public class PLSQLTokenizer implements Tokenizer {
             LOGGER.fine(sourceCode.getFileName() + ": encountered " + encounteredTokens + " tokens;" + " added "
                     + addedTokens + " tokens");
         }
+    }
+
+    private JavaCCTokenFilter createTokenFilter(final SourceCode sourceCode) {
+        final StringBuilder stringBuilder = sourceCode.getCodeBuffer();
+        final LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(PLSQLLanguageModule.NAME)
+                .getDefaultVersion().getLanguageVersionHandler();
+        final TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
+                .getTokenManager(sourceCode.getFileName(), new StringReader(stringBuilder.toString()));
+        return new JavaCCTokenFilter(tokenMgr);
     }
 
 }
