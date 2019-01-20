@@ -1904,7 +1904,6 @@ ASTUpdateSetClause UpdateSetClause() :
     <SET>
     (
         <ROW> "=" ID()
-        ( "," Column() "=" ( Expression() | <_DEFAULT> )*)*
     |
         Column() "=" ( Expression() | <_DEFAULT> )
         ( "," Column() "=" ( Expression() | <_DEFAULT> )*)*

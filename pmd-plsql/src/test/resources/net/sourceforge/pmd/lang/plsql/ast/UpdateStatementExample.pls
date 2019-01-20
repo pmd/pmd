@@ -18,9 +18,13 @@ BEGIN
     default_week.week    := i;
 
     UPDATE schedule
-    SET ROW = default_week,
-     Whatever = default_week
-    WHERE week = i;
+      SET ROW = default_week
+      WHERE week = i;
+
+    UPDATE schedule
+      SET Mon = 'Day Off',
+          Tue = 'Day Off'
+      WHERE week = i;
   END LOOP;
 END;
 /
