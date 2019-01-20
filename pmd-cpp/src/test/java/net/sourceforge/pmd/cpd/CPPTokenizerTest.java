@@ -75,30 +75,32 @@ public class CPPTokenizerTest {
     @Test
     public void testTokenizerWithSkipBlocks() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
-        Tokens tokens = parse(test, true);
+        Tokens tokens = parse(test, true, new Tokens());
         assertEquals(19, tokens.size());
     }
 
     @Test
     public void testTokenizerWithSkipBlocksPattern() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
+        Tokens tokens = new Tokens();
         try {
-            Tokens tokens = parse(test, true, "#if debug|#endif");
-            assertEquals(31, tokens.size());
+            parse(test, true, "#if debug|#endif", tokens);
         } catch (TokenMgrError ignored) {
             // ignored
         }
+        assertEquals(31, tokens.size());
     }
 
     @Test
     public void testTokenizerWithoutSkipBlocks() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
+        Tokens tokens = new Tokens();
         try {
-            Tokens tokens = parse(test, false);
-            assertEquals(37, tokens.size());
+            parse(test, false, tokens);
         } catch (TokenMgrError ignored) {
             // ignored
         }
+        assertEquals(37, tokens.size());
     }
 
     @Test
@@ -157,14 +159,14 @@ public class CPPTokenizerTest {
     }
 
     private Tokens parse(String snippet) {
-        return parse(snippet, false);
+        return parse(snippet, false, new Tokens());
     }
 
-    private Tokens parse(String snippet, boolean skipBlocks) {
-        return parse(snippet, skipBlocks, null);
+    private Tokens parse(String snippet, boolean skipBlocks, Tokens tokens) {
+        return parse(snippet, skipBlocks, null, tokens);
     }
 
-    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern) {
+    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern, Tokens tokens) {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         if (skipPattern != null) {
@@ -175,7 +177,6 @@ public class CPPTokenizerTest {
         tokenizer.setProperties(properties);
 
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(snippet));
-        Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
         return tokens;
     }
