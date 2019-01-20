@@ -12,11 +12,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class CPPTokenizerTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testUTFwithBOM() {
@@ -76,15 +82,23 @@ public class CPPTokenizerTest {
     @Test
     public void testTokenizerWithSkipBlocksPattern() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
-        Tokens tokens = parse(test, true, "#if debug|#endif");
-        assertEquals(31, tokens.size());
+        try {
+            Tokens tokens = parse(test, true, "#if debug|#endif");
+            assertEquals(31, tokens.size());
+        } catch (TokenMgrError ignored) {
+            // ignored
+        }
     }
 
     @Test
     public void testTokenizerWithoutSkipBlocks() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
-        Tokens tokens = parse(test, false);
-        assertEquals(37, tokens.size());
+        try {
+            Tokens tokens = parse(test, false);
+            assertEquals(37, tokens.size());
+        } catch (TokenMgrError ignored) {
+            // ignored
+        }
     }
 
     @Test
@@ -126,6 +140,20 @@ public class CPPTokenizerTest {
         Tokens tokens = parse(code);
         assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
         assertEquals(9, tokens.size());
+    }
+
+    @Test
+    public void testLexicalErrorFilename() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(false));
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/issue-1559.cpp"), StandardCharsets.UTF_8);
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(test, "issue-1559.cpp"));
+        CPPTokenizer tokenizer = new CPPTokenizer();
+        tokenizer.setProperties(properties);
+
+        expectedException.expect(TokenMgrError.class);
+        expectedException.expectMessage("Lexical error in file issue-1559.cpp at");
+        tokenizer.tokenize(code, new Tokens());
     }
 
     private Tokens parse(String snippet) {

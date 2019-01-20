@@ -57,6 +57,8 @@ This is a {{ site.pmd.release_type }} release.
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
     *   [#1546](https://github.com/pmd/pmd/issues/1546): \[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword
+*   cpp
+    *   [#1559](https://github.com/pmd/pmd/issues/1559): \[cpp] CPD: Lexical error in file (no file name provided)
 *   java
     *   [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
     *   [#1578](https://github.com/pmd/pmd/issues/1578): \[java] Private field is detected as public inside nested classes in interfaces

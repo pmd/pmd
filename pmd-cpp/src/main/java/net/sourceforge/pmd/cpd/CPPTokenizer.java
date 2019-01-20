@@ -14,7 +14,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
 import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.cpp.CppTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
 
@@ -53,18 +52,19 @@ public class CPPTokenizer implements Tokenizer {
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         try (Reader reader = IOUtil.skipBOM(new StringReader(maybeSkipBlocks(buffer.toString())))) {
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(new CppTokenManager(reader));
-            
+            CppTokenManager tokenManager = new CppTokenManager(reader);
+            tokenManager.setFileName(sourceCode.getFileName());
+            final TokenFilter tokenFilter = new JavaCCTokenFilter(tokenManager);
+
             GenericToken currentToken = tokenFilter.getNextToken();
             while (currentToken != null) {
                 tokenEntries.add(new TokenEntry(currentToken.getImage(), sourceCode.getFileName(), currentToken.getBeginLine()));
                 currentToken = tokenFilter.getNextToken();
             }
-            tokenEntries.add(TokenEntry.getEOF());
-            System.err.println("Added " + sourceCode.getFileName());
-        } catch (TokenMgrError | IOException err) {
-            err.printStackTrace();
-            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error parsing " + sourceCode.getFileName());
+        } finally {
             tokenEntries.add(TokenEntry.getEOF());
         }
     }
