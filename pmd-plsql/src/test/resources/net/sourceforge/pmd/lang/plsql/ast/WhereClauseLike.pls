@@ -11,5 +11,17 @@ BEGIN
         WHERE last_name LIKE 'R%'
         ORDER BY salary;
 
+    select count(1)
+        into users
+        from users_table
+        where userid = 1
+            AND NVL(cmp_id,0) like NVL(other_cmp_id,0);
+
+    select count(1)
+        into users
+        from users_table
+        where userid = 1
+           AND LOWER (what) LIKE LOWER ('%' || name_in || '%');
+
 END;
 /
