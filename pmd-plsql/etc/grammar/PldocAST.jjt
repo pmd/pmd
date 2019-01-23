@@ -1556,8 +1556,6 @@ void QueryTableExpression() #void :
   (
     LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
   |
-    LOOKAHEAD(2) TableName()
-  |
     TableCollectionExpression()
   |
     [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
@@ -1893,6 +1891,9 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
     { return jjtThis ; }
 }
 
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/INSERT.html#GUID-903F8043-0254-4EE9-ACC1-CB8AC0AF3423
+ */
 ASTInsertStatement InsertStatement() :
 {}
 {
@@ -1970,8 +1971,6 @@ ASTDMLTableExpressionClause DMLTableExpressionClause() :
 {}
 {
   (
-    LOOKAHEAD(2) TableName()
-  |
     TableCollectionExpression()
   |
     LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
