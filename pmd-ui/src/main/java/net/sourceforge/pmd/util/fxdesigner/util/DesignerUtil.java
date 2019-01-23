@@ -21,6 +21,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.util.Callback;
@@ -142,16 +144,37 @@ public final class DesignerUtil {
      * maps the selected toggle property to a Var&lt;T>
      */
     @SuppressWarnings("unchecked")
-    public static <T> Var<T> mapToggleGroupToUserData(ToggleGroup toggleGroup) {
+    public static <T> Var<T> mapToggleGroupToUserData(ToggleGroup toggleGroup, Supplier<T> defaultValue) {
         return Var.fromVal(toggleGroup.selectedToggleProperty(), toggleGroup::selectToggle)
                   .mapBidirectional(
                       item -> (T) item.getUserData(),
-                      t -> toggleGroup.getToggles()
-                                      .stream()
-                                      .filter(toggle -> toggle.getUserData().equals(t))
-                                      .findFirst()
-                                      .orElseThrow(() -> new IllegalStateException("Unknown toggle " + t))
+                      t -> selectFirst(
+                          () -> findToggleWithUserData(toggleGroup, t),
+                          () -> findToggleWithUserData(toggleGroup, defaultValue.get())
+                      )
+                          .orElseThrow(() -> new IllegalStateException("Unknown toggle " + t))
                   );
+    }
+
+
+    /** Returns the first non-empty optional in the arguments, or else Optional.empty. */
+    @SafeVarargs
+    public static <T> Optional<T> selectFirst(Supplier<Optional<T>>... opts) {
+        for (Supplier<Optional<T>> optGetter : opts) {
+            Optional<T> o = optGetter.get();
+            if (o.isPresent()) {
+                return o;
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    private static <T> Optional<Toggle> findToggleWithUserData(ToggleGroup toggleGroup, T data) {
+        return toggleGroup.getToggles()
+                          .stream()
+                          .filter(toggle -> toggle.getUserData().equals(data))
+                          .findFirst();
     }
 
 

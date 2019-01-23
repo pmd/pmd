@@ -178,7 +178,7 @@ public class XPathPanelController extends AbstractController {
             xpathVersionMenuButton.getItems().add(item);
         });
 
-        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup);
+        xpathVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(xpathVersionToggleGroup, DesignerUtil::defaultXPathVersion);
 
         setXpathVersion(XPathRuleQuery.XPATH_2_0);
     }

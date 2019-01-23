@@ -184,7 +184,7 @@ public class SourceEditorController extends AbstractController {
                         languageSelectionMenuButton.getItems().add(item);
                     });
 
-        languageVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(languageToggleGroup);
+        languageVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(languageToggleGroup, DesignerUtil::defaultLanguageVersion);
     }
 
 
