@@ -4,14 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Iterator;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 
 import apex.jorje.data.Location;
 import apex.jorje.data.Locations;
