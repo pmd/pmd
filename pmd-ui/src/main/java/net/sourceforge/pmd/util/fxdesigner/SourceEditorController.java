@@ -73,7 +73,7 @@ public class SourceEditorController extends AbstractController {
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
     @FXML
-    private NodeParentageCrumbBar focusNodeParentageBreadCrumbBar;
+    private NodeParentageCrumbBar focusNodeParentageCrumbBar;
 
     private final ASTManager astManager;
 
@@ -142,7 +142,7 @@ public class SourceEditorController extends AbstractController {
         DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
 
         // Focus the crumb
-        focusNodeParentageBreadCrumbBar.setOnRegularCrumbAction(treeitem -> {
+        focusNodeParentageCrumbBar.setOnRegularCrumbAction(treeitem -> {
             if (treeitem != null && treeitem.getValue() != null) {
                 astTreeView.focusNode(treeitem.getValue());
             }

@@ -80,7 +80,7 @@
         </SplitPane>
     </center>
     <bottom>
-        <NodeParentageCrumbBar fx:id="focusNodeParentageBreadCrumbBar"
+        <NodeParentageCrumbBar fx:id="focusNodeParentageCrumbBar"
                                stylesheets="@../css/crumbbar.css"
                                prefHeight="30" id="main-toolbar" />
     </bottom>
