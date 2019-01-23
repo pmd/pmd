@@ -22,7 +22,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
 
     protected final T node;
 
-    public AbstractApexNode(T node) {
+    protected AbstractApexNode(T node) {
         super(node.getClass());
         this.node = node;
     }
@@ -69,11 +69,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
         // Attributes of this node have precedence over same-name attributes of the underlying node
-        return Stream.concat(iteratorToStream(new AttributeAxisIterator(this)),
-                             iteratorToStream(new AttributeAxisIterator(this, node)))
-                     .distinct()
-                     .iterator();
-
+        return new AttributeAxisIterator(this);
     }
 
     // TODO move to IteratorUtil w/ java 8
