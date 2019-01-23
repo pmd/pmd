@@ -68,4 +68,11 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
     }
+
+    @Test
+    public void testSubqueries() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseSubqueries.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+    }
 }
