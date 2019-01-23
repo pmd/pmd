@@ -64,16 +64,4 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
             return "no location";
         }
     }
-
-
-    @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        // Attributes of this node have precedence over same-name attributes of the underlying node
-        return new AttributeAxisIterator(this);
-    }
-
-    // TODO move to IteratorUtil w/ java 8
-    private static <T> Stream<T> iteratorToStream(Iterator<? extends T> it) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, 0), false);
-    }
 }
