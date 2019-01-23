@@ -1414,16 +1414,38 @@ ASTSqlExpression SqlExpression() :
  |
     LOOKAHEAD(2) <ROWNUM>
  |
-    LOOKAHEAD(2) AdditiveExpression() // this can be a literal or a simple expression, but no conditional
+    AdditiveExpression() // this can be a literal or a simple expression, but no conditional
  )
     { return jjtThis; }
 }
 
+/**
+ * See also https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
+ *
+ * A function reference might be:
+ * function_name
+ * package.function_name
+ * package.schema.function_name
+ * optional: @ dblink .
+ */
 ASTFunctionCall FunctionCall() :
-{ ASTID id; }
 {
-    id = ID() { jjtThis.setImage(id.getImage()); } Arguments()
-    { return jjtThis; }
+    ASTID id;
+    StringBuilder name = new StringBuilder();
+}
+{
+    id = ID() { name.append(id.getImage()); }
+    [ "." id = ID() { name.append('.').append(id.getImage()); }
+        [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+    ]
+    [ "@" id = ID() { name.append('@').append(id.getImage()); } ]
+
+    Arguments()
+
+    {
+        jjtThis.setImage(name.toString());
+        return jjtThis;
+    }
 }
 
 ASTColumn Column() :

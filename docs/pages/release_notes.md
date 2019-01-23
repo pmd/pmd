@@ -79,6 +79,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1511](https://github.com/pmd/pmd/issues/1511): \[plsql] Parse Exception with IS NOT NULL
     *   [#1583](https://github.com/pmd/pmd/issues/1583): \[plsql] Update Set Clause should allow multiple columns
     *   [#1586](https://github.com/pmd/pmd/issues/1586): \[plsql] Parse Exception when functions are used with LIKE
+    *   [#1588](https://github.com/pmd/pmd/issues/1588): \[plsql] Parse Exception with function calls in WHERE clause
 
 ### API Changes
 
