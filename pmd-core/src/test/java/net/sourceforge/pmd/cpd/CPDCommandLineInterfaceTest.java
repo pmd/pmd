@@ -7,16 +7,15 @@ package net.sourceforge.pmd.cpd;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.LogMode;
 import org.junit.contrib.java.lang.system.RestoreSystemProperties;
-import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.rules.TestRule;
 
 public class CPDCommandLineInterfaceTest {
     @Rule
     public final TestRule restoreSystemProperties = new RestoreSystemProperties();
     @Rule
-    public final StandardOutputStreamLog log = new StandardOutputStreamLog(LogMode.LOG_ONLY);
+    public final SystemOutRule log = new SystemOutRule().enableLog();
 
     @Test
     public void testEmptyResultRendering() {

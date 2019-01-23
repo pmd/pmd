@@ -56,7 +56,6 @@ public class Designer extends Application {
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(mainController);
         XPathPanelController xpathPanelController = new XPathPanelController(owner, mainController);
         SourceEditorController sourceEditorController = new SourceEditorController(owner, mainController);
-        EventLogController eventLogController = new EventLogController(owner, mainController);
 
         loader.setControllerFactory(type -> {
             if (type == MainDesignerController.class) {
@@ -67,8 +66,6 @@ public class Designer extends Application {
                 return xpathPanelController;
             } else if (type == SourceEditorController.class) {
                 return sourceEditorController;
-            } else if (type == EventLogController.class) {
-                return eventLogController;
             } else {
                 // default behavior for controllerFactory:
                 try {

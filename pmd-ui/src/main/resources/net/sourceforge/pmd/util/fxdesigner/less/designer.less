@@ -61,6 +61,10 @@
         }
     }
 
+    .table-row-cell:new-entry {
+      -fx-background-color: lightyellow;
+    }
+
     .show-hide-columns-button {
         -fx-background-color: @darker-accent;
         -fx-border-color: @darker-accent-border;
@@ -143,6 +147,11 @@
     &.info-title-bar .label {
         -fx-padding: 0 0 0 6;
     }
+}
+
+// TODO convert every header to ToolbarTitledPane and get rid of info-title-bar
+.info-title-bar {
+  .fix-height(30);
 }
 
 .titled-pane.full-size-title {

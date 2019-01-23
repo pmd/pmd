@@ -125,8 +125,8 @@ public abstract class SimpleRegexSyntaxHighlighter implements SyntaxHighlighter 
      */
     protected static final class RegexHighlightGrammarBuilder {
 
-        private Map<String, String> groupNameToRegex = new LinkedHashMap<>();
-        private Map<String, Set<String>> groupNameToCssClasses = new LinkedHashMap<>();
+        private final Map<String, String> groupNameToRegex = new LinkedHashMap<>();
+        private final Map<String, Set<String>> groupNameToCssClasses = new LinkedHashMap<>();
 
 
         RegexHighlightGrammarBuilder(Collection<String> cssClass, String regex) {
