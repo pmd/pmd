@@ -56,6 +56,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   all
     *   [#1196](https://github.com/pmd/pmd/issues/1196): \[core] CPD results not consistent between runs
+    *   [#1462](https://github.com/pmd/pmd/issues/1462): \[core] Failed build on Windows with source zip archive
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
     *   [#1546](https://github.com/pmd/pmd/issues/1546): \[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword
