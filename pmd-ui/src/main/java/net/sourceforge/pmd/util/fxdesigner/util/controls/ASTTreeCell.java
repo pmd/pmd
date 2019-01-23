@@ -7,13 +7,13 @@ package net.sourceforge.pmd.util.fxdesigner.util.controls;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.function.Consumer;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -34,11 +34,11 @@ import javafx.scene.input.MouseEvent;
  */
 public class ASTTreeCell extends TreeCell<Node> {
 
-    private final MainDesignerController controller;
+    private final Consumer<Node> onNodeItemSelected;
 
 
-    public ASTTreeCell(MainDesignerController controller) {
-        this.controller = controller;
+    public ASTTreeCell(Consumer<Node> clickHandler) {
+        this.onNodeItemSelected = clickHandler;
 
         // Binds the cell to its treeItem
         Val.wrap(treeItemProperty())
@@ -209,7 +209,7 @@ public class ASTTreeCell extends TreeCell<Node> {
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
             if (t.getButton() == MouseButton.PRIMARY
                     && getTreeView().getSelectionModel().getSelectedItem().getValue() == item) {
-                controller.onNodeItemSelected(item);
+                onNodeItemSelected.accept(item);
                 t.consume();
             }
         });

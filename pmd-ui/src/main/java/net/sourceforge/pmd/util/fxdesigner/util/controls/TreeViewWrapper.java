@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
+import javafx.application.Platform;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
@@ -28,7 +29,7 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 6.4.0
  */
-public class TreeViewWrapper<T> {
+class TreeViewWrapper<T> {
     
 
     private final TreeView<T> wrapped;
@@ -39,10 +40,10 @@ public class TreeViewWrapper<T> {
     private Object virtualFlow = null;
 
 
-    public TreeViewWrapper(TreeView<T> wrapped) {
+    TreeViewWrapper(TreeView<T> wrapped) {
         Objects.requireNonNull(wrapped);
         this.wrapped = wrapped;
-        initialiseTreeViewReflection();
+        Platform.runLater(this::initialiseTreeViewReflection);
     }
 
 
@@ -73,7 +74,7 @@ public class TreeViewWrapper<T> {
      * Returns true if the item at the given index
      * is visible in the TreeView.
      */
-    public boolean isIndexVisible(int index) {
+    boolean isIndexVisible(int index) {
         if (virtualFlow == null && wrapped.getSkin() == null) {
             return false;
         } else if (virtualFlow == null && wrapped.getSkin() != null) {

@@ -5,15 +5,12 @@
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeView?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.172-ea"
@@ -64,23 +61,19 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                     <children>
-                        <BorderPane prefHeight="200.0"
-                                    prefWidth="200.0"
-                                    AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0"
-                                    AnchorPane.rightAnchor="0.0"
-                                    AnchorPane.topAnchor="0.0">
-                            <center>
-                                <TreeView fx:id="astTreeView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-                            </center>
-                            <top>
-                                <ToolBar prefHeight="40.0" prefWidth="200.0" styleClass="accent-header" BorderPane.alignment="CENTER">
-                                    <items>
-                                        <Label fx:id="astTitleLabel" text="Abstract Syntax Tree" />
-                                    </items>
-                                </ToolBar>
-                            </top>
-                        </BorderPane>
+                        <ToolbarTitledPane
+                                collapsible="false"
+                                title="Abstract Syntax Tree"
+                                fx:id="astTitledPane"
+                                styleClass="full-size-title"
+                                AnchorPane.bottomAnchor="0.0"
+                                AnchorPane.leftAnchor="0.0"
+                                AnchorPane.rightAnchor="0.0"
+                                AnchorPane.topAnchor="0.0">
+
+                            <ASTTreeView fx:id="astTreeView" />
+
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
             </items>
