@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
-import java.net.URL;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 import org.reactfx.EventStreams;
 
@@ -18,13 +16,13 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
@@ -40,7 +38,7 @@ import javafx.scene.control.TreeView;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class NodeInfoPanelController implements Initializable {
+public class NodeInfoPanelController extends AbstractController {
 
     private final MainDesignerController parent;
 
@@ -58,16 +56,15 @@ public class NodeInfoPanelController implements Initializable {
     private Label metricsTitleLabel;
     @FXML
     private TreeView<Object> scopeHierarchyTreeView;
-    private MetricEvaluator metricEvaluator = new MetricEvaluator();
+    private final MetricEvaluator metricEvaluator = new MetricEvaluator();
     private Node selectedNode;
 
     public NodeInfoPanelController(MainDesignerController mainController) {
         parent = mainController;
     }
 
-
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    protected void beforeParentInit() {
         EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty())
                     .filter(Objects::nonNull)
                     .map(TreeItem::getValue)

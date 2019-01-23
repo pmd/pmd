@@ -28,13 +28,13 @@ import javafx.scene.control.TreeItem;
 public final class ASTTreeItem extends TreeItem<Node> {
 
 
-    private Var<ASTTreeCell> treeCell = Var.newSimpleVar(null);
+    private final Var<ASTTreeCell> treeCell = Var.newSimpleVar(null);
 
     /**
      * Latent style classes are style classes that logically belong to this tree item (i.e. the node it wraps).
      * The TreeItem must sync them to the TreeCell that currently displays it. The value is never null.
      */
-    private Var<List<String>> latentStyleClasses = Var.newSimpleVar(Collections.emptyList());
+    private final Var<List<String>> latentStyleClasses = Var.newSimpleVar(Collections.emptyList());
 
     private ASTTreeItem(Node n) {
         super(n);

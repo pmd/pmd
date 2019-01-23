@@ -1,23 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.SyntaxHighlightingCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="1200.0" stylesheets="@../css/designer.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
+<?import javafx.scene.shape.SVGPath?>
+<AnchorPane minHeight="0.0"
+            minWidth="0.0"
+            prefHeight="180.0"
+            prefWidth="1200.0"
+            stylesheets="@../css/designer.css"
+            xmlns="http://javafx.com/javafx/8.0.172-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="net.sourceforge.pmd.util.fxdesigner.XPathPanelController">
     <children>
-        <SplitPane dividerPositions="0.2, 0.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.2, 0.8"
+                   AnchorPane.bottomAnchor="0.0"
+                   AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane>
                     <children>
-                        <TitledPane animated="false" collapsible="false" styleClass="accent-header" text="Properties" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TitledPane animated="false"
+                                    collapsible="false"
+                                    styleClass="accent-header"
+                                    text="Properties"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
                             <content>
                                 <AnchorPane>
-                                    <PropertyTableView fx:id="propertyTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <PropertyTableView fx:id="propertyTableView"
+                                                       AnchorPane.bottomAnchor="0.0"
+                                                       AnchorPane.leftAnchor="0.0"
+                                                       AnchorPane.rightAnchor="0.0"
+                                                       AnchorPane.topAnchor="0.0" />
                                     <padding>
                                         <Insets bottom="-0.5" left="-0.5" right="-0.5" top="-0.5" />
                                     </padding>
@@ -28,24 +56,68 @@
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <TitledPane collapsible="false" styleClass="accent-header" text="XPath Expression" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <ToolbarTitledPane fx:id="expressionTitledPane"
+                                           styleClass="accent-header"
+                                           collapsible="false"
+                                           title="XPath Expression"
+                                           AnchorPane.bottomAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.topAnchor="0.0">
+                            <toolbarItems>
+                                <MenuButton mnemonicParsing="false"
+                                            styleClass="menu-button-no-arrow,icon-button"
+                                            fx:id="xpathVersionMenuButton">
+                                    <graphic>
+                                        <FontIcon iconLiteral="fas-cog" />
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip>
+                                            <text>
+                                                <String fx:value="Configure XPath version" />
+                                            </text>
+                                        </Tooltip>
+                                    </tooltip>
+                                    <items>
+                                        <!-- Populated in the controller -->
+                                    </items>
+                                </MenuButton>
+                                <Button fx:id="exportXpathToRuleButton" mnemonicParsing="false" styleClass="icon-button">
+                                    <graphic>
+                                        <!--Needs FA 5.1.0 -->
+                                        <!--<FontIcon iconLiteral="fas-file-export" />-->
+                                        <SVGPath styleClass="svg-icon"
+                                                 scaleX="0.024" scaleY="0.024"
+                                                 content="M384 121.9c0-6.3-2.5-12.4-7-16.9L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1zM192 336v-32c0-8.84 7.16-16 16-16h176V160H248c-13.2 0-24-10.8-24-24V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V352H208c-8.84 0-16-7.16-16-16zm379.05-28.02l-95.7-96.43c-10.06-10.14-27.36-3.01-27.36 11.27V288H384v64h63.99v65.18c0 14.28 17.29 21.41 27.36 11.27l95.7-96.42c6.6-6.66 6.6-17.4 0-24.05z" />
+                                    </graphic>
+                                    <tooltip>
+                                        <Tooltip>
+                                            <text>
+                                                <String fx:value="Export XPath to XML rule" />
+                                            </text>
+                                        </Tooltip>
+                                    </tooltip>
+                                </Button>
+                            </toolbarItems>
                             <content>
-                                <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css"
-                                                            fx:id="xpathExpressionArea">
-                                </SyntaxHighlightingCodeArea>
+                                <SyntaxHighlightingCodeArea stylesheets="@../css/editor-theme.css" fx:id="xpathExpressionArea" />
                             </content>
-                        </TitledPane>
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <TitledPane fx:id="violationsTitledPane" animated="false"
-                                    collapsible="false" styleClass="accent-header"
-                                    text="Matched Nodes" AnchorPane.bottomAnchor="0.0"
-                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                        <TitledPane fx:id="violationsTitledPane"
+                                    animated="false"
+                                    collapsible="false"
+                                    styleClass="accent-header"
+                                    text="Matched Nodes"
+                                    AnchorPane.bottomAnchor="0.0"
+                                    AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"
                                     AnchorPane.topAnchor="0.0">
                             <content>
-                                <ListView fx:id="xpathResultListView" stylesheets="@../css/syntax-highlighting.css" />
+                                <ListView stylesheets="@../css/syntax-highlighting.css" fx:id="xpathResultListView" />
                             </content>
                         </TitledPane>
                     </children>

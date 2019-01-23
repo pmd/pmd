@@ -21,6 +21,7 @@ import apex.jorje.semantic.compiler.CompilerOperation;
 import apex.jorje.semantic.compiler.CompilerStage;
 import apex.jorje.semantic.compiler.SourceFile;
 import apex.jorje.semantic.compiler.sfdc.AccessEvaluator;
+import apex.jorje.semantic.compiler.sfdc.NoopCompilerProgressCallback;
 import apex.jorje.semantic.compiler.sfdc.QueryValidator;
 import apex.jorje.semantic.compiler.sfdc.SymbolProvider;
 import com.google.common.collect.ImmutableList;
@@ -96,7 +97,8 @@ public class CompilerService {
 
     private CompilationInput createCompilationInput(List<SourceFile> sourceFiles,
             AstVisitor<AdditionalPassScope> visitor) {
-        return new CompilationInput(sourceFiles, symbolProvider, accessEvaluator, queryValidator, visitor);
+        return new CompilationInput(sourceFiles, symbolProvider, accessEvaluator, queryValidator, visitor,
+                NoopCompilerProgressCallback.get());
     }
 
     /**

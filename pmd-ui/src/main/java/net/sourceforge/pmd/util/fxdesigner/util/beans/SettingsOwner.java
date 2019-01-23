@@ -21,7 +21,7 @@ public interface SettingsOwner {
 
 
     /** Gets the children of this node in order. */
-    default List<SettingsOwner> getChildrenSettingsNodes() {
+    default List<? extends SettingsOwner> getChildrenSettingsNodes() {
         return Collections.emptyList();
     }
 

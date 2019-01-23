@@ -22,7 +22,9 @@ import net.sourceforge.pmd.stat.Metric;
  * Rule implementations should delegate to an instance of this class.
  *
  * @author David Dixon-Peugh Aug 8, 2002 StatisticalRule.java
+ * @deprecated see {@link StatisticalRule}
  */
+@Deprecated
 public class StatisticalRuleHelper {
 
     public static final double DELTA = 0.000005; // Within this range. . .

@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.stat;
 
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
+
+
 /**
  * This class holds all sorts of statistical information.
  *
  * @author David Dixon-Peugh
+ * @deprecated see {@link StatisticalRule}
  */
+@Deprecated
 public class Metric {
     private String metricName = null;
     private int count = 0;
