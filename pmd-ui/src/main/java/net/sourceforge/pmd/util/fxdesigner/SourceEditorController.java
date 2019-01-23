@@ -11,7 +11,6 @@ import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.pare
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
@@ -38,22 +36,26 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
+import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
-import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionModel;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -64,10 +66,16 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class SourceEditorController implements Initializable, SettingsOwner {
+public class SourceEditorController extends AbstractController {
 
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
+    @FXML
+    private ToolbarTitledPane editorTitledPane;
+    @FXML
+    private MenuButton languageSelectionMenuButton;
+    @FXML
+    private Label sourceCodeTitleLabel;
     @FXML
     private Label astTitleLabel;
     @FXML
@@ -75,15 +83,15 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
 
-    private ASTManager astManager;
+    private final ASTManager astManager;
     private TreeViewWrapper<Node> treeViewWrapper;
 
     private final MainDesignerController parent;
 
-    private Var<Node> currentFocusNode = Var.newSimpleVar(null);
+    private final Var<Node> currentFocusNode = Var.newSimpleVar(null);
     private ASTTreeItem selectedTreeItem;
 
-    private Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
+    private final Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
         try {
             return new ClasspathClassLoader(fileList, SourceEditorController.class.getClassLoader());
@@ -93,6 +101,9 @@ public class SourceEditorController implements Initializable, SettingsOwner {
         }
     });
 
+    private Var<LanguageVersion> languageVersionUIProperty;
+
+
     public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
         parent = mainController;
         astManager = new ASTManager(owner);
@@ -100,15 +111,22 @@ public class SourceEditorController implements Initializable, SettingsOwner {
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
+    protected void beforeParentInit() {
         treeViewWrapper = new TreeViewWrapper<>(astTreeView);
         astTreeView.setCellFactory(treeView -> new ASTTreeCell(parent));
+
+        initializeLanguageSelector(); // languageVersionProperty() must be initialized
 
         languageVersionProperty().values()
                                  .filterMap(Objects::nonNull, LanguageVersion::getLanguage)
                                  .distinct()
                                  .subscribe(this::updateSyntaxHighlighter);
+
+        languageVersionProperty().values()
+                                 .filter(Objects::nonNull)
+                                 .map(LanguageVersion::getShortName)
+                                 .map(lang -> "Source Code (" + lang + ")")
+                                 .subscribe(editorTitledPane::setTitle);
 
         EventStreams.valuesOf(astTreeView.getSelectionModel().selectedItemProperty())
                     .filterMap(Objects::nonNull, TreeItem::getValue)
@@ -127,6 +145,33 @@ public class SourceEditorController implements Initializable, SettingsOwner {
                       });
 
         codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
+    }
+
+
+    private void initializeLanguageSelector() {
+
+        ToggleGroup languageToggleGroup = new ToggleGroup();
+
+        DesignerUtil.getSupportedLanguageVersions()
+                    .stream()
+                    .sorted(LanguageVersion::compareTo)
+                    .map(lv -> {
+                        RadioMenuItem item = new RadioMenuItem(lv.getShortName());
+                        item.setUserData(lv);
+                        return item;
+                    })
+                    .forEach(item -> {
+                        languageToggleGroup.getToggles().add(item);
+                        languageSelectionMenuButton.getItems().add(item);
+                    });
+
+        languageVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(languageToggleGroup);
+    }
+
+
+    @Override
+    protected void afterParentInit() {
+        DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
     }
 
 
@@ -341,19 +386,18 @@ public class SourceEditorController implements Initializable, SettingsOwner {
 
     @PersistentProperty
     public LanguageVersion getLanguageVersion() {
-        return astManager.getLanguageVersion();
+        return languageVersionUIProperty.getValue();
     }
 
 
     public void setLanguageVersion(LanguageVersion version) {
-        astManager.setLanguageVersion(version);
+        languageVersionUIProperty.setValue(version);
     }
 
 
     public Var<LanguageVersion> languageVersionProperty() {
-        return astManager.languageVersionProperty();
+        return languageVersionUIProperty;
     }
-
 
     /**
      * Returns the most up-to-date compilation unit, or empty if it can't be parsed.
@@ -418,5 +462,4 @@ public class SourceEditorController implements Initializable, SettingsOwner {
             return styleClass;
         }
     }
-
 }

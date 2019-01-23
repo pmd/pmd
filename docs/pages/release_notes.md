@@ -14,7 +14,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+### Updatex Apex Support
+
+*   The Apex language support has been bumped to version 45 (Spring '19). All new language features are now properly
+    parsed and processed.
+
 #### New Rules
+
+*   The new Java rule {% rule "java/multithreading/UnsynchronizedStaticFormatter" %} (`java-multithreading`) detects
+    unsynchronized usages of static `java.text.Format` instances. This rule is a more generic replacement of the
+    rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} which focused just on `DateFormat`.
 
 *   The new Java rule {% rule "java/bestpractices/ForLoopVariableCount" %} (`java-bestpractices`) checks for
     the number of control variables in a for-loop. Having a lot of control variables makes it harder to understand
@@ -35,13 +44,23 @@ This is a {{ site.pmd.release_type }} release.
     property `ignoreForEachDecl`, which is by default disabled. The new property allows for ignoring
     non-final loop variables in a for-each statement.
 
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general
+    {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
+
 ### Fixed Issues
 
+*   all
+    *   [#1196](https://github.com/pmd/pmd/issues/1196): \[core] CPD results not consistent between runs
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
+    *   [#1546](https://github.com/pmd/pmd/issues/1546): \[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword
     *   [#1568](https://github.com/pmd/pmd/pull/1568): \[apex] AST node attribute @Image not usable / always null in XPath rule / Designer
 *   java
-    * [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
+    *   [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
+    *   [#1578](https://github.com/pmd/pmd/issues/1578): \[java] Private field is detected as public inside nested classes in interfaces
 *   java-bestpractices
     *   [#658](https://github.com/pmd/pmd/issues/658): \[java] OneDeclarationPerLine: False positive for loops
     *   [#1518](https://github.com/pmd/pmd/issues/1518): \[java] New rule: AvoidReassigningLoopVariable
@@ -51,15 +70,24 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1517](https://github.com/pmd/pmd/issues/1517): \[java] New Rule: UseDiamondOperator
 *   java-errorprone
     *   [#1035](https://github.com/pmd/pmd/issues/1035): \[java] ReturnFromFinallyBlock: False positive on lambda expression in finally block
+    *   [#1549](https://github.com/pmd/pmd/issues/1549): \[java] NPE in PMD 6.8.0 InvalidSlf4jMessageFormat
+*   java-multithreading
+    *   [#1533](https://github.com/pmd/pmd/issues/1533): \[java] New rule: UnsynchronizedStaticFormatter
 *   plsql
     *   [#1507](https://github.com/pmd/pmd/issues/1507): \[plsql] Parse Exception when using '||' operator in where clause
-    *   [#1508](https://github.com/pmd/pmd/issues/1508): \[plsql] Parse Exception when using SELECT COUNT(*)
+    *   [#1508](https://github.com/pmd/pmd/issues/1508): \[plsql] Parse Exception when using SELECT COUNT(\*)
     *   [#1509](https://github.com/pmd/pmd/issues/1509): \[plsql] Parse Exception with OUTER/INNER Joins
     *   [#1511](https://github.com/pmd/pmd/issues/1511): \[plsql] Parse Exception with IS NOT NULL
+    *   [#1583](https://github.com/pmd/pmd/issues/1583): \[plsql] Update Set Clause should allow multiple columns
+    *   [#1586](https://github.com/pmd/pmd/issues/1586): \[plsql] Parse Exception when functions are used with LIKE
 
 ### API Changes
 
-
+* {% jdoc core::lang.rule.stat.StatisticalRule %} and the related helper classes and base rule classes
+are deprecated for removal in 7.0.0. This includes all of {% jdoc_package core::stat %} and {% jdoc_package core::lang.rule.stat %},
+and also {% jdoc java::lang.java.rule.AbstractStatisticalJavaRule %}, {% jdoc apex::lang.apex.rule.AbstractStatisticalApexRule %} and the like.
+The methods {% jdoc !c!core::Report#addMetric(core::stat.Metric) %} and {% jdoc core::ThreadSafeReportListener#metricAdded(core::stat.Metric) %}
+will also be removed.
 * {% jdoc core::properties.PropertySource#setProperty(core::properties.MultiValuePropertyDescriptor, Object[]) %} is deprecated,
 because {% jdoc core::properties.MultiValuePropertyDescriptor %} is deprecated as well
 
@@ -73,6 +101,11 @@ because {% jdoc core::properties.MultiValuePropertyDescriptor %} is deprecated a
 *   [#1530](https://github.com/pmd/pmd/pull/1530): \[java] New rule: AvoidReassigningLoopVariables - [Kris Scheibe](https://github.com/kris-scheibe)
 *   [#1534](https://github.com/pmd/pmd/pull/1534): \[java] This is the change regarding the usediamondoperator #1517 - [hemanshu070](https://github.com/hemanshu070)
 *   [#1545](https://github.com/pmd/pmd/pull/1545): \[doc] fixing dead links + tool to check for dead links automatically - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#1551](https://github.com/pmd/pmd/pull/1551): \[java] InvalidSlf4jMessageFormatRule should not throw NPE for enums - [Robbie Martinus](https://github.com/rmartinus)
+*   [#1552](https://github.com/pmd/pmd/pull/1552): \[core] Upgrading Google Gson from 2.5 to 2.8.5 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1553](https://github.com/pmd/pmd/pull/1553): \[core] Upgrading System Rules dependency from 1.8.0 to 1.19.0 - [Thunderforge](https://github.com/Thunderforge)
+*   [#1554](https://github.com/pmd/pmd/pull/1554): \[plsql] updates should allow for multiple statements - [tashiscool](https://github.com/tashiscool)
+*   [#1584](https://github.com/pmd/pmd/pull/1584): \[core] Fixes 1196: inconsistencies of clones returned by different CPD executions for the same files  - [Bruno Ferreira](https://github.com/bmbferreira)
 
 {% endtocmaker %}
 
