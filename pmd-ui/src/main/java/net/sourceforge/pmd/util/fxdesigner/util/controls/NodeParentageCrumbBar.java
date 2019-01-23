@@ -53,7 +53,7 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
             Button button = originalCrumbFactory.call(item);
             if (item == ellipsisCrumb) {
                 button.setText("... (" + numElidedNodes + ")");
-                button.setTooltip(new Tooltip(numElidedNodes + " parents are not shown"));
+                button.setTooltip(new Tooltip(numElidedNodes + " ancestors are not shown"));
             }
             // we use that to communicate the node later on
             button.setUserData(item);

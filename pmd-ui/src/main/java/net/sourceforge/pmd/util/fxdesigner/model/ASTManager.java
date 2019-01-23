@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 
 /**
@@ -28,15 +29,6 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 public class ASTManager {
 
     private final DesignerRoot designerRoot;
-
-    /**
-     * Last valid source that was compiled, corresponds to {@link #compilationUnit}.
-     */
-    private String lastValidSource;
-    /**
-     * Last language version used.
-     */
-    private LanguageVersion lastLanguageVersion;
     /**
      * Most up-to-date compilation unit. Is null if the current source cannot be parsed.
      */
@@ -45,6 +37,14 @@ public class ASTManager {
      * Selected language version.
      */
     private final Var<LanguageVersion> languageVersion = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage().getDefaultVersion());
+    /**
+     * Last valid source that was compiled, corresponds to {@link #compilationUnit}.
+     */
+    private String lastValidSource;
+    /**
+     * Last language version used.
+     */
+    private LanguageVersion lastLanguageVersion;
 
 
     public ASTManager(DesignerRoot owner) {
@@ -53,7 +53,8 @@ public class ASTManager {
 
 
     public LanguageVersion getLanguageVersion() {
-        return languageVersion.getValue();
+        LanguageVersion ver = languageVersion.getValue();
+        return ver == null ? DesignerUtil.defaultLanguageVersion() : ver;
     }
 
 
@@ -81,8 +82,8 @@ public class ASTManager {
      */
     public Optional<Node> updateIfChanged(String source, ClassLoader classLoader) throws ParseAbortedException {
         if (compilationUnit.isPresent()
-                && getLanguageVersion().equals(lastLanguageVersion)
-                && StringUtils.equals(source, lastValidSource)) {
+            && getLanguageVersion().equals(lastLanguageVersion)
+            && StringUtils.equals(source, lastValidSource)) {
             return getCompilationUnit();
         }
         LanguageVersionHandler languageVersionHandler = getLanguageVersion().getLanguageVersionHandler();
