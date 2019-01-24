@@ -1311,6 +1311,8 @@ void Condition2() #void :
  |
     LOOKAHEAD(9) LikeCondition()
  |
+    LOOKAHEAD(9) RegexpLikeCondition()
+ |
     LOOKAHEAD(4) BetweenCondition()
  |
     LOOKAHEAD(4) IsNullCondition()
@@ -1339,6 +1341,19 @@ ASTLikeCondition LikeCondition() :
 {}
 {
     SqlExpression() [ <NOT> ] (<LIKE>|<LIKEC>|<LIKE2>|<LIKE4>) SqlExpression() [ <ESCAPE> SqlExpression() ]
+    { return jjtThis; }
+}
+
+ASTRegexpLikeCondition RegexpLikeCondition() :
+{
+    Token matchParam = null;
+}
+{
+    <REGEXP_LIKE> "("
+        ID() ","
+        StringLiteral()
+        [ "," ( matchParam = <CHARACTER_LITERAL> | matchParam = <STRING_LITERAL> ) {jjtThis.setMatchParam(matchParam.toString());} ]
+    ")"
     { return jjtThis; }
 }
 
@@ -4365,6 +4380,7 @@ TOKEN [IGNORE_CASE]:
 <RECORD: "RECORD"> |
 <REF: "REF"> |
 <REFERENCES: "REFERENCES"> |
+<REGEXP_LIKE: "REGEXP_LIKE"> |
 <RELEASE: "RELEASE"> |
 <RELIES_ON: "RELIES_ON"> |
 <RENAME: "RENAME"> | //SRT 2011-04-17
@@ -5523,7 +5539,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <REFERENCES>
 //| <REFERENCING>
 //| <REFRESH>
-//| <REGEXP_LIKE>
+| <REGEXP_LIKE>
 //| <REGISTER>
 //| <REJECT>
 //| <REKEY>

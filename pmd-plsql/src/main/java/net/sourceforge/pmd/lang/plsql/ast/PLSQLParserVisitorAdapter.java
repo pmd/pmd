@@ -1011,4 +1011,9 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTSubmultisetCondition node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTRegexpLikeCondition node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }
