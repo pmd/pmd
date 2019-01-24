@@ -1314,6 +1314,8 @@ void Condition2() #void :
     LOOKAHEAD(4) IsNullCondition()
  |
     LOOKAHEAD(4) IsOfTypeCondition()
+ |
+    ExistsCondition()
  )
 }
 
@@ -1335,6 +1337,14 @@ ASTLikeCondition LikeCondition() :
 {}
 {
     SqlExpression() [ <NOT> ] (<LIKE>|<LIKEC>|<LIKE2>|<LIKE4>) SqlExpression() [ <ESCAPE> SqlExpression() ]
+    { return jjtThis; }
+}
+
+ASTExistsCondition ExistsCondition() :
+{}
+{
+    <EXISTS> "(" Subquery() ")"
+
     { return jjtThis; }
 }
 
@@ -5848,7 +5858,7 @@ ASTID ID(): {}
 		| <EXCEPTION> //SYNTAX
 		| <EXCLUSIVE> //SYNTAX //RESERVED WORD
 		| <EXECUTE> //SYNTAX
-		| <EXISTS> //SYNTAX //RESERVED WORD
+		//| <EXISTS> //SYNTAX //RESERVED WORD
 		//| <EXIT> //SYNTAX
 		//20120501 | <EXTENDS>
 		| <FETCH> //SYNTAX
