@@ -1301,6 +1301,8 @@ void Condition2() #void :
     // a IS OF Type condition that starts with a function...
     LOOKAHEAD(FunctionCall() <IS> <OF>) IsOfTypeCondition()
  |
+    LOOKAHEAD(9) MultisetCondition()
+ |
     LOOKAHEAD(9) ComparisonCondition()
  |
     LOOKAHEAD(9) FloatingPointCondition()
@@ -1345,6 +1347,46 @@ ASTExistsCondition ExistsCondition() :
 {
     <EXISTS> "(" Subquery() ")"
 
+    { return jjtThis; }
+}
+
+void MultisetCondition() #void :
+{}
+{
+    LOOKAHEAD(4) IsASetCondition()
+  |
+    LOOKAHEAD(4) IsEmptyCondition()
+  |
+    LOOKAHEAD(4) MemberCondition()
+  |
+    LOOKAHEAD(4) SubmultisetCondition()
+}
+
+ASTIsASetCondition IsASetCondition() :
+{}
+{
+    TableName() <IS> [<NOT>] <A> <SET>
+    { return jjtThis; }
+}
+
+ASTIsEmptyCondition IsEmptyCondition() :
+{}
+{
+    TableName() <IS> [<NOT>] <EMPTY>
+    { return jjtThis; }
+}
+
+ASTMemberCondition MemberCondition() :
+{}
+{
+    SqlExpression() [<NOT>] <MEMBER> [<OF>] TableName()
+    { return jjtThis; }
+}
+
+ASTSubmultisetCondition SubmultisetCondition() :
+{}
+{
+    TableName() [<NOT>] <SUBMULTISET> [<OF>] TableName()
     { return jjtThis; }
 }
 
@@ -5904,7 +5946,7 @@ ASTID ID(): {}
 		| <NUMBER>  //RESERVED WORD
 		| <NUMBER_BASE>
 		| <OCIROWID>
-		| <OF>  //RESERVED WORD
+		//| <OF>  //RESERVED WORD
 		//| <ON>  //RESERVED WORD
 		//20120501 | <OPAQUE>
 		| <BFILE_BASE>
