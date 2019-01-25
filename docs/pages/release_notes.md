@@ -57,6 +57,7 @@ This is a {{ site.pmd.release_type }} release.
 *   apex
     *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
     *   [#1546](https://github.com/pmd/pmd/issues/1546): \[apex] PMD parsing exception for Apex classes using 'inherited sharing' keyword
+    *   [#1568](https://github.com/pmd/pmd/pull/1568): \[apex] AST node attribute @Image not usable / always null in XPath rule / Designer
 *   java
     *   [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
     *   [#1578](https://github.com/pmd/pmd/issues/1578): \[java] Private field is detected as public inside nested classes in interfaces
@@ -82,14 +83,13 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
-#### Deprecated API
-
 * {% jdoc core::lang.rule.stat.StatisticalRule %} and the related helper classes and base rule classes
 are deprecated for removal in 7.0.0. This includes all of {% jdoc_package core::stat %} and {% jdoc_package core::lang.rule.stat %},
 and also {% jdoc java::lang.java.rule.AbstractStatisticalJavaRule %}, {% jdoc apex::lang.apex.rule.AbstractStatisticalApexRule %} and the like.
 The methods {% jdoc !c!core::Report#addMetric(core::stat.Metric) %} and {% jdoc core::ThreadSafeReportListener#metricAdded(core::stat.Metric) %}
 will also be removed.
-
+* {% jdoc core::properties.PropertySource#setProperty(core::properties.MultiValuePropertyDescriptor, Object[]) %} is deprecated,
+because {% jdoc core::properties.MultiValuePropertyDescriptor %} is deprecated as well
 
 ### External Contributions
 

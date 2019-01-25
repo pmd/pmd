@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.reverse;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.reverse;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
 
 import java.util.Arrays;
 import java.util.Collections;
