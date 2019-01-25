@@ -986,4 +986,9 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTValuesClause node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTHierarchicalQueryClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }

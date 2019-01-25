@@ -125,10 +125,14 @@ public class CodeFormatRule extends AbstractPLSQLRule {
         int currentLine = firstLine;
         for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
             Node child = parent.jjtGetChild(i);
+            String image = child.getImage();
+            if (image == null && child.jjtGetNumChildren() > 0) {
+                image = child.jjtGetChild(0).getImage();
+            }
             if (child.getBeginLine() != currentLine) {
-                addViolationWithMessage(data, child, child.getImage() + " should be on line " + currentLine);
+                addViolationWithMessage(data, child, image + " should be on line " + currentLine);
             } else if (i > 0 && child.getBeginColumn() != indentation) {
-                addViolationWithMessage(data, child, child.getImage() + " should begin at column " + indentation);
+                addViolationWithMessage(data, child, image + " should begin at column " + indentation);
             }
             // next entry needs to be on the next line
             currentLine++;
