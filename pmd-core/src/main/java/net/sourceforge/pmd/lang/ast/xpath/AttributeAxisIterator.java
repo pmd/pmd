@@ -44,7 +44,6 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private MethodWrapper[] methodWrappers;
     private int position;
     private Node node;
-    private final Object bean;
 
 
     /**
@@ -53,31 +52,18 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      * use instead the overridable {@link Node#getXPathAttributesIterator()}.
      */
     public AttributeAxisIterator(Node contextNode) {
-        this(contextNode, contextNode);
-    }
-
-
-    /**
-     * Creates a new iterator creating attributes belonging to the
-     * context node, but taken from the given bean.
-     *
-     * @param contextNode Owner of the attributes (from the point of view of XPath)
-     * @param bean        Source of the attributes
-     */
-    public AttributeAxisIterator(Node contextNode, Object bean) {
         this.node = contextNode;
-        this.bean = bean;
-        if (!METHOD_CACHE.containsKey(bean.getClass())) {
-            Method[] preFilter = bean.getClass().getMethods();
+        if (!METHOD_CACHE.containsKey(contextNode.getClass())) {
+            Method[] preFilter = contextNode.getClass().getMethods();
             List<MethodWrapper> postFilter = new ArrayList<>();
             for (Method element : preFilter) {
                 if (isAttributeAccessor(element)) {
                     postFilter.add(new MethodWrapper(element));
                 }
             }
-            METHOD_CACHE.putIfAbsent(bean.getClass(), postFilter.toArray(new MethodWrapper[0]));
+            METHOD_CACHE.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[0]));
         }
-        this.methodWrappers = METHOD_CACHE.get(bean.getClass());
+        this.methodWrappers = METHOD_CACHE.get(contextNode.getClass());
 
         this.position = 0;
         this.currObj = getNextAttribute();
@@ -132,7 +118,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             return null;
         }
         MethodWrapper m = methodWrappers[position++];
-        return new Attribute(node, bean, m.name, m.method);
+        return new Attribute(node, m.name, m.method);
     }
 
 

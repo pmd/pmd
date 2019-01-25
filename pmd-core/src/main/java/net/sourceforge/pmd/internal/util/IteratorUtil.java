@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public final class IteratorUtil {
 

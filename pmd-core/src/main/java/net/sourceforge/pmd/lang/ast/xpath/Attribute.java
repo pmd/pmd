@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Attributes know their name, the node they wrap,
  * and have access to their value.
  *
- * Two attributes are equal iff they have the same name
+ * <p>Two attributes are equal if they have the same name
  * and their parent nodes are equal.
  *
  * @author daniels
@@ -33,7 +33,6 @@ public class Attribute {
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
     private final Node parent;
-    private final Object myBean;
     private final String name;
     private Method method;
     private Object value;
@@ -44,19 +43,6 @@ public class Attribute {
         this.parent = parent;
         this.name = name;
         this.method = m;
-        this.myBean = parent;
-    }
-
-
-    /**
-     * Creates a new attribute belonging to the given node using an accessor
-     * for the given bean.
-     */
-    public Attribute(Node parent, Object bean, String name, Method m) {
-        this.parent = parent;
-        this.name = name;
-        this.method = m;
-        this.myBean = bean;
     }
 
     /** Creates a new attribute belonging to the given node using its string value. */
@@ -65,7 +51,6 @@ public class Attribute {
         this.name = name;
         this.value = value;
         this.stringValue = value;
-        this.myBean = parent;
     }
 
 
@@ -91,7 +76,7 @@ public class Attribute {
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
-            value = method.invoke(myBean, EMPTY_OBJ_ARRAY);
+            value = method.invoke(parent, EMPTY_OBJ_ARRAY);
             return value;
         } catch (IllegalAccessException | InvocationTargetException iae) {
             iae.printStackTrace();

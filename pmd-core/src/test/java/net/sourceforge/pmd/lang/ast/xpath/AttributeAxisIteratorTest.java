@@ -54,15 +54,14 @@ public class AttributeAxisIteratorTest {
     }
 
     @Test
-    public void testAttributeAxisIteratorOnBean() {
-        DummyNode dummyNode = new DummyNode(1);
+    public void testAttributeAxisIteratorWithEnum() {
+        DummyNodeWithEnum dummyNode = new DummyNodeWithEnum(1);
 
-        AttributeAxisIterator it = new AttributeAxisIterator(dummyNode, new MyBean());
+        AttributeAxisIterator it = new AttributeAxisIterator(dummyNode);
         Map<String, Attribute> atts = toMap(it);
-        Assert.assertEquals(2, atts.size());
+        Assert.assertEquals(8, atts.size());
         assertTrue(atts.containsKey("Enum"));
-        assertEquals(MyEnum.FOO, atts.get("Enum").getValue());
-        assertTrue(atts.containsKey("XPath"));
+        assertEquals(DummyNodeWithEnum.MyEnum.FOO, atts.get("Enum").getValue());
     }
 
 
@@ -75,19 +74,18 @@ public class AttributeAxisIteratorTest {
         return atts;
     }
 
-    private static class MyBean {
+    public static class DummyNodeWithEnum extends DummyNode {
 
+        public DummyNodeWithEnum(int id) {
+            super(id);
+        }
 
-        public String getXPath() {
-            return "";
+        public enum MyEnum {
+            FOO, BAR
         }
 
         public MyEnum getEnum() {
             return MyEnum.FOO;
         }
-    }
-
-    private enum MyEnum {
-        FOO, BAR
     }
 }
