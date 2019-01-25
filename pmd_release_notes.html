@@ -1291,6 +1291,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <ul>
   <li>The Apex language support has been bumped to version 45 (Spring ‘19). All new language features are now properly
 parsed and processed.</li>
+  <li>Many nodes now expose more informations, such as the operator for BooleanExpressions. This makes these operators
+consumable by XPath rules, e.g. <code class="highlighter-rouge">//BooleanExpression[@Operator='&amp;&amp;']</code>.</li>
 </ul>
 
 <h4 id="new-rules">New Rules</h4>
@@ -1347,6 +1349,7 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/1542">#1542</a>: [apex] Include the documentation category</li>
       <li><a href="https://github.com/pmd/pmd/issues/1546">#1546</a>: [apex] PMD parsing exception for Apex classes using ‘inherited sharing’ keyword</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1568">#1568</a>: [apex] AST node attribute @Image not usable / always null in XPath rule / Designer</li>
     </ul>
   </li>
   <li>java
@@ -1403,14 +1406,14 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="deprecated-api">Deprecated API</h4>
-
 <ul>
   <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/rule/stat/StatisticalRule.html#"><code class="highlighter-rouge">StatisticalRule</code></a> and the related helper classes and base rule classes
 are deprecated for removal in 7.0.0. This includes all of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/stat/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.stat</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/lang/rule/stat/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.rule.stat</code></a>,
 and also <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.11.0/net/sourceforge/pmd/lang/java/rule/AbstractStatisticalJavaRule.html#"><code class="highlighter-rouge">AbstractStatisticalJavaRule</code></a>, <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.11.0/net/sourceforge/pmd/lang/apex/rule/AbstractStatisticalApexRule.html#"><code class="highlighter-rouge">AbstractStatisticalApexRule</code></a> and the like.
 The methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/Report.html#addMetric(net.sourceforge.pmd.stat.Metric)"><code class="highlighter-rouge">Report#addMetric</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/ThreadSafeReportListener.html#metricAdded(net.sourceforge.pmd.stat.Metric)"><code class="highlighter-rouge">metricAdded</code></a>
 will also be removed.</li>
+  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/PropertySource.html#setProperty(net.sourceforge.pmd.properties.MultiValuePropertyDescriptor,Object[])"><code class="highlighter-rouge">setProperty</code></a> is deprecated,
+because <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.11.0/net/sourceforge/pmd/properties/MultiValuePropertyDescriptor.html#"><code class="highlighter-rouge">MultiValuePropertyDescriptor</code></a> is deprecated as well</li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1447,7 +1450,7 @@ will also be removed.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jan 20, 2019 <br />
+ Site last generated: Jan 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
