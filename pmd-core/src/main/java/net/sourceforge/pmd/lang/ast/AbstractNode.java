@@ -22,6 +22,7 @@ import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.stream.NodeStream;
+import net.sourceforge.pmd.lang.ast.stream.internal.NodeStreamImpl;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -528,7 +529,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public NodeStream<? extends Node> childrenStream() {
-        return NodeStream.of(Arrays.stream(children));
+        return NodeStreamImpl.fromSupplier(() -> Arrays.stream(children));
     }
 
     // TODO benchmark and select the better implementation

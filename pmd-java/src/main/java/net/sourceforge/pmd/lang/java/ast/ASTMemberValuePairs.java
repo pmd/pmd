@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.ast.stream.NodeStream;
 import net.sourceforge.pmd.lang.ast.SingleChildNode;
+import net.sourceforge.pmd.lang.ast.stream.NodeStream;
 
 
 /**

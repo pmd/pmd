@@ -251,7 +251,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                                                           .withImage("1")
                                                                           .any()
                                                    )
-                        )
+                                     )
                                      .children(ASTPrimaryExpression.class)
                                      .children(ASTPrimaryPrefix.class)
                                      .children(ASTName.class)

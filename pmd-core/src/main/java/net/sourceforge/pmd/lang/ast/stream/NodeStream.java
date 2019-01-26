@@ -22,14 +22,19 @@ import net.sourceforge.pmd.lang.ast.stream.internal.NodeStreamImpl;
  * Lazy stream of nodes. Wraps a {@link Stream} and provides additional
  * shorthands for a nice API. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
- * <p>Like a {@link Stream}, a NodeStream works with terminal and non-terminal operations.
- * Terminal operations consume the stream, after which it may not be used any more.
+ * <p>Unlike a Stream, NodeStreams can be iterated multiple times.
  *
  * @implNote
  * Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid code the bloat
  * induced by delegation.
- * TODO we could easily make node streams iterable multiple times
+ *
+ * <p>Intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
+ * specify new pipeline operations that are stacked on the stream produced by
+ * {@link #toStream()}. Terminal operations like {@link #count()} or {@link #toList()}
+ * create a new Stream with the correct pipeline and then apply the terminal
+ * operation to it. That temporary stream is consumed, but subsequent terminal
+ * operations on the node stream will be called on new Streams.
  *
  * @param <T> Type of nodes this stream contains
  *
@@ -50,7 +55,7 @@ public interface NodeStream<T extends Node> {
      * empty stream is used, instead.)
      *
      * <p>If you want to map this node stream to a {@link Stream} with
-     * arbitrary elements (ie not nodes), use {@link #getStream()} then
+     * arbitrary elements (ie not nodes), use {@link #toStream()} then
      * {@link Stream#flatMap(Function)}.
      *
      * @param mapper A function mapping the elements of this stream to another stream
@@ -68,7 +73,7 @@ public interface NodeStream<T extends Node> {
      * mapping function to the node of this stream.
      *
      * <p>If you want to map this node stream to a {@link Stream} with
-     * arbitrary elements (ie not nodes), use {@link #getStream()} then
+     * arbitrary elements (ie not nodes), use {@link #toStream()} then
      * {@link Stream#map(Function)}.
      *
      * @param mapper A function mapping the elements of this stream to another node type
@@ -146,9 +151,9 @@ public interface NodeStream<T extends Node> {
 
 
     /**
-     * Applies the given mapping functions to this node stream and merges the results
-     * into a new node stream. This allows exploring several paths at once in the same
-     * stream.
+     * Applies the given mapping functions to this node stream in order and merges the
+     * results into a new node stream. This allows exploring several paths at once on
+     * the same stream.
      *
      * @param mappers Mapper functions
      * @param <R>     Common supertype for the element type of the return types of the mapper functions
@@ -156,9 +161,8 @@ public interface NodeStream<T extends Node> {
      * @return A merged node stream
      */
     default <R extends Node> NodeStream<R> forkJoin(Function<? super NodeStream<T>, ? extends NodeStream<? extends R>>... mappers) {
-        return of(Arrays.stream(mappers).map(f -> f.andThen(NodeStream::getStream)).flatMap(f -> f.apply(this)));
+        return NodeStreamImpl.fromSupplier(() -> Arrays.stream(mappers).map(f -> f.andThen(NodeStream::toStream)).flatMap(f -> f.apply(this)));
     }
-
 
     // filtering
 
@@ -229,18 +233,17 @@ public interface NodeStream<T extends Node> {
         return filter(it -> it.getImage().matches(regex));
     }
 
-    // other Stream methods
+    // "terminal" operations
 
 
     /**
-     * Returns the number of nodes in this stream. This is a
-     * terminal operation.
+     * Returns the number of nodes in this stream.
      *
      * @return the number of elements in this stream
      */
     default int count() {
         // ASTs are not so big as to warrant using a 'long' here
-        return (int) getStream().count();
+        return (int) toStream().count();
     }
 
 
@@ -260,27 +263,32 @@ public interface NodeStream<T extends Node> {
      * Returns whether any elements of this stream match the provided predicate.
      * If the stream is empty then false is returned and the predicate is not evaluated.
      */
-    boolean any(Predicate<? super T> predicate);
+    default boolean any(Predicate<? super T> predicate) {
+        return toStream().anyMatch(predicate);
+    }
 
 
     /**
      * Returns whether no elements of this stream match the provided predicate.
      * If the stream is empty then true is returned and the predicate is not evaluated.
      */
-    boolean none(Predicate<? super T> predicate);
+    default boolean none(Predicate<? super T> predicate) {
+        return toStream().noneMatch(predicate);
+    }
 
 
     /**
      * Returns whether all elements of this stream match the provided predicate.
      * If the stream is empty then true is returned and the predicate is not evaluated.
      */
-    boolean all(Predicate<? super T> predicate);
+    default boolean all(Predicate<? super T> predicate) {
+        return toStream().allMatch(predicate);
+    }
 
 
     /**
      * Collects the elements of this node stream using the specified {@link Collector}.
-     * This is a terminal operation, equivalent to {@link #getStream()} followed by
-     * {@link Stream#collect(Collector)}.
+     * This is equivalent to {@link #toStream()} followed by {@link Stream#collect(Collector)}.
      *
      * @param <R>       the type of the result
      * @param <A>       the intermediate accumulation type of the {@code Collector}
@@ -291,16 +299,18 @@ public interface NodeStream<T extends Node> {
      * @see Stream#collect(Collector)
      * @see java.util.stream.Collectors
      */
-    <R, A> R collect(Collector<? super T, A, R> collector);
+    default <R, A> R collect(Collector<? super T, A, R> collector) {
+        return toStream().collect(collector);
+    }
 
 
     /**
-     * Collects the elements of this node stream into a list. This is a terminal operation,
+     * Collects the elements of this node stream into a list. This is
      * equivalent to calling {@code collect(Collectors.toList())}.
      *
      * @return a list containing the elements of this stream
      *
-     * @see java.util.stream.Collectors
+     * @see Collectors#toList()
      */
     default List<T> toList() {
         return collect(Collectors.toList());
@@ -324,12 +334,12 @@ public interface NodeStream<T extends Node> {
 
 
     /**
-     * Returns the stream backing this node stream. Closing the returned
-     * stream with a terminal operation will make this node stream unusable.
+     * Returns a new stream of Ts having the pipeline of operations
+     * defined by this node stream. This can be called multiple times.
      *
      * @return The stream backing this node stream
      */
-    Stream<? extends T> getStream();
+    Stream<? extends T> toStream();
 
     // construction
 
@@ -343,7 +353,7 @@ public interface NodeStream<T extends Node> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> of(T node) {
-        return of(Stream.of(node));
+        return NodeStreamImpl.fromSupplier(() -> Stream.of(node));
     }
 
 
@@ -357,29 +367,13 @@ public interface NodeStream<T extends Node> {
      */
     @SafeVarargs
     static <T extends Node> NodeStream<T> of(T... nodes) {
-        return of(Stream.of(nodes));
-    }
-
-
-    /**
-     * Returns a node stream wrapping the given stream of nodes.
-     * The returned node stream is backed by the given stream, so
-     * that invoking a terminal operation on either will close both.
-     *
-     * @param nodeStream The elements of the new stream
-     * @param <T>        Element type of the returned stream
-     *
-     * @return A new node stream
-     */
-    static <T extends Node> NodeStream<T> of(Stream<? extends T> nodeStream) {
-        return new NodeStreamImpl<>(nodeStream);
+        return NodeStreamImpl.fromSupplier(() -> Stream.of(nodes));
     }
 
 
     /**
      * Returns a node stream containing all the elements of the first stream,
-     * then all the elements of the second stream. This is equivalent to
-     * calling {@link #of(Stream)} with the result of {@link Stream#concat(Stream, Stream)}.
+     * then all the elements of the second stream.
      *
      * @param <T> The type of stream elements
      * @param a   the first input stream
@@ -388,6 +382,20 @@ public interface NodeStream<T extends Node> {
      * @return the concatenation of the two input streams
      */
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T> a, NodeStream<? extends T> b) {
-        return of(Stream.concat(a.getStream(), b.getStream()));
+        return NodeStreamImpl.fromSupplier(() -> Stream.concat(a.toStream(), b.toStream()));
+    }
+
+
+    /**
+     * Returns a node stream containing all the elements of the given streams,
+     * each stream flattened into a single stream.
+     *
+     * @param <T>     The type of stream elements
+     * @param streams the streams to flatten in here
+     *
+     * @return the concatenation of the two input streams
+     */
+    static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
+        return NodeStreamImpl.fromSupplier(() -> Stream.of(streams).flatMap(NodeStream::toStream));
     }
 }
