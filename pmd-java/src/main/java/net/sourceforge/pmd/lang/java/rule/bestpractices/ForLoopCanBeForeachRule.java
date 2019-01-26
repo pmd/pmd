@@ -14,7 +14,6 @@ import java.util.Optional;
 import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.stream.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
@@ -238,37 +237,27 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                     return Optional.empty();
                 }
 
-                NodeStream<ASTName> right1 =
-                    guardCondition
-                        .children(ASTRelationalExpression.class)
-                        .withImage("<")
-                        .children(ASTPrimaryExpression.class)
-                        .children(ASTPrimaryPrefix.class)
-                        .children(ASTName.class)
-                        .imageMatching("\\w+\\.(size|length)");
-
-                NodeStream<ASTName> right2 =
-                    guardCondition
-                        .children(ASTRelationalExpression.class)
-                        .withImage("<=")
-                        .children(ASTAdditiveExpression.class)
-                        .filter(expr ->
-                                    expr.jjtGetNumChildren() == 2
-                                        && expr.getOperator().equals("-")
-                                        && expr.children(ASTPrimaryExpression.class)
-                                               .children(ASTPrimaryPrefix.class)
-                                               .children(ASTLiteral.class)
-                                               .withImage("1")
-                                               .any()
+                return guardCondition.children(ASTRelationalExpression.class)
+                                     .forkJoin(
+                                         rel -> rel.withImage("<"),
+                                         rel -> rel.withImage("<=")
+                                                   .children(ASTAdditiveExpression.class)
+                                                   .filter(expr ->
+                                                               expr.jjtGetNumChildren() == 2
+                                                                   && expr.getOperator().equals("-")
+                                                                   && expr.children(ASTPrimaryExpression.class)
+                                                                          .children(ASTPrimaryPrefix.class)
+                                                                          .children(ASTLiteral.class)
+                                                                          .withImage("1")
+                                                                          .any()
+                                                   )
                         )
-                        .children(ASTPrimaryExpression.class)
-                        .children(ASTPrimaryPrefix.class)
-                        .children(ASTName.class)
-                        .imageMatching("\\w+\\.(size|length)");
-
-                Optional<ASTName> right = NodeStream.union(right1, right2).findFirst();
-
-                return right.map(astName -> astName.getImage().split("\\.")[0]);
+                                     .children(ASTPrimaryExpression.class)
+                                     .children(ASTPrimaryPrefix.class)
+                                     .children(ASTName.class)
+                                     .imageMatching("\\w+\\.(size|length)")
+                                     .findFirst()
+                                     .map(astName -> astName.getImage().split("\\.")[0]);
 
             }
         }

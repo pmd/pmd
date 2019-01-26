@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.stream;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -141,6 +142,21 @@ public interface NodeStream<T extends Node> {
      */
     default NodeStream<Node> descendants() {
         return flatMap(Node::descendantStream);
+    }
+
+
+    /**
+     * Applies the given mapping functions to this node stream and merges the results
+     * into a new node stream. This allows exploring several paths at once in the same
+     * stream.
+     *
+     * @param mappers Mapper functions
+     * @param <R>     Common supertype for the element type of the return types of the mapper functions
+     *
+     * @return A merged node stream
+     */
+    default <R extends Node> NodeStream<R> forkJoin(Function<? super NodeStream<T>, ? extends NodeStream<? extends R>>... mappers) {
+        return of(Arrays.stream(mappers).map(f -> f.andThen(NodeStream::getStream)).flatMap(f -> f.apply(this)));
     }
 
 
