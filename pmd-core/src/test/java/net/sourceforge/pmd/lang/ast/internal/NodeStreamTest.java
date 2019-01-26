@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -37,6 +38,14 @@ public class NodeStreamTest {
                         node()
                     )
                 ),
+                node()
+            )
+    );
+
+
+    private final DummyNode tree2 = tree(
+        () ->
+            node(
                 node()
             )
     );
@@ -112,14 +121,63 @@ public class NodeStreamTest {
 
         NodeStream<Node> filtered = treeStream.filter(n -> n.jjtGetNumChildren() == 0); // filter the leaves
 
-        assertFalse(((NodeStreamImpl) treeStream).isCached());
-        assertFalse(((NodeStreamImpl) filtered).isCached());
+        assertFalse(isCached(treeStream));
+        assertFalse(isCached(filtered));
 
         assertThat(filtered.count(), equalTo(3));
 
-        assertFalse(((NodeStreamImpl) treeStream).isCached());
-        assertTrue(((NodeStreamImpl) filtered).isCached());
+        assertFalse(isCached(treeStream)); // the intermediary pipeline op isn't cached
+        assertTrue(isCached(filtered));
 
+    }
+
+
+    @Test
+    public void testUnionIsLazy() {
+
+        MutableInt numEvals = new MutableInt();
+        MutableInt numEvals2 = new MutableInt();
+
+        NodeStream<Node> tree1Stream = hook(tree1.descendantStream(), numEvals::increment);
+        NodeStream<Node> tree2Stream = hook(tree2.descendantStream(), numEvals2::increment);
+
+        NodeStream<Node> union = NodeStream.union(tree1Stream, tree2Stream);
+
+        assertFalse(isCached(tree1Stream));
+        assertFalse(isCached(tree2Stream));
+        assertFalse(isCached(union));
+
+        Iterator<Node> fromUnion = union.toStream().iterator();
+
+        // the union's cache fetches values from the substreams instead of dumping them into a list
+        assertTrue(isCached(union));
+
+        // nothing was evaluated yet
+        assertThat(numEvals.getValue(), equalTo(0));
+        assertThat(numEvals2.getValue(), equalTo(0));
+        assertFalse(isCached(tree1Stream));
+        assertFalse(isCached(tree2Stream));
+
+        fromUnion.next(); // here the first substream is fetched and its value is cached eagerly
+
+        assertThat(numEvals.getValue(), equalTo(5));  // fetched
+        assertThat(numEvals2.getValue(), equalTo(0)); // untouched
+        assertTrue(isCached(tree1Stream));
+        assertFalse(isCached(tree2Stream));
+
+    }
+
+
+    private static boolean isCached(NodeStream<?> tree2Stream) {
+        return ((NodeStreamImpl) tree2Stream).isCached();
+    }
+
+
+    private static <T extends Node> NodeStream<T> hook(NodeStream<T> stream, Runnable hook) {
+        return stream.filter(t -> {
+            hook.run();
+            return true;
+        });
     }
 
 

@@ -396,7 +396,8 @@ public interface NodeStream<T extends Node> {
      *
      * @return the concatenation of the two input streams
      */
+    @SafeVarargs
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
-        return NodeStreamImpl.fromSupplier(() -> Stream.of(streams).flatMap(NodeStream::toStream));
+        return NodeStreamImpl.unionImpl(streams);
     }
 }
