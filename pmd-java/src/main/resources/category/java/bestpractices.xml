@@ -1465,7 +1465,7 @@ preserved.
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryStatement[not(ResourceSpecification)][FinallyStatement//Name[
+//TryStatement[FinallyStatement//Name[
     tokenize(@Image, '\.')[last()] = $closeMethods
 ]]
 ]]>

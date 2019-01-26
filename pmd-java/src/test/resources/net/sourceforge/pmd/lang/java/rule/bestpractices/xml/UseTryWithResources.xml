@@ -141,4 +141,21 @@ public class TryWithResources {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False negative with two resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class TryWithResources {
+    public void run() {
+        Reader r1 = new FileReader(file);
+        try (Reader r2 = new FileReader(otherFile)) {
+        } finally {
+            r1.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
