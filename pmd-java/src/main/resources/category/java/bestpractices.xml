@@ -1524,7 +1524,7 @@ public class Foo {
           minimumLanguageVersion="1.7"
           since="6.11.0"
           typeResolution="true"
-          message="Consider use the try-with-resources statement instead of explicitly closing the resource"
+          message="Consider using a try-with-resources statement instead of explicitly closing the resource"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usetrywithresources">
         <description>
