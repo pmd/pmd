@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForInit;
@@ -239,10 +240,11 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
                 return guardCondition.children(ASTRelationalExpression.class)
                                      .forkJoin(
-                                         rel -> rel.withImage("<"),
-                                         rel -> rel.withImage("<=")
-                                                   .children(ASTAdditiveExpression.class)
-                                                   .filter(expr ->
+                                         rel -> NodeStream.of(rel).withImage("<"),
+                                         rel -> NodeStream.of(rel)
+                                                          .withImage("<=")
+                                                          .children(ASTAdditiveExpression.class)
+                                                          .filter(expr ->
                                                                expr.jjtGetNumChildren() == 2
                                                                    && expr.getOperator().equals("-")
                                                                    && expr.children(ASTPrimaryExpression.class)

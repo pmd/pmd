@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -18,22 +19,19 @@ import net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl;
 
 
 /**
- * Lazy stream of nodes. Wraps a {@link Stream} and provides additional
- * shorthands for a nice API. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
+ * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but provides
+ * a specialized API to roam abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
- * <p>Unlike a Stream, NodeStreams can be iterated multiple times.
+ * <p>Unlike Streams, NodeStreams can be iterated multiple times. Be aware though, that
+ * they don't cache their results by default, so e.g. evaluating calling count() several
+ * times will execute the whole pipeline again. The elements of a stream can however be
+ * {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
+ * upstream only once.
  *
  * @implNote
  * Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid code the bloat
  * induced by delegation.
- *
- * <p>Intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
- * specify new pipeline operations that are stacked on the stream produced by
- * {@link #toStream()}. Terminal operations like {@link #count()} or {@link #toList()}
- * create a new Stream with the correct pipeline and then apply the terminal
- * operation to it. That temporary stream is consumed, but subsequent terminal
- * operations on the node stream will be called on new Streams.
  *
  * @param <T> Type of nodes this stream contains
  *
@@ -150,17 +148,34 @@ public interface NodeStream<T extends Node> {
 
 
     /**
-     * Applies the given mapping functions to this node stream in order and merges the
-     * results into a new node stream. This allows exploring several paths at once on
-     * the same stream.
+     * Applies the given mapping functions to this node stream and merges the results
+     * into a new node stream. This allows exploring several paths at once on the same
+     * stream. The method is lazy and won't evaluate the upstream pipeline several times.
      *
-     * @param mappers Mapper functions
-     * @param <R>     Common supertype for the element type of the return types of the mapper functions
+     * @param fst  First mapper
+     * @param snd  Second mapper
+     * @param rest Rest of the mappers
+     * @param <R>  Common supertype for the element type of the streams returned by the mapping functions
      *
      * @return A merged node stream
      */
-    default <R extends Node> NodeStream<R> forkJoin(Function<? super NodeStream<T>, ? extends NodeStream<? extends R>>... mappers) {
-        return NodeStreamImpl.fromSupplier(() -> Arrays.stream(mappers).map(f -> f.andThen(NodeStream::toStream)).flatMap(f -> f.apply(this)));
+    <R extends Node> NodeStream<R> forkJoin(Function<? super T, ? extends NodeStream<? extends R>> fst,
+                                            Function<? super T, ? extends NodeStream<? extends R>> snd,
+                                            Function<? super T, ? extends NodeStream<? extends R>>... rest);
+
+
+    /**
+     * Returns a stream consisting of the elements of this stream, additionally
+     * performing the provided action on each element as elements are consumed
+     * from the resulting stream.
+     *
+     * @param action an action to perform on the elements as they are consumed
+     *               from the stream
+     *
+     * @return A new stream
+     */
+    default NodeStream<T> peek(Consumer<? super T> action) {
+        return NodeStreamImpl.fromSupplier(() -> this.toStream().peek(action));
     }
 
     // filtering
@@ -361,6 +376,35 @@ public interface NodeStream<T extends Node> {
 
 
     /**
+     * Returns a node stream containing all the elements of this node stream,
+     * but which will evaluate the upstream pipeline only once. The returned
+     * stream is also lazy, which means the elements of this stream are not
+     * eagerly evaluated when calling this method, but only on the first
+     * terminal operation called on the downstream of the returned stream.
+     *
+     * <p>This is useful e.g. if you want to call several terminal operations
+     * without executing the pipeline several times.
+     *
+     * @return A cached node stream
+     */
+    default NodeStream<T> cached() {
+
+        return NodeStreamImpl.fromSupplier(new Supplier<Stream<T>>() {
+            List<T> cachedValue = null;
+
+
+            @Override
+            public Stream<T> get() {
+                if (cachedValue == null) {
+                    cachedValue = NodeStream.this.toStream().collect(Collectors.toList());
+                }
+                return cachedValue.stream();
+            }
+        });
+    }
+
+
+    /**
      * Returns a node stream containing a single node.
      *
      * @param node The node to contain
@@ -397,7 +441,8 @@ public interface NodeStream<T extends Node> {
      * @return the concatenation of the two input streams
      */
     @SafeVarargs
+    @SuppressWarnings("unchecked")
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
-        return NodeStreamImpl.unionImpl(streams);
+        return NodeStreamImpl.fromSupplier(() -> Stream.of(streams).flatMap(ns -> ((NodeStreamImpl<T>) ns).toStream()));
     }
 }

@@ -8,11 +8,8 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -90,87 +87,28 @@ public class NodeStreamTest {
 
 
     @Test
-    public void testNodeStreamPipelineIsExecutedAtMostOnce() {
+    public void testForkJoinUpstreamPipelineIsExecutedAtMostOnce() {
 
         MutableInt numEvals = new MutableInt();
-
-        NodeStream<Node> stream = tree1.descendantStream().filter(n -> {
-            numEvals.increment();
-            return true;
-        });
+        NodeStream<Node> stream =
+            hook(tree1.descendantStream(), numEvals::increment)
+                .forkJoin(
+                    n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("0")),
+                    n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("1"))
+                );
 
         assertThat(numEvals.getValue(), equalTo(0)); // not evaluated yet
 
-        assertThat(stream.count(), equalTo(5));
+        assertThat(stream.count(), equalTo(2));
 
-        assertThat(numEvals.getValue(), equalTo(5)); // evaluated
+        assertThat(numEvals.getValue(), equalTo(5)); // evaluated *once* every element of the upper stream
 
-        assertThat(stream.count(), equalTo(5));
+        assertThat(stream.count(), equalTo(2));
 
-        assertThat(pathsOf(stream), contains("0", "00", "01", "010", "1"));
-        assertThat(pathsOf(stream.filter(n -> n.jjtGetNumChildren() == 0)), contains("00", "010", "1"));
-
-        assertThat(numEvals.getValue(), equalTo(5)); // not evaluated any more than necessary
+        assertThat(numEvals.getValue(), equalTo(10)); // reevaluated
     }
 
 
-    @Test
-    public void testOnlyStreamHeadIsCached() {
-
-        NodeStream<Node> treeStream = tree1.descendantStream();
-
-        NodeStream<Node> filtered = treeStream.filter(n -> n.jjtGetNumChildren() == 0); // filter the leaves
-
-        assertFalse(isCached(treeStream));
-        assertFalse(isCached(filtered));
-
-        assertThat(filtered.count(), equalTo(3));
-
-        assertFalse(isCached(treeStream)); // the intermediary pipeline op isn't cached
-        assertTrue(isCached(filtered));
-
-    }
-
-
-    @Test
-    public void testUnionIsLazy() {
-
-        MutableInt numEvals = new MutableInt();
-        MutableInt numEvals2 = new MutableInt();
-
-        NodeStream<Node> tree1Stream = hook(tree1.descendantStream(), numEvals::increment);
-        NodeStream<Node> tree2Stream = hook(tree2.descendantStream(), numEvals2::increment);
-
-        NodeStream<Node> union = NodeStream.union(tree1Stream, tree2Stream);
-
-        assertFalse(isCached(tree1Stream));
-        assertFalse(isCached(tree2Stream));
-        assertFalse(isCached(union));
-
-        Iterator<Node> fromUnion = union.toStream().iterator();
-
-        // the union's cache fetches values from the substreams instead of dumping them into a list
-        assertTrue(isCached(union));
-
-        // nothing was evaluated yet
-        assertThat(numEvals.getValue(), equalTo(0));
-        assertThat(numEvals2.getValue(), equalTo(0));
-        assertFalse(isCached(tree1Stream));
-        assertFalse(isCached(tree2Stream));
-
-        fromUnion.next(); // here the first substream is fetched and its value is cached eagerly
-
-        assertThat(numEvals.getValue(), equalTo(5));  // fetched
-        assertThat(numEvals2.getValue(), equalTo(0)); // untouched
-        assertTrue(isCached(tree1Stream));
-        assertFalse(isCached(tree2Stream));
-
-    }
-
-
-    private static boolean isCached(NodeStream<?> tree2Stream) {
-        return ((NodeStreamImpl) tree2Stream).isCached();
-    }
 
 
     private static <T extends Node> NodeStream<T> hook(NodeStream<T> stream, Runnable hook) {

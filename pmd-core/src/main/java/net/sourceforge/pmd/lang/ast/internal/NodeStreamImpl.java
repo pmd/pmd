@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,57 +16,33 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
+ * Implementation of {@link NodeStream}.
+ *
+ * <p>Intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
+ * specify new pipeline operations that are stacked on the stream produced by
+ * {@link #toStream()}. Terminal operations like {@link #count()} or {@link #toList()}
+ * create a new temporary Stream with the correct pipeline and then apply the terminal
+ * operation to it. That temporary stream is consumed, but subsequent terminal
+ * operations on the NodeStream will be called on new Streams.
+ *
+ *
  * @author Clément Fournier
- * @since 6.12.0
+ * @since 7.0.0
  */
 public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
 
     private final Supplier<Stream<T>> myStreamBuilder;
 
-    /**
-     * Populates the cached stream supplier.
-     * * When doing a union, the cache produces the Stream.concat of the component streams
-     * * Otherwise, when a terminal operation is called, it necessarily goes through {@link #toStream()},
-     * and the elements are dumped to a list.
-     */
-    private final Supplier<Supplier<Stream<T>>> myCacheMaker;
 
-    /** Produces a valid open stream on each get. Null when no terminal operation has been called. */
-    private Supplier<Stream<T>> myCachedValue;
-
-
-    private NodeStreamImpl(Supplier<Stream<T>> stream, Supplier<Supplier<Stream<T>>> cacheMaker) {
+    private NodeStreamImpl(Supplier<Stream<T>> stream) {
         this.myStreamBuilder = stream;
-        this.myCacheMaker = cacheMaker;
     }
 
 
     @Override
     public Stream<T> toStream() {
-        // was called from a terminal operation or directly by the user
-        // so we cache the value
-        return toStream(true);
+        return myStreamBuilder.get();
     }
-
-
-    private Stream<T> toStream(boolean populateCache) {
-        if (myCachedValue != null) {
-            return myCachedValue.get();
-        } else if (!populateCache) {
-            return myStreamBuilder.get();
-        } else {
-            // populate cache
-            myCachedValue = myCacheMaker.get();
-            return myCachedValue.get();
-        }
-    }
-
-
-    // Test only
-    boolean isCached() {
-        return myCachedValue != null;
-    }
-
 
     @Override
     public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
@@ -80,6 +56,38 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
     }
 
 
+    @SafeVarargs
+    @Override
+    public final <R extends Node> NodeStream<R> forkJoin(Function<? super T, ? extends NodeStream<? extends R>> fst,
+                                                         Function<? super T, ? extends NodeStream<? extends R>> snd,
+                                                         Function<? super T, ? extends NodeStream<? extends R>>... rest) {
+        Objects.requireNonNull(fst);
+        Objects.requireNonNull(snd);
+
+        Function<? super T, ? extends NodeStream<? extends R>>[] mappers = Arrays.copyOf(rest, rest.length + 2);
+
+        mappers[mappers.length - 1] = snd;
+        mappers[mappers.length - 2] = fst;
+
+        return forkJoinImpl(mappers);
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    @SafeVarargs
+    private final <R extends Node> NodeStream<R> forkJoinImpl(Function<? super T, ? extends NodeStream<? extends R>>... mappers) {
+
+        Function<? super T, ? extends NodeStream<? extends R>> aggregate =
+            t -> NodeStream.union(Arrays.stream(mappers)
+                                        .map(f -> f.apply(t))
+                                        .<NodeStream<R>>toArray(NodeStream[]::new));
+
+        // with forkJoin we know that the stream will be iterated more than twice
+        // so we cache the values
+        return cached().flatMap(aggregate);
+    }
+
+
     @Override
     public NodeStream<T> filter(Predicate<? super T> predicate) {
         return mapMyStreamGetter(tStream -> tStream.filter(predicate));
@@ -87,7 +95,7 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
 
 
     private <R extends Node> NodeStream<R> mapMyStreamGetter(Function<Stream<T>, Stream<R>> mapper) {
-        return fromSupplier(mapSupplier(() -> this.toStream(false), mapper)); // intermediate operations don't populate the cache
+        return fromSupplier(mapSupplier(this::toStream, mapper));
     }
 
 
@@ -109,18 +117,7 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
      * @apiNote This is a low-level utility that shouldn't ever be called from user code.
      */
     public static <T extends Node> NodeStream<T> fromSupplier(Supplier<Stream<T>> nodeStream) {
-        return new NodeStreamImpl<>(nodeStream, () -> {
-            List<T> lst = nodeStream.get().collect(Collectors.toList());
-            return lst::stream;
-        }); // use the default cache maker
+        return new NodeStreamImpl<>(nodeStream);
     }
 
-
-    @SafeVarargs
-    public static <T extends Node> NodeStream<T> unionImpl(NodeStream<? extends T>... streams) {
-        // evaluating toStream() for the union stream will evaluate the toStream of each substream eagerly and cache them inside the substreams.
-        // so creating another cache list in the union with the values of all substreams is not useful.
-        Supplier<Supplier<Stream<T>>> joinCacheBuilder = () -> () -> Stream.of(streams).flatMap(NodeStream::toStream);
-        return new NodeStreamImpl<>(joinCacheBuilder.get(), joinCacheBuilder);
-    }
 }
