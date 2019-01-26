@@ -37,20 +37,20 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
 
 
     @Override
-    public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> nodeStreamGetter) {
-        return new NodeStreamImpl<>(myStream.<R>flatMap(nodeStreamGetter.andThen(NodeStream::getStream)));
+    public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
+        return NodeStream.of(myStream.flatMap(mapper.andThen(NodeStream::getStream)));
     }
 
 
     @Override
-    public <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> nodeGetter) {
-        return new NodeStreamImpl<>(myStream.map(nodeGetter));
+    public <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
+        return NodeStream.of(myStream.map(mapper));
     }
 
 
     @Override
-    public NodeStream<T> filter(Predicate<? super T> nodeGetter) {
-        return new NodeStreamImpl<>(myStream.filter(nodeGetter));
+    public NodeStream<T> filter(Predicate<? super T> predicate) {
+        return NodeStream.of(myStream.filter(predicate));
     }
 
 

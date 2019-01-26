@@ -347,16 +347,36 @@ public interface Node {
 
     /**
      * Returns a node stream containing all the descendants
-     * of this node.
+     * of this node, in depth-first order.
+     *
+     * @return A node stream of the descendants of this node
      */
     NodeStream<Node> descendantStream();
 
 
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #childrenStream() children}
+     * of this node that are of the given type.
+     *
+     * @param childClass Type of node the returning stream should contain
+     * @param <R>        Type of node the returning stream should contain
+     *
+     * @return A new node stream
+     */
     default <R extends Node> NodeStream<R> children(Class<R> childClass) {
         return childrenStream().filterIs(childClass);
     }
 
 
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendantStream() descendants}
+     * of this node that are of the given type.
+     *
+     * @param childClass Type of node the returning stream should contain
+     * @param <R>        Type of node the returning stream should contain
+     *
+     * @return A new node stream
+     */
     default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
         return descendantStream().filterIs(childClass);
     }
