@@ -1448,6 +1448,7 @@ public class Foo {
           language="java"
           minimumLanguageVersion="1.7"
           since="6.11.0"
+          typeResolution="true"
           message="Consider use the try-with-resources statement instead of explicitly closing the resource"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usetrywithresources">
@@ -1467,6 +1468,10 @@ preserved.
 <![CDATA[
 //TryStatement[FinallyStatement//Name[
     tokenize(@Image, '\.')[last()] = $closeMethods
+][
+    pmd-java:typeIs('java.lang.AutoCloseable')
+    or
+    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ]]>
                 </value>

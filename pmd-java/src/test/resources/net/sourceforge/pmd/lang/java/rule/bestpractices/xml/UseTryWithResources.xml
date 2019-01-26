@@ -6,8 +6,10 @@
     <test-code>
         <description>Code sample</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.io.*;
+
 public class TryWithResources {
     public void run() {
         InputStream in = null;
@@ -36,8 +38,10 @@ public class TryWithResources {
     <test-code>
         <description>With IOUtils.closeQuietly 1</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.io.*;
+
 public class TryWithResources {
     public void run() {
         InputStream in = null;
@@ -57,8 +61,10 @@ public class TryWithResources {
     <test-code>
         <description>With IOUtils.closeQuietly 2</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.io.*;
+
 public class TryWithResources {
     public void run() {
         InputStream in = null;
@@ -78,8 +84,10 @@ public class TryWithResources {
     <test-code>
         <description>Multiple Resources</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
+import java.io.*;
+
 public class TryWithResources {
     public void run() {
         InputStream in1 = null;
@@ -114,8 +122,10 @@ public class TryWithResources {
         <description>Custom close methods</description>
         <rule-property name="closeMethods">myClose2,myClose</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.io.*;
+
 public class TryWithResources {
     public void run() {
         InputStream in = null;
@@ -145,14 +155,35 @@ public class TryWithResources {
     <test-code>
         <description>False negative with two resources</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
+import java.io.*;
+
 public class TryWithResources {
     public void run() {
         Reader r1 = new FileReader(file);
         try (Reader r2 = new FileReader(otherFile)) {
         } finally {
             r1.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with no autocloseable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TryWithResources {
+    public void run() {
+        var noAutoclosable = new Object() {
+            public void close() {}
+        };
+        try {
+            System.out.println(noAutocloseable);
+        } finally {
+            noAutoclosable.close();
         }
     }
 }
