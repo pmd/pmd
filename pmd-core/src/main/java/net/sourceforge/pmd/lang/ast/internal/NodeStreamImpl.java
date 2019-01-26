@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -21,6 +22,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
 
     private final Supplier<Stream<? extends T>> myStream;
+    private List<T> cachedValue;
 
 
     public NodeStreamImpl(Supplier<Stream<? extends T>> stream) {
@@ -29,8 +31,28 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
 
 
     @Override
-    public Stream<? extends T> toStream() {
-        return myStream.get();
+    public Stream<T> toStream() {
+        // was called from a terminal operation or directly by the user
+        return toStream(true);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private Stream<T> toStream(boolean populateCache) {
+        if (cachedValue != null) {
+            return cachedValue.stream();
+        } else if (!populateCache) {
+            return (Stream<T>) myStream.get();
+        } else {
+            cachedValue = myStream.get().collect(Collectors.toList());
+            return cachedValue.stream();
+        }
+    }
+
+
+    // Test only
+    boolean isCached() {
+        return cachedValue != null;
     }
 
 
@@ -52,21 +74,9 @@ public final class NodeStreamImpl<T extends Node> implements NodeStream<T> {
     }
 
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public Optional<T> findFirst() {
-        return (Optional<T>) myStream.get().findFirst();
-    }
-
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Optional<T> findAny() {
-        return (Optional<T>) myStream.get().findAny();
-    }
 
     private <R extends Node> NodeStream<R> mapMyStreamGetter(Function<Stream<? extends T>, Stream<? extends R>> mapper) {
-        return fromSupplier(mapSupplier(myStream, mapper));
+        return fromSupplier(mapSupplier(() -> this.toStream(false), mapper)); // intermediate operations don't populate the cache
     }
 
 

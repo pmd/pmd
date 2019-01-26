@@ -317,10 +317,25 @@ public interface NodeStream<T extends Node> {
 
 
     /**
+     * Maps the elements of this node stream using the given mapping
+     * and collects the result into a list.
+     *
+     * @return a list containing the elements of this stream
+     *
+     * @see Collectors#toList()
+     */
+    default <R> List<R> toList(Function<T, R> mapper) {
+        return toStream().map(mapper).collect(Collectors.toList());
+    }
+
+
+    /**
      * Returns an Optional describing the first element of this stream,
      * or an empty Optional if the stream is empty.
      */
-    Optional<T> findFirst();
+    default Optional<T> findFirst() {
+        return toStream().findFirst();
+    }
 
 
     /**
@@ -329,7 +344,9 @@ public interface NodeStream<T extends Node> {
      * describing some element of the stream, or an empty Optional if the
      * stream is empty.
      */
-    Optional<T> findAny();
+    default Optional<T> findAny() {
+        return toStream().findAny();
+    }
 
 
     /**
@@ -338,7 +355,7 @@ public interface NodeStream<T extends Node> {
      *
      * @return The stream backing this node stream
      */
-    Stream<? extends T> toStream();
+    Stream<T> toStream();
 
     // construction
 
@@ -367,21 +384,6 @@ public interface NodeStream<T extends Node> {
     @SafeVarargs
     static <T extends Node> NodeStream<T> of(T... nodes) {
         return NodeStreamImpl.fromSupplier(() -> Stream.of(nodes));
-    }
-
-
-    /**
-     * Returns a node stream containing all the elements of the first stream,
-     * then all the elements of the second stream.
-     *
-     * @param <T> The type of stream elements
-     * @param a   the first input stream
-     * @param b   the second input stream
-     *
-     * @return the concatenation of the two input streams
-     */
-    static <T extends Node> NodeStream<T> union(NodeStream<? extends T> a, NodeStream<? extends T> b) {
-        return NodeStreamImpl.fromSupplier(() -> Stream.concat(a.toStream(), b.toStream()));
     }
 
 

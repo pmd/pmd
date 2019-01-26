@@ -538,11 +538,11 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public NodeStream<Node> descendantStream() {
-        return childrenStream().flatMap(AbstractNode::meAndMyChildrenStream);
+        return childrenStream().flatMap(AbstractNode::meAndMyDescendantStream);
     }
 
 
-    private static NodeStream<Node> meAndMyChildrenStream(Node n) {
-        return NodeStream.union(NodeStream.of(n), n.childrenStream());
+    private static NodeStream<Node> meAndMyDescendantStream(Node n) {
+        return NodeStream.union(NodeStream.of(n), n.descendantStream());
     }
 }
