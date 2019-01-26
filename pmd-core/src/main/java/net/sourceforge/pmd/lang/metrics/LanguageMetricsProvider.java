@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.ast.QualifiableNode;
  * @param <O> Type of operation declaration nodes of the language
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 @Experimental
 public interface LanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> {

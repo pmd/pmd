@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.metrics.ProjectMemoizer;
  * Memoizes nothing.
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public final class DummyProjectMemoizer<T extends QualifiableNode, O extends QualifiableNode> implements ProjectMemoizer<T, O> {
 

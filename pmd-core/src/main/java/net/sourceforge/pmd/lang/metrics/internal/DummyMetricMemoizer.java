@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.metrics.ParameterizedMetricKey;
  * Memoizes nothing.
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public final class DummyMetricMemoizer<N extends Node> implements MetricMemoizer<N> {
 

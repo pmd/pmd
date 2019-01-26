@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.metrics.ResultOption;
  * Base implementation for {@link LanguageMetricsProvider}.
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public abstract class AbstractLanguageMetricsProvider<T extends QualifiableNode, O extends QualifiableNode> implements LanguageMetricsProvider<T, O> {
 
