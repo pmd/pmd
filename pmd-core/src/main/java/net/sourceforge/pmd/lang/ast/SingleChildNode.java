@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import net.sourceforge.pmd.lang.ast.stream.NodeStream;
-
 
 /**
  * Interface for a node that only has children of a specific type T.

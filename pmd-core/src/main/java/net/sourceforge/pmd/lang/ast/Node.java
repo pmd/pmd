@@ -11,7 +11,6 @@ import java.util.List;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
-import net.sourceforge.pmd.lang.ast.stream.NodeStream;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 

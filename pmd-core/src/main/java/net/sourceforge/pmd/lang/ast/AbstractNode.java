@@ -21,8 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.lang.ast.stream.NodeStream;
-import net.sourceforge.pmd.lang.ast.stream.internal.NodeStreamImpl;
+import net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.stream.internal;
+package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.stream.NodeStream;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
 /**
