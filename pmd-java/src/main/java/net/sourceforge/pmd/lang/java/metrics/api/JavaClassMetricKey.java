@@ -96,5 +96,4 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
         return calculator.supports(node);
     }
 
-
 }
