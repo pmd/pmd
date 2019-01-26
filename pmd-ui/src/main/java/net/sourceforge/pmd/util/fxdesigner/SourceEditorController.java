@@ -51,7 +51,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper;
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionModel;
@@ -71,13 +70,11 @@ public class SourceEditorController extends AbstractController {
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
     @FXML
-    private ToolbarTitledPane editorTitledPane;
-    @FXML
     private MenuButton languageSelectionMenuButton;
     @FXML
-    private Label sourceCodeTitleLabel;
+    private ToolbarTitledPane editorTitledPane;
     @FXML
-    private Label astTitleLabel;
+    private ToolbarTitledPane astViewTitledPane;
     @FXML
     private TreeView<Node> astTreeView;
     @FXML
@@ -214,7 +211,7 @@ public class SourceEditorController extends AbstractController {
         try {
             current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
-            astTitleLabel.setText("Abstract syntax tree (error)");
+            astViewTitledPane.setTitle("Abstract syntax tree (error)");
             return Optional.empty();
         }
 
@@ -231,7 +228,7 @@ public class SourceEditorController extends AbstractController {
 
     private void setUpToDateCompilationUnit(Node node) {
         parent.invalidateAst();
-        astTitleLabel.setText("Abstract syntax tree");
+        astViewTitledPane.setTitle("Abstract syntax tree");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }
@@ -251,7 +248,7 @@ public class SourceEditorController extends AbstractController {
 
     /** Clears the name occurences. */
     public void clearNameOccurences() {
-        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
+        codeEditorArea.clearStyleLayer(StyleLayerIds.NAME_OCCURENCE);
     }
 
 
@@ -269,6 +266,8 @@ public class SourceEditorController extends AbstractController {
         if (Objects.equals(node, currentFocusNode.getValue())) {
             return;
         }
+
+        Platform.runLater(() -> focusNodeInTreeView(node));
 
         codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true);
 
@@ -326,7 +325,7 @@ public class SourceEditorController extends AbstractController {
     }
 
 
-    public void focusNodeInTreeView(Node node) {
+    private void focusNodeInTreeView(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = astTreeView.getSelectionModel();
 
         // node is different from the old one

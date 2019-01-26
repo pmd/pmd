@@ -21,8 +21,11 @@
 
 */
 
-// This is repeated to use it from Less
-// Prefer using it over -fx-base
+// This is repeated to use it from Less and fix the default values
+// Important difference:
+// * @foo is resolved at compile-time by Less
+// * -foo is looked-up at runtime by the CSS engine. So it can't be used with Less
+//   compile-time functions, which will fail.
 @fx-base: #ececec;
 @fx-text-fill: ladder(
         -fx-color,
@@ -31,6 +34,7 @@
         -fx-dark-text-color 59%,
         -fx-mid-text-color 60%);
 
+// TODO simplify that
 // Base colors for background slates
 @app-base-color: darken(@fx-base, 4%);
 @app-darker-slate-color: darken(@fx-base, 14%);
@@ -45,6 +49,14 @@
 
 @normal-font-size: 10pt;
 @smaller-font-size: 9pt;
+
+.root {
+
+  /* A light grey that is the base color for objects.  Instead of using
+   * -fx-base directly, the sections in this file will typically use -fx-color.
+   */
+  -fx-base: @app-base-color;
+}
 
 // mixin to fix the width of a component
 .fix-width(@width) {
