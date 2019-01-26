@@ -14,7 +14,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-### Updatex Apex Support
+### Updated Apex Support
 
 *   The Apex language support has been bumped to version 45 (Spring '19). All new language features are now properly
     parsed and processed.
