@@ -112,7 +112,10 @@ public interface PropertySource {
      * @param propertyDescriptor The property descriptor for which to add a value
      * @param values             Values
      * @param <V>                The type of the values
+     *
+     * @deprecated {@link MultiValuePropertyDescriptor} is deprecated
      */
+    @Deprecated
     <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values);
 
 

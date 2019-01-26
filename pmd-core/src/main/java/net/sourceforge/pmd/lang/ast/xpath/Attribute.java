@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -18,6 +19,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Attributes know their name, the node they wrap,
  * and have access to their value.
  *
+ * <p>Two attributes are equal if they have the same name
+ * and their parent nodes are equal.
+ *
  * @author daniels
  */
 public class Attribute {
@@ -28,8 +32,8 @@ public class Attribute {
 
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
 
-    private Node parent;
-    private String name;
+    private final Node parent;
+    private final String name;
     private Method method;
     private Object value;
     private String stringValue;
@@ -40,7 +44,6 @@ public class Attribute {
         this.name = name;
         this.method = m;
     }
-
 
     /** Creates a new attribute belonging to the given node using its string value. */
     public Attribute(Node parent, String name, String value) {
@@ -93,12 +96,33 @@ public class Attribute {
         return stringValue;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attribute attribute = (Attribute) o;
+        return Objects.equals(parent, attribute.parent)
+            && Objects.equals(name, attribute.name);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parent, name);
+    }
+
+
     private String getLoggableAttributeName() {
         return parent.getXPathNodeName() + "/@" + name;
     }
 
     @Override
     public String toString() {
-        return name + ':' + getValue() + ':' + parent;
+        return name + ':' + getValue() + ':' + parent.getXPathNodeName();
     }
 }

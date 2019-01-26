@@ -97,7 +97,7 @@ class JavadocTag < Liquid::Tag
   QNAME_NO_NAMESPACE_REGEX = /((?:\w+\.)*\w+)/
 
   ARG_REGEX = Regexp.new(Regexp.union(JDocNamespaceDeclaration::NAMESPACED_FQCN_REGEX, QNAME_NO_NAMESPACE_REGEX).source + '(\[\])*')
-  ARGUMENTS_REGEX = Regexp.new('\(\)|\((' + ARG_REGEX.source + "(?:," + ARG_REGEX.source + ")*" + ')\)')
+  ARGUMENTS_REGEX = Regexp.new('\(\)|\((' + ARG_REGEX.source + "(?:,(?:" + ARG_REGEX.source + "))*" + ')\)')
 
 
   def initialize(tag_name, doc_ref, tokens)
