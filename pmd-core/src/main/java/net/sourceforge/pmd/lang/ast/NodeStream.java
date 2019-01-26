@@ -4,7 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import static net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl.fromSupplier;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -28,17 +34,12 @@ import net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl;
  * {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
  * upstream only once.
  *
- * @implNote
- * Choosing to wrap a stream instead of extending the interface is to
- * allow the functions to return NodeStreams, and to avoid code the bloat
- * induced by delegation.
- *
  * @param <T> Type of nodes this stream contains
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
-public interface NodeStream<T extends Node> {
+public interface NodeStream<T extends Node> extends Iterable<T> {
 
     // mapping
 
@@ -62,7 +63,9 @@ public interface NodeStream<T extends Node> {
      *
      * @see Stream#flatMap(Function)
      */
-    <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper);
+    default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
+        return NodeStreamImpl.fromSupplier(() -> toStream().flatMap(mapper.andThen(NodeStream::toStream)));
+    }
 
 
     /**
@@ -80,7 +83,9 @@ public interface NodeStream<T extends Node> {
      *
      * @see Stream#flatMap(Function)
      */
-    <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper);
+    default <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
+        return NodeStreamImpl.fromSupplier(() -> toStream().map(mapper));
+    }
 
     // navigation
 
@@ -148,9 +153,9 @@ public interface NodeStream<T extends Node> {
 
 
     /**
-     * Applies the given mapping functions to this node stream and merges the results
-     * into a new node stream. This allows exploring several paths at once on the same
-     * stream. The method is lazy and won't evaluate the upstream pipeline several times.
+     * Applies the given mapping functions to this node stream in order and merges the
+     * results into a new node stream. This allows exploring several paths at once on the
+     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
      *
      * @param fst  First mapper
      * @param snd  Second mapper
@@ -159,9 +164,23 @@ public interface NodeStream<T extends Node> {
      *
      * @return A merged node stream
      */
-    <R extends Node> NodeStream<R> forkJoin(Function<? super T, ? extends NodeStream<? extends R>> fst,
-                                            Function<? super T, ? extends NodeStream<? extends R>> snd,
-                                            Function<? super T, ? extends NodeStream<? extends R>>... rest);
+    default <R extends Node> NodeStream<R> forkJoin(Function<? super T, ? extends NodeStream<? extends R>> fst,
+                                                    Function<? super T, ? extends NodeStream<? extends R>> snd,
+                                                    Function<? super T, ? extends NodeStream<? extends R>>... rest) {
+        Objects.requireNonNull(fst);
+        Objects.requireNonNull(snd);
+
+        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
+        mappers.add(fst);
+        mappers.add(snd);
+        mappers.addAll(Arrays.asList(rest));
+
+        Function<? super T, ? extends NodeStream<? extends R>> aggregate =
+            t -> NodeStream.union(mappers.stream().map(f -> f.apply(t)).<NodeStream<R>>toArray(NodeStream[]::new));
+
+        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
+        return cached().flatMap(aggregate);
+    }
 
 
     /**
@@ -175,7 +194,7 @@ public interface NodeStream<T extends Node> {
      * @return A new stream
      */
     default NodeStream<T> peek(Consumer<? super T> action) {
-        return NodeStreamImpl.fromSupplier(() -> this.toStream().peek(action));
+        return NodeStreamImpl.fromSupplier(() -> toStream().peek(action));
     }
 
     // filtering
@@ -190,7 +209,9 @@ public interface NodeStream<T extends Node> {
      *
      * @return A filtered node stream
      */
-    NodeStream<T> filter(Predicate<? super T> predicate);
+    default NodeStream<T> filter(Predicate<? super T> predicate) {
+        return NodeStreamImpl.fromSupplier(() -> toStream().filter(predicate));
+    }
 
     // these are shorthands defined relative to filter
 
@@ -364,11 +385,17 @@ public interface NodeStream<T extends Node> {
     }
 
 
+    @Override
+    default Iterator<T> iterator() {
+        return toStream().iterator();
+    }
+
+
     /**
      * Returns a new stream of Ts having the pipeline of operations
      * defined by this node stream. This can be called multiple times.
      *
-     * @return The stream backing this node stream
+     * @return A stream containing the same elements as this node stream
      */
     Stream<T> toStream();
 
@@ -389,7 +416,7 @@ public interface NodeStream<T extends Node> {
      */
     default NodeStream<T> cached() {
 
-        return NodeStreamImpl.fromSupplier(new Supplier<Stream<T>>() {
+        return fromSupplier(new Supplier<Stream<T>>() {
             List<T> cachedValue = null;
 
 
@@ -413,7 +440,7 @@ public interface NodeStream<T extends Node> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> of(T node) {
-        return NodeStreamImpl.fromSupplier(() -> Stream.of(node));
+        return fromSupplier(() -> Stream.of(node));
     }
 
 
@@ -427,22 +454,22 @@ public interface NodeStream<T extends Node> {
      */
     @SafeVarargs
     static <T extends Node> NodeStream<T> of(T... nodes) {
-        return NodeStreamImpl.fromSupplier(() -> Stream.of(nodes));
+        return fromSupplier(() -> Stream.of(nodes));
     }
 
 
     /**
      * Returns a node stream containing all the elements of the given streams,
-     * each stream flattened into a single stream.
+     * one after the other.
      *
      * @param <T>     The type of stream elements
-     * @param streams the streams to flatten in here
+     * @param streams the streams to flatten
      *
-     * @return the concatenation of the two input streams
+     * @return the concatenation of the input streams
      */
     @SafeVarargs
     @SuppressWarnings("unchecked")
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
-        return NodeStreamImpl.fromSupplier(() -> Stream.of(streams).flatMap(ns -> ((NodeStreamImpl<T>) ns).toStream()));
+        return fromSupplier(() -> Arrays.stream(streams).flatMap(NodeStream::toStream));
     }
 }

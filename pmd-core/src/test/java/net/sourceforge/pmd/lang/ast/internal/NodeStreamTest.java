@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public class NodeStreamTest {
 
         MutableInt numEvals = new MutableInt();
         NodeStream<Node> stream =
-            hook(tree1.descendantStream(), numEvals::increment)
+            hook(numEvals::increment, tree1.descendantStream())
                 .forkJoin(
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("0")),
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("1"))
@@ -105,13 +106,58 @@ public class NodeStreamTest {
 
         assertThat(stream.count(), equalTo(2));
 
-        assertThat(numEvals.getValue(), equalTo(10)); // reevaluated
+        assertThat(numEvals.getValue(), equalTo(5)); // not reevaluated
     }
 
 
+    @Test
+    public void testCachedStreamUpstreamPipelineIsExecutedAtMostOnce() {
+
+        MutableInt upstreamEvals = new MutableInt();
+        MutableInt downstreamEvals = new MutableInt();
+
+        NodeStream<Node> stream =
+            tree1.descendantStream()
+                 .imageMatching("0.*")
+                 .peek(n -> upstreamEvals.increment())
+                 .cached()
+                 .filter(n -> true)
+                 .peek(n -> downstreamEvals.increment());
+
+        assertThat(upstreamEvals.getValue(), equalTo(0));   // not evaluated yet
+
+        assertThat(stream.count(), equalTo(4));
+
+        assertThat(upstreamEvals.getValue(), equalTo(4));   // evaluated once
+        assertThat(downstreamEvals.getValue(), equalTo(4)); // evaluated once
+
+        assertThat(stream.count(), equalTo(4));
+
+        assertThat(upstreamEvals.getValue(), equalTo(4));   // upstream was not reevaluated
+        assertThat(downstreamEvals.getValue(), equalTo(8)); // downstream has been reevaluated
+    }
 
 
-    private static <T extends Node> NodeStream<T> hook(NodeStream<T> stream, Runnable hook) {
+    @Test
+    public void testUnionIsLazy() {
+
+        MutableInt tree1Evals = new MutableInt();
+        MutableInt tree2Evals = new MutableInt();
+
+        NodeStream<Node> unionStream = NodeStream.union(tree1.treeStream().peek(n -> tree1Evals.increment()),
+                                                        tree2.treeStream().peek(n -> tree2Evals.increment()));
+
+        assertThat(tree1Evals.getValue(), equalTo(0));   // not evaluated yet
+        assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated yet
+
+        assertSame(unionStream.findFirst().get(), tree1);
+
+        assertThat(tree1Evals.getValue(), equalTo(1));   // evaluated once
+        assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated
+    }
+
+
+    private static <T extends Node> NodeStream<T> hook(Runnable hook, NodeStream<T> stream) {
         return stream.filter(t -> {
             hook.run();
             return true;

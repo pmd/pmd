@@ -354,6 +354,15 @@ public interface Node {
 
 
     /**
+     * Returns a node stream containing this node, then all its
+     * descendants in depth-first order.
+     *
+     * @return A node stream of the whole subtree topped by this node
+     */
+    NodeStream<Node> treeStream();
+
+
+    /**
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #childrenStream() children}
      * of this node that are of the given type.
      *
