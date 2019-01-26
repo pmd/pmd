@@ -4,36 +4,20 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 
-import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
-import net.sourceforge.pmd.cpd.token.TokenFilter;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.objectivec.ObjectiveCTokenManager;
-import net.sourceforge.pmd.lang.objectivec.ast.Token;
+import net.sourceforge.pmd.util.IOUtil;
 
 /**
  * The Objective-C Tokenizer
  */
-public class ObjectiveCTokenizer implements Tokenizer {
+public class ObjectiveCTokenizer extends JavaCCTokenizer {
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+    protected TokenManager getLexerForSource(SourceCode sourceCode) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
-        try (Reader reader = new StringReader(buffer.toString())) {
-            ObjectiveCTokenManager tokenManager = new ObjectiveCTokenManager(reader);
-            tokenManager.setFileName(sourceCode.getFileName());
-            final TokenFilter tokenFilter = new JavaCCTokenFilter(tokenManager);
-            Token currentToken = (Token) tokenFilter.getNextToken();
-            while (currentToken != null) {
-                tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
-                currentToken = (Token) tokenFilter.getNextToken();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            tokenEntries.add(TokenEntry.getEOF());
-        }
+        return new ObjectiveCTokenManager(IOUtil.skipBOM(new StringReader(buffer.toString())));
     }
 }

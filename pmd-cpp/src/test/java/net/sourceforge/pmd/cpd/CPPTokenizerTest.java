@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -159,14 +160,18 @@ public class CPPTokenizerTest {
     }
 
     private Tokens parse(String snippet) {
-        return parse(snippet, false, new Tokens());
+        try {
+            return parse(snippet, false, new Tokens());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private Tokens parse(String snippet, boolean skipBlocks, Tokens tokens) {
+    private Tokens parse(String snippet, boolean skipBlocks, Tokens tokens) throws IOException {
         return parse(snippet, skipBlocks, null, tokens);
     }
 
-    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern, Tokens tokens) {
+    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern, Tokens tokens) throws IOException {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         if (skipPattern != null) {

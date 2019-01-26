@@ -23,6 +23,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
 
         AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
+        tokenManager.setFileName(sourceCode.getFileName());
 
         try {
             AntlrToken token = (AntlrToken) tokenManager.getNextToken();
