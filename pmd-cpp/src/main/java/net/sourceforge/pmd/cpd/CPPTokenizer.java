@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.cpp.CppTokenManager;
 import net.sourceforge.pmd.util.IOUtil;
