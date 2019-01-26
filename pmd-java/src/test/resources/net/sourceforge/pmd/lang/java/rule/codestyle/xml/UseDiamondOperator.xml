@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Use Diamond</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,11</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+public class Foo {
+    List<String> field;
+    public void foo() {
+       List<String> strings = new ArrayList<String>();
+       List<String> strings2 = new ArrayList<>();
+       this.field = new ArrayList<String>();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>False positive cases: anonymous classes, methods calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private WeakReference<Class<?>> typeReference;
+    public void foo() {
+        Collections.sort(files, new Comparator<DataSource>() {
+            @Override
+            public int compare(DataSource left, DataSource right) {
+                String leftString = left.getNiceFileName(useShortNames, inputPaths);
+                String rightString = right.getNiceFileName(useShortNames, inputPaths);
+                return leftString.compareTo(rightString);
+            }
+        });
+        final TreeSet<Map.Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(
+            new Comparator<Map.Entry<String, TimedResult>>() {
+                @Override
+                public int compare(final Entry<String, TimedResult> o1, final Entry<String, TimedResult> o2) {
+                    return Long.compare(o1.getValue().selfTimeNanos.get(), o2.getValue().selfTimeNanos.get());
+                }
+            });
+        new ThreadLocal<Queue<TimerEntry>>() {
+            @Override
+            protected Queue<TimerEntry> initialValue() {
+                return Collections.asLifoQueue(new LinkedList<TimerEntry>());
+            }
+        };
+        Iterator<Node> EMPTY_ITERATOR = new ArrayList<Node>().iterator();
+        Class<?> type = null;
+        typeReference = new WeakReference<Class<?>>(type);
+        ((ListNode<E>) rev).reverseCache = new SoftReference<ImmutableList<E>>(this);
+    }
+    public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
+        return propertyValues == null ? new HashMap<PropertyDescriptor<?>, Object>() : new HashMap<>(propertyValues);
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>

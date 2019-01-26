@@ -121,6 +121,9 @@ entries:
         - title: Design
           output: web, pdf
           url: /pmd_rules_apex_design.html
+        - title: Documentation
+          output: web, pdf
+          url: /pmd_rules_apex_documentation.html
         - title: Error Prone
           output: web, pdf
           url: /pmd_rules_apex_errorprone.html

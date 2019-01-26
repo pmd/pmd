@@ -335,4 +335,49 @@ public final class Main {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NPE in enums (see #1549)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+
+            public enum LoggerHelper {
+                INSTANCE;
+
+                private final Logger log = LoggerFactory.getLogger(LoggerHelper.class);
+
+                public void sendMessage(String message) {
+                    log.info(message);
+                }
+
+                public static void main(String[] args) {
+                    LoggerHelper.INSTANCE.sendMessage("A message");
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>missing argument in enum</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            import org.slf4j.Logger;
+            import org.slf4j.LoggerFactory;
+
+            public enum LoggerHelper {
+                INSTANCE;
+
+                private static final String pattern = "log: {}";
+
+                public static void main(String[] args) {
+                    final Logger logger = LoggerFactory.getLogger(LoggerHelper.class);
+
+                    logger.info(pattern, 1, 2);
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

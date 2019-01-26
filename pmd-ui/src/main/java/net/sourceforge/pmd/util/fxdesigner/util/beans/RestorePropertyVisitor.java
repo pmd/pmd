@@ -65,7 +65,10 @@ public class RestorePropertyVisitor extends BeanNodeVisitor<SettingsOwner> {
         }
 
         for (SettingsOwner child : target.getChildrenSettingsNodes()) {
-            model.getChildrenByType().get(child.getClass()).accept(this, child);
+            BeanModelNode childModel = model.getChildrenByType().get(child.getClass());
+            if (childModel != null) {
+                childModel.accept(this, child);
+            }
         }
     }
 

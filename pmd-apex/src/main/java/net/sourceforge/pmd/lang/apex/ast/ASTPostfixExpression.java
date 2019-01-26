@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import apex.jorje.data.ast.PostfixOp;
 import apex.jorje.semantic.ast.expression.PostfixExpression;
+
 
 public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
 
@@ -12,8 +14,14 @@ public class ASTPostfixExpression extends AbstractApexNode<PostfixExpression> {
         super(postfixExpression);
     }
 
+
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    public PostfixOp getOperator() {
+        return node.getOp();
     }
 }
