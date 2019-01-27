@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * <p>Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid the code bloat
  * induced by delegation. Being a functional interface wasn't expected at
- * all, but in the end it's a nice-to-have that makes implementation conciser.
+ * all, but in the end it's a nice-to-have that shortens the implementation.
  *
  * <p>Intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
  * specify new pipeline operations that are stacked on the stream produced by
@@ -50,7 +50,7 @@ import java.util.stream.Stream;
  * @author Clément Fournier
  * @since 7.0.0
  */
-@FunctionalInterface // technically a functional interface hehe
+@FunctionalInterface
 public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
@@ -62,7 +62,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     Stream<T> toStream();
 
-    // mapping
+    // lazy pipeline transformations
 
 
     /**
@@ -106,6 +106,90 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     default <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
         return () -> toStream().map(mapper);
+    }
+
+
+    /**
+     * Returns a node stream consisting of the nodes of this stream that match
+     * the given predicate.
+     *
+     * @param predicate A predicate to apply to each node to determine if
+     *                  it should be included
+     *
+     * @return A filtered node stream
+     */
+    default NodeStream<T> filter(Predicate<? super T> predicate) {
+        return () -> toStream().filter(predicate);
+    }
+
+
+    /**
+     * Returns a stream consisting of the elements of this stream, additionally
+     * performing the provided action on each element as elements are consumed
+     * from the resulting stream.
+     *
+     * @param action an action to perform on the elements as they are consumed
+     *               from the stream
+     *
+     * @return A new stream
+     */
+    default NodeStream<T> peek(Consumer<? super T> action) {
+        return () -> toStream().peek(action);
+    }
+
+
+    /**
+     * Returns a new node stream that contains all the elements of this stream, then
+     * all the elements of the given stream.
+     *
+     * @param right Other stream
+     *
+     * @return A concatenated stream
+     */
+    default NodeStream<T> append(NodeStream<? extends T> right) {
+        return () -> Stream.concat(this.toStream(), right.toStream());
+    }
+
+
+    /**
+     * Returns a new node stream that contains all the elements of the given stream,
+     * then all the elements of this stream.
+     *
+     * @param right Other stream
+     *
+     * @return A concatenated stream
+     */
+    default NodeStream<T> prepend(NodeStream<? extends T> right) {
+        return () -> Stream.concat(right.toStream(), this.toStream());
+    }
+
+
+    /**
+     * Returns a node stream containing all the elements of this node stream,
+     * but which will evaluate the upstream pipeline only once. The returned
+     * stream is also lazy, which means the elements of this stream are not
+     * eagerly evaluated when calling this method, but only on the first
+     * terminal operation called on the downstream of the returned stream.
+     *
+     * <p>This is useful e.g. if you want to call several terminal operations
+     * without executing the pipeline several times.
+     *
+     * @return A cached node stream
+     */
+    default NodeStream<T> cached() {
+
+        return new NodeStream<T>() {
+            List<T> cachedValue = null;
+
+
+            @Override
+            public Stream<T> toStream() {
+                if (cachedValue == null) {
+                    cachedValue = NodeStream.this.toStream().collect(Collectors.toList());
+                }
+                return cachedValue.stream();
+            }
+        };
     }
 
     // navigation
@@ -204,21 +288,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return cached().flatMap(aggregate);
     }
 
-    // filtering
 
-
-    /**
-     * Returns a node stream consisting of the nodes of this stream that match
-     * the given predicate.
-     *
-     * @param predicate A predicate to apply to each node to determine if
-     *                  it should be included
-     *
-     * @return A filtered node stream
-     */
-    default NodeStream<T> filter(Predicate<? super T> predicate) {
-        return () -> toStream().filter(predicate);
-    }
 
     // these are shorthands defined relative to filter
 
@@ -395,78 +465,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     @Override
     default Iterator<T> iterator() {
         return toStream().iterator();
-    }
-
-    // other
-
-
-    /**
-     * Returns a new node stream that contains all the elements of this stream, then
-     * all the elements of the given stream.
-     *
-     * @param right Other stream
-     *
-     * @return A concatenated stream
-     */
-    default NodeStream<T> append(NodeStream<? extends T> right) {
-        return () -> Stream.concat(this.toStream(), right.toStream());
-    }
-
-
-    /**
-     * Returns a new node stream that contains all the elements of the given stream,
-     * then all the elements of this stream.
-     *
-     * @param right Other stream
-     *
-     * @return A concatenated stream
-     */
-    default NodeStream<T> prepend(NodeStream<? extends T> right) {
-        return () -> Stream.concat(right.toStream(), this.toStream());
-    }
-
-
-    /**
-     * Returns a stream consisting of the elements of this stream, additionally
-     * performing the provided action on each element as elements are consumed
-     * from the resulting stream.
-     *
-     * @param action an action to perform on the elements as they are consumed
-     *               from the stream
-     *
-     * @return A new stream
-     */
-    default NodeStream<T> peek(Consumer<? super T> action) {
-        return () -> toStream().peek(action);
-    }
-
-
-    /**
-     * Returns a node stream containing all the elements of this node stream,
-     * but which will evaluate the upstream pipeline only once. The returned
-     * stream is also lazy, which means the elements of this stream are not
-     * eagerly evaluated when calling this method, but only on the first
-     * terminal operation called on the downstream of the returned stream.
-     *
-     * <p>This is useful e.g. if you want to call several terminal operations
-     * without executing the pipeline several times.
-     *
-     * @return A cached node stream
-     */
-    default NodeStream<T> cached() {
-
-        return new NodeStream<T>() {
-            List<T> cachedValue = null;
-
-
-            @Override
-            public Stream<T> toStream() {
-                if (cachedValue == null) {
-                    cachedValue = NodeStream.this.toStream().collect(Collectors.toList());
-                }
-                return cachedValue.stream();
-            }
-        };
     }
 
     // construction

@@ -157,6 +157,45 @@ public class NodeStreamTest {
     }
 
 
+    @Test
+    public void testSomeOperationsAreLazy() {
+
+        MutableInt tree1Evals = new MutableInt();
+
+        NodeStream<Node> unionStream = tree1.treeStream().peek(n -> tree1Evals.increment());
+
+        int i = 0;
+
+        assertThat(tree1Evals.getValue(), equalTo(i));      // not evaluated yet
+
+        unionStream.findFirst();
+
+        assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
+
+        unionStream.any();
+
+        assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
+
+        unionStream.none();
+
+        assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
+
+        // those don't trigger any evaluation
+
+        unionStream.map(p -> p);
+        unionStream.filter(p -> true);
+        unionStream.append(tree2.treeStream());
+        unionStream.prepend(tree2.treeStream());
+        unionStream.flatMap(Node::treeStream);
+        unionStream.iterator();
+        unionStream.cached();
+        unionStream.descendants();
+        unionStream.children();
+
+        assertThat(tree1Evals.getValue(), equalTo(i));      // not evaluated
+    }
+
+
     private static <T extends Node> NodeStream<T> hook(Runnable hook, NodeStream<T> stream) {
         return stream.filter(t -> {
             hook.run();
