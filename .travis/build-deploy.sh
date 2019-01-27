@@ -127,8 +127,6 @@ elif travis_isPush; then
         set +e
 
         upload_baseline
-
-        true
     )
 
 else
