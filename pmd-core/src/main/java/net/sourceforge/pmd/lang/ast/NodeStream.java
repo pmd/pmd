@@ -24,14 +24,18 @@ import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 
 
 /**
- * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but provides
- * a specialized API to roam abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
+ * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
+ * a specialized API to navigate abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
  * <p>Unlike Streams, NodeStreams can be iterated multiple times. Be aware though, that
- * they don't cache their results by default, so e.g. evaluating calling count() several
- * times will execute the whole pipeline again. The elements of a stream can however be
- * {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
- * upstream only once.
+ * they don't cache their results by default, so e.g. calling count() several times will
+ * execute the whole pipeline again. The elements of a stream can however be {@linkplain #cached() cached}
+ * at an arbitrary point in the pipeline to evaluate the upstream only once.
+ *
+ * <p>NodeStreams are sequential streams, most of the time ordered in document order.
+ * For that reason there is no equivalent to {@link Stream#findAny()}, although {@link #first()}
+ * is an equivalent to {@link Stream#findFirst()}. Exceptions to the  document ordering
+ * rule are {@link #precedingSiblings()} and {@link #siblings()}.
  *
  * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
  * Its only abstract member is {@link #toStream()}.
@@ -39,7 +43,8 @@ import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
  * @param <T> Type of nodes this stream contains
  *
  * @author Clément Fournier
- * @implNote <p>Choosing to wrap a stream instead of extending the interface is to
+ * @implNote
+ * Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid the code bloat
  * induced by delegation. Being a functional interface wasn't expected at
  * all, but in the end it's a nice-to-have that shortens the implementation.
@@ -194,7 +199,85 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         };
     }
 
-    // navigation
+    // tree navigation
+
+
+    /**
+     * Returns a node stream composed of all the ancestors of the nodes
+     * contained in this stream.
+     *
+     * <p>This is equivalent to {@code flatMap(Node::ancestorStream)}.
+     *
+     * @return A stream of ancestors
+     *
+     * @see Node#ancestorStream()
+     */
+    default NodeStream<Node> ancestors() {
+        return flatMap(Node::ancestorStream);
+    }
+
+
+    /**
+     * Returns a node stream composed of all the (first-degree) parents of the nodes
+     * contained in this stream.
+     *
+     * <p>This is equivalent to {@code map(Node::jjtGetParent)}.
+     *
+     * @return A stream of parents
+     */
+    default NodeStream<Node> parents() {
+        return map(Node::jjtGetParent);
+    }
+
+
+    /**
+     * Returns a node stream composed of all the children of the nodes
+     * contained in this stream.
+     *
+     * <p>This is equivalent to {@code flatMap(Node::childrenStream)}.
+     *
+     * @return A stream of children
+     *
+     * @see Node#childrenStream()
+     * @see #children(Class)
+     */
+    default NodeStream<Node> children() {
+        return flatMap(Node::childrenStream);
+    }
+
+
+    /**
+     * Returns a node stream composed of all the descendants of the nodes
+     * contained in this stream. The nodes of the returning stream are yielded
+     * in a depth-first fashion.
+     *
+     * <p>This is equivalent to {@code flatMap(Node::descendantStream)}.
+     *
+     * @return A stream of children
+     *
+     * @see Node#descendantStream()
+     * @see #descendants(Class)
+     */
+    default NodeStream<Node> descendants() {
+        return flatMap(Node::descendantStream);
+    }
+
+
+    /**
+     * Returns a node stream composed of all the descendants of the nodes
+     * contained in this stream. The nodes of the returning stream are yielded
+     * in a depth-first fashion.
+     *
+     * <p>This is equivalent to {@code flatMap(Node::treeStream)}.
+     *
+     * @return A stream of children
+     *
+     * @see Node#treeStream()
+     * @see #descendants()
+     */
+    default NodeStream<Node> descendantsOrSelf() {
+        return flatMap(Node::treeStream);
+    }
 
 
     /**
@@ -212,7 +295,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Returns a node stream containing all the preceding siblings of the nodes contained
-     * in this stream.
+     * in this stream. The nodes are yielded from right to left, i.e. from the node out,
+     * and so not in document order.
      *
      * @return A stream of siblings
      */
@@ -225,65 +309,12 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Returns a node stream containing all the siblings of the nodes contained in this stream.
-     * Order is not specified.
+     * This method makes no guarantee about the order in which the siblings are yielded.
      *
      * @return A stream of siblings
      */
     default NodeStream<Node> siblings() {
         return flatMap(n -> n.singletonStream().precedingSiblings().append(n.singletonStream().followingSiblings()));
-    }
-
-
-    /**
-     * Returns a node stream composed of all the ancestors of the nodes
-     * contained in this stream. This is equivalent to {@code flatMap(Node::ancestorStream)}.
-     *
-     * @return A new node stream
-     */
-    default NodeStream<Node> ancestors() {
-        return flatMap(Node::ancestorStream);
-    }
-
-
-    /**
-     * Returns a node stream composed of all the (first) parents of the nodes
-     * contained in this stream. This is equivalent to {@code map(Node::jjtGetParent)}.
-     *
-     * @return A new node stream
-     */
-    default NodeStream<Node> parents() {
-        return map(Node::jjtGetParent);
-    }
-
-
-    /**
-     * Returns a node stream composed of all the children of the nodes
-     * contained in this stream. This is equivalent to {@code flatMap(Node::childrenStream)}.
-     *
-     * @return A new node stream
-     *
-     * @see Node#childrenStream()
-     * @see #children(Class)
-     */
-    default NodeStream<Node> children() {
-        return flatMap(Node::childrenStream);
-    }
-
-
-    /**
-     * Returns a node stream composed of all the descendants of the nodes
-     * contained in this stream. The nodes of the returning stream are yielded
-     * in a depth-first fashion.
-     *
-     * <p>This is equivalent to {@code flatMap(Node::descendantStream)}.
-     *
-     * @return A new node stream
-     *
-     * @see Node#descendantStream()
-     * @see #descendants(Class)
-     */
-    default NodeStream<Node> descendants() {
-        return flatMap(Node::descendantStream);
     }
 
 
@@ -340,22 +371,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
         mappers.add(fst);
         mappers.add(snd);
-        mappers.addAll(Arrays.asList(rest));
-
-        Function<? super T, ? extends NodeStream<? extends R>> aggregate =
-            t -> NodeStream.union(mappers.stream().map(f -> f.apply(t)).<NodeStream<R>>toArray(NodeStream[]::new));
-
-        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
-        return cached().flatMap(aggregate);
-    }
-
-
-    default <R extends Node> NodeStream<R> matching(Function<? super T, ? extends NodeStream<? extends R>> fst,
-                                                    Function<? super T, ? extends NodeStream<? extends R>>... rest) {
-        Objects.requireNonNull(fst);
-
-        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
-        mappers.add(fst);
         mappers.addAll(Arrays.asList(rest));
 
         Function<? super T, ? extends NodeStream<? extends R>> aggregate =
@@ -448,21 +463,33 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     }
 
 
-    /** Returns 'true' if the stream has at least one element. **/
-    default boolean any() {
-        return any(t -> true);
+    /**
+     * Returns 'true' if the stream has at least one element.
+     *
+     * @return 'true' if the stream has at least one element.
+     */
+    default boolean nonEmpty() {
+        return first().isPresent();
     }
 
 
-    /** Returns 'true' if the stream is empty. **/
-    default boolean none() {
-        return none(t -> true);
+    /**
+     * Returns 'true' if the stream has no elements.
+     *
+     * @return 'true' if the stream has no elements.
+     */
+    default boolean isEmpty() {
+        return !nonEmpty();
     }
 
 
     /**
      * Returns whether any elements of this stream match the provided predicate.
      * If the stream is empty then false is returned and the predicate is not evaluated.
+     *
+     * @param predicate The predicate that one element should match for this method to return true
+     *
+     * @return true if any elements of the stream match the provided predicate, otherwise false
      */
     default boolean any(Predicate<? super T> predicate) {
         return toStream().anyMatch(predicate);
@@ -472,6 +499,10 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     /**
      * Returns whether no elements of this stream match the provided predicate.
      * If the stream is empty then true is returned and the predicate is not evaluated.
+     *
+     * @param predicate The predicate that no element should match for this method to return true
+     *
+     * @return true if either no elements of the stream match the provided predicate or the stream is empty, otherwise false
      */
     default boolean none(Predicate<? super T> predicate) {
         return toStream().noneMatch(predicate);
@@ -481,9 +512,55 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     /**
      * Returns whether all elements of this stream match the provided predicate.
      * If the stream is empty then true is returned and the predicate is not evaluated.
+     *
+     * @param predicate The predicate that all elements should match for this method to return true
+     *
+     * @return true if either all elements of the stream match the provided predicate or the stream is empty, otherwise false
      */
     default boolean all(Predicate<? super T> predicate) {
         return toStream().allMatch(predicate);
+    }
+
+
+    /**
+     * Returns an Optional containing the first element of this stream,
+     * or an empty Optional if the stream is empty.
+     *
+     * @return an Optional containing the first element of this stream,
+     */
+    default Optional<T> first() {
+        return toStream().findFirst();
+    }
+
+
+    /**
+     * Returns an Optional containing the first element of this stream
+     * that matches the given predicate, or an empty optional if there
+     * is none.
+     *
+     * @param predicate The predicate that one element should match for
+     *                  this method to return it
+     *
+     * @return an Optional containing the first element of this stream
+     * that matches the given predicate
+     */
+    default Optional<T> first(Predicate<? super T> predicate) {
+        return filter(predicate).first();
+    }
+
+
+    /**
+     * Returns an Optional containing the first element of this stream
+     * of the given type, or an empty optional if there is none.
+     *
+     * @param rClass The type of node to find
+     * @param <R>    The type of node to find
+     *
+     * @return an Optional containing the first element of this stream
+     * of the given type
+     */
+    default <R extends Node> Optional<R> first(Class<R> rClass) {
+        return filterIs(rClass).first();
     }
 
 
@@ -520,42 +597,17 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Maps the elements of this node stream using the given mapping
-     * and collects the result into a list.
+     * and collects the results into a list.
+     *
+     * @param mapper Mapping function
+     * @param <R>    Return type of the mapper, and element type of the returned list
      *
      * @return a list containing the elements of this stream
      *
      * @see Collectors#toList()
      */
-    default <R> List<R> toList(Function<T, R> mapper) {
-        return toStream().map(mapper).collect(Collectors.toList());
-    }
-
-
-    /**
-     * Returns an Optional describing the first element of this stream,
-     * or an empty Optional if the stream is empty.
-     */
-    default Optional<T> first() {
-        return toStream().findFirst();
-    }
-
-
-    /**
-     * Returns an Optional containing the first element of this stream
-     * that matches the given predicate, or an empty optional if there
-     * is none.
-     */
-    default Optional<T> first(Predicate<? super T> predicate) {
-        return filter(predicate).first();
-    }
-
-
-    /**
-     * Returns an Optional containing the first element of this stream
-     * that of the given type, or an empty optional if there is none.
-     */
-    default <R extends Node> Optional<R> first(Class<R> rClass) {
-        return filterIs(rClass).first();
+    default <R> List<R> toList(Function<? super T, ? extends R> mapper) {
+        return collect(Collectors.mapping(mapper, Collectors.toList()));
     }
 
 
@@ -615,6 +667,16 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     }
 
 
+    /**
+     * Returns a new node stream backed by the given stream supplier.
+     * The returned node stream will be iterable several times if the
+     * supplier returns a non-closed stream each time.
+     *
+     * @param streamSupplier A supplier for a stream of nodes
+     * @param <T>            Type of nodes in the returned stream
+     *
+     * @return A new node stream
+     */
     static <T extends Node> NodeStream<T> fromSupplier(Supplier<Stream<T>> streamSupplier) {
         return streamSupplier::get;
     }

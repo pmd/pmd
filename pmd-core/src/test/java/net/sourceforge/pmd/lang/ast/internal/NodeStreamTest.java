@@ -184,11 +184,11 @@ public class NodeStreamTest {
 
         assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
 
-        unionStream.any();
+        unionStream.nonEmpty();
 
         assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
 
-        unionStream.none();
+        unionStream.isEmpty();
 
         assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
 
