@@ -198,7 +198,7 @@ Maven plugin will use and benefit from the latest bugfixes and enhancements:
 
 For more information, please see the well documented PMD plugin project page here:
 <http://maven.apache.org/plugins/maven-pmd-plugin/index.html>.
-Also, the bug tracker for this plugin is [here](http://jira.codehaus.org/browse/MPMD).
+Also, the bug tracker for this plugin is [here](https://issues.apache.org/jira/browse/MPMD).
 
 
 ## Maven 1
