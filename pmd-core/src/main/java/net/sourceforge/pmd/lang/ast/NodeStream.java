@@ -25,27 +25,29 @@ import java.util.stream.StreamSupport;
  * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
  * a specialized API to navigate abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
+ * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
+ * Its only abstract member is {@link #toStream()}.
+ *
  * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. Be aware though, that
  * they don't cache their results by default, so e.g. calling count() several times will
  * execute the whole pipeline again. The elements of a stream can however be {@linkplain #cached() cached}
  * at an arbitrary point in the pipeline to evaluate the upstream only once. Some construction
  * methods allow building a node stream from an external data source, e.g. {@link #fromIterable(Iterable)}
  * and {@link #fromSupplier(Supplier)}. Depending on how the data source is implemented, the
- * built node streams may only be iterable once.
+ * built node streams may be iterable only once.
  *
- * <p>Node streams are meant to be sequential streams, so there is no equivalent to  {@link Stream#findAny()},
- * although {@link #first()} is an equivalent to {@link Stream#findFirst()}.
+ * <p>Node streams are meant to be sequential streams, so there is no equivalent to  {@link Stream#findAny()}.
+ * {@link #first()} is an equivalent to {@link Stream#findFirst()}.
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
  * {@link #union(NodeStream[])} or {@link #append(NodeStream)}, may not preserve that ordering.
  * {@link #map(Function)} and {@link #flatMap(Function)} operations may not preserve the ordering
  * if the stream has more than one element, since the mapping is applied in order to each element
- * of the receiver stream. {@link #parents()} and {@link #ancestors()} also break document order,
- * and may produce a stream with duplicate elements.
+ * of the receiver stream. This extends to methods defined in terms of map or flatMap, e.g.
+ * {@link #descendants()} or {@link #children()}.
  *
- * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
- * Its only abstract member is {@link #toStream()}.
+ * <p>Node streams may contain duplicates, which can be pruned with {@link #distinct()}.
  *
  * @param <T> Type of nodes this stream contains
  *
@@ -140,7 +142,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     /**
      * Returns a stream consisting of the elements of this stream, additionally
      * performing the provided action on each element as elements are consumed
-     * from the resulting stream.
+     * from the resulting stream. Note that terminal operations such as {@link #count()}
+     * don't necessarily execute the action.
      *
      * @param action an action to perform on the elements as they are consumed
      *               from the stream
@@ -369,6 +372,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      *
      * @see #filterIs(Class)
+     * @see Node#children(Class)
      */
     default <R extends Node> NodeStream<R> children(Class<R> childClass) {
         return children().filterIs(childClass);
@@ -384,6 +388,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      *
      * @see #filterIs(Class)
+     * @see Node#descendants(Class)
      */
     default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
         return descendants().filterIs(childClass);
@@ -640,12 +645,14 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Maps the elements of this node stream using the given mapping
      * and collects the results into a list.
      *
+     * <p>This is equivalent to {@code collect(Collectors.mapping(mapper, Collectors.toList()))}.
+     *
      * @param mapper Mapping function
      * @param <R>    Return type of the mapper, and element type of the returned list
      *
      * @return a list containing the elements of this stream
      *
-     * @see Collectors#toList()
+     * @see Collectors#mapping(Function, Collector)
      */
     default <R> List<R> toList(Function<? super T, ? extends R> mapper) {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
@@ -669,15 +676,19 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @param <T>  Element type of the returned stream
      *
      * @return A new node stream
+     *
+     * @see Node#asStream()
      */
     static <T extends Node> NodeStream<T> of(T node) {
+        // overload the varargs to avoid useless array creation
         return node == null ? empty() : () -> Stream.of(node);
     }
 
 
     /**
-     * Returns a node stream whose elements are the given nodes in order.
-     * Null elements are not part of the resulting node stream.
+     * Returns a node stream whose elements are the given nodes
+     * in order. Null elements are not part of the resulting node
+     * stream.
      *
      * @param nodes The elements of the new stream
      * @param <T>   Element type of the returned stream
@@ -692,7 +703,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Returns a new node stream that contains the same elements as the given
-     * iterable. Null elements are not part of the resulting node stream.
+     * iterable. Null items are filtered out of the resulting stream.
      *
      * @param iterable Source of nodes
      * @param <T>      Type of nodes in the returned node stream
@@ -710,7 +721,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Returns a new node stream backed by the given stream supplier.
-     * The returned node stream will be iterable several times if the
+     * Null items are filtered out of the resulting stream.
+     *
+     * <p>The returned node stream will be iterable several times if the
      * supplier returns a non-closed stream each time.
      *
      * @param streamSupplier A supplier for a stream of nodes
@@ -719,7 +732,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> fromSupplier(Supplier<Stream<T>> streamSupplier) {
-        return streamSupplier::get;
+        return () -> streamSupplier.get().filter(Objects::nonNull);
     }
 
 
