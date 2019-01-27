@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
@@ -115,6 +116,8 @@ public class NodeStreamTest {
     @Test
     public void testSiblings() {
         assertThat(pathsOf(followPath(tree2, "1").asStream().siblings()), contains("0", "2", "3"));
+        assertThat(pathsOf(tree2.asStream().siblings()), empty());
+        assertThat(pathsOf(tree1.asStream().siblings()), empty());
     }
 
 
@@ -201,7 +204,7 @@ public class NodeStreamTest {
 
         NodeStream<Node> stream =
             tree1.descendantStream()
-                 .imageMatching("0.*")
+                 .filterMatching(Node::getImage, "0.*")
                  .peek(n -> upstreamEvals.increment())
                  .cached()
                  .filter(n -> true)

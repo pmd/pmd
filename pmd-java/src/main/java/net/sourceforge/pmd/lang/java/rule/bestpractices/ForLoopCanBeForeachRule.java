@@ -156,7 +156,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .children(ASTPrimaryExpression.class)
                          .children(ASTPrimaryPrefix.class)
                          .children(ASTLiteral.class)
-                         .withImage("0")
+                         .filterMatching(Node::getImage, "0")
                          .filterNot(ASTLiteral::isStringLiteral)
                          .nonEmpty();
     }
@@ -199,7 +199,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                   .children(ASTPrimaryExpression.class)
                                   .children(ASTPrimaryPrefix.class)
                                   .children(ASTName.class)
-                                  .withImage(itName)
+                                  .filterMatching(Node::getImage, itName)
                                   .nonEmpty();
 
                 if (!leftIsIndexVarName) {
@@ -208,9 +208,9 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
                 return guardCondition.children(ASTRelationalExpression.class)
                                      .forkJoin(
-                                         rel -> NodeStream.of(rel).withImage("<"),
+                                         rel -> NodeStream.of(rel).filterMatching(Node::getImage, "<"),
                                          rel -> NodeStream.of(rel)
-                                                          .withImage("<=")
+                                                          .filterMatching(Node::getImage, "<=")
                                                           .children(ASTAdditiveExpression.class)
                                                           .filter(expr ->
                                                                expr.jjtGetNumChildren() == 2
@@ -218,14 +218,14 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                                                    && expr.children(ASTPrimaryExpression.class)
                                                                           .children(ASTPrimaryPrefix.class)
                                                                           .children(ASTLiteral.class)
-                                                                          .withImage("1")
+                                                                          .filterMatching(Node::getImage, "1")
                                                                           .nonEmpty()
                                                    )
                                      )
                                      .children(ASTPrimaryExpression.class)
                                      .children(ASTPrimaryPrefix.class)
                                      .children(ASTName.class)
-                                     .imageMatching("\\w+\\.(size|length)")
+                                     .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
                                      .first()
                                      .map(astName -> astName.getImage().split("\\.")[0]);
 
@@ -292,13 +292,13 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .filter(it -> it.jjtGetNumChildren() == 1)
                          .children(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
-                         .withImage(occ.getImage())
+                         .filterMatching(Node::getImage, occ.getImage())
                          .nonEmpty()
                 && suffix.asStream()
                          .precedingSiblings()
                          .filterIs(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
-                         .withImage(arrayName)
+                         .filterMatching(Node::getImage, arrayName)
                          .nonEmpty()
 
                 && suffix.jjtGetParent()
@@ -393,7 +393,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                        .filter(indexName -> guardCondition.children(ASTPrimaryExpression.class)
                                                           .children(ASTPrimaryPrefix.class)
                                                           .children(ASTName.class)
-                                                          .withImage(indexName + ".hasNext")
+                                                          .filterMatching(Node::getImage, indexName + ".hasNext")
                                                           .nonEmpty())
                        .map(indexName -> occurrences.stream()
                                                     .map(NameOccurrence::getLocation)

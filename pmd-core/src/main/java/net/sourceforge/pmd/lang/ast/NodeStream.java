@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,16 +24,58 @@ import java.util.stream.StreamSupport;
  * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
  * a specialized API to navigate abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
+ * <h1>API usage</h1>
+ *
+ * <p>The {@link Node} interface exposes methods like {@link Node#childrenStream()} or {@link Node#asStream()}
+ * to obtain new NodeStreams. Null-safe construction methods are available here, see {@link #of(Node)},
+ * {@link #of(Node[])}, {@link #fromIterable(Iterable)}.
+ *
+ * <p>Most functions have an equivalent in the {@link Stream} interface and their behaviour is equivalent.
+ * Some additional functions are provided to iterate the axes of the tree: {@link #children()}, {@link #descendants()},
+ * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #precedingSiblings()},
+ * {@link #followingSiblings()}, {@link #siblings()}. Filtering and mapping nodes by type is possible
+ * through {@link #filterIs(Class)}, and the specialized {@link #children(Class)} and {@link #descendants(Class)}.
+ *
+ * <p>Many complex predicates about nodes can be expressed by testing the emptiness of a node stream. E.g. the
+ * following tests if the node is a variable declarator id initialized to the value {@code 0}:
+ * <pre>
+ *     {@linkplain #of(Node) NodeStream.of}(someNode)                           // the stream here is empty if the node is null
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
+ *               {@linkplain #children(Class) .followingSiblings}()                    // the stream here contains only the siblings, not the original node
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableInitializer.class)
+ *               .children(ASTExpression.class)
+ *               .children(ASTPrimaryExpression.class)
+ *               .children(ASTPrimaryPrefix.class)
+ *               .children(ASTLiteral.class)
+ *               {@linkplain #filterMatching(Function, Object) .filterMatching}(Node::getImage, "0")
+ *               {@linkplain #filterNot(Predicate) .filterNot}(ASTLiteral::isStringLiteral)
+ *               {@linkplain #nonEmpty() .nonEmpty}(); // If the stream is non empty here, then all the pipeline matched
+ * </pre>
+ *
+ * <p>Many operations from the node interface can be written with streams too.
+ * <ul>
+ * <li>node.{@linkplain Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@linkplain Node#children(Class) children(t)}.{@linkplain #first()}
+ * <li>node.{@linkplain Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@linkplain Node#descendants(Class) descendants(t)}.{@linkplain #first()}
+ * <li>node.{@linkplain Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@linkplain Node#ancestorStream() ancestorStream()}.{@linkplain #first(Class) first(t)}
+ * <li>node.{@linkplain Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@linkplain Node#descendants(Class) children(t)}.{@linkplain #toList()}
+ * <li>node.{@linkplain Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@linkplain Node#descendants(Class) descendants(t)}.{@linkplain #toList()}
+ * </ul>
+ *
+ * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. That means, that the operations
+ * that are <i>terminal</i> in the Stream interface (i.e. consume the stream) don't consume NodeStreams.
+ * Be aware though, that node streams don't cache their results by default, so e.g. calling {@link #count()}
+ * followed by {@link #toList()} will execute the whole pipeline twice. The elements of a stream can
+ * however be {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
+ * upstream only once. Some construction methods allow building a node stream from an external data
+ * source, e.g. {@link #fromIterable(Iterable)} and {@link #fromSupplier(Supplier)}. Depending on how
+ * the data source is implemented, the built node streams may be iterable only once.
+ *
+ * <p>Node streams may contain duplicates, which can be pruned with {@link #distinct()}.
+ *
+ * <h1>Details</h1>
+ *
  * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
  * Its only abstract member is {@link #toStream()}.
- *
- * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. Be aware though, that
- * they don't cache their results by default, so e.g. calling count() several times will
- * execute the whole pipeline again. The elements of a stream can however be {@linkplain #cached() cached}
- * at an arbitrary point in the pipeline to evaluate the upstream only once. Some construction
- * methods allow building a node stream from an external data source, e.g. {@link #fromIterable(Iterable)}
- * and {@link #fromSupplier(Supplier)}. Depending on how the data source is implemented, the
- * built node streams may be iterable only once.
  *
  * <p>Node streams are meant to be sequential streams, so there is no equivalent to  {@link Stream#findAny()}.
  * {@link #first()} is an equivalent to {@link Stream#findFirst()}.
@@ -47,13 +88,10 @@ import java.util.stream.StreamSupport;
  * of the receiver stream. This extends to methods defined in terms of map or flatMap, e.g.
  * {@link #descendants()} or {@link #children()}.
  *
- * <p>Node streams may contain duplicates, which can be pruned with {@link #distinct()}.
- *
  * @param <T> Type of nodes this stream contains
  *
  * @author Clément Fournier
- * @implNote
- * Choosing to wrap a stream instead of extending the interface is to
+ * @implNote Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid the code bloat
  * induced by delegation. Being a functional interface wasn't expected at
  * all, but in the end it's a nice-to-have that shortens the implementation.
@@ -100,7 +138,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
         return () -> toStream().flatMap(mapper.<NodeStream<? extends R>>andThen(ns -> ns == null ? empty() : ns)
-                                              .andThen(NodeStream::toStream));
+                                            .andThen(NodeStream::toStream));
     }
 
 
@@ -118,7 +156,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A mapped stream
      *
-     * @see Stream#flatMap(Function)
+     * @see Stream#map(Function)
      */
     default <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
         return () -> toStream().<R>map(mapper).filter(Objects::nonNull);
@@ -133,6 +171,11 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *                  it should be included
      *
      * @return A filtered node stream
+     *
+     * @see Stream#filter(Predicate)
+     * @see #filterNot(Predicate)
+     * @see #filterIs(Class)
+     * @see #filterMatching(Function, Object)
      */
     default NodeStream<T> filter(Predicate<? super T> predicate) {
         return () -> toStream().filter(predicate);
@@ -294,6 +337,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return flatMap(Node::childrenStream);
     }
 
+    // TODO find boundaries can only be handled if we implement takeWhile/dropWhile
+    // but they were only added in JDK 9
+
 
     /**
      * Returns a node stream composed of all the descendants of the nodes
@@ -366,32 +412,37 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns the {@linkplain #children() children stream} filtered by the given
      * node type.
      *
-     * @param childClass Type of node the returning stream should contain
-     * @param <R>        Type of node the returning stream should contain
+     * <p>This is equivalent to {@code children().filterIs(rClass)}.
+     *
+     * @param rClass Type of node the returning stream should contain
+     * @param <R>    Type of node the returning stream should contain
      *
      * @return A new node stream
      *
      * @see #filterIs(Class)
      * @see Node#children(Class)
      */
-    default <R extends Node> NodeStream<R> children(Class<R> childClass) {
-        return children().filterIs(childClass);
+    default <R extends Node> NodeStream<R> children(Class<R> rClass) {
+        return children().filterIs(rClass);
     }
 
 
     /**
-     * Returns the {@linkplain #descendants() descendant stream} filtered by child type.
+     * Returns the {@linkplain #descendants() descendant stream} filtered by the
+     * given node type.
      *
-     * @param childClass Type of node the returning stream should contain
-     * @param <R>        Type of node the returning stream should contain
+     * <p>This is equivalent to {@code descendants().filterIs(rClass)}.
+     *
+     * @param rClass Type of node the returning stream should contain
+     * @param <R>    Type of node the returning stream should contain
      *
      * @return A new node stream
      *
      * @see #filterIs(Class)
      * @see Node#descendants(Class)
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
-        return descendants().filterIs(childClass);
+    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+        return descendants().filterIs(rClass);
     }
 
 
@@ -430,13 +481,14 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream consisting of the nodes of this stream that do not
-     * match the given predicate.
+     * Filters the node of this stream using the negation of the given predicate.
      *
      * @param predicate A predicate to apply to each node to determine if
      *                  it should be included
      *
      * @return A filtered node stream
+     *
+     * @see #filter(Predicate)
      */
     default NodeStream<T> filterNot(Predicate<? super T> predicate) {
         return filter(predicate.negate());
@@ -444,13 +496,14 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream consisting of the nodes of this stream whose class
-     * is a subtype of the given class.
+     * Filters the nodes of this stream that are a subtype of the given class.
      *
      * @param rClass The type of the nodes of the returned stream
      * @param <R>    The type of the nodes of the returned stream
      *
      * @return A filtered node stream
+     *
+     * @see #filter(Predicate)
      */
     default <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
         return filter(rClass::isInstance).map(rClass::cast);
@@ -458,41 +511,39 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream consisting of the nodes of this stream whose
-     * {@linkplain Node#getImage() image} is exactly the given string.
+     * Filters the nodes of this stream by comparing a value extracted from the nodes
+     * with the given constant. This takes care of null value by calling
+     * {@link Objects#equals(Object, Object)}. E.g. to filter nodes that have
+     * the {@linkplain Node#getImage() image} {@code "a"}, use {@code filterMatching(Node::getImage, "a")}.
      *
-     * @param image The image the returned nodes must have
+     * @param extractor Function extracting a value from the nodes of this stream
+     * @param comparand Value to which the extracted value will be compared
+     * @param <U>       Type of value to compare
      *
      * @return A filtered node stream
+     *
+     * @see #filter(Predicate)
+     * @see #filterNotMatching(Function, Object)
      */
-    default NodeStream<T> withImage(String image) {
-        return filter(it -> it.hasImageEqualTo(image));
+    default <U> NodeStream<T> filterMatching(Function<? super T, ? extends U> extractor, U comparand) {
+        return filter(t -> Objects.equals(extractor.apply(t), comparand));
     }
 
 
     /**
-     * Returns a node stream consisting of the nodes of this stream whose
-     * {@linkplain Node#getImage() image} matches the given {@link Pattern}.
+     * Inverse of {@link #filterMatching(Function, Object)}.
      *
-     * @param regex A regular expression that the image of the returned nodes must match
-     *
-     * @return A filtered node stream
-     */
-    default NodeStream<T> imageMatching(Pattern regex) {
-        return filter(it -> it.getImage() != null && regex.matcher(it.getImage()).matches());
-    }
-
-
-    /**
-     * Returns a node stream consisting of the nodes of this stream whose
-     * {@linkplain Node#getImage() image} matches the given regular expression.
-     *
-     * @param regex A regular expression that the image of the returned nodes must match
+     * @param extractor Function extracting a value from the nodes of this stream
+     * @param comparand Value to which the extracted value will be compared
+     * @param <U>       Type of value to compare
      *
      * @return A filtered node stream
+     *
+     * @see #filter(Predicate)
+     * @see #filterMatching(Function, Object)
      */
-    default NodeStream<T> imageMatching(String regex) {
-        return filter(it -> it.getImage().matches(regex));
+    default <U> NodeStream<T> filterNotMatching(Function<? super T, ? extends U> extractor, U comparand) {
+        return filter(t -> !Objects.equals(extractor.apply(t), comparand));
     }
 
     // "terminal" operations
@@ -705,14 +756,14 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns a new node stream that contains the same elements as the given
      * iterable. Null items are filtered out of the resulting stream.
      *
+     * <p>It's possible to map an iterator to a node stream by calling
+     * {@code fromIterable(() -> iterator)}, but then the returned node stream
+     * would only be iterable once.
+     *
      * @param iterable Source of nodes
      * @param <T>      Type of nodes in the returned node stream
      *
      * @return A new node stream
-     *
-     * @apiNote It's possible to map an iterator to a node stream by calling
-     * {@code fromIterable(() -> iterator)}, but then the returned node stream
-     * would only be iterable once.
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
         return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);

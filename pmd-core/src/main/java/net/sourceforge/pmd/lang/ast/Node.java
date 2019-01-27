@@ -337,6 +337,20 @@ public interface Node {
 
 
     /**
+     * Returns a node stream containing only this node.
+     * {@link NodeStream#of(Node)} is a null-safe version
+     * of this method.
+     *
+     * @return A node stream containing only this node
+     *
+     * @see NodeStream#of(Node)
+     */
+    default NodeStream<Node> asStream() {
+        return NodeStream.of(this);
+    }
+
+
+    /**
      * Returns a node stream containing all the children of
      * this node. The return type uses a wildcard to make it
      * possible to override it with some more specific type,
@@ -408,32 +422,18 @@ public interface Node {
 
 
     /**
-     * Returns a node stream containing only this node.
-     * {@link NodeStream#of(Node)} is a null-safe version
-     * of this method.
-     *
-     * @return A node stream containing only this node
-     *
-     * @see NodeStream#of(Node)
-     */
-    default NodeStream<Node> asStream() {
-        return NodeStream.of(this);
-    }
-
-
-    /**
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #childrenStream() children}
      * of this node that are of the given type.
      *
-     * @param childClass Type of node the returning stream should contain
-     * @param <R>        Type of node the returning stream should contain
+     * @param rClass Type of node the returning stream should contain
+     * @param <R>    Type of node the returning stream should contain
      *
      * @return A new node stream
      *
      * @see NodeStream#children(Class)
      */
-    default <R extends Node> NodeStream<R> children(Class<R> childClass) {
-        return childrenStream().filterIs(childClass);
+    default <R extends Node> NodeStream<R> children(Class<R> rClass) {
+        return asStream().children(rClass);
     }
 
 
@@ -441,15 +441,15 @@ public interface Node {
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendantStream() descendants}
      * of this node that are of the given type.
      *
-     * @param childClass Type of node the returning stream should contain
-     * @param <R>        Type of node the returning stream should contain
+     * @param rClass Type of node the returning stream should contain
+     * @param <R>    Type of node the returning stream should contain
      *
      * @return A new node stream
      *
      * @see NodeStream#descendants(Class)
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
-        return descendantStream().filterIs(childClass);
+    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+        return asStream().descendants(rClass);
     }
 
 }
