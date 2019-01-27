@@ -62,6 +62,18 @@ public class NodeStreamTest {
 
 
     @Test
+    public void testSingletonStream() {
+        assertThat(pathsOf(tree1.singletonStream()), contains(""));
+    }
+
+
+    @Test
+    public void testTreeStream() {
+        assertThat(pathsOf(tree1.treeStream()), contains("", "0", "00", "01", "010", "1"));
+    }
+
+
+    @Test
     public void testNodeStreamsCanBeIteratedSeveralTimes() {
         NodeStream<Node> stream = tree1.descendantStream();
 
