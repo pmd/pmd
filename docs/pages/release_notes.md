@@ -14,14 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-### Updated Apex Support
+#### Updated Apex Support
 
 *   The Apex language support has been bumped to version 45 (Spring '19). All new language features are now properly
     parsed and processed.
 *   Many nodes now expose more informations, such as the operator for BooleanExpressions. This makes these operators
     consumable by XPath rules, e.g. `//BooleanExpression[@Operator='&&']`.
 
-### PL/SQL Grammar improvements
+#### PL/SQL Grammar improvements
 
 *   In this release, many parser bugs in our PL/SQL support have been fixed. This adds e.g. support for
     table collection expressions (`SELECT * FROM TABLE(expr)`).
