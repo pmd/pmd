@@ -3,7 +3,7 @@ repository: pmd/pmd
 pmd:
     version: 6.11.0
     previous_version: 6.10.0
-    date: ??-January-2019
+    date: 27-January-2019
     release_type: minor
 
 output: web
