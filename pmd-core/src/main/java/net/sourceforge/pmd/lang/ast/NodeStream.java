@@ -42,7 +42,7 @@ import java.util.stream.StreamSupport;
  * <pre>
  *     {@linkplain #of(Node) NodeStream.of}(someNode)                           // the stream here is empty if the node is null
  *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
- *               {@linkplain #children(Class) .followingSiblings}()                    // the stream here contains only the siblings, not the original node
+ *               {@linkplain #followingSiblings() .followingSiblings}()                    // the stream here contains only the siblings, not the original node
  *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableInitializer.class)
  *               .children(ASTExpression.class)
  *               .children(ASTPrimaryExpression.class)
