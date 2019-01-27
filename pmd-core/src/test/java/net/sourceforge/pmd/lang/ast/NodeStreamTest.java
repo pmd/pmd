@@ -19,10 +19,6 @@ import java.util.List;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Test;
 
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.NodeStream;
-
 
 /**
  * @author Clément Fournier

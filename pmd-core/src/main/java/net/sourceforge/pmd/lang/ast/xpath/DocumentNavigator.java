@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.jaxen.DefaultNavigator;
-import org.jaxen.UnsupportedAxisException;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
 
@@ -183,14 +182,6 @@ public class DocumentNavigator extends DefaultNavigator {
             return EMPTY_ITERATOR;
         }
     }
-
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Iterator<Node> getAncestorAxisIterator(Object contextNode) throws UnsupportedAxisException {
-        return super.getAncestorAxisIterator(contextNode);
-    }
-
 
     /**
      * Get an iterator over all following siblings.
