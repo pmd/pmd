@@ -452,4 +452,20 @@ public interface Node {
         return asStream().descendants(rClass);
     }
 
+
+    /**
+     * Returns the {@linkplain #ancestorStream() ancestor stream} of each node
+     * in this stream, filtered by the given node type.
+     *
+     * @param rClass Type of node the returning stream should contain
+     * @param <R>    Type of node the returning stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#ancestors(Class)
+     */
+    default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
+        return asStream().ancestors(rClass);
+    }
+
 }

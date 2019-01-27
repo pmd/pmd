@@ -108,7 +108,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
         return init.children(ASTLocalVariableDeclaration.class)
                    .first(it -> it.children(ASTVariableDeclarator.class).count() == 1)
-                   .map(decl -> getInfoAboutForIndexVar(init));
+                   .flatMap(decl -> getInfoAboutForIndexVar(init));
     }
 
 
@@ -162,18 +162,15 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
     }
 
 
-    private static Entry<VariableNameDeclaration, List<NameOccurrence>> getInfoAboutForIndexVar(ASTForInit init) {
+    private static Optional<Entry<VariableNameDeclaration, List<NameOccurrence>>> getInfoAboutForIndexVar(ASTForInit init) {
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = init.getScope().getDeclarations(VariableNameDeclaration.class);
 
-        for (Entry<VariableNameDeclaration, List<NameOccurrence>> e : decls.entrySet()) {
-
-            ASTForInit declInit = e.getKey().getNode().getFirstParentOfType(ASTForInit.class);
-            if (Objects.equals(declInit, init)) {
-                return e;
-            }
-        }
-
-        return null;
+        return decls.entrySet().stream()
+                    .filter(e -> e.getKey().getNode()
+                                  .ancestors(ASTForInit.class)
+                                  .filterMatching(n -> n, init)
+                                  .nonEmpty())
+                    .findFirst();
     }
 
 
@@ -414,8 +411,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
         return iterableInfo.getValue().stream()
                            .map(NameOccurrence::getLocation)
-                           .filter(n -> n.ancestorStream()
-                                         .first(ASTForStatement.class)
+                           .filter(n -> n.ancestors(ASTForStatement.class)
+                                         .first()
                                          .filter(forParent -> Objects.equals(forParent, stmt))
                                          .isPresent())
                            .filter(it -> it.hasImageEqualTo(iterableInfo.getKey().getName() + ".remove"))

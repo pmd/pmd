@@ -32,9 +32,10 @@ import java.util.stream.StreamSupport;
  *
  * <p>Most functions have an equivalent in the {@link Stream} interface and their behaviour is equivalent.
  * Some additional functions are provided to iterate the axes of the tree: {@link #children()}, {@link #descendants()},
- * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #precedingSiblings()},
- * {@link #followingSiblings()}, {@link #siblings()}. Filtering and mapping nodes by type is possible
- * through {@link #filterIs(Class)}, and the specialized {@link #children(Class)} and {@link #descendants(Class)}.
+ * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
+ * {@link #precedingSiblings()}, {@link #followingSiblings()}, {@link #siblings()}. Filtering and mapping
+ * nodes by type is possible through {@link #filterIs(Class)}, and the specialized {@link #children(Class)},
+ * {@link #descendants(Class)}, and {@link #ancestors(Class)}.
  *
  * <p>Many complex predicates about nodes can be expressed by testing the emptiness of a node stream. E.g. the
  * following tests if the node is a variable declarator id initialized to the value {@code 0}:
@@ -52,11 +53,11 @@ import java.util.stream.StreamSupport;
  *               {@linkplain #nonEmpty() .nonEmpty}(); // If the stream is non empty here, then all the pipeline matched
  * </pre>
  *
- * <p>Many operations from the node interface can be written with streams too.
+ * <p>Many existing operations from the node interface can be written with streams too:
  * <ul>
  * <li>node.{@linkplain Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@linkplain Node#children(Class) children(t)}.{@linkplain #first()}
  * <li>node.{@linkplain Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@linkplain Node#descendants(Class) descendants(t)}.{@linkplain #first()}
- * <li>node.{@linkplain Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@linkplain Node#ancestorStream() ancestorStream()}.{@linkplain #first(Class) first(t)}
+ * <li>node.{@linkplain Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@linkplain Node#ancestors(Class) ancestors(t)}.{@linkplain #first()}
  * <li>node.{@linkplain Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@linkplain Node#descendants(Class) children(t)}.{@linkplain #toList()}
  * <li>node.{@linkplain Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@linkplain Node#descendants(Class) descendants(t)}.{@linkplain #toList()}
  * </ul>
@@ -294,15 +295,16 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream composed of all the ancestors of the nodes
+     * Returns a node stream containing all the ancestors of the nodes
      * contained in this stream. The returned stream doesn't preserve document
-     * order.
+     * order, since ancestors are yielded in innermost to outermost order.
      *
      * <p>This is equivalent to {@code flatMap(Node::ancestorStream)}.
      *
      * @return A stream of ancestors
      *
      * @see Node#ancestorStream()
+     * @see #ancestorsOrSelf()
      */
     default NodeStream<Node> ancestors() {
         return flatMap(Node::ancestorStream);
@@ -310,12 +312,30 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream composed of all the (first-degree) parents of the nodes
+     * Returns a node stream containing the nodes contained in this stream and their ancestors.
+     * The nodes of the returning stream are yielded in a depth-first fashion.
+     *
+     * <p>This is equivalent to {@code flatMap(Node::treeStream)}.
+     *
+     * @return A stream of ancestors
+     *
+     * @see #ancestors()
+     */
+    default NodeStream<Node> ancestorsOrSelf() {
+        return flatMap(n -> n.asStream().append(n.ancestorStream()));
+    }
+
+
+    /**
+     * Returns a node stream containing all the (first-degree) parents of the nodes
      * contained in this stream.
      *
      * <p>This is equivalent to {@code map(Node::jjtGetParent)}.
      *
      * @return A stream of parents
+     *
+     * @see #ancestors()
+     * @see #ancestorsOrSelf()
      */
     default NodeStream<Node> parents() {
         return map(Node::jjtGetParent);
@@ -323,7 +343,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream composed of all the children of the nodes
+     * Returns a node stream containing all the children of the nodes
      * contained in this stream.
      *
      * <p>This is equivalent to {@code flatMap(Node::childrenStream)}.
@@ -342,13 +362,13 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream composed of all the descendants of the nodes
+     * Returns a node stream containing all the strict descendants of the nodes
      * contained in this stream. The nodes of the returning stream are yielded
      * in a depth-first fashion.
      *
      * <p>This is equivalent to {@code flatMap(Node::descendantStream)}.
      *
-     * @return A stream of children
+     * @return A stream of descendants
      *
      * @see Node#descendantStream()
      * @see #descendants(Class)
@@ -359,13 +379,12 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a node stream composed of all the descendants of the nodes
-     * contained in this stream. The nodes of the returning stream are yielded
-     * in a depth-first fashion.
+     * Returns a node stream containing the nodes contained in this stream and their descendants.
+     * The nodes of the returning stream are yielded in a depth-first fashion.
      *
      * <p>This is equivalent to {@code flatMap(Node::treeStream)}.
      *
-     * @return A stream of children
+     * @return A stream of descendants
      *
      * @see Node#treeStream()
      * @see #descendants()
@@ -409,8 +428,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns the {@linkplain #children() children stream} filtered by the given
-     * node type.
+     * Returns the {@linkplain #children() children stream} of each node
+     * in this stream, filtered by the given node type.
      *
      * <p>This is equivalent to {@code children().filterIs(rClass)}.
      *
@@ -428,8 +447,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns the {@linkplain #descendants() descendant stream} filtered by the
-     * given node type.
+     * Returns the {@linkplain #descendants() descendant stream} of each node
+     * in this stream, filtered by the given node type.
      *
      * <p>This is equivalent to {@code descendants().filterIs(rClass)}.
      *
@@ -443,6 +462,25 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
         return descendants().filterIs(rClass);
+    }
+
+
+    /**
+     * Returns the {@linkplain #ancestors() ancestor stream} of each node
+     * in this stream, filtered by the given node type.
+     *
+     * <p>This is equivalent to {@code ancestors().filterIs(rClass)}.
+     *
+     * @param rClass Type of node the returning stream should contain
+     * @param <R>    Type of node the returning stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see #filterIs(Class)
+     * @see Node#ancestors(Class)
+     */
+    default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
+        return ancestors().filterIs(rClass);
     }
 
 
