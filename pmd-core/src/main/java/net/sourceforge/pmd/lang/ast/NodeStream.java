@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -348,6 +349,22 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return cached().flatMap(aggregate);
     }
 
+
+    default <R extends Node> NodeStream<R> matching(Function<? super T, ? extends NodeStream<? extends R>> fst,
+                                                    Function<? super T, ? extends NodeStream<? extends R>>... rest) {
+        Objects.requireNonNull(fst);
+
+        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
+        mappers.add(fst);
+        mappers.addAll(Arrays.asList(rest));
+
+        Function<? super T, ? extends NodeStream<? extends R>> aggregate =
+            t -> NodeStream.union(mappers.stream().map(f -> f.apply(t)).<NodeStream<R>>toArray(NodeStream[]::new));
+
+        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
+        return cached().flatMap(aggregate);
+    }
+
     // these are shorthands defined relative to filter
 
 
@@ -518,19 +535,27 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns an Optional describing the first element of this stream,
      * or an empty Optional if the stream is empty.
      */
-    default Optional<T> findFirst() {
+    default Optional<T> first() {
         return toStream().findFirst();
     }
 
 
     /**
-     * Returns an Optional describing the first element of this stream,
-     * or an empty Optional if the stream is empty. Returns an Optional
-     * describing some element of the stream, or an empty Optional if the
-     * stream is empty.
+     * Returns an Optional containing the first element of this stream
+     * that matches the given predicate, or an empty optional if there
+     * is none.
      */
-    default Optional<T> findAny() {
-        return toStream().findAny();
+    default Optional<T> first(Predicate<? super T> predicate) {
+        return filter(predicate).first();
+    }
+
+
+    /**
+     * Returns an Optional containing the first element of this stream
+     * that of the given type, or an empty optional if there is none.
+     */
+    default <R extends Node> Optional<R> first(Class<R> rClass) {
+        return filterIs(rClass).first();
     }
 
 
@@ -587,6 +612,11 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
         return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);
+    }
+
+
+    static <T extends Node> NodeStream<T> fromSupplier(Supplier<Stream<T>> streamSupplier) {
+        return streamSupplier::get;
     }
 
 

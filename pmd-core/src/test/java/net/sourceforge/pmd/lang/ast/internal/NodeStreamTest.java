@@ -162,7 +162,7 @@ public class NodeStreamTest {
         assertThat(tree1Evals.getValue(), equalTo(0));   // not evaluated yet
         assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated yet
 
-        assertSame(unionStream.findFirst().get(), tree1);
+        assertSame(unionStream.first().get(), tree1);
 
         assertThat(tree1Evals.getValue(), equalTo(1));   // evaluated once
         assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated
@@ -180,7 +180,7 @@ public class NodeStreamTest {
 
         assertThat(tree1Evals.getValue(), equalTo(i));      // not evaluated yet
 
-        unionStream.findFirst();
+        unionStream.first();
 
         assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
 
