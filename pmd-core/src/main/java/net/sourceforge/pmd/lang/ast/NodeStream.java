@@ -20,22 +20,29 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
-
 
 /**
  * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
  * a specialized API to navigate abstract syntax trees. This API replaces the defunct {@link Node#findChildNodesWithXPath(String)}.
  *
- * <p>Unlike Streams, NodeStreams can be iterated multiple times. Be aware though, that
+ * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. Be aware though, that
  * they don't cache their results by default, so e.g. calling count() several times will
  * execute the whole pipeline again. The elements of a stream can however be {@linkplain #cached() cached}
- * at an arbitrary point in the pipeline to evaluate the upstream only once.
+ * at an arbitrary point in the pipeline to evaluate the upstream only once. Some construction
+ * methods allow building a node stream from an external data source, e.g. {@link #fromIterable(Iterable)}
+ * and {@link #fromSupplier(Supplier)}. Depending on how the data source is implemented, the
+ * built node streams may only be iterable once.
  *
- * <p>NodeStreams are sequential streams, most of the time ordered in document order.
- * For that reason there is no equivalent to {@link Stream#findAny()}, although {@link #first()}
- * is an equivalent to {@link Stream#findFirst()}. Exceptions to the  document ordering
- * rule are {@link #precedingSiblings()} and {@link #siblings()}.
+ * <p>Node streams are meant to be sequential streams, so there is no equivalent to  {@link Stream#findAny()},
+ * although {@link #first()} is an equivalent to {@link Stream#findFirst()}.
+ *
+ * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
+ * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
+ * {@link #union(NodeStream[])} or {@link #append(NodeStream)}, may not preserve that ordering.
+ * {@link #map(Function)} and {@link #flatMap(Function)} operations may not preserve the ordering
+ * if the stream has more than one element, since the mapping is applied in order to each element
+ * of the receiver stream. {@link #parents()} and {@link #ancestors()} also break document order,
+ * and may produce a stream with duplicate elements.
  *
  * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
  * Its only abstract member is {@link #toStream()}.
@@ -76,11 +83,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns a node stream consisting of the results of replacing each
      * node of this stream with the contents of a mapped stream
      * produced by applying the given mapping function to each
-     * node. Each mapped stream is closed after its contents have
-     * been placed into this stream. (If a mapped stream is null an
-     * empty stream is used, instead.)
+     * node. If a mapped stream is null an empty stream is used, instead.
      *
-     * <p>If you want to map this node stream to a {@link Stream} with
+     * <p>If you want to flatMap this node stream to a {@link Stream} with
      * arbitrary elements (ie not nodes), use {@link #toStream()} then
      * {@link Stream#flatMap(Function)}.
      *
@@ -92,13 +97,15 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#flatMap(Function)
      */
     default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
-        return () -> toStream().flatMap(mapper.andThen(NodeStream::toStream));
+        return () -> toStream().flatMap(mapper.<NodeStream<? extends R>>andThen(ns -> ns == null ? empty() : ns)
+                                              .andThen(NodeStream::toStream));
     }
 
 
     /**
      * Returns a node stream consisting of the results of applying the given
-     * mapping function to the node of this stream.
+     * mapping function to the node of this stream. If the mapping function
+     * returns null, the elements are not included.
      *
      * <p>If you want to map this node stream to a {@link Stream} with
      * arbitrary elements (ie not nodes), use {@link #toStream()} then
@@ -112,7 +119,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#flatMap(Function)
      */
     default <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
-        return () -> toStream().map(mapper);
+        return () -> toStream().<R>map(mapper).filter(Objects::nonNull);
     }
 
 
@@ -199,12 +206,51 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         };
     }
 
+
+    /**
+     * Returns a stream consisting of the elements of this stream,
+     * truncated to be no longer than maxSize in length.
+     *
+     * @param maxSize Maximum size of the returned stream
+     *
+     * @return A new node stream
+     */
+    default NodeStream<T> take(int maxSize) {
+        return () -> toStream().limit(maxSize);
+    }
+
+
+    /**
+     * Returns a stream consisting of the remaining elements of this
+     * stream after discarding the first n elements of the stream. If
+     * this stream contains fewer than n elements then an empty stream
+     * will be returned.
+     *
+     * @param n the number of leading elements to skip
+     *
+     * @return A new node stream
+     */
+    default NodeStream<T> drop(int n) {
+        return () -> toStream().skip(n);
+    }
+
+
+    /**
+     * Returns a stream consisting of the distinct elements (w.r.t to {@link Object#equals(Object)}) of this stream.
+     *
+     * @return a stream consisting of the distinct elements of this stream
+     */
+    default NodeStream<T> distinct() {
+        return () -> toStream().distinct();
+    }
+
     // tree navigation
 
 
     /**
      * Returns a node stream composed of all the ancestors of the nodes
-     * contained in this stream.
+     * contained in this stream. The returned stream doesn't preserve document
+     * order.
      *
      * <p>This is equivalent to {@code flatMap(Node::ancestorStream)}.
      *
@@ -287,34 +333,29 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A stream of siblings
      */
     default NodeStream<Node> followingSiblings() {
-        // using DocumentNavigator is not cool but we can move the implementation here when we remove DocumentNavigator
-        DocumentNavigator documentNavigator = new DocumentNavigator();
-        return flatMap(node -> fromIterable(() -> documentNavigator.getFollowingSiblingAxisIterator(node)));
+        return flatMap(node -> of(node.jjtGetParent()).children().drop(node.jjtGetChildIndex() + 1));
     }
 
 
     /**
      * Returns a node stream containing all the preceding siblings of the nodes contained
-     * in this stream. The nodes are yielded from right to left, i.e. from the node out,
-     * and so not in document order.
+     * in this stream. The nodes are yielded from left to right, i.e. in document order.
      *
      * @return A stream of siblings
      */
     default NodeStream<Node> precedingSiblings() {
-        // using DocumentNavigator is not cool but we can move the implementation here when we remove DocumentNavigator
-        DocumentNavigator documentNavigator = new DocumentNavigator();
-        return flatMap(node -> fromIterable(() -> documentNavigator.getPrecedingSiblingAxisIterator(node)));
+        return flatMap(node -> of(node.jjtGetParent()).children().take(node.jjtGetChildIndex()));
     }
 
 
     /**
      * Returns a node stream containing all the siblings of the nodes contained in this stream.
-     * This method makes no guarantee about the order in which the siblings are yielded.
+     * The nodes are yielded from left to right, i.e. in document order.
      *
      * @return A stream of siblings
      */
     default NodeStream<Node> siblings() {
-        return flatMap(n -> n.singletonStream().precedingSiblings().append(n.singletonStream().followingSiblings()));
+        return flatMap(n -> n.asStream().precedingSiblings().append(n.asStream().followingSiblings()));
     }
 
 

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
+import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -63,13 +64,31 @@ public class NodeStreamTest {
 
     @Test
     public void testSingletonStream() {
-        assertThat(pathsOf(tree1.singletonStream()), contains(""));
+        assertThat(pathsOf(tree1.asStream()), contains(""));
     }
 
 
     @Test
     public void testTreeStream() {
         assertThat(pathsOf(tree1.treeStream()), contains("", "0", "00", "01", "010", "1"));
+    }
+
+
+    @Test
+    public void testFollowingSiblings() {
+        assertThat(pathsOf(followPath(tree1, "00").asStream().followingSiblings()), contains("01"));
+    }
+
+
+    @Test
+    public void testPrecedingSiblings() {
+        assertThat(pathsOf(followPath(tree1, "01").asStream().precedingSiblings()), contains("00"));
+    }
+
+
+    @Test
+    public void testAncestorStream() {
+        assertThat(pathsOf(followPath(tree1, "01").ancestorStream()), contains("0", ""));
     }
 
 

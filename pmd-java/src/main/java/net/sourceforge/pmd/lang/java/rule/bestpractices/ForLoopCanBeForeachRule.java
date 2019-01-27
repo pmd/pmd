@@ -195,21 +195,18 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
                 boolean leftIsIndexVarName =
-                    guardCondition
-                        .singletonStream()
-                        .children(ASTRelationalExpression.class)
-                        .children(ASTPrimaryExpression.class)
-                        .children(ASTPrimaryPrefix.class)
-                        .children(ASTName.class)
-                        .withImage(itName)
-                        .nonEmpty();
+                    guardCondition.children(ASTRelationalExpression.class)
+                                  .children(ASTPrimaryExpression.class)
+                                  .children(ASTPrimaryPrefix.class)
+                                  .children(ASTName.class)
+                                  .withImage(itName)
+                                  .nonEmpty();
 
                 if (!leftIsIndexVarName) {
                     return Optional.empty();
                 }
 
-                return guardCondition.singletonStream()
-                                     .children(ASTRelationalExpression.class)
+                return guardCondition.children(ASTRelationalExpression.class)
                                      .forkJoin(
                                          rel -> NodeStream.of(rel).withImage("<"),
                                          rel -> NodeStream.of(rel)
@@ -218,8 +215,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                                           .filter(expr ->
                                                                expr.jjtGetNumChildren() == 2
                                                                    && expr.getOperator().equals("-")
-                                                                   && expr.singletonStream()
-                                                                          .children(ASTPrimaryExpression.class)
+                                                                   && expr.children(ASTPrimaryExpression.class)
                                                                           .children(ASTPrimaryPrefix.class)
                                                                           .children(ASTLiteral.class)
                                                                           .withImage("1")
@@ -298,7 +294,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .children(ASTName.class)
                          .withImage(occ.getImage())
                          .nonEmpty()
-                && suffix.singletonStream()
+                && suffix.asStream()
                          .precedingSiblings()
                          .filterIs(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
@@ -307,7 +303,6 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
 
                 && suffix.jjtGetParent()
                          .jjtGetParent()
-                         .singletonStream()
                          .children(ASTAssignmentOperator.class)
                          .isEmpty();
         }

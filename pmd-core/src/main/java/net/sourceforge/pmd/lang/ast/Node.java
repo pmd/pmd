@@ -7,14 +7,11 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.jaxen.JaxenException;
-import org.jaxen.UnsupportedAxisException;
 import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 
@@ -344,6 +341,8 @@ public interface Node {
      * this node. The return type uses a wildcard to make it
      * possible to override it with some more specific type,
      * for {@link SingleChildNode}.
+     *
+     * @see NodeStream#children(Class)
      */
     NodeStream<? extends Node> childrenStream();
 
@@ -353,11 +352,13 @@ public interface Node {
      * of this node, in depth-first order.
      *
      * @return A node stream of the descendants of this node
+     *
+     * @see NodeStream#descendants()
      */
     default NodeStream<Node> descendantStream() {
         // TODO benchmark and select the better implementation
         // descendantStream may either be implemented with streams (like this) relative to childrenStream
-        // or with a lazy AST traversal. I'd wager that the stream implementation is faster.
+        // or with a lazy AST traversal. I'd think that the stream implementation is faster.
         return childrenStream().flatMap(Node::treeStream);
     }
 
@@ -367,9 +368,11 @@ public interface Node {
      * descendants in depth-first order.
      *
      * @return A node stream of the whole subtree topped by this node
+     *
+     * @see NodeStream#descendantsOrSelf()
      */
     default NodeStream<Node> treeStream() {
-        return NodeStream.union(this.singletonStream(), this.descendantStream());
+        return asStream().append(descendantStream());
     }
 
 
@@ -379,26 +382,25 @@ public interface Node {
      * node, and is empty if this node has no parent.
      *
      * @return A node stream of the ancestors of this node
+     *
+     * @see NodeStream#ancestors()
      */
     default NodeStream<Node> ancestorStream() {
-        // using DocumentNavigator is not cool but we can move the implementation here when we remove DocumentNavigator
-        DocumentNavigator documentNavigator = new DocumentNavigator();
-        return NodeStream.fromIterable(() -> {
-            try {
-                return documentNavigator.getAncestorAxisIterator(this);
-            } catch (UnsupportedAxisException e) {
-                return new Iterator<Node>() {
-                    @Override
-                    public boolean hasNext() {
-                        return false;
-                    }
+        return NodeStream.fromIterable(() -> new Iterator<Node>() {
+            Node next = jjtGetParent();
 
 
-                    @Override
-                    public Node next() {
-                        throw new NoSuchElementException();
-                    }
-                };
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+
+            @Override
+            public Node next() {
+                Node n = next;
+                next = n.jjtGetParent();
+                return n;
             }
         });
 
@@ -407,10 +409,14 @@ public interface Node {
 
     /**
      * Returns a node stream containing only this node.
+     * {@link NodeStream#of(Node)} is a null-safe version
+     * of this method.
      *
      * @return A node stream containing only this node
+     *
+     * @see NodeStream#of(Node)
      */
-    default NodeStream<Node> singletonStream() {
+    default NodeStream<Node> asStream() {
         return NodeStream.of(this);
     }
 
@@ -423,6 +429,8 @@ public interface Node {
      * @param <R>        Type of node the returning stream should contain
      *
      * @return A new node stream
+     *
+     * @see NodeStream#children(Class)
      */
     default <R extends Node> NodeStream<R> children(Class<R> childClass) {
         return childrenStream().filterIs(childClass);
@@ -437,6 +445,8 @@ public interface Node {
      * @param <R>        Type of node the returning stream should contain
      *
      * @return A new node stream
+     *
+     * @see NodeStream#descendants(Class)
      */
     default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
         return descendantStream().filterIs(childClass);

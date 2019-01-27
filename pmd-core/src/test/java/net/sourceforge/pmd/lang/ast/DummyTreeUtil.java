@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 
 /**
@@ -22,7 +25,23 @@ public final class DummyTreeUtil {
     public static DummyNode node(DummyNode... children) {
         DummyNode node = new DummyNode(0);
         node.children = children;
+        for (int i = 0; i < children.length; i++) {
+            children[i].jjtSetParent(node);
+            children[i].jjtSetChildIndex(i);
+        }
         return node;
+    }
+
+
+    public static DummyNode followPath(DummyNode root, String path) {
+        List<Integer> pathIndices = Arrays.stream(path.split("")).map(Integer::valueOf).collect(Collectors.toList());
+
+        Node current = root;
+        for (int i : pathIndices) {
+            current = current.jjtGetChild(i);
+        }
+
+        return (DummyNode) current;
     }
 
 
