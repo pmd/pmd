@@ -71,8 +71,6 @@ public class SourceEditorController extends AbstractController {
     @FXML
     private ASTTreeView astTreeView;
     @FXML
-    private ToolbarTitledPane astViewTitledPane;
-    @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
     @FXML
     private NodeParentageCrumbBar focusNodeParentageCrumbBar;

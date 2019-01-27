@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.reactfx.EventStreams;
 import org.reactfx.value.Var;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
@@ -209,7 +210,7 @@ public class NodeInfoPanelController extends AbstractController {
             // Otherwise, when you select a node in the scope tree, since focus of the app is shifted to that
             // node, the scope hierarchy is reset and you lose the selection - even though obviously the node
             // you selected is in its own scope hierarchy so it looks buggy.
-            int maxDepth = DesignerIteratorUtil.count(DesignerIteratorUtil.parentIterator(previousSelection, true));
+            int maxDepth = IteratorUtil.count(DesignerIteratorUtil.parentIterator(previousSelection, true));
             rootScope.tryFindNode(previousSelection.getValue(), maxDepth)
                      .ifPresent(scopeHierarchyTreeView.getSelectionModel()::select);
         }

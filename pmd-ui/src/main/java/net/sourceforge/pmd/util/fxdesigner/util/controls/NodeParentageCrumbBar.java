@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.asReversed;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.count;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
+
+import static net.sourceforge.pmd.internal.util.IteratorUtil.asReversed;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.count;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

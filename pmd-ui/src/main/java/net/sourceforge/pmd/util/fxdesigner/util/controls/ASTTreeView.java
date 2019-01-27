@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.parentIterator;
-import static net.sourceforge.pmd.util.fxdesigner.util.IteratorUtil.toIterable;
+import static net.sourceforge.pmd.internal.util.IteratorUtil.toIterable;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -111,7 +111,7 @@ public class ASTTreeView extends TreeView<Node> {
      * Returns true if the item at the given index
      * is visible in the TreeView.
      */
-    public boolean isIndexVisible(int index) {
+    private boolean isIndexVisible(int index) {
         return myWrapper.isIndexVisible(index);
     }
 
