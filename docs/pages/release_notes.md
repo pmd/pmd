@@ -21,6 +21,13 @@ This is a {{ site.pmd.release_type }} release.
 *   Many nodes now expose more informations, such as the operator for BooleanExpressions. This makes these operators
     consumable by XPath rules, e.g. `//BooleanExpression[@Operator='&&']`.
 
+### PL/SQL Grammar improvements
+
+*   In this release, many parser bugs in our PL/SQL support have been fixed. This adds e.g. support for
+    table collection expressions (`SELECT * FROM TABLE(expr)`).
+*   Support for parsing insert statements has been added.
+*   More improvements are planned for the next release of PMD.
+
 #### New Rules
 
 *   The new Java rule {% rule "java/multithreading/UnsynchronizedStaticFormatter" %} (`java-multithreading`) detects
