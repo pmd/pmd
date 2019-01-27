@@ -18,7 +18,7 @@ BEGIN
 
   SELECT value
     INTO v_value
-    FROM table
+    FROM mytable
     WHERE colname = utils.get_colname('COLUMN_ID');
 
 END;
