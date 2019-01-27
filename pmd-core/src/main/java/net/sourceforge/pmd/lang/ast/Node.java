@@ -7,12 +7,16 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.jaxen.JaxenException;
+import org.jaxen.UnsupportedAxisException;
 import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+
 
 /**
  * All AST nodes must implement this interface. It provides basic
@@ -370,6 +374,38 @@ public interface Node {
 
 
     /**
+     * Returns a node stream containing all the strict ancestors of this node,
+     * in innermost to outermost order. The returned stream doesn't contain this
+     * node, and is empty if this node has no parent.
+     *
+     * @return A node stream of the ancestors of this node
+     */
+    default NodeStream<Node> ancestorStream() {
+        // using DocumentNavigator is not cool but we can move the implementation here when we remove DocumentNavigator
+        DocumentNavigator documentNavigator = new DocumentNavigator();
+        return NodeStream.fromIterable(() -> {
+            try {
+                return documentNavigator.getAncestorAxisIterator(this);
+            } catch (UnsupportedAxisException e) {
+                return new Iterator<Node>() {
+                    @Override
+                    public boolean hasNext() {
+                        return false;
+                    }
+
+
+                    @Override
+                    public Node next() {
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        });
+
+    }
+
+
+    /**
      * Returns a node stream containing only this node.
      *
      * @return A node stream containing only this node
@@ -377,4 +413,33 @@ public interface Node {
     default NodeStream<Node> singletonStream() {
         return NodeStream.of(this);
     }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #childrenStream() children}
+     * of this node that are of the given type.
+     *
+     * @param childClass Type of node the returning stream should contain
+     * @param <R>        Type of node the returning stream should contain
+     *
+     * @return A new node stream
+     */
+    default <R extends Node> NodeStream<R> children(Class<R> childClass) {
+        return childrenStream().filterIs(childClass);
+    }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendantStream() descendants}
+     * of this node that are of the given type.
+     *
+     * @param childClass Type of node the returning stream should contain
+     * @param <R>        Type of node the returning stream should contain
+     *
+     * @return A new node stream
+     */
+    default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
+        return descendantStream().filterIs(childClass);
+    }
+
 }

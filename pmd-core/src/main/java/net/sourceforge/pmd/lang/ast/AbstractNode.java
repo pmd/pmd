@@ -527,7 +527,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public NodeStream<? extends Node> childrenStream() {
-        return () -> Arrays.stream(children);
+        return children == null ? NodeStream.empty() : () -> Arrays.stream(children);
     }
 
 }
