@@ -5,7 +5,7 @@
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeView?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
@@ -71,7 +71,7 @@
                                 AnchorPane.rightAnchor="0.0"
                                 AnchorPane.topAnchor="0.0">
 
-                            <ASTTreeView fx:id="astTreeView" />
+                            <AstTreeView fx:id="astTreeView" />
 
                         </ToolbarTitledPane>
                     </children>

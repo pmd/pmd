@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -28,7 +30,6 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
@@ -210,7 +211,7 @@ public class NodeInfoPanelController extends AbstractController {
             // Otherwise, when you select a node in the scope tree, since focus of the app is shifted to that
             // node, the scope hierarchy is reset and you lose the selection - even though obviously the node
             // you selected is in its own scope hierarchy so it looks buggy.
-            int maxDepth = IteratorUtil.count(DesignerIteratorUtil.parentIterator(previousSelection, true));
+            int maxDepth = IteratorUtil.count(parentIterator(previousSelection, true));
             rootScope.tryFindNode(previousSelection.getValue(), maxDepth)
                      .ifPresent(scopeHierarchyTreeView.getSelectionModel()::select);
         }

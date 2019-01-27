@@ -40,7 +40,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighligh
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeView;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
@@ -69,7 +69,7 @@ public class SourceEditorController extends AbstractController {
     @FXML
     private MenuButton languageSelectionMenuButton;
     @FXML
-    private ASTTreeView astTreeView;
+    private AstTreeView astTreeView;
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
     @FXML
@@ -271,7 +271,7 @@ public class SourceEditorController extends AbstractController {
         codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true);
 
         if (node != null) {
-            scrollEditorToNode(node);
+            Platform.runLater(() -> scrollEditorToNode(node));
         }
 
         currentFocusNode.setValue(node);

@@ -27,7 +27,7 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class ASTTreeView extends TreeView<Node> {
+public class AstTreeView extends TreeView<Node> {
 
 
     private final Var<Consumer<Node>> onNodeClickedHandler = Var.newSimpleVar(n -> {});
@@ -37,7 +37,7 @@ public class ASTTreeView extends TreeView<Node> {
     private ASTTreeItem selectedTreeItem;
 
 
-    public ASTTreeView() {
+    public AstTreeView() {
 
         onNodeClickedHandler.values()
                             .subscribe(handler -> {

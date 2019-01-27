@@ -16,7 +16,7 @@
         <maven.compiler.source>1.${java.version}</maven.compiler.source>
         <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
-        <build.mr.java8.output>${project.build.directory}/classes-java8</build.mr.java8.output>
+        <build.mr.java9.output>${project.build.outputDirectory}/META-INF/versions/9</build.mr.java9.output>
 
 
         <openjfx.version>11</openjfx.version>
@@ -65,7 +65,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Unpack Java 8 specific code into the root output dir -->
+            <!-- Unpack Java 8 specific dependencies into the root output dir -->
             <!-- Code specific to higher versions is unpacked into META-INF/versions/n -->
 
             <plugin>
@@ -73,7 +73,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>Unpack java 8 specific deps</id>
+                        <id>layout-java-8-specific-code</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -87,14 +87,14 @@
                     </execution>
 
                     <execution>
-                        <id>Unpack java 9 specific deps</id>
+                        <id>layout-java-9-specific-code</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
                             <artifact>org.controlsfx:controlsfx:9.0.0</artifact>
-                            <outputDirectory>${project.build.outputDirectory}/META-INF/versions/9</outputDirectory>
+                            <outputDirectory>${build.mr.java9.output}</outputDirectory>
                             <includes>**/*</includes>
                         </configuration>
                     </execution>

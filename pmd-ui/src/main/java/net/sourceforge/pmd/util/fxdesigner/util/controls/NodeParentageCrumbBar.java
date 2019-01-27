@@ -37,6 +37,9 @@ import javafx.util.Callback;
  */
 public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
 
+    private static final int DEFAULT_PX_BY_CHAR = 5;
+    private static final int DEFAULT_CONSTANT_PADDING = 19;
+
     /** Special item used to truncate paths when they're too long. */
     private final TreeItem<Node> ellipsisCrumb = new TreeItem<>(null);
     /** number of nodes currently behind the ellipsis */
@@ -192,14 +195,14 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
     private Function<Node, Double> getWidthEstimator(int totalNumDisplayedChars, double totalChildrenWidth, int totalNumCrumbs, double constantPadding) {
 
         double safeConstantPadding = Double.isNaN(constantPadding)
-                                     ? 19 // that's the value on my machine
+                                     ? DEFAULT_CONSTANT_PADDING // that's the value on my machine
                                      : constantPadding;
 
         double thisPxByChar = totalNumDisplayedChars == 0
-                              ? 5.0 // we have no data, too bad
+                              ? DEFAULT_PX_BY_CHAR // we have no data, too bad
                               : (totalChildrenWidth - safeConstantPadding * totalNumCrumbs) / totalNumDisplayedChars;
 
-        return node -> node.getXPathNodeName().length() * thisPxByChar + safeConstantPadding;
+        return node -> node.getXPathNodeName().length() * (thisPxByChar + 1 /*scale it up a bit*/) + safeConstantPadding;
     }
 
 }
