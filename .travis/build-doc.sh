@@ -35,7 +35,7 @@ ls -lh pmd-doc-${VERSION}.zip
     if [[ "${TRAVIS_TAG}" != "" || "${VERSION}" == *-SNAPSHOT ]]; then
         echo -e "\n\n"
         log_info "Uploading pmd doc distribution to sourceforge..."
-        rsync -avh pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
+        ../.travis/travis_wait "rsync -avh pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/"
         if [ $? -ne 0 ]; then
             log_error "Couldn't upload pmd-doc-${VERSION}.zip!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
@@ -48,7 +48,7 @@ ls -lh pmd-doc-${VERSION}.zip
     if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]] && has_docs_change; then
         echo -e "\n\n"
         log_info "Uploading snapshot site to pmd.sourceforge.net/snapshot..."
-        travis_wait rsync -ah --stats --delete pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/
+        ../.travis/travis_wait "rsync -ah --stats --delete pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/"
         if [ $? -ne 0 ]; then
             log_error "Couldn't upload the snapshot documentation. It won't be current on http://pmd.sourceforge.net/snapshot/"
         else
