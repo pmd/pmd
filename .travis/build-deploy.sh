@@ -35,7 +35,7 @@ function upload_baseline() {
     cd target/reports
     BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-    rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
+    .travis/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
     if [ $? -ne 0 ]; then
         log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
         log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
@@ -89,7 +89,7 @@ elif travis_isPush; then
 
         echo -e "\n\n"
         log_info "Uploading pmd distribution to sourceforge..."
-        rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
+        .travis/travis_wait "rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/"
         if [ $? -ne 0 ]; then
             log_error "Error while uploading pmd-*-${VERSION}.zip to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
