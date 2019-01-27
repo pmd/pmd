@@ -204,7 +204,7 @@ public class NodeStreamTest {
 
         NodeStream<Node> stream =
             tree1.descendantStream()
-                 .filterMatching(Node::getImage, "0.*")
+                 .filter(n -> n.getImage().matches("0.*"))
                  .peek(n -> upstreamEvals.increment())
                  .cached()
                  .filter(n -> true)
