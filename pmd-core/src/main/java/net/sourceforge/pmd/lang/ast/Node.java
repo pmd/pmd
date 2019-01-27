@@ -350,7 +350,12 @@ public interface Node {
      *
      * @return A node stream of the descendants of this node
      */
-    NodeStream<Node> descendantStream();
+    default NodeStream<Node> descendantStream() {
+        // TODO benchmark and select the better implementation
+        // descendantStream may either be implemented with streams (like this) relative to childrenStream
+        // or with a lazy AST traversal. I'd wager that the stream implementation is faster.
+        return childrenStream().flatMap(Node::treeStream);
+    }
 
 
     /**
@@ -359,33 +364,17 @@ public interface Node {
      *
      * @return A node stream of the whole subtree topped by this node
      */
-    NodeStream<Node> treeStream();
-
-
-    /**
-     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #childrenStream() children}
-     * of this node that are of the given type.
-     *
-     * @param childClass Type of node the returning stream should contain
-     * @param <R>        Type of node the returning stream should contain
-     *
-     * @return A new node stream
-     */
-    default <R extends Node> NodeStream<R> children(Class<R> childClass) {
-        return childrenStream().filterIs(childClass);
+    default NodeStream<Node> treeStream() {
+        return NodeStream.union(this.singletonStream(), this.descendantStream());
     }
 
 
     /**
-     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendantStream() descendants}
-     * of this node that are of the given type.
+     * Returns a node stream containing only this node.
      *
-     * @param childClass Type of node the returning stream should contain
-     * @param <R>        Type of node the returning stream should contain
-     *
-     * @return A new node stream
+     * @return A node stream containing only this node
      */
-    default <R extends Node> NodeStream<R> descendants(Class<R> childClass) {
-        return descendantStream().filterIs(childClass);
+    default NodeStream<Node> singletonStream() {
+        return NodeStream.of(this);
     }
 }

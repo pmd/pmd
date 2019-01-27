@@ -21,7 +21,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -528,22 +527,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public NodeStream<? extends Node> childrenStream() {
-        return NodeStreamImpl.fromSupplier(() -> Arrays.stream(children));
+        return () -> Arrays.stream(children);
     }
 
-    // TODO benchmark and select the better implementation
-    // descendantStream may either be implemented with streams (like this) relative to childrenStream
-    // or with a lazy AST traversal. I'd wager that the stream implementation is faster.
-
-
-    @Override
-    public NodeStream<Node> descendantStream() {
-        return childrenStream().flatMap(Node::treeStream);
-    }
-
-
-    @Override
-    public NodeStream<Node> treeStream() {
-        return NodeStream.union(NodeStream.of(this), this.descendantStream());
-    }
 }

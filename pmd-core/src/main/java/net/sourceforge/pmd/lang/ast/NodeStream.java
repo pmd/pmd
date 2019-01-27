@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import static net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl.fromSupplier;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,13 +13,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl;
 
 
 /**
@@ -34,12 +29,38 @@ import net.sourceforge.pmd.lang.ast.internal.NodeStreamImpl;
  * {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
  * upstream only once.
  *
+ * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
+ * Its only abstract member is {@link #toStream()}.
+ *
+ * @implNote
+ * <p>Choosing to wrap a stream instead of extending the interface is to
+ * allow the functions to return NodeStreams, and to avoid the code bloat
+ * induced by delegation. Being a functional interface wasn't expected at
+ * all, but in the end it's a nice-to-have that makes implementation conciser.
+ *
+ * <p>Intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
+ * specify new pipeline operations that are stacked on the stream produced by
+ * {@link #toStream()}. Terminal operations like {@link #count()} or {@link #toList()}
+ * create a new temporary Stream with the correct pipeline and then apply the terminal
+ * operation to it. That temporary stream is consumed, but subsequent terminal
+ * operations on the NodeStream will be called on new Streams.
+ *
  * @param <T> Type of nodes this stream contains
  *
  * @author Clément Fournier
  * @since 7.0.0
  */
+@FunctionalInterface // technically a functional interface hehe
 public interface NodeStream<T extends Node> extends Iterable<T> {
+
+
+    /**
+     * Returns a new stream of Ts having the pipeline of operations
+     * defined by this node stream. This can be called multiple times.
+     *
+     * @return A stream containing the same elements as this node stream
+     */
+    Stream<T> toStream();
 
     // mapping
 
@@ -64,7 +85,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#flatMap(Function)
      */
     default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
-        return NodeStreamImpl.fromSupplier(() -> toStream().flatMap(mapper.andThen(NodeStream::toStream)));
+        return () -> toStream().flatMap(mapper.andThen(NodeStream::toStream));
     }
 
 
@@ -84,7 +105,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#flatMap(Function)
      */
     default <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
-        return NodeStreamImpl.fromSupplier(() -> toStream().map(mapper));
+        return () -> toStream().map(mapper);
     }
 
     // navigation
@@ -164,6 +185,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A merged node stream
      */
+    @SuppressWarnings("rawtypes") // necessary because of generic array creation is forbidden
     default <R extends Node> NodeStream<R> forkJoin(Function<? super T, ? extends NodeStream<? extends R>> fst,
                                                     Function<? super T, ? extends NodeStream<? extends R>> snd,
                                                     Function<? super T, ? extends NodeStream<? extends R>>... rest) {
@@ -182,21 +204,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return cached().flatMap(aggregate);
     }
 
-
-    /**
-     * Returns a stream consisting of the elements of this stream, additionally
-     * performing the provided action on each element as elements are consumed
-     * from the resulting stream.
-     *
-     * @param action an action to perform on the elements as they are consumed
-     *               from the stream
-     *
-     * @return A new stream
-     */
-    default NodeStream<T> peek(Consumer<? super T> action) {
-        return NodeStreamImpl.fromSupplier(() -> toStream().peek(action));
-    }
-
     // filtering
 
 
@@ -210,7 +217,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A filtered node stream
      */
     default NodeStream<T> filter(Predicate<? super T> predicate) {
-        return NodeStreamImpl.fromSupplier(() -> toStream().filter(predicate));
+        return () -> toStream().filter(predicate);
     }
 
     // these are shorthands defined relative to filter
@@ -390,16 +397,48 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return toStream().iterator();
     }
 
+    // other
+
 
     /**
-     * Returns a new stream of Ts having the pipeline of operations
-     * defined by this node stream. This can be called multiple times.
+     * Returns a new node stream that contains all the elements of this stream, then
+     * all the elements of the given stream.
      *
-     * @return A stream containing the same elements as this node stream
+     * @param right Other stream
+     *
+     * @return A concatenated stream
      */
-    Stream<T> toStream();
+    default NodeStream<T> append(NodeStream<? extends T> right) {
+        return () -> Stream.concat(this.toStream(), right.toStream());
+    }
 
-    // construction
+
+    /**
+     * Returns a new node stream that contains all the elements of the given stream,
+     * then all the elements of this stream.
+     *
+     * @param right Other stream
+     *
+     * @return A concatenated stream
+     */
+    default NodeStream<T> prepend(NodeStream<? extends T> right) {
+        return () -> Stream.concat(right.toStream(), this.toStream());
+    }
+
+
+    /**
+     * Returns a stream consisting of the elements of this stream, additionally
+     * performing the provided action on each element as elements are consumed
+     * from the resulting stream.
+     *
+     * @param action an action to perform on the elements as they are consumed
+     *               from the stream
+     *
+     * @return A new stream
+     */
+    default NodeStream<T> peek(Consumer<? super T> action) {
+        return () -> toStream().peek(action);
+    }
 
 
     /**
@@ -416,19 +455,22 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     default NodeStream<T> cached() {
 
-        return fromSupplier(new Supplier<Stream<T>>() {
+        return new NodeStream<T>() {
             List<T> cachedValue = null;
 
 
             @Override
-            public Stream<T> get() {
+            public Stream<T> toStream() {
                 if (cachedValue == null) {
                     cachedValue = NodeStream.this.toStream().collect(Collectors.toList());
                 }
                 return cachedValue.stream();
             }
-        });
+        };
     }
+
+    // construction
+
 
 
     /**
@@ -440,7 +482,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> of(T node) {
-        return fromSupplier(() -> Stream.of(node));
+        return () -> Stream.of(node);
     }
 
 
@@ -454,7 +496,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     @SafeVarargs
     static <T extends Node> NodeStream<T> of(T... nodes) {
-        return fromSupplier(() -> Stream.of(nodes));
+        return () -> Stream.of(nodes);
     }
 
 
@@ -470,6 +512,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     @SafeVarargs
     @SuppressWarnings("unchecked")
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
-        return fromSupplier(() -> Arrays.stream(streams).flatMap(NodeStream::toStream));
+        return () -> Arrays.stream(streams).flatMap(NodeStream::toStream);
     }
 }
