@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import apex.jorje.data.ast.BinaryOp;
 import apex.jorje.semantic.ast.expression.BinaryExpression;
 
 public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
@@ -15,5 +16,9 @@ public class ASTBinaryExpression extends AbstractApexNode<BinaryExpression> {
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public BinaryOp getOperator() {
+        return node.getOp();
     }
 }

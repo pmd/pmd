@@ -107,7 +107,7 @@
         <dependency>
             <groupId>org.fxmisc.richtext</groupId>
             <artifactId>richtextfx</artifactId>
-            <version>0.9.0</version>
+            <version>0.9.2</version>
         </dependency>
         <dependency>
             <groupId>org.controlsfx</groupId>
@@ -128,7 +128,7 @@
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-fontawesome-pack</artifactId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
             <version>2.3.0</version>
         </dependency>
 
@@ -138,48 +138,56 @@
             <artifactId>pmd-apex</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-java</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-javascript</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-jsp</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-plsql</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-visualforce</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-vm</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-xml</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

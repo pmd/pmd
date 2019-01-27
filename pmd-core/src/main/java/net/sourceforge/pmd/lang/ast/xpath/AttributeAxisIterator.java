@@ -69,7 +69,6 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         this.currObj = getNextAttribute();
     }
 
-
     /**
      * Returns whether the given method is an attribute accessor,
      * in which case a corresponding Attribute will be added to
@@ -80,10 +79,14 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     protected boolean isAttributeAccessor(Method method) {
         String methodName = method.getName();
 
-        return CONSIDERED_RETURN_TYPES.contains(method.getReturnType())
+        return isConsideredReturnType(method.getReturnType())
                 && method.getParameterTypes().length == 0
                 && !methodName.startsWith("jjt")
                 && !FILTERED_OUT_NAMES.contains(methodName);
+    }
+
+    private boolean isConsideredReturnType(Class<?> klass) {
+        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
     }
 
 

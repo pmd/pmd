@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util.fxdesigner.popups;
 
 import static net.sourceforge.pmd.properties.MultiValuePropertyDescriptor.DEFAULT_DELIMITER;
 import static net.sourceforge.pmd.properties.MultiValuePropertyDescriptor.DEFAULT_NUMERIC_DELIMITER;
-import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.rewire;
 
 import java.net.URL;
 import java.util.Objects;
@@ -51,10 +50,10 @@ public class EditPropertyDialogController implements Initializable {
 
     private final Var<PropertyTypeId> typeId = Var.newSimpleVar(PropertyTypeId.STRING);
     private final Var<Runnable> commitHandler = Var.newSimpleVar(null);
-    private Var<PropertyDescriptorSpec> backingDescriptor = Var.newSimpleVar(null);
-    private Var<ObservableList<PropertyDescriptorSpec>> backingDescriptorList = Var.newSimpleVar(null);
+    private final Var<PropertyDescriptorSpec> backingDescriptor = Var.newSimpleVar(null);
+    private final Var<ObservableList<PropertyDescriptorSpec>> backingDescriptorList = Var.newSimpleVar(null);
 
-    private ValidationSupport validationSupport = new ValidationSupport();
+    private final ValidationSupport validationSupport = new ValidationSupport();
     @FXML
     private TextField nameField;
     @FXML
@@ -127,10 +126,10 @@ public class EditPropertyDialogController implements Initializable {
     public void bindToDescriptor(PropertyDescriptorSpec spec, ObservableList<PropertyDescriptorSpec> allDescriptors) {
         backingDescriptor.setValue(spec);
         backingDescriptorList.setValue(allDescriptors);
-        rewire(spec.nameProperty(), this.nameProperty(), this::setName);
-        rewire(spec.typeIdProperty(), this.typeIdProperty(), this::setTypeId);
-        rewire(spec.valueProperty(), this.valueProperty(), this::setValue);
-        rewire(spec.descriptionProperty(), this.descriptionProperty(), this::setDescription);
+        DesignerUtil.rewireInit(spec.nameProperty(), this.nameProperty(), this::setName);
+        DesignerUtil.rewireInit(spec.typeIdProperty(), this.typeIdProperty(), this::setTypeId);
+        DesignerUtil.rewireInit(spec.valueProperty(), this.valueProperty(), this::setValue);
+        DesignerUtil.rewireInit(spec.descriptionProperty(), this.descriptionProperty(), this::setDescription);
     }
 
 

@@ -41,5 +41,6 @@ public interface MetricKey<N extends Node> {
      */
     boolean supports(N node);
 
+    // TODO the metric key should know about supported options
 
 }

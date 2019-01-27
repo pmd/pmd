@@ -20,6 +20,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
@@ -340,7 +341,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @param metric
      *            the metric to add
+     *
+     * @deprecated see {@link StatisticalRule}
      */
+    @Deprecated
     public void addMetric(Metric metric) {
         metrics.add(metric);
         for (ThreadSafeReportListener listener : listeners) {

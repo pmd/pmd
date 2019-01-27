@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.it;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +60,7 @@ public class BinaryDistributionIT {
         Set<String> result = new HashSet<>();
         String basedir = "pmd-bin-" + PMDVersion.VERSION + "/";
         result.add(basedir);
+        result.add(basedir + "LICENSE");
         result.add(basedir + "bin/run.sh");
         result.add(basedir + "bin/pmd.bat");
         result.add(basedir + "bin/cpd.bat");
@@ -81,7 +83,9 @@ public class BinaryDistributionIT {
 
         zip.close();
 
-        assertTrue(expectedFileNames.isEmpty());
+        if (!expectedFileNames.isEmpty()) {
+            fail("Missing files in archive: " + expectedFileNames);
+        }
     }
 
     @Test

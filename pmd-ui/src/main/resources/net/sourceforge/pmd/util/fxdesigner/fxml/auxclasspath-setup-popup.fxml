@@ -32,7 +32,7 @@
                         styleClass="icon-button"
                         textAlignment="CENTER">
                     <graphic>
-                        <FontIcon iconLiteral="fa-plus"/>
+                        <FontIcon iconLiteral="fas-plus"/>
                     </graphic>
                     <tooltip>
                         <Tooltip text="Add new jars"/>
@@ -44,7 +44,7 @@
                         styleClass="icon-button"
                         textAlignment="CENTER">
                     <graphic>
-                        <FontIcon iconLiteral="fa-minus"/>
+                        <FontIcon iconLiteral="fas-minus"/>
                     </graphic>
                     <tooltip>
                         <Tooltip text="Remove item"/>
@@ -52,12 +52,12 @@
                 </Button>
                 <Button fx:id="moveItemUpButton" minWidth="-Infinity" mnemonicParsing="false" styleClass="icon-button">
                     <graphic>
-                        <FontIcon iconLiteral="fa-arrow-up"/>
+                        <FontIcon iconLiteral="fas-arrow-up"/>
                     </graphic>
                 </Button>
                 <Button fx:id="moveItemDownButton" minWidth="-Infinity" mnemonicParsing="false" styleClass="icon-button">
                     <graphic>
-                        <FontIcon iconLiteral="fa-arrow-down"/>
+                        <FontIcon iconLiteral="fas-arrow-down"/>
                     </graphic>
                     <tooltip>
                         <Tooltip text="Move item down"/>

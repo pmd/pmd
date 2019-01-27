@@ -44,6 +44,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/TokenMgrError.java" />
 
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTArguments.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTCompoundCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTDatatype.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTFormalParameter.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTIfStatement.java" />

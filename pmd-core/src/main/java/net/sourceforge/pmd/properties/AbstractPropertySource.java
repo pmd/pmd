@@ -164,6 +164,7 @@ public abstract class AbstractPropertySource implements PropertySource {
 
 
     @Override
+    @Deprecated
     public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
         checkValidPropertyDescriptor(propertyDescriptor);
         propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
