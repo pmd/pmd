@@ -58,7 +58,6 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -95,7 +94,7 @@ public class XPathPanelController extends AbstractController {
     @FXML
     private SyntaxHighlightingCodeArea xpathExpressionArea;
     @FXML
-    private TitledPane violationsTitledPane;
+    private ToolbarTitledPane violationsTitledPane;
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
 
@@ -255,7 +254,7 @@ public class XPathPanelController extends AbstractController {
                                                                                  ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
             parent.highlightXPathResults(results);
-            violationsTitledPane.setText("Matched nodes\t(" + results.size() + ")");
+            violationsTitledPane.setTitle("Matched nodes (" + results.size() + ")");
             // Notify that everything went OK so we can avoid logging very recent exceptions
             designerRoot.getLogger().logEvent(new LogEntry(null, Category.XPATH_OK));
         } catch (XPathEvaluationException e) {
@@ -274,7 +273,7 @@ public class XPathPanelController extends AbstractController {
     public void invalidateResults(boolean error) {
         xpathResultListView.getItems().clear();
         parent.resetXPathResults();
-        violationsTitledPane.setText("Matched nodes" + (error ? "\t(error)" : ""));
+        violationsTitledPane.setTitle("Matched nodes" + (error ? "\t(error)" : ""));
     }
 
 

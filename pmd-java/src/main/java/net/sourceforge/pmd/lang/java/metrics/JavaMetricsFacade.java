@@ -33,7 +33,7 @@ class JavaMetricsFacade extends AbstractMetricsFacade<ASTAnyTypeDeclaration, Met
 
     @Override
     protected MetricsComputer<ASTAnyTypeDeclaration, MethodLikeNode> getLanguageSpecificComputer() {
-        return JavaMetricsComputer.INSTANCE;
+        return JavaMetricsComputer.getInstance();
     }
 
 }

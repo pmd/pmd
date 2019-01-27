@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
@@ -20,11 +21,18 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
  */
 public final class JavaMetricsComputer extends AbstractMetricsComputer<ASTAnyTypeDeclaration, MethodLikeNode> {
 
-    static final JavaMetricsComputer INSTANCE = new JavaMetricsComputer();
+    private static final JavaMetricsComputer INSTANCE = new JavaMetricsComputer();
 
 
     private JavaMetricsComputer() {
     }
+
+
+    @InternalApi
+    public static JavaMetricsComputer getInstance() {
+        return INSTANCE;
+    }
+
 
     // TODO: doesn't consider lambdas
     @Override

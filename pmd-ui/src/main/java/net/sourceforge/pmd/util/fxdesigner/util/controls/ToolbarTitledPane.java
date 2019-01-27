@@ -37,10 +37,14 @@ public final class ToolbarTitledPane extends TitledPane {
 
         getStyleClass().add("tool-bar-title");
 
+        // change the default
+        setCollapsible(false);
+
         toolBar.setPadding(Insets.EMPTY);
 
         Label titleLabel = new Label("Title");
         titleLabel.textProperty().bind(title);
+        titleLabel.getStyleClass().add("title-label");
 
         toolBar.getItems().add(titleLabel);
 

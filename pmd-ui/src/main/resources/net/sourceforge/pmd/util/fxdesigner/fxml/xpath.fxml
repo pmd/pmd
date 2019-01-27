@@ -10,7 +10,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.SVGPath?>
@@ -31,10 +30,9 @@
             <items>
                 <AnchorPane>
                     <children>
-                        <TitledPane animated="false"
+                        <ToolbarTitledPane animated="false"
                                     collapsible="false"
-                                    styleClass="accent-header"
-                                    text="Properties"
+                                    title="Properties"
                                     AnchorPane.bottomAnchor="0.0"
                                     AnchorPane.leftAnchor="0.0"
                                     AnchorPane.rightAnchor="0.0"
@@ -51,13 +49,12 @@
                                     </padding>
                                 </AnchorPane>
                             </content>
-                        </TitledPane>
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
                 <AnchorPane>
                     <children>
                         <ToolbarTitledPane fx:id="expressionTitledPane"
-                                           styleClass="accent-header"
                                            collapsible="false"
                                            title="XPath Expression"
                                            AnchorPane.bottomAnchor="0.0"
@@ -65,7 +62,9 @@
                                            AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
                             <toolbarItems>
+                                <!-- For some reason setting "text", even if it's not displayed, makes the padding of the icon work properly -->
                                 <MenuButton mnemonicParsing="false"
+                                            text="spacer"
                                             styleClass="menu-button-no-arrow,icon-button"
                                             fx:id="xpathVersionMenuButton">
                                     <graphic>
@@ -93,7 +92,7 @@
                                     <tooltip>
                                         <Tooltip>
                                             <text>
-                                                <String fx:value="Export XPath to XML rule" />
+                                                <String fx:value="Export XPath to XML rule..." />
                                             </text>
                                         </Tooltip>
                                     </tooltip>
@@ -107,11 +106,10 @@
                 </AnchorPane>
                 <AnchorPane>
                     <children>
-                        <TitledPane fx:id="violationsTitledPane"
+                        <ToolbarTitledPane fx:id="violationsTitledPane"
                                     animated="false"
                                     collapsible="false"
-                                    styleClass="accent-header"
-                                    text="Matched Nodes"
+                                    title="Matched Nodes"
                                     AnchorPane.bottomAnchor="0.0"
                                     AnchorPane.leftAnchor="0.0"
                                     AnchorPane.rightAnchor="0.0"
@@ -119,14 +117,10 @@
                             <content>
                                 <ListView stylesheets="@../css/syntax-highlighting.css" fx:id="xpathResultListView" />
                             </content>
-                        </TitledPane>
+                        </ToolbarTitledPane>
                     </children>
                 </AnchorPane>
             </items>
-            <styleClass>
-                <String fx:value="bottom-pane-split-pane" />
-                <String fx:value="accent-header" />
-            </styleClass>
         </SplitPane>
     </children>
 </AnchorPane>

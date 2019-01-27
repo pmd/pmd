@@ -21,7 +21,6 @@ import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
@@ -194,21 +193,29 @@ public class MainDesignerController extends AbstractController {
      * Executed when the user selects a node in a treeView or listView.
      */
     public void onNodeItemSelected(Node selectedValue) {
-        nodeInfoPanelController.displayInfo(selectedValue);
-        sourceEditorController.setFocusNode(selectedValue);
+        onNodeItemSelected(selectedValue, false);
     }
 
 
-    public void onNameDeclarationSelected(NameDeclaration declaration) {
-        sourceEditorController.clearNameOccurences();
+    /**
+     * Executed when the user selects a node in a treeView or listView.
+     *
+     * @param isFromNameDecl Whether the node was selected in the scope hierarchy treeview
+     */
+    public void onNodeItemSelected(Node selectedValue, boolean isFromNameDecl) {
+        // doing that in parallel speeds it up
+        Platform.runLater(() -> nodeInfoPanelController.setFocusNode(selectedValue, isFromNameDecl));
+        Platform.runLater(() -> sourceEditorController.setFocusNode(selectedValue));
+    }
 
-        List<NameOccurrence> occurrences = declaration.getNode().getScope().getDeclarations().get(declaration);
 
-        if (occurrences != null) {
-            sourceEditorController.highlightNameOccurrences(occurrences);
-        }
-
-        Platform.runLater(() -> onNodeItemSelected(declaration.getNode()));
+    /**
+     * Highlight a list of name occurrences.
+     *
+     * @param occurrences May be empty but never null.
+     */
+    public void highlightAsNameOccurences(List<NameOccurrence> occurrences) {
+        sourceEditorController.highlightNameOccurrences(occurrences);
     }
 
     /**
@@ -341,7 +348,7 @@ public class MainDesignerController extends AbstractController {
      * Called when the AST is updated to update all parts of the UI.
      */
     public void invalidateAst() {
-        nodeInfoPanelController.invalidateInfo();
+        nodeInfoPanelController.setFocusNode(null);
         xpathPanelController.invalidateResults(false);
         sourceEditorController.setFocusNode(null);
     }

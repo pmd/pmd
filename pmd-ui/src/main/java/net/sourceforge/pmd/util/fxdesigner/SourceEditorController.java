@@ -40,8 +40,8 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighligh
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeView;
+import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
 import javafx.application.Platform;
@@ -70,6 +70,8 @@ public class SourceEditorController extends AbstractController {
     private MenuButton languageSelectionMenuButton;
     @FXML
     private ASTTreeView astTreeView;
+    @FXML
+    private ToolbarTitledPane astViewTitledPane;
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
     @FXML
@@ -324,9 +326,6 @@ public class SourceEditorController extends AbstractController {
     public void clearStyleLayers() {
         codeEditorArea.clearStyleLayers();
     }
-
-
-
 
 
     /** Moves the caret to a position and makes the view follow it. */

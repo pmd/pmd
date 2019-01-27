@@ -16,5 +16,10 @@ BEGIN
        OR rgn.cny_code = street_cny_code_in)
        AND UPPER(rgn.name) = UPPER(street_rgn_in);
 
+  SELECT value
+    INTO v_value
+    FROM mytable
+    WHERE colname = utils.get_colname('COLUMN_ID');
+
 END;
 /

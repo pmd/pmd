@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Writer;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
@@ -135,4 +137,17 @@ public interface LanguageVersionHandler {
     @Deprecated
     @InternalApi
     DFAGraphRule getDFAGraphRule();
+
+
+    /**
+     * Returns the metrics provider for this language version,
+     * or null if it has none.
+     *
+     * Note: this is experimental, ie unstable until 7.0.0, after
+     * which it will probably be promoted to a stable API. For
+     * instance the return type will probably be changed to an Optional.
+     */
+    @Experimental
+    LanguageMetricsProvider<?, ?> getLanguageMetricsProvider();
+
 }

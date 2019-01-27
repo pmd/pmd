@@ -4,10 +4,27 @@
 
 /*
   Rules for the syntax highlighters.
-  This file doesn't include highlight rules, so that highlight is not displayed
-  on controls that display node rich text if only this file is set as stylesheet.
+  This file doesn't include layer highlight rules (eg .xpath-highlight .depth-0), so that
+  layer highlight is not displayed on controls that display node rich text if only this
+  file is set as stylesheet.
  */
 
+
+.list-cell:selected:focused .code {
+  // more readable styles on focused cells w/ blue background
+
+  &.identifier {
+    -fx-fill: white !important;
+  }
+
+  &.keyword, &.literal {
+    -fx-fill: #dddddd;
+  }
+
+  &.punctuation {
+    -fx-fill: black;
+  }
+}
 
 .code {
 

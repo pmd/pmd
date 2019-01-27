@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import apex.jorje.semantic.ast.expression.IdentifierContext;
 import apex.jorje.semantic.ast.expression.ReferenceExpression;
+import apex.jorje.semantic.ast.expression.ReferenceType;
+
 
 public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression> {
 
@@ -12,8 +15,19 @@ public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression
         super(referenceExpression);
     }
 
+
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    public IdentifierContext getContext() {
+        return node.getContext();
+    }
+
+
+    public ReferenceType getReferenceType() {
+        return node.getReferenceType();
     }
 }
