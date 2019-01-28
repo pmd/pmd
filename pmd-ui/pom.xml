@@ -16,9 +16,6 @@
         <maven.compiler.source>1.${java.version}</maven.compiler.source>
         <maven.compiler.target>1.${java.version}</maven.compiler.target>
 
-        <build.mr.java9.output>${project.build.outputDirectory}/META-INF/versions/9</build.mr.java9.output>
-
-
         <openjfx.version>11</openjfx.version>
     </properties>
 
@@ -62,57 +59,6 @@
                     <rulesets>
                         <ruleset>/net/sourceforge/pmd/pmd-ui-dogfood-config.xml</ruleset>
                     </rulesets>
-                </configuration>
-            </plugin>
-
-            <!-- Unpack Java 8 specific dependencies into the root output dir -->
-            <!-- Code specific to higher versions is unpacked into META-INF/versions/n -->
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>layout-java-8-specific-code</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifact>org.controlsfx:controlsfx:8.40.13</artifact>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                            <includes>**/*</includes>
-                            <excludes>MANIFEST.MF</excludes>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>layout-java-9-specific-code</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifact>org.controlsfx:controlsfx:9.0.0</artifact>
-                            <outputDirectory>${build.mr.java9.output}</outputDirectory>
-                            <includes>**/*</includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <!-- Important for it to work on JRE 9+ -->
-                            <Multi-Release>true</Multi-Release>
-                            <Main-Class>net.sourceforge.pmd.util.fxdesigner.DesignerStarter</Main-Class>
-                        </manifestEntries>
-                    </archive>
-                    <finalName>pmd-ui-${project.version}</finalName>
                 </configuration>
             </plugin>
         </plugins>
@@ -169,12 +115,9 @@
             <version>0.9.2</version>
         </dependency>
         <dependency>
-            <!-- That one is "provided" because several versions are unpacked into versioned dirs -->
-            <!-- to create a multi-release jar. -->
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>8.40.13</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>

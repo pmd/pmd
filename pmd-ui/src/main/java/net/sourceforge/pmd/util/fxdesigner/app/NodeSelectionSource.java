@@ -10,14 +10,14 @@ import org.reactfx.EventStream;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
+import net.sourceforge.pmd.util.fxdesigner.XPathPanelController;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 
 
 /**
  * A control or controller that somehow displays nodes in a form that the user can select.
- * When a node is selected by the user (e.g. {@link AstTreeView}, {@link NodeParentageCrumbBar}, etc),
+ * When a node is selected by the user (e.g. {@link AstTreeView}, {@link XPathPanelController}, etc),
  * the whole UI is synchronized to reflect information about the node. This includes scrolling
  * the TreeView, the editor, etc. To achieve that uniformly, node selection events are merged
  * into a global stream for the whole app. Events from that stream are handled by {@link MainDesignerController}.

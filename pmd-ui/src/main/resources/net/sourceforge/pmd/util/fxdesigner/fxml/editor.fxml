@@ -6,7 +6,6 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.MenuButton?>
@@ -80,8 +79,8 @@
         </SplitPane>
     </center>
     <bottom>
-        <NodeParentageCrumbBar fx:id="focusNodeParentageCrumbBar"
-                               stylesheets="@../css/crumbbar.css"
-                               prefHeight="30" id="main-toolbar" />
+        <!--<NodeParentageCrumbBar fx:id="focusNodeParentageCrumbBar"-->
+                               <!--stylesheets="@../css/crumbbar.css"-->
+                               <!--prefHeight="30" id="main-toolbar" />-->
     </bottom>
 </BorderPane>

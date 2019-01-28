@@ -29,13 +29,13 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
-import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -43,7 +43,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ASTTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView;
-import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
 import javafx.application.Platform;
@@ -76,8 +75,6 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
     private AstTreeView astTreeView;
     @FXML
     private HighlightLayerCodeArea<StyleLayerIds> codeEditorArea;
-    @FXML
-    private NodeParentageCrumbBar focusNodeParentageCrumbBar;
 
     private final ASTManager astManager;
 
@@ -107,7 +104,6 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
     protected void beforeParentInit() {
 
         astTreeView.setDesignerRoot(getDesignerRoot());
-        focusNodeParentageCrumbBar.setDesignerRoot(getDesignerRoot());
 
         initializeLanguageSelector(); // languageVersionProperty() must be initialized
 
@@ -193,7 +189,7 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
     @Override
     public ObservableSet<? extends NodeSelectionSource> getSubSelectionSources() {
-        return FXCollections.observableSet(astTreeView, focusNodeParentageCrumbBar);
+        return FXCollections.observableSet(astTreeView);
     }
 
 
