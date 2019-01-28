@@ -19,7 +19,7 @@ public final class DesignerRoot {
 
 
     private final Stage mainStage;
-    private final EventLogger logger = new EventLogger();
+    private final EventLogger logger = new EventLogger(this);
     private final boolean developerMode;
 
 

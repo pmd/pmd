@@ -427,4 +427,9 @@ public class SourceEditorController extends AbstractController implements Compos
 
     }
 
+
+    @Override
+    public String getDebugName() {
+        return "editor";
+    }
 }

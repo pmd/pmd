@@ -87,6 +87,15 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> implements NodeSe
 
 
     @Override
+    public boolean alwaysHandleSelection() {
+        // We need to reset the pseudo class we artificially added.
+        // if the event originated from here, then we know the crumb is displayed
+        // and we won't reset the displayed nodes
+        return true;
+    }
+
+
+    @Override
     public EventStream<NodeSelectionEvent> getSelectionEvents() {
         return selectionEvents.map(n -> new NodeSelectionEvent(n, this));
     }
@@ -218,5 +227,11 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> implements NodeSe
 
     public void setDesignerRoot(DesignerRoot designerRoot) {
         this.designerRoot = designerRoot;
+    }
+
+
+    @Override
+    public String getDebugName() {
+        return "crumb-bar";
     }
 }

@@ -129,6 +129,7 @@ public final class EventLogController extends AbstractController {
             }
         });
 
+        logCategoryColumn.setResizable(true);
         logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
         logMessageColumn.setSortable(false);
@@ -149,7 +150,7 @@ public final class EventLogController extends AbstractController {
 
         logMessageColumn.prefWidthProperty()
                         .bind(eventLogTableView.widthProperty()
-                                               .subtract(logCategoryColumn.getPrefWidth())
+                                               .subtract(logCategoryColumn.getWidth())
                                                .subtract(logDateColumn.getPrefWidth())
                                                .subtract(2)); // makes it work
 
@@ -235,6 +236,7 @@ public final class EventLogController extends AbstractController {
     public void showPopup() {
         myPopupStage.show();
         popupBinding = bindPopupToThisController();
+        eventLogTableView.refresh();
     }
 
 
@@ -242,7 +244,6 @@ public final class EventLogController extends AbstractController {
         myPopupStage.hide();
         popupBinding.unsubscribe();
         popupBinding = () -> {};
-
     }
 
 

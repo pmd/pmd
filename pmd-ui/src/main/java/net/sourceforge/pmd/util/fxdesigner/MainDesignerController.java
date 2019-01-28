@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -157,7 +158,12 @@ public class MainDesignerController extends AbstractController implements Compos
         refreshAST(); // initial refreshing
         sourceEditorController.moveCaret(0, 0);
 
-        getSelectionEvents().subscribe(n -> CompositeSelectionSource.super.select(n));
+        // ignore selection events produced in very short delay
+        // this avoids event handling loops, e.g. an event from
+        // the xpath panel is forwarded to the treeView, which
+        // forwards back an event, etc.
+        getSelectionEvents().thenIgnoreFor(Duration.ofMillis(20))
+                            .subscribe(n -> CompositeSelectionSource.super.select(n));
     }
 
 
@@ -165,7 +171,6 @@ public class MainDesignerController extends AbstractController implements Compos
     public ObservableSet<? extends NodeSelectionSource> getComponents() {
         return FXCollections.observableSet(nodeInfoPanelController, sourceEditorController, xpathPanelController);
     }
-
 
     public void shutdown() {
         try {
@@ -418,4 +423,11 @@ public class MainDesignerController extends AbstractController implements Compos
     public List<AbstractController> getChildren() {
         return Arrays.asList(xpathPanelController, sourceEditorController, nodeInfoPanelController);
     }
+
+
+    @Override
+    public String getDebugName() {
+        return "MAIN";
+    }
+
 }

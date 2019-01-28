@@ -10,7 +10,7 @@ import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.SELECT
 import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_EVALUATION_EXCEPTION;
 import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_OK;
 import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.countNotMatching;
-import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.reduceIfPossible;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.reduceEntangledIfPossible;
 
 import java.time.Duration;
 import java.util.EnumSet;
@@ -23,8 +23,10 @@ import org.reactfx.collection.LiveArrayList;
 import org.reactfx.collection.LiveList;
 import org.reactfx.value.Val;
 
+import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.LogEntryWithData;
+import net.sourceforge.pmd.util.fxdesigner.util.ApplicationComponent;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource.NodeSelectionEvent;
 
@@ -35,7 +37,7 @@ import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource.NodeSelectio
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class EventLogger {
+public class EventLogger implements ApplicationComponent {
 
     /**
      * Exceptions from XPath evaluation or parsing are never emitted
@@ -45,26 +47,29 @@ public class EventLogger {
     private static final Duration EVENT_TRACING_REDUCTION_DELAY = Duration.ofMillis(200);
     private final EventSource<LogEntry> latestEvent = new EventSource<>();
     private final LiveList<LogEntry> fullLog = new LiveArrayList<>();
+    private final DesignerRoot designerRoot;
 
 
-    public EventLogger() {
+    public EventLogger(DesignerRoot designerRoot) {
+        this.designerRoot = designerRoot;
 
         EventStream<LogEntryWithData<NodeSelectionEvent>> eventTraces =
-            reduceIfPossible(filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
-                             // the user data for those is the event
-                             // if they're the same event we reduce them together
-                             (lastEv, newEv) -> Objects.equals(lastEv.getUserData(), newEv.getUserData()),
-                             LogEntryWithData::reduceEventTrace,
-                             EVENT_TRACING_REDUCTION_DELAY);
+            reduceEntangledIfPossible(filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
+                                      // the user data for those is the event
+                                      // if they're the same event we reduce them together
+                                      (lastEv, newEv) -> Objects.equals(lastEv.getUserData(), newEv.getUserData()),
+                                      LogEntryWithData::reduceEventTrace,
+                                      EVENT_TRACING_REDUCTION_DELAY);
 
         EventStream<LogEntry> onlyParseException = deleteOnSignal(latestEvent, PARSE_EXCEPTION, PARSE_OK);
         EventStream<LogEntry> onlyXPathException = deleteOnSignal(latestEvent, XPATH_EVALUATION_EXCEPTION, XPATH_OK);
 
         EventStream<LogEntry> otherExceptions =
             filterOnCategory(latestEvent, true, PARSE_EXCEPTION, XPATH_EVALUATION_EXCEPTION, SELECTION_EVENT_TRACING)
-                .filter(it -> !it.getCategory().isFlag());
+                .filter(it -> isDeveloperMode() || !it.getCategory().isInternal());
 
         EventStreams.merge(eventTraces, onlyParseException, otherExceptions, onlyXPathException)
+                    .distinct()
                     .subscribe(fullLog::add);
     }
 
@@ -72,6 +77,12 @@ public class EventLogger {
     /** Number of log entries that were not yet examined by the user. */
     public Val<Integer> numNewLogEntriesProperty() {
         return countNotMatching(fullLog.map(LogEntry::wasExaminedProperty));
+    }
+
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return designerRoot;
     }
 
 

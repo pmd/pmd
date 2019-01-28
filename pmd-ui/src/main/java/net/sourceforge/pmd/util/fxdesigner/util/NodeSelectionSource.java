@@ -32,14 +32,19 @@ public interface NodeSelectionSource extends ApplicationComponent {
 
 
     default void select(NodeSelectionEvent selectionEvent) {
-        if (selectionEvent.getOrigin() != this) {
-            logSelectionEventTrace(selectionEvent, () -> this.getDebugName() + " handling");
+        if (alwaysHandleSelection() || selectionEvent.getOrigin() != this) {
+            logSelectionEventTrace(selectionEvent, () -> "\t" + this.getDebugName() + " is handling event");
             setFocusNode(selectionEvent.getSelection());
         }
     }
 
 
     void setFocusNode(Node node);
+
+
+    default boolean alwaysHandleSelection() {
+        return false;
+    }
 
 
     final class NodeSelectionEvent {

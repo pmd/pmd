@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 
 import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.CategoryType.FLAG;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -123,8 +124,8 @@ public class LogEntry implements Comparable<LogEntry> {
 
         // These are "flag" categories that signal that previous exceptions
         // thrown during code or XPath edition may be discarded as uninteresting
-        PARSE_OK("Parsing success", FLAG),
-        XPATH_OK("XPath evaluation success", FLAG),
+        PARSE_OK("Parsing success", CategoryType.INTERNAL),
+        XPATH_OK("XPath evaluation success", CategoryType.INTERNAL),
 
         /**
          * Used for events that occurred internally to the app and are only relevant to a developer of the app.

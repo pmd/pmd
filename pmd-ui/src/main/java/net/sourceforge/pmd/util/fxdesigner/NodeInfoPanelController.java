@@ -298,4 +298,10 @@ public class NodeInfoPanelController extends AbstractController implements NodeS
         Collections.sort(result);
         return result;
     }
+
+
+    @Override
+    public String getDebugName() {
+        return "info-panel";
+    }
 }

@@ -362,12 +362,47 @@ public final class DesignerUtil {
 
 
     /**
+     * Like reduce if possible, but can be used if the events to reduce are emitted in extremely close
+     * succession, so close that some unrelated events may be mixed up. This reduces each new event
+     * with a related event in the pending notification chain instead of just considering the last one
+     * as a possible reduction target.
+     */
+    public static <T> EventStream<T> reduceEntangledIfPossible(EventStream<T> input, BiPredicate<T, T> canReduce, BinaryOperator<T> reduction, Duration duration) {
+        EventSource<T> source = new EventSource<>();
+
+        input.reduceSuccessions(
+            () -> new ArrayList<>(),
+            (List<T> pending, T t) -> {
+
+                for (int i = 0; i < pending.size(); i++) {
+                    if (canReduce.test(pending.get(i), t)) {
+                        pending.set(i, reduction.apply(pending.get(i), t));
+                        return pending;
+                    }
+                }
+                pending.add(t);
+
+                return pending;
+            },
+            duration
+        )
+             .subscribe(pending -> {
+                 for (T t : pending) {
+                     source.push(t);
+                 }
+             });
+
+        return source;
+    }
+
+
+    /**
      * Returns an event stream that reduces successions of the input stream, and deletes the latest
      * event if a new event that matches the isCancelSignal predicate is recorded during a reduction
-     * period. Cancel events are never emitted.
+     * period. Cancel events are also emitted.
      */
     public static <T> EventStream<T> deleteOnSignal(EventStream<T> input, Predicate<T> isCancelSignal, Duration duration) {
-        return reduceIfPossible(input, (last, t) -> isCancelSignal.test(t), (last, t) -> t, duration).filter(isCancelSignal.negate());
+        return reduceIfPossible(input, (last, t) -> isCancelSignal.test(t), (last, t) -> t, duration);
     }
 
 
