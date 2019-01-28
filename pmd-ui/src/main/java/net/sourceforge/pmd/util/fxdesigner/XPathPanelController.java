@@ -19,6 +19,7 @@ import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
+import org.reactfx.SuspendableEventStream;
 import org.reactfx.collection.LiveArrayList;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -27,14 +28,14 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
-import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CompletionResultSource;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathAutocompleteProvider;
@@ -100,6 +101,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
     // ui property
     private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
 
+    private SuspendableEventStream<TextAwareNodeWrapper> selectionEvents;
 
     public XPathPanelController(MainDesignerController mainController) {
         super(mainController);
@@ -127,7 +129,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
                            .or(xpathVersionProperty().changes())
                            .subscribe(tick -> parent.refreshXPathResults());
 
-
+        selectionEvents = EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty()).suppressible();
     }
 
 
@@ -219,11 +221,9 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
     @Override
     public EventStream<NodeSelectionEvent> getSelectionEvents() {
-        return EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
-                           .conditionOn(xpathResultListView.focusedProperty())
-                           .filter(Objects::nonNull)
-                           .map(TextAwareNodeWrapper::getNode)
-                           .map(n -> new NodeSelectionEvent(n, this));
+        return selectionEvents.filter(Objects::nonNull)
+                              .map(TextAwareNodeWrapper::getNode)
+                              .map(n -> new NodeSelectionEvent(n, this));
     }
 
 
@@ -232,7 +232,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
         xpathResultListView.getItems().stream()
                            .filter(wrapper -> wrapper.getNode().equals(node))
                            .findFirst()
-                           .ifPresent(xpathResultListView.getSelectionModel()::select);
+                           .ifPresent(item -> selectionEvents.suspendWhile(() -> xpathResultListView.getSelectionModel().select(item)));
     }
 
 

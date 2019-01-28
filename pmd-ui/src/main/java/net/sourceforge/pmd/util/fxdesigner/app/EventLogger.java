@@ -23,13 +23,10 @@ import org.reactfx.collection.LiveArrayList;
 import org.reactfx.collection.LiveList;
 import org.reactfx.value.Val;
 
-import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.app.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.LogEntryWithData;
-import net.sourceforge.pmd.util.fxdesigner.app.ApplicationComponent;
-import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource.NodeSelectionEvent;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 
 /**
@@ -55,6 +52,7 @@ public class EventLogger implements ApplicationComponent {
         this.designerRoot = designerRoot; // we have to be careful with initialization order here
 
         EventStream<LogEntryWithData<NodeSelectionEvent>> eventTraces =
+            // none of this is done if developer mode isn't enabled because then those events aren't even pushed in the first place
             reduceEntangledIfPossible(filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
                                       // the user data for those is the event
                                       // if they're the same event we reduce them together

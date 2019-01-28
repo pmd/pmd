@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,14 +22,14 @@ import org.reactfx.value.Val;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
-import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
+import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
@@ -148,12 +147,8 @@ public class MainDesignerController extends AbstractController<AbstractControlle
         refreshAST(); // initial refreshing
         sourceEditorController.moveCaret(0, 0);
 
-        // ignore selection events produced in very short delay
-        // this avoids event handling loops, e.g. an event from
-        // the xpath panel is forwarded to the treeView, which
-        // forwards back an event, etc.
-        getSelectionEvents().thenIgnoreFor(Duration.ofMillis(20))
-                            .subscribe(n -> CompositeSelectionSource.super.bubbleDown(n));
+        // this is the only place where getSelectionEvents is called
+        getSelectionEvents().distinct().subscribe(n -> CompositeSelectionSource.super.bubbleDown(n));
     }
 
 

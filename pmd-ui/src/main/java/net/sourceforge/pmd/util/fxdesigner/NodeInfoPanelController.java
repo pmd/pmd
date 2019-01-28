@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
+import org.reactfx.SuspendableEventStream;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
@@ -29,9 +30,9 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
-import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
@@ -83,6 +84,9 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
 
     private Node selectedNode;
 
+    private SuspendableEventStream<TreeItem<Object>> myScopeItemSelectionEvents;
+
+
     public NodeInfoPanelController(MainDesignerController mainController) {
         super(mainController);
     }
@@ -101,17 +105,19 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
             .distinct()
             .subscribe(show -> displayAttributes(selectedNode));
 
+        // suppress as early as possible in the pipeline
+        myScopeItemSelectionEvents = EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty()).suppressible();
+
     }
 
 
     @Override
     public EventStream<NodeSelectionEvent> getSelectionEvents() {
-        return EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty())
-                           .filter(Objects::nonNull)
-                           .map(TreeItem::getValue)
-                           .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
-                           .map(NameDeclaration::getNode)
-                           .map(n -> new NodeSelectionEvent(n, this));
+        return myScopeItemSelectionEvents.filter(Objects::nonNull)
+                                         .map(TreeItem::getValue)
+                                         .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
+                                         .map(NameDeclaration::getNode)
+                                         .map(n -> new NodeSelectionEvent(n, this));
 
     }
 
@@ -213,7 +219,8 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
             // you selected is in its own scope hierarchy so it looks buggy.
             int maxDepth = IteratorUtil.count(parentIterator(previousSelection, true));
             rootScope.tryFindNode(previousSelection.getValue(), maxDepth)
-                     .ifPresent(scopeHierarchyTreeView.getSelectionModel()::select);
+                     // suspend notifications while selecting
+                     .ifPresent(item -> myScopeItemSelectionEvents.suspendWhile(() -> scopeHierarchyTreeView.getSelectionModel().select(item)));
         }
     }
 

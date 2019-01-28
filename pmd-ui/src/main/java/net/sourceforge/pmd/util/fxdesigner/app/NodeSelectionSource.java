@@ -33,7 +33,12 @@ public interface NodeSelectionSource extends ApplicationComponent {
     /**
      * Returns a stream of events that should push an event each time
      * this source or one of its sub components records a change in node
-     * selection.
+     * selection. This one needs to be implemented in sub classes.
+     *
+     * <p>You can't trust that this method will return the same stream
+     * when called several times. In fact it's just called one time.
+     * That's why you can't abstract the suppressible behaviour here.
+     * You'd need Scala traits.
      */
     EventStream<NodeSelectionEvent> getSelectionEvents();
 

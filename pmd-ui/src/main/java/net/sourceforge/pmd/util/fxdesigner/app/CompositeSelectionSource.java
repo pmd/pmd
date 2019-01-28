@@ -30,6 +30,11 @@ public interface CompositeSelectionSource extends NodeSelectionSource {
     }
 
 
+    default boolean isRoot() {
+        return false;
+    }
+
+
     @Override
     default void setFocusNode(Node node) {
         // by default do nothing,
