@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveArrayList;
 import org.reactfx.value.Val;
@@ -34,6 +35,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CompletionResultSource;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathAutocompleteProvider;
@@ -74,7 +76,7 @@ import javafx.stage.StageStyle;
  * @see ExportXPathWizardController
  * @since 6.0.0
  */
-public class XPathPanelController extends AbstractController {
+public class XPathPanelController extends AbstractController implements NodeSelectionSource {
 
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final DesignerRoot designerRoot;
@@ -122,12 +124,6 @@ public class XPathPanelController extends AbstractController {
         xpathResultListView.setCellFactory(v -> new XpathViolationListCell());
 
         exportXpathToRuleButton.setOnAction(e -> showExportXPathToRuleWizard());
-
-        EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
-                    .conditionOn(xpathResultListView.focusedProperty())
-                    .filter(Objects::nonNull)
-                    .map(TextAwareNodeWrapper::getNode)
-                    .subscribe(parent::onNodeItemSelected);
 
         xpathExpressionArea.richChanges()
                            .filter(t -> !t.isIdentity())
@@ -226,6 +222,23 @@ public class XPathPanelController extends AbstractController {
     }
 
 
+    @Override
+    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+        return EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty())
+                           .conditionOn(xpathResultListView.focusedProperty())
+                           .filter(Objects::nonNull)
+                           .map(TextAwareNodeWrapper::getNode)
+                           .map(n -> new NodeSelectionEvent(n, this));
+    }
+
+
+    @Override
+    public void setFocusNode(Node node) {
+        xpathResultListView.getItems().stream()
+                           .filter(wrapper -> wrapper.getNode().equals(node))
+                           .findFirst()
+                           .ifPresent(xpathResultListView.getSelectionModel()::select);
+    }
 
 
     /**
@@ -256,10 +269,10 @@ public class XPathPanelController extends AbstractController {
             parent.highlightXPathResults(results);
             violationsTitledPane.setTitle("Matched nodes (" + results.size() + ")");
             // Notify that everything went OK so we can avoid logging very recent exceptions
-            designerRoot.getLogger().logEvent(new LogEntry(null, Category.XPATH_OK));
+            designerRoot.getLogger().logEvent(LogEntry.createExceptionEntry(null, Category.XPATH_OK));
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
+            designerRoot.getLogger().logEvent(LogEntry.createExceptionEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
         }
 
     }
@@ -341,4 +354,6 @@ public class XPathPanelController extends AbstractController {
     public List<SettingsOwner> getChildrenSettingsNodes() {
         return Collections.singletonList(getRuleBuilder());
     }
+
+
 }

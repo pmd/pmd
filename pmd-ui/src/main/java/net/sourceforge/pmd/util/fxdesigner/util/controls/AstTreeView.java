@@ -8,15 +8,16 @@ import static net.sourceforge.pmd.internal.util.IteratorUtil.toIterable;
 import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.reactfx.EventSource;
+import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
-import org.reactfx.Subscription;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
@@ -27,38 +28,43 @@ import javafx.scene.control.TreeView;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class AstTreeView extends TreeView<Node> {
+public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
 
     private final Var<Consumer<Node>> onNodeClickedHandler = Var.newSimpleVar(n -> {});
     private final TreeViewWrapper<Node> myWrapper = new TreeViewWrapper<>(this);
 
-    private Subscription myNodeSelectedSub;
     private ASTTreeItem selectedTreeItem;
-
+    private final EventSource<Node> selectionEvents = new EventSource<>();
 
     public AstTreeView() {
+        // push a node selection event whenever...
+        //  * The selection changes
+        EventStreams.valuesOf(getSelectionModel().selectedItemProperty())
+                    .filterMap(Objects::nonNull, TreeItem::getValue)
+                    .subscribe(selectionEvents::push);
+        // * a cell is explicitly clicked. This catches the case where the cell was already selected
+        setCellFactory(tv -> new ASTTreeCell(n -> {
+            // only push an event if the node was already selected
+            if (selectedTreeItem != null && selectedTreeItem.getValue() != null && selectedTreeItem.getValue().equals(n)) {
+                selectionEvents.push(n);
+            }
+        }));
 
-        onNodeClickedHandler.values()
-                            .subscribe(handler -> {
-                                setCellFactory(tv -> new ASTTreeCell(handler));
-
-                                Optional.ofNullable(myNodeSelectedSub).ifPresent(Subscription::unsubscribe);
-
-                                myNodeSelectedSub = EventStreams.valuesOf(getSelectionModel().selectedItemProperty())
-                                                                .filterMap(Objects::nonNull, TreeItem::getValue)
-                                                                .subscribe(handler);
-
-                            });
+    }
 
 
+    @Override
+    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+        return selectionEvents.map(n -> new NodeSelectionEvent(n, this));
     }
 
 
     /**
      * Focus the given node, handling scrolling if needed.
      */
-    public void focusNode(Node node) {
+    @Override
+    public void setFocusNode(Node node) {
         SelectionModel<TreeItem<Node>> selectionModel = getSelectionModel();
 
         if (selectedTreeItem == null && node != null

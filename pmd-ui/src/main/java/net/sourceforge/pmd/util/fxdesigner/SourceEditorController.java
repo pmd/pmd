@@ -33,7 +33,9 @@ import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -45,6 +47,8 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
@@ -58,7 +62,7 @@ import javafx.scene.control.ToggleGroup;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class SourceEditorController extends AbstractController {
+public class SourceEditorController extends AbstractController implements CompositeSelectionSource {
 
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
@@ -132,21 +136,12 @@ public class SourceEditorController extends AbstractController {
 
         codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
 
-        astTreeView.onNodeClickedHandlerProperty().setValue(parent::onNodeItemSelected);
-
     }
 
 
     @Override
     protected void afterParentInit() {
         DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
-
-        // Focus the crumb
-        focusNodeParentageCrumbBar.setOnRegularCrumbAction(treeitem -> {
-            if (treeitem != null && treeitem.getValue() != null) {
-                astTreeView.focusNode(treeitem.getValue());
-            }
-        });
     }
 
 
@@ -193,6 +188,12 @@ public class SourceEditorController extends AbstractController {
 
             return label;
         };
+    }
+
+
+    @Override
+    public ObservableSet<? extends NodeSelectionSource> getComponents() {
+        return FXCollections.observableSet(astTreeView, focusNodeParentageCrumbBar);
     }
 
 
@@ -263,20 +264,21 @@ public class SourceEditorController extends AbstractController {
      * Highlights the given node (or nothing if null).
      * Removes highlighting on the previously highlighted node.
      */
+    @Override
     public void setFocusNode(Node node) {
-        if (Objects.equals(node, currentFocusNode.getValue())) {
-            return;
-        }
-
-        codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true);
-
+        // editor is always scrolled when re-selecting a node
         if (node != null) {
             Platform.runLater(() -> scrollEditorToNode(node));
         }
 
+        if (Objects.equals(node, currentFocusNode.getValue())) {
+            return;
+        }
+
         currentFocusNode.setValue(node);
-        Platform.runLater(() -> astTreeView.focusNode(node));
-        focusNodeParentageCrumbBar.setFocusNode(node);
+
+        // editor is only restyled if the selection has changed
+        Platform.runLater(() -> codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true));
     }
 
 

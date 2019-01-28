@@ -9,13 +9,15 @@ import static net.sourceforge.pmd.internal.util.IteratorUtil.asReversed;
 import static net.sourceforge.pmd.internal.util.IteratorUtil.count;
 import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.parentIterator;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.controlsfx.control.BreadCrumbBar;
+import org.reactfx.EventSource;
+import org.reactfx.EventStream;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 
 import javafx.application.Platform;
 import javafx.css.PseudoClass;
@@ -35,7 +37,7 @@ import javafx.util.Callback;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
+public class NodeParentageCrumbBar extends BreadCrumbBar<Node> implements NodeSelectionSource {
 
     private static final int DEFAULT_PX_BY_CHAR = 5;
     private static final int DEFAULT_CONSTANT_PADDING = 19;
@@ -44,7 +46,7 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
     private final TreeItem<Node> ellipsisCrumb = new TreeItem<>(null);
     /** number of nodes currently behind the ellipsis */
     private int numElidedNodes = 0;
-
+    private final EventSource<Node> selectionEvents = new EventSource<>();
 
     public NodeParentageCrumbBar() {
         // This allows to click on a parent crumb and keep the children crumb
@@ -52,6 +54,12 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
 
         // captured in the closure
         final Callback<TreeItem<Node>, Button> originalCrumbFactory = getCrumbFactory();
+
+        setOnCrumbAction(ev -> {
+            if (ev.getSelectedCrumb() != ellipsisCrumb) {
+                selectionEvents.push(ev.getSelectedCrumb().getValue());
+            }
+        });
 
         setCrumbFactory(item -> {
             Button button = originalCrumbFactory.call(item);
@@ -74,18 +82,9 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
     }
 
 
-    /**
-     * Set a handler that executes when the user selects a crumb other than the ellipsis.
-     * This shouldn't be calling {@link #setFocusNode(Node)} on the same node otherwise
-     * the crumb bar will set the deepest node to the node and the children won't be
-     * available.
-     */
-    public void setOnRegularCrumbAction(Consumer<TreeItem<Node>> handler) {
-        setOnCrumbAction(e -> {
-            if (e.getSelectedCrumb() != ellipsisCrumb) {
-                handler.accept(e.getSelectedCrumb());
-            }
-        });
+    @Override
+    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+        return selectionEvents.map(n -> new NodeSelectionEvent(n, this));
     }
 
     // getSelectedCrumb gets the deepest displayed node
@@ -96,6 +95,7 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> {
      * sets the focus on it. Otherwise, sets the node to be
      * the deepest one of the crumb bar. Noop if node is null.
      */
+    @Override
     public void setFocusNode(Node node) {
         if (node == null) {
             return;

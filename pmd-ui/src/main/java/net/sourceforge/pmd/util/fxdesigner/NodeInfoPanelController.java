@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.value.Var;
 
@@ -30,6 +31,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
@@ -55,7 +57,7 @@ import javafx.scene.control.TreeView;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class NodeInfoPanelController extends AbstractController {
+public class NodeInfoPanelController extends AbstractController implements NodeSelectionSource {
 
     private final MainDesignerController parent;
 
@@ -91,13 +93,6 @@ public class NodeInfoPanelController extends AbstractController {
 
         xpathAttributesListView.setPlaceholder(new Label("No available attributes"));
 
-        EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty())
-                    .filter(Objects::nonNull)
-                    .map(TreeItem::getValue)
-                    .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
-                    .filter(nd -> !Objects.equals(nd.getNode(), selectedNode))
-                    .subscribe(declaration -> Platform.runLater(() -> parent.onNodeItemSelected(declaration.getNode(), true)));
-
         scopeHierarchyTreeView.setCellFactory(view -> new ScopeHierarchyTreeCell());
 
         hideCommonAttributesProperty()
@@ -108,20 +103,25 @@ public class NodeInfoPanelController extends AbstractController {
     }
 
 
-    /** <pre>{@linkplain #setFocusNode(Node, boolean) setFocusNode}(node, false)</pre> */
-    public void setFocusNode(Node node) {
-        setFocusNode(node, false);
+    @Override
+    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+        return EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty())
+                           .filter(Objects::nonNull)
+                           .map(TreeItem::getValue)
+                           .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
+                           .map(NameDeclaration::getNode)
+                           .map(n -> new NodeSelectionEvent(n, this));
+
     }
 
 
     /**
      * Displays info about a node. If null, the panels are reset.
      *
-     * @param node           Node to inspect
-     * @param isFromNameDecl Whether the node was selected in the scope hierarchy treeview.
-     *                       If so we'll attempt to preserve that selection.
+     * @param node Node to inspect
      */
-    public void setFocusNode(Node node, boolean isFromNameDecl) {
+    @Override
+    public void setFocusNode(Node node) {
         if (node == null) {
             invalidateInfo();
             return;
@@ -132,15 +132,14 @@ public class NodeInfoPanelController extends AbstractController {
         }
         selectedNode = node;
 
-        displayAttributes(node);
-        displayMetrics(node);
-        displayScopes(node, isFromNameDecl);
+        Platform.runLater(() -> displayAttributes(node));
+        Platform.runLater(() -> displayMetrics(node));
+        displayScopes(node);
 
         if (node instanceof ScopedNode) {
             // not null as well
             highlightNameOccurences((ScopedNode) node);
         }
-
     }
 
 
@@ -198,7 +197,7 @@ public class NodeInfoPanelController extends AbstractController {
     }
 
 
-    private void displayScopes(Node node, boolean focusScopeView) {
+    private void displayScopes(Node node) {
 
         // current selection
         TreeItem<Object> previousSelection = scopeHierarchyTreeView.getSelectionModel().getSelectedItem();
@@ -206,7 +205,7 @@ public class NodeInfoPanelController extends AbstractController {
         ScopeHierarchyTreeItem rootScope = ScopeHierarchyTreeItem.buildAscendantHierarchy(node);
         scopeHierarchyTreeView.setRoot(rootScope);
 
-        if (focusScopeView && previousSelection != null) {
+        if (previousSelection != null) {
             // Try to find the node that was previously selected and focus it in the new ascendant hierarchy.
             // Otherwise, when you select a node in the scope tree, since focus of the app is shifted to that
             // node, the scope hierarchy is reset and you lose the selection - even though obviously the node

@@ -17,7 +17,9 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.reactfx.value.Val;
+import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -25,14 +27,17 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
+import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 
-import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -62,7 +67,7 @@ import javafx.stage.FileChooser;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class MainDesignerController extends AbstractController {
+public class MainDesignerController extends AbstractController implements CompositeSelectionSource {
 
     /**
      * Callback to the owner.
@@ -145,7 +150,27 @@ public class MainDesignerController extends AbstractController {
         updateRecentFilesMenu();
         refreshAST(); // initial refreshing
         sourceEditorController.moveCaret(0, 0);
+
+        MutableInt mutableInt = new MutableInt();
+        Var<Boolean> canProcessEvent = Var.newSimpleVar(true);
+        //                    .conditionOn(canProcessEvent)
+        //                    .distinct()
+        getSelectionEvents().hook(n -> System.out.println(mutableInt.incrementAndGet() + ": " + n))
+                            .subscribe(n -> {
+                                canProcessEvent.setValue(false);
+                                CompositeSelectionSource.super.select(n);
+//                                onNodeItemSelected(n.getSelection());
+                                canProcessEvent.setValue(true);
+                            });
+
     }
+
+
+    @Override
+    public ObservableSet<? extends NodeSelectionSource> getComponents() {
+        return FXCollections.observableSet(nodeInfoPanelController, sourceEditorController, xpathPanelController);
+    }
+
 
     public void shutdown() {
         try {
@@ -193,19 +218,8 @@ public class MainDesignerController extends AbstractController {
      * Executed when the user selects a node in a treeView or listView.
      */
     public void onNodeItemSelected(Node selectedValue) {
-        onNodeItemSelected(selectedValue, false);
-    }
-
-
-    /**
-     * Executed when the user selects a node in a treeView or listView.
-     *
-     * @param isFromNameDecl Whether the node was selected in the scope hierarchy treeview
-     */
-    public void onNodeItemSelected(Node selectedValue, boolean isFromNameDecl) {
-        // doing that in parallel speeds it up
-        Platform.runLater(() -> nodeInfoPanelController.setFocusNode(selectedValue, isFromNameDecl));
-        Platform.runLater(() -> sourceEditorController.setFocusNode(selectedValue));
+        nodeInfoPanelController.setFocusNode(selectedValue);
+        sourceEditorController.setFocusNode(selectedValue);
     }
 
 
