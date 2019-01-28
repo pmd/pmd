@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.util.ApplicationComponent;
 
 
 /**
@@ -25,7 +26,7 @@ import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class ASTManager {
+public class ASTManager implements ApplicationComponent {
 
     private final DesignerRoot designerRoot;
 
@@ -72,6 +73,12 @@ public class ASTManager {
     }
 
 
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return designerRoot;
+    }
+
+
     /**
      * Refreshes the compilation unit given the current parameters of the model.
      *
@@ -92,25 +99,25 @@ public class ASTManager {
         try {
             node = parser.parse(null, new StringReader(source));
         } catch (Exception e) {
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.PARSE_EXCEPTION));
+            logUserException(e, Category.PARSE_EXCEPTION);
             compilationUnit.setValue(null);
             throw new ParseAbortedException(e);
         }
         try {
             languageVersionHandler.getSymbolFacade().start(node);
         } catch (Exception e) {
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.SYMBOL_FACADE_EXCEPTION));
+            logUserException(e, Category.SYMBOL_FACADE_EXCEPTION);
         }
         try {
             languageVersionHandler.getQualifiedNameResolutionFacade(classLoader).start(node);
         } catch (Exception e) {
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.QNAME_RESOLUTION_EXCEPTION));
+            logUserException(e, Category.QNAME_RESOLUTION_EXCEPTION);
         }
 
         try {
             languageVersionHandler.getTypeResolutionFacade(classLoader).start(node);
         } catch (Exception e) {
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.TYPERESOLUTION_EXCEPTION));
+            logUserException(e, Category.TYPERESOLUTION_EXCEPTION);
         }
 
         compilationUnit.setValue(node);
@@ -118,7 +125,7 @@ public class ASTManager {
         lastLanguageVersion = getLanguageVersion();
 
         // Notify that the parse went OK so we can avoid logging very recent exceptions
-        designerRoot.getLogger().logEvent(new LogEntry(null, Category.PARSE_OK));
+        raiseParsableSourceFlag();
 
         return getCompilationUnit();
     }

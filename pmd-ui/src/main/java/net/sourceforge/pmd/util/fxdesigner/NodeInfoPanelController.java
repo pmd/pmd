@@ -88,6 +88,13 @@ public class NodeInfoPanelController extends AbstractController implements NodeS
         parent = mainController;
     }
 
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return parent.getDesignerRoot();
+    }
+
+
     @Override
     protected void beforeParentInit() {
 

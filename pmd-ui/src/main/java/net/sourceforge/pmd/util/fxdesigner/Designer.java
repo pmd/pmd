@@ -30,32 +30,33 @@ import javafx.stage.Stage;
  */
 public class Designer extends Application {
 
-    private void parseParameters(Parameters params) {
+    private boolean parseParameters(Parameters params) {
         List<String> raw = params.getRaw();
         if (!raw.contains("-v")
             && !raw.contains("--verbose")) {
             // error output is disabled by default
             
             System.err.close();
+            return false;
         }
-
+        return true;
     }
 
 
     @Override
     public void start(Stage stage) throws IOException {
-        parseParameters(getParameters());
+        boolean developerMode = parseParameters(getParameters());
 
 
         FXMLLoader loader
             = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
 
-        DesignerRoot owner = new DesignerRoot(stage);
+        DesignerRoot owner = new DesignerRoot(stage, developerMode);
         MainDesignerController mainController = new MainDesignerController(owner);
 
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(mainController);
-        XPathPanelController xpathPanelController = new XPathPanelController(owner, mainController);
-        SourceEditorController sourceEditorController = new SourceEditorController(owner, mainController);
+        XPathPanelController xpathPanelController = new XPathPanelController(mainController);
+        SourceEditorController sourceEditorController = new SourceEditorController(mainController);
 
         loader.setControllerFactory(type -> {
             if (type == MainDesignerController.class) {

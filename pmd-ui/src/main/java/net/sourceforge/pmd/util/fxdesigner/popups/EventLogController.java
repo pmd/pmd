@@ -80,11 +80,18 @@ public final class EventLogController extends AbstractController {
     // subscription allowing to unbind from the popup.
     private Subscription popupBinding = () -> {};
 
-    public EventLogController(DesignerRoot owner, MainDesignerController mediator) {
-        this.designerRoot = owner;
+
+    public EventLogController(MainDesignerController mediator) {
+        this.designerRoot = mediator.getDesignerRoot();
         this.mediator = mediator;
         // the FXML fields are injected and initialize is called in createStage
-        this.myPopupStage = createStage(owner.getMainStage());
+        this.myPopupStage = createStage(designerRoot.getMainStage());
+    }
+
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return designerRoot;
     }
 
 
@@ -219,18 +226,8 @@ public final class EventLogController extends AbstractController {
 
         entry.setExamined(true);
 
-        switch (entry.getCategory()) {
-        case OTHER:
-            break;
-        case PARSE_EXCEPTION:
-            // TODO
-            break;
-        case TYPERESOLUTION_EXCEPTION:
-        case SYMBOL_FACADE_EXCEPTION:
-            DesignerUtil.stackTraceToXPath(entry.getThrown()).map(mediator::runXPathQuery).ifPresent(selectedErrorNodes::setValue);
-            break;
-        default:
-            break;
+        if (entry.getCategory().isUserException()) {
+            DesignerUtil.stackTraceToXPath(entry.getDetails()).map(mediator::runXPathQuery).ifPresent(selectedErrorNodes::setValue);
         }
     }
 
@@ -250,7 +247,7 @@ public final class EventLogController extends AbstractController {
 
 
     private void onExceptionSelectionChanges(LogEntry newVal) {
-        logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
+        logDetailsTextArea.setText(newVal == null ? "" : newVal.getDetails());
         handleSelectedEntry(newVal);
     }
 

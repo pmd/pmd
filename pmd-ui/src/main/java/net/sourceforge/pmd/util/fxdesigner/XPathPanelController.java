@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
@@ -79,7 +78,6 @@ import javafx.stage.StageStyle;
 public class XPathPanelController extends AbstractController implements NodeSelectionSource {
 
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
-    private final DesignerRoot designerRoot;
     private final MainDesignerController parent;
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
@@ -104,13 +102,16 @@ public class XPathPanelController extends AbstractController implements NodeSele
     private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
 
 
-    public XPathPanelController(DesignerRoot owner, MainDesignerController mainController) {
-        this.designerRoot = owner;
+    public XPathPanelController(MainDesignerController mainController) {
         parent = mainController;
-
         getRuleBuilder().setClazz(XPathRule.class);
     }
 
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return parent.getDesignerRoot();
+    }
 
     @Override
     protected void beforeParentInit() {
@@ -205,7 +206,7 @@ public class XPathPanelController extends AbstractController implements NodeSele
                 popup.setScene(new Scene(root));
                 popup.initStyle(StageStyle.UTILITY);
                 popup.initModality(Modality.WINDOW_MODAL);
-                popup.initOwner(designerRoot.getMainStage());
+                popup.initOwner(getDesignerRoot().getMainStage());
                 popup.show();
             } catch (IOException e1) {
                 throw new RuntimeException(e1);
@@ -269,10 +270,10 @@ public class XPathPanelController extends AbstractController implements NodeSele
             parent.highlightXPathResults(results);
             violationsTitledPane.setTitle("Matched nodes (" + results.size() + ")");
             // Notify that everything went OK so we can avoid logging very recent exceptions
-            designerRoot.getLogger().logEvent(LogEntry.createExceptionEntry(null, Category.XPATH_OK));
+            raiseParsableXPathFlag();
         } catch (XPathEvaluationException e) {
             invalidateResults(true);
-            designerRoot.getLogger().logEvent(LogEntry.createExceptionEntry(e, Category.XPATH_EVALUATION_EXCEPTION));
+            logUserException(e, Category.XPATH_EVALUATION_EXCEPTION);
         }
 
     }
@@ -298,7 +299,7 @@ public class XPathPanelController extends AbstractController implements NodeSele
         loader.setController(wizard);
 
         final Stage dialog = new Stage();
-        dialog.initOwner(designerRoot.getMainStage());
+        dialog.initOwner(getDesignerRoot().getMainStage());
         dialog.setOnCloseRequest(e -> wizard.shutdown());
         dialog.initModality(Modality.WINDOW_MODAL);
 

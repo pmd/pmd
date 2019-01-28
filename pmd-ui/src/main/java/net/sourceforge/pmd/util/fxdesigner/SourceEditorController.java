@@ -98,15 +98,24 @@ public class SourceEditorController extends AbstractController implements Compos
     private Var<LanguageVersion> languageVersionUIProperty;
 
 
-    public SourceEditorController(DesignerRoot owner, MainDesignerController mainController) {
+    public SourceEditorController(MainDesignerController mainController) {
         parent = mainController;
-        astManager = new ASTManager(owner);
+        astManager = new ASTManager(mainController.getDesignerRoot());
 
     }
 
 
     @Override
+    public DesignerRoot getDesignerRoot() {
+        return parent.getDesignerRoot();
+    }
+
+
+    @Override
     protected void beforeParentInit() {
+
+        astTreeView.setDesignerRoot(getDesignerRoot());
+        focusNodeParentageCrumbBar.setDesignerRoot(getDesignerRoot());
 
         initializeLanguageSelector(); // languageVersionProperty() must be initialized
 
@@ -120,7 +129,6 @@ public class SourceEditorController extends AbstractController implements Compos
                                  .map(LanguageVersion::getShortName)
                                  .map(lang -> "Source Code (" + lang + ")")
                                  .subscribe(editorTitledPane::setTitle);
-
 
         codeEditorArea.plainTextChanges()
                       .filter(t -> !t.isIdentity())

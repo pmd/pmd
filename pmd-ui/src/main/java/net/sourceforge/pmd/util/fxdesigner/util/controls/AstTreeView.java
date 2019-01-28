@@ -14,9 +14,11 @@ import java.util.function.Consumer;
 import org.reactfx.EventSource;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
+import org.reactfx.SuspendableEventStream;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 
 import javafx.scene.control.SelectionModel;
@@ -35,14 +37,20 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
     private final TreeViewWrapper<Node> myWrapper = new TreeViewWrapper<>(this);
 
     private ASTTreeItem selectedTreeItem;
-    private final EventSource<Node> selectionEvents = new EventSource<>();
+    private final SuspendableEventStream<Node> pausableEvents;
+    private DesignerRoot designerRoot;
+
 
     public AstTreeView() {
+        EventSource<Node> selectionEvents = new EventSource<>();
+        pausableEvents = selectionEvents.pausable();
+
         // push a node selection event whenever...
         //  * The selection changes
         EventStreams.valuesOf(getSelectionModel().selectedItemProperty())
                     .filterMap(Objects::nonNull, TreeItem::getValue)
                     .subscribe(selectionEvents::push);
+
         // * a cell is explicitly clicked. This catches the case where the cell was already selected
         setCellFactory(tv -> new ASTTreeCell(n -> {
             // only push an event if the node was already selected
@@ -56,7 +64,7 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
     @Override
     public EventStream<NodeSelectionEvent> getSelectionEvents() {
-        return selectionEvents.map(n -> new NodeSelectionEvent(n, this));
+        return pausableEvents.map(n -> new NodeSelectionEvent(n, this));
     }
 
 
@@ -74,7 +82,7 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
             ASTTreeItem found = ((ASTTreeItem) getRoot()).findItem(node);
             if (found != null) {
-                selectionModel.select(found);
+                pausableEvents.suspendWhile(() -> selectionModel.select(found));
             }
 
             highlightFocusNodeParents(selectedTreeItem, found);
@@ -124,5 +132,16 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
     public Var<Consumer<Node>> onNodeClickedHandlerProperty() {
         return onNodeClickedHandler;
+    }
+
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return designerRoot;
+    }
+
+
+    public void setDesignerRoot(DesignerRoot designerRoot) {
+        this.designerRoot = designerRoot;
     }
 }

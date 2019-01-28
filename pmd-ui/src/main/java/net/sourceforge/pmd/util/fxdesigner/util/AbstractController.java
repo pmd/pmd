@@ -28,7 +28,7 @@ import javafx.fxml.Initializable;
  * @author Clément Fournier
  * @since 7.0.0
  */
-public class AbstractController implements Initializable, SettingsOwner {
+public abstract class AbstractController implements Initializable, SettingsOwner, ApplicationComponent {
 
     @Override
     public final void initialize(URL url, ResourceBundle resourceBundle) {

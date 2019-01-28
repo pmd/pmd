@@ -17,6 +17,7 @@ import org.reactfx.EventStream;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
 
 import javafx.application.Platform;
@@ -47,6 +48,9 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> implements NodeSe
     /** number of nodes currently behind the ellipsis */
     private int numElidedNodes = 0;
     private final EventSource<Node> selectionEvents = new EventSource<>();
+
+    private DesignerRoot designerRoot;
+
 
     public NodeParentageCrumbBar() {
         // This allows to click on a parent crumb and keep the children crumb
@@ -205,4 +209,14 @@ public class NodeParentageCrumbBar extends BreadCrumbBar<Node> implements NodeSe
         return node -> node.getXPathNodeName().length() * (thisPxByChar + 1 /*scale it up a bit*/) + safeConstantPadding;
     }
 
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return designerRoot;
+    }
+
+
+    public void setDesignerRoot(DesignerRoot designerRoot) {
+        this.designerRoot = designerRoot;
+    }
 }

@@ -15,15 +15,17 @@ import javafx.stage.Stage;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class DesignerRoot {
+public final class DesignerRoot {
 
 
     private final Stage mainStage;
     private final EventLogger logger = new EventLogger();
+    private final boolean developerMode;
 
 
-    public DesignerRoot(Stage mainStage) {
+    public DesignerRoot(Stage mainStage, boolean developerMode) {
         this.mainStage = mainStage;
+        this.developerMode = developerMode;
     }
 
 
@@ -44,6 +46,11 @@ public class DesignerRoot {
      */
     public Stage getMainStage() {
         return mainStage;
+    }
+
+
+    public boolean isDeveloperMode() {
+        return developerMode;
     }
 
 }

@@ -22,22 +22,19 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeParentageCrumbBar;
  *
  * @author Clément Fournier
  */
-public interface NodeSelectionSource {
+public interface NodeSelectionSource extends ApplicationComponent {
 
     /**
      * Returns a stream of nodes that pushes an event every time
      * this control records a *user* change in selection.
      */
-
     EventStream<NodeSelectionEvent> getSelectionEvents();
 
 
     default void select(NodeSelectionEvent selectionEvent) {
-        System.out.println("\t\t" + this.getClass().getSimpleName() + " handling " + selectionEvent);
         if (selectionEvent.getOrigin() != this) {
+            logSelectionEventTrace(selectionEvent, () -> this.getDebugName() + " handling");
             setFocusNode(selectionEvent.getSelection());
-        } else {
-            System.out.println("\tUnhandled");
         }
     }
 
@@ -89,7 +86,7 @@ public interface NodeSelectionSource {
 
         @Override
         public String toString() {
-            return getSelection().getXPathNodeName() + "(" + hashCode() + ")\t\tfrom " + getOrigin().getClass().getSimpleName();
+            return getSelection().getXPathNodeName() + "(" + hashCode() + ") from " + getOrigin().getClass().getSimpleName();
         }
     }
 

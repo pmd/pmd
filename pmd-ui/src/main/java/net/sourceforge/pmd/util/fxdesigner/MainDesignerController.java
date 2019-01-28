@@ -17,9 +17,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.reactfx.value.Val;
-import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -27,6 +25,7 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.util.ApplicationComponent;
 import net.sourceforge.pmd.util.fxdesigner.util.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
@@ -67,7 +66,7 @@ import javafx.stage.FileChooser;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class MainDesignerController extends AbstractController implements CompositeSelectionSource {
+public class MainDesignerController extends AbstractController implements CompositeSelectionSource, ApplicationComponent {
 
     /**
      * Callback to the owner.
@@ -116,8 +115,15 @@ public class MainDesignerController extends AbstractController implements Compos
 
     public MainDesignerController(DesignerRoot owner) {
         this.designerRoot = owner;
-        eventLogController = new SoftReferenceCache<>(() -> new EventLogController(owner, this));
+        eventLogController = new SoftReferenceCache<>(() -> new EventLogController(this));
     }
+
+
+    @Override
+    public DesignerRoot getDesignerRoot() {
+        return designerRoot;
+    }
+
 
     @Override
     protected void beforeParentInit() {
@@ -139,7 +145,7 @@ public class MainDesignerController extends AbstractController implements Compos
 
         openEventLogMenuItem.setOnAction(e -> eventLogController.getValue().showPopup());
         openEventLogMenuItem.textProperty().bind(
-            designerRoot.getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)")
+            getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)")
         );
 
     }
@@ -151,18 +157,7 @@ public class MainDesignerController extends AbstractController implements Compos
         refreshAST(); // initial refreshing
         sourceEditorController.moveCaret(0, 0);
 
-        MutableInt mutableInt = new MutableInt();
-        Var<Boolean> canProcessEvent = Var.newSimpleVar(true);
-        //                    .conditionOn(canProcessEvent)
-        //                    .distinct()
-        getSelectionEvents().hook(n -> System.out.println(mutableInt.incrementAndGet() + ": " + n))
-                            .subscribe(n -> {
-                                canProcessEvent.setValue(false);
-                                CompositeSelectionSource.super.select(n);
-//                                onNodeItemSelected(n.getSelection());
-                                canProcessEvent.setValue(true);
-                            });
-
+        getSelectionEvents().subscribe(n -> CompositeSelectionSource.super.select(n));
     }
 
 

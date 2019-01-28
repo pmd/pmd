@@ -36,9 +36,10 @@ public interface CompositeSelectionSource extends NodeSelectionSource {
 
     @Override
     default void select(NodeSelectionEvent selectionEvent) {
-        System.out.println("\t" + this.getClass().getSimpleName() + " handling " + selectionEvent);
+        logSelectionEventTrace(selectionEvent, () -> getDebugName() + " received event");
         for (NodeSelectionSource source : getComponents()) {
             if (!selectionEvent.getOrigin().equals(source)) {
+                logSelectionEventTrace(selectionEvent, () -> getDebugName() + " forwards to " + source.getDebugName());
                 source.select(selectionEvent);
             }
         }
