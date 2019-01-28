@@ -80,26 +80,28 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        String nameOfMethod = node.getMethodName();
+        if (!hasIgnoredAnnotation(node)) {
+            String nameOfMethod = node.getMethodName();
 
-        if (getProperty(CHECK_BOOLEAN_METHODS)) {
-            checkBooleanMethods(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_SETTERS)) {
-            checkSetters(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_GETTERS)) {
-            checkGetters(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
-            checkPrefixedTransformMethods(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_TRANSFORM_METHODS)) {
-            checkTransformMethods(node, data, nameOfMethod);
+            if (getProperty(CHECK_BOOLEAN_METHODS)) {
+                checkBooleanMethods(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_SETTERS)) {
+                checkSetters(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_GETTERS)) {
+                checkGetters(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
+                checkPrefixedTransformMethods(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_TRANSFORM_METHODS)) {
+                checkTransformMethods(node, data, nameOfMethod);
+            }
         }
 
         return data;
@@ -140,12 +142,10 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     }
 
     private void checkSetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        if (!hasIgnoredAnnotation(node)) {
-            ASTResultType resultType = node.getResultType();
-            if (hasPrefix(nameOfMethod, "set") && !resultType.isVoid()) {
-                addViolationWithMessage(data, node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
-                        new Object[] { nameOfMethod });
-            }
+        ASTResultType resultType = node.getResultType();
+        if (hasPrefix(nameOfMethod, "set") && !resultType.isVoid()) {
+            addViolationWithMessage(data, node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
+                    new Object[] { nameOfMethod });
         }
     }
 
