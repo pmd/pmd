@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.cpd.token.AntlrHiddenTokenFilter;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+
 import net.sourceforge.pmd.cpd.token.AntlrToken;
+import net.sourceforge.pmd.cpd.token.AntlrHiddenTokenFilter;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 
 import static org.antlr.v4.runtime.Token.EOF;
 
