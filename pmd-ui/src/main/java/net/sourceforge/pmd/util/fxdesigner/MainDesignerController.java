@@ -135,7 +135,7 @@ public class MainDesignerController extends AbstractController<AbstractControlle
 
         openEventLogMenuItem.setOnAction(e -> eventLogController.getValue().showPopup());
         openEventLogMenuItem.textProperty().bind(
-            getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)")
+            getLogger().numNewLogEntriesProperty().map(i -> "Event log (" + (i > 0 ? i : "no") + " new)")
         );
 
     }
@@ -196,15 +196,6 @@ public class MainDesignerController extends AbstractController<AbstractControlle
      */
     public TextAwareNodeWrapper wrapNode(Node node) {
         return sourceEditorController.wrapNode(node);
-    }
-
-
-    /**
-     * Executed when the user selects a node in a treeView or listView.
-     */
-    public void onNodeItemSelected(Node selectedValue) {
-        nodeInfoPanelController.setFocusNode(selectedValue);
-        sourceEditorController.setFocusNode(selectedValue);
     }
 
 

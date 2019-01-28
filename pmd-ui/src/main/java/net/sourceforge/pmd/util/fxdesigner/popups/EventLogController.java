@@ -245,7 +245,7 @@ public final class EventLogController extends AbstractController<MainDesignerCon
 
 
     private Val<String> titleProperty() {
-        return parent.getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)");
+        return parent.getLogger().numNewLogEntriesProperty().map(i -> "Event log (" + (i > 0 ? i : "no") + " new)");
     }
 
 

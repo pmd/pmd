@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.util.fxdesigner.app;
 
-import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.CategoryType.FLAG;
-
 import java.util.Date;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -123,12 +121,12 @@ public class LogEntry implements Comparable<LogEntry> {
 
         // These are "flag" categories that signal that previous exceptions
         // thrown during code or XPath edition may be discarded as uninteresting
+        // When in developer mode they're pushed to the event log too
         PARSE_OK("Parsing success", CategoryType.INTERNAL),
         XPATH_OK("XPath evaluation success", CategoryType.INTERNAL),
 
-        /**
-         * Used for events that occurred internally to the app and are only relevant to a developer of the app.
-         */
+        // These are used for events that occurred internally to the app and are
+        // only relevant to a developer of the app.
         INTERNAL("Internal event", CategoryType.INTERNAL),
         SELECTION_EVENT_TRACING("Selection event tracing", CategoryType.INTERNAL);
 
@@ -153,11 +151,6 @@ public class LogEntry implements Comparable<LogEntry> {
         }
 
 
-        public boolean isFlag() {
-            return type == FLAG;
-        }
-
-
         public boolean isInternal() {
             return type == CategoryType.INTERNAL;
         }
@@ -170,12 +163,11 @@ public class LogEntry implements Comparable<LogEntry> {
 
         enum CategoryType {
             USER_EXCEPTION,
-            FLAG,
             INTERNAL
         }
     }
 
-    public static class LogEntryWithData<T> extends LogEntry {
+    static class LogEntryWithData<T> extends LogEntry {
 
         private final T userData;
 

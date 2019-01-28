@@ -14,6 +14,8 @@ import net.sourceforge.pmd.util.fxdesigner.XPathPanelController;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView;
 
+import javafx.application.Platform;
+
 
 /**
  * A control or controller that somehow displays nodes in a form that the user can select.
@@ -53,7 +55,8 @@ public interface NodeSelectionSource extends ApplicationComponent {
     default void bubbleDown(NodeSelectionEvent selectionEvent) {
         if (alwaysHandleSelection() || selectionEvent.getOrigin() != this) {
             logSelectionEventTrace(selectionEvent, () -> "\t" + this.getDebugName() + " is handling event");
-            setFocusNode(selectionEvent.getSelection());
+            // roam the tree synchronously, execute handlers some time later
+            Platform.runLater(() -> setFocusNode(selectionEvent.getSelection()));
         }
     }
 
@@ -74,7 +77,8 @@ public interface NodeSelectionSource extends ApplicationComponent {
 
     /**
      * An event fired when the user selects a node somewhere in the UI
-     * and bubbled up to the {@link MainDesignerController}.
+     * and bubbled up to the {@link MainDesignerController}. It's a pure
+     * data class.
      */
     final class NodeSelectionEvent {
 
