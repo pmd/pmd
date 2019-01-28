@@ -27,14 +27,14 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.model.ObservableXPathRuleBuilder;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluator;
 import net.sourceforge.pmd.util.fxdesigner.popups.ExportXPathWizardController;
-import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.CompletionResultSource;
 import net.sourceforge.pmd.util.fxdesigner.util.autocomplete.XPathAutocompleteProvider;
@@ -75,10 +75,9 @@ import javafx.stage.StageStyle;
  * @see ExportXPathWizardController
  * @since 6.0.0
  */
-public class XPathPanelController extends AbstractController implements NodeSelectionSource {
+public class XPathPanelController extends AbstractController<MainDesignerController> implements NodeSelectionSource {
 
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
-    private final MainDesignerController parent;
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
 
@@ -103,15 +102,10 @@ public class XPathPanelController extends AbstractController implements NodeSele
 
 
     public XPathPanelController(MainDesignerController mainController) {
-        parent = mainController;
+        super(mainController);
         getRuleBuilder().setClazz(XPathRule.class);
     }
 
-
-    @Override
-    public DesignerRoot getDesignerRoot() {
-        return parent.getDesignerRoot();
-    }
 
     @Override
     protected void beforeParentInit() {

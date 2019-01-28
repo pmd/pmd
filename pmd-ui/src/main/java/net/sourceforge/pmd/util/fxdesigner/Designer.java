@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.application.Application;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 
 
 /**
- * Main class for the designer.
+ * Main class for the designer, launched only if {@link DesignerStarter} detected JavaFX support.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -45,13 +46,12 @@ public class Designer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        boolean developerMode = parseParameters(getParameters());
+        boolean isDeveloperMode = parseParameters(getParameters());
 
 
-        FXMLLoader loader
-            = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
+        FXMLLoader loader = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
 
-        DesignerRoot owner = new DesignerRoot(stage, developerMode);
+        DesignerRoot owner = new DesignerRoot(stage, isDeveloperMode);
         MainDesignerController mainController = new MainDesignerController(owner);
 
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(mainController);

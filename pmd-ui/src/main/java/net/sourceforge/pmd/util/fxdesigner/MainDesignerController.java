@@ -23,14 +23,14 @@ import org.reactfx.value.Val;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
-import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.util.ApplicationComponent;
-import net.sourceforge.pmd.util.fxdesigner.util.CompositeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.LimitedSizeStack;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
@@ -67,12 +67,7 @@ import javafx.stage.FileChooser;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class MainDesignerController extends AbstractController implements CompositeSelectionSource, ApplicationComponent {
-
-    /**
-     * Callback to the owner.
-     */
-    private final DesignerRoot designerRoot;
+public class MainDesignerController extends AbstractController<AbstractController<?>> implements CompositeSelectionSource {
 
 
     /* Menu bar */
@@ -115,15 +110,10 @@ public class MainDesignerController extends AbstractController implements Compos
 
 
     public MainDesignerController(DesignerRoot owner) {
-        this.designerRoot = owner;
+        super(owner, null);
         eventLogController = new SoftReferenceCache<>(() -> new EventLogController(this));
     }
 
-
-    @Override
-    public DesignerRoot getDesignerRoot() {
-        return designerRoot;
-    }
 
 
     @Override
@@ -142,7 +132,7 @@ public class MainDesignerController extends AbstractController implements Compos
         openRecentMenu.setOnShowing(e -> updateRecentFilesMenu());
         fileMenu.setOnShowing(e -> onFileMenuShowing());
 
-        setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup(designerRoot));
+        setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup());
 
         openEventLogMenuItem.setOnAction(e -> eventLogController.getValue().showPopup());
         openEventLogMenuItem.textProperty().bind(
@@ -163,12 +153,12 @@ public class MainDesignerController extends AbstractController implements Compos
         // the xpath panel is forwarded to the treeView, which
         // forwards back an event, etc.
         getSelectionEvents().thenIgnoreFor(Duration.ofMillis(20))
-                            .subscribe(n -> CompositeSelectionSource.super.select(n));
+                            .subscribe(n -> CompositeSelectionSource.super.bubbleDown(n));
     }
 
 
     @Override
-    public ObservableSet<? extends NodeSelectionSource> getComponents() {
+    public ObservableSet<? extends NodeSelectionSource> getSubSelectionSources() {
         return FXCollections.observableSet(nodeInfoPanelController, sourceEditorController, xpathPanelController);
     }
 
@@ -298,7 +288,7 @@ public class MainDesignerController extends AbstractController implements Compos
     private void onOpenFileClicked() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Load source from file");
-        File file = chooser.showOpenDialog(designerRoot.getMainStage());
+        File file = chooser.showOpenDialog(getMainStage());
         loadSourceFromFile(file);
     }
 
@@ -396,13 +386,13 @@ public class MainDesignerController extends AbstractController implements Compos
 
     @PersistentProperty
     public boolean isMaximized() {
-        return designerRoot.getMainStage().isMaximized();
+        return getMainStage().isMaximized();
     }
 
 
     public void setMaximized(boolean b) {
-        designerRoot.getMainStage().setMaximized(!b); // trigger change listener anyway
-        designerRoot.getMainStage().setMaximized(b);
+        getMainStage().setMaximized(!b); // trigger change listener anyway
+        getMainStage().setMaximized(b);
     }
 
 
@@ -420,7 +410,7 @@ public class MainDesignerController extends AbstractController implements Compos
 
 
     @Override
-    public List<AbstractController> getChildren() {
+    public List<AbstractController<MainDesignerController>> getChildren() {
         return Arrays.asList(xpathPanelController, sourceEditorController, nodeInfoPanelController);
     }
 

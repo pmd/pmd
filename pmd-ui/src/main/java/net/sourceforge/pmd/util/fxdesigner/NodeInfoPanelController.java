@@ -30,8 +30,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
-import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
@@ -57,9 +57,8 @@ import javafx.scene.control.TreeView;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class NodeInfoPanelController extends AbstractController implements NodeSelectionSource {
+public class NodeInfoPanelController extends AbstractController<MainDesignerController> implements NodeSelectionSource {
 
-    private final MainDesignerController parent;
 
     /** List of attribute names that are ignored if {@link #isHideCommonAttributes()} is true. */
     private static final List<String> IGNORABLE_ATTRIBUTES =
@@ -85,14 +84,9 @@ public class NodeInfoPanelController extends AbstractController implements NodeS
     private Node selectedNode;
 
     public NodeInfoPanelController(MainDesignerController mainController) {
-        parent = mainController;
+        super(mainController);
     }
 
-
-    @Override
-    public DesignerRoot getDesignerRoot() {
-        return parent.getDesignerRoot();
-    }
 
 
     @Override

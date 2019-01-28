@@ -17,8 +17,8 @@ import org.reactfx.EventStream;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 
 import javafx.application.Platform;
 import javafx.css.PseudoClass;

@@ -32,10 +32,10 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
-import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.util.CompositeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
@@ -62,7 +62,7 @@ import javafx.scene.control.ToggleGroup;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class SourceEditorController extends AbstractController implements CompositeSelectionSource {
+public class SourceEditorController extends AbstractController<MainDesignerController> implements CompositeSelectionSource {
 
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
 
@@ -81,8 +81,6 @@ public class SourceEditorController extends AbstractController implements Compos
 
     private final ASTManager astManager;
 
-    private final MainDesignerController parent;
-
     private final Var<Node> currentFocusNode = Var.newSimpleVar(null);
 
     private final Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
@@ -99,15 +97,9 @@ public class SourceEditorController extends AbstractController implements Compos
 
 
     public SourceEditorController(MainDesignerController mainController) {
-        parent = mainController;
+        super(mainController);
         astManager = new ASTManager(mainController.getDesignerRoot());
 
-    }
-
-
-    @Override
-    public DesignerRoot getDesignerRoot() {
-        return parent.getDesignerRoot();
     }
 
 
@@ -200,7 +192,7 @@ public class SourceEditorController extends AbstractController implements Compos
 
 
     @Override
-    public ObservableSet<? extends NodeSelectionSource> getComponents() {
+    public ObservableSet<? extends NodeSelectionSource> getSubSelectionSources() {
         return FXCollections.observableSet(astTreeView, focusNodeParentageCrumbBar);
     }
 
@@ -230,10 +222,9 @@ public class SourceEditorController extends AbstractController implements Compos
     }
 
 
-    public void showAuxclasspathSetupPopup(DesignerRoot root) {
-        new AuxclasspathSetupController(root).show(root.getMainStage(),
-                                                   auxclasspathFiles.getValue(),
-                                                   auxclasspathFiles::setValue);
+    public void showAuxclasspathSetupPopup() {
+        new AuxclasspathSetupController(getDesignerRoot())
+            .show(getMainStage(), auxclasspathFiles.getValue(), auxclasspathFiles::setValue);
     }
 
     private void setUpToDateCompilationUnit(Node node) {

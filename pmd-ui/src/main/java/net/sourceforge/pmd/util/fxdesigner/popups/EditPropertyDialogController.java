@@ -22,7 +22,7 @@ import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.ValueParser;
 import net.sourceforge.pmd.properties.ValueParserConstants;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.PropertyDescriptorSpec;
+import net.sourceforge.pmd.util.fxdesigner.model.PropertyDescriptorSpec;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.PropertyTableView;
 
 import javafx.application.Platform;

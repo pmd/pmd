@@ -2,17 +2,16 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner.model;
+package net.sourceforge.pmd.util.fxdesigner.app;
 
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.CategoryType.FLAG;
+import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.CategoryType.FLAG;
 
-import java.time.Instant;
 import java.util.Date;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.reactfx.value.Var;
 
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource.NodeSelectionEvent;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource.NodeSelectionEvent;
 
 
 /**

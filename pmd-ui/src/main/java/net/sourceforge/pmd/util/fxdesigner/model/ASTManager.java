@@ -15,13 +15,14 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
-import net.sourceforge.pmd.util.fxdesigner.util.ApplicationComponent;
+import net.sourceforge.pmd.util.fxdesigner.SourceEditorController;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.app.ApplicationComponent;
 
 
 /**
- * Main class of the model. Manages a compilation unit.
+ * Manages a compilation unit for {@link SourceEditorController}.
  *
  * @author Clément Fournier
  * @since 6.0.0

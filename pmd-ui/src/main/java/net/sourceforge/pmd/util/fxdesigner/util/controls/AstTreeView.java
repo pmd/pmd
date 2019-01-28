@@ -18,8 +18,8 @@ import org.reactfx.SuspendableEventStream;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;

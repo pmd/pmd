@@ -2,13 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.util.fxdesigner.model;
+package net.sourceforge.pmd.util.fxdesigner.app;
 
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_EXCEPTION;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.PARSE_OK;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.SELECTION_EVENT_TRACING;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_EVALUATION_EXCEPTION;
-import static net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category.XPATH_OK;
+import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.PARSE_EXCEPTION;
+import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.PARSE_OK;
+import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.SELECTION_EVENT_TRACING;
+import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.XPATH_EVALUATION_EXCEPTION;
+import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.XPATH_OK;
 import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.countNotMatching;
 import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.reduceEntangledIfPossible;
 
@@ -23,12 +23,13 @@ import org.reactfx.collection.LiveArrayList;
 import org.reactfx.collection.LiveList;
 import org.reactfx.value.Val;
 
-import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.LogEntryWithData;
-import net.sourceforge.pmd.util.fxdesigner.util.ApplicationComponent;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.LogEntryWithData;
+import net.sourceforge.pmd.util.fxdesigner.app.ApplicationComponent;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.NodeSelectionSource.NodeSelectionEvent;
+import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource.NodeSelectionEvent;
 
 
 /**
@@ -51,7 +52,7 @@ public class EventLogger implements ApplicationComponent {
 
 
     public EventLogger(DesignerRoot designerRoot) {
-        this.designerRoot = designerRoot;
+        this.designerRoot = designerRoot; // we have to be careful with initialization order here
 
         EventStream<LogEntryWithData<NodeSelectionEvent>> eventTraces =
             reduceEntangledIfPossible(filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
