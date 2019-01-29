@@ -20,10 +20,10 @@ import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.EventLogger;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
-import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.property.SimpleObjectProperty;

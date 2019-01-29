@@ -111,8 +111,8 @@ public interface NodeSelectionSource extends ApplicationComponent {
                 return false;
             }
             NodeSelectionEvent that = (NodeSelectionEvent) o;
-            return Objects.equals(selection, that.selection) &&
-                Objects.equals(origin, that.origin);
+            return Objects.equals(selection, that.selection)
+                && Objects.equals(origin, that.origin);
         }
 
 

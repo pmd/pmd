@@ -3,6 +3,7 @@
  */
 
 /**
- * Interfaces and base classes that structure an support the whole app.
+ * Interfaces and base classes that structure and support the whole app.
+ * See {@link net.sourceforge.pmd.util.fxdesigner.app.ApplicationComponent}.
  */
 package net.sourceforge.pmd.util.fxdesigner.app;

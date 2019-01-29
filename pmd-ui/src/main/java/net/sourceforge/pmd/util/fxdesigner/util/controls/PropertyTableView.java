@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.util.fxdesigner.model.PropertyDescriptorSpec;
 import net.sourceforge.pmd.util.fxdesigner.popups.EditPropertyDialogController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.model.PropertyDescriptorSpec;
 import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 
 import javafx.application.Platform;

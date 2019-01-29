@@ -51,14 +51,15 @@ public class EventLogger implements ApplicationComponent {
     public EventLogger(DesignerRoot designerRoot) {
         this.designerRoot = designerRoot; // we have to be careful with initialization order here
 
-        EventStream<LogEntryWithData<NodeSelectionEvent>> eventTraces =
-            // none of this is done if developer mode isn't enabled because then those events aren't even pushed in the first place
-            reduceEntangledIfPossible(filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
-                                      // the user data for those is the event
-                                      // if they're the same event we reduce them together
-                                      (lastEv, newEv) -> Objects.equals(lastEv.getUserData(), newEv.getUserData()),
-                                      LogEntryWithData::reduceEventTrace,
-                                      EVENT_TRACING_REDUCTION_DELAY);
+        // none of this is done if developer mode isn't enabled because then those events aren't even pushed in the first place
+        EventStream<LogEntryWithData<NodeSelectionEvent>> eventTraces = reduceEntangledIfPossible(
+            filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
+            // the user data for those is the event
+            // if they're the same event we reduce them together
+            (lastEv, newEv) -> Objects.equals(lastEv.getUserData(), newEv.getUserData()),
+            LogEntryWithData::reduceEventTrace,
+            EVENT_TRACING_REDUCTION_DELAY
+        );
 
         EventStream<LogEntry> onlyParseException = deleteOnSignal(latestEvent, PARSE_EXCEPTION, PARSE_OK);
         EventStream<LogEntry> onlyXPathException = deleteOnSignal(latestEvent, XPATH_EVALUATION_EXCEPTION, XPATH_OK);
@@ -86,9 +87,11 @@ public class EventLogger implements ApplicationComponent {
 
 
     private static EventStream<LogEntry> deleteOnSignal(EventStream<LogEntry> input, Category normal, Category deleteSignal) {
-        return DesignerUtil.deleteOnSignal(filterOnCategory(input, false, normal, deleteSignal),
-                                           x -> x.getCategory() == deleteSignal,
-                                           PARSE_EXCEPTION_REDUCTION_DELAY);
+        return DesignerUtil.deleteOnSignal(
+            filterOnCategory(input, false, normal, deleteSignal),
+            x -> x.getCategory() == deleteSignal,
+            PARSE_EXCEPTION_REDUCTION_DELAY
+        );
     }
 
 
