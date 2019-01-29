@@ -122,6 +122,13 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
     }
 
 
+    @Override
+    public boolean alwaysHandleSelection() {
+        // it needs to handle name occurrences
+        return true;
+    }
+
+
     /**
      * Displays info about a node. If null, the panels are reset.
      *
