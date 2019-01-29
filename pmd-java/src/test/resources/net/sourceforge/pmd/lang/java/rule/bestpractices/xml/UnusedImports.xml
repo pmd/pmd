@@ -462,12 +462,11 @@ public class Imports {
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
-import static net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports.Base;
-
 import java.io.File;
+import java.io.FileInputStream;
 
-public class Derived extends Base {
-    /** @see #method(File) */
+public class Derived extends FileInputStream {
+    /** @see #FileInputStream(File) */
     void main() {}
 }
         ]]></code>
