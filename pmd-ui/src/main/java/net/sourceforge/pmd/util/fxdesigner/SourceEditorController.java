@@ -181,8 +181,7 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
 
     public void showAuxclasspathSetupPopup() {
-        new AuxclasspathSetupController(getDesignerRoot())
-            .show(getMainStage(), auxclasspathFiles.getValue(), auxclasspathFiles::setValue);
+        new AuxclasspathSetupController(getDesignerRoot()).show(getMainStage(), auxclasspathFiles.getValue(), auxclasspathFiles::setValue);
     }
 
 

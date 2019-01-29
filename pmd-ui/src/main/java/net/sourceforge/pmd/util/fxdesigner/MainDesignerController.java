@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner;
 
+import static net.sourceforge.pmd.util.fxdesigner.popups.SimplePopups.showLicensePopup;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -219,23 +221,6 @@ public class MainDesignerController extends AbstractController<AbstractControlle
                                      .orElseGet(Collections::emptyList);
     }
 
-
-    private void showLicensePopup() {
-        Alert licenseAlert = new Alert(AlertType.INFORMATION);
-        licenseAlert.setWidth(500);
-        licenseAlert.setHeaderText("License");
-
-        ScrollPane scroll = new ScrollPane();
-        try {
-            scroll.setContent(new TextArea(IOUtils.toString(getClass().getResourceAsStream("LICENSE"),
-                    StandardCharsets.UTF_8)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        licenseAlert.getDialogPane().setContent(scroll);
-        licenseAlert.showAndWait();
-    }
 
 
     private void onFileMenuShowing() {
