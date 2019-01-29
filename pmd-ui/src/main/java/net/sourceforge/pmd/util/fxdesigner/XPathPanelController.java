@@ -98,6 +98,8 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
     @FXML
     private ListView<TextAwareNodeWrapper> xpathResultListView;
 
+    private final Var<List<Node>> currentResults = Var.newSimpleVar(Collections.emptyList());
+
     // ui property
     private Var<String> xpathVersionUIProperty = Var.newSimpleVar(XPathRuleQuery.XPATH_2_0);
 
@@ -261,7 +263,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
                                                                                  xpath,
                                                                                  ruleBuilder.getRuleProperties()));
             xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
-            parent.highlightXPathResults(results);
+            this.currentResults.setValue(results);
             violationsTitledPane.setTitle("Matched nodes (" + results.size() + ")");
             // Notify that everything went OK so we can avoid logging very recent exceptions
             raiseParsableXPathFlag();
@@ -280,7 +282,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
     public void invalidateResults(boolean error) {
         xpathResultListView.getItems().clear();
-        parent.resetXPathResults();
+        this.currentResults.setValue(Collections.emptyList());
         violationsTitledPane.setTitle("Matched nodes" + (error ? "\t(error)" : ""));
     }
 
@@ -309,6 +311,9 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
         dialog.show();
     }
 
+    public Val<List<Node>> currentResultsProperty() {
+        return currentResults;
+    }
 
     public String getXpathExpression() {
         return xpathExpressionArea.getText();

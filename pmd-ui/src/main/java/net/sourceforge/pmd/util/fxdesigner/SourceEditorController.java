@@ -12,10 +12,14 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
@@ -27,7 +31,10 @@ import org.reactfx.value.Var;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
@@ -79,6 +86,8 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
     private final ASTManager astManager;
 
     private final Var<Node> currentFocusNode = Var.newSimpleVar(null);
+    private final Var<List<Node>> currentRuleResults = Var.newSimpleVar(Collections.emptyList());
+    private final Var<List<Node>> currentErrorNodes = Var.newSimpleVar(Collections.emptyList());
 
     private final Var<List<File>> auxclasspathFiles = Var.newSimpleVar(emptyList());
     private final Val<ClassLoader> auxclasspathClassLoader = auxclasspathFiles.map(fileList -> {
@@ -132,12 +141,15 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
         codeEditorArea.setParagraphGraphicFactory(lineNumberFactory());
 
+        currentRuleResultsProperty().values().subscribe(this::highlightXPathResults);
+        currentErrorNodesProperty().values().subscribe(this::highlightErrorNodes);
     }
 
 
     @Override
     protected void afterParentInit() {
         DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
+        moveCaret(0, 0);
     }
 
 
@@ -237,24 +249,6 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
     }
 
 
-    /** Clears the error nodes. */
-    public void clearErrorNodes() {
-        codeEditorArea.clearStyleLayer(StyleLayerIds.ERROR);
-    }
-
-
-    /** Clears the name occurrences. */
-    public void clearNameOccurences() {
-        codeEditorArea.clearStyleLayer(StyleLayerIds.NAME_OCCURENCE);
-    }
-
-
-    /** Clears the highlighting of XPath results. */
-    public void clearXPathHighlight() {
-        codeEditorArea.clearStyleLayer(StyleLayerIds.XPATH_RESULT);
-    }
-
-
     /**
      * Highlights the given node (or nothing if null).
      * Removes highlighting on the previously highlighted node.
@@ -274,27 +268,77 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
         // editor is only restyled if the selection has changed
         Platform.runLater(() -> codeEditorArea.styleNodes(node == null ? emptyList() : singleton(node), StyleLayerIds.FOCUS, true));
+        if (node instanceof ScopedNode) {
+            // not null as well
+            Platform.runLater(() -> highlightNameOccurrences(getNameOccurrences((ScopedNode) node)));
+
+        }
+    }
+
+
+    private List<NameOccurrence> getNameOccurrences(ScopedNode node) {
+
+        // For MethodNameDeclaration the scope is the method scope, which is not the scope it is declared
+        // in but the scope it declares! That means that getDeclarations().get(declaration) returns null
+        // and no name occurrences are found. We thus look in the parent, but ultimately the name occurrence
+        // finder is broken since it can't find e.g. the use of a method in another scope. Plus in case of
+        // overloads both overloads are reported to have a usage.
+
+        // Plus this is some serious law of Demeter breaking there...
+
+        Set<NameDeclaration> candidates = new HashSet<>(node.getScope().getDeclarations().keySet());
+
+        Optional.ofNullable(node.getScope().getParent())
+                .map(Scope::getDeclarations)
+                .map(Map::keySet)
+                .ifPresent(candidates::addAll);
+
+        return candidates.stream()
+                         .filter(nd -> node.equals(nd.getNode()))
+                         .findFirst()
+                         .map(nd -> {
+                             // nd.getScope() != nd.getNode().getScope()?? wtf?
+
+                             List<NameOccurrence> usages = nd.getNode().getScope().getDeclarations().get(nd);
+
+                             if (usages == null) {
+                                 usages = nd.getNode().getScope().getParent().getDeclarations().get(nd);
+                             }
+
+                             return usages;
+                         })
+                         .orElse(Collections.emptyList());
     }
 
 
     /** Highlights xpath results (xpath highlight). */
-    public void highlightXPathResults(Collection<? extends Node> nodes) {
+    private void highlightXPathResults(Collection<? extends Node> nodes) {
         codeEditorArea.styleNodes(nodes, StyleLayerIds.XPATH_RESULT, true);
     }
 
 
     /** Highlights name occurrences (secondary highlight). */
-    public void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
+    private void highlightNameOccurrences(Collection<? extends NameOccurrence> occs) {
         codeEditorArea.styleNodes(occs.stream().map(NameOccurrence::getLocation).collect(Collectors.toList()), StyleLayerIds.NAME_OCCURENCE, true);
     }
 
 
     /** Highlights nodes that are in error (secondary highlight). */
-    public void highlightErrorNodes(Collection<? extends Node> nodes) {
+    private void highlightErrorNodes(Collection<? extends Node> nodes) {
         codeEditorArea.styleNodes(nodes, StyleLayerIds.ERROR, true);
         if (!nodes.isEmpty()) {
             scrollEditorToNode(nodes.iterator().next());
         }
+    }
+
+
+    public Var<List<Node>> currentRuleResultsProperty() {
+        return currentRuleResults;
+    }
+
+
+    public Var<List<Node>> currentErrorNodesProperty() {
+        return currentErrorNodes;
     }
 
 
@@ -318,13 +362,8 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
     }
 
 
-    public void clearStyleLayers() {
-        codeEditorArea.clearStyleLayers();
-    }
-
-
     /** Moves the caret to a position and makes the view follow it. */
-    public void moveCaret(int line, int column) {
+    private void moveCaret(int line, int column) {
         codeEditorArea.moveTo(line, column);
         codeEditorArea.requestFollowCaret();
     }

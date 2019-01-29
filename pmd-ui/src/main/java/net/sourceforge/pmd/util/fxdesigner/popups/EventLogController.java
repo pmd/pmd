@@ -4,16 +4,16 @@
 
 package net.sourceforge.pmd.util.fxdesigner.popups;
 
+import static org.reactfx.EventStreams.valuesOf;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.reactfx.EventStreams;
 import org.reactfx.Subscription;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -175,25 +175,12 @@ public final class EventLogController extends AbstractController<MainDesignerCon
     private Subscription bindPopupToThisController() {
 
         Subscription binding =
-            EventStreams.valuesOf(eventLogTableView.getSelectionModel().selectedItemProperty())
-                        .distinct()
-                        .subscribe(this::onExceptionSelectionChanges);
+            valuesOf(eventLogTableView.getSelectionModel().selectedItemProperty())
+                .distinct()
+                .subscribe(this::onExceptionSelectionChanges);
 
-        binding = binding.and(
-            EventStreams.valuesOf(eventLogTableView.focusedProperty())
-                        .successionEnds(Duration.ofMillis(100))
-                        .subscribe(b -> {
-                            if (b) {
-                                parent.handleSelectedNodeInError(selectedErrorNodes.getValue());
-                            } else {
-                                parent.resetSelectedErrorNodes();
-                            }
-                        })
-        );
-
-        binding = binding.and(
-            selectedErrorNodes.values().subscribe(parent::handleSelectedNodeInError)
-        );
+        // reset error nodes on closing
+        binding = binding.and(() -> selectedErrorNodes.setValue(Collections.emptyList()));
 
         SortedList<LogEntry> logEntries = new SortedList<>(getLogger().getLog(), Comparator.reverseOrder());
         eventLogTableView.itemsProperty().setValue(logEntries);
@@ -211,8 +198,9 @@ public final class EventLogController extends AbstractController<MainDesignerCon
 
 
     private void handleSelectedEntry(LogEntry entry) {
+        selectedErrorNodes.setValue(Collections.emptyList());
+
         if (entry == null) {
-            selectedErrorNodes.setValue(Collections.emptyList());
             return;
         }
 
@@ -224,14 +212,15 @@ public final class EventLogController extends AbstractController<MainDesignerCon
     }
 
 
-    public void showPopup() {
+    public void showPopup(Subscription extSub) {
         myPopupStage.show();
-        popupBinding = bindPopupToThisController();
+        popupBinding = bindPopupToThisController().and(extSub);
         eventLogTableView.refresh();
+        myPopupStage.setOnCloseRequest(e -> hidePopup());
     }
 
 
-    public void hidePopup() {
+    private void hidePopup() {
         myPopupStage.hide();
         popupBinding.unsubscribe();
         popupBinding = () -> {};
@@ -243,6 +232,10 @@ public final class EventLogController extends AbstractController<MainDesignerCon
         handleSelectedEntry(newVal);
     }
 
+
+    public Val<List<Node>> errorNodesProperty() {
+        return selectedErrorNodes;
+    }
 
     private Val<String> titleProperty() {
         return parent.getLogger().numNewLogEntriesProperty().map(i -> "Event log (" + (i > 0 ? i : "no") + " new)");

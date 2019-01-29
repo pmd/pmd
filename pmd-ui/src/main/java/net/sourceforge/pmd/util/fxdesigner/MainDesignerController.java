@@ -17,11 +17,11 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.reactfx.Subscription;
 import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
@@ -133,7 +133,11 @@ public class MainDesignerController extends AbstractController<AbstractControlle
 
         setupAuxclasspathMenuItem.setOnAction(e -> sourceEditorController.showAuxclasspathSetupPopup());
 
-        openEventLogMenuItem.setOnAction(e -> eventLogController.getValue().showPopup());
+        openEventLogMenuItem.setOnAction(e -> {
+            EventLogController wizard = eventLogController.getValue();
+            Subscription parentToWizSubscription = wizard.errorNodesProperty().values().subscribe(sourceEditorController.currentErrorNodesProperty()::setValue);
+            wizard.showPopup(parentToWizSubscription);
+        });
         openEventLogMenuItem.textProperty().bind(
             getLogger().numNewLogEntriesProperty().map(i -> "Event log (" + (i > 0 ? i : "no") + " new)")
         );
@@ -145,10 +149,12 @@ public class MainDesignerController extends AbstractController<AbstractControlle
     protected void afterChildrenInit() {
         updateRecentFilesMenu();
         refreshAST(); // initial refreshing
-        sourceEditorController.moveCaret(0, 0);
+
+        sourceEditorController.currentRuleResultsProperty().bind(xpathPanelController.currentResultsProperty());
 
         // this is the only place where getSelectionEvents is called
         getSelectionEvents().distinct().subscribe(n -> CompositeSelectionSource.super.bubbleDown(n));
+
     }
 
 
@@ -200,15 +206,6 @@ public class MainDesignerController extends AbstractController<AbstractControlle
 
 
     /**
-     * Highlight a list of name occurrences.
-     *
-     * @param occurrences May be empty but never null.
-     */
-    public void highlightAsNameOccurences(List<NameOccurrence> occurrences) {
-        sourceEditorController.highlightNameOccurrences(occurrences);
-    }
-
-    /**
      * Runs an XPath (2.0) query on the current AST.
      * Performs no side effects.
      *
@@ -222,31 +219,6 @@ public class MainDesignerController extends AbstractController<AbstractControlle
                                      .orElseGet(Collections::emptyList);
     }
 
-
-    /**
-     * Handles nodes that potentially caused an error.
-     * This can for example highlight nodes on the
-     * editor. Effects can be reset with {@link #resetSelectedErrorNodes()}.
-     *
-     * @param n Node
-     */
-    public void handleSelectedNodeInError(List<Node> n) {
-        resetSelectedErrorNodes();
-        sourceEditorController.highlightErrorNodes(n);
-    }
-
-    public void resetSelectedErrorNodes() {
-        sourceEditorController.clearErrorNodes();
-    }
-
-    public void resetXPathResults() {
-        sourceEditorController.clearXPathHighlight();
-    }
-
-    /** Replaces previously highlighted XPath results with the given nodes. */
-    public void highlightXPathResults(List<Node> nodes) {
-        sourceEditorController.highlightXPathResults(nodes);
-    }
 
     private void showLicensePopup() {
         Alert licenseAlert = new Alert(AlertType.INFORMATION);
