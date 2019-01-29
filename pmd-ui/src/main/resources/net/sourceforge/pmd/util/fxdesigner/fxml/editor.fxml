@@ -4,8 +4,8 @@
 
 
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView?>
+<?import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeEditionCodeArea?>
 <?import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.MenuButton?>
@@ -45,15 +45,13 @@
                                 </MenuButton>
                             </toolbarItems>
                             <content>
-                                <HighlightLayerCodeArea fx:id="codeEditorArea"
-                                                        idEnum="net.sourceforge.pmd.util.fxdesigner.SourceEditorController$StyleLayerIds"
-                                                        stylesheets="@../css/editor-theme.css"
-                                                        BorderPane.alignment="CENTER">
+                                <NodeEditionCodeArea fx:id="nodeEditionCodeArea"
+                                                     stylesheets="@../css/editor-theme.css"
+                                                     BorderPane.alignment="CENTER">
                                     <BorderPane.margin>
                                         <Insets />
                                     </BorderPane.margin>
-                                </HighlightLayerCodeArea>
-                                <!--<TextArea />-->
+                                </NodeEditionCodeArea>
                             </content>
                         </ToolbarTitledPane>
                     </children>

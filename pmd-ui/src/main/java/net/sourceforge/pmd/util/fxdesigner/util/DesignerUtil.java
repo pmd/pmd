@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
@@ -42,6 +44,10 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
@@ -411,4 +417,37 @@ public final class DesignerUtil {
     }
 
 
+    public static List<NameOccurrence> getNameOccurrences(ScopedNode node) {
+
+        // For MethodNameDeclaration the scope is the method scope, which is not the scope it is declared
+        // in but the scope it declares! That means that getDeclarations().get(declaration) returns null
+        // and no name occurrences are found. We thus look in the parent, but ultimately the name occurrence
+        // finder is broken since it can't find e.g. the use of a method in another scope. Plus in case of
+        // overloads both overloads are reported to have a usage.
+
+        // Plus this is some serious law of Demeter breaking there...
+
+        Set<NameDeclaration> candidates = new HashSet<>(node.getScope().getDeclarations().keySet());
+
+        Optional.ofNullable(node.getScope().getParent())
+                .map(Scope::getDeclarations)
+                .map(Map::keySet)
+                .ifPresent(candidates::addAll);
+
+        return candidates.stream()
+                         .filter(nd -> node.equals(nd.getNode()))
+                         .findFirst()
+                         .map(nd -> {
+                             // nd.getScope() != nd.getNode().getScope()?? wtf?
+
+                             List<NameOccurrence> usages = nd.getNode().getScope().getDeclarations().get(nd);
+
+                             if (usages == null) {
+                                 usages = nd.getNode().getScope().getParent().getDeclarations().get(nd);
+                             }
+
+                             return usages;
+                         })
+                         .orElse(Collections.emptyList());
+    }
 }
