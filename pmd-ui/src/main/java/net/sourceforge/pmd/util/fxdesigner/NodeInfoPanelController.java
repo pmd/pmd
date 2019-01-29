@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.model.MetricResult;
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
@@ -242,10 +243,8 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
             }
         }
 
-        // TODO maybe put some equivalent to TypeNode inside pmd-core
-        //        if (node instanceof TypeNode) {
-        //            result.add("typeIs() = " + ((TypeNode) node).getType());
-        //        }
+        DesignerUtil.getResolvedType(node).map(t -> "typeIs() = " + t).ifPresent(result::add);
+
         Collections.sort(result);
         return result;
     }

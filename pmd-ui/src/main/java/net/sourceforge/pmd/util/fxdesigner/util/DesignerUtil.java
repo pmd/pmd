@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,6 +44,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -449,5 +451,27 @@ public final class DesignerUtil {
                              return usages;
                          })
                          .orElse(Collections.emptyList());
+    }
+
+
+    /**
+     * Attempts to retrieve the type of a java TypeNode reflectively.
+     */
+    public static Optional<Class<?>> getResolvedType(Node node) {
+        // TODO maybe put some equivalent to TypeNode inside pmd-core
+
+        try {
+            return Optional.of(node.getClass().getMethod("getType"))
+                           .filter(m -> m.getReturnType() == Class.class)
+                           .map(m -> {
+                               try {
+                                   return m.invoke(node);
+                               } catch (IllegalAccessException | InvocationTargetException e) {
+                                   return null;
+                               }
+                           }).map(type -> (Class<?>) type);
+        } catch (NoSuchMethodException e) {
+            return Optional.empty();
+        }
     }
 }
