@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *   [#1555](https://github.com/pmd/pmd/issues/1555): \[java] UnusedImports false positive for method parameter type in @see Javadoc
 *   java-codestyle
     *   [#1547](https://github.com/pmd/pmd/issues/1547): \[java] AtLeastOneConstructorRule: false-positive with lombok.AllArgsConstructor
 
@@ -24,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 *   [#1623](https://github.com/pmd/pmd/pull/1623): \[java] Fix lombok.AllArgsConstructor support - [Bobby Wertman](https://github.com/CasualSuperman)
+*   [#1625](https://github.com/pmd/pmd/pull/1625): \[java] UnusedImports false positive for method parameter type in @see Javadoc - [Shubham](https://github.com/Shubham-2k17)
 
 {% endtocmaker %}
 

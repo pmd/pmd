@@ -455,4 +455,20 @@ public class Imports {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1625 [java] UnusedImports false positive for method parameter type in @see Javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+public class Derived extends FileInputStream {
+    /** @see #FileInputStream(File) */
+    void main() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

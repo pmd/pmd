@@ -41,7 +41,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
-            .compile("@see\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([\\w\\s,]*)\\))?)?");
+            .compile("@see\\s+(\\p{Alpha}?+\\w*)(?:#\\w*(?:\\(([\\w\\s,]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern
             .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([.\\w\\s,]*)\\))?)?[\\s\\}]");
