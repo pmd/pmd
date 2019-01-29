@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -283,7 +284,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a stream consisting of the distinct elements (w.r.t to {@link Object#equals(Object)}) of this stream.
+     * Returns a stream consisting of the distinct elements (w.r.t {@link Object#equals(Object)}) of this stream.
      *
      * @return a stream consisting of the distinct elements of this stream
      */
@@ -747,10 +748,24 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
     }
 
+    // Iterable methods
+
 
     @Override
     default Iterator<T> iterator() {
         return toStream().iterator();
+    }
+
+
+    @Override
+    default void forEach(Consumer<? super T> action) {
+        toStream().forEach(action);
+    }
+
+
+    @Override
+    default Spliterator<T> spliterator() {
+        return toStream().spliterator();
     }
 
     // construction
