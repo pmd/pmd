@@ -1370,7 +1370,7 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
   <tbody>
     <tr>
       <td>ignoredAnnotations</td>
-      <td>lombok.Data | lombok.Value | lombok.Builder | lombok.NoArgsConstructor | lombok.RequiredArgsConstructor | lombok.AllArgsConstructorAtLeastOneConstructor</td>
+      <td>lombok.Data | lombok.Value | lombok.Builder | lombok.NoArgsConstructor | lombok.RequiredArgsConstructor | lombok.AllArgsConstructor</td>
       <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
@@ -2631,6 +2631,12 @@ Developers Perceive Them</a>.</p>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>ignoredAnnotations</td>
+      <td>java.lang.Override</td>
+      <td>Fully qualified names of the annotation types that should be ignored by this rule</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
     <tr>
       <td>checkBooleanMethod</td>
       <td>true</td>
