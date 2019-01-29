@@ -16,9 +16,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-codestyle
+    *   [#1547](https://github.com/pmd/pmd/issues/1547): \[java] AtLeastOneConstructorRule: false-positive with lombok.AllArgsConstructor
+
 ### API Changes
 
 ### External Contributions
+
+*   [#1623](https://github.com/pmd/pmd/pull/1623): \[java] Fix lombok.AllArgsConstructor support - [Bobby Wertman](https://github.com/CasualSuperman)
 
 {% endtocmaker %}
 
