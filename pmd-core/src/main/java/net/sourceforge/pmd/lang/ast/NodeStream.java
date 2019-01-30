@@ -34,33 +34,39 @@ import java.util.stream.StreamSupport;
  * <p>Most functions have an equivalent in the {@link Stream} interface and their behaviour is equivalent.
  * Some additional functions are provided to iterate the axes of the tree: {@link #children()}, {@link #descendants()},
  * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
- * {@link #precedingSiblings()}, {@link #followingSiblings()}, {@link #siblings()}. Filtering and mapping
+ * {@link #precedingSiblings()}, {@link #followingSiblings()}, and {@link #siblings()}. Filtering and mapping
  * nodes by type is possible through {@link #filterIs(Class)}, and the specialized {@link #children(Class)},
  * {@link #descendants(Class)}, and {@link #ancestors(Class)}.
  *
  * <p>Many complex predicates about nodes can be expressed by testing the emptiness of a node stream. E.g. the
  * following tests if the node is a variable declarator id initialized to the value {@code 0}:
  * <pre>
- *     {@linkplain #of(Node) NodeStream.of}(someNode)                           // the stream here is empty if the node is null
- *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)// the stream here is empty if the node was not a variable declarator id
- *               {@linkplain #followingSiblings() .followingSiblings}()                    // the stream here contains only the siblings, not the original node
+ *     {@linkplain #of(Node) NodeStream.of}(someNode)                           <i>// the stream here is empty if the node is null</i>
+ *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableDeclaratorId.class)<i>// the stream here is empty if the node was not a variable declarator id</i>
+ *               {@linkplain #followingSiblings() .followingSiblings}()                    <i>// the stream here contains only the siblings, not the original node</i>
  *               {@linkplain #filterIs(Class) .filterIs}(ASTVariableInitializer.class)
- *               .children(ASTExpression.class)
+ *               {@linkplain #children(Class) .children}(ASTExpression.class)
  *               .children(ASTPrimaryExpression.class)
  *               .children(ASTPrimaryPrefix.class)
  *               .children(ASTLiteral.class)
  *               {@linkplain #filterMatching(Function, Object) .filterMatching}(Node::getImage, "0")
  *               {@linkplain #filterNot(Predicate) .filterNot}(ASTLiteral::isStringLiteral)
- *               {@linkplain #nonEmpty() .nonEmpty}(); // If the stream is non empty here, then all the pipeline matched
+ *               {@linkplain #nonEmpty() .nonEmpty}(); <i>// If the stream is non empty here, then all the pipeline matched</i>
  * </pre>
  *
  * <p>Many existing operations from the node interface can be written with streams too:
  * <ul>
- * <li>node.{@linkplain Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@linkplain Node#children(Class) children(t)}.{@linkplain #first()}
- * <li>node.{@linkplain Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@linkplain Node#descendants(Class) descendants(t)}.{@linkplain #first()}
- * <li>node.{@linkplain Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@linkplain Node#ancestors(Class) ancestors(t)}.{@linkplain #first()}
- * <li>node.{@linkplain Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@linkplain Node#descendants(Class) children(t)}.{@linkplain #toList()}
- * <li>node.{@linkplain Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@linkplain Node#descendants(Class) descendants(t)}.{@linkplain #toList()}
+ * <li><tt>node.{@link Node#getFirstChildOfType(Class) getFirstChildOfType(t)} === node.{@link Node#children(Class) children(t)}.{@link #first()}</tt></li>
+ * <li><tt>node.{@link Node#getFirstDescendantOfType(Class) getFirstDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt></li>
+ * <li><tt>node.{@link Node#getFirstParentOfType(Class) getFirstParentOfType(t)} === node.{@link Node#ancestors(Class) ancestors(t)}.{@link #first()}</tt></li>
+ * <li><tt>node.{@link Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
+ * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
+ * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
+ * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestorStream() ancestorStream()}.{@link #get(int) get(n)}</tt></li>
+ * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.<br/>
+ * You can also call <tt>node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt> and use {@link Optional#ifPresent(Consumer) ifPresent} or add more
+ * pipeline operations on the {@link Optional}.
+ * </li>
  * </ul>
  *
  * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. That means, that the operations
@@ -69,8 +75,8 @@ import java.util.stream.StreamSupport;
  * followed by {@link #toList()} will execute the whole pipeline twice. The elements of a stream can
  * however be {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
  * upstream only once. Some construction methods allow building a node stream from an external data
- * source, e.g. {@link #fromIterable(Iterable)} and {@link #fromSupplier(Supplier)}. Depending on how
- * the data source is implemented, the built node streams may be iterable only once.
+ * source, e.g. {@link #fromIterable(Iterable) fromIterable} and {@link #fromSupplier(Supplier) fromSupplier}.
+ * Depending on how the data source is implemented, the built node streams may be iterable only once.
  *
  * <p>Node streams may contain duplicates, which can be pruned with {@link #distinct()}.
  *
@@ -79,13 +85,13 @@ import java.util.stream.StreamSupport;
  * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
  * Its only abstract member is {@link #toStream()}.
  *
- * <p>Node streams are meant to be sequential streams, so there is no equivalent to  {@link Stream#findAny()}.
- * {@link #first()} is an equivalent to {@link Stream#findFirst()}.
+ * <p>Node streams are meant to be sequential streams, so there is no equivalent to {@link Stream#findAny()}.
+ * The method {@link #first()} is an equivalent to {@link Stream#findFirst()}.
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
- * {@link #union(NodeStream[])} or {@link #append(NodeStream)}, may not preserve that ordering.
- * {@link #map(Function)} and {@link #flatMap(Function)} operations may not preserve the ordering
+ * {@link #union(NodeStream[]) union} or {@link #append(NodeStream) append}, may not preserve that ordering.
+ * {@link #map(Function) map} and {@link #flatMap(Function) flatMap} operations may not preserve the ordering
  * if the stream has more than one element, since the mapping is applied in order to each element
  * of the receiver stream. This extends to methods defined in terms of map or flatMap, e.g.
  * {@link #descendants()} or {@link #children()}.
@@ -234,7 +240,21 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * terminal operation called on the downstream of the returned stream.
      *
      * <p>This is useful e.g. if you want to call several terminal operations
-     * without executing the pipeline several times.
+     * without executing the pipeline several times. For example,
+     *
+     * <pre>
+     *
+     *     NodeStream&lt;T&gt; stream = NodeStream.of(...)
+     *                                      <i>// long pipeline</i>
+     *                                      <i>// ...</i>
+     *                                      .cached()
+     *                                      <i>// downstream</i>
+     *                                      <i>// ...</i>
+     *                                      ;
+     *
+     *     stream.forEach(this::addViolation); <i>// both up- and downstream will be evaluated</i>
+     *     curViolations += stream.count();    <i>// only downstream is evaluated</i>
+     * </pre>
      *
      * @return A cached node stream
      */
@@ -262,6 +282,10 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @param maxSize Maximum size of the returned stream
      *
      * @return A new node stream
+     *
+     * @throws IllegalArgumentException if n is negative
+     * @see Stream#limit(long)
+     * @see #drop(int)
      */
     default NodeStream<T> take(int maxSize) {
         return () -> toStream().limit(maxSize);
@@ -277,6 +301,10 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @param n the number of leading elements to skip
      *
      * @return A new node stream
+     *
+     * @throws IllegalArgumentException if n is negative
+     * @see Stream#skip(long)
+     * @see #take(int)
      */
     default NodeStream<T> drop(int n) {
         return () -> toStream().skip(n);
@@ -522,6 +550,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     /**
      * Filters the node of this stream using the negation of the given predicate.
      *
+     * <p>This is equivalent to {@code filter(predicate.negate())}
+     *
      * @param predicate A predicate to apply to each node to determine if
      *                  it should be included
      *
@@ -536,6 +566,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Filters the nodes of this stream that are a subtype of the given class.
+     *
+     * <p>This is equivalent to {@code filter(rClass::isInstance).map(rClass::cast)}.
      *
      * @param rClass The type of the nodes of the returned stream
      * @param <R>    The type of the nodes of the returned stream
@@ -554,6 +586,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * with the given constant. This takes care of null value by calling
      * {@link Objects#equals(Object, Object)}. E.g. to filter nodes that have
      * the {@linkplain Node#getImage() image} {@code "a"}, use {@code filterMatching(Node::getImage, "a")}.
+     *
+     * <p>This is equivalent to {@code filter(t -> Objects.equals(extractor.apply(t), comparand))}.
      *
      * @param extractor Function extracting a value from the nodes of this stream
      * @param comparand Value to which the extracted value will be compared
@@ -591,7 +625,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     /**
      * Returns the number of nodes in this stream.
      *
-     * @return the number of elements in this stream
+     * @return the number of nodes in this stream
      */
     default int count() {
         // ASTs are not so big as to warrant using a 'long' here
@@ -603,9 +637,11 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns 'true' if the stream has at least one element.
      *
      * @return 'true' if the stream has at least one element.
+     *
+     * @see #isEmpty()
      */
     default boolean nonEmpty() {
-        return first().isPresent();
+        return toStream().anyMatch(t -> true);
     }
 
 
@@ -613,6 +649,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns 'true' if the stream has no elements.
      *
      * @return 'true' if the stream has no elements.
+     *
+     * @see #nonEmpty()
      */
     default boolean isEmpty() {
         return !nonEmpty();
@@ -626,6 +664,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @param predicate The predicate that one element should match for this method to return true
      *
      * @return true if any elements of the stream match the provided predicate, otherwise false
+     *
+     * @see #all(Predicate)
+     * @see #none(Predicate)
      */
     default boolean any(Predicate<? super T> predicate) {
         return toStream().anyMatch(predicate);
@@ -639,6 +680,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @param predicate The predicate that no element should match for this method to return true
      *
      * @return true if either no elements of the stream match the provided predicate or the stream is empty, otherwise false
+     *
+     * @see #any(Predicate)
+     * @see #all(Predicate)
      */
     default boolean none(Predicate<? super T> predicate) {
         return toStream().noneMatch(predicate);
@@ -652,6 +696,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @param predicate The predicate that all elements should match for this method to return true
      *
      * @return true if either all elements of the stream match the provided predicate or the stream is empty, otherwise false
+     *
+     * @see #any(Predicate)
+     * @see #none(Predicate)
      */
     default boolean all(Predicate<? super T> predicate) {
         return toStream().allMatch(predicate);
@@ -659,10 +706,38 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
+     * Returns an optional containing the element at index n in this stream.
+     * If no such element exists, and empty optional is returned.
+     *
+     * <p>This is equivalent to <tt>{@link #drop(int) drop(n)}.{@link #first()}</tt>
+     *
+     * <p>If instead of an optional, you'd rather continue processing
+     * the nth element as a node stream, you can use <tt>{@link #drop(int) drop(n)}.{@link #take(int) take(1)}.</tt>
+     *
+     * @param n Index of the element to find
+     *
+     * @return The nth element of this stream, or empty if it doesn't exist
+     *
+     * @throws IllegalArgumentException if n is negative
+     */
+    default Optional<T> get(int n) {
+        return drop(n).first();
+    }
+
+
+    /**
      * Returns an Optional containing the first element of this stream,
      * or an empty Optional if the stream is empty.
      *
+     * <p>If instead of an optional, you'd rather continue processing
+     * the first element as a node stream, you can use {@link #take(int) take(1)}.
+     *
+     * <p>This is equivalent to {@link #get(int) get(0)}.
+     *
      * @return an Optional containing the first element of this stream,
+     *
+     * @see #first(Predicate)
+     * @see #first(Class)
      */
     default Optional<T> first() {
         return toStream().findFirst();
@@ -679,6 +754,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return an Optional containing the first element of this stream
      * that matches the given predicate
+     *
+     * @see #first()
+     * @see #first(Class)
      */
     default Optional<T> first(Predicate<? super T> predicate) {
         return filter(predicate).first();
@@ -694,6 +772,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return an Optional containing the first element of this stream
      * of the given type
+     *
+     * @see #first()
+     * @see #first(Predicate)
      */
     default <R extends Node> Optional<R> first(Class<R> rClass) {
         return filterIs(rClass).first();
@@ -712,6 +793,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see Stream#collect(Collector)
      * @see java.util.stream.Collectors
+     * @see #toList()
+     * @see #toList(Function)
      */
     default <R, A> R collect(Collector<? super T, A, R> collector) {
         return toStream().collect(collector);
@@ -719,12 +802,14 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Collects the elements of this node stream into a list. This is
-     * equivalent to calling {@code collect(Collectors.toList())}.
+     * Collects the elements of this node stream into a list.
+     *
+     * <p>This is equivalent to {@code collect(Collectors.toList())}.
      *
      * @return a list containing the elements of this stream
      *
      * @see Collectors#toList()
+     * @see #collect(Collector)
      */
     default List<T> toList() {
         return collect(Collectors.toList());
@@ -743,6 +828,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return a list containing the elements of this stream
      *
      * @see Collectors#mapping(Function, Collector)
+     * @see #collect(Collector)
      */
     default <R> List<R> toList(Function<? super T, ? extends R> mapper) {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
@@ -776,6 +862,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns a node stream containing zero or one node,
      * depending on whether the argument is null or not.
      *
+     * <p>If you know the node is not null, you can also
+     * call <tt>node.{@link Node#asStream() asStream()}</tt>.
+     *
      * @param node The node to contain
      * @param <T>  Element type of the returned stream
      *
@@ -786,6 +875,23 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     static <T extends Node> NodeStream<T> of(T node) {
         // overload the varargs to avoid useless array creation
         return node == null ? empty() : () -> Stream.of(node);
+    }
+
+
+    /**
+     * Returns a node stream containing zero or one node,
+     * depending on whether the optional is empty or not.
+     *
+     * @param optNode The node to contain
+     * @param <T>     Element type of the returned stream
+     *
+     * @return A new node stream
+     *
+     * @see #of(Node)
+     */
+    static <T extends Node> NodeStream<T> ofOptional(Optional<T> optNode) {
+        // overload the varargs to avoid useless array creation
+        return optNode.map(NodeStream::of).orElseGet(NodeStream::empty);
     }
 
 

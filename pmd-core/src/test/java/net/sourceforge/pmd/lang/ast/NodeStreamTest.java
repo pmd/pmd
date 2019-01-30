@@ -10,12 +10,14 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Test;
@@ -145,6 +147,17 @@ public class NodeStreamTest {
     public void testDistinct() {
         assertThat(pathsOf(NodeStream.union(followPath(tree1, "01").ancestorStream(),
                                             tree2.childrenStream().ancestors()).distinct()), contains("0", "", "")); // roots of both trees
+    }
+
+
+    @Test
+    public void testGet() {
+        // ("0", "00", "01", "010", "1")
+        assertEquals(Optional.of("0"), tree1.descendantStream().get(0).map(Node::getImage));
+        assertEquals(Optional.of("00"), tree1.descendantStream().get(1).map(Node::getImage));
+        assertEquals(Optional.of("010"), tree1.descendantStream().get(3).map(Node::getImage));
+        assertEquals(Optional.of("1"), tree1.descendantStream().get(4).map(Node::getImage));
+        assertEquals(Optional.empty(), tree1.descendantStream().get(6));
     }
 
     @Test
