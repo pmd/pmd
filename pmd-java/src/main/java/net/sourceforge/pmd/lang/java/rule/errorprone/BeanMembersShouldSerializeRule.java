@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +36,17 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
 
     private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
 
-
     public BeanMembersShouldSerializeRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        return Arrays.asList(
+            "lombok.Data",
+            "lombok.Getter",
+            "lombok.Value"
+        );
     }
 
     @Override
@@ -63,7 +72,9 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
             return data;
         }
 
-        boolean classHasLombok = hasLombokAnnotation(node);
+        if (hasLombokAnnotation(node)) {
+            return super.visit(node, data);
+        }
 
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
                 .getMethodDeclarations();
@@ -85,7 +96,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
             if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic() 
-                    || classHasLombok || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
+                    || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
             String varName = StringUtils.capitalize(trimIfPrefix(decl.getImage()));
