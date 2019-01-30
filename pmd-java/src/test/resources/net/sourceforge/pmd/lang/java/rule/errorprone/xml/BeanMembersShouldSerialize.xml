@@ -188,4 +188,82 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 1</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class Buzz {
+    private String foo;
+
+    public Buzz(String s) {
+        foo = s;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@lombok.Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.*;
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 4</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+@Getter
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 5</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 6</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+public class Foo {
+    @Getter(lazy=true) private String bar;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#780 [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - 7</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@Data
+public class Foo {
+    private String bar;
+}
+        ]]></code>
+    </test-code>
 </test-data>
