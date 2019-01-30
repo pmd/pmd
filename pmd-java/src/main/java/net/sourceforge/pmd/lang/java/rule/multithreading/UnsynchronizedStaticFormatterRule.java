@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import java.text.Format;
 import java.util.Arrays;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -28,9 +29,9 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  */
 public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
     private Class<?> formatterClassToCheck = Format.class;
-    private String[] threadSafeFormatter = {
-        "org.apache.commons.lang3.time.FastDateFormat",
-    };
+    private static final List<String> THREAD_SAFE_FORMATTER = Arrays.asList(
+        "org.apache.commons.lang3.time.FastDateFormat"
+    );
 
     public UnsynchronizedStaticFormatterRule() {
         addRuleChainVisit(ASTFieldDeclaration.class);
@@ -52,8 +53,10 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
         }
 
         ASTVariableDeclaratorId var = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        if (var.getType() != null && Arrays.asList(threadSafeFormatter).contains(var.getType().getName())) {
-            return data;
+        for (String formatter: THREAD_SAFE_FORMATTER) {
+            if (TypeHelper.isA(var, formatter)) {
+                return data;
+            }
         }
         for (NameOccurrence occ : var.getUsages()) {
             Node n = occ.getLocation();
