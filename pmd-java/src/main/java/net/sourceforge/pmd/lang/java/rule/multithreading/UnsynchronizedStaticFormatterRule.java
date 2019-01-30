@@ -52,7 +52,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
         }
 
         ASTVariableDeclaratorId var = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-        if (Arrays.asList(threadSafeFormatter).contains(var.getType().getName())) {
+        if (var.getType() != null && Arrays.asList(threadSafeFormatter).contains(var.getType().getName())) {
             return data;
         }
         for (NameOccurrence occ : var.getUsages()) {
