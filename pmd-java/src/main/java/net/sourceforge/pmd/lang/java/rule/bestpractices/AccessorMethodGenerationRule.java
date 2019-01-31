@@ -10,6 +10,9 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.AbstractJavaScope;
@@ -18,6 +21,7 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class AccessorMethodGenerationRule extends AbstractJavaRule {
@@ -55,6 +59,23 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
             final ClassScope classScope, final Object data) {
         if (!node.isPrivate()) {
             return;
+        }
+
+        for (final ASTVariableDeclarator varDecl: node.findChildrenOfType(ASTVariableDeclarator.class)) {
+            if (varDecl.hasInitializer()) {
+                ASTVariableInitializer varInit = varDecl.getInitializer();
+                List<ASTPrimaryPrefix> initPrefix = varInit.findDescendantsOfType(ASTPrimaryPrefix.class);
+                boolean allLiterals = true;
+                for (ASTPrimaryPrefix prefix: initPrefix) {
+                    if (!prefix.getType().isPrimitive() && !TypeHelper.isA(prefix, "java.lang.String")) {
+                        allLiterals = false;
+                        break;
+                    }
+                }
+                if (allLiterals) {
+                    return;
+                }
+            }
         }
 
         for (final NameOccurrence no : occurrences) {

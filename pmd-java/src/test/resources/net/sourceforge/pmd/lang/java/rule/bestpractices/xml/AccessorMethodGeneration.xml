@@ -194,4 +194,37 @@ public class Foo implements Parcelable {
      ]]></code>
      <source-type>java 10</source-type>
     </test-code>
+    <test-code>
+        <description>#808 - [java] AccessorMethodGeneration false positives with compile time constants - literals</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("unused")
+class Outer {
+  private static final String CONST_STRING = "value";
+  private static final String CALCULATED_STRING = "value" + 0;
+  private static final int LITERAL = 0;
+  private static final int CALCULATED = LITERAL * 2;
+  private static final int CAST = (int) 0L;
+  private static final int LATE_INIT;
+  static {
+  	LATE_INIT = 0;
+  }
+
+  class Inner {
+    @Override
+    public String toString() {
+      return "" // separate lines so the rule violations show up better
+           + CONST_STRING
+           + CALCULATED_STRING
+           + LITERAL
+           + CALCULATED
+           + LATE_INIT    // valid violation
+           + CAST
+      ;
+    }
+  }
+}
+     ]]></code>
+     <source-type>java 10</source-type>
+    </test-code>
 </test-data>
