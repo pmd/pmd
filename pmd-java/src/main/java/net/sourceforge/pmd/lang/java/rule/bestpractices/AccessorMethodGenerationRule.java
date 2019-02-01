@@ -4,13 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
@@ -21,10 +26,11 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
 public class AccessorMethodGenerationRule extends AbstractJavaRule {
+
+    private Map<String, Boolean> cache = new HashMap<>();
 
     @Override
     public Object visit(final ASTCompilationUnit node, final Object data) {
@@ -64,17 +70,24 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
         for (final ASTVariableDeclarator varDecl: node.findChildrenOfType(ASTVariableDeclarator.class)) {
             if (varDecl.hasInitializer()) {
                 ASTVariableInitializer varInit = varDecl.getInitializer();
-                List<ASTPrimaryPrefix> initPrefix = varInit.findDescendantsOfType(ASTPrimaryPrefix.class);
-                boolean allLiterals = true;
-                for (ASTPrimaryPrefix prefix: initPrefix) {
-                    if (!prefix.getType().isPrimitive() && !TypeHelper.isA(prefix, "java.lang.String")) {
-                        allLiterals = false;
-                        break;
+                List<ASTExpression> initExpression = varInit.findDescendantsOfType(ASTExpression.class);
+                boolean isConstantExpression = true;
+                constantCheck:
+                for (ASTExpression exp: initExpression) {
+                    List<ASTPrimaryExpression> primaryExpressions = exp.findDescendantsOfType(ASTPrimaryExpression.class);
+                    for (ASTPrimaryExpression expression: primaryExpressions) {
+                        if (!isCompileTimeConstant(expression)) {
+                            isConstantExpression = false;
+                            break constantCheck;
+                        }
                     }
                 }
-                if (allLiterals) {
+                cache.put(varDecl.getName(), isConstantExpression);
+                if (isConstantExpression) {
                     return;
                 }
+            } else {
+                cache.put(varDecl.getName(), false);
             }
         }
 
@@ -86,5 +99,34 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
                 addViolation(data, no.getLocation());
             }
         }
+    }
+
+    public boolean isCompileTimeConstant(ASTPrimaryExpression expressions) {
+        // function call detected
+        List<ASTPrimarySuffix> suffix = expressions.findDescendantsOfType(ASTPrimarySuffix.class);
+        if (!suffix.isEmpty()) {
+            return false;
+        }
+
+        // single node expression
+        List<ASTName> nameNodes = expressions.findDescendantsOfType(ASTName.class);
+        List<ASTLiteral> literalNodes = expressions.findDescendantsOfType(ASTLiteral.class);
+        if (nameNodes.size() + literalNodes.size() < 2) {
+            for (ASTName node: nameNodes) {
+                if (cache.containsKey(node.getImage())) {
+                    return cache.get(node.getImage());
+                }
+            }
+            return true;
+        }
+
+        // multiple node expression
+        List<ASTPrimaryExpression> subExpressions = expressions.findDescendantsOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression exp: subExpressions) {
+            if (!isCompileTimeConstant(exp)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

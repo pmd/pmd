@@ -195,8 +195,9 @@ public class Foo implements Parcelable {
      <source-type>java 10</source-type>
     </test-code>
     <test-code>
-        <description>#808 - [java] AccessorMethodGeneration false positives with compile time constants - literals</description>
-        <expected-problems>1</expected-problems>
+        <description>#808 - [java] AccessorMethodGeneration false positives with compile time constants</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>24,27,28</expected-linenumbers>
         <code><![CDATA[
 @SuppressWarnings("unused")
 class Outer {
@@ -204,7 +205,10 @@ class Outer {
   private static final String CALCULATED_STRING = "value" + 0;
   private static final int LITERAL = 0;
   private static final int CALCULATED = LITERAL * 2;
+  private static final int REFERENCED = Thread.MIN_PRIORITY;
   private static final int CAST = (int) 0L;
+  private static final long NON_CONSTANT = java.util.concurrent.TimeUnit.SECONDS.toMillis(10);
+  private static final String NON_CONSTANT_STR = NON_CONSTANT + "foo";
   private static final int LATE_INIT;
   static {
   	LATE_INIT = 0;
@@ -218,8 +222,11 @@ class Outer {
            + CALCULATED_STRING
            + LITERAL
            + CALCULATED
-           + LATE_INIT    // valid violation
+           + LATE_INIT        // valid violation
+           + REFERENCED
            + CAST
+           + NON_CONSTANT     // valid violation
+           + NON_CONSTANT_STR // valid violation
       ;
     }
   }
