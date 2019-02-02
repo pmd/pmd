@@ -114,6 +114,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
         List<ASTLiteral> literalNodes = expressions.findDescendantsOfType(ASTLiteral.class);
         if (nameNodes.size() + literalNodes.size() < 2) {
             for (ASTName node: nameNodes) {
+                // TODO : use the symbol table to get the declaration of the referenced var and check it
                 if (!cache.contains(node.getImage())) {
                     return false;
                 }
