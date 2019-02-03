@@ -74,9 +74,6 @@ public final class EventLogController extends AbstractController<MainDesignerCon
 
     private final Stage myPopupStage;
 
-    // subscription allowing to unbind from the popup.
-    private Subscription popupBinding = () -> {};
-
 
     public EventLogController(MainDesignerController mediator) {
         super(mediator);
@@ -89,8 +86,6 @@ public final class EventLogController extends AbstractController<MainDesignerCon
     // this is only called each time a popup is created
     @Override
     protected void beforeParentInit() {
-
-        popupBinding.unsubscribe();
 
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue()));
@@ -214,16 +209,9 @@ public final class EventLogController extends AbstractController<MainDesignerCon
 
     public void showPopup(Subscription extSub) {
         myPopupStage.show();
-        popupBinding = bindPopupToThisController().and(extSub);
+        Subscription popupBinding = bindPopupToThisController().and(extSub);
         eventLogTableView.refresh();
-        myPopupStage.setOnCloseRequest(e -> hidePopup());
-    }
-
-
-    private void hidePopup() {
-        myPopupStage.hide();
-        popupBinding.unsubscribe();
-        popupBinding = () -> {};
+        myPopupStage.setOnCloseRequest(e -> popupBinding.unsubscribe());
     }
 
 

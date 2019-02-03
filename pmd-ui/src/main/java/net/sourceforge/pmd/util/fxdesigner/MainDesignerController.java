@@ -80,9 +80,6 @@ public class MainDesignerController extends AbstractController<AbstractControlle
     private Menu openRecentMenu;
     @FXML
     private Menu fileMenu;
-    /* Center toolbar */
-    @FXML
-    private ToggleButton bottomTabsToggle;
     /* Bottom panel */
     @FXML
     private TabPane bottomTabPane;
