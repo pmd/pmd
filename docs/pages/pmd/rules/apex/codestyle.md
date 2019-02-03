@@ -187,6 +187,7 @@ public class Foo {
 |cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
 |cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|skipTestMethodUnderscores|false|Skip underscores in test methods|no|
 
 **Use this rule by referencing it:**
 ``` xml
