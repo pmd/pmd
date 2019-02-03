@@ -100,11 +100,6 @@ public class CompareObjectsWithEqualsRule extends AbstractJavaRule {
                     && type0.getType() == java.lang.Exception.class) {
                     return data;
                 }
-                // skip, if it is an List
-                if (type0.getType() != null && type0.getType().equals(type1.getType())
-                    && type0.getType() == java.util.List.class) {
-                    return data;
-                }
                 addViolation(data, node);
             }
         }
