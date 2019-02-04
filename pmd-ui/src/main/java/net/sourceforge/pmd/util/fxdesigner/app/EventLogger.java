@@ -10,7 +10,6 @@ import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.SELECTIO
 import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.XPATH_EVALUATION_EXCEPTION;
 import static net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category.XPATH_OK;
 import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.countNotMatching;
-import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.reduceEntangledIfPossible;
 
 import java.time.Duration;
 import java.util.EnumSet;
@@ -25,7 +24,6 @@ import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.LogEntryWithData;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource.NodeSelectionEvent;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 
@@ -51,16 +49,6 @@ public class EventLogger implements ApplicationComponent {
     public EventLogger(DesignerRoot designerRoot) {
         this.designerRoot = designerRoot; // we have to be careful with initialization order here
 
-        // none of this is done if developer mode isn't enabled because then those events aren't even pushed in the first place
-        EventStream<LogEntryWithData<NodeSelectionEvent>> eventTraces = reduceEntangledIfPossible(
-            filterOnCategory(latestEvent, false, SELECTION_EVENT_TRACING).map(t -> (LogEntryWithData<NodeSelectionEvent>) t),
-            // the user data for those is the event
-            // if they're the same event we reduce them together
-            (lastEv, newEv) -> Objects.equals(lastEv.getUserData(), newEv.getUserData()),
-            LogEntryWithData::reduceEventTrace,
-            EVENT_TRACING_REDUCTION_DELAY
-        );
-
         EventStream<LogEntry> onlyParseException = deleteOnSignal(latestEvent, PARSE_EXCEPTION, PARSE_OK);
         EventStream<LogEntry> onlyXPathException = deleteOnSignal(latestEvent, XPATH_EVALUATION_EXCEPTION, XPATH_OK);
 
@@ -68,7 +56,19 @@ public class EventLogger implements ApplicationComponent {
             filterOnCategory(latestEvent, true, PARSE_EXCEPTION, XPATH_EVALUATION_EXCEPTION, SELECTION_EVENT_TRACING)
                 .filter(it -> isDeveloperMode() || !it.getCategory().isInternal());
 
-        EventStreams.merge(eventTraces, onlyParseException, otherExceptions, onlyXPathException)
+        // none of this is done if developer mode isn't enabled because then those events aren't even pushed in the first place
+        @SuppressWarnings("unchecked")
+        EventStream<LogEntryWithData<Object>> traces = latestEvent.filter(e -> e.getCategory().isTrace()).map(t -> (LogEntryWithData<Object>) t);
+        EventStream<LogEntryWithData<Object>> reducedTraces = DesignerUtil.reduceEntangledIfPossible(
+            traces,
+            // the user data for those is the event
+            // if they're the same event we reduce them together
+            (lastEv, newEv) -> Objects.equals(lastEv.getUserData(), newEv.getUserData()),
+            LogEntryWithData::reduceEventTrace,
+            EVENT_TRACING_REDUCTION_DELAY
+        );
+
+        EventStreams.merge(reducedTraces, onlyParseException, otherExceptions, onlyXPathException)
                     .distinct()
                     .subscribe(fullLog::add);
     }

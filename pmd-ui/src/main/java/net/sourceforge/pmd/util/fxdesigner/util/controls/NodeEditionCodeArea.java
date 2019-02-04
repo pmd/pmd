@@ -59,8 +59,8 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
         currentRuleResultsProperty().values().subscribe(this::highlightXPathResults);
         currentErrorNodesProperty().values().subscribe(this::highlightErrorNodes);
         currentNameOccurrences.values().subscribe(this::highlightNameOccurrences);
+        initNodeSelectionHandling();
     }
-
 
     /** Scroll the editor to a node and makes it visible. */
     private void scrollToNode(Node node) {
@@ -149,7 +149,7 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
 
 
     @Override
-    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+    public EventStream<Node> getSelectionEvents() {
         // never emits selection events itself for now
         return EventStreams.never();
     }

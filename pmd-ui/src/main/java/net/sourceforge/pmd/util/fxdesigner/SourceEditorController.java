@@ -23,8 +23,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.model.ASTManager;
 import net.sourceforge.pmd.util.fxdesigner.model.ParseAbortedException;
 import net.sourceforge.pmd.util.fxdesigner.popups.AuxclasspathSetupController;
@@ -37,8 +35,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeEditionCodeArea;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.RadioMenuItem;
@@ -47,13 +43,13 @@ import javafx.scene.control.ToggleGroup;
 
 /**
  * One editor, i.e. source editor and ast tree view. The {@link NodeEditionCodeArea} handles the
- * presentation of different types of nodes in separate layers. This class aggregates the event
- * streams of its controls and handles configuration, language selection and such.
+ * presentation of different types of nodes in separate layers. This class handles configuration,
+ * language selection and such.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class SourceEditorController extends AbstractController<MainDesignerController> implements CompositeSelectionSource {
+public class SourceEditorController extends AbstractController<MainDesignerController> {
 
     private static final Duration AST_REFRESH_DELAY = Duration.ofMillis(100);
     private final ASTManager astManager;
@@ -116,8 +112,6 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
                                tick.ifRight(c -> astTreeView.setRoot(null));
                                Platform.runLater(parent::refreshAST);
                            });
-
-
     }
 
 
@@ -147,13 +141,6 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
         languageVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(languageToggleGroup, DesignerUtil::defaultLanguageVersion);
     }
-
-
-    @Override
-    public ObservableSet<? extends NodeSelectionSource> getSubSelectionSources() {
-        return FXCollections.observableSet(nodeEditionCodeArea, astTreeView);
-    }
-
 
     /**
      * Refreshes the AST and returns the new compilation unit if the parse didn't fail.

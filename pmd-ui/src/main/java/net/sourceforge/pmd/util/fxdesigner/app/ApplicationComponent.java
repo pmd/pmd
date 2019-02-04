@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import net.sourceforge.pmd.util.fxdesigner.SourceEditorController;
 import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource.NodeSelectionEvent;
+import net.sourceforge.pmd.util.fxdesigner.app.MessageChannel.Message;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsOwner;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.AstTreeView;
 
@@ -24,8 +24,7 @@ import javafx.stage.Stage;
  * root at initialization time, eg what {@link SourceEditorController} does with {@link AstTreeView}.
  *
  * <p>Some more specific cross-cutting structures for the internals of the app are the {@link SettingsOwner}
- * tree, which is more or less identical to the {@link AbstractController} tree. {@link NodeSelectionSource}s
- * form yet another similar tree of related components.
+ * tree, which is more or less identical to the {@link AbstractController} tree.
  *
  * @author Clément Fournier
  */
@@ -120,10 +119,10 @@ public interface ApplicationComponent {
     }
 
 
-    /** Logs a tracing event pushed by a {@link NodeSelectionSource}. */
-    default void logSelectionEventTrace(NodeSelectionEvent event, Supplier<String> details) {
+    /** Traces a message. */
+    default <T> void logMessageTrace(Message<T> event, Supplier<String> details) {
         if (isDeveloperMode()) {
-            getLogger().logEvent(LogEntry.createNodeSelectionEventTraceEntry(event, details.get()));
+            getLogger().logEvent(LogEntry.createDataEntry(event, event.getCategory(), details.get()));
         }
     }
 

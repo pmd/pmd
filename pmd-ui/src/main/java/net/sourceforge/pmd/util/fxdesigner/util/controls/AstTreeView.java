@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.reactfx.EventSource;
+import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.SuspendableEventStream;
 import org.reactfx.value.Var;
@@ -58,12 +59,13 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
             }
         }));
 
+        initNodeSelectionHandling();
     }
 
 
     @Override
-    public SuspendableEventStream<NodeSelectionEvent> getSelectionEvents() {
-        return selectionEvents.map(n -> new NodeSelectionEvent(n, this)).suppressible();
+    public EventStream<Node> getSelectionEvents() {
+        return selectionEvents;
     }
 
 

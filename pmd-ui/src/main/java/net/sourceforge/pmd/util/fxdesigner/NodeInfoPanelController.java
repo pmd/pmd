@@ -32,7 +32,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeCell;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ScopeHierarchyTreeItem;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.ToolbarTitledPane;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -102,16 +101,16 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
         // suppress as early as possible in the pipeline
         myScopeItemSelectionEvents = EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty()).suppressible();
 
+        initNodeSelectionHandling();
     }
 
 
     @Override
-    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+    public EventStream<Node> getSelectionEvents() {
         return myScopeItemSelectionEvents.filter(Objects::nonNull)
                                          .map(TreeItem::getValue)
                                          .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
-                                         .map(NameDeclaration::getNode)
-                                         .map(n -> new NodeSelectionEvent(n, this));
+                                         .map(NameDeclaration::getNode);
 
     }
 
@@ -133,15 +132,14 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
         }
         selectedNode = node;
 
-        Platform.runLater(() -> displayAttributes(node));
-        Platform.runLater(() -> displayMetrics(node));
+        displayAttributes(node);
+        displayMetrics(node);
         displayScopes(node);
     }
 
 
     private void displayAttributes(Node node) {
-        ObservableList<String> atts = getAttributes(node);
-        xpathAttributesListView.setItems(atts);
+        xpathAttributesListView.setItems(getAttributes(node));
     }
 
 

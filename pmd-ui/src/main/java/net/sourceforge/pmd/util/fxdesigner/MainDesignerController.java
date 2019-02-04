@@ -25,7 +25,6 @@ import org.reactfx.value.Val;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
-import net.sourceforge.pmd.util.fxdesigner.app.CompositeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
@@ -37,8 +36,6 @@ import net.sourceforge.pmd.util.fxdesigner.util.TextAwareNodeWrapper;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.beans.SettingsPersistenceUtil.PersistentProperty;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableSet;
 import javafx.fxml.FXML;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
@@ -48,7 +45,6 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 
@@ -64,7 +60,7 @@ import javafx.stage.FileChooser;
  * @since 6.0.0
  */
 @SuppressWarnings("PMD.UnusedPrivateField")
-public class MainDesignerController extends AbstractController<AbstractController<?>> implements CompositeSelectionSource {
+public class MainDesignerController extends AbstractController<AbstractController<?>> {
 
 
     /* Menu bar */
@@ -117,7 +113,7 @@ public class MainDesignerController extends AbstractController<AbstractControlle
         } catch (Exception e) {
             // shouldn't prevent the app from opening
             // in case the file is corrupted, it will be overwritten on shutdown
-            e.printStackTrace();
+            logInternalException(e);
         }
 
         licenseMenuItem.setOnAction(e -> showLicensePopup());
@@ -146,17 +142,9 @@ public class MainDesignerController extends AbstractController<AbstractControlle
         refreshAST(); // initial refreshing
 
         sourceEditorController.currentRuleResultsProperty().bind(xpathPanelController.currentResultsProperty());
-
-        // this is the only place where getSelectionEvents is called
-        getSelectionEvents().distinct().subscribe(n -> CompositeSelectionSource.super.bubbleDown(n));
-
     }
 
 
-    @Override
-    public ObservableSet<? extends NodeSelectionSource> getSubSelectionSources() {
-        return FXCollections.observableSet(nodeInfoPanelController, sourceEditorController, xpathPanelController);
-    }
 
     public void shutdown() {
         try {
@@ -290,7 +278,7 @@ public class MainDesignerController extends AbstractController<AbstractControlle
     public void invalidateAst() {
         nodeInfoPanelController.setFocusNode(null);
         xpathPanelController.invalidateResults(false);
-        sourceEditorController.setFocusNode(null);
+        NodeSelectionSource.CHANNEL.pushEvent(this, null);
     }
 
 

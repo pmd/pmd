@@ -24,10 +24,11 @@ import javafx.fxml.Initializable;
  * tree too.
  *
  * <p>For now controllers mostly communicate by sending messages to their parent
- * and letting it forward the message to the rest of the app. TODO I'm more and more
- * convinced we should avoid that and stop having the controllers hold a reference
- * to their parent. They should only communicate by exposing properties their parent
- * binds to, but they shouldn't know about their parent.
+ * and letting it forward the message to the rest of the app.
+ * TODO I'm more and more convinced we should avoid that and stop having the controllers
+ *  hold a reference to their parent. They should only communicate by exposing properties
+ *  their parent binds to, but they shouldn't know about their parent.
+ *  {@link MessageChannel}s can allow us to decouple them event more.
  *
  * <p>This class mainly to make the initialization cycle of JavaFX clearer. Children controllers
  * are initialized before their parent, but sometimes they should only

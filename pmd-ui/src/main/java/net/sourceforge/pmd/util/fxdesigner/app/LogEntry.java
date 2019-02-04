@@ -5,11 +5,10 @@
 package net.sourceforge.pmd.util.fxdesigner.app;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.reactfx.value.Var;
-
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource.NodeSelectionEvent;
 
 
 /**
@@ -76,11 +75,6 @@ public class LogEntry implements Comparable<LogEntry> {
     }
 
 
-    public boolean isInternal() {
-        return category == Category.INTERNAL;
-    }
-
-
     public static LogEntry createUserExceptionEntry(Throwable thrown, Category cat) {
         return new LogEntry(ExceptionUtils.getStackTrace(thrown), thrown.getMessage(), cat);
     }
@@ -105,8 +99,8 @@ public class LogEntry implements Comparable<LogEntry> {
     }
 
 
-    public static LogEntryWithData<NodeSelectionEvent> createNodeSelectionEventTraceEntry(NodeSelectionEvent event, String details) {
-        return new LogEntryWithData<>(details, event.toString(), Category.SELECTION_EVENT_TRACING, event);
+    public static <T> LogEntryWithData<T> createDataEntry(T data, Category category, String details) {
+        return new LogEntryWithData<>(details, Objects.toString(data), category, data);
     }
 
 
@@ -128,7 +122,7 @@ public class LogEntry implements Comparable<LogEntry> {
         // These are used for events that occurred internally to the app and are
         // only relevant to a developer of the app.
         INTERNAL("Internal event", CategoryType.INTERNAL),
-        SELECTION_EVENT_TRACING("Selection event tracing", CategoryType.INTERNAL);
+        SELECTION_EVENT_TRACING("Selection event tracing", CategoryType.TRACE);
 
         public final String name;
         private final CategoryType type;
@@ -151,8 +145,9 @@ public class LogEntry implements Comparable<LogEntry> {
         }
 
 
+        /** Internal categories are only logged if the app is in developer mode. */
         public boolean isInternal() {
-            return type == CategoryType.INTERNAL;
+            return type != CategoryType.USER_EXCEPTION;
         }
 
 
@@ -161,9 +156,15 @@ public class LogEntry implements Comparable<LogEntry> {
         }
 
 
+        public boolean isTrace() {
+            return type == CategoryType.TRACE;
+        }
+
         enum CategoryType {
             USER_EXCEPTION,
-            INTERNAL
+            INTERNAL,
+            /** Trace events are aggregated. */
+            TRACE
         }
     }
 
@@ -183,8 +184,8 @@ public class LogEntry implements Comparable<LogEntry> {
         }
 
 
-        static LogEntryWithData<NodeSelectionEvent> reduceEventTrace(LogEntryWithData<NodeSelectionEvent> prev, LogEntryWithData<NodeSelectionEvent> next) {
-            return createNodeSelectionEventTraceEntry(prev.getUserData(), prev.getDetails() + "\n" + next.getDetails());
+        static <T> LogEntryWithData<T> reduceEventTrace(LogEntryWithData<T> prev, LogEntryWithData<T> next) {
+            return createDataEntry(prev.getUserData(), prev.getCategory(), prev.getDetails() + "\n" + next.getDetails());
         }
     }
 

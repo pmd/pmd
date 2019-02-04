@@ -132,6 +132,8 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
                            .subscribe(tick -> parent.refreshXPathResults());
 
         selectionEvents = EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty()).suppressible();
+
+        initNodeSelectionHandling();
     }
 
 
@@ -222,10 +224,9 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
 
     @Override
-    public EventStream<NodeSelectionEvent> getSelectionEvents() {
+    public EventStream<Node> getSelectionEvents() {
         return selectionEvents.filter(Objects::nonNull)
-                              .map(TextAwareNodeWrapper::getNode)
-                              .map(n -> new NodeSelectionEvent(n, this));
+                              .map(TextAwareNodeWrapper::getNode);
     }
 
 
