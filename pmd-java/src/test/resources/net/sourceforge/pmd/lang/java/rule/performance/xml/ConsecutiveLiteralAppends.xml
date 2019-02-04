@@ -1418,4 +1418,28 @@ public class ConsecutiveLiteralAppendsFP {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1632 [java] ConsecutiveLiteralAppends false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Test {
+    public String foo() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("literal1");
+        try {
+            final String res = bar();
+            sb.append("literal2").append(res);
+        } catch (Exception e) {
+            sb.append("literal3");
+        }
+        return sb.toString();
+    }
+
+    public String bar() throws Exception {
+        throw new Exception();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
