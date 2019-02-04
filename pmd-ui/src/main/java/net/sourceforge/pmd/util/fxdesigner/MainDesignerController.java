@@ -26,7 +26,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
-import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.model.XPathEvaluationException;
 import net.sourceforge.pmd.util.fxdesigner.popups.EventLogController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
@@ -278,7 +277,7 @@ public class MainDesignerController extends AbstractController<AbstractControlle
     public void invalidateAst() {
         nodeInfoPanelController.setFocusNode(null);
         xpathPanelController.invalidateResults(false);
-        NodeSelectionSource.CHANNEL.pushEvent(this, null);
+        getDesignerRoot().getNodeSelectionChannel().pushEvent(this, null);
     }
 
 

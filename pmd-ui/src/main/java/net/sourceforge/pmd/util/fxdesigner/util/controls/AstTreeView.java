@@ -58,8 +58,6 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
                 eventSink.push(n);
             }
         }));
-
-        initNodeSelectionHandling();
     }
 
 
@@ -145,5 +143,6 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
     public void setDesignerRoot(DesignerRoot designerRoot) {
         this.designerRoot = designerRoot;
+        initNodeSelectionHandling();
     }
 }

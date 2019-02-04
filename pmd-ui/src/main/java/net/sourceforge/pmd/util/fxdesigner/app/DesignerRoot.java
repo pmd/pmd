@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.util.fxdesigner.app;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
+
 import javafx.stage.Stage;
 
 
@@ -19,6 +22,8 @@ public final class DesignerRoot {
     private final Stage mainStage;
     private final EventLogger logger;
     private final boolean developerMode;
+
+    private final MessageChannel<Node> nodeSelectionChannel = new MessageChannel<>(Category.SELECTION_EVENT_TRACING);
 
 
     public DesignerRoot(Stage mainStage, boolean developerMode) {
@@ -57,4 +62,11 @@ public final class DesignerRoot {
         return developerMode;
     }
 
+
+    /**
+     * Channel used to transmit node selection events to all interested components.
+     */
+    public MessageChannel<Node> getNodeSelectionChannel() {
+        return nodeSelectionChannel;
+    }
 }

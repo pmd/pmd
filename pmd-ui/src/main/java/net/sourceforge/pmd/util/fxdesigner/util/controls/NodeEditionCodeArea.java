@@ -59,7 +59,6 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
         currentRuleResultsProperty().values().subscribe(this::highlightXPathResults);
         currentErrorNodesProperty().values().subscribe(this::highlightErrorNodes);
         currentNameOccurrences.values().subscribe(this::highlightNameOccurrences);
-        initNodeSelectionHandling();
     }
 
     /** Scroll the editor to a node and makes it visible. */
@@ -186,6 +185,7 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
 
     public void setDesignerRoot(DesignerRoot designerRoot) {
         this.designerRoot = designerRoot;
+        initNodeSelectionHandling();
     }
 
 

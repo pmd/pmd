@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.util.fxdesigner.app;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import org.reactfx.EventSource;
 import org.reactfx.EventStream;
-import org.reactfx.Subscription;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
@@ -35,8 +33,6 @@ import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
  * associate a node with its rich-text representation by delegating to the code area. This would
  * be a "two-way" channel.</li>
  * </ul>
- *
- * <p>Channels are static for ease of access for now.
  *
  * @param <T> Type of the messages of this channel
  *
