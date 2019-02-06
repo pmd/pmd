@@ -1952,6 +1952,7 @@ which makes the code also more readable.
                 <value>
                     <![CDATA[
 //VariableInitializer
+/../..[(Type)]
 //PrimaryExpression[not(PrimarySuffix)]
 [not(ancestor::ArgumentList)]
 /PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]

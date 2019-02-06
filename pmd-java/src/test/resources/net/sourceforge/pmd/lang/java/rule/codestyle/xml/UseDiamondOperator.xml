@@ -6,7 +6,7 @@
     <test-code>
         <description>Use Diamond</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>8,11</expected-linenumbers>
+        <expected-linenumbers>6,8</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 import java.util.List;
@@ -58,5 +58,22 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
+     <test-code>
+        <description>#1624[java] UseDiamondOperator doesn't work with var</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Buzz {
+    public void buzz() {
+    var f = new ArrayList<String>();
+	f = new ArrayList<>();
+	f = new ArrayList<String>(); // flagged by rule
+	var s = new ArrayList<>(4); // won't compile
+	var b; // won't compile
+    }
+}
+     ]]></code>
     </test-code>
 </test-data>
