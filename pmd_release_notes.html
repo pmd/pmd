@@ -1286,6 +1286,14 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Apex rule <a href="pmd_rules_apex_codestyle.html#methodnamingconventions"><code class="highlighter-rouge">MethodNamingConventions</code></a> (apex-codestyle) has a new
+property <code class="highlighter-rouge">skipTestMethodUnderscores</code>, which is by default disabled. The new property allows for ignoring
+all test methods, either using the <code class="highlighter-rouge">testMethod</code> modifier or simply annotating them <code class="highlighter-rouge">@isTest</code>.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1335,6 +1343,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="https://github.com/pmd/pmd/pull/1635">#1635</a>: [java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1637">#1637</a>: [java] Compile time constants initialized by literals avoided by AccessorMethodGenerationRule - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1640">#1640</a>: [java] Update instead of override classHasLombokAnnotation flag - <a href="https://github.com/fluxroot">Phokham Nonava</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1644">#1644</a>: [apex] Add property to allow apex test methods to contain underscores - <a href="https://github.com/tomdaly">Tom</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1645">#1645</a>: [java] ConsecutiveLiteralAppends false positive - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
 </ul>
 
