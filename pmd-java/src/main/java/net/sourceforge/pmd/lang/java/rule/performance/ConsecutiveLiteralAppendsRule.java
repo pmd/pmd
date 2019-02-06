@@ -16,7 +16,9 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFinallyStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -74,6 +76,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
         BLOCK_PARENTS.add(ASTIfStatement.class);
         BLOCK_PARENTS.add(ASTSwitchStatement.class);
         BLOCK_PARENTS.add(ASTMethodDeclaration.class);
+        BLOCK_PARENTS.add(ASTCatchStatement.class);
+        BLOCK_PARENTS.add(ASTFinallyStatement.class);
     }
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
