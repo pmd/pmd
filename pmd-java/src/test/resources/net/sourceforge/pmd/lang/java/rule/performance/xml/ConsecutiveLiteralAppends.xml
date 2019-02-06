@@ -1449,4 +1449,44 @@ public final class Test {
 }       
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>Consecutive literal append over try</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public final class Test {
+    public String foo() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("foo"); // violation here
+        try {
+            sb.append("bar");
+            final String res = methodThatMightThrow();
+            sb.append(res);
+        } catch (IOException ioe) {
+            // noop
+        }
+    }
+}       
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>literal appends over lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Test {
+    public String foo() {
+        final StringBuilder sb = new StringBuilder();
+        Runnable r = () -> sb.append("foo");
+        Runnable r2 = () -> sb.append("bar");
+        
+        r.run();
+        System.out.println(sb.toString());
+        r2.run();
+        return sb.toString();
+    }
+}       
+        ]]></code>
+    </test-code>
 </test-data>
