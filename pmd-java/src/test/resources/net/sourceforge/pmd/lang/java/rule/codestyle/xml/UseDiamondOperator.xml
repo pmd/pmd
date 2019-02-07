@@ -70,8 +70,6 @@ public class Buzz {
     var f = new ArrayList<String>();
 	f = new ArrayList<>();
 	f = new ArrayList<String>(); // flagged by rule
-	var s = new ArrayList<>(4); // won't compile
-	var b; // won't compile
     }
 }
      ]]></code>
