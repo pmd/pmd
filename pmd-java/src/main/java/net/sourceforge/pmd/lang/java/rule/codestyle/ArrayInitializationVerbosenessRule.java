@@ -14,7 +14,7 @@ public class ArrayInitializationVerbosenessRule extends AbstractJavaRule {
 
         if (node.isArray()) {
             if (node.getImage().matches("(= ?new).+\\{")) {
-              addViolation(data, node);
+                addViolation(data, node);
             }
             return super.visit(node, data);
         }
