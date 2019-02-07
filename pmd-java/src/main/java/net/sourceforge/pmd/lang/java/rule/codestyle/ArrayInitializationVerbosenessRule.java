@@ -13,7 +13,7 @@ public class ArrayInitializationVerbosenessRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
         if (node.isArray()) {
-            if (node.getImage().matches("(new).+\\{")) {
+            if (node.getImage().matches("(= ?new).+\\{")) {
               addViolation(data, node);
             }
             return super.visit(node, data);
