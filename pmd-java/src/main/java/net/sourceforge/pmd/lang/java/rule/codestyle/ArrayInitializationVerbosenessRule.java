@@ -3,7 +3,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-public class ArrayDeclarationVerbosenessRule extends AbstractJavaRule {
+public class ArrayInitializationVerbosenessRule extends AbstractJavaRule {
 
   @Override
   public Object visit(ASTLocalVariableDeclaration node, Object data) {
