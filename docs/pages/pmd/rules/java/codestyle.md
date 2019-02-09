@@ -2110,7 +2110,7 @@ which makes the code also more readable.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//VariableInitializer
+//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred="false"]
 //PrimaryExpression[not(PrimarySuffix)]
 [not(ancestor::ArgumentList)]
 /PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
