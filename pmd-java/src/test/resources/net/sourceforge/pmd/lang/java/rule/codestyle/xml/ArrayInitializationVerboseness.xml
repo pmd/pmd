@@ -16,6 +16,21 @@ public class Foo {
 }
      ]]></code>
   </test-code>
+
+  <test-code>
+    <description><![CDATA[
+case with two initializers
+     ]]></description>
+    <expected-problems>2</expected-problems>
+    <code><![CDATA[
+public class Foo {
+ void foo() {
+   int ar[] = new int[] { 1,2,3}, foo[] = new int[] { 4, 5, 6 }
+ }
+}
+     ]]></code>
+  </test-code>
+
   <test-code>
     <description><![CDATA[
 ok
