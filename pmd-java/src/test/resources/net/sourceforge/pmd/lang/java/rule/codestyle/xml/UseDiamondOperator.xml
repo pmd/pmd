@@ -61,8 +61,8 @@ public class Foo {
     </test-code>
      <test-code>
         <description>#1624[java] UseDiamondOperator doesn't work with var</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
         <code><![CDATA[
 import java.util.ArrayList;
 public class Buzz {
@@ -70,6 +70,7 @@ public class Buzz {
     var f = new ArrayList<String>();
 	f = new ArrayList<>();
 	f = new ArrayList<String>(); // flagged by rule
+    List<String> foo, bar = new ArrayList<String>(), baz = new ArrayList<>(); //flagged only once
     }
 }
      ]]></code>
