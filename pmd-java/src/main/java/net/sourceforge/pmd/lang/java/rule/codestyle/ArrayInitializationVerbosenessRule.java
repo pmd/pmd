@@ -14,9 +14,11 @@ public class ArrayInitializationVerbosenessRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        if (node.isArray() && node.getImage() != null) {
+        boolean isArrayPlaceholder = true;
+
+        if (isArrayPlaceholder && node.getImage() != null) {
             Pattern verbosePattern = Pattern.compile("(= ?new).+\\{");
-            Matcher matcher = verbosePattern.matcher(string);
+            Matcher matcher = verbosePattern.matcher(node.getImage());
 
             while (matcher.find()) {
                 addViolation(data, node);
