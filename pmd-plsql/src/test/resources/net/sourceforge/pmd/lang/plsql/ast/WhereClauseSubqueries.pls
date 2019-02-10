@@ -4,10 +4,10 @@
 
 BEGIN
 
-SELECT id INTO v_id FROM table
+SELECT id INTO v_id FROM my_table
   WHERE id = (SELECT id FROM other_table);
 
-UPDATE table SET name = 'a'
+UPDATE my_table SET name = 'a'
   WHERE id = (SELECT id FROM other_table);
 
 END;

@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
-public class TableCollectionExpression extends AbstractPLSQLParserTst {
+public class TableCollectionExpressionTest extends AbstractPLSQLParserTst {
 
     @Test
     public void testExamples() throws Exception {
