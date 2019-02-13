@@ -1532,6 +1532,35 @@ ASTFunctionName FunctionName() :
     }
 }
 
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Analytic-Functions.html
+ */
+ASTAnalyticClause AnalyticClause() :
+{}
+{
+    "OVER" "(" [ QueryPartitionClause() ] [ OrderByClause() [ WindowingClause() ] ] ")"
+    { return jjtThis; }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Analytic-Functions.html
+ */
+ASTWindowingClause WindowingClause() :
+{}
+{
+    ( <ROWS> | <RANGE> )
+    (
+        ( <BETWEEN>
+          ( LOOKAHEAD(3) "UNBOUNDED" "PRECEDING" | LOOKAHEAD(2) <CURRENT> <ROW> | SqlExpression() ( "PRECEDING" | "FOLLOWING" ) )
+          <AND>
+          ( LOOKAHEAD(3) "UNBOUNDED" "FOLLOWING" | LOOKAHEAD(2) <CURRENT> <ROW> | SqlExpression() ( "PRECEDING" | "FOLLOWING" ) )
+        )
+        |
+        ( LOOKAHEAD(3) "UNBOUNDED" "PRECEDING" | LOOKAHEAD(2) <CURRENT> <ROW> | SqlExpression() "PRECEDING" )
+    )
+    { return jjtThis; }
+}
+
 ASTColumn Column() :
 { ASTID id; }
 {
@@ -2921,7 +2950,8 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
-  LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall()
+  // Note: AnalyticClause is only allowed for specific functions, but this grammar allows it for all functions.
+  LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall() [ AnalyticClause() ]
 | LOOKAHEAD(Literal()) simpleNode = Literal() { sb.append(simpleNode.getImage()) ; }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
 | LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
@@ -4780,7 +4810,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
-"FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" |
+"FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" |
 <FALSE>
  | <TRUE>
  | <A>
@@ -5898,7 +5928,6 @@ ASTID ID(): {}
 		//20120429 | <AT> | <AUTHID>
 		//| <AVG>
 		//	<BEGIN> |
-		| <BETWEEN>  //RESERVED WORD
 		| <BINARY_INTEGER>
 		| <BODY> //SYNTAX
 		| <BOOLEAN>
@@ -6144,7 +6173,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120429 | <AUTHID>
 		//| <AVG>
 		//<BEGIN>
-		//<BETWEEN>
 		| <BINARY_INTEGER>
 		| <BODY>
 		| <BOOLEAN>
