@@ -1189,9 +1189,9 @@ ASTOrderByClause OrderByClause() :
 void OrderByEntry() #void :
 {}
 {
-    ( LOOKAHEAD(2) ColumnAlias() | LOOKAHEAD(2) SqlExpression() )
+    ( LOOKAHEAD(ID() ".") SqlExpression() | LOOKAHEAD(2) ColumnAlias() | SqlExpression() )
     [ <ASC> | <DESC> ]
-    [ LOOKAHEAD(2) <NULLS> "FIRST" | LOOKAHEAD(2) <NULLS> "LAST" ]
+    [ <NULLS> ( "FIRST" | "LAST" ) ]
 }
 
 /**
@@ -1675,10 +1675,14 @@ ASTIntoClause IntoClause() :
 }
 
 ASTVariableName VariableName() :
-{ ASTID id; }
+{ ASTID id; StringBuilder name = new StringBuilder(); }
 {
-    id = ID() {jjtThis.setImage(id.getImage());}
-    { return jjtThis; }
+    id = ID() { name.append(id.getImage()); }
+    [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+    {
+        jjtThis.setImage(name.toString());
+        return jjtThis;
+    }
 }
 
 ASTBulkCollectIntoClause BulkCollectIntoClause() :

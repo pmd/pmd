@@ -56,5 +56,9 @@ SELECT department_id "Dept", hire_date "Date", last_name "Name",
   WHERE hire_date < '01-SEP-2003'
   ORDER BY "Dept", "Date", "Name";
 
+SELECT listagg(e.email,',') within group (order by e.email )INTO
+                v_task_resp
+            FROM sso_auth_employees e;
+
 END;
 /
