@@ -25,5 +25,20 @@ SELECT manager_id, last_name, hire_date, salary,
   FROM employees
   ORDER BY manager_id, hire_date, salary;
 
+-- Example from: https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/LISTAGG.html
+SELECT LISTAGG(last_name, '; ')
+         WITHIN GROUP (ORDER BY hire_date, last_name) "Emp_list",
+       MIN(hire_date) "Earliest"
+  INTO some_record
+  FROM employees
+  WHERE department_id = 30;
+
+SELECT department_id "Dept.",
+       LISTAGG(last_name, '; ') WITHIN GROUP (ORDER BY hire_date) "Employees"
+  INTO some_record
+  FROM employees
+  GROUP BY department_id
+  ORDER BY department_id;
+
 END;
 /

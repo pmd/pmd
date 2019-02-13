@@ -1561,6 +1561,19 @@ ASTWindowingClause WindowingClause() :
     { return jjtThis; }
 }
 
+/**
+ * Within Clause is used for the following analytic functions: CUME_DIST, DENSE_RANK, LISTAGG, PERCENT_RANK, PERCENTILE_CONT,
+ * PERCENTILE_DISC, RANK.
+ *
+ * See e.g. https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/LISTAGG.html
+ */
+ASTWithinClause WithinClause() :
+{}
+{
+    "WITHIN" <GROUP> "(" OrderByClause() ")" [ LOOKAHEAD(2) "OVER" "(" QueryPartitionClause() ")" ]
+    { return jjtThis; }
+}
+
 ASTColumn Column() :
 { ASTID id; }
 {
@@ -2950,8 +2963,8 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
-  // Note: AnalyticClause is only allowed for specific functions, but this grammar allows it for all functions.
-  LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall() [ AnalyticClause() ]
+  // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
+  LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ]
 | LOOKAHEAD(Literal()) simpleNode = Literal() { sb.append(simpleNode.getImage()) ; }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
 | LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
@@ -4810,7 +4823,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
-"FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" |
+"FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 <FALSE>
  | <TRUE>
  | <A>
@@ -5974,7 +5987,6 @@ ASTID ID(): {}
 
 		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
 		| <GOTO> //SYNTAX
-		//| <GROUP>  //RESERVED WORD
 		| <HAVING>  //RESERVED WORD
 		//20120501 | <HEAP>
 		| <IF> //SYNTAX
@@ -6221,7 +6233,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<FROM>
 		//| <FUNCTION>
 		//<GOTO>
-		//<GROUP>
 		//<HAVING>
 		//20120501 | <HEAP>
 		//<IF>
