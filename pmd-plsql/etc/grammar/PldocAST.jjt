@@ -223,7 +223,8 @@ ASTInput Input() : {}
 	 | UpdateStatement()
 	 | DeleteStatement()
 	 | InsertStatement()
-	 |(<SELECT>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
+	 | SelectStatement() (";")?
+	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
 	 )
 	 ("/")*
 	)*
@@ -1303,7 +1304,7 @@ void Condition2() #void :
 {
  (
     // a IS OF Type condition that starts with a function...
-    LOOKAHEAD(FunctionCall() <IS> <OF>) IsOfTypeCondition()
+    LOOKAHEAD(FunctionCall() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
     LOOKAHEAD(9) MultisetCondition()
  |
@@ -2998,8 +2999,8 @@ ASTPrimaryPrefix PrimaryPrefix() :
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 | ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
-| LOOKAHEAD(<SELECT>) (<SELECT>) {sb.append("SELECT ..."); }  Skip2NextTerminator(null,";")
-| LOOKAHEAD(("(")+ <SELECT>) ("(") {sb.append("(SELECT ..."); }  Skip2NextTerminator("(",")") ")"
+| SelectStatement()
+| LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
 | LOOKAHEAD(<WITH>) (<WITH>) {sb.append("WITH ..."); }  Skip2NextTerminator(null,";")
 | LOOKAHEAD(("(")+ <WITH>) ("(") {sb.append("(WITH ..."); }  Skip2NextTerminator("(",")") ")"
 |

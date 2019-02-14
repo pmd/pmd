@@ -29,4 +29,12 @@ public class SelectExpressionsTest extends AbstractPLSQLParserTst {
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
     }
+
+    @Test
+    public void parseSelectSubqueryExpression() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectSubqueryExpressions.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }
