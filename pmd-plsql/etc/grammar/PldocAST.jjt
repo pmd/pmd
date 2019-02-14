@@ -1147,6 +1147,9 @@ void RestOfStatement() #void :
     [ WhereClause() ]
     [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
+    
+    (LOOKAHEAD(2) ( SubqueryOperation() ) Subquery() )*
+    
     [ OrderByClause() ]
     [ RowLimitingClause() ]
 }
@@ -1950,7 +1953,14 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
-       SelectIntoStatement() ";" |
+       // small optimization: SelectIntoStatement and SelectStatement both begin with SELECT
+       // but to distinguish the two, a complete lookahead of SelectIntoStatement needs to be parsed.
+       // Using a lookahead of a single token first avoids this the syntatic lookahead for all other choices
+       // not related to SELECT statements.
+       LOOKAHEAD(<SELECT>) (
+            LOOKAHEAD(SelectIntoStatement()) SelectIntoStatement() ";" |
+            SelectStatement() ";"
+       ) |
        UpdateStatement() ";" |
        DeleteStatement() ";" |
        InsertStatement() ";" |
