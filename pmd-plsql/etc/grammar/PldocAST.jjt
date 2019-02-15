@@ -2147,6 +2147,8 @@ ASTUpdateStatement UpdateStatement() :
     <UPDATE> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ]
     UpdateSetClause()
     [ WhereClause() ]
+    [ ReturningClause() ]
+    [ ErrorLoggingClause() ]
     { return jjtThis; }
 }
 
@@ -2156,7 +2158,7 @@ ASTDMLTableExpressionClause DMLTableExpressionClause() :
   (
     TableCollectionExpression()
   |
-    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ "@" ID() | PartitionExtensionClause() ]
   |
     [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
   )
@@ -2164,18 +2166,63 @@ ASTDMLTableExpressionClause DMLTableExpressionClause() :
   { return jjtThis; }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__CHDBBDEI
+ */
+ASTPartitionExtensionClause PartitionExtensionClause() :
+{}
+{
+    (<PARTITION> | "SUBPARTITION") ( "(" ID() ")" | <FOR> "(" ( ID() (",")? )+ ")" )
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__I2126876
+ */
 ASTUpdateSetClause UpdateSetClause() :
 {}
 {
     <SET>
     (
-        LOOKAHEAD(3) <ROW> "=" ID()
+        LOOKAHEAD(1) <ROW> "=" ID()
     |
-        [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( Expression() | <_DEFAULT> )
-        ( "," [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( Expression() | <_DEFAULT> ) )*
+        "VALUE" "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
+    |
+      (
+        (
+          ( "(" ( [ LOOKAHEAD(2) TableName() "." ] Column() (",")? )+ ")" "=" "(" Subquery() ")" )
+          |
+          ( [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )
+        )
+        (",")?
+      )+
     )
     { return jjtThis; }
 }
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__I2126358
+ */
+ASTReturningClause ReturningClause() :
+{}
+{
+    ( <RETURN> | <RETURNING> ) ( Expression() (",")? )+ <INTO> ( ID() (",")? )+
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__BCEEAAGC
+ */
+ASTErrorLoggingClause ErrorLoggingClause() :
+{}
+{
+    "LOG" "ERRORS"
+    [ <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() ]
+    [ "(" SqlExpression() ")" ]
+    [ "REJECT" <LIMIT> ( NumericLiteral() | "UNLIMITED" ) ]
+    { return jjtThis; }
+}
+
 
 ASTDeleteStatement DeleteStatement() :
 {}
@@ -4851,7 +4898,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
 "FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
-"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" |
+"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
  | <A>
@@ -5101,7 +5148,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <ENTERPRISE>
 //| <ENTRY>
 //| <ERROR_ON_OVERLAP_TIME>
-//| <ERRORS>
 | <ESCAPE>
 //| <ESTIMATE>
 //| <EVALNAME>
@@ -5287,7 +5333,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LOCATION>
 //| <LOCATOR>
 //| <LOCKED>
-//| <LOG>
 //| <LOGFILE>
 //| <LOGGING>
 //| <LOGICAL>
@@ -5632,7 +5677,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <REFRESH>
 | <REGEXP_LIKE>
 //| <REGISTER>
-//| <REJECT>
 //| <REKEY>
 //| <RELATIONAL>
 //| <RELY>
@@ -5851,7 +5895,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <UNDO>
 //| <UNDROP>
 //| <UNIFORM>
-//| <UNLIMITED>
 //| <UNLOCK>
 //| <UNNEST>
 //| <UNPACKED>
