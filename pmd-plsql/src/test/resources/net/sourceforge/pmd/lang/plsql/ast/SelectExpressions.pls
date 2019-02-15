@@ -60,5 +60,19 @@ SELECT listagg(e.email,',') within group (order by e.email )INTO
                 v_task_resp
             FROM sso_auth_employees e;
 
+select listagg(asap_func_loc_number,'; ') within group (order by 1)
+    INTO my_record
+    FROM company_asap_func_locs
+    WHERE cmp_id = cmp_id_in;
+
+SELECT CASE
+            WHEN priv != 'Y' AND my_package.my_function(param1, TO_NUMBER(TO_CHAR(SYSDATE, 'yyyy'))) >= 100 THEN
+                 'Y'
+               ELSE
+                 'N'
+             END
+        INTO my_result
+        FROM DUAL;
+
 END;
 /

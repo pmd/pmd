@@ -21,7 +21,7 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         List<ASTSelectIntoStatement> selectStatements = input.findDescendantsOfType(ASTSelectIntoStatement.class);
-        Assert.assertEquals(3, selectStatements.size());
+        Assert.assertEquals(4, selectStatements.size());
 
         ASTFunctionCall functionCall = selectStatements.get(0).getFirstDescendantOfType(ASTFunctionCall.class);
         Assert.assertEquals("UPPER", functionCall.getImage());

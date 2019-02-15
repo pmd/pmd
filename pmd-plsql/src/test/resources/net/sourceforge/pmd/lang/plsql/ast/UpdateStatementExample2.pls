@@ -52,4 +52,10 @@ UPDATE employees
    WHERE department_id = 100
    RETURNING SUM(salary) INTO :bnd1;
 
+update xsearch_wsh_active
+     set line_items_cnt = p_cnt
+     where wsh_id = p_wid
+       and revision = p_rev
+     returning opp_id into v_opp_id;
+
 END;
