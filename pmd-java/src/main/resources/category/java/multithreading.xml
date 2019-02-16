@@ -169,7 +169,7 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
     [
         ./Name[ends-with(@Image, '.run') or @Image = 'run']
         and substring-before(Name/@Image, '.') =//VariableDeclarator/VariableDeclaratorId/@Image
-            [../../../Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]]
+            [../../../ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]]
         or (./AllocationExpression/ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread')]
         and ../PrimarySuffix[@Image = 'run'])
     ]
@@ -329,8 +329,7 @@ perform efficient map reads without blocking other threads.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Type[../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
-/ReferenceType/ClassOrInterfaceType[@Image = 'Map']
+//ClassOrInterfaceType[@Image="Map" and ../VariableDeclarator/VariableInitializer//AllocationExpression/ClassOrInterfaceType[@Image != 'ConcurrentHashMap']]
 ]]>
                 </value>
             </property>

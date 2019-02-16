@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -126,18 +125,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         int hash = node.getImage().hashCode() * 31 + ((ASTMethodDeclarator) node).getParameterCount();
 
         ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
-
-            String myTypeImg;
-            if (myTypeNode instanceof ASTPrimitiveType) {
-                myTypeImg = myTypeNode.getImage();
-            } else if (myTypeNode.jjtGetChild(0) instanceof ASTArrayType) {
-                myTypeImg = ((ASTArrayType) myTypeNode.jjtGetChild(0)).getElementType().getImage();
-            } else {
-                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
-            }
+        for (ASTFormalParameter myParam : myParams) {
+            String myTypeImg = myParam.getTypeNode().getTypeImage();
 
             hash = hash * 31 + myTypeImg.hashCode();
         }

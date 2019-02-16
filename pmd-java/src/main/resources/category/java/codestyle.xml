@@ -306,7 +306,7 @@ prefix for these methods.
 MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
                 [starts-with(@Image, 'get')]
 and
-ResultType/Type/PrimitiveType[@Image = 'boolean']
+ResultType/PrimitiveType[@Image = 'boolean']
 and not(../Annotation//Name[@Image = 'Override'])
 ]
 ]]>

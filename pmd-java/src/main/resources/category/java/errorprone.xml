@@ -219,8 +219,7 @@ original error, causing other, more subtle problems later on.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter/Type
- /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
+//CatchStatement/FormalParameter/ClassOrInterfaceType[@Image='NullPointerException']
 ]]>
                 </value>
             </property>
@@ -1386,7 +1385,7 @@ performance need (space or time).
                 <value>
 <![CDATA[
 //ForStatement/ForInit/LocalVariableDeclaration
-/Type/PrimitiveType[@Image="float"]
+/PrimitiveType[@Image="float"]
 ]]>
                 </value>
             </property>
@@ -1426,9 +1425,7 @@ or reported.
 <![CDATA[
 //CatchStatement
  [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
- [FormalParameter/Type/ReferenceType
-   /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
- ]
+ [FormalParameter/ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']]
  [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
 ]]>
                 </value>
@@ -2191,8 +2188,7 @@ In most cases, the Logger reference can be declared as static and final.
 <![CDATA[
 //VariableDeclarator
  [parent::FieldDeclaration]
- [../Type/ReferenceType
-  /ClassOrInterfaceType[@Image='Logger']
+ [../ClassOrInterfaceType[@Image='Logger']
    and
   (..[@Final='false'] or ..[@Static = 'false'] ) ]
 ]]>
@@ -2407,7 +2403,7 @@ A class that has private constructors and does not have any static methods or fi
            [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']]
            [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
                 [@Public='true']
-                [./ResultType/Type/ReferenceType/ClassOrInterfaceType
+                [./ResultType/ClassOrInterfaceType
                     [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
                 ]
             ]
@@ -2681,7 +2677,7 @@ NullPointerExceptions.
 <![CDATA[
 //MethodDeclaration
 [
-(./ResultType/Type[@ArrayType='true'])
+(./ResultType/*[@ArrayType='true'])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]
@@ -2953,12 +2949,12 @@ intention to override the equals(Object) method.
 //MethodDeclarator[@Image = 'equals']
 [   
     (count(FormalParameters/*) = 1
-    and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+    and not (FormalParameters/FormalParameter/ClassOrInterfaceType
         [@Image = 'Object' or @Image = 'java.lang.Object'])
-    or not (../ResultType/Type/PrimitiveType[@Image = 'boolean'])
+    or not (../ResultType/PrimitiveType[@Image = 'boolean'])
     )  or  (
     count(FormalParameters/*) = 2
-    and ../ResultType/Type/PrimitiveType[@Image = 'boolean']
+    and ../ResultType/PrimitiveType[@Image = 'boolean']
     and FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
     and not(../../Annotation/MarkerAnnotation/Name[@Image='Override'])
     )
@@ -2966,7 +2962,7 @@ intention to override the equals(Object) method.
 | //MethodDeclarator[@Image = 'equal']
 [
     count(FormalParameters/*) = 1
-    and FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+    and FormalParameters/FormalParameter/ClassOrInterfaceType
         [@Image = 'Object' or @Image = 'java.lang.Object']
 ]
 ]]>

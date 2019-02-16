@@ -250,7 +250,7 @@ if held within objects with long lifetimes.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
+//FieldDeclaration/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
 ]]>
                 </value>
             </property>
@@ -494,7 +494,7 @@ through the @RunWith(Suite.class) annotation.
                 <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
-[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+[MethodDeclaration/ResultType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
 [not(MethodDeclaration/Block//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
@@ -1084,7 +1084,7 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
+                <value>//ClassOrInterfaceType[@Image='Hashtable']</value>
             </property>
         </properties>
         <example>
@@ -1110,7 +1110,7 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
+                <value>//ClassOrInterfaceType[@Image='Vector']</value>
             </property>
         </properties>
         <example>
@@ -1603,9 +1603,9 @@ having to deal with the creation of an array.
     [position()=last()]
     [VariableDeclaratorId/@ArrayType=true()]
     [@Varargs=false()]
-    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
-    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
-    [not (./Type/PrimitiveType[@Image='byte'])]
+    [not (./PrimitiveType[@ArrayType=true() and @Image='byte'])]
+    [not (./ClassOrInterfaceType[@Image='Byte'])]
+    [not (./PrimitiveType[@Image='byte'])]
     [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
     [not(
         ancestor::MethodDeclaration
@@ -1613,7 +1613,7 @@ having to deal with the creation of an array.
             [child::ResultType[@Void=true()]] and
         ancestor::MethodDeclarator[@Image='main'] and
         ..[@ParameterCount=1] and
-        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
+        ./ClassOrInterfaceType[@Image='String']
     )]
 ]]>
                 </value>

@@ -28,6 +28,10 @@ public interface ASTType extends TypeNode {
     }
 
 
+    /**
+     * Returns the number of array dimensions of this type.
+     * This is 0 unless this node {@linkplain #isArrayType()}.
+     */
     default int getArrayDepth() {
         return 0;
     }

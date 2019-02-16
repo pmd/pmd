@@ -58,7 +58,7 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchStatement/FormalParameter/Type/ReferenceType/ClassOrInterfaceType[
+//CatchStatement/FormalParameter/ClassOrInterfaceType[
     @Image='NullPointerException' or
     @Image='Exception' or
     @Image='RuntimeException']
@@ -167,7 +167,7 @@ code size and runtime complexity.
 //CatchStatement[
   count(Block/BlockStatement/Statement) = 1
   and
-  FormalParameter/Type/ReferenceType/ClassOrInterfaceType/@Image = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType/@Image
+  FormalParameter/ClassOrInterfaceType/@Image = Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType/@Image
   and
   count(Block/BlockStatement/Statement/ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/Arguments/ArgumentList/Expression) = 1
   and
@@ -1639,7 +1639,7 @@ your API.
                 <value>
 <![CDATA[
 //MethodDeclaration[@Public = 'true']/MethodDeclarator/FormalParameters[
-     count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String' and @Array = 'false']) > 3
+     count(FormalParameter/ClassOrInterfaceType[@Image = 'String' and @Array = 'false']) > 3
 ]
 ]]>
                 </value>
