@@ -6,15 +6,20 @@ class WildcardBoundsTest : ParserTestSpec({
 
     parserTest("Simple grammar test") {
 
-        "SomeClass<? extends Another>" should matchType<ASTWildcardBounds> {
+        "SomeClass<? extends Another>" should matchType<ASTClassOrInterfaceType> {
 
-            val ref = child<ASTReferenceType> {
-                child<ASTClassOrInterfaceType> {
-                    it.image shouldBe "Another"
+            it.typeArguments shouldBePresent child {
+                child<ASTTypeArgument> {
+                    child<ASTWildcardBounds> {
+                        val ref = child<ASTClassOrInterfaceType> {
+                            it.image shouldBe "Another"
+                        }
+
+                        it.typeBoundNode shouldBe ref
+                    }
                 }
             }
 
-            it.typeBoundNode shouldBe ref
         }
     }
 
