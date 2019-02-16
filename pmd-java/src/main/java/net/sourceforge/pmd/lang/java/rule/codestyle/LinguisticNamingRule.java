@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
@@ -150,7 +150,14 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     }
 
     private boolean isBooleanType(ASTType node) {
-        return "boolean".equalsIgnoreCase(node.getTypeImage()) || TypeHelper.isA(node, "java.util.concurrent.atomic.AtomicBoolean");
+        return "boolean".equalsIgnoreCase(node.getTypeImage())
+            // I changed this because TypeHelper causes false positives.
+            // it previously only worked because the image of an ASTType used to be null
+            // but now when it's an ASTClassOrInterfaceType it's e.g. AtomicBoolean and so
+            // TypeHelper considers the types equal....
+            // The FQCN is derived by ClassTypeResolver but thrown away because the class
+            // is not on the classpath. Another reason why we need symbols.
+            || node.getType() != null && Objects.equals(node.getType().getCanonicalName(), "java.util.concurrent.atomic.AtomicBoolean");
     }
 
     private void checkBooleanMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
