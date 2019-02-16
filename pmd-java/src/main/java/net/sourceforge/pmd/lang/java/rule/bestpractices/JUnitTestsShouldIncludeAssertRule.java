@@ -7,11 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -19,14 +19,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTNormalAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJUnitRule;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
 
@@ -44,7 +42,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             if (!isExpectAnnotated(method.jjtGetParent())) {
                 Map<String, VariableNameDeclaration> variables = getVariables(method);
 
-                Scope classScope = method.getScope().getParent();
+                ClassScope classScope = (ClassScope) method.getScope().getParent();
                 Map<String, List<NameOccurrence>> expectables = getRuleAnnotatedExpectedExceptions(classScope);
 
                 if (!containsExpectOrAssert(method.getBlock(), expectables, variables)) {
@@ -92,23 +90,15 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
      *            The class scope to search for
      * @return See description
      */
-    private Map<String, List<NameOccurrence>> getRuleAnnotatedExpectedExceptions(Scope classScope) {
+    private Map<String, List<NameOccurrence>> getRuleAnnotatedExpectedExceptions(ClassScope classScope) {
         Map<String, List<NameOccurrence>> result = new HashMap<>();
-        Map<NameDeclaration, List<NameOccurrence>> decls = classScope.getDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = classScope.getVariableDeclarations();
 
-        for (Map.Entry<NameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
-            Node parent = entry.getKey().getNode().jjtGetParent().jjtGetParent().jjtGetParent();
-            if (parent.hasDescendantOfType(ASTMarkerAnnotation.class)
-                    && parent.getFirstChildOfType(ASTFieldDeclaration.class) != null) {
-                String annot = parent.getFirstDescendantOfType(ASTMarkerAnnotation.class).jjtGetChild(0).getImage();
-                if (!"Rule".equals(annot) && !"org.junit.Rule".equals(annot)) {
-                    continue;
-                }
+        for (Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {
+            ASTFieldDeclaration parent = entry.getKey().getNode().getFirstParentOfType(ASTFieldDeclaration.class);
+            if (parent.isAnnotationPresent("org.junit.Rule")
+                || TypeHelper.isA(parent.getTypeNode(), "org.junit.rules.ExpectedException")) {
 
-                Node type = parent.getFirstDescendantOfType(ASTReferenceType.class);
-                if (!"ExpectedException".equals(type.jjtGetChild(0).getImage())) {
-                    continue;
-                }
                 result.put(entry.getKey().getName(), entry.getValue());
             }
         }
