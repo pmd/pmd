@@ -131,19 +131,16 @@ public class CloseResourceRule extends AbstractJavaRule {
         for (ASTLocalVariableDeclaration var : vars) {
             ASTType type = var.getTypeNode();
 
-            if (type != null && type.jjtGetChild(0) instanceof ASTReferenceType) {
-                ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
-                if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
+            if (type instanceof ASTClassOrInterfaceType) {
+                ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) type;
 
-                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
-                                    && !clazz.isReferenceToClassSameCompilationUnit()
-                            || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
+                if (clazz.getType() != null && types.contains(clazz.getType().getName())
+                    || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
+                    && !clazz.isReferenceToClassSameCompilationUnit()
+                    || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
 
-                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                        ids.add(id);
-                    }
+                    ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+                    ids.add(id);
                 }
             }
         }
@@ -323,9 +320,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         // if all is not well, complain
         if (!closed) {
-            ASTType type = var.getFirstChildOfType(ASTType.class);
-            ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
-            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
+            ASTType clazz = var.getFirstChildOfType(ASTClassOrInterfaceType.class);
             addViolation(data, id, clazz.getImage());
         }
     }
