@@ -40,5 +40,21 @@ SELECT department_id "Dept.",
   GROUP BY department_id
   ORDER BY department_id;
 
+SELECT department_id "Dept.",
+       LISTAGG(last_name, '; ' ON OVERFLOW TRUNCATE '...')
+               WITHIN GROUP (ORDER BY hire_date) "Employees"
+  INTO some_record
+  FROM employees
+  GROUP BY department_id
+  ORDER BY department_id;
+
+SELECT department_id "Dept", hire_date "Date", last_name "Name",
+       LISTAGG(last_name, '; ') WITHIN GROUP (ORDER BY hire_date, last_name)
+         OVER (PARTITION BY department_id) as "Emp_list"
+  INTO some_record
+  FROM employees
+  WHERE hire_date < '01-SEP-2003'
+  ORDER BY "Dept", "Date", "Name";
+
 END;
 /
