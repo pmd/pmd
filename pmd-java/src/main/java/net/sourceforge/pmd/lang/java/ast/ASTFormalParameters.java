@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 
 public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
     public ASTFormalParameters(int id) {
@@ -36,6 +38,12 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    @Override
+    public ASTFormalParameter jjtGetChild(int index) {
+        return (ASTFormalParameter) super.jjtGetChild(index);
     }
 
 

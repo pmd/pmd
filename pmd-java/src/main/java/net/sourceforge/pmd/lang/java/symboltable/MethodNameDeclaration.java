@@ -4,7 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -56,6 +57,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return sb.toString();
     }
 
+    public ASTMethodDeclarator getDeclarator() {
+        return (ASTMethodDeclarator) node;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof MethodNameDeclaration)) {
@@ -65,57 +70,51 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         MethodNameDeclaration other = (MethodNameDeclaration) o;
 
         // compare name
-        if (!other.node.getImage().equals(node.getImage())) {
+        if (!other.getName().equals(getName())) { // method declarators have no image
             return false;
         }
 
         // compare parameter count - this catches the case where there are no
         // params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
-                .getParameterCount()) {
+        if (other.getParameterCount() != this.getParameterCount()) {
             return false;
         }
 
         // compare parameter types
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        ASTFormalParameters otherParams = (ASTFormalParameters) other.node.jjtGetChild(0);
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
-            ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
+
+        ASTFormalParameters myParams = getDeclarator().getFormalParameters();
+        ASTFormalParameters otherParams = other.getDeclarator().getFormalParameters();
+
+        for (int i = 0; i < getParameterCount(); i++) {
+            ASTFormalParameter myParam = myParams.jjtGetChild(i);
+            ASTFormalParameter otherParam = otherParams.jjtGetChild(i);
 
             // Compare vararg
             if (myParam.isVarargs() != otherParam.isVarargs()) {
                 return false;
             }
 
-            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
-            Node otherTypeNode = otherParam.getTypeNode().jjtGetChild(0);
+            ASTType myTypeNode = myParam.getTypeNode();
+            ASTType otherTypeNode = otherParam.getTypeNode();
 
             // compare primitive vs reference type
             if (myTypeNode.getClass() != otherTypeNode.getClass()) {
                 return false;
             }
 
-            // simple comparison of type images
-            // this can be fooled by one method using "String"
-            // and the other method using "java.lang.String"
-            // once we get real types in here that should get fixed
-            String myTypeImg;
-            String otherTypeImg;
-            if (myTypeNode instanceof ASTPrimitiveType) {
-                myTypeImg = myTypeNode.getImage();
-                otherTypeImg = otherTypeNode.getImage();
-            } else {
-                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
-                otherTypeImg = otherTypeNode.jjtGetChild(0).getImage();
-            }
-
-            if (!myTypeImg.equals(otherTypeImg)) {
+            // if we could resolve the first one, assume we could resolve the second
+            if (myTypeNode.getTypeDefinition() != null
+                && !myTypeNode.getTypeDefinition().equals(otherTypeNode.getTypeDefinition())) {
                 return false;
             }
 
-            // if type is ASTPrimitiveType and is an array, make sure the other
-            // one is also
+            // fallback on simple comparison of type images
+            // this can be fooled by one method using "String"
+            // and the other method using "java.lang.String"
+            // once we get real types in here that should get fixed
+            if (!Objects.equals(myTypeNode.getTypeImage(), otherTypeNode.getTypeImage())) {
+                return false;
+            }
         }
         return true;
     }

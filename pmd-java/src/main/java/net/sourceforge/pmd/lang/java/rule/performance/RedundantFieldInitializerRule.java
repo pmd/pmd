@@ -130,14 +130,9 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
      *         otherwise.
      */
     private boolean isRef(ASTFieldDeclaration fieldDeclaration, ASTVariableDeclarator variableDeclarator) {
-        Node type = fieldDeclaration.jjtGetChild(0).jjtGetChild(0);
-        if (type instanceof ASTReferenceType) {
-            // Reference type, array or otherwise
-            return true;
-        } else {
-            // Primitive array?
-            return ((ASTVariableDeclaratorId) variableDeclarator.jjtGetChild(0)).isArray();
-        }
+        return fieldDeclaration.getTypeNode().isReferenceType()
+            // Maybe primitive array
+            || variableDeclarator.getVariableId().getArrayDepth() > 0;
     }
 
     private void addViolation(Object data, ASTVariableDeclarator variableDeclarator) {

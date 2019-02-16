@@ -33,7 +33,7 @@ public final class TypeHelper {
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     /**
      * Checks whether the resolved type of the given {@link TypeNode} n is exactly of the type
      * given by the clazzName.

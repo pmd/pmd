@@ -5,6 +5,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Child of an {@link ASTMethodDeclaration}.
+ *
+ * <p>
+ *
+ * MethodDeclarator ::=  &lt;IDENTIFIER&gt; {@link ASTFormalParameters FormalParameters} ( "[" "]" )*
+ *
+ * </p>
+ *
+ */
 public class ASTMethodDeclarator extends AbstractJavaNode {
     public ASTMethodDeclarator(int id) {
         super(id);
@@ -15,7 +25,11 @@ public class ASTMethodDeclarator extends AbstractJavaNode {
     }
 
     public int getParameterCount() {
-        return getFirstChildOfType(ASTFormalParameters.class).getParameterCount();
+        return getFormalParameters().getParameterCount();
+    }
+
+    public ASTFormalParameters getFormalParameters() {
+        return (ASTFormalParameters) jjtGetChild(0);
     }
 
     /**
