@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -253,6 +254,13 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     private boolean isLambdaTypeInferred() {
         return getNthParent(3) instanceof ASTLambdaExpression
                 && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
+    }
+
+    public Optional<ASTVariableInitializer> getInitializer() {
+        if (parent instanceof ASTVariableDeclarator) {
+            return Optional.ofNullable(((ASTVariableDeclarator) parent).getInitializer());
+        }
+        return Optional.empty();
     }
 
     /**

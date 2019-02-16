@@ -32,7 +32,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description> ok, not java.util.Vector</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 import foo.Hashtable;
 public class Foo {

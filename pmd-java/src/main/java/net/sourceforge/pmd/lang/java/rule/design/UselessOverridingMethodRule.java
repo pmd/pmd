@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -76,13 +75,10 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodType(ASTMethodDeclaration node, String methodType) {
-        boolean result = false;
-        ASTResultType type = node.getResultType();
-        if (type != null) {
-            result = type.hasDescendantMatchingXPath(
-                    "./Type/ReferenceType/ClassOrInterfaceType[@Image = '" + methodType + "']");
-        }
-        return result;
+        return node.getResultType()
+                   .getTypeNode()
+                   .map(it -> it.isClassOrInterfaceType() && it.getTypeImage().equals(methodType))
+                   .orElse(false);
     }
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?

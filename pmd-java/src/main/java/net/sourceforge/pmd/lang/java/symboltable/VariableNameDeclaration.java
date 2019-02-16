@@ -60,9 +60,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     @Override
     public String getTypeImage() {
-        TypeNode typeNode = getTypeNode();
+        ASTType typeNode = getTypeNode();
         if (typeNode != null) {
-            return typeNode.getImage();
+            return typeNode.getTypeImage();
         }
         return null;
     }

@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,15 +46,8 @@ public class Java10Test {
         // first: var list = new ArrayList<String>();
         ASTType type = localVars.get(0).getFirstChildOfType(ASTType.class);
         assertEquals("var", type.getTypeImage());
-        assertEquals(1, type.jjtGetNumChildren());
-        ASTReferenceType referenceType = type.getFirstChildOfType(ASTReferenceType.class);
-        assertNotNull(referenceType);
-        assertEquals(1, referenceType.jjtGetNumChildren());
-        ASTClassOrInterfaceType classType = referenceType.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        assertNotNull(classType);
-        assertEquals("var", classType.getImage());
+        assertTrue(type instanceof ASTClassOrInterfaceType);
         // in that case, we don't have a class named "var", so the type will be null
-        assertNull(classType.getType());
         assertNull(type.getType());
 
         // check the type of the variable initializer's expression

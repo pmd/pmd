@@ -793,14 +793,41 @@ public class ClassTypeResolverTest {
 
         // Object[][] b = new Object[1][0];
         // ----------
-        assertEquals(Object[][].class, referenceTypes.get(index++).getType());
+        assertEquals(Object[][].class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isArrayType());
+
+        // Object[][] b = new Object[1][0];
+        // ------
+        assertEquals(Object.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
+
+        // Object[][] b = new Object[1][0];
+        //                    ------
+        assertEquals(Object.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
 
         // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
         // ----------------
-        assertEquals(ArrayTypes[][][].class, referenceTypes.get(index++).getType());
+        assertEquals(ArrayTypes[][][].class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isArrayType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
+        // ----------
+        assertEquals(ArrayTypes.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
+        //                          ----------
+        assertEquals(ArrayTypes.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
+        //                                                 ----------
+        assertEquals(ArrayTypes.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
 
         // Make sure we got them all
-        assertEquals("All expressions not tested", index, referenceTypes.size());
+        assertEquals("All expressions not tested", referenceTypes.size(), index);
     }
 
 
@@ -823,7 +850,7 @@ public class ClassTypeResolverTest {
     private void testPrimitiveTypeFieldDecl(Node declaration) throws JaxenException {
         // public int[] a, b[];
 
-        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTReferenceType.class);
         assertNotNull(typeNode);
         assertTrue(typeNode.isArrayType());
         assertEquals(1, typeNode.getArrayDepth());
@@ -850,11 +877,14 @@ public class ClassTypeResolverTest {
 
         // public String[] c, d[];
 
-        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        ASTArrayType  arrayType = (ASTArrayType) declaration.getFirstChildOfType(ASTType.class);
+        ASTReferenceType typeNode = arrayType.getFirstChildOfType(ASTClassOrInterfaceType.class);
         assertNotNull(typeNode);
-        assertTrue(typeNode.isArrayType());
-        assertEquals(1, typeNode.getArrayDepth());
-        assertEquals("String", typeNode.getFirstChildOfType(ASTArrayType.class).getFirstChildOfType(ASTClassOrInterfaceType.class).getImage());
+        assertFalse(typeNode.isArrayType());
+        assertTrue(arrayType.isArrayType());
+        assertEquals(1, arrayType.getArrayDepth());
+        assertEquals(0, typeNode.getArrayDepth());
+        assertEquals("String", typeNode.getImage());
 
         ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(cID);
