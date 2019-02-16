@@ -1306,6 +1306,8 @@ void Condition2() #void :
     // a IS OF Type condition that starts with a function...
     LOOKAHEAD(FunctionCall() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
+    LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
+ |
     LOOKAHEAD(9) MultisetCondition()
  |
     LOOKAHEAD(9) ComparisonCondition()
@@ -1315,8 +1317,6 @@ void Condition2() #void :
     LOOKAHEAD(9) InCondition()
  |
     LOOKAHEAD(9) LikeCondition()
- |
-    LOOKAHEAD(9) RegexpLikeCondition()
  |
     LOOKAHEAD(4) BetweenCondition()
  |
@@ -1355,8 +1355,8 @@ ASTRegexpLikeCondition RegexpLikeCondition() :
 }
 {
     <REGEXP_LIKE> "("
-        ID() ","
-        StringLiteral()
+        SqlExpression() ","
+        SqlExpression()
         [ "," ( matchParam = <CHARACTER_LITERAL> | matchParam = <STRING_LITERAL> ) {jjtThis.setMatchParam(matchParam.toString());} ]
     ")"
     { return jjtThis; }
@@ -1473,24 +1473,49 @@ ASTExpressionList ExpressionList() :
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Expressions.html
  */
 ASTSqlExpression SqlExpression() :
-{}
+{ PLSQLNode simpleNode = null; }
 {
- [ LOOKAHEAD(2) <PRIOR> ]
- // SimpleExpression
  (
-    LOOKAHEAD(3) AdditiveExpression() // this can be a literal or a simple expression, but no conditional
- |
-    LOOKAHEAD(5) SchemaName() "." TableName() "." Column()
- |
-    LOOKAHEAD(3) TableName() "." Column()
- |
-    LOOKAHEAD(2) Column()
- |
-    LOOKAHEAD(2) <ROWNUM>
- |
-    LOOKAHEAD(2) "(" SelectStatement() ")"  // see "Scalar Subquery Expressions"
+    // AdditiveExpression includes literals and simple expressions, but no conditional
+    ( simpleNode = AdditiveExpression() ) { jjtThis.setImage(simpleNode.getImage()); }
  )
     { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Simple-Expressions.html
+ */
+ASTSimpleExpression SimpleExpression() :
+{ StringBuilder sb = new StringBuilder(); }
+{
+ (
+    LOOKAHEAD(2) <ROWNUM> { sb.append(token.image); }
+ |
+    StringLiteral() { sb.append(token.image); }
+ |
+    NumericLiteral() { sb.append(token.image); }
+ |
+    LOOKAHEAD(2) NullLiteral() { sb.append(token.image); }
+ |
+    // sequence
+    LOOKAHEAD(4) ID() "." ( <CURRVAL> | <NEXTVAL> )
+ |
+    LOOKAHEAD(6)
+        SchemaName() { sb.append(token.image); } "." { sb.append(token.image); }
+        TableName() { sb.append(token.image); } "." { sb.append(token.image); }
+        Column() { sb.append(token.image); }
+ |
+    LOOKAHEAD(4)
+        TableName() { sb.append(token.image); } "." { sb.append(token.image); }
+        Column() { sb.append(token.image); }
+ |
+    LOOKAHEAD(2)
+        Column() { sb.append(token.image); }
+ )
+ {
+    jjtThis.setImage(sb.toString());
+    return jjtThis;
+ }
 }
 
 /**
@@ -2938,6 +2963,7 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) #UnaryExpression(>1) :
  (
    ( ("+" ) { sb.append(isUnarySign ? " +" : " + "); }
    | ("-" ) { sb.append(isUnarySign ? " -" : " - "); }
+   | (<PRIOR>) { sb.append(" PRIOR "); }
    )
    (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
@@ -3039,12 +3065,13 @@ ASTPrimaryPrefix PrimaryPrefix() :
 (
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
   LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ]
-| LOOKAHEAD(Literal()) simpleNode = Literal() { sb.append(simpleNode.getImage()) ; }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
 | LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
 | LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
+| LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
+| LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
 | ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
 | SelectStatement()
 | LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
@@ -3069,20 +3096,20 @@ ASTPrimarySuffix PrimarySuffix() :
 { PLSQLNode suffixNode = null ; PLSQLNode arguments = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-  (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
+  (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.getImage()) ; }
   //Bug 3535118 - Method call may include dblink
   //String dblink = null;
   //["@" dblink = qualifiedName() {sb.append("@"); sb.append(dblink); } ]
   | //Possible dblink
-  ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
+  ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.getImage()) ; }
   | //Possible Date Time Expression - Bug 3553725
   ( <AT> {sb.append(" "); sb.append(token.image.toUpperCase());}
           (  <LOCAL> {sb.append(" "); sb.append(token.image.toUpperCase());}
             | ( <TIME> <ZONE> {sb.append(" TIME ZONE");}
 		(   <DBTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
 		  | <SESSIONTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
-		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.toString());}
-		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.toString());}
+		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.getImage());}
+		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.getImage());}
 		)
 	      )
          )
@@ -6031,7 +6058,6 @@ ASTID ID(): {}
 		| <DATE> //RESERVED WORD
 		| <DECLARE> //SYNTAX
 		| <DECIMAL> //RESERVED WORD
-		//| <_DEFAULT> //RESERVED WORD
 		| <DELETE>  //RESERVED WORD
 		| <DESC>  //RESERVED WORD
 		//| <DISTINCT>  //RESERVED WORD

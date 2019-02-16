@@ -16,5 +16,15 @@ INTO test
 FROM employees
 WHERE REGEXP_LIKE (last_name, '([aeiou])\1', 'i')
 ORDER BY last_name;
+
+SELECT e.first_name || ',' || e.last_name
+INTO test
+FROM employees e
+WHERE REGEXP_LIKE(
+    e.last_name || ',' || e.first_name,
+    NVL(:search, e.last_name || ',' || e.first_name),
+    'i')
+    AND NVL(:selected, 0) = 0;
+
 END;
 /

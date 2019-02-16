@@ -92,7 +92,7 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         List<ASTRegexpLikeCondition> regexps = input.findDescendantsOfType(ASTRegexpLikeCondition.class);
-        Assert.assertEquals(2, regexps.size());
+        Assert.assertEquals(3, regexps.size());
         Assert.assertEquals("last_name", regexps.get(1).getSourceChar().getImage());
         Assert.assertEquals("'([aeiou])\\1'", regexps.get(1).getPattern().getImage());
         Assert.assertEquals("'i'", regexps.get(1).getMatchParam());
