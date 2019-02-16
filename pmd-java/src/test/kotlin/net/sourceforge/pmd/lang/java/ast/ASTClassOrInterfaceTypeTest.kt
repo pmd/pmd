@@ -9,17 +9,19 @@ import io.kotlintest.specs.FunSpec
  */
 class ASTClassOrInterfaceTypeTest : FunSpec({
 
-
     testGroup("Test non-recursive COITs") {
 
         "java.util.List" should matchType<ASTClassOrInterfaceType> {
             it.typeImage shouldBe "java.util.List"
+            it.typeArguments.shouldBeEmpty()
+            it.leftHandSide.shouldBeEmpty()
         }
 
         "java.util.List<F>" should matchType<ASTClassOrInterfaceType> {
 
+            it.leftHandSide.shouldBeEmpty()
 
-            child<ASTTypeArguments> {
+            it.typeArguments shouldBePresent child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it.typeImage shouldBe "F"
@@ -43,20 +45,25 @@ class ASTClassOrInterfaceTypeTest : FunSpec({
                 it.annotationName shouldBe "Foo"
 
                 child<ASTMarkerAnnotation> {
-                    child<ASTName> {  }
+                    child<ASTName> { }
                 }
             }
 
-            child<ASTTypeArguments> {
+            it.typeArguments shouldBePresent child {
+
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it.typeImage shouldBe "K"
+                        it.typeArguments.shouldBeEmpty()
+                        it.leftHandSide.shouldBeEmpty()
                     }
                 }
 
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it.typeImage shouldBe "V"
+                        it.typeArguments.shouldBeEmpty()
+                        it.leftHandSide.shouldBeEmpty()
                     }
                 }
             }
@@ -69,10 +76,12 @@ class ASTClassOrInterfaceTypeTest : FunSpec({
             it.leftHandSide shouldBePresent child {
                 it.typeImage shouldBe "Foo.Bar"
 
+                it.typeArguments.shouldBeEmpty()
+
                 it.leftHandSide shouldBePresent child {
                     it.typeImage shouldBe "Foo"
 
-                    child<ASTTypeArguments> {
+                    it.typeArguments shouldBePresent child {
                         child<ASTTypeArgument> {
                             child<ASTClassOrInterfaceType> {
                                 it.typeImage shouldBe "K"
@@ -90,7 +99,7 @@ class ASTClassOrInterfaceTypeTest : FunSpec({
                 }
             }
 
-            child<ASTTypeArguments> {
+            it.typeArguments shouldBePresent child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it.typeImage shouldBe "V"
@@ -99,6 +108,5 @@ class ASTClassOrInterfaceTypeTest : FunSpec({
             }
         }
     }
-
 
 })
