@@ -94,4 +94,11 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
         Assert.assertEquals("'([aeiou])\\1'", regexps.get(1).getPattern().getImage());
         Assert.assertEquals("'i'", regexps.get(1).getMatchParam());
     }
+
+    @Test
+    public void testSubqueries() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("WhereClauseSubqueries.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+    }
 }

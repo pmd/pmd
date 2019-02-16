@@ -1482,6 +1482,8 @@ ASTSqlExpression SqlExpression() :
  |
     LOOKAHEAD(2) <ROWNUM>
  |
+    LOOKAHEAD(2) "(" SelectStatement() ")"  // see "Scalar Subquery Expressions"
+ |
     AdditiveExpression() // this can be a literal or a simple expression, but no conditional
  )
     { return jjtThis; }
