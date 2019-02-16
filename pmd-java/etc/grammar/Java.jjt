@@ -1995,6 +1995,7 @@ void ReferenceType() #void:
 void ClassOrInterfaceType() #void:
 {
   StringBuilder imageBuilder = new StringBuilder();
+  Token t;
 }
 {
   /*
