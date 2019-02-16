@@ -1308,7 +1308,7 @@ void Condition2() #void :
  |
     LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
  |
-    LOOKAHEAD(9) MultisetCondition()
+    LOOKAHEAD(MultisetCondition()) MultisetCondition()
  |
     LOOKAHEAD(9) ComparisonCondition()
  |
@@ -6148,7 +6148,6 @@ ASTID ID(): {}
 		//20120501 | <ROWNUM>
 		| <ROWTYPE>
 		//20120501 | <SAVEPOINT> //SYNTAX
-		| <SELECT>  //SYNTAX  //RESERVED WORD
 		| <SEPARATE>
 		| <SHARE>  //RESERVED WORD
 		| <SMALLINT>  //RESERVED WORD
@@ -6405,7 +6404,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <ROWNUM>
 		| <ROWTYPE>
 		//20120501 | <SAVEPOINT>
-		//<SELECT>
 		| <SEPARATE>
 		//<SET>
 		//<SHARE>
