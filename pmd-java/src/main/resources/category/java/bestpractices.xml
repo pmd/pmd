@@ -1585,6 +1585,7 @@ public class TryWithResources {
           language="java"
           minimumLanguageVersion="1.5"
           since="5.0"
+          typeResolution="true"
           message="Consider using varargs for methods or constructors which take an array the last parameter."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
@@ -1601,19 +1602,20 @@ having to deal with the creation of an array.
 <![CDATA[
 //FormalParameters/FormalParameter
     [position()=last()]
-    [VariableDeclaratorId/@ArrayType=true()]
     [@Varargs=false()]
-    [not (./PrimitiveType[@ArrayType=true() and @Image='byte'])]
-    [not (./ClassOrInterfaceType[@Image='Byte'])]
-    [not (./PrimitiveType[@Image='byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
+    [VariableDeclaratorId/@ArrayType=true()]
+    (: the node is nested within an ArrayType unless the [] are on the id :)
+    [not (.//PrimitiveType[@Image='byte'])]
+    [not (.//ClassOrInterfaceType[@Image='Byte'])]
+    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation[@AnnotationName = 'Override'])]
+    (: not a main method :)
     [not(
-        ancestor::MethodDeclaration
+        ancestor::MethodDeclaration[1]
             [@Public=true() and @Static=true()]
-            [child::ResultType[@Void=true()]] and
-        ancestor::MethodDeclarator[@Image='main'] and
-        ..[@ParameterCount=1] and
-        ./ClassOrInterfaceType[@Image='String']
+            [ResultType[@Void=true()]]
+            [@MethodName='main']
+	    and ..[@ParameterCount=1]
+        and VariableDeclaratorId[pmd-java:typeIs('java.lang.String[]')]
     )]
 ]]>
                 </value>
