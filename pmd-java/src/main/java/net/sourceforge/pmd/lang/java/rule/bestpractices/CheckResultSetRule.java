@@ -50,7 +50,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         ASTClassOrInterfaceType type = null;
         if (!node.isTypeInferred()) {
-            type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(ASTClassOrInterfaceType.class);
+            type = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
         }
         if (type != null && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName())
                 || "ResultSet".equals(type.getImage()))) {

@@ -1075,6 +1075,7 @@ public class Foo implements Enumeration {
     <rule name="ReplaceHashtableWithMap"
           language="java"
           since="3.4"
+          typeResolution="true"
           message="Consider replacing this Hashtable with the newer java.util.Map"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacehashtablewithmap">
@@ -1083,8 +1084,9 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0" />
             <property name="xpath">
-                <value>//ClassOrInterfaceType[@Image='Hashtable']</value>
+                <value>//VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Hashtable')]</value>
             </property>
         </properties>
         <example>
@@ -1101,6 +1103,7 @@ public class Foo {
     <rule name="ReplaceVectorWithList"
           language="java"
           since="3.4"
+          typeResolution="true"
           message="Consider replacing this Vector with the newer java.util.List"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
@@ -1109,8 +1112,9 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0" />
             <property name="xpath">
-                <value>//ClassOrInterfaceType[@Image='Vector']</value>
+                <value>//VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Vector')]</value>
             </property>
         </properties>
         <example>

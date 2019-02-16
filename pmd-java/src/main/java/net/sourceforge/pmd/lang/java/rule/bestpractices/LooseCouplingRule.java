@@ -34,7 +34,7 @@ public class LooseCouplingRule extends AbstractJavaRule {
         if (methodHasOverride(node)) {
             return data;
         }
-        Node parent = node.getNthParent(3);
+        Node parent = node.jjtGetParent();
         Class<?> clazzType = node.getType();
         boolean isType = CollectionUtil.isCollectionType(clazzType, false);
         if (isType && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter
