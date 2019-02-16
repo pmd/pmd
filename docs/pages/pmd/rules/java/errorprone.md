@@ -738,6 +738,7 @@ private int getMoreFoo(){
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.Data \| lombok.Getter \| lombok.Value|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |prefix||A variable prefix to skip, i.e., m\_|no|
 
 **Use this rule by referencing it:**

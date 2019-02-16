@@ -552,4 +552,28 @@ public class AtomicBooleanFN {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#1543 [java] LinguisticNaming should ignore overriden methods</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    private int value;
+
+    public int setValue(int value) {
+        this.value = value;
+        return value;
+    }
+}
+public class Bar extends Foo {
+    private int value;
+
+    @Override
+    public int setValue(int value) {
+        this.value = value;
+        return value;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -314,6 +314,8 @@ main() {
   else
     exit_slowpoke=${exit_force}
   fi
+  # Output last couple of lines from $file_log
+  tail -5 "${file_log}"
   show_warning "Your given command has terminated with exit code $exit_slowpoke. So do I."
   exit ${exit_slowpoke}
 

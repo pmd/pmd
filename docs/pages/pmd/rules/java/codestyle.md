@@ -77,7 +77,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoredAnnotations|lombok.Data \| lombok.Value \| lombok.Builder \| lombok.NoArgsConstructor \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructorAtLeastOneConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|ignoredAnnotations|lombok.Data \| lombok.Value \| lombok.Builder \| lombok.NoArgsConstructor \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule by referencing it:**
 ``` xml
@@ -1160,6 +1160,7 @@ public class LinguisticNaming {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
+|ignoredAnnotations|java.lang.Override|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |checkBooleanMethod|true|Check method names and types for inconsistent naming.|no|
 |checkGetters|true|Check return type of getters.|no|
 |checkSetters|true|Check return type of setters.|no|
@@ -2109,7 +2110,7 @@ which makes the code also more readable.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//VariableInitializer
+//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred="false"]
 //PrimaryExpression[not(PrimarySuffix)]
 [not(ancestor::ArgumentList)]
 /PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]
