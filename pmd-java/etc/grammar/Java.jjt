@@ -1950,36 +1950,25 @@ void Type():
     Token t;
 }
 {
- LOOKAHEAD(PrimitiveType() Dims() | <IDENTIFIER>) ReferenceType()
+ // lookahead to catch arrays of primitive types.
+ // we can't lookahead for just PrimitiveType() "["
+ // because the "[" may be preceded by annotations
+ LOOKAHEAD(PrimitiveType() ArrayTypeDim() | <IDENTIFIER>) ReferenceType()
  | PrimitiveType()
 }
 
 void Dims() #ArrayTypeDims:
 {}
 {
+  // the list of dimensions is flat which is not cool for annotation
+  // placement, but realistically that's a corner case.
+  (ArrayTypeDim())+
+}
 
-/* @A [] @B []
- node<ASTDims> {
-   it.dimSize shouldBe 2
-
-   child<ASTDim> {
-     child<ASTAnnotation>(ignoreChildren=true) {
-       it.nameImage shouldBe "A"
-     }
-   }
-
-   child<ASTDim> {
-     child<ASTAnnotation>(ignoreChildren=true) {
-       it.nameImage shouldBe "B"
-     }
-   }
- }
-*/
-
-
-  ( // LOOKAHEAD((TypeAnnotation())* "[" "]")
-    ((TypeAnnotation())* "[" "]") #ArrayTypeDim
-  )+
+void ArrayTypeDim():
+{}
+{
+  (TypeAnnotation())* "[" "]"
 }
 
 void ReferenceType():

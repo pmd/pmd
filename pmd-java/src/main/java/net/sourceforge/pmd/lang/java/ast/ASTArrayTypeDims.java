@@ -39,7 +39,12 @@ public final class ASTArrayTypeDims extends AbstractJavaTypeNode implements Iter
     }
 
 
+    /**
+     * Returns the number of array dimensions of this type.
+     * E.g. for [][], this will return 2. The returned number
+     * is always greater than 0.
+     */
     public int getSize() {
-        return jjtGetNumChildren();
+        return findChildrenOfType(ASTArrayTypeDim.class).size();
     }
 }
