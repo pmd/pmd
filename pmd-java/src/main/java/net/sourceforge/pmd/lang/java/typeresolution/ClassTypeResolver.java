@@ -285,7 +285,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTArrayType node, Object data) {
 
-        AbstractJavaTypeNode element = node.getElementType();
+        ASTType element = node.getElementType();
 
         element.jjtAccept(this, data);
 
@@ -565,8 +565,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         return null;
                     }
 
-                    if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
-                        return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
+                    if (typeNode instanceof ASTReferenceType) {
+                        return typeNode.getTypeDefinition();
                     } else { // primitive type
                         return JavaTypeDefinition.forClass(typeNode.getType());
                     }

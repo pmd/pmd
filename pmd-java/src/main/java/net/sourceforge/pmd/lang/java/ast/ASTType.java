@@ -20,7 +20,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * Note: it is not exactly the same the "UnnanType" defined in JLS.
  */
-public interface ASTType extends TypeNode {
+public interface ASTType extends JavaNode, TypeNode {
 
     /**
      * For now this returns the name of the type with all the segments,
