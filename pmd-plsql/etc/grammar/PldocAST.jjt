@@ -1193,7 +1193,7 @@ ASTOrderByClause OrderByClause() :
 void OrderByEntry() #void :
 {}
 {
-    ( LOOKAHEAD(ID() ".") SqlExpression() | LOOKAHEAD(2) ColumnAlias() | SqlExpression() )
+    SqlExpression()
     [ <ASC> | <DESC> ]
     [ <NULLS> ( "FIRST" | "LAST" ) ]
 }
@@ -3064,7 +3064,7 @@ ASTPrimaryPrefix PrimaryPrefix() :
 {
 (
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
-  LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ]
+  LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
 | LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
 | LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
