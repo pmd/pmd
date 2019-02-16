@@ -32,7 +32,6 @@ public interface Node {
      */
     void jjtClose();
 
-
     /**
      * Sets the parent of this node.
      *
@@ -40,14 +39,12 @@ public interface Node {
      */
     void jjtSetParent(Node parent);
 
-
     /**
      * Returns the parent of this node.
      *
      * @return The parent of the node
      */
     Node jjtGetParent();
-
 
     /**
      * This method tells the node to add its argument to the node's list of
@@ -62,11 +59,9 @@ public interface Node {
      * Sets the index of this node from the perspective of its parent. This
      * means: this.jjtGetParent().jjtGetChild(index) == this.
      *
-     * @param index
-     *            the child index
+     * @param index the child index
      */
     void jjtSetChildIndex(int index);
-
 
     /**
      * Gets the index of this node in the children of its parent.
@@ -79,9 +74,7 @@ public interface Node {
      * This method returns a child node. The children are numbered from zero,
      * left to right.
      *
-     * @param index
-     *            the child index. Must be nonnegative and less than
-     *            {@link #jjtGetNumChildren}.
+     * @param index the child index. Must be nonnegative and less than {@link #jjtGetNumChildren}.
      */
     Node jjtGetChild(int index);
 
@@ -91,7 +84,6 @@ public interface Node {
     int jjtGetNumChildren();
 
     int jjtGetId();
-
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual
@@ -121,7 +113,6 @@ public interface Node {
 
     void setDataFlowNode(DataFlowNode dataFlowNode);
 
-
     /**
      * Returns true if this node is considered a boundary by traversal methods.
      * Traversal methods such as {@link #getFirstDescendantOfType(Class)} don't
@@ -131,30 +122,24 @@ public interface Node {
      */
     boolean isFindBoundary();
 
-
     /**
      * Returns the n-th parent or null if there are less than {@code n} ancestors.
      *
      * @param n how many ancestors to iterate over.
-     *
      * @return the n-th parent or null.
-     *
      * @throws IllegalArgumentException if {@code n} is negative or zero.
      */
     Node getNthParent(int n);
-
 
     /**
      * Traverses up the tree to find the first parent instance of type
      * parentType or one of its subclasses.
      *
      * @param parentType Class literal of the type you want to find
-     * @param <T>        The type you want to find
-     *
+     * @param <T> The type you want to find
      * @return Node of type parentType. Returns null if none found.
      */
     <T> T getFirstParentOfType(Class<T> parentType);
-
 
     /**
      * Traverses up the tree to find all of the parent instances of type
@@ -162,21 +147,17 @@ public interface Node {
      * deepest-first.
      *
      * @param parentType Class literal of the type you want to find
-     * @param <T>        The type you want to find
-     *
+     * @param <T> The type you want to find
      * @return List of parentType instances found.
      */
     <T> List<T> getParentsOfType(Class<T> parentType);
-
 
     /**
      * Gets the first parent that's an instance of any of the given types.
      *
      * @param parentTypes Types to look for
-     * @param <T>         Most specific common type of the parameters
-     *
-     * @return The first parent with a matching type. Returns null if there
-     * is no such parent
+     * @param <T> Most specific common type of the parameters
+     * @return The first parent with a matching type. Returns null if there is no such parent
      */
     <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
 
@@ -184,13 +165,9 @@ public interface Node {
      * Traverses the children to find all the instances of type childType or
      * one of its subclasses.
      *
-     * @see #findDescendantsOfType(Class) if traversal of the entire tree is
-     *      needed.
-     *
-     * @param childType
-     *            class which you want to find.
-     * @return List of all children of type childType. Returns an empty list if
-     *         none found.
+     * @param childType class which you want to find.
+     * @return List of all children of type childType. Returns an empty list if none found.
+     * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
      */
     <T> List<T> findChildrenOfType(Class<T> childType);
 
@@ -198,10 +175,8 @@ public interface Node {
      * Traverses down the tree to find all the descendant instances of type
      * descendantType without crossing find boundaries.
      *
-     * @param targetType
-     *            class which you want to find.
-     * @return List of all children of type targetType. Returns an empty list if
-     *         none found.
+     * @param targetType class which you want to find.
+     * @return List of all children of type targetType. Returns an empty list if none found.
      */
     <T> List<T> findDescendantsOfType(Class<T> targetType);
 
@@ -209,25 +184,19 @@ public interface Node {
      * Traverses down the tree to find all the descendant instances of type
      * descendantType.
      *
-     * @param targetType
-     *            class which you want to find.
-     * @param results
-     *            list to store the matching descendants
-     * @param crossFindBoundaries
-     *            if <code>false</code>, recursion stops for nodes for which
-     *            {@link #isFindBoundary()} is <code>true</code>
+     * @param targetType class which you want to find.
+     * @param results list to store the matching descendants
+     * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
+     * is <code>true</code>
      */
     <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries);
 
     /**
      * Traverses the children to find the first instance of type childType.
      *
-     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is
-     *      needed.
-     *
-     * @param childType
-     *            class which you want to find.
+     * @param childType class which you want to find.
      * @return Node of type childType. Returns <code>null</code> if none found.
+     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
      */
     <T> T getFirstChildOfType(Class<T> childType);
 
@@ -235,28 +204,23 @@ public interface Node {
      * Traverses down the tree to find the first descendant instance of type
      * descendantType without crossing find boundaries.
      *
-     * @param descendantType
-     *            class which you want to find.
-     * @return Node of type descendantType. Returns <code>null</code> if none
-     *         found.
+     * @param descendantType class which you want to find.
+     * @return Node of type descendantType. Returns <code>null</code> if none found.
      */
     <T> T getFirstDescendantOfType(Class<T> descendantType);
 
     /**
      * Finds if this node contains a descendant of the given type without crossing find boundaries.
      *
-     * @param type
-     *            the node type to search
-     * @return <code>true</code> if there is at least one descendant of the
-     *         given type
+     * @param type the node type to search
+     * @return <code>true</code> if there is at least one descendant of the given type
      */
     <T> boolean hasDescendantOfType(Class<T> type);
 
     /**
      * Returns all the nodes matching the xpath expression.
      *
-     * @param xpathString
-     *            the expression to check
+     * @param xpathString the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
      * @throws JaxenException if the xpath is incorrect or fails altogether
      */
@@ -265,8 +229,7 @@ public interface Node {
     /**
      * Checks whether at least one descendant matches the xpath expression.
      *
-     * @param xpathString
-     *            the expression to check
+     * @param xpathString the expression to check
      * @return true if there is a match
      */
     boolean hasDescendantMatchingXPath(String xpathString);
@@ -289,17 +252,16 @@ public interface Node {
 
     /**
      * Set the user data associated with this node.
-     *
+     * <p>
      * <p>PMD itself will never set user data onto a node. Nor should any Rule
      * implementation, as the AST nodes are shared between concurrently
      * executing Rules (i.e. it is <strong>not</strong> thread-safe).
-     *
+     * <p>
      * <p>This API is most useful for external applications looking to leverage
      * PMD's robust support for AST structures, in which case application
      * specific annotations on the AST nodes can be quite useful.
      *
-     * @param userData
-     *            The data to set on this node.
+     * @param userData The data to set on this node.
      */
     void setUserData(Object userData);
 
@@ -312,11 +274,9 @@ public interface Node {
      * This method tells the node to remove the child node at the given index from the node's list of
      * children, if any; if not, no changes are done.
      *
-     * @param childIndex
-     *          The index of the child to be removed
+     * @param childIndex The index of the child to be removed
      */
     void removeChildAtIndex(int childIndex);
-
 
     /**
      * Gets the name of the node that is used to match it with XPath queries.
@@ -325,7 +285,6 @@ public interface Node {
      */
     String getXPathNodeName();
 
-
     /**
      * Returns an iterator enumerating all the attributes that are available
      * from XPath for this node.
@@ -333,5 +292,4 @@ public interface Node {
      * @return An attribute iterator for this node
      */
     Iterator<Attribute> getXPathAttributesIterator();
-
 }

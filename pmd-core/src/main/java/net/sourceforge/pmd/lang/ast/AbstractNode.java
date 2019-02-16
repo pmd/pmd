@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
-
 /**
  * Base class for all implementations of the Node interface.
  */
@@ -53,7 +52,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public AbstractNode(final int id, final int theBeginLine, final int theEndLine, final int theBeginColumn,
-                        final int theEndColumn) {
+        final int theEndColumn) {
         this(id);
 
         beginLine = theBeginLine;
@@ -267,12 +266,12 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public <T> void findDescendantsOfType(final Class<T> targetType, final List<T> results,
-                                          final boolean crossBoundaries) {
+        final boolean crossBoundaries) {
         findDescendantsOfType(this, targetType, results, crossBoundaries);
     }
 
     private static <T> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
-                                                  final boolean crossFindBoundaries) {
+        final boolean crossFindBoundaries) {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             final Node child = node.jjtGetChild(i);
@@ -327,11 +326,11 @@ public abstract class AbstractNode implements Node {
         final String elementName = docNav.getElementName(this);
         final Element element = ownerDocument.createElement(elementName);
         parentNode.appendChild(element);
-        for (final Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
+        for (final Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext(); ) {
             final Attribute attr = iter.next();
             element.setAttribute(attr.getName(), attr.getStringValue());
         }
-        for (final Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
+        for (final Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext(); ) {
             final AbstractNode child = (AbstractNode) iter.next();
             child.appendElement(element);
         }
@@ -483,15 +482,15 @@ public abstract class AbstractNode implements Node {
     // @Deprecated // FUTURE 7.0.0 make abstract
     public String getXPathNodeName() {
         LOG.warning("getXPathNodeName should be overriden in classes derived from AbstractNode. "
-                + "The implementation is provided for compatibility with existing implementors,"
-                + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
-                + ".");
+            + "The implementation is provided for compatibility with existing implementors,"
+            + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
+            + ".");
         return toString();
     }
 
     /**
-     * @deprecated The equivalence between toString and a node's name could be broken as soon as release 7.0.0.
-     * Use getXPathNodeName for that purpose. The use for debugging purposes is not deprecated.
+     * @deprecated The equivalence between toString and a node's name could be broken as soon as release 7.0.0. Use
+     * getXPathNodeName for that purpose. The use for debugging purposes is not deprecated.
      */
     @Deprecated
     @Override
