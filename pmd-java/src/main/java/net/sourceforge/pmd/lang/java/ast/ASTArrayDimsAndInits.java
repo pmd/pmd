@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * TODO should we merge with {@link ASTArrayTypeDims}?
+ */
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
     private int arrayDepth;
 
