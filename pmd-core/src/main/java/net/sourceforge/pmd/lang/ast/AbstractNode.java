@@ -9,15 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -298,45 +293,6 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public boolean isFindBoundary() {
-        return false;
-    }
-
-    @Override
-    public Document getAsDocument() {
-        try {
-            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder db = dbf.newDocumentBuilder();
-            final Document document = db.newDocument();
-            appendElement(document);
-            return document;
-        } catch (final ParserConfigurationException pce) {
-            throw new RuntimeException(pce);
-        }
-    }
-
-    protected void appendElement(final org.w3c.dom.Node parentNode) {
-        final DocumentNavigator docNav = new DocumentNavigator();
-        Document ownerDocument = parentNode.getOwnerDocument();
-        if (ownerDocument == null) {
-            // If the parentNode is a Document itself, it's ownerDocument is
-            // null
-            ownerDocument = (Document) parentNode;
-        }
-        final String elementName = docNav.getElementName(this);
-        final Element element = ownerDocument.createElement(elementName);
-        parentNode.appendChild(element);
-        for (final Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext(); ) {
-            final Attribute attr = iter.next();
-            element.setAttribute(attr.getName(), attr.getStringValue());
-        }
-        for (final Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext(); ) {
-            final AbstractNode child = (AbstractNode) iter.next();
-            child.appendElement(element);
-        }
-    }
-
-    @Override
     public <T> T getFirstDescendantOfType(final Class<T> descendantType) {
         return getFirstDescendantOfType(descendantType, this);
     }
@@ -486,16 +442,6 @@ public abstract class AbstractNode implements Node {
             + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
             + ".");
         return toString();
-    }
-
-    /**
-     * @deprecated The equivalence between toString and a node's name could be broken as soon as release 7.0.0. Use
-     * getXPathNodeName for that purpose. The use for debugging purposes is not deprecated.
-     */
-    @Deprecated
-    @Override
-    public String toString() {
-        return getXPathNodeName();
     }
 
     @Override
