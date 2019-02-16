@@ -74,7 +74,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     public Object visit(ASTResultType node, Object data) {
         node.getTypeNode()
             .filter(ASTType::isClassOrInterfaceType)
-            .ifPresent(node1 -> checkVariableType(node1));
+            .ifPresent(this::checkVariableType);
 
         return super.visit(node, data);
     }

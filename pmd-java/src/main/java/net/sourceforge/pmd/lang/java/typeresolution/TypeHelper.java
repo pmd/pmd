@@ -41,6 +41,8 @@ public final class TypeHelper {
      * @param n the type node to check
      * @param clazzName the class name to compare to
      * @return <code>true</code> if type node n is exactly of type clazzName.
+     *
+     * @throws NullPointerException if n is null
      */
     public static boolean isExactlyA(final TypeNode n, final String clazzName) {
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);

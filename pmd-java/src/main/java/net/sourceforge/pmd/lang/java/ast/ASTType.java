@@ -25,7 +25,8 @@ public interface ASTType extends JavaNode, TypeNode {
     /**
      * For now this returns the name of the type with all the segments,
      * without annotations, array dimensions, or type parameters. Experimental
-     * because we need to specify it and see if it's useful.
+     * because we need to specify it, eg it would be more useful to have
+     * a method return a qualified name with help of the symbol table.
      */
     @Experimental
     String getTypeImage();

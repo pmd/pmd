@@ -290,14 +290,14 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
         Literal[(not(ends-with(@Image,'"'))) and contains(@Image,".")]
         or
         Name[ancestor::Block/BlockStatement/LocalVariableDeclaration
-                [Type[PrimitiveType[@Image='double' or @Image='float']
-                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                [PrimitiveType[@Image='double' or @Image='float']
+                      or ClassOrInterfaceType[@Image='Double' or @Image='Float']]
                 /VariableDeclarator/VariableDeclaratorId/@Image = @Image
             ]
         or
         Name[ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter
-                [Type[PrimitiveType[@Image='double' or @Image='float']
-                      or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
+                [PrimitiveType[@Image='double' or @Image='float']
+                      or ClassOrInterfaceType[@Image='Double' or @Image='Float']]
                 /VariableDeclaratorId/@Image = @Image
             ]
     ]
@@ -819,8 +819,7 @@ in a ClassCastException.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
-"Object"]]/PrimaryExpression
+//CastExpression[ArrayType[@TypeImage != "Object"]]/PrimaryExpression
 [
  PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
  and
@@ -3264,7 +3263,7 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression
 /PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
 concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-[Type//ClassOrInterfaceType[@Image='Log']]
+[ClassOrInterfaceType[@Image='Log']]
 /VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
 [PrimarySuffix/Arguments[@ArgumentCount='1']]
 [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]

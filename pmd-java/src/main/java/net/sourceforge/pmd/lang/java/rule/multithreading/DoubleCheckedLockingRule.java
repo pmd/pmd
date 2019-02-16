@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
@@ -91,12 +90,9 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (node.getResultType().isVoid()) {
-            return super.visit(node, data);
-        }
 
-        ASTType typeNode = (ASTType) node.getResultType().jjtGetChild(0);
-        if (typeNode.jjtGetNumChildren() == 0 || !(typeNode.jjtGetChild(0) instanceof ASTReferenceType)) {
+        boolean isVoidOrPrimitive = node.getResultType().getTypeNode().map(ASTType::isPrimitiveType).orElse(true);
+        if (isVoidOrPrimitive) {
             return super.visit(node, data);
         }
 

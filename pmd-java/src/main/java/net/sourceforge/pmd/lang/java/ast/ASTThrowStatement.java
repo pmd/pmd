@@ -37,6 +37,8 @@ public class ASTThrowStatement extends AbstractJavaNode {
      * special case of returning <code>null</code> is when the throws is like
      * throw this.e or throw this.
      *
+     * This is too specific
+     *
      * <p>TODO - use symbol table (?)</p>
      *
      * @return the image of the first ASTClassOrInterfaceType node found or
