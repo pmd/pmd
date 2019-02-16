@@ -31,8 +31,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre>
  *
- * ClassOrInterfaceType ::= ClassOrInterfaceType ( "." {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@linkplain ASTTypeArguments TypeArguments}? )+
- *                        | &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; ) *  {@linkplain ASTTypeArguments TypeArguments}?
+ * ClassOrInterfaceType ::= ClassOrInterfaceType ( "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}? )+
+ *                        | &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; ) *  {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
  */

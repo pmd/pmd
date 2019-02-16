@@ -13,8 +13,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre>
  *
- * Type ::= {@linkplain ASTReferenceType ReferenceType}
- *        | {@linkplain ASTPrimitiveType PrimitiveType}
+ * Type ::= {@link ASTReferenceType ReferenceType}
+ *        | {@link ASTPrimitiveType PrimitiveType}
  *
  * </pre>
  *

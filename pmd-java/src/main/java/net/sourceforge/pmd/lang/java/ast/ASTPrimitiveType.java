@@ -56,7 +56,9 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
     }
 
 
-
+    /**
+     * Model constants to work with when the node's position is not important.
+     */
     public enum PrimitiveType {
         BOOLEAN,
         CHAR,

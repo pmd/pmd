@@ -11,8 +11,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- *  ReferenceType ::= {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType}
- *                  | {@linkplain ASTArrayType}
+ *  ReferenceType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType}
+ *                  | {@link ASTArrayType}
  *
  * </pre>
  */

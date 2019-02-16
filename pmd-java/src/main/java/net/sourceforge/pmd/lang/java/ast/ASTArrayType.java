@@ -9,8 +9,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * ArrayType ::= {@linkplain ASTPrimitiveType PrimitiveType} {@linkplain ASTArrayTypeDims ArrayTypeDims}
- *             | {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} {@linkplain ASTArrayTypeDims}
+ * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayTypeDims ArrayTypeDims}
+ *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayTypeDims ArrayTypeDims}
  *
  * </pre>
  */
