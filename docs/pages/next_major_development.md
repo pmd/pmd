@@ -15,6 +15,29 @@ TODO
 
 {% include note.html content="Current plans are listed [here](https://github.com/pmd/pmd/labels/in%3Aast) and in particular [here](https://github.com/pmd/pmd/issues/1019)" %}
 
+### Type grammar changes
+
+{% jdoc_nspace :jast java::lang.java.ast %}
+
+* {% jdoc jast::ASTType %} and {% jdoc jast::ASTReferenceType %} have been turned into
+interfaces, implemented by {% jdoc jast::ASTPrimitiveType %}, {% jdoc jast::ASTClassOrInterfaceType %},
+and the new node {% jdoc jast::ASTArrayType %}. This reduces the depth of the relevant
+subtrees, and allows to explore them more easily and consistently.
+
+* {% jdoc jast::ASTClassOrInterfaceType %} appears to be left recursive now.
+TODO document that when we're done discussing the semantic rewrite phase.
+
+* **Migrating**:
+  * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
+  * `Type/PrimitiveType` -> `PrimitiveType`.
+  * `Type/ReferenceType[@ArrayDepth>1]/ClassOrInterfaceType` -> `ArrayType/ClassOrInterfaceType`.
+  * `Type/ReferenceType/PrimitiveType` -> `ArrayType/PrimitiveType`.
+  * Note that in most cases you should check the type of a variable with
+  `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
+  considers the additional dimensions on declarations like `String foo[];`.
+  The Java equivalent is `TypeHelper.isA(id, String[].class);`
+
+
 
 
 ## New API support guidelines

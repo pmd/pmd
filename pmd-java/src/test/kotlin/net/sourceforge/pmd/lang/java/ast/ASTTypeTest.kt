@@ -7,9 +7,9 @@ import io.kotlintest.specs.FunSpec
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ASTClassOrInterfaceTypeTest : FunSpec({
+class ASTTypeTest : FunSpec({
 
-    testGroup("Test non-recursive COITs") {
+    testGroup("Test non-recursive ClassOrInterfaceTypes") {
 
         "java.util.List" should matchType<ASTClassOrInterfaceType> {
             it.typeImage shouldBe "java.util.List"
@@ -31,7 +31,7 @@ class ASTClassOrInterfaceTypeTest : FunSpec({
         }
     }
 
-    testGroup("Test recursive COITs") {
+    testGroup("Test recursive ClassOrInterfaceTypes") {
 
         "java.util.Map.@Foo Entry<K, V>" should matchType<ASTClassOrInterfaceType> {
             it.typeImage shouldBe "java.util.Map.Entry"

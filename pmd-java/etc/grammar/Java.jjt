@@ -1,4 +1,8 @@
 /**
+ * Change parsing of types to flatten their AST and preserve their structure.
+ * Refs #1150 [java] ClassOrInterfaceType AST improvements
+ * Clément Fournier 02/2019
+ *====================================================================
  * Add support for Java 12 switch expressions and switch rules.
  * Andreas Dangel, Clément Fournier 03/2019
  *====================================================================
@@ -1962,8 +1966,8 @@ void Type() #void:
 void Dims() #ArrayTypeDims:
 {}
 {
-  // the list of dimensions is flat which is not cool for annotation
-  // placement, but realistically that's a corner case.
+  // the list of dimensions is flat, but annotations are
+  // preserved within each specific dim.
   (ArrayTypeDim())+
 }
 
@@ -2104,14 +2108,16 @@ FloatingPointType:
 void PrimitiveType() :
 {}
 {
-  "boolean" {jjtThis.setImage("boolean");}
-| "char" {jjtThis.setImage("char");}
-| "byte" {jjtThis.setImage("byte");}
-| "short" {jjtThis.setImage("short");}
-| "int" {jjtThis.setImage("int");}
-| "long" {jjtThis.setImage("long");}
-| "float" {jjtThis.setImage("float");}
-| "double" {jjtThis.setImage("double");}
+    ( "boolean"
+    | "char"
+    | "byte"
+    | "short"
+    | "int"
+    | "long"
+    | "float"
+    | "double"
+    )
+    {jjtThis.setImage(getToken(0).getImage());}
 }
 
 

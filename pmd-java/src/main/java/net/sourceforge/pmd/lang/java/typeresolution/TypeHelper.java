@@ -31,6 +31,10 @@ public final class TypeHelper {
             return isA(n, clazz);
         }
 
+        // FIXME checking against the image is for the most part meaningless.
+        //   Many type nodes don't have an image or have one that has no relation
+        //   to their type. The TypeNode interface should have a method getTypeImage,
+        //   or better, we could use symbols instead.
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
 

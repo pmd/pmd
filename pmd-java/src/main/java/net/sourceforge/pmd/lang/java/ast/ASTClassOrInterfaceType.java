@@ -15,8 +15,11 @@ import net.sourceforge.pmd.annotation.Experimental;
  * Represents a class or interface type, possibly parameterised with type arguments.
  * This node comes in two productions (see below):
  *
- * <p>The first is a left-recursive variant, allowing to parse references to type members
- * unambiguously. The resulting node's {@linkplain #getLeftHandSide() left-hand-side type}
+ * <p>The first is a simple, flat variant. The image of the node corresponds to the
+ * chain of identifiers. May have type arguments.
+ *
+ * <p>The second is a left-recursive variant, allowing to preserve the position of
+ * type parameters and annotations. The resulting node's {@linkplain #getLeftHandSide() left-hand-side type}
  * addresses the type parent of the type. The position of type arguments and annotations are
  * preserved.
  *
@@ -26,13 +29,15 @@ import net.sourceforge.pmd.annotation.Experimental;
  * qualified type name (e.g. {@code java.util.List}, where the full sequence refers to a unique
  * type, but individual segments don't).
  *
- * <p>TODO We could uniformise those with an AST visit provided we have a classloader
- * Could be preliminary to type resolution
+ * <p>TODO I expect to fix that before 7.0.0
+ *      We can add an analysis phase that rewrites nodes using semantic info from the symbol table.
+ *      That could be useful for many things (eg disambiguate obscured expression names in the
+ *      expression grammar).
  *
  * <pre>
  *
- * ClassOrInterfaceType ::= ClassOrInterfaceType ( "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}? )+
- *                        | &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; ) *  {@link ASTTypeArguments TypeArguments}?
+ * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; ) *  {@link ASTTypeArguments TypeArguments}?
+ *                        | ClassOrInterfaceType ( "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}? )+
  *
  * </pre>
  */

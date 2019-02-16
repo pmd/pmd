@@ -6,8 +6,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import net.sourceforge.pmd.annotation.Experimental;
 
 
 /**
@@ -63,9 +69,17 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
     }
 
 
+    public PrimitiveType getModelConstant() {
+        return PrimitiveType.fromToken(getImage()).get();
+    }
+
+
     /**
-     * Model constants to work with when the node's position is not important.
+     * Constants to symbolise a primitive type when the tree context is
+     * not important. I expect this may be fleshed out to be used by type
+     * resolution or something.
      */
+    @Experimental
     public enum PrimitiveType {
         BOOLEAN,
         CHAR,
@@ -75,6 +89,14 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
         LONG,
         DOUBLE,
         FLOAT;
+
+        private static final Map<String, PrimitiveType> LOOKUP =
+            Collections.unmodifiableMap(
+                Arrays.stream(values()).collect(Collectors.toMap(
+                    PrimitiveType::getToken,
+                    Function.identity()
+                ))
+            );
 
 
         /**
@@ -95,9 +117,8 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
          * @return A constant, or the empty optional if the token doesn't correspond to a constant
          */
         public static Optional<PrimitiveType> fromToken(String token) {
-            return Arrays.stream(values()).filter(v -> v.getToken().equals(token)).findFirst();
+            return Optional.ofNullable(LOOKUP.get(token));
         }
-
     }
 
 }
