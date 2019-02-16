@@ -2025,12 +2025,12 @@ void ClassOrInterfaceType() #void:
   }
 
   /*
-    Now if there are other segments, either the previous type specified formal parameters,
+    Now if there are other segments, either the previous type specified type arguments,
     or the next has an annotation.
 
     Each of the following segments is its own ClassOrInterfaceType which encloses the
     previous one. The resulting structure appears left-recursive, but the parser just
-    executes a loop. That scheme preserves the position of type params and annotations.
+    executes a loop. That scheme preserves the position of type arguments and annotations.
     See #1150.
 
     FIXME this doesn't account for annotated AND qualified types
@@ -2068,6 +2068,10 @@ void TypeArguments():
    "<" {checkForBadDiamondUsage();} ">"
 }
 
+/**
+* We could make this #void and instead have a node WildcardType extending ReferenceType.
+* This would remove this level of nesting, which is unnecessary.
+*/
 void TypeArgument():
 {}
 {
