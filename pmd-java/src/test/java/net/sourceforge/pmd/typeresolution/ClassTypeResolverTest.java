@@ -877,7 +877,7 @@ public class ClassTypeResolverTest {
 
         // public String[] c, d[];
 
-        ASTArrayType  arrayType = (ASTArrayType) declaration.getFirstChildOfType(ASTType.class);
+        ASTArrayType arrayType = (ASTArrayType) declaration.getFirstChildOfType(ASTType.class);
         ASTReferenceType typeNode = arrayType.getFirstChildOfType(ASTClassOrInterfaceType.class);
         assertNotNull(typeNode);
         assertFalse(typeNode.isArrayType());

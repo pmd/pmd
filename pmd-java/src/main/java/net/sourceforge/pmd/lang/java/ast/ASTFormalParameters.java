@@ -8,8 +8,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 
 public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
     public ASTFormalParameters(int id) {

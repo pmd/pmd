@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Optional;
 
 
@@ -81,7 +82,7 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
          * e.g. "int" or "double".
          */
         public String getToken() {
-            return name().toLowerCase();
+            return name().toLowerCase(Locale.ROOT);
         }
 
 
