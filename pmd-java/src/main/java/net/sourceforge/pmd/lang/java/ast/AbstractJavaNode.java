@@ -114,7 +114,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     // insert a child at a given index, shifting other children if need be
     // The implementation of jjtAddChild in AbstractNode overwrites nodes
     // -> probably unexpected and to be changed
-    // parser only
+    // visible to parser only
     void insertChild(JavaNode child, int index, boolean expandTextSpan) {
         // Allow to insert a child at random index without overwriting
         // If the child is null, it is replaced. If it is not null, children are shifted

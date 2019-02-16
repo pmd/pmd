@@ -1947,7 +1947,6 @@ Dims:
  *
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType
  */
-// TODO make void
 void Type() #void:
 {
     Token t;
@@ -1991,43 +1990,53 @@ void ReferenceType() #void:
 
 /**
  * Parses a ClassOrInterfaceType. The production itself is #void,
- * but the node exists (declared inline within the production.
- * TODO have a different node for ParameterizedType? Zero size overhead in the grammar,
- * would allow us to specialize our API better.
+ * but the node exists (declared inline within the production).
  */
 void ClassOrInterfaceType() #void:
 {
-  StringBuilder s = new StringBuilder();
-  Token t;
+  StringBuilder imageBuilder = new StringBuilder();
 }
 {
+  /*
+    First, gobble up all identifiers until the first type arguments
+    or annotation is found. This builds a single ClassOrInterfaceType
+    with the given image and the type arguments if any.
+   */
   (
-    t=<IDENTIFIER> { s.append(t.getImage()); }
-    // FIXME We gobble up all identifiers until we find
-    // either type arguments or annotations, because
-    // it may be a FQCN, e.g. java.util.List is a single node
-    // But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
-    // I would have said this doesn't matter but the other fixme comment just
-    // below shows we need a rewrite phase anyway
+    t=<IDENTIFIER> { imageBuilder.append(t.getImage()); }
+    /*
+      FIXME We gobble up all identifiers until we find
+        either type arguments or annotations, because
+        it may be a FQCN, e.g. java.util.List is a single node.
+
+        But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
+        I would have said this doesn't matter but the other fixme comment just
+        below shows we need a rewrite phase anyway
+    */
 
     ( LOOKAHEAD("." <IDENTIFIER>)
-      "." t=<IDENTIFIER> { s.append('.').append(t.getImage()); }
+      "." t=<IDENTIFIER> { imageBuilder.append('.').append(t.getImage()); }
     )*
     [ LOOKAHEAD( "<" ) TypeArguments() ]
   ) #ClassOrInterfaceType
   {
     // At this point the first ClassOrInterfaceType is on top of the stack
-    jjtree.peekNode().setImage(s.toString());
+    jjtree.peekNode().setImage(imageBuilder.toString());
   }
 
-  // Now if there are other segments, either the previous type specified formal parameters,
-  // or the next has an annotation.
-  // We parse the rest of the type recursively, to preserve the position of type params
-  // and annotations.
+  /*
+    Now if there are other segments, either the previous type specified formal parameters,
+    or the next has an annotation.
 
-  // FIXME this doesn't account for annotated AND qualified types
-  // e.g. java.util.@Annot List, in which java.util should not be a ClassOrInterfaceType
-  // We can only fix that through rewrite, later on, with knowledge of the classpath.
+    Each of the following segments is its own ClassOrInterfaceType which encloses the
+    previous one. The resulting structure appears left-recursive, but the parser just
+    executes a loop. That scheme preserves the position of type params and annotations.
+    See #1150.
+
+    FIXME this doesn't account for annotated AND qualified types
+      e.g. java.util.@Annot List, in which java.util should not be a ClassOrInterfaceType
+      We can only fix that through rewrite, later on, with knowledge of the classpath.
+  */
 
   ( LOOKAHEAD(2)
       (
