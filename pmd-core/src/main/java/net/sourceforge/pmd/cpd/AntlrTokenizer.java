@@ -22,8 +22,8 @@ public abstract class AntlrTokenizer implements Tokenizer {
     @Override
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
 
-        AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
-        AntlrTokenFilter tokenFilter = getTokenFilter(tokenManager);
+        final AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
+        final AntlrTokenFilter tokenFilter = getTokenFilter(tokenManager);
 
         try {
             AntlrToken currentToken = tokenFilter.getNextToken();
@@ -42,7 +42,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
         }
     }
 
-    protected AntlrTokenFilter getTokenFilter(AntlrTokenManager tokenManager) {
+    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
         return new AntlrTokenFilter(tokenManager);
     }
 
@@ -51,7 +51,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
         return CharStreams.fromString(buffer.toString());
     }
 
-    private void processToken(Tokens tokenEntries, String fileName, AntlrToken token) {
+    private void processToken(final Tokens tokenEntries, final String fileName, final AntlrToken token) {
         final TokenEntry tokenEntry = new TokenEntry(token.getImage(), fileName, token.getBeginLine());
         tokenEntries.add(tokenEntry);
     }

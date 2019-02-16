@@ -31,7 +31,6 @@ public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
 
     @Override
     protected void analyzeToken(final AntlrToken currentToken) {
-        super.analyzeToken(currentToken);
         analyzeHiddenTokens(currentToken);
     }
 

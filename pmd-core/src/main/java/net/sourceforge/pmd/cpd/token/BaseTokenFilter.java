@@ -62,14 +62,6 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
     }
 
     /**
-     * Extension point for subclasses to indicate when to stop filtering tokens.
-     *
-     * @param currentToken The token to be analyzed
-     * @return True if the token filter has finished consuming all tokens, false otherwise
-     */
-    protected abstract boolean shouldStopProcessing(T currentToken);
-
-    /**
      * Extension point for subclasses to indicate tokens are to be filtered.
      *
      * @return True if tokens should be filtered, false otherwise
@@ -79,14 +71,20 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
     }
 
     /**
+     * Extension point for subclasses to indicate when to stop filtering tokens.
+     *
+     * @param currentToken The token to be analyzed
+     * @return True if the token filter has finished consuming all tokens, false otherwise
+     */
+    protected abstract boolean shouldStopProcessing(T currentToken);
+
+    /**
      * Extension point for subclasses to analyze all tokens (before filtering)
      * and update internal status to decide on custom discard rules.
      *
      * @param currentToken The token to be analyzed
      * @see #isLanguageSpecificDiscarding()
      */
-    protected void analyzeToken(final T currentToken) {
-        // noop
-    }
+    protected abstract void analyzeToken(T currentToken);
 
 }
