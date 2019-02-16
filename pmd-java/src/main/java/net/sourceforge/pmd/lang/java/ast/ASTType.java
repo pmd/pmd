@@ -22,11 +22,13 @@ import net.sourceforge.pmd.annotation.Experimental;
  */
 public interface ASTType extends TypeNode {
 
+    /**
+     * For now this returns the name of the type with all the segments,
+     * without annotations, array dimensions, or type parameters. Experimental
+     * because we need to specify it and see if it's useful.
+     */
     @Experimental
-    default String getTypeImage() {
-        return getImage();
-    }
-
+    String getTypeImage();
 
     /**
      * Returns the number of array dimensions of this type.

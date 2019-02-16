@@ -41,6 +41,12 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
     }
 
 
+    @Override
+    public String getTypeImage() {
+        return getImage();
+    }
+
+
     /**
      * Accept the visitor. *
      */
