@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 /**
- * Return type of a method.
+ * Return type of a method. TODO maybe make it implement {@link ASTType}.
  *
  * <pre>
  *
@@ -34,6 +34,10 @@ public class ASTResultType extends AbstractJavaNode {
         return jjtGetNumChildren() == 0;
     }
 
+
+    /**
+     * Returns the enclosed type node, or an empty optional if this is void.
+     */
     public Optional<ASTType> getTypeNode() {
         return isVoid() ? Optional.empty() : Optional.of((ASTType) jjtGetChild(0));
     }
