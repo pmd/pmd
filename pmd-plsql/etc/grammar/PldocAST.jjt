@@ -1435,12 +1435,12 @@ ASTComparisonCondition ComparisonCondition() :
 {
     (
     // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.image); } SqlExpression() )
+    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.image); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
 
     // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
+    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.image); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
+    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.image); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
     )
     { return jjtThis; }
 }
