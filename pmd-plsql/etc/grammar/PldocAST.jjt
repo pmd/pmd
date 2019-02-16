@@ -1308,23 +1308,23 @@ void Condition2() #void :
  |
     LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
  |
+    LOOKAHEAD(<EXISTS>) ExistsCondition()
+ |
     LOOKAHEAD(MultisetCondition()) MultisetCondition()
  |
-    LOOKAHEAD(9) ComparisonCondition()
+    LOOKAHEAD(FloatingPointCondition()) FloatingPointCondition()
  |
-    LOOKAHEAD(9) FloatingPointCondition()
+    LOOKAHEAD(SqlExpression() [<NOT>] <IN>) InCondition()
  |
-    LOOKAHEAD(9) InCondition()
+    LOOKAHEAD(LikeCondition()) LikeCondition()
  |
-    LOOKAHEAD(9) LikeCondition()
+    LOOKAHEAD(BetweenCondition()) BetweenCondition()
  |
-    LOOKAHEAD(4) BetweenCondition()
+    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>) IsNullCondition()
  |
-    LOOKAHEAD(4) IsNullCondition()
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
-    LOOKAHEAD(4) IsOfTypeCondition()
- |
-    ExistsCondition()
+    ComparisonCondition()
  )
 }
 
@@ -1536,7 +1536,11 @@ ASTFunctionCall FunctionCall() :
 }
 {
     name = FunctionName()
-    Arguments()
+    (
+      LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
+      |
+      Arguments()
+    )
 
     {
         jjtThis.setImage(name.getImage());
@@ -2740,15 +2744,17 @@ ASTLikeExpression LikeExpression() :
  }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/TRIM.html
+ */
 ASTTrimExpression TrimExpression() :
-{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	(thisToken = "TRIM" ) { sb.append(thisToken.image);}
 	"(" { sb.append("(");}
 	 [ ( <LEADING> | <TRAILING> | <BOTH> ){ sb.append(" "); sb.append(token.toString()); }  ]
 	 [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-	 ( <FROM>  )  { sb.append(thisToken.image);}
+	 ( <FROM>  )  { sb.append(token.image);}
 	 simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	")" { sb.append(")");}
   )
@@ -3066,7 +3072,6 @@ ASTPrimaryPrefix PrimaryPrefix() :
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
   LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
-| LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
 | LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
@@ -3335,8 +3340,7 @@ ASTArguments Arguments() :
 }
 
 ASTArgumentList ArgumentList() :
-{
-}
+{}
 {
   //Argument() ("," token=Argument())*
   (Argument())
@@ -3364,8 +3368,6 @@ ASTArgument Argument() :
  return jjtThis ;
  }
 }
-
-
 
 // ============================================================================
 // D E C L A R A T I O N S
