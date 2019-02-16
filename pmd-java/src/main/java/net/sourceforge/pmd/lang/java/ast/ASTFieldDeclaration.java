@@ -202,6 +202,10 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return signature;
     }
 
+    public ASTType getTypeNode() {
+        return getFirstChildOfType(ASTType.class);
+    }
+
 
     /**
      * Returns an iterator over the ids of the fields

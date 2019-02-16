@@ -5,6 +5,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Optional;
+
+
+/**
+ * Return type of a method.
+ *
+ * <pre>
+ *
+ * ResultType ::= "void" | {@link ASTType Type}
+ *
+ * </pre>
+ */
 public class ASTResultType extends AbstractJavaNode {
     public ASTResultType(int id) {
         super(id);
@@ -20,6 +32,10 @@ public class ASTResultType extends AbstractJavaNode {
 
     public boolean isVoid() {
         return jjtGetNumChildren() == 0;
+    }
+
+    public Optional<ASTType> getTypeNode() {
+        return isVoid() ? Optional.empty() : Optional.of((ASTType) jjtGetChild(0));
     }
 
     /**
