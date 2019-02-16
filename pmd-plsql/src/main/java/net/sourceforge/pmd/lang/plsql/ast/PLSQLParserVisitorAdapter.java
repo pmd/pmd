@@ -993,6 +993,11 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     }
 
     @Override
+    public Object visit(ASTHierarchicalQueryClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
     public Object visit(ASTIsASetCondition node, Object data) {
         return visit((PLSQLNode) node, data);
     }
@@ -1014,6 +1019,11 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
 
     @Override
     public Object visit(ASTRegexpLikeCondition node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTFunctionName node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 }

@@ -23,8 +23,11 @@ public class WhereClauseTest extends AbstractPLSQLParserTst {
         List<ASTSelectIntoStatement> selectStatements = input.findDescendantsOfType(ASTSelectIntoStatement.class);
         Assert.assertEquals(3, selectStatements.size());
 
-        ASTFunctionCall functionCall = selectStatements.get(2).getFirstDescendantOfType(ASTFunctionCall.class);
-        Assert.assertEquals("utils.get_colname", functionCall.getImage());
+        ASTFunctionCall functionCall = selectStatements.get(0).getFirstDescendantOfType(ASTFunctionCall.class);
+        Assert.assertEquals("UPPER", functionCall.getImage());
+
+        ASTFunctionCall functionCall2 = selectStatements.get(2).getFirstDescendantOfType(ASTFunctionCall.class);
+        Assert.assertEquals("utils.get_colname", functionCall2.getImage());
     }
 
     @Test

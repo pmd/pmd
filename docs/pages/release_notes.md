@@ -40,6 +40,7 @@ This is a {{ site.pmd.release_type }} release.
 *   plsql
     *   [#1587](https://github.com/pmd/pmd/issues/1587): \[plsql] Parse Exception with EXISTS
     *   [#1589](https://github.com/pmd/pmd/issues/1589): \[plsql] ParseException with subqueries in WHERE clause
+    *   [#1590](https://github.com/pmd/pmd/issues/1590): \[plsql] ParseException when using hierarchical query clause
 
 ### API Changes
 

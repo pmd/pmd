@@ -357,7 +357,7 @@ ASTPackageSpecification PackageSpecification()  :
 }
 {
       (
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<PACKAGE> simpleNode = ObjectNameDeclaration()
 
         (
@@ -388,7 +388,7 @@ ASTPackageBody PackageBody()  :
 }
 {
     (
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	( <PACKAGE> | <TYPE> ) <BODY> simpleNode = ObjectNameDeclaration()
 
 	(
@@ -490,7 +490,7 @@ ASTProgramUnit ProgramUnit()  :
 {
 	(
 
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 
         MethodDeclarator()
 
@@ -684,7 +684,7 @@ ASTDatatype Datatype() :
 		LOOKAHEAD(2) simpleNode = ScalarDataTypeName() {sb.append(simpleNode.getImage());}
 		|
 		(
-		  ( [LOOKAHEAD(2) <REF>  {sb.append(token.image);}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());}
+		  ( [LOOKAHEAD(2) "REF"  {sb.append(token.image);}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());}
 		    //Bug 35352414 - datatype may include dblink
 		    ["@" simpleNode = QualifiedName() {sb.append("@"+simpleNode.getImage());}  ]
 		    ["%" (<TYPE>|<ROWTYPE>){sb.append("%"+token.image);} ]
@@ -796,7 +796,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 
 	// reference types
   	<SYS_REFCURSOR> | //SRT Added to support pre-defined weak REF CURSOR
-  	(<REF><CURSOR> {name.append("REF CURSOR");}) |
+  	("REF" <CURSOR> {name.append("REF CURSOR");}) |
 	//<REF> object_type - defined elsewhere
 
 	// scalar types - date/time:
@@ -1145,6 +1145,7 @@ void RestOfStatement() #void :
 {
     FromClause()
     [ WhereClause() ]
+    [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
     [ OrderByClause() ]
     [ RowLimitingClause() ]
@@ -1190,7 +1191,7 @@ void OrderByEntry() #void :
 {
     ( LOOKAHEAD(2) ColumnAlias() | LOOKAHEAD(2) SqlExpression() )
     [ <ASC> | <DESC> ]
-    [ LOOKAHEAD(2) <NULLS> <FIRST> | LOOKAHEAD(2) <NULLS> <LAST> ]
+    [ LOOKAHEAD(2) <NULLS> "FIRST" | LOOKAHEAD(2) <NULLS> "LAST" ]
 }
 
 /**
@@ -1202,7 +1203,7 @@ ASTRowLimitingClause RowLimitingClause() :
   (
     <OFFSET> NumericLiteral() ( <ROW> | <ROWS> )
   |
-    <FETCH> ( <FIRST> | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
+    <FETCH> ( "FIRST" | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
   )
     { return jjtThis; }
 }
@@ -1215,7 +1216,7 @@ ASTQueryBlock QueryBlock() :
     SelectList()
     FromClause()
     [ WhereClause() ]
-    // [ HierarchicalQueryClause() ]
+    [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
     // [ ModelClause() ]
     { return jjtThis; }
@@ -1470,9 +1471,10 @@ ASTExpressionList ExpressionList() :
 ASTSqlExpression SqlExpression() :
 {}
 {
+ [ LOOKAHEAD(2) <PRIOR> ]
  // SimpleExpression
  (
-    LOOKAHEAD(FunctionCall()) FunctionCall()
+    LOOKAHEAD(3) AdditiveExpression() // this can be a literal or a simple expression, but no conditional
  |
     LOOKAHEAD(5) SchemaName() "." TableName() "." Column()
  |
@@ -1483,22 +1485,37 @@ ASTSqlExpression SqlExpression() :
     LOOKAHEAD(2) <ROWNUM>
  |
     LOOKAHEAD(2) "(" SelectStatement() ")"  // see "Scalar Subquery Expressions"
- |
-    AdditiveExpression() // this can be a literal or a simple expression, but no conditional
  )
     { return jjtThis; }
 }
 
 /**
- * See also https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
+ * Built-in function call or a user defined function call.
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Functions.html#GUID-D079EFD3-C683-441F-977E-2C9503089982
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
  *
- * A function reference might be:
+ * A function reference/name might be:
  * function_name
  * package.function_name
  * package.schema.function_name
- * optional: @ dblink .
+ * optional: @ dblink
+ *
  */
 ASTFunctionCall FunctionCall() :
+{
+    ASTFunctionName name;
+}
+{
+    name = FunctionName()
+    Arguments()
+
+    {
+        jjtThis.setImage(name.getImage());
+        return jjtThis;
+    }
+}
+
+ASTFunctionName FunctionName() :
 {
     ASTID id;
     StringBuilder name = new StringBuilder();
@@ -1506,12 +1523,9 @@ ASTFunctionCall FunctionCall() :
 {
     id = ID() { name.append(id.getImage()); }
     [ "." id = ID() { name.append('.').append(id.getImage()); }
-        [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+      [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     ]
     [ "@" id = ID() { name.append('@').append(id.getImage()); } ]
-
-    Arguments()
-
     {
         jjtThis.setImage(name.toString());
         return jjtThis;
@@ -1522,6 +1536,20 @@ ASTColumn Column() :
 { ASTID id; }
 {
     id = ID() { jjtThis.setImage(id.getImage()); }
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__I2126079
+ */
+ASTHierarchicalQueryClause HierarchicalQueryClause() :
+{}
+{
+  (
+    ( <CONNECT> <BY> [ LOOKAHEAD(2) <NOCYCLE>] Condition() [ <START> <WITH> Condition() ] )
+    |
+    ( <START> <WITH> Condition() <CONNECT> <BY> [ LOOKAHEAD(2) <NOCYCLE>] Condition() )
+  )
     { return jjtThis; }
 }
 
@@ -1566,19 +1594,14 @@ ASTSelectList SelectList() :
 void SelectListEntry() #void :
 {}
 {
-  (
-    LOOKAHEAD(3) TableAlias() "." "*"
-  |
-    LOOKAHEAD(FunctionCall()) FunctionCall() [ [<AS>] ColumnAlias() ]
-  |
-    LOOKAHEAD(3) Expression() [ [<AS>] ColumnAlias() ]
-  )
+  [ LOOKAHEAD(2) <CONNECT_BY_ROOT> ]
+  SqlExpression() [LOOKAHEAD(2, {!(getToken(1).kind == BULK)}) [LOOKAHEAD(2) <AS>] ColumnAlias() ]
 }
 
 ASTColumnAlias ColumnAlias() :
-{}
+{ ASTID id; }
 {
-    ( <IDENTIFIER> | <QUOTED_LITERAL> ) { jjtThis.setImage(token.image); }
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -2026,7 +2049,7 @@ ASTMultiTableInsert MultiTableInsert() :
 ASTConditionalInsertClause ConditionalInsertClause() :
 {}
 {
-    [ <ALL> | <FIRST> ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
+    [ <ALL> | "FIRST" ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
         [ <ELSE> ( InsertIntoClause() [ ValuesClause() ] )+ ]
     { return jjtThis; }
 }
@@ -2300,7 +2323,7 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 				((<TABLE> | <VARRAY> | <VARYING> <ARRAY>)["(" NumericLiteral() ")"]
 				<OF> Datatype() (<NOT> <NULL>)? (<INDEX> <BY> Datatype())?)
 				|
-				<REF> <CURSOR> [<RETURN> Datatype()]
+				"REF" <CURSOR> [<RETURN> Datatype()]
 				//Enumeration
 				| ( "("
 				      Expression()
@@ -2580,7 +2603,7 @@ ASTTrimExpression TrimExpression() :
 { Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	(thisToken = <TRIM> ) { sb.append(thisToken.image);}
+	(thisToken = "TRIM" ) { sb.append(thisToken.image);}
 	"(" { sb.append("(");}
 	 [ ( <LEADING> | <TRAILING> | <BOTH> ){ sb.append(" "); sb.append(token.toString()); }  ]
 	 [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
@@ -2879,7 +2902,7 @@ ASTPrimaryExpression PrimaryExpression() #PrimaryExpression(>1) :
       )
     |
     (
-      LOOKAHEAD( <NEW>  PrimaryPrefix() ) // Lookahead so that we can recover and treat NEW as an identifier
+      LOOKAHEAD(<NEW>  PrimaryPrefix() ) // Lookahead so that we can recover and treat NEW as an identifier
         <NEW> { sb.append(" NEW "); } (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}
       |       (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}
 
@@ -2898,7 +2921,8 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
-  ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
+  LOOKAHEAD(FunctionName() "(") simpleNode = FunctionCall()
+| LOOKAHEAD(Literal()) simpleNode = Literal() { sb.append(simpleNode.getImage()) ; }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
 | LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
 | LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
@@ -3354,7 +3378,7 @@ ASTView View()  :
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> <REPLACE>]
+  <CREATE> [<OR> "REPLACE"]
   [[<NO>] <FORCE>]
   <VIEW> simpleNode = ObjectNameDeclaration()
   ["(" ViewColumn() ("," ViewColumn())* ")"]
@@ -3371,7 +3395,7 @@ ASTSynonym Synonym()  :
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> <REPLACE>]
+  <CREATE> [<OR> "REPLACE"]
   [<PUBLIC>] <SYNONYM>
   simpleNode = ObjectNameDeclaration()
   <FOR>
@@ -3386,7 +3410,7 @@ ASTDirectory Directory()  :
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> <REPLACE>]
+  <CREATE> [<OR> "REPLACE"]
    <DIRECTORY>
   simpleNode = ObjectNameDeclaration()
   <AS>
@@ -3503,7 +3527,7 @@ ASTTypeSpecification TypeSpecification()  :
  PLSQLNode simpleNode = null;
 }
 {
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<TYPE> simpleNode = ObjectNameDeclaration()
 
 	[
@@ -3682,7 +3706,7 @@ ASTAlterTypeSpec AlterTypeSpec()  :
         |
 */
         [
-                <REPLACE>
+                "REPLACE"
                 (
 		LOOKAHEAD(2) //<AUTHID> (<CURRENT_USER> | <DEFINER>)
 				(
@@ -3894,7 +3918,7 @@ ASTTriggerUnit TriggerUnit()  :
  PLSQLNode simpleNode = null ;
 }
 {
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 
 	(<TRIGGER>) simpleNode = ObjectNameDeclaration()
 
@@ -4140,7 +4164,6 @@ MORE :
 
 TOKEN [IGNORE_CASE]:
 {
-<REPLACE: "REPLACE"> |
 <DEFINER: "DEFINER"> |
 <CURRENT_USER: "CURRENT_USER"> |
 <SERIALLY_REUSABLE: "SERIALLY_REUSABLE"> |
@@ -4151,7 +4174,10 @@ TOKEN [IGNORE_CASE]:
 | <INLINE: "INLINE"> // PRAGMA INLINE
 }
 
-/* PL/SQL RESERVED WORDS */
+/**
+ * PL/SQL RESERVED WORDS
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html#GUID-9BAA3A99-41B1-45CB-A91E-1E482BC1F927
+ */
 /**
  * 2006-05-20 - Matthias Hendler - Removed: <COLUMN: "COLUMN">
  *                                 Added: <MERGE: "MERGE">, <AFTER: "AFTER">, <BEFORE: "BEFORE">,
@@ -4175,7 +4201,6 @@ TOKEN [IGNORE_CASE]:
 <AT: "AT"> |
 <ATTRIBUTE: "ATTRIBUTE"> |
 <AUTHID: "AUTHID"> |
-<AVG: "AVG"> |
 <BEGIN: "BEGIN"> |
 <BETWEEN: "BETWEEN"> |
 <BINARY_INTEGER: "BINARY_INTEGER"> |
@@ -4246,7 +4271,6 @@ TOKEN [IGNORE_CASE]:
 <FALSE: "FALSE"> |
 <FETCH: "FETCH"> |
 <FINAL: "FINAL"> |
-<FIRST: "FIRST"> |
 <FLOAT: "FLOAT"> |
 <FOR: "FOR"> |
 <FORALL: "FORALL"> |
@@ -4290,7 +4314,6 @@ TOKEN [IGNORE_CASE]:
 <JOIN: "JOIN"> |
 <KEY: "KEY"> |
 //<LANGUAGE: "LANGUAGE"> |
-<LAST: "LAST"> |
 <LEVEL: "LEVEL"> |
 <LIKE: "LIKE"> |
 <LIKEC: "LIKEC"> |
@@ -4302,11 +4325,9 @@ TOKEN [IGNORE_CASE]:
 <LONG: "LONG"> |
 <LOOP: "LOOP"> |
 <MAP: "MAP"> |
-<MAX: "MAX"> |
 <MEMBER: "MEMBER"> |
 <MERGE: "MERGE"> |
 <METADATA: "METADATA"> |
-<MIN: "MIN"> |
 <MINUS: "MINUS"> |
 <MINUTE: "MINUTE"> |
 <MLSLABEL: "MLSLABEL"> |
@@ -4380,7 +4401,6 @@ TOKEN [IGNORE_CASE]:
 <RAW: "RAW"> |
 <REAL: "REAL"> |
 <RECORD: "RECORD"> |
-<REF: "REF"> |
 <REFERENCES: "REFERENCES"> |
 <REGEXP_LIKE: "REGEXP_LIKE"> |
 <RELEASE: "RELEASE"> |
@@ -4421,11 +4441,9 @@ TOKEN [IGNORE_CASE]:
 <SQLERRM: "SQLERRM"> |
 <START: "START"> |
 <STATIC: "STATIC"> |
-<STDDEV: "STDDEV"> |
 <SUBTYPE: "SUBTYPE"> |
 <SUBSTITUTABLE: "SUBSTITUTABLE"> |
 <SUCCESSFUL: "SUCCESSFUL"> |
-<SUM: "SUM"> |
 <SYNONYM: "SYNONYM"> |
 <SYSDATE: "SYSDATE"> |
 <SYS_REFCURSOR: "SYS_REFCURSOR"> |
@@ -4559,7 +4577,6 @@ TOKEN [IGNORE_CASE]:
 | <ATTACH : "ATTACH">
 | <CAST : "CAST">
 | <TREAT : "TREAT">
-| <TRIM : "TRIM">
 | <LEFT : "LEFT">
 | <RIGHT : "RIGHT">
 | <BOTH : "BOTH">
@@ -4580,9 +4597,10 @@ TOKEN [IGNORE_CASE]:
 | <SHARED : "SHARED">
 | <DIRECTORY : "DIRECTORY">
 | <USER : "USER">
-
 | <READ : "READ">
 | <LATERAL : "LATERAL">
+| <NOCYCLE : "NOCYCLE">
+| <CONNECT_BY_ROOT : "CONNECT_BY_ROOT">
 }
 
 /**
@@ -4666,7 +4684,11 @@ TOKEN :
 <SQLPLUS_TERMINATOR: ( ";" | "/" ) >
 }
 
-//SRT 2011-04-17 - START
+/**
+ * PL/SQL Reserved words
+ *
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html#GUID-9BAA3A99-41B1-45CB-A91E-1E482BC1F927
+ */
 ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
 {
 // PL/SQL RESERVED WORDS - V$RESERVED.RESERVED='Y'
@@ -4757,7 +4779,9 @@ ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
 ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
-(<FALSE>
+(
+"FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" |
+<FALSE>
  | <TRUE>
  | <A>
 //| <ABORT>
@@ -4894,7 +4918,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <CONNECT_BY_FILTERING>
 //| <CONNECT_BY_ISCYCLE>
 //| <CONNECT_BY_ISLEAF>
-//| <CONNECT_BY_ROOT>
+| <CONNECT_BY_ROOT>
 //| <CONNECT_TIME>
 //| <CONSIDER>
 //| <CONSISTENT>
@@ -4959,7 +4983,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DEMAND>
 //| <DENSE_RANK>
 //| <DEQUEUE>
-//| <DEREF>
 //| <DEREF_NO_REWRITE>
 //| <DETACHED>
 //| <DETERMINES>
@@ -5047,7 +5070,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <FINAL>
 //| <FINE>
 //| <FINISH>
-| <FIRST>
 //| <FIRST_ROWS>
 //| <FLAGGER>
 //| <FLASHBACK>
@@ -5168,7 +5190,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <KEYSIZE>
 //| <KILL>
 | <LANGUAGE>
-| <LAST>
 | <LATERAL>
 //| <LAYER>
 //| <LDAP_REG_SYNC_INTERVAL>
@@ -5216,7 +5237,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <MATCHED>
 //| <MATERIALIZE>
 //| <MATERIALIZED>
-| <MAX>
+//| <MAX>
 //| <MAXARCHLOGS>
 //| <MAXDATAFILES>
 //| <MAXEXTENTS>
@@ -5239,7 +5260,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <METADATA>
 //| <METHOD>
 //| <MIGRATE>
-| <MIN>
+//| <MIN>
 //| <MINEXTENTS>
 //| <MINIMIZE>
 //| <MINIMUM>
@@ -5359,7 +5380,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <NOAUDIT>
 //| <NOCACHE>
 //| <NOCPU_COSTING>
-//| <NOCYCLE>
+| <NOCYCLE>
 //| <NODELAY>
 //| <NOFORCE>
 //| <NOGUARANTEE>
@@ -5534,7 +5555,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RECYCLEBIN>
 //| <REDUCED>
 //| <REDUNDANCY>
-| <REF>
 //| <REF_CASCADE_CURSOR>
 //| <REFERENCE>
 //| <REFERENCED>
@@ -5551,7 +5571,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <REMARK>
 //| <REMOTE_MAPPED>
 //| <REPAIR>
-//| <REPLACE>
 //| <REQUIRED>
 //| <RESET>
 //| <RESETLOGS>
@@ -5744,7 +5763,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <TRANSITIONAL>
 | <TREAT>
 //| <TRIGGERS>
-| <TRIM>
 | <TRUNCATE>
 //| <TRUSTED>
 //| <TUNING>
@@ -5802,7 +5820,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <USING>
 //| <VALIDATE>
 //| <VALIDATION>
-//| <VALUE>
 | <VARRAY>
 | <VARIABLE>
 | <VARYING>
@@ -5868,7 +5885,6 @@ ASTID ID(): {}
 		|<EXTRACT> | <FALSE> | <TRUE>  | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <MONTH> | <YEAR>
 		 | <NO> |<ROW>  | <COMMENT> | <CURSOR>
 		*/
-		| <REPLACE> //SYNTAX
 		//20120501 | <DEFINER>
 		| <SERIALLY_REUSABLE> | <RESTRICT_REFERENCES>
 		| <EXCEPTION_INIT> | <AUTONOMOUS_TRANSACTION> // | <LANGUAGE>
@@ -5880,7 +5896,7 @@ ASTID ID(): {}
 		| <AS>  //SYNTAX  //RESERVED WORD
 		| <ASC>  //RESERVED WORD
 		//20120429 | <AT> | <AUTHID>
-		| <AVG>
+		//| <AVG>
 		//	<BEGIN> |
 		| <BETWEEN>  //RESERVED WORD
 		| <BINARY_INTEGER>
@@ -5897,7 +5913,7 @@ ASTID ID(): {}
 		| <CLUSTER> //-<COALESCE> |
 		//20120501 | <COLLECT>
 		| <COMPRESS>  //RESERVED WPRDS
-		| <CONNECT> //SYNTAX //RESERVED WORD
+		//| <CONNECT> //SYNTAX //RESERVED WORD
 		| <CONSTANT>
 		| <CREATE> //SYNTAX //RESERVED WORD
 		//20120501 | <CURRENT>
@@ -5905,17 +5921,17 @@ ASTID ID(): {}
 		| <DATE> //RESERVED WORD
 		| <DECLARE> //SYNTAX
 		| <DECIMAL> //RESERVED WORD
-		| <_DEFAULT> //RESERVED WORD
+		//| <_DEFAULT> //RESERVED WORD
 		| <DELETE>  //RESERVED WORD
 		| <DESC>  //RESERVED WORD
 		//| <DISTINCT>  //RESERVED WORD
 		| <DO>
 		| <DROP>  //RESERVED WORD
-		| <ELSE> //SYNTAX //RESERVED WORD
+		//| <ELSE> //SYNTAX //RESERVED WORD
 		| <ELSIF> //SYNTAX
 
 		//| <END> |<CURRENT_USER>
-		| <EXCEPTION> //SYNTAX
+		//| <EXCEPTION> //SYNTAX
 		| <EXCLUSIVE> //SYNTAX //RESERVED WORD
 		| <EXECUTE> //SYNTAX
 		//| <EXISTS> //SYNTAX //RESERVED WORD
@@ -5925,7 +5941,7 @@ ASTID ID(): {}
 		| <FLOAT> //SYNTAX //RESERVED WORD
 		| <FOR>  //RESERVED WORD
 		| <FORALL> //SYNTAX
-		| <FROM>  //RESERVED WORD
+		//| <FROM>  //RESERVED WORD
 
 		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
 		| <GOTO> //SYNTAX
@@ -5942,7 +5958,7 @@ ASTID ID(): {}
 		| <INTERFACE>
 		| <INTERSECT>  //RESERVED WORD
 		//20120501 | <INTERVAL>
-		| <INTO>  //RESERVED WORD
+		//| <INTO>  //RESERVED WORD
 		| <IS> //SYNTAX
 		//20120501 | <ISOLATION> | <JAVA> | <LEVEL>
 		| <LIKE>  //RESERVED WORD
@@ -5991,7 +6007,7 @@ ASTID ID(): {}
 		| <RAISE> //SYNTAX
 		| <RAW>  //RESERVED WORD
 		//20120501 | <REAL>
-		//<RECORD> | <RETURN> |  <SET> |<REF> |
+		//<RECORD> | <RETURN> |  <SET> |
 		//| <RELEASE>
 		//20120501 | <REVERSE>
 		//20120501 | <ROLLBACK> //SYNTAX
@@ -6005,10 +6021,10 @@ ASTID ID(): {}
 		| <SMALLINT>  //RESERVED WORD
 		| <SQL>
 		| <SQLCODE> | <SQLERRM>
-		| <START>  //RESERVED WORD
-		| <STDDEV> // <SUBTYPE> |
+		//| <START>  //RESERVED WORD
+		//| <STDDEV> // <SUBTYPE> |
 		//20120501 | <SUCCESSFUL>
-		| <SUM>
+		//| <SUM>
 		| <SYNONYM>  //RESERVED WORD
 		| <SYSDATE>
 		//| <TABLE>  //RESERVED WORD
@@ -6072,7 +6088,6 @@ ASTUnqualifiedID UnqualifiedID(): {}
 		| <OPERATOR>
 		| <PRIVATE>
 		| <RAW>
-		| <REPLACE>
 		| <STRING>
 		| <SQL>
 		| <SQLCODE>
@@ -6111,7 +6126,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <YEAR> --Unreserved Key Word
 		| <NO> //SRT
 		*/
-		| <REPLACE>
 		//20120501 | <DEFINER>
 		//| <CURRENT_USER>
 		| <SERIALLY_REUSABLE>
@@ -6128,7 +6142,7 @@ ASTQualifiedID QualifiedID(): {}
 		//<ASC>
 		//<AT>
 		//20120429 | <AUTHID>
-		| <AVG>
+		//| <AVG>
 		//<BEGIN>
 		//<BETWEEN>
 		| <BINARY_INTEGER>
@@ -6253,7 +6267,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <RAW>
 		//20120501 | <REAL>
 		//| <RECORD>
-		//| <REF>
 		//| <RELEASE>
 		//| <RETURN>
 		//20120501 | <REVERSE>
@@ -6273,10 +6286,10 @@ ASTQualifiedID QualifiedID(): {}
 		| <SQLCODE>
 		| <SQLERRM>
 		//<START>
-		| <STDDEV>
+		//| <STDDEV>
 		//| <SUBTYPE>
 		//20120501 | <SUCCESSFUL>
-		| <SUM>
+		//| <SUM>
 		| <SYNONYM>
 		| <SYSDATE>
 		//<TABLE>
@@ -6343,7 +6356,7 @@ ASTTypeKeyword TypeKeyword(): {}
 	<INTERVAL> |
 	<MONTH> |
 	<OCIROWID> |
-	<RECORD> | <REF> |
+	<RECORD> | "REF" |
 	<ROW> |
 	<ROWNUM> |
 	<ROWTYPE> | <SECOND> | <SET> |
