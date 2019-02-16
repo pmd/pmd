@@ -62,6 +62,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimaryPrefix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimarySuffix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTProgramUnit.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTRegexpLikeCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectIntoStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSubqueryOperation.java" />

@@ -37,6 +37,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1633](https://github.com/pmd/pmd/issues/1633): \[java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat
 *   java-performance
     *   [#1632](https://github.com/pmd/pmd/issues/1632): \[java] ConsecutiveLiteralAppends false positive over catch
+*   plsql
+    *   [#1587](https://github.com/pmd/pmd/issues/1587): \[plsql] Parse Exception with EXISTS
 
 ### API Changes
 
