@@ -13,7 +13,7 @@ class ASTArrayTypeTest : ParserTestSpec({
         "ArrayTypes[][][]" should matchType<ASTArrayType> {
 
             it.elementType shouldBe child<ASTClassOrInterfaceType> {
-                it.image shouldBe "ArrayTypes"
+                it.typeImage shouldBe "ArrayTypes"
             }
 
             it.dimensions shouldBe child {
@@ -30,7 +30,7 @@ class ASTArrayTypeTest : ParserTestSpec({
 
             // not an array type
             child<ASTClassOrInterfaceType> {
-                it.image shouldBe "ArrayTypes"
+                it.typeImage shouldBe "ArrayTypes"
             }
 
             child<ASTArrayDimsAndInits> {
