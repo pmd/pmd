@@ -358,7 +358,7 @@ ASTPackageSpecification PackageSpecification()  :
 }
 {
       (
-	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<PACKAGE> simpleNode = ObjectNameDeclaration()
 
         (
@@ -389,7 +389,7 @@ ASTPackageBody PackageBody()  :
 }
 {
     (
-	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	( <PACKAGE> | <TYPE> ) <BODY> simpleNode = ObjectNameDeclaration()
 
 	(
@@ -491,7 +491,7 @@ ASTProgramUnit ProgramUnit()  :
 {
 	(
 
-	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 
         MethodDeclarator()
 
@@ -1195,7 +1195,7 @@ void OrderByEntry() #void :
 {
     SqlExpression()
     [ <ASC> | <DESC> ]
-    [ <NULLS> ( "FIRST" | "LAST" ) ]
+    [ <NULLS> ( KEYWORD("FIRST") | "LAST" ) ]
 }
 
 /**
@@ -1207,7 +1207,7 @@ ASTRowLimitingClause RowLimitingClause() :
   (
     <OFFSET> NumericLiteral() ( <ROW> | <ROWS> )
   |
-    <FETCH> ( "FIRST" | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
+    <FETCH> ( KEYWORD("FIRST") | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
   )
     { return jjtThis; }
 }
@@ -2147,7 +2147,7 @@ ASTMultiTableInsert MultiTableInsert() :
 ASTConditionalInsertClause ConditionalInsertClause() :
 {}
 {
-    [ <ALL> | "FIRST" ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
+    [ <ALL> | KEYWORD("FIRST") ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
         [ <ELSE> ( InsertIntoClause() [ ValuesClause() ] )+ ]
     { return jjtThis; }
 }
@@ -3524,7 +3524,7 @@ ASTView View()  :
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> "REPLACE"]
+  <CREATE> [<OR> KEYWORD("REPLACE")]
   [[<NO>] <FORCE>]
   <VIEW> simpleNode = ObjectNameDeclaration()
   ["(" ViewColumn() ("," ViewColumn())* ")"]
@@ -3541,7 +3541,7 @@ ASTSynonym Synonym()  :
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> "REPLACE"]
+  <CREATE> [<OR> KEYWORD("REPLACE")]
   [<PUBLIC>] <SYNONYM>
   simpleNode = ObjectNameDeclaration()
   <FOR>
@@ -3556,7 +3556,7 @@ ASTDirectory Directory()  :
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> "REPLACE"]
+  <CREATE> [<OR> KEYWORD("REPLACE")]
    <DIRECTORY>
   simpleNode = ObjectNameDeclaration()
   <AS>
@@ -3673,7 +3673,7 @@ ASTTypeSpecification TypeSpecification()  :
  PLSQLNode simpleNode = null;
 }
 {
-	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<TYPE> simpleNode = ObjectNameDeclaration()
 
 	[
@@ -3852,7 +3852,7 @@ ASTAlterTypeSpec AlterTypeSpec()  :
         |
 */
         [
-                "REPLACE"
+                KEYWORD("REPLACE")
                 (
 		LOOKAHEAD(2) //<AUTHID> (<CURRENT_USER> | <DEFINER>)
 				(
@@ -4064,7 +4064,7 @@ ASTTriggerUnit TriggerUnit()  :
  PLSQLNode simpleNode = null ;
 }
 {
-	[<CREATE> [<OR> "REPLACE"] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 
 	(<TRIGGER>) simpleNode = ObjectNameDeclaration()
 
@@ -4938,11 +4938,25 @@ void RESERVED_WORD() #void: {}
 | <WITH>
 }
 
+void KEYWORD(String id) #void:
+{}
+{
+    <IDENTIFIER>
+    {
+        if (!token.image.equalsIgnoreCase(id)) {
+            String eol = System.getProperty("line.separator", "\n");
+            throw new ParseException("Encountered \"" + token.image + "\" at line "
+                + token.beginLine + ", column " + token.beginColumn + "." + eol
+                + "Was expecting: " + id);
+        }
+    }
+}
+
 ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
-"FIRST" | "REPLACE" | "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
+ "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 "OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
