@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -132,6 +133,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             String myTypeImg;
             if (myTypeNode instanceof ASTPrimitiveType) {
                 myTypeImg = myTypeNode.getImage();
+            } else if (myTypeNode.jjtGetChild(0) instanceof ASTArrayType) {
+                myTypeImg = ((ASTArrayType) myTypeNode.jjtGetChild(0)).getElementType().getImage();
             } else {
                 myTypeImg = myTypeNode.jjtGetChild(0).getImage();
             }

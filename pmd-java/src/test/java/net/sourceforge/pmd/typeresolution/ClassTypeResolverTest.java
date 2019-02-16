@@ -39,6 +39,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -826,7 +827,7 @@ public class ClassTypeResolverTest {
         assertNotNull(typeNode);
         assertTrue(typeNode.isArray());
         assertEquals(1, typeNode.getArrayDepth());
-        assertEquals("int", typeNode.getFirstChildOfType(ASTPrimitiveType.class).getImage());
+        assertEquals("int", typeNode.getFirstChildOfType(ASTArrayType.class).getFirstChildOfType(ASTPrimitiveType.class).getImage());
 
         ASTVariableDeclaratorId aID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(aID);
@@ -853,7 +854,7 @@ public class ClassTypeResolverTest {
         assertNotNull(typeNode);
         assertTrue(typeNode.isArray());
         assertEquals(1, typeNode.getArrayDepth());
-        assertEquals("String", typeNode.getFirstChildOfType(ASTClassOrInterfaceType.class).getImage());
+        assertEquals("String", typeNode.getFirstChildOfType(ASTArrayType.class).getFirstChildOfType(ASTClassOrInterfaceType.class).getImage());
 
         ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(cID);

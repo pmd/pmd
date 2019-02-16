@@ -52,13 +52,21 @@ public class ASTReferenceType extends AbstractJavaTypeNode implements Dimensiona
     @Override
     @Deprecated
     public int getArrayDepth() {
-        return arrayDepth;
+        if (isArray()) {
+            if (arrayDepth > 0) {
+                return arrayDepth;
+            } else {
+                ASTArrayType arrayType = (ASTArrayType) jjtGetChild(0);
+                return arrayType.getArrayDepth();
+            }
+        }
+        return 0;
     }
 
     @Override
     @Deprecated
     public boolean isArray() {
-        return arrayDepth > 0;
+        return arrayDepth > 0 || jjtGetChild(0) instanceof ASTArrayType;
     }
 
 }

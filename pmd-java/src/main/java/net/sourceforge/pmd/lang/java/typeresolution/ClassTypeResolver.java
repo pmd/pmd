@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -279,6 +280,23 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         return data;
     }
+
+
+    @Override
+    public Object visit(ASTArrayType node, Object data) {
+
+        AbstractJavaTypeNode element = node.getElementType();
+
+        element.jjtAccept(this, data);
+
+        JavaTypeDefinition def = element.getTypeDefinition();
+        if (def != null) {
+            node.setTypeDefinition(def.withDimensions(node.getArrayDepth()));
+        }
+
+        return data;
+    }
+
 
     /**
      * Set's the node's type to the found Class in the node's name (if there is a class to be found).

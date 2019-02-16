@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
@@ -103,6 +104,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     private TypeNode getTypeNode() {
+        if (isArray() && getAccessNodeParent().hasDescendantOfType(ASTArrayType.class)) {
+            return getAccessNodeParent().getFirstChildOfType(ASTType.class).getFirstDescendantOfType(ASTArrayType.class).getElementType();
+        }
         if (isPrimitiveType()) {
             return (TypeNode) getAccessNodeParent().getFirstChildOfType(ASTType.class).jjtGetChild(0);
         }

@@ -30,6 +30,14 @@ public final class ASTArrayType extends AbstractJavaTypeNode {
     }
 
 
+    public AbstractJavaTypeNode getElementType() {
+        return (AbstractJavaTypeNode) jjtGetChild(0);
+    }
+
+    public String getTypeImage() {
+        return getElementType().getImage();
+    }
+
     public int getArrayDepth() {
         return getDimensions().getSize();
     }
