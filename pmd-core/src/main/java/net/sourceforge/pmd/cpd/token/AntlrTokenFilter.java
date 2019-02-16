@@ -1,17 +1,46 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.cpd.token;
+
+import static org.antlr.v4.runtime.Token.EOF;
 
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 
-public class AntlrTokenFilter implements TokenFilter {
+/**
+ * A generic filter for Antlr-based token managers that allows to use comments
+ * to enable / disable analysis of parts of the stream
+ */
+public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
 
-    private TokenFilter tokenFilter;
+    private boolean discardingHiddenTokens = false;
 
+    /**
+     * Creates a new AntlrTokenFilter
+     * @param tokenManager The token manager from which to retrieve tokens to be filtered
+     */
     public AntlrTokenFilter(final AntlrTokenManager tokenManager) {
-        this.tokenFilter = new JavaCCTokenFilter(tokenManager);
+        super(tokenManager);
     }
 
     @Override
-    public AntlrToken getNextToken() {
-        return (AntlrToken) tokenFilter.getNextToken();
+    protected boolean shouldStopProcessing(final AntlrToken currentToken) {
+        return currentToken.getType() == EOF;
+    }
+
+    @Override
+    protected void analyzeToken(final AntlrToken currentToken) {
+        super.analyzeToken(currentToken);
+        analyzeHiddenTokens(currentToken);
+    }
+
+    @Override
+    protected boolean isLanguageSpecificDiscarding() {
+        return super.isLanguageSpecificDiscarding() || discardingHiddenTokens;
+    }
+
+    private void analyzeHiddenTokens(final AntlrToken token) {
+        discardingHiddenTokens = token.isHidden();
     }
 }

@@ -8,12 +8,9 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 
 import net.sourceforge.pmd.cpd.token.AntlrToken;
-import net.sourceforge.pmd.cpd.token.AntlrHiddenTokenFilter;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
-
-import static org.antlr.v4.runtime.Token.EOF;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
@@ -30,7 +27,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
 
         try {
             AntlrToken currentToken = tokenFilter.getNextToken();
-            while (currentToken != null && currentToken.getType() != EOF) {
+            while (currentToken != null) {
                 processToken(tokenEntries, tokenManager.getFileName(), currentToken);
                 currentToken = tokenFilter.getNextToken();
             }
@@ -46,7 +43,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
     }
 
     protected AntlrTokenFilter getTokenFilter(AntlrTokenManager tokenManager) {
-        return new AntlrHiddenTokenFilter(tokenManager);
+        return new AntlrTokenFilter(tokenManager);
     }
 
     /* default */ static CharStream getCharStreamFromSourceCode(final SourceCode sourceCode) {
