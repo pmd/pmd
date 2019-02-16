@@ -316,7 +316,7 @@ public class PMD {
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
-        final RuleSetFactory silentFactoy = new RuleSetFactory(ruleSetFactory, false);
+        final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
 
         /*
          * Check if multithreaded support is available. ExecutorService can also
@@ -324,9 +324,9 @@ public class PMD {
          * "-threads 0" command line option.
          */
         if (configuration.getThreads() > 0) {
-            new MultiThreadProcessor(configuration).processFiles(silentFactoy, files, ctx, renderers);
+            new MultiThreadProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         } else {
-            new MonoThreadProcessor(configuration).processFiles(silentFactoy, files, ctx, renderers);
+            new MonoThreadProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         }
 
         // Persist the analysis cache
