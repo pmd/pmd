@@ -4322,90 +4322,152 @@ TOKEN [IGNORE_CASE]:
 
 /**
  * PL/SQL RESERVED WORDS
- * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html#GUID-9BAA3A99-41B1-45CB-A91E-1E482BC1F927
- */
-/**
- * 2006-05-20 - Matthias Hendler - Removed: <COLUMN: "COLUMN">
- *                                 Added: <MERGE: "MERGE">, <AFTER: "AFTER">, <BEFORE: "BEFORE">,
- *                                 <INSTEADOF: "INSTEAD OF">, <FOREACHROW: "FOR EACH ROW">, <REFERENCING: "REFERENCING">,
- *                                 <OLD: "OLD">, <PARENT: "PARENT">
- * 2016-11-04 - Andreas Dangel - Added <ONLY: "ONLY">, <IN_OUT: "IN_OUT">
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html
+ *
+ * See also pseudo-production #RESERVED_WORD().
  */
 
 TOKEN [IGNORE_CASE]:
 {
-<ADD: "ADD"> |
-<AGGREGATE: "AGGREGATE"> |
 <ALL: "ALL"> |
 <ALTER: "ALTER"> |
 <AND: "AND"> |
 <ANY: "ANY"> |
-<APPLY: "APPLY"> |
-<ARRAY: "ARRAY"> |
 <AS: "AS"> |
 <ASC: "ASC"> |
 <AT: "AT"> |
-<ATTRIBUTE: "ATTRIBUTE"> |
-<AUTHID: "AUTHID"> |
 <BEGIN: "BEGIN"> |
 <BETWEEN: "BETWEEN"> |
+<BY: "BY"> |
+<CASE: "CASE"> |
+<CHECK: "CHECK"> |
+<CLUSTERS: "CLUSTERS"> |
+<CLUSTER: "CLUSTER"> |
+<COLAUTH: "COLAUTH"> |
+<COLUMNS: "COLUMNS"> |
+<COMPRESS: "COMPRESS"> |
+<CONNECT: "CONNECT"> |
+<CRASH: "CRASH"> |
+<CREATE: "CREATE"> |
+<CURSOR: "CURSOR"> |
+<DECLARE: "DECLARE"> |
+<_DEFAULT: "DEFAULT"> |
+<DESC: "DESC"> |
+<DISTINCT: "DISTINCT"> |
+<DROP: "DROP"> |
+<ELSE: "ELSE"> |
+<END: "END"> |
+<EXCEPTION: "EXCEPTION"> |
+<EXCLUSIVE: "EXCLUSIVE"> |
+<FETCH: "FETCH"> |
+<FOR: "FOR"> |
+<FROM: "FROM"> |
+<FUNCTION: "FUNCTION"> |
+<GOTO: "GOTO"> |
+<GRANT: "GRANT"> |
+<GROUP: "GROUP"> |
+<HAVING: "HAVING"> |
+<IDENTIFIED: "IDENTIFIED"> |
+<IF: "IF"> |
+<IN: "IN"> |
+<INDEX: "INDEX"> |
+<INDEXES: "INDEXES"> |
+<INSERT: "INSERT"> |
+<INTERSECT: "INTERSECT"> |
+<INTO: "INTO"> |
+<IS: "IS"> |
+<LIKE: "LIKE"> |
+<LOCK: "LOCK"> |
+<MINUS: "MINUS"> |
+<MODE: "MODE"> |
+<NOCOMPRESS: "NOCOMPRESS"> |
+<NOT: "NOT"> |
+<NOWAIT: "NOWAIT"> |
+<NULL: "NULL"> |
+<OF: "OF"> |
+<ON: "ON"> |
+<OPTION: "OPTION"> |
+<OR: "OR"> |
+<ORDER: "ORDER"> |
+<OVERLAPS: "OVERLAPS"> |
+<PROCEDURE: "PROCEDURE"> |
+<PUBLIC: "PUBLIC"> |
+<RESOURCE: "RESOURCE"> |
+<REVOKE: "REVOKE"> |
+<SELECT: "SELECT"> |
+<SHARE: "SHARE"> |
+<SIZE: "SIZE"> |
+<SQL: "SQL"> |
+<START: "START"> |
+<SUBTYPE: "SUBTYPE"> |
+<TABAUTH: "TABAUTH"> |
+<TABLE: "TABLE"> |
+<THEN: "THEN"> |
+<TO: "TO"> |
+<TYPE: "TYPE"> |
+<UNION: "UNION"> |
+<UNIQUE: "UNIQUE"> |
+<UPDATE: "UPDATE"> |
+<VALUES: "VALUES"> |
+<VIEW: "VIEW"> |
+<VIEWS: "VIEWS"> |
+<WHEN: "WHEN"> |
+<WHERE: "WHERE"> |
+<WITH: "WITH">
+}
+
+/**
+ * Tokens, that are not reserved words, but used as keywords...
+ * These are therefore valid identifiers
+ */
+TOKEN [IGNORE_CASE]:
+{
+<ADD: "ADD"> |
+<AGGREGATE: "AGGREGATE"> |
+<APPLY: "APPLY"> |
+<ARRAY: "ARRAY"> |
+<ATTRIBUTE: "ATTRIBUTE"> |
+<AUTHID: "AUTHID"> |
 <BINARY_INTEGER: "BINARY_INTEGER"> |
 <BODY: "BODY"> |
 <BOOLEAN: "BOOLEAN"> |
 <BULK: "BULK"> |
-<BY: "BY"> |
 <BYTE: "BYTE"> |
 <CASCADE: "CASCADE"> |
-<CASE: "CASE"> |
 <CHAR: "CHAR"> |
 <CHAR_BASE: "CHAR_BASE"> |
-<CHECK: "CHECK"> |
 <CLOSE: "CLOSE"> |
-<CLUSTER: "CLUSTER"> |
 <COALESCE: "COALESCE"> |
 <COLLECT: "COLLECT"> |
 <COLUMN: "COLUMN"> |
 <COMMENT: "COMMENT"> |
 <COMMIT: "COMMIT"> |
-<COMPRESS: "COMPRESS"> |
-<CONNECT: "CONNECT"> |
 <CONSTANT: "CONSTANT"> |
 <CONSTRAINT: "CONSTRAINT"> |
 <CONSTRUCTOR: "CONSTRUCTOR"> |
 <CONTINUE: "CONTINUE"> |
 <CONVERT: "CONVERT"> |
-<CREATE: "CREATE"> |
 <CROSS: "CROSS"> |
 <CUBE: "CUBE"> |
 <CURRENT: "CURRENT"> |
 <CURRVAL: "CURRVAL"> |
-<CURSOR: "CURSOR"> |
 <DATA: "DATA"> |
 <DATE: "DATE"> |
 <DAY: "DAY"> |
-<DECLARE: "DECLARE"> |
 <DECIMAL: "DECIMAL"> |
-<_DEFAULT: "DEFAULT"> |
 <DEFINITION: "DEFINITION"> |
 <DELETE: "DELETE"> |
-<DESC: "DESC"> |
 <DETERMINISTIC: "DETERMINISTIC"> |
 <DISABLE: "DISABLE"> | // Needed for 11G Trigger Syntax
-<DISTINCT: "DISTINCT"> |
 <DO: "DO"> |
-<DROP: "DROP"> |
 <DUPLICATED: "DUPLICATED"> |
 <EDITIONABLE: "EDITIONABLE"> |
 <ELEMENT: "ELEMENT"> |
-<ELSE: "ELSE"> |
 <ELSIF: "ELSIF"> |
 <ENABLE: "ENABLE"> | // Needed for 11G Trigger Syntax
-<END: "END"> |
 <ESCAPE: "ESCAPE"> |
 <EXCEPT: "EXCEPT"> |
-<EXCEPTION: "EXCEPTION"> |
 <EXCEPTIONS: "EXCEPTIONS"> |
-<EXCLUSIVE: "EXCLUSIVE"> |
 <EXECUTE: "EXECUTE"> |
 <EXISTS: "EXISTS"> |
 <EXIT: "EXIT"> |
@@ -4415,71 +4477,51 @@ TOKEN [IGNORE_CASE]:
 <EXTENDS: "EXTENDS"> |
 <EXTRACT: "EXTRACT"> |
 <FALSE: "FALSE"> |
-<FETCH: "FETCH"> |
 <FINAL: "FINAL"> |
 <FLOAT: "FLOAT"> |
-<FOR: "FOR"> |
 <FORALL: "FORALL"> |
 <FOREIGN: "FOREIGN"> |
 <FORCE: "FORCE"> |
-<FROM: "FROM"> |
 <FULL: "FULL"> |
-<FUNCTION: "FUNCTION"> |
 <GLOBAL: "GLOBAL"> |
-<GOTO: "GOTO"> |
-<GROUP: "GROUP"> |
 <GROUPING: "GROUPING"> |
-<GRANT: "GRANT"> | //SRT 2011-04-17
 <HASH: "HASH"> |
-<HAVING: "HAVING"> |
 <HEAP: "HEAP"> |
 <HOUR: "HOUR"> |
-<IDENTIFIED: "IDENTIFIED"> | //SRT 2011-04-17
-<IF: "IF"> |
 <IMMEDIATE: "IMMEDIATE"> |
-<IN: "IN"> |
 <INNER: "INNER"> |
 <IN_OUT: "IN_OUT"> |
-<INDEX: "INDEX"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
 <INDEXTYPE: "INDEXTYPE"> |
 <INDICATOR: "INDICATOR"> |
 <INFINITE: "INFINITE"> |
-<INSERT: "INSERT"> |
 <INSTANTIABLE: "INSTANTIABLE"> |
 <INTEGER: "INTEGER"> |
 <INTERFACE: "INTERFACE"> |
-<INTERSECT: "INTERSECT"> |
 <INTERVAL: "INTERVAL"> |
-<INTO: "INTO"> |
 <INVALIDATE: "INVALIDATE"> |
-<IS: "IS"> |
 <ISOLATION: "ISOLATION"> |
 <JAVA: "JAVA"> |
 <JOIN: "JOIN"> |
 <KEY: "KEY"> |
 //<LANGUAGE: "LANGUAGE"> |
 <LEVEL: "LEVEL"> |
-<LIKE: "LIKE"> |
 <LIKEC: "LIKEC"> |
 <LIKE2: "LIKE2"> |
 <LIKE4: "LIKE4"> |
 <LIMIT: "LIMIT"> |
 <LIMITED: "LIMITED"> |
-<LOCK: "LOCK"> |
 <LONG: "LONG"> |
 <LOOP: "LOOP"> |
 <MAP: "MAP"> |
 <MEMBER: "MEMBER"> |
 <MERGE: "MERGE"> |
 <METADATA: "METADATA"> |
-<MINUS: "MINUS"> |
 <MINUTE: "MINUTE"> |
 <MLSLABEL: "MLSLABEL"> |
 <MODIFY: "MODIFY"> |
 <MOD: "MOD"> |
-<MODE: "MODE"> |
 <MONTH: "MONTH"> |
 <NAN: "NAN"> |
 <NATURAL: "NATURAL"> |
@@ -4489,13 +4531,9 @@ TOKEN [IGNORE_CASE]:
 <NEXT: "NEXT"> |
 <NEXTVAL: "NEXTVAL"> |
 <NO: "NO"> |
-<NOCOMPRESS: "NOCOMPRESS"> | //SRT 2011-04-17
 <NOCOPY: "NOCOPY"> |
 <NONE: "NONE"> |
 <NONEDITIONABLE: "NONEDITIONABLE"> |
-<NOT: "NOT"> |
-<NOWAIT: "NOWAIT"> |
-<NULL: "NULL"> |
 <NULLIF: "NULLIF"> |
 <NULLS: "NULLS"> |
 <NUMBER: "NUMBER"> |
@@ -4507,17 +4545,12 @@ TOKEN [IGNORE_CASE]:
 <NUMBER_BASE: "NUMBER_BASE"> |
 <OBJECT: "OBJECT"> |
 <OCIROWID: "OCIROWID"> |
-<OF: "OF"> |
 <OFFSET: "OFFSET"> |
 <OID: "OID"> |
-<ON: "ON"> |
 <ONLY: "ONLY"> |
 <OPAQUE: "OPAQUE"> |
 <OPEN: "OPEN"> |
 <OPERATOR: "OPERATOR"> |
-<OPTION: "OPTION"> |
-<OR: "OR"> |
-<ORDER: "ORDER"> |
 <ORGANIZATION: "ORGANIZATION"> |
 <OTHERS: "OTHERS"> |
 <OUT: "OUT"> |
@@ -4539,8 +4572,6 @@ TOKEN [IGNORE_CASE]:
 <PROMPT: "PROMPT"> |
 <PRIMARY: "PRIMARY"> |
 <PRIVATE: "PRIVATE"> |
-<PROCEDURE: "PROCEDURE"> |
-<PUBLIC: "PUBLIC"> |
 //<QQUOTE_START: "Q'">  |  // Mark the start of a Q-quoted string, e.g. Q'[ This string contains a single-quote(') ]'
 <RAISE: "RAISE"> |
 <RANGE: "RANGE"> |
@@ -4552,13 +4583,11 @@ TOKEN [IGNORE_CASE]:
 <RELEASE: "RELEASE"> |
 <RELIES_ON: "RELIES_ON"> |
 <RENAME: "RENAME"> | //SRT 2011-04-17
-<RESOURCE: "RESOURCE"> | //SRT 2011-04-17
 <RESULT: "RESULT"> |
 <RESULT_CACHE: "RESULT_CACHE"> |
 <RETURN: "RETURN"> |
 <RETURNING: "RETURNING"> |
 <REVERSE: "REVERSE"> |
-<REVOKE: "REVOKE"> | //SRT 2011-04-17
 <ROLLBACK: "ROLLBACK"> |
 <ROLLUP: "ROLLUP"> |
 <ROW: "ROW"> |
@@ -4569,33 +4598,25 @@ TOKEN [IGNORE_CASE]:
 <SAVE: "SAVE"> |
 <SAVEPOINT: "SAVEPOINT"> |
 <SECOND: "SECOND"> |
-<SELECT: "SELECT"> |
 <SELF: "SELF"> |
 <SEPARATE: "SEPARATE"> |
 <SET: "SET"> |
 <SETS: "SETS"> |
 <SIBLINGS: "SIBLINGS"> |
-<SIZE: "SIZE"> | //SRT 2011-04-17
 <SHARDED: "SHARDED"> |
-<SHARE: "SHARE"> |
 <SHARING: "SHARING"> |
 <SMALLINT: "SMALLINT"> |
 <SOME: "SOME"> |
 <SPACE: "SPACE"> |
-<SQL: "SQL"> |
 <SQLCODE: "SQLCODE"> |
 <SQLERRM: "SQLERRM"> |
-<START: "START"> |
 <STATIC: "STATIC"> |
-<SUBTYPE: "SUBTYPE"> |
 <SUBSTITUTABLE: "SUBSTITUTABLE"> |
 <SUCCESSFUL: "SUCCESSFUL"> |
 <SYNONYM: "SYNONYM"> |
 <SYSDATE: "SYSDATE"> |
 <SYS_REFCURSOR: "SYS_REFCURSOR"> |
-<TABLE: "TABLE"> |
 <TEMPORARY: "TEMPORARY"> |
-<THEN: "THEN"> |
 <TIES: "TIES"> |
 <TIME: "TIME"> |
 <TIMESTAMP: "TIMESTAMP"> |
@@ -4603,21 +4624,14 @@ TOKEN [IGNORE_CASE]:
 <TIMEZONE_ABBR: "TIMEZONE_ABBR"> |
 <TIMEZONE_MINUTE: "TIMEZONE_MINUTE"> |
 <TIMEZONE_HOUR: "TIMEZONE_HOUR"> |
-<TO: "TO"> |
 <TRANSACTION: "TRANSACTION"> |
 <TRIGGER: "TRIGGER"> |
 <TRUE: "TRUE"> |
-<TYPE: "TYPE"> |
 <UI: "UI"> |
 <UNDER: "UNDER"> |
-<UNIQUE: "UNIQUE"> | //SRT 2011-04-17
 <USING: "USING"> |
-<VALUES: "VALUES"> | //SRT 2011-04-17
-<WHEN: "WHEN"> |
-<WHERE: "WHERE"> | //SRT 2011-04-17
 <WHILE: "WHILE"> |
 <YES: "YES"> | //SRT 2011-04-17
-
 
 <SHOW: "SHOW"> |
 <SPOOL: "SPOOL"> |
@@ -4627,7 +4641,6 @@ TOKEN [IGNORE_CASE]:
 //<WHILE: "WHILE"> |
 //<NAME: "NAME"> |
 <A: "A"> |
-<UPDATE: "UPDATE"> |
 <VARCHAR: "VARCHAR"> |
 <VARCHAR2: "VARCHAR2"> |
 <DOUBLE: "DOUBLE"> |
@@ -4648,7 +4661,6 @@ TOKEN [IGNORE_CASE]:
 <NCLOB: "NCLOB"> |
 <YEAR: "YEAR"> |
 <LOCAL: "LOCAL"> |
-<WITH: "WITH"> |
 <ZONE: "ZONE"> |
 <CHARACTER: "CHARACTER"> |
 <AFTER: "AFTER"> |
@@ -4657,9 +4669,8 @@ TOKEN [IGNORE_CASE]:
 <FOREACHROW: "FOR EACH ROW"> |
 <REFERENCING: "REFERENCING"> |
 <OLD: "OLD"> |
-<PARENT: "PARENT"> |
-<VIEW: "VIEW"> |
-<UNION: "UNION">
+<PARENT: "PARENT">
+
 | <CC_IF: "$IF">
 | <CC_THEN: "$THEN">
 | <CC_ELSE: "$ELSE">
@@ -4833,93 +4844,98 @@ TOKEN :
 /**
  * PL/SQL Reserved words
  *
- * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html#GUID-9BAA3A99-41B1-45CB-A91E-1E482BC1F927
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html
+ *
+ * Note: This production is not used, it is just here for reference of collecting all reserved words.
+ * Reserved words cannot be used a identifiers.
  */
-ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
+void RESERVED_WORD() #void: {}
 {
-// PL/SQL RESERVED WORDS - V$RESERVED.RESERVED='Y'
-( <ALL>
+  <ALL>
 | <ALTER>
 | <AND>
 | <ANY>
 | <AS>
 | <ASC>
+| <AT>
+| <BEGIN>
 | <BETWEEN>
 | <BY>
-| <CHAR>
+| <CASE>
 | <CHECK>
+| <CLUSTERS>
 | <CLUSTER>
+| <COLAUTH>
+| <COLUMNS>
 | <COMPRESS>
 | <CONNECT>
+| <CRASH>
 | <CREATE>
-| <DATE>
-| <DECIMAL>
+| <CURSOR>
+| <DECLARE>
 | <_DEFAULT>
-| <DELETE>
 | <DESC>
 | <DISTINCT>
 | <DROP>
 | <ELSE>
+| <END>
+| <EXCEPTION>
 | <EXCLUSIVE>
-| <EXISTS>
-| <FLOAT>
+| <FETCH>
 | <FOR>
 | <FROM>
+| <FUNCTION>
+| <GOTO>
 | <GRANT>
 | <GROUP>
 | <HAVING>
 | <IDENTIFIED>
+| <IF>
 | <IN>
 | <INDEX>
+| <INDEXES>
 | <INSERT>
-| <INTEGER>
 | <INTERSECT>
 | <INTO>
 | <IS>
 | <LIKE>
 | <LOCK>
-| <LONG>
 | <MINUS>
 | <MODE>
 | <NOCOMPRESS>
 | <NOT>
 | <NOWAIT>
 | <NULL>
-| <NUMBER>
 | <OF>
 | <ON>
 | <OPTION>
 | <OR>
 | <ORDER>
-| <PCTFREE>
-| <PRIOR>
+| <OVERLAPS>
+| <PROCEDURE>
 | <PUBLIC>
-| <RAW>
-// | <RENAME> // Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
 | <RESOURCE>
 | <REVOKE>
 | <SELECT>
-| <SET>
 | <SHARE>
 | <SIZE>
-| <SMALLINT>
+| <SQL>
 | <START>
-| <SYNONYM>
+| <SUBTYPE>
+| <TABAUTH>
 | <TABLE>
 | <THEN>
 | <TO>
-| <TRIGGER>
+| <TYPE>
 | <UNION>
 | <UNIQUE>
 | <UPDATE>
 | <VALUES>
-| <VARCHAR>
-| <VARCHAR2>
 | <VIEW>
+| <VIEWS>
+| <WHEN>
 | <WHERE>
 | <WITH>
-)
- { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
@@ -6503,35 +6519,5 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
-}
-
-
-
-
-/**
- * Tests, if the new Token if type ID is identical to the old Token of type ID.
- *
- * 2006-05-18 - Matthias Hendler - added: Just for understanding javacc and not used,
- *                                        cause to many closing ENDs (IDENTIFIER) were mistyped.
- */
-PLSQLNode EqualsOldIDNewID(PLSQLNode pOldID) :
-{
-	PLSQLNode newID;
-	Token oldIDToken;
-	Token newIDToken;
-}
-{
-	newID = ID()
-	{
-	        oldIDToken = (Token) ((AbstractPLSQLNode)pOldID).value ;
-	        newIDToken = (Token) ((AbstractPLSQLNode)newID).value ;
-		if (oldIDToken.image.equals(newIDToken.image)) {
-			return newID;
-		} else {
-			throw new ParseException("PLSQL syntax error on line "+newIDToken.beginLine+" at column "+newIDToken.beginColumn+"!\n"
-				+ "Found \""+newIDToken.image+"\" but expected \""+oldIDToken.image+"\".");
-		}
-	}
-
 }
 

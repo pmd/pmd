@@ -741,11 +741,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
     @Override
-    public Object visit(ASTKEYWORD_RESERVED node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
     public Object visit(ASTKEYWORD_UNRESERVED node, Object data) {
         return visit((PLSQLNode) node, data);
     }
@@ -772,11 +767,6 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
 
     @Override
     public Object visit(ASTJavaInterfaceClass node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTEqualsOldIDNewID node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 

@@ -246,8 +246,6 @@ TYPE typ_unreserved_keywords AS OBJECT
   COLUMN_STATS VARCHAR2(240),
 /** Unreserved Keyword Word COLUMN_VALUE **/
   COLUMN_VALUE VARCHAR2(240),
-/** Unreserved Keyword Word COLUMNS **/
-  COLUMNS VARCHAR2(240),
 /** Unreserved Keyword Word COMMENT **/
   COMMENT VARCHAR2(240),
 /** Unreserved Keyword Word COMMIT **/
@@ -722,8 +720,6 @@ TYPE typ_unreserved_keywords AS OBJECT
   INDEX_STATS VARCHAR2(240),
 /** Unreserved Keyword Word INDEXED **/
   INDEXED VARCHAR2(240),
-/** Unreserved Keyword Word INDEXES **/
-  INDEXES VARCHAR2(240),
 /** Unreserved Keyword Word INDEXTYPE **/
   INDEXTYPE VARCHAR2(240),
 /** Unreserved Keyword Word INDEXTYPES **/
@@ -1316,8 +1312,6 @@ TYPE typ_unreserved_keywords AS OBJECT
   OVERFLOW VARCHAR2(240),
 /** Unreserved Keyword Word OVERFLOW_NOMOVE **/
   OVERFLOW_NOMOVE VARCHAR2(240),
-/** Unreserved Keyword Word OVERLAPS **/
-  OVERLAPS VARCHAR2(240),
 /** Unreserved Keyword Word OVERRIDING **/
  -- OVERRIDING VARCHAR2(240),
 /** Unreserved Keyword Word OWN **/
