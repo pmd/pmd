@@ -2384,7 +2384,7 @@ void PrimaryPrefix() :
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
-| LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
+| LOOKAHEAD( ResultType() "." "class" ) (ResultType() #void "." "class") #ClassLiteral
 | LOOKAHEAD( Name() "::" ) Name()
 | LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
 | Name()
