@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd.token;
 
+import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
