@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -32,7 +31,7 @@ public class AppendCharacterWithCharRule extends AbstractJavaRule {
             return data;
         }
 
-        if (((ASTStringLiteral) node).getEscapedValue().length() == 1) {
+        if (((ASTStringLiteral) node).getUnescapedValue().length() == 1) {
             if (!InefficientStringBufferingRule.isInStringBufferOperation(node, 8, "append")) {
                 return data;
             }

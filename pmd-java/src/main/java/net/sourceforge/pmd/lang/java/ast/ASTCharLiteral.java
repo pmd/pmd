@@ -8,6 +8,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 
+/**
+ * Represents a character literal. The image of this node can be the literal as it appeared
+ * in the source, but JavaCC performs its own unescaping and some escapes may be lost. At the
+ * very least it has delimiters. {@link #getUnescapedValue()} allows to recover the actual runtime value.
+ */
 public final class ASTCharLiteral extends AbstractJavaTypeNode implements ASTLiteral {
 
 
@@ -21,9 +26,7 @@ public final class ASTCharLiteral extends AbstractJavaTypeNode implements ASTLit
     }
 
 
-    /**
-     * Accept the visitor. *
-     */
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -39,9 +42,10 @@ public final class ASTCharLiteral extends AbstractJavaTypeNode implements ASTLit
     /**
      * Gets the char value of this literal.
      */
-    public char getEscapedValue() {
-        // TODO
-        return StringEscapeUtils.unescapeJava(getImage()).charAt(0);
+    public char getUnescapedValue() {
+        String image = getImage();
+        String woDelims = image.substring(1, image.length() - 1);
+        return StringEscapeUtils.unescapeJava(woDelims).charAt(0);
     }
 
 }

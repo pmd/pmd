@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.math.BigInteger;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 
 /**
@@ -17,7 +16,7 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
 
 
     // by default is double
-    // TODO this can be done in jjtCloseNodeScope
+    // TODO all of this can be done in jjtCloseNodeScope
     private boolean isInt;
     private boolean isFloat;
 
@@ -60,9 +59,7 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
     public boolean isIntLiteral() {
         String image = getImage();
         if (isInt && image != null && image.length() > 0) {
-            if (!image.endsWith("l") && !image.endsWith("L")) {
-                return true;
-            }
+            return !image.endsWith("l") && !image.endsWith("L");
         }
         return false;
     }
@@ -77,9 +74,7 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
     public boolean isLongLiteral() {
         String image = getImage();
         if (isInt && image != null && image.length() > 0) {
-            if (image.endsWith("l") || image.endsWith("L")) {
-                return true;
-            }
+            return image.endsWith("l") || image.endsWith("L");
         }
         return false;
     }
@@ -91,9 +86,7 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
         String image = getImage();
         if (isFloat && image != null && image.length() > 0) {
             char lastChar = image.charAt(image.length() - 1);
-            if (lastChar == 'f' || lastChar == 'F') {
-                return true;
-            }
+            return lastChar == 'f' || lastChar == 'F';
         }
         return false;
     }
@@ -109,9 +102,7 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
         String image = getImage();
         if (isFloat && image != null && image.length() > 0) {
             char lastChar = image.charAt(image.length() - 1);
-            if (lastChar == 'd' || lastChar == 'D' || Character.isDigit(lastChar) || lastChar == '.') {
-                return true;
-            }
+            return lastChar == 'd' || lastChar == 'D' || Character.isDigit(lastChar) || lastChar == '.';
         }
         return false;
     }
@@ -126,7 +117,8 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
             image = image.substring(1);
         }
 
-        if (image.endsWith("l")) {
+        char last = image.charAt(image.length()-1);
+        if (last == 'l' || last == 'd' || last == 'f') {
             image = image.substring(0, image.length() - 1);
         }
 

@@ -15,6 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *           | {@link ASTCharLiteral CharLiteral}
  *           | {@link ASTBooleanLiteral BooleanLiteral}
  *           | {@link ASTNullLiteral NullLiteral}
+ *           | {@link ASTClassLiteral ClassLiteral}
  *
  * </pre>
  */
@@ -43,6 +44,21 @@ public interface ASTLiteral extends ASTPrimaryExpression {
         return this instanceof ASTNullLiteral;
     }
 
+
+    /**
+     * Returns true if this is a {@linkplain ASTNullLiteral class literal}.
+     */
+    default boolean isClassLiteral() {
+        return this instanceof ASTClassLiteral;
+    }
+
+
+    /**
+     * Returns true if this is a {@linkplain ASTBooleanLiteral boolean literal}.
+     */
+    default boolean isBooleanLiteral() {
+        return this instanceof ASTBooleanLiteral;
+    }
 
     /**
      * Returns true if this is a {@linkplain ASTNumericLiteral numeric literal}

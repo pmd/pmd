@@ -65,7 +65,7 @@ by it was inconsistent, and ultimately that level of nesting was unnecessary.
   * As is usual, use the designer to explore the new AST structure
 
 * {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are not nodes anymore.
-Subtrees for expressions appear to be left-recursive now. For example,
+Subtrees for primary expressions appear to be left-recursive now. For example,
 
 ```java
 new Foo().bar.foo(1)
@@ -120,6 +120,23 @@ give you the information you need quickly.
 TODO write a summary of changes in the javadoc of the package, will be more
 accessible.
 
+Note: this doesn't affect binary expressions like {% jdoc jast::ASTAdditiveExpression %}.
+E.g. `a+b+c` is not parsed as
+```
+AdditiveExpression
++ AdditiveExpression
+  + (a)
+  + (b)
++ (c)  
+``` 
+It's still
+```
+AdditiveExpression
++ (a)
++ (b)
++ (c)  
+``` 
+which is easier to navigate, especially from XPath.
 
 ## New API support guidelines
 
