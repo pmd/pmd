@@ -6,7 +6,7 @@ import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class AbstractAntrlNode extends ParserRuleContext implements AntlrNode {
+public class AntrlBaseNode extends ParserRuleContext implements AntlrNode {
 
     // TODO: what should we do with parent? how do we handle data flows in this scenario? it's ok to ignore
     // TODO: our parent data flow in case we don't have one?
