@@ -14,6 +14,24 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+### CPD Suppression for Antlr-based languages
+
+[ITBA](https://www.itba.edu.ar/) students [Matías Fraga](https://github.com/matifraga),
+[Tomi De Lucca](https://github.com/tomidelucca) and [Lucas Soncini](https://github.com/lsoncini)
+keep working on bringing full Antlr support to PMD. For this release, they have implemented
+token filtering in an equivalent way as we did for JavaCC languages, adding support for CPD
+suppressions through `CPD-OFF` and `CPD-ON` comments for all Antlr-based languages.
+
+This means, you can now ignore arbitrary blocks of code on:
+* Go
+* Kotlin
+* Swift
+
+Simply start the suppression with any comment (single or multiline) containing `CPD-OFF`,
+and resume again with a comment containing `CPD-ON`.
+
+More information is available in [the user documentation](pmd_userdocs_cpd.html#suppression).
+
 #### New Rules
 
 *   The new Java rule {% rule "java/bestpractices/UseTryWithResources" %) (`java-bestpractices`) searches
@@ -61,6 +79,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1644](https://github.com/pmd/pmd/pull/1644): \[apex] Add property to allow apex test methods to contain underscores - [Tom](https://github.com/tomdaly)
 *   [#1645](https://github.com/pmd/pmd/pull/1645): \[java] ConsecutiveLiteralAppends false positive - [Shubham](https://github.com/Shubham-2k17)
 *   [#1646](https://github.com/pmd/pmd/pull/1646): \[java] UseDiamondOperator doesn't work with var - [Shubham](https://github.com/Shubham-2k17)
+*   [#1654](https://github.com/pmd/pmd/pull/1654): \[core] Antlr token filter - [Tomi De Lucca](https://github.com/tomidelucca)
 
 {% endtocmaker %}
 
