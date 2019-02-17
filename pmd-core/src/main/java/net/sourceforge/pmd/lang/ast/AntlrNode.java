@@ -31,11 +31,6 @@ public interface AntlrNode extends Node {
     }
 
     @Override
-    default Node jjtGetParent() {
-        return null; // TODO: review this
-    }
-
-    @Override
     default void jjtAddChild(final Node child, final int index) {
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }

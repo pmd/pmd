@@ -41,6 +41,11 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     }
 
     @Override
+    public Node jjtGetParent() {
+        return (Node) parent; // TODO: review if all parents are Nodes
+    }
+
+    @Override
     public int getBeginLine() {
         return start.getLine(); // This goes from 1 to n
     }
