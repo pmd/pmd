@@ -39,10 +39,10 @@ class ASTExpressionTest : FunSpec({
             it.image shouldBe "foo"
 
             it.leftHandSide shouldBePresent child<ASTMethodCall> {
-                it.leftHandSide.shouldBeEmpty()
+                it.lhsExpression.shouldBeEmpty()
                 it.methodName shouldBe "foo"
+                it.image shouldBe "foo"
 
-                it.nameNode shouldBe child {}
                 it.arguments shouldBe child {}
             }
         }
@@ -54,16 +54,14 @@ class ASTExpressionTest : FunSpec({
 
         "Type.this.foo()" should matchExpr<ASTMethodCall> {
             it.methodName shouldBe "foo"
+            it.image shouldBe "foo"
 
-            it.leftHandSide shouldBePresent child<ASTThisExpression> {
+            it.lhsExpression shouldBePresent child<ASTThisExpression> {
                 it.qualifier shouldBePresent child<ASTAmbiguousNameExpr> {
                     it.image shouldBe "Type"
                 }
             }
 
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
-            }
 
             it.arguments shouldBe child {}
 
@@ -71,18 +69,15 @@ class ASTExpressionTest : FunSpec({
 
         "foo().bar()" should matchExpr<ASTMethodCall> {
             it.methodName shouldBe "bar"
+            it.image shouldBe "bar"
 
-            it.leftHandSide shouldBePresent child<ASTMethodCall> {
+            it.lhsExpression shouldBePresent child<ASTMethodCall> {
                 it.methodName shouldBe "foo"
+                it.image shouldBe "foo"
 
-                it.leftHandSide.shouldBeEmpty()
+                it.lhsExpression.shouldBeEmpty()
 
-                it.nameNode shouldBe child {}
                 it.arguments shouldBe child {}
-            }
-
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
             }
 
             it.arguments shouldBe child {}
@@ -90,13 +85,10 @@ class ASTExpressionTest : FunSpec({
 
         "foo.bar.baz()" should matchExpr<ASTMethodCall> {
             it.methodName shouldBe "baz"
+            it.image shouldBe "baz"
 
-            it.leftHandSide shouldBePresent child<ASTAmbiguousNameExpr> {
+            it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
                 it.image shouldBe "foo.bar"
-            }
-
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
             }
 
             it.arguments shouldBe child {}
@@ -104,8 +96,9 @@ class ASTExpressionTest : FunSpec({
 
         "foo.<B>f()" should matchExpr<ASTMethodCall> {
             it.methodName shouldBe "f"
+            it.image shouldBe "f"
 
-            it.leftHandSide shouldBePresent child<ASTAmbiguousNameExpr> {
+            it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
                 it.image shouldBe "foo"
             }
 
@@ -117,24 +110,16 @@ class ASTExpressionTest : FunSpec({
                 }
             }
 
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
-            }
-
             it.arguments shouldBe child {}
         }
 
         "foo.bar(e->it.f(e))" should matchExpr<ASTMethodCall> {
 
             it.methodName shouldBe "bar"
+            it.image shouldBe "bar"
 
-            it.leftHandSide shouldBePresent child<ASTAmbiguousNameExpr> {
+            it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
                 it.image shouldBe "foo"
-            }
-
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
-
             }
 
             it.arguments shouldBe child {
@@ -143,14 +128,10 @@ class ASTExpressionTest : FunSpec({
 
                     child<ASTMethodCall> {
                         it.methodName shouldBe "f"
+                        it.image shouldBe "f"
 
-                        it.leftHandSide shouldBePresent child<ASTAmbiguousNameExpr> {
+                        it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
                             it.image shouldBe "it"
-                        }
-
-                        it.nameNode shouldBe child {
-                            (it is ASTAmbiguousNameExpr) shouldBe false
-                            it.xPathNodeName shouldBe "Name"
                         }
 
                         it.arguments shouldBe child {

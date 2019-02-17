@@ -2358,17 +2358,16 @@ void PrimaryExpression() #void :
   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
 }
 
+/**
+ * A selector like a
+ */
 void MemberSelector() #void :
+{}
 {
-Token t;
-}
-{
-  LOOKAHEAD(3) // "." IDENT "(" or "." IDENT "<"
   // if there are type arguments, this is a method call
-  ("." TypeArguments() MethodName() ArgumentsList()) #MethodCall { wrapLeft(); }
-| LOOKAHEAD(3)
-  ("." MethodName() ArgumentsList())                 #MethodCall { wrapLeft(); }
-| ("." <IDENTIFIER> {setLastTokenImage(jjtThis);})   #FieldAccess { wrapLeft(); }
+  LOOKAHEAD(2) ("." TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall  { wrapLeft(); }
+| LOOKAHEAD(3) ("." <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                 #MethodCall  { wrapLeft(); }
+|              ("." <IDENTIFIER> {setLastTokenImage(jjtThis);})                                 #FieldAccess { wrapLeft(); }
 }
 
 void MethodReference(): // LHS is injected
@@ -2390,6 +2389,9 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD(3) ("(" Expression() ")")     #ParenthesizedExpression
 | AllocationExpression()
 | LOOKAHEAD( TypeOrVoid() "." "class" ) (TypeOrVoid() "." "class") #ClassLiteral
+// lookahead <IDENTIFIER> "(", higher than the method reference ones because they're more frequent
+// unqualified method call
+| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall
 | LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" ) ReferenceType()
 // not a constructor reference, could be an expression
 | LOOKAHEAD( Name() "::"  ) AmbiguousNameExpr()

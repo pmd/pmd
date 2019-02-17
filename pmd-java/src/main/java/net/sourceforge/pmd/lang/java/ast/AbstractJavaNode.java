@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -112,31 +114,32 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
 
     // insert a child at a given index, shifting other children if need be
-    // The implementation of jjtAddChild in AbstractNode overwrites nodes
-    // -> probably unexpected and to be changed
+
+
+    /**
+     * Inserts a child at the given index, shifting other children without overwriting
+     * them. The implementation of jjtAddChild in AbstractNode overwrites nodes, and
+     * doesn't shrink or grow the initial array. That's probably unexpected and this should
+     * be the standard implementation.
+     *
+     * The text bounds of this node are enlarged to contain the new child if need be.
+     * Text bounds of the child should hence have been set before calling this method.
+     * The designer relies on this invariant to perform the overlay (in UniformStyleCollection).
+     *
+     * @param child Child to add
+     * @param index Index the child should have in the parent
+     */
     // visible to parser only
-    JavaNode insertChild(AbstractJavaNode child, int index) {
+    void insertChild(AbstractJavaNode child, int index) {
         // Allow to insert a child at random index without overwriting
         // If the child is null, it is replaced. If it is not null, children are shifted
         if (children != null && index < children.length && children[index] != null) {
-            Node[] newChildren = new Node[children.length + 1];
-
-            // toShift nodes are to the right of the insertion index
-            int toShift = children.length - index;
-
-            // copy the nodes before
-            System.arraycopy(children, 0, newChildren, 0, index);
-
-            // copy the nodes after
-            System.arraycopy(children, index, newChildren, index + 1, toShift);
-            children = newChildren;
+            children = ArrayUtils.insert(index, children, child);
         }
         super.jjtAddChild(child, index);
         child.jjtSetParent(this);
 
-        for (int j = index; j < jjtGetNumChildren(); j++) {
-            children[j].jjtSetChildIndex(j); // shift the children to the right
-        }
+        updateChildrenIndices(index);
 
         // The text coordinates of this node will be enlarged with those of the child
 
@@ -155,19 +158,47 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
             && this.endColumn < child.endColumn) {
             this.endColumn = child.endColumn;
         }
-        // TODO tokens
 
-        return child;
+        // TODO set the tokens, assert they're correctly linked
+
     }
 
 
-    // same length so we don't need to enlarge the offsets of this node
-    void replaceChildSameLength(int index, AbstractJavaNode replacement) {
-        children[index] = replacement;
-        replacement.jjtSetParent(this);
+    /**
+     * Deletes the child at the given index. If there is no child at the given index,
+     * does nothing. Text bounds of this node are not shrunk (this can be added later
+     * if needed).
+     */
+    void deleteChild(int index) {
+
+        if (children == null || index >= children.length || index < 0 || children[index] == null) {
+            return;
+        }
+
+        Node toRemove = children[index];
+        toRemove.jjtSetParent(null);
+        children = ArrayUtils.remove(children, index);
+        updateChildrenIndices(index - 1);
     }
 
 
+    /**
+     * Updates the {@link #jjtGetChildIndex()} of the children with their
+     * real position, starting at [startIndex].
+     */
+    private void updateChildrenIndices(int startIndex) {
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        for (int j = startIndex; j < jjtGetNumChildren(); j++) {
+            children[j].jjtSetChildIndex(j); // shift the children to the right
+        }
+    }
+
+
+    /**
+     * Shifts the begin and end columns of this node by the given offsets.
+     */
     void shiftColumns(int beginShift, int endShift) {
         this.beginColumn += beginShift;
         this.endColumn += endShift;
