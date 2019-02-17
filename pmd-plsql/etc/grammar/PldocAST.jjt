@@ -190,6 +190,14 @@ public class PLSQLParser {
     }
     return s.toString();
   }
+
+  /**
+   * Semantic lookahead to check if the next identifier is a
+   * specific keyword.
+   */
+  private boolean isKeyword(String keyword) {
+    return getToken(1).kind == IDENTIFIER && getToken(1).image.equalsIgnoreCase(keyword);
+  }
 }
 
 PARSER_END(PLSQLParser)
@@ -1503,14 +1511,14 @@ ASTSimpleExpression SimpleExpression() :
     LOOKAHEAD(6)
         SchemaName() { sb.append(token.image); } "." { sb.append(token.image); }
         TableName() { sb.append(token.image); } "." { sb.append(token.image); }
-        Column() { sb.append(token.image); }
+        ( "*" | Column() ) { sb.append(token.image); }
  |
     LOOKAHEAD(4)
         TableName() { sb.append(token.image); } "." { sb.append(token.image); }
-        Column() { sb.append(token.image); }
+        ( "*" | Column() ) { sb.append(token.image); }
  |
     LOOKAHEAD(2)
-        Column() { sb.append(token.image); }
+        ( "*" | Column() ) { sb.append(token.image); }
  )
  {
     jjtThis.setImage(sb.toString());
@@ -1537,9 +1545,8 @@ ASTFunctionCall FunctionCall() :
 {
     name = FunctionName()
     (
-      LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
-      |
-      Arguments()
+        LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
+      | Arguments()
     )
 
     {
@@ -1563,6 +1570,70 @@ ASTFunctionName FunctionName() :
         jjtThis.setImage(name.toString());
         return jjtThis;
     }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/XMLTABLE.html
+ */
+ASTXMLTable XMLTable() :
+{}
+{
+    KEYWORD("XMLTABLE")
+    "("
+        [ LOOKAHEAD({isKeyword("XMLNAMESPACES")}) XMLNamespacesClause() "," ]
+        StringLiteral()
+        XMLTableOptions()
+    ")"
+    { return jjtThis; }
+}
+
+ASTXMLNamespacesClause XMLNamespacesClause() :
+{}
+{
+    KEYWORD("XMLNAMESPACES") "("
+    (
+        ( StringLiteral() <AS> ID()
+         | <_DEFAULT> StringLiteral() )
+        (",")?
+    )+
+    ")"
+    { return jjtThis; }
+}
+
+ASTXMLTableOptions XMLTableOptions() :
+{}
+{
+    [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ]
+    [ <RETURNING> KEYWORD("SEQUENCE") <BY> "REF" ]
+    [ <COLUMNS> ( XMLTableColum() (",")? )+ ]
+    { return jjtThis; }
+}
+
+ASTXMLTableColum XMLTableColum() :
+{}
+{
+    Column()
+    (
+      <FOR> KEYWORD("ORDINALITY")
+        |
+      (
+        LOOKAHEAD({isKeyword("XMLTYPE")}) KEYWORD("XMLTYPE") [ "(" KEYWORD("SEQUENCE") ")" <BY> "REF" ]
+        |
+        Datatype()
+      )
+      [ LOOKAHEAD({isKeyword("PATH")}) KEYWORD("PATH") StringLiteral() ]
+      [ <_DEFAULT> SqlExpression() ]
+    )
+    { return jjtThis; }
+}
+
+ASTXMLPassingClause XMLPassingClause() :
+{}
+{
+    KEYWORD("PASSING")
+    [ <BY> "VALUE" ]
+    ( LOOKAHEAD(2) SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] (",")? )+
+    { return jjtThis; }
 }
 
 /**
@@ -1656,6 +1727,8 @@ void FromClauseEntry() #void :
      // using lookahead to avoid misinterpreting the token after the identifier
      // as a table alias rather than as a keyword
      LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
+ |
+     LOOKAHEAD(<IDENTIFIER> "(", {isKeyword("XMLTABLE")}) XMLTable() [ LOOKAHEAD(2) TableAlias() ]
  |
      LOOKAHEAD(3) TableReference()
  |
