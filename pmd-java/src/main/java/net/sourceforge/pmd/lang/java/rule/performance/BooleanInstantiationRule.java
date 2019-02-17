@@ -75,39 +75,39 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
         }
         return super.visit(node, data);
     }
-
-    @Override
-    public Object visit(ASTPrimaryPrefix node, Object data) {
-
-        if (!customBoolean) {
-            if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
-                return super.visit(node, data);
-            }
-
-            if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
-                    || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
-                ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
-                ASTPrimarySuffix suffix = parent.getFirstDescendantOfType(ASTPrimarySuffix.class);
-                if (suffix == null) {
-                    return super.visit(node, data);
-                }
-                ASTPrimaryPrefix prefix = suffix.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-                if (prefix == null) {
-                    return super.visit(node, data);
-                }
-
-                if (prefix.hasDescendantOfType(ASTBooleanLiteral.class)) {
-                    super.addViolation(data, node);
-                    return data;
-                }
-                ASTLiteral literal = prefix.getFirstDescendantOfType(ASTLiteral.class);
-                if (literal != null
-                        && ("\"true\"".equals(literal.getImage()) || "\"false\"".equals(literal.getImage()))) {
-                    super.addViolation(data, node);
-                    return data;
-                }
-            }
-        }
-        return super.visit(node, data);
-    }
+//
+//    @Override
+//    public Object visit(ASTPrimaryPrefix node, Object data) {
+//
+//        if (!customBoolean) {
+//            if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
+//                return super.visit(node, data);
+//            }
+//
+//            if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
+//                    || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
+//                ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
+//                ASTPrimarySuffix suffix = parent.getFirstDescendantOfType(ASTPrimarySuffix.class);
+//                if (suffix == null) {
+//                    return super.visit(node, data);
+//                }
+//                ASTPrimaryPrefix prefix = suffix.getFirstDescendantOfType(ASTPrimaryPrefix.class);
+//                if (prefix == null) {
+//                    return super.visit(node, data);
+//                }
+//
+//                if (prefix.hasDescendantOfType(ASTBooleanLiteral.class)) {
+//                    super.addViolation(data, node);
+//                    return data;
+//                }
+//                ASTLiteral literal = prefix.getFirstDescendantOfType(ASTLiteral.class);
+//                if (literal != null
+//                        && ("\"true\"".equals(literal.getImage()) || "\"false\"".equals(literal.getImage()))) {
+//                    super.addViolation(data, node);
+//                    return data;
+//                }
+//            }
+//        }
+//        return super.visit(node, data);
+//    }
 }

@@ -24,4 +24,21 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
+    // TODO set up delegation
+
+    public Object visit(ASTExpression node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
+
+
+    public Object visit(ASTPrimaryExpression node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
+
+
+    public Object visit(ASTLiteral node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
+
+
 }

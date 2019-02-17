@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.FileProperty;
@@ -175,9 +176,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             List<ASTLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
                 ASTLiteral first = occurrences.get(0);
-                String rawImage = first.getEscapedStringLiteral();
-                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
-                addViolation(data, first, args);
+                if (first instanceof ASTStringLiteral) {
+                    String rawImage = ((ASTStringLiteral) first).getEscapedValue();
+                    Object[] args = {rawImage, occurrences.size(), first.getBeginLine(),};
+                    addViolation(data, first, args);
+                }
             }
         }
     }

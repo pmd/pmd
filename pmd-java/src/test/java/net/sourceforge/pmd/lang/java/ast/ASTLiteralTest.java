@@ -61,7 +61,7 @@ public class ASTLiteralTest {
 
     @Test
     public void testIntValueParsing() {
-        ASTLiteral literal = new ASTLiteral(1);
+        ASTNumericLiteral literal = new ASTNumericLiteral(1);
         literal.setIntLiteral();
         literal.setImage("1___234");
         literal.testingOnlySetBeginColumn(1);
@@ -71,7 +71,7 @@ public class ASTLiteralTest {
     
     @Test
     public void testIntValueParsingBinary() {
-        ASTLiteral literal = new ASTLiteral(1);
+        ASTNumericLiteral literal = new ASTNumericLiteral(1);
         literal.setIntLiteral();
         literal.setImage("0b0000_0010");
         literal.testingOnlySetBeginColumn(1);
@@ -81,7 +81,7 @@ public class ASTLiteralTest {
     
     @Test
     public void testIntValueParsingNegativeHexa() {
-        ASTLiteral literal = new ASTLiteral(1);
+        ASTNumericLiteral literal = new ASTNumericLiteral(1);
         literal.setIntLiteral();
         literal.setImage("-0X0000_000f");
         literal.testingOnlySetBeginColumn(1);
@@ -91,7 +91,7 @@ public class ASTLiteralTest {
     
     @Test
     public void testFloatValueParsingNegative() {
-        ASTLiteral literal = new ASTLiteral(1);
+        ASTNumericLiteral literal = new ASTNumericLiteral(1);
         literal.setFloatLiteral();
         literal.setImage("-3_456.123_456");
         literal.testingOnlySetBeginColumn(1);
@@ -101,45 +101,41 @@ public class ASTLiteralTest {
     
     @Test
     public void testStringUnicodeEscapesNotEscaped() {
-        ASTLiteral literal = new ASTLiteral(1);
-        literal.setStringLiteral();
+        ASTStringLiteral literal = new ASTStringLiteral(1);
         literal.setImage("abcüabc");
         literal.testingOnlySetBeginColumn(1);
         literal.testingOnlySetEndColumn(7);
-        assertEquals("abcüabc", literal.getEscapedStringLiteral());
+        assertEquals("abcüabc", literal.getEscapedValue());
         assertEquals("abcüabc", literal.getImage());
     }
 
     @Test
     public void testStringUnicodeEscapesInvalid() {
-        ASTLiteral literal = new ASTLiteral(1);
-        literal.setStringLiteral();
+        ASTStringLiteral literal = new ASTStringLiteral(1);
         literal.setImage("abc\\uXYZAabc");
         literal.testingOnlySetBeginColumn(1);
         literal.testingOnlySetEndColumn(12);
-        assertEquals("abc\\uXYZAabc", literal.getEscapedStringLiteral());
+        assertEquals("abc\\uXYZAabc", literal.getEscapedValue());
         assertEquals("abc\\uXYZAabc", literal.getImage());
     }
 
     @Test
     public void testStringUnicodeEscapesValid() {
-        ASTLiteral literal = new ASTLiteral(1);
-        literal.setStringLiteral();
+        ASTStringLiteral literal = new ASTStringLiteral(1);
         literal.setImage("abc\u1234abc");
         literal.testingOnlySetBeginColumn(1);
         literal.testingOnlySetEndColumn(12);
-        assertEquals("abc\\u1234abc", literal.getEscapedStringLiteral());
+        assertEquals("abc\\u1234abc", literal.getEscapedValue());
         assertEquals("abcሴabc", literal.getImage());
     }
 
     @Test
     public void testCharacterUnicodeEscapesValid() {
-        ASTLiteral literal = new ASTLiteral(1);
-        literal.setCharLiteral();
+        ASTCharLiteral literal = new ASTCharLiteral(1);
         literal.setImage("\u0030");
         literal.testingOnlySetBeginColumn(1);
         literal.testingOnlySetEndColumn(6);
-        assertEquals("\\u0030", literal.getEscapedStringLiteral());
+        assertEquals("\\u0030", literal.getEscapedValue());
         assertEquals("0", literal.getImage());
     }
 

@@ -1034,13 +1034,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    @Override
-    public Object visit(ASTPrimaryPrefix node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-
-        return data;
-    }
 
     @Override
     public Object visit(ASTTypeArgument node, Object data) {

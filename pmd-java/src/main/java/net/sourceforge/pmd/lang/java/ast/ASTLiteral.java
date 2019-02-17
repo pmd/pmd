@@ -18,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public interface ASTLiteral extends JavaNode { // TODO extend ASTPrimaryExpression when it's an interface
+public interface ASTLiteral extends ASTPrimaryExpression {
 
     /**
      * Returns true if this is a {@linkplain ASTStringLiteral string literal}.

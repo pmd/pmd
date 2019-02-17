@@ -221,10 +221,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
             if (relationalExpression.hasImageEqualTo("<") || relationalExpression.hasImageEqualTo("<=")) {
 
                 try {
-                    List<Node> left = guardCondition.findChildNodesWithXPath(
+                    List<? extends Node> left = guardCondition.findChildNodesWithXPath(
                         "./RelationalExpression/PrimaryExpression/PrimaryPrefix/Name[@Image='" + itName + "']");
 
-                    List<Node> right = guardCondition.findChildNodesWithXPath(
+                    List<? extends Node> right = guardCondition.findChildNodesWithXPath(
                         "./RelationalExpression[@Image='<']/PrimaryExpression/PrimaryPrefix"
                             + "/Name[matches(@Image,'\\w+\\.(size|length)')]"
                             + "|"

@@ -52,24 +52,24 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
         definePropertyDescriptor(ALLOW_WHILE_DESCRIPTOR);
         definePropertyDescriptor(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR);
     }
-
-    @Override
-    public Object visit(ASTExpression node, Object data) {
-        Node parent = node.jjtGetParent();
-        if ((parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
-                || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
-                || parent instanceof ASTForStatement && parent.jjtGetChild(1) == node
-                        && !getProperty(ALLOW_FOR_DESCRIPTOR))
-                && (node.hasDescendantOfType(ASTAssignmentOperator.class)
-                        || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && (node.hasDescendantOfAnyType(ASTPreIncrementExpression.class,
-                                                                ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
-
-            addViolation(data, node);
-            return data;
-        }
-        return super.visit(node, data);
-    }
+//
+//    @Override
+//    public Object visit(ASTExpression node, Object data) {
+//        Node parent = node.jjtGetParent();
+//        if ((parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
+//                || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
+//                || parent instanceof ASTForStatement && parent.jjtGetChild(1) == node
+//                        && !getProperty(ALLOW_FOR_DESCRIPTOR))
+//                && (node.hasDescendantOfType(ASTAssignmentOperator.class)
+//                        || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
+//                                && (node.hasDescendantOfAnyType(ASTPreIncrementExpression.class,
+//                                                                ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
+//
+//            addViolation(data, node);
+//            return data;
+//        }
+//        return super.visit(node, data);
+//    }
 
     public boolean allowsAllAssignments() {
         return getProperty(ALLOW_IF_DESCRIPTOR) && getProperty(ALLOW_FOR_DESCRIPTOR)

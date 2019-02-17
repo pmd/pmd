@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
-public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
+public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode, ASTPrimaryExpression {
 
     private JavaTypeQualifiedName qualifiedName;
 

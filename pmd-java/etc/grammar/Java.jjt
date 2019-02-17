@@ -2401,9 +2401,9 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD(3) ("(" Expression() ")")     #ParenthesizedExpression
 | AllocationExpression()
 | LOOKAHEAD( TypeOrVoid() "." "class" ) (TypeOrVoid() "." "class") #ClassLiteral
-| LOOKAHEAD( Name() "::" ) Name() // TODO #AmbiguousName
+| LOOKAHEAD( Name() "::" ) Name() #AmbiguousNameExpr
 | LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference() { wrapLeft(); }
-| Name() // TODO #AmbiguousName
+| Name()  #AmbiguousNameExpr
 }
 
 void LambdaExpression() :

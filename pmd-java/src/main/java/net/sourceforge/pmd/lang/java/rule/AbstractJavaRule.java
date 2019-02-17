@@ -14,7 +14,10 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaProcessingStage;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
@@ -94,6 +97,21 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
             throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
         }
         return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
+    }
+
+
+    public Object visit(ASTExpression node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
+
+
+    public Object visit(ASTPrimaryExpression node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
+
+
+    public Object visit(ASTLiteral node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
     }
 
 }

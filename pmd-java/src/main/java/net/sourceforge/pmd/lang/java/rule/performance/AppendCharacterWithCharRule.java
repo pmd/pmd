@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -26,11 +28,11 @@ public class AppendCharacterWithCharRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTLiteral node, Object data) {
         ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
-        if (bs == null) {
+        if (bs == null || !node.isStringLiteral()) {
             return data;
         }
 
-        if (node.isSingleCharacterStringLiteral()) {
+        if (((ASTStringLiteral) node).getEscapedValue().length() == 1) {
             if (!InefficientStringBufferingRule.isInStringBufferOperation(node, 8, "append")) {
                 return data;
             }
