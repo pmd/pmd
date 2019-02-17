@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;

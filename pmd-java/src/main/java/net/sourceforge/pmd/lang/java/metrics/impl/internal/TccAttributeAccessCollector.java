@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -63,7 +62,7 @@ public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter
             methodAttributeAccess = new HashMap<>();
             super.visit(node, data);
         } else if (node instanceof ASTClassOrInterfaceDeclaration
-                && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
+            && ((ASTClassOrInterfaceDeclaration) node).isLocal()) {
             super.visit(node, data);
         }
         return methodAttributeAccess;
@@ -151,7 +150,7 @@ public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter
             for (VariableNameDeclaration decl : currentScope.getDeclarations(VariableNameDeclaration.class).keySet()) {
                 if (decl.getImage().equals(varName)) {
                     if (currentScope instanceof ClassScope
-                            && ((ClassScope) currentScope).getClassDeclaration().getNode() == exploredClass) {
+                        && ((ClassScope) currentScope).getClassDeclaration().getNode() == exploredClass) {
                         return true;
                     }
                 }
