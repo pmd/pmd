@@ -21,6 +21,23 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     private DataFlowNode dataFlowNode;
     private Object userData;
 
+    /**
+     * Constructor required by {@link ParserRuleContext}
+     */
+    public AntlrBaseNode() {
+
+    }
+
+    /**
+     * Constructor required by {@link ParserRuleContext}
+     *
+     * @param parent The parent
+     * @param invokingStateNumber the invokingState defined by {@link org.antlr.v4.runtime.RuleContext} parent
+     */
+    public AntlrBaseNode(final ParserRuleContext parent, final int invokingStateNumber) {
+        super(parent, invokingStateNumber);
+    }
+
     @Override
     public int getBeginLine() {
         return start.getLine(); // This goes from 1 to n
