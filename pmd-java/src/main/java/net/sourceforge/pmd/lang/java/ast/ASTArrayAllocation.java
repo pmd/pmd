@@ -16,15 +16,15 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTArrayCreationExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTArrayAllocation extends AbstractJavaTypeNode implements ASTPrimaryExpression {
 
 
-    ASTArrayCreationExpression(int id) {
+    ASTArrayAllocation(int id) {
         super(id);
     }
 
 
-    ASTArrayCreationExpression(JavaParser p, int id) {
+    ASTArrayAllocation(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -40,6 +40,85 @@ TODO document that when we're done discussing the semantic rewrite phase.
   The Java equivalent is `TypeHelper.isA(id, String[].class);`
 
 
+### Expression grammar changes
+
+* {% jdoc jast::ASTExpression %} and {% jdoc jast::ASTPrimaryExpression %} have
+been turned into interfaces. These added no information to the AST and increased
+its depth unnecessarily. All expressions implement the first interface. Both of
+those nodes can no more be found in ASTs.
+
+* **Migrating**:
+  * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
+  * In XPath rules, the axis step `*[@Expression=true()]` matches any expression, though
+  neither `/Expression/` nor `/PrimaryExpression/` can match anything now.
+
+* {% jdoc jast::ASTLiteral %} has been turned into an interface. The fact that {% jdoc jast::ASTNullLiteral %}
+and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
+by it was inconsistent, and ultimately that level of nesting was unnecessary.
+  * {% jdoc jast::ASTNumericLiteral %}, {% jdoc jast::ASTCharLiteral %}, {% jdoc jast::ASTStringLiteral %},
+  and {% jdoc jast::ASTClassLiteral %} are new nodes that implement that interface.
+  * ASTLiteral implements {% jdoc jast::ASTPrimaryExpression %}
+
+* **Migrating**:
+  * Remove all `/Literal/` segments from your XPath expressions
+  * If you tested several types of literals, you can e.g. do it like `/(StringLiteral | CharLiteral)/`
+  * As is usual, use the designer to explore the new AST structure
+
+* {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are not nodes anymore.
+Subtrees for expressions appear to be left-recursive now. For example,
+
+```java
+new Foo().bar.foo(1)
+```
+used to be parsed as
+```
+Expression
++ PrimaryExpression
+  + PrimaryPrefix
+    + AllocationExpression
+      + ClassOrInterfaceType[@Image="Foo"]
+  + PrimarySuffix
+    + Arguments
+  + PrimarySuffix
+    + Name[@Image="foo.bar"]
+  + PrimarySuffix
+    + Arguments
+      + ArgumentsList
+        + Expression
+          + PrimaryExpression
+            + Literal[@ValueAsInt=1]
+```
+It's now parsed as
+```
+MethodCall[@MethodName="foo"]
++ FieldAccess[@FieldName="bar"]
+  + ConstructorCall
+    + ClassOrInterfaceType[@TypeImage="Foo"]
+    + ArgumentsList
++ ArgumentsList
+  + NumericLiteral[@ValueAsInt=1]
+```
+Instead of being flat, the subexpressions are now nested within one another.
+The nesting follows the naturally recursive structure of expressions:
+
+```java
+new Foo().bar.foo(1)
+---------            ConstructorCall
+-------------        FieldAccess
+-------------------- MethodCall
+```
+This makes the AST more regular and easier to navigate. Each node contains 
+the other nodes that are relevant to it (e.g. arguments) instead of them 
+being spread out over several siblings. The API of all nodes has been 
+enriched with high-level accessors to query the AST in a semantic way,
+without bothering with the placement details.
+
+The amount of changes in the grammar that this change entails is enormous, 
+but hopefully firing up the designer to inspect the new structure should 
+give you the information you need quickly.
+
+TODO write a summary of changes in the javadoc of the package, will be more
+accessible.
 
 
 ## New API support guidelines

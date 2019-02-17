@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
- * An anonymous class declaration. This can occur in a {@link ASTClassInstanceCreationExpression class instance creation expression}
+ * An anonymous class declaration. This can occur in a {@link ASTConstructorCall class instance creation expression}
  * or in an {@link ASTEnumConstant enum constant declaration}.
  *
  *

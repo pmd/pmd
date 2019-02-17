@@ -337,7 +337,7 @@ class ASTExpressionTest : FunSpec({
 
     testGroup("Class instance creation") {
 
-        "new Foo(a)" should matchExpr<ASTClassInstanceCreationExpression> {
+        "new Foo(a)" should matchExpr<ASTConstructorCall> {
 
             it.typeNode shouldBe child {
                 it.typeImage shouldBe "Foo"
@@ -349,7 +349,7 @@ class ASTExpressionTest : FunSpec({
             }
         }
 
-        "new <Bar> Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+        "new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
 
             it.explicitTypeArguments shouldBePresent child {
                 unspecifiedChild()
@@ -366,7 +366,7 @@ class ASTExpressionTest : FunSpec({
             it.arguments shouldBe child {}
         }
 
-        "new @Lol Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+        "new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
 
             it.explicitTypeArguments.shouldBeEmpty()
 
@@ -385,7 +385,7 @@ class ASTExpressionTest : FunSpec({
     }
     testGroup("Qualified class instance creation") {
 
-        "a.g.c.new Foo(a)" should matchExpr<ASTClassInstanceCreationExpression> {
+        "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
 
             it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
                 it.image shouldBe "a.g.c"
@@ -401,9 +401,9 @@ class ASTExpressionTest : FunSpec({
             }
         }
 
-        "new O().new <Bar> Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+        "new O().new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
 
-            it.lhsExpression shouldBePresent child<ASTClassInstanceCreationExpression> {
+            it.lhsExpression shouldBePresent child<ASTConstructorCall> {
 
                 it.typeNode shouldBe child {
                     it.typeImage shouldBe "O"
@@ -427,7 +427,7 @@ class ASTExpressionTest : FunSpec({
             it.arguments shouldBe child {}
         }
 
-        "method().new @Lol Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+        "method().new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
 
             it.lhsExpression shouldBePresent child<ASTMethodCall> {
                 it.methodName shouldBe "method"
@@ -452,7 +452,7 @@ class ASTExpressionTest : FunSpec({
 
     testGroup("Array creation") {
 
-        "new int[2][]" should matchExpr<ASTArrayCreationExpression > {
+        "new int[2][]" should matchExpr<ASTArrayAllocation> {
 
             it.elementTypeNode shouldBe child<ASTPrimitiveType> {
                 it.modelConstant shouldBe net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
@@ -466,14 +466,14 @@ class ASTExpressionTest : FunSpec({
             }
         }
 
-        "new @Foo int[3][2]" should matchExpr<ASTArrayCreationExpression> {
+        "new @Foo int[3][2]" should matchExpr<ASTArrayAllocation> {
 
         }
 
         "(new int[3])[2]" should matchExpr<ASTArrayAccess> {
             child<ASTParenthesizedExpression> {
 
-                it.wrappedExpression shouldBe child<ASTArrayCreationExpression> {
+                it.wrappedExpression shouldBe child<ASTArrayAllocation> {
 
                     it.elementTypeNode shouldBe child<ASTPrimitiveType> {
                         it.typeImage shouldBe "int"
@@ -490,12 +490,12 @@ class ASTExpressionTest : FunSpec({
             child<ASTNumericLiteral> {}
         }
 
-        "new Foo[0]" should matchExpr<ASTArrayCreationExpression> {
+        "new Foo[0]" should matchExpr<ASTArrayAllocation> {
 
         }
 
 
-        "new Foo[] { f, g }" should matchExpr<ASTArrayCreationExpression> {
+        "new Foo[] { f, g }" should matchExpr<ASTArrayAllocation> {
 
             it.elementTypeNode shouldBe child<ASTClassOrInterfaceType> {
                 it.isAnonymousClass shouldBe false
@@ -518,11 +518,11 @@ class ASTExpressionTest : FunSpec({
             }
         }
 
-        "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayCreationExpression> {
+        "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayAllocation> {
 
         }
 
-        "new int[][] { { 1 , 2 }, null }" should matchExpr<ASTArrayCreationExpression> {
+        "new int[][] { { 1 , 2 }, null }" should matchExpr<ASTArrayAllocation> {
 
             it.elementTypeNode shouldBe child<ASTPrimitiveType> {
                 it.typeImage shouldBe "int"

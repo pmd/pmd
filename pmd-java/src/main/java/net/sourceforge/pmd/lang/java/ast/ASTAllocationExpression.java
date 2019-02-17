@@ -15,21 +15,8 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  * and unqualified instance creation. Also represents array creation expressions. May declare an anonymous
  * class body. TODO API
  *
- *
- * <pre>
- *
- * AllocationExpression ::=
- *
- *
- * UnqualifiedAlloc     ::= "new" {@link ASTTypeArguments TypeArguments}?
- *
- *
- *
- *
- * </pre>
- *
- *
  */
+@Deprecated
 public final class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode, ASTPrimaryExpression {
 
     private JavaTypeQualifiedName qualifiedName;

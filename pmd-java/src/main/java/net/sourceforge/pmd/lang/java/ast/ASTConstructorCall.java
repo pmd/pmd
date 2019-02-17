@@ -25,14 +25,14 @@ import java.util.Optional;
  *
  * </pre>
  */
-public final class ASTClassInstanceCreationExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTConstructorCall extends AbstractJavaTypeNode implements ASTPrimaryExpression {
 
-    ASTClassInstanceCreationExpression(int id) {
+    ASTConstructorCall(int id) {
         super(id);
     }
 
 
-    ASTClassInstanceCreationExpression(JavaParser p, int id) {
+    ASTConstructorCall(JavaParser p, int id) {
         super(p, id);
     }
 

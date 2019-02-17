@@ -349,8 +349,8 @@ public class JavaParser {
   private void checkForBadAnonymousDiamondUsage() {
     if (jdkVersion < 9) {
       Node node = jjtree.peekNode();
-      if (node instanceof ASTClassInstanceCreationExpression) {
-        ASTClassInstanceCreationExpression expr = (ASTClassInstanceCreationExpression) node;
+      if (node instanceof ASTConstructorCall) {
+        ASTConstructorCall expr = (ASTConstructorCall) node;
         ASTTypeArguments types = expr.getTypeNode().getTypeArguments().orElse(null);
         if (expr.isAnonymousClass() && types != null && types.isDiamond()) {
           throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
@@ -2536,7 +2536,7 @@ void AllocationExpression():
 }
 
 // more straightforward because can't be an array creation expr
-void QualifiedAllocationExpr() #ClassInstanceCreationExpression:
+void QualifiedAllocationExpr() #ConstructorCall:
 {}
 {
    "."
@@ -2581,9 +2581,9 @@ void UnqualifiedAllocationExpr() #void :
            )
        )
      )
-     #ArrayCreationExpression(jjtree.peekNode() instanceof ASTArrayDimsAndInits)
+     #ArrayAllocation(jjtree.peekNode() instanceof ASTArrayDimsAndInits)
    )
-   #ClassInstanceCreationExpression(>1) // corresponds to "no ArrayCreationExpression has been pushed"
+   #ConstructorCall(>1) // corresponds to "no ArrayCreationExpression has been pushed"
    { checkForBadAnonymousDiamondUsage(); }
 
 }
