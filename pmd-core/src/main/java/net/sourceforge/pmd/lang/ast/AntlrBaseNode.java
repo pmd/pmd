@@ -24,6 +24,7 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     /**
      * Constructor required by {@link ParserRuleContext}
      */
+    @SuppressWarnings("unused")
     public AntlrBaseNode() {
         // Nothing to be done
     }
@@ -34,6 +35,7 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
      * @param parent The parent
      * @param invokingStateNumber the invokingState defined by {@link org.antlr.v4.runtime.RuleContext} parent
      */
+    @SuppressWarnings("unused")
     public AntlrBaseNode(final ParserRuleContext parent, final int invokingStateNumber) {
         super(parent, invokingStateNumber);
     }
