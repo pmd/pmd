@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,10 +31,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  *
  * @author Clément Fournier
  * @since 6.0.0
- * @deprecated Is internal API, will be moved in 7.0.0
  */
-@Deprecated
-@InternalApi
 public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter {
 
     private final ASTAnyTypeDeclaration exploredClass;

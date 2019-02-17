@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.AtfdBaseVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.ResultOption;
 

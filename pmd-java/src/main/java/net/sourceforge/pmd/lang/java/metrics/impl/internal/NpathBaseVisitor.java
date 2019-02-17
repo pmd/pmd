@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.java.metrics.impl.internal;
 
 import java.util.List;
 
@@ -29,10 +29,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
  *
  * @author Clément Fournier
  * @author Jason Bennett
- * @deprecated Is internal API, will be moved in 7.0.0
  */
-@Deprecated
-@InternalApi
 public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
     /** Instance. */

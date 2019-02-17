@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.impl.visitors.TccAttributeAccessCollector;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.TccAttributeAccessCollector;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**
