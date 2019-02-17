@@ -1286,6 +1286,26 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h3 id="cpd-suppression-for-antlr-based-languages">CPD Suppression for Antlr-based languages</h3>
+
+<p><a href="https://www.itba.edu.ar/">ITBA</a> students <a href="https://github.com/matifraga">Matías Fraga</a>,
+<a href="https://github.com/tomidelucca">Tomi De Lucca</a> and <a href="https://github.com/lsoncini">Lucas Soncini</a>
+keep working on bringing full Antlr support to PMD. For this release, they have implemented
+token filtering in an equivalent way as we did for JavaCC languages, adding support for CPD
+suppressions through <code class="highlighter-rouge">CPD-OFF</code> and <code class="highlighter-rouge">CPD-ON</code> comments for all Antlr-based languages.</p>
+
+<p>This means, you can now ignore arbitrary blocks of code on:</p>
+<ul>
+  <li>Go</li>
+  <li>Kotlin</li>
+  <li>Swift</li>
+</ul>
+
+<p>Simply start the suppression with any comment (single or multiline) containing <code class="highlighter-rouge">CPD-OFF</code>,
+and resume again with a comment containing <code class="highlighter-rouge">CPD-ON</code>.</p>
+
+<p>More information is available in <a href="pmd_userdocs_cpd.html#suppression">the user documentation</a>.</p>
+
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
@@ -1353,6 +1373,7 @@ all test methods, either using the <code class="highlighter-rouge">testMethod</c
   <li><a href="https://github.com/pmd/pmd/pull/1644">#1644</a>: [apex] Add property to allow apex test methods to contain underscores - <a href="https://github.com/tomdaly">Tom</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1645">#1645</a>: [java] ConsecutiveLiteralAppends false positive - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1646">#1646</a>: [java] UseDiamondOperator doesn’t work with var - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1654">#1654</a>: [core] Antlr token filter - <a href="https://github.com/tomidelucca">Tomi De Lucca</a></li>
 </ul>
 
 
