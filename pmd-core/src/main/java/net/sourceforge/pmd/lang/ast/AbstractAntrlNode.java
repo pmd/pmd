@@ -2,11 +2,15 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import org.antlr.v4.runtime.ParserRuleContext;
 
-public abstract class AbstractAntrlNode implements AntlrNode {
+public abstract class AbstractAntrlNode extends ParserRuleContext implements AntlrNode {
 
-    protected Node parent;
+    // TODO: what should we do with parent? how do we handle data flows in this scenario? it's ok to ignore
+    // TODO: our parent data flow in case we don't have one?
+    // protected Node parent;
 
     private DataFlowNode dataFlowNode;
     private Object userData;
@@ -25,12 +29,6 @@ public abstract class AbstractAntrlNode implements AntlrNode {
 
     @Override
     public DataFlowNode getDataFlowNode() {
-        if (this.dataFlowNode == null) {
-            if (this.parent != null) {
-                return parent.getDataFlowNode();
-            }
-            return null; // TODO wise?
-        }
         return dataFlowNode;
     }
 
@@ -56,5 +54,7 @@ public abstract class AbstractAntrlNode implements AntlrNode {
     }
 
     @Override
-    public abstract Iterator<Attribute> getXPathAttributesIterator();
+    public Iterator<Attribute> getXPathAttributesIterator() {
+        return new AttributeAxisIterator(this);
+    }
 }
