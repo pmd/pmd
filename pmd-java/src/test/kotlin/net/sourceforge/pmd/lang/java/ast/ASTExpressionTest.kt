@@ -26,19 +26,17 @@ class ASTExpressionTest : FunSpec({
 
         "Type.this.foo" should matchExpr<ASTFieldAccess> {
             it.fieldName shouldBe "foo"
+            it.image shouldBe "foo"
 
             it.leftHandSide shouldBePresent child<ASTThisExpression> {
                 it.qualifier shouldBePresent child<ASTAmbiguousNameExpr> { }
-            }
-
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
             }
         }
 
         "foo().foo" should matchExpr<ASTFieldAccess> {
 
             it.fieldName shouldBe "foo"
+            it.image shouldBe "foo"
 
             it.leftHandSide shouldBePresent child<ASTMethodCall> {
                 it.leftHandSide.shouldBeEmpty()
@@ -46,10 +44,6 @@ class ASTExpressionTest : FunSpec({
 
                 it.nameNode shouldBe child {}
                 it.arguments shouldBe child {}
-            }
-
-            it.nameNode shouldBe child {
-                (it is ASTAmbiguousNameExpr) shouldBe false
             }
         }
 

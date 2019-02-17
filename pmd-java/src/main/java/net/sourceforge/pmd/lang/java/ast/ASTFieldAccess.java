@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * <pre>
  *
- * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." {@link ASTName FieldName}
+ * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
  *
  * </pre>
  */
@@ -28,18 +28,21 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
     }
 
 
+    /**
+     * TODO this is for now always non-empty, since field accesses without qualifier
+     *   are classified as {@link ASTAmbiguousNameExpr}. But the symbol table could
+     *   easily provide a way to reclassify those as field accesses too.
+     */
     public Optional<ASTPrimaryExpression> getLeftHandSide() {
         return Optional.ofNullable(getFirstChildOfType(ASTPrimaryExpression.class));
     }
 
 
-    public ASTName getNameNode() {
-        return getFirstChildOfType(ASTName.class);
-    }
-
-
+    /**
+     * Returns the name of the field.
+     */
     public String getFieldName() {
-        return getNameNode().getImage();
+        return getImage();
     }
 
 

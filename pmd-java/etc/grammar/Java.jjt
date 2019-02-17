@@ -472,6 +472,9 @@ public class JavaParser {
     jjtree.pushNode(lastSegment);
   }
 
+  private void setLastTokenImage(JavaNode node) {
+    node.setImage(getToken(0).getImage());
+  }
 
 }
 PARSER_END(JavaParser)
@@ -2365,13 +2368,13 @@ Token t;
   ("." TypeArguments() MethodName() ArgumentsList()) #MethodCall { wrapLeft(); }
 | LOOKAHEAD(3)
   ("." MethodName() ArgumentsList())                 #MethodCall { wrapLeft(); }
-| ("." FieldName())                                 #FieldAccess { wrapLeft(); }
+| ("." <IDENTIFIER> {setLastTokenImage(jjtThis);})   #FieldAccess { wrapLeft(); }
 }
 
 void MethodReference(): // LHS is injected
 {checkForBadMethodReferenceUsage();}
 {
-  "::" [TypeArguments()] ( "new" | <IDENTIFIER>){jjtThis.setImage(getToken(0).getImage());}
+  "::" [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
 }
 
 // TODO remove Name nodes from method calls and field accesses, setting the image is enough
@@ -2404,7 +2407,7 @@ void PrimarySuffix() #void :
 | LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); } // those will enclose the Name
 | LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
 | LOOKAHEAD(2) "." AllocationExpression() // TODO
-| LOOKAHEAD(1) MemberSelector() // may either start with "." or with "::"
+| LOOKAHEAD(1) MemberSelector() // starts with "."
 | ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
 }
 

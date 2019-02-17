@@ -31,7 +31,6 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
