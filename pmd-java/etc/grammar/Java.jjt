@@ -466,6 +466,9 @@ public class JavaParser {
     Node previousSegment = jjtree.popNode();
 
     lastSegment.insertChild((AbstractJavaNode) previousSegment, 0);
+    if (lastSegment instanceof LateInitNode) {
+        ((LateInitNode) lastSegment).onInjectFinished();
+    }
     jjtree.pushNode(lastSegment);
   }
 
@@ -2371,6 +2374,7 @@ void MethodReference(): // LHS is injected
   "::" [TypeArguments()] ( "new" | MethodName() )
 }
 
+// TODO remove Name nodes from method calls and field accesses, setting the image is enough
 void PrimaryPrefix() #void :
 {Token t;}
 {
@@ -2388,7 +2392,7 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD( Name() "::"  ) AmbiguousNameExpr()
 // Still need to allow type name
 | LOOKAHEAD( ReferenceType() "::" ) ReferenceType()
-| (AmbiguousNameExpr() [ArgumentsList()]) #MethodCall(>1)
+| AmbiguousNameExpr()
 }
 
 
@@ -2396,13 +2400,12 @@ void PrimarySuffix() #void :
 {}
 {
   MethodReference()                           { wrapLeft(); }
+| ArgumentsList()            #MethodCall      { wrapLeft(); }
 | LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); } // those will enclose the Name
 | LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
 | LOOKAHEAD(2) "." AllocationExpression() // TODO
 | LOOKAHEAD(1) MemberSelector() // may either start with "." or with "::"
-| ("[" Expression() "]")     #ArrayAccess { wrapLeft(); }
-// this applies only if the previous was an AmbiguousNameExpr, otherwise MemberSelector catches it
-| ArgumentsList()            #MethodCall  { wrapLeft(); }
+| ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
 }
 
 void LambdaExpression() :

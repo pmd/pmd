@@ -134,7 +134,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         super.jjtAddChild(child, index);
         child.jjtSetParent(this);
 
-        for (int j = index + 1; j < jjtGetNumChildren(); j++) {
+        for (int j = index; j < jjtGetNumChildren(); j++) {
             children[j].jjtSetChildIndex(j); // shift the children to the right
         }
 

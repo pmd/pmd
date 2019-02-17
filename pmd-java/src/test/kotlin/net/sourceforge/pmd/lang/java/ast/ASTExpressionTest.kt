@@ -130,6 +130,45 @@ class ASTExpressionTest : FunSpec({
             it.arguments shouldBe child {}
         }
 
+        "foo.bar(e->it.f(e))" should matchExpr<ASTMethodCall> {
+
+            it.methodName shouldBe "bar"
+
+            it.leftHandSide shouldBePresent child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "foo"
+            }
+
+            it.nameNode shouldBe child {
+                (it is ASTAmbiguousNameExpr) shouldBe false
+
+            }
+
+            it.arguments shouldBe child {
+                child<ASTLambdaExpression> {
+                    child<ASTVariableDeclaratorId> {  }
+
+                    child<ASTMethodCall> {
+                        it.methodName shouldBe "f"
+
+                        it.leftHandSide shouldBePresent child<ASTAmbiguousNameExpr> {
+                            it.image shouldBe "it"
+                        }
+
+                        it.nameNode shouldBe child {
+                            (it is ASTAmbiguousNameExpr) shouldBe false
+                            it.xPathNodeName shouldBe "Name"
+                        }
+
+                        it.arguments shouldBe child {
+
+                            child<ASTAmbiguousNameExpr> {
+                                it.image shouldBe "e"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     testGroup("Method reference") {

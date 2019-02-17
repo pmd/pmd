@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *              |  {@link ASTClassOrInterfaceType ClassName} "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
 
     private ASTName methodName;
 
@@ -37,57 +37,58 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
     }
 
 
+    @Override
+    public void onInjectFinished() {
+        // perform some preliminary disambiguation before we have a true rewrite pass
+
+        if (getExplicitTypeArguments().isPresent()) {
+            // then the name is already separate from the lhs
+            methodName = (ASTName) jjtGetChild(jjtGetNumChildren() - 2);
+        } else {
+
+            Node fstChild = jjtGetChild(0);
+            if (fstChild.getClass() == ASTName.class) {
+                methodName = (ASTName) fstChild;
+            } else if (fstChild instanceof ASTAmbiguousNameExpr) {
+                String image = fstChild.getImage();
+                int lastDotIdx = image.lastIndexOf('.');
+
+                if (lastDotIdx < 0) {
+                    // no dot, this is just a method call like foo()
+                    // so we promote the ambiguous expr to a method name
+                    ASTName newName = new ASTName(image);
+                    newName.copyTextCoordinates(fstChild);
+                    replaceChildSameLength(0, newName);
+                    methodName = newName;
+                } else {
+
+                    String realName = image.substring(lastDotIdx + 1);
+                    String remainingAmbiguous = image.substring(0, lastDotIdx);
+
+                    fstChild.setImage(remainingAmbiguous);
+
+                    ASTName newName = new ASTName(realName);
+                    newName.copyTextCoordinates(fstChild);
+
+                    ((ASTAmbiguousNameExpr) fstChild).shiftColumns(0, -(realName.length() + 1));
+                    newName.shiftColumns(remainingAmbiguous.length() + 1, 0);
+
+                    insertChild(newName, 1);
+                    this.methodName = newName;
+                }
+            } else {
+                methodName = getFirstChildOfType(ASTName.class);
+            }
+        }
+        assert methodName != null && !(methodName instanceof ASTAmbiguousNameExpr);
+    }
+
     public String getMethodName() {
         return getNameNode().getImage();
     }
 
 
     public ASTName getNameNode() {
-        if (methodName == null) {
-            // perform some preliminary disambiguation before we have a true rewrite pass
-
-            if (getExplicitTypeArguments().isPresent()) {
-                // then the name is already separate from the lhs
-                int idx = getArguments().jjtGetChildIndex() - 1;
-                methodName = (ASTName) jjtGetChild(idx);
-            } else {
-
-                Node fstChild = jjtGetChild(0);
-                if (fstChild.getClass() == ASTName.class) {
-                    methodName = (ASTName) fstChild;
-                } else if (fstChild instanceof ASTAmbiguousNameExpr) {
-                    String image = fstChild.getImage();
-                    int lastDotIdx = image.lastIndexOf('.');
-
-                    if (lastDotIdx < 0) {
-                        // no dot, this is just a method call like foo()
-                        // so we promote the ambiguous expr to a method name
-                        ASTName newName = new ASTName(image);
-                        newName.copyTextCoordinates(fstChild);
-                        replaceChildSameLength(0, newName);
-                        methodName = newName;
-                    } else {
-
-                        String realName = image.substring(lastDotIdx + 1);
-                        String remainingAmbiguous = image.substring(0, lastDotIdx);
-
-                        fstChild.setImage(remainingAmbiguous);
-
-                        ASTName newName = new ASTName(realName);
-                        newName.copyTextCoordinates(fstChild);
-
-                        ((ASTAmbiguousNameExpr) fstChild).shiftColumns(0, -(realName.length() + 1));
-                        newName.shiftColumns(remainingAmbiguous.length() + 1, 0);
-
-                        insertChild(newName, 1);
-                        this.methodName = newName;
-                    }
-                } else {
-                    methodName = getFirstChildOfType(ASTName.class);
-                }
-            }
-            assert methodName != null;
-        }
         return methodName;
     }
 

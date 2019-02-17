@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.javacc.jjtree.JJTreeParserConstants;
-import org.javacc.jjtree.JJTreeParserTreeConstants;
-
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ASTName extends AbstractJavaTypeNode {
