@@ -200,9 +200,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
     public Object visit(ASTConditionalExpression node, Object data) {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
-        ASTExpression wrapper = new ASTExpression(Integer.MAX_VALUE);
-        wrapper.jjtAddChild(node.jjtGetChild(0), 0);
-        int boolCompTernary = CycloMetric.booleanExpressionComplexity(wrapper);
+        int boolCompTernary = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
 
         return boolCompTernary + sumChildrenComplexities(node, data) - 1;
     }
