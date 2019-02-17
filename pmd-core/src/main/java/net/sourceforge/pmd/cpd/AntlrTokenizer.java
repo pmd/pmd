@@ -8,13 +8,18 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
+ * 
+ * @deprecated This is an internal API.
  */
+@Deprecated
+@InternalApi
 public abstract class AntlrTokenizer implements Tokenizer {
 
     protected abstract AntlrTokenManager getLexerForSource(SourceCode sourceCode);
@@ -23,6 +28,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
 
         AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
+        tokenManager.setFileName(sourceCode.getFileName());
 
         try {
             AntlrToken token = (AntlrToken) tokenManager.getNextToken();
