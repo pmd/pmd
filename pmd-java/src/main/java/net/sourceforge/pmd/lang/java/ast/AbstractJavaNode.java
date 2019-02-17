@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 
@@ -163,25 +162,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
     }
 
-
-    /**
-     * Deletes the child at the given index. If there is no child at the given index,
-     * does nothing. Text bounds of this node are not shrunk (this can be added later
-     * if needed).
-     */
-    void deleteChild(int index) {
-
-        if (children == null || index >= children.length || index < 0 || children[index] == null) {
-            return;
-        }
-
-        Node toRemove = children[index];
-        toRemove.jjtSetParent(null);
-        children = ArrayUtils.remove(children, index);
-        updateChildrenIndices(index - 1);
-    }
-
-
     /**
      * Updates the {@link #jjtGetChildIndex()} of the children with their
      * real position, starting at [startIndex].
@@ -202,14 +182,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     void shiftColumns(int beginShift, int endShift) {
         this.beginColumn += beginShift;
         this.endColumn += endShift;
-    }
-
-
-    void copyTextCoordinates(Node copy) {
-        this.beginLine = copy.getBeginLine();
-        this.beginColumn = copy.getBeginColumn();
-        this.endLine = copy.getEndLine();
-        this.endColumn = copy.getEndColumn();
     }
 
 
