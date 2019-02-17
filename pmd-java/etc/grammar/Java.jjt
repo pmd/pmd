@@ -456,6 +456,19 @@ public class JavaParser {
     token_source.setSuppressMarker(marker);
   }
 
+  /**
+   * Takes the two nodes at the top of the stack and inject the next-to-last as the first
+   * child of the last. Basically it transforms eg [A][B] into [[A]B]. Can be used to e.g.
+   * build a left-recursive expression or type subtree from an iterative parsing.
+   */
+  private void wrapLeft() {
+    AbstractJavaNode lastSegment = (AbstractJavaNode) jjtree.popNode();
+    Node previousSegment = jjtree.popNode();
+
+    lastSegment.insertChild((JavaNode) previousSegment, 0, true);
+    jjtree.pushNode(lastSegment);
+  }
+
 
 }
 PARSER_END(JavaParser)
@@ -2049,17 +2062,9 @@ void ClassOrInterfaceType() #void:
         (TypeAnnotation())*
         t=<IDENTIFIER> { jjtThis.setImage(t.getImage()); }
         [ LOOKAHEAD( "<" ) TypeArguments() ]
-      ) #ClassOrInterfaceType {
-        // At this point the newer ClassOrInterfaceType has been pushed on the stack
-        // We retrieve it
-        AbstractJavaNode lastSegment = (AbstractJavaNode) jjtree.popNode();
-        // All its children (annotations and type arguments) have already been popped,
-        // so the node remaining on top of the stack is the previous segment
-        Node previousSegment = jjtree.popNode();
-
-        lastSegment.insertChild((JavaNode) previousSegment, 0, true);
-        jjtree.pushNode(lastSegment);
-      }
+      ) #ClassOrInterfaceType
+      // inject the previous segment into the last one
+      { wrapLeft(); }
   )*
 }
 
