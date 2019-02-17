@@ -9,7 +9,7 @@ import io.kotlintest.specs.FunSpec
  */
 class ASTExpressionTest : FunSpec({
 
-    testGroup("Test this expression ") {
+    testGroup("this keyword") {
 
         "this" should matchExpr<ASTThisExpression> { }
 
@@ -22,7 +22,7 @@ class ASTExpressionTest : FunSpec({
 
     }
 
-    testGroup("Test field access exprs") {
+    testGroup("Field access exprs") {
 
         "Type.this.foo" should matchExpr<ASTFieldAccess> {
             it.fieldName shouldBe "foo"
@@ -56,7 +56,7 @@ class ASTExpressionTest : FunSpec({
     }
 
 
-    testGroup("Test method call exprs") {
+    testGroup("Method call exprs") {
 
         "Type.this.foo()" should matchExpr<ASTMethodCall> {
             it.methodName shouldBe "foo"
@@ -132,6 +132,178 @@ class ASTExpressionTest : FunSpec({
 
     }
 
+    testGroup("Method reference") {
+
+        "this::foo" should matchExpr<ASTMethodReference> {
+
+            it.methodName shouldBePresent "foo"
+            it.lhsType.shouldBeEmpty()
+            it.isConstructorReference shouldBe false
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsExpression shouldBePresent child<ASTThisExpression> {
+
+            }
+
+            it.nameNode shouldBePresent child { }
+        }
+
+        "foobar.b::foo" should matchExpr<ASTMethodReference> {
+
+            it.methodName shouldBePresent "foo"
+            it.lhsType.shouldBeEmpty()
+            it.isConstructorReference shouldBe false
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "foobar.b"
+            }
+
+            it.nameNode shouldBePresent child { }
+        }
+
+        "foobar.b::<B>foo" should matchExpr<ASTMethodReference> {
+
+            it.methodName shouldBePresent "foo"
+            it.lhsType.shouldBeEmpty()
+            it.isConstructorReference shouldBe false
+
+            it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "foobar.b"
+            }
+
+            it.typeArguments shouldBePresent child {
+                unspecifiedChild()
+            }
+
+            it.nameNode shouldBePresent child { }
+        }
+
+
+        "foobar.b<B>::foo" should matchExpr<ASTMethodReference> {
+
+            it.methodName shouldBePresent "foo"
+            it.isConstructorReference shouldBe false
+            it.lhsExpression.shouldBeEmpty()
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsType shouldBePresent child<ASTClassOrInterfaceType> {
+
+                it.typeArguments shouldBePresent child {
+                    child<ASTTypeArgument> {
+                        child<ASTClassOrInterfaceType> {
+                            it.typeImage shouldBe "B"
+                        }
+                    }
+                }
+            }
+
+            it.nameNode shouldBePresent child { }
+        }
+
+    }
+
+    testGroup("Constructor reference") {
+
+        "foobar.b::new" should matchExpr<ASTMethodReference> {
+
+            it.nameNode.shouldBeEmpty()
+            it.methodName.shouldBeEmpty()
+            it.isConstructorReference shouldBe true
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsExpression.shouldBeEmpty()
+            it.lhsType shouldBePresent child<ASTClassOrInterfaceType> {
+                it.typeImage shouldBe "foobar.b"
+            }
+
+        }
+
+
+        "foobar.b<B>::new" should matchExpr<ASTMethodReference> {
+
+            it.nameNode.shouldBeEmpty()
+            it.methodName.shouldBeEmpty()
+            it.isConstructorReference shouldBe true
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsExpression.shouldBeEmpty()
+            it.lhsType shouldBePresent child<ASTClassOrInterfaceType> {
+                it.typeImage shouldBe "foobar.b"
+
+                it.typeArguments shouldBePresent child {
+                    child<ASTTypeArgument> {
+                        child<ASTClassOrInterfaceType> {
+                            it.typeImage shouldBe "B"
+                        }
+                    }
+                }
+            }
+        }
+
+        "int[]::new" should matchExpr<ASTMethodReference> {
+
+            it.nameNode.shouldBeEmpty()
+            it.methodName.shouldBeEmpty()
+            it.isConstructorReference shouldBe true
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsExpression.shouldBeEmpty()
+            it.lhsType shouldBePresent child<ASTArrayType> {
+                it.typeImage shouldBe "int"
+
+                it.elementType shouldBe child<ASTPrimitiveType> {
+                    it.typeImage shouldBe "int"
+                }
+
+                it.dimensions shouldBe child {
+                    child<ASTArrayTypeDim> {}
+                }
+            }
+        }
+
+        "ArrayList<String>::new" should matchExpr<ASTMethodReference> {
+
+            it.nameNode.shouldBeEmpty()
+            it.methodName.shouldBeEmpty()
+            it.isConstructorReference shouldBe true
+            it.typeArguments.shouldBeEmpty()
+
+            it.lhsExpression.shouldBeEmpty()
+            it.lhsType shouldBePresent child<ASTClassOrInterfaceType> {
+                it.typeImage shouldBe "ArrayList"
+
+                it.typeArguments shouldBePresent child {
+                    child<ASTTypeArgument> {
+                        child<ASTClassOrInterfaceType> {
+                            it.typeImage shouldBe "String"
+                        }
+                    }
+                }
+            }
+        }
+
+        "ArrayList::<String>new" should matchExpr<ASTMethodReference> {
+
+            it.nameNode.shouldBeEmpty()
+            it.methodName.shouldBeEmpty()
+            it.isConstructorReference shouldBe true
+
+            it.lhsExpression.shouldBeEmpty()
+            it.lhsType shouldBePresent child<ASTClassOrInterfaceType> {
+                it.typeImage shouldBe "ArrayList"
+                it.typeArguments.shouldBeEmpty()
+            }
+
+            it.typeArguments shouldBePresent child {
+                child<ASTTypeArgument> {
+                    child<ASTClassOrInterfaceType> {
+                        it.typeImage shouldBe "String"
+                    }
+                }
+            }
+        }
+    }
 
     testGroup("Test ambiguous names") {
 

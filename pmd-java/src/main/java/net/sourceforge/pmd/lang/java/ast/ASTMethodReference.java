@@ -6,18 +6,25 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Optional;
+
+import net.sourceforge.pmd.lang.ast.Node;
+
+
 /**
- * Method reference expression.
+ * Method or constructor reference expression.
  *
  * <pre>
  *
- * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
+ * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? {@link ASTName MethodName}
+ *                   | {@link ASTReferenceType ReferenceType} "::" {@link ASTTypeArguments TypeArguments}? {@link ASTName MethodName}
  *                   | {@link ASTClassOrInterfaceType ClassType} "::" {@link ASTTypeArguments TypeArguments}? "new"
  *                   | {@link ASTArrayType ArrayType} "::" "new"
  *
  * </pre>
  */
 public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+
     public ASTMethodReference(int id) {
         super(id);
     }
@@ -30,6 +37,69 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+
+    /**
+     * Returns true if this is a constructor reference,
+     * e.g. {@code ArrayList::new}.
+     */
+    public boolean isConstructorReference() {
+        return jjtGetLastToken().getImage().equals("new");
+    }
+
+
+    public Optional<ASTName> getNameNode() {
+        if (isConstructorReference()) {
+            return Optional.empty();
+        }
+        Node last = jjtGetChild(jjtGetNumChildren() - 1);
+        return last instanceof ASTName ? Optional.of((ASTName) last) : Optional.empty();
+    }
+
+
+    /**
+     * Returns the type node to the left of the "::" if it exists.
+     * Otherwise, this method returns an empty optional and {@link #getLhsExpression()}
+     * returns a non-empty optional.
+     */
+    public Optional<ASTReferenceType> getLhsType() {
+        // TODO rewrite, if this is a constructor reference, then we know
+        // that the lhs is a type
+        return Optional.of(jjtGetChild(0))
+                       .filter(it -> it instanceof ASTType)
+                       .map(it -> (ASTReferenceType) it);
+    }
+
+
+    /**
+     * Returns the expression node to the left of the "::" if it exists.
+     * Otherwise, this method returns an empty optional and {@link #getLhsType()}
+     * returns a non-empty optional.
+     */
+    public Optional<ASTPrimaryExpression> getLhsExpression() {
+        return Optional.of(jjtGetChild(0))
+                       .filter(it -> it instanceof ASTPrimaryExpression)
+                       .map(it -> (ASTPrimaryExpression) it);
+    }
+
+
+    /**
+     * Returns the explicit type arguments mentioned after the "::" if they exist.
+     * Type arguments mentioned before the "::", if any, are contained within
+     * the {@linkplain #getLhsType() lhs type}.
+     */
+    public Optional<ASTTypeArguments> getTypeArguments() {
+        return Optional.ofNullable(getFirstChildOfType(ASTTypeArguments.class));
+    }
+
+
+    /**
+     * Returns the method name, or an empty optional if
+     * this is a {@linkplain #isConstructorReference() constructor reference}.
+     */
+    public Optional<String> getMethodName() {
+        return getNameNode().map(Node::getImage);
     }
 
 
