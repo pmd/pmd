@@ -126,7 +126,7 @@ fun AbstractFunSpec.testGroup(name: String,
 
 class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: String, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
 
-    infix fun String.should(matcher: Matcher<String>) {
+    infix fun String.should(matcher: Assertions<String>) {
         funspec.parserTest("$groupName: '$this'") {
             this@should kotlintestShould matcher
         }
