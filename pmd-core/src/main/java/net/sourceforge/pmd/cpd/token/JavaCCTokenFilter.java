@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.cpd.token;
 
+import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -24,10 +25,5 @@ public class JavaCCTokenFilter extends BaseTokenFilter<GenericToken> {
     @Override
     protected boolean shouldStopProcessing(final GenericToken currentToken) {
         return currentToken.getImage().isEmpty();
-    }
-
-    @Override
-    protected void analyzeToken(final GenericToken currentToken) {
-        // noop
     }
 }

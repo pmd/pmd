@@ -34,6 +34,14 @@ public class AntlrTokenManager implements TokenManager {
 
     @Override
     public Object getNextToken() {
+        AntlrToken nextToken = getNextTokenFromAnyChannel();
+        while (!nextToken.isDefault()) {
+            nextToken = getNextTokenFromAnyChannel();
+        }
+        return nextToken;
+    }
+
+    private AntlrToken getNextTokenFromAnyChannel() {
         final AntlrToken previousComment = previousToken != null && previousToken.isHidden() ? previousToken : null;
         final AntlrToken currentToken = new AntlrToken(lexer.nextToken(), previousComment);
         previousToken = currentToken;

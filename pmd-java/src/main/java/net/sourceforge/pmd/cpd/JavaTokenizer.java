@@ -4,21 +4,22 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Properties;
 
+import net.sourceforge.pmd.cpd.internal.JavaCCTokenizer;
 import net.sourceforge.pmd.cpd.token.JavaCCTokenFilter;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaTokenManager;
 import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
 import net.sourceforge.pmd.lang.java.ast.Token;
 
-public class JavaTokenizer implements Tokenizer {
+public class JavaTokenizer extends JavaCCTokenizer {
 
     public static final String CPD_START = "\"CPD-START\"";
     public static final String CPD_END = "\"CPD-END\"";
@@ -27,6 +28,8 @@ public class JavaTokenizer implements Tokenizer {
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
 
+    private ConstructorDetector constructorDetector;
+
     public void setProperties(Properties properties) {
         ignoreAnnotations = Boolean.parseBoolean(properties.getProperty(IGNORE_ANNOTATIONS, "false"));
         ignoreLiterals = Boolean.parseBoolean(properties.getProperty(IGNORE_LITERALS, "false"));
@@ -34,48 +37,42 @@ public class JavaTokenizer implements Tokenizer {
     }
 
     @Override
-    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        final String fileName = sourceCode.getFileName();
-        final JavaTokenFilter tokenFilter = createTokenFilter(sourceCode);
-        final ConstructorDetector constructorDetector = new ConstructorDetector(ignoreIdentifiers);
-
-        Token currentToken = (Token) tokenFilter.getNextToken();
-        while (currentToken != null) {
-            processToken(tokenEntries, fileName, currentToken, constructorDetector);
-            currentToken = (Token) tokenFilter.getNextToken();
-        }
-        tokenEntries.add(TokenEntry.getEOF());
+    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) throws IOException {
+        constructorDetector = new ConstructorDetector(ignoreIdentifiers);
+        super.tokenize(sourceCode, tokenEntries);
     }
 
-    private JavaTokenFilter createTokenFilter(final SourceCode sourceCode) {
+    @Override
+    protected TokenManager getLexerForSource(SourceCode sourceCode) {
         final StringBuilder stringBuilder = sourceCode.getCodeBuffer();
-        // Note that Java version is irrelevant for tokenizing
-        final LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                .getVersion("1.4").getLanguageVersionHandler();
-        final TokenManager tokenMgr = languageVersionHandler.getParser(languageVersionHandler.getDefaultParserOptions())
-                .getTokenManager(sourceCode.getFileName(), new StringReader(stringBuilder.toString()));
-        return new JavaTokenFilter(tokenMgr, ignoreAnnotations);
+        return new JavaTokenManager(new StringReader(stringBuilder.toString()));
     }
 
-    private void processToken(Tokens tokenEntries, String fileName, Token currentToken,
-            ConstructorDetector constructorDetector) {
-        String image = currentToken.image;
+    @Override
+    protected TokenFilter getTokenFilter(TokenManager tokenManager) {
+        return new JavaTokenFilter(tokenManager, ignoreAnnotations);
+    }
 
-        constructorDetector.restoreConstructorToken(tokenEntries, currentToken);
+    @Override
+    protected TokenEntry processToken(Tokens tokenEntries, GenericToken currentToken, String fileName) {
+        String image = currentToken.getImage();
+        Token javaToken = (Token) currentToken;
 
-        if (ignoreLiterals && (currentToken.kind == JavaParserConstants.STRING_LITERAL
-                || currentToken.kind == JavaParserConstants.CHARACTER_LITERAL
-                || currentToken.kind == JavaParserConstants.DECIMAL_LITERAL
-                || currentToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
-            image = String.valueOf(currentToken.kind);
+        constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
+
+        if (ignoreLiterals && (javaToken.kind == JavaParserConstants.STRING_LITERAL
+                || javaToken.kind == JavaParserConstants.CHARACTER_LITERAL
+                || javaToken.kind == JavaParserConstants.DECIMAL_LITERAL
+                || javaToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
+            image = String.valueOf(javaToken.kind);
         }
-        if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
-            image = String.valueOf(currentToken.kind);
+        if (ignoreIdentifiers && javaToken.kind == JavaParserConstants.IDENTIFIER) {
+            image = String.valueOf(javaToken.kind);
         }
 
-        constructorDetector.processToken(currentToken);
+        constructorDetector.processToken(javaToken);
 
-        tokenEntries.add(new TokenEntry(image, fileName, currentToken.beginLine));
+        return new TokenEntry(image, fileName, currentToken.getBeginLine());
     }
 
     public void setIgnoreLiterals(boolean ignore) {

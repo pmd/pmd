@@ -2,8 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd.token;
+package net.sourceforge.pmd.cpd.token.internal;
 
+import net.sourceforge.pmd.cpd.token.TokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -62,6 +63,17 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
     }
 
     /**
+     * Extension point for subclasses to analyze all tokens (before filtering)
+     * and update internal status to decide on custom discard rules.
+     *
+     * @param currentToken The token to be analyzed
+     * @see #isLanguageSpecificDiscarding()
+     */
+    protected void analyzeToken(final GenericToken currentToken) {
+        // noop
+    }
+
+    /**
      * Extension point for subclasses to indicate tokens are to be filtered.
      *
      * @return True if tokens should be filtered, false otherwise
@@ -77,14 +89,5 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
      * @return True if the token filter has finished consuming all tokens, false otherwise
      */
     protected abstract boolean shouldStopProcessing(T currentToken);
-
-    /**
-     * Extension point for subclasses to analyze all tokens (before filtering)
-     * and update internal status to decide on custom discard rules.
-     *
-     * @param currentToken The token to be analyzed
-     * @see #isLanguageSpecificDiscarding()
-     */
-    protected abstract void analyzeToken(T currentToken);
 
 }

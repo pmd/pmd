@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd.token;
 
 import static org.antlr.v4.runtime.Token.EOF;
 
+import net.sourceforge.pmd.cpd.token.internal.BaseTokenFilter;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 
 /**
@@ -13,8 +14,6 @@ import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
  * to enable / disable analysis of parts of the stream
  */
 public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
-
-    private boolean discardingHiddenTokens = false;
 
     /**
      * Creates a new AntlrTokenFilter
@@ -27,19 +26,5 @@ public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
     @Override
     protected boolean shouldStopProcessing(final AntlrToken currentToken) {
         return currentToken.getType() == EOF;
-    }
-
-    @Override
-    protected void analyzeToken(final AntlrToken currentToken) {
-        analyzeHiddenTokens(currentToken);
-    }
-
-    @Override
-    protected boolean isLanguageSpecificDiscarding() {
-        return super.isLanguageSpecificDiscarding() || discardingHiddenTokens;
-    }
-
-    private void analyzeHiddenTokens(final AntlrToken token) {
-        discardingHiddenTokens = token.isHidden();
     }
 }
