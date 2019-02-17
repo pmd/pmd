@@ -2437,27 +2437,43 @@ void PrimarySuffix() :
 | Arguments() {jjtThis.setIsArguments();}
 }
 
-void Literal() :
+void Literal() #void :
 { Token t;}
 {
-  t=<INTEGER_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
-| t=<FLOATING_POINT_LITERAL> { checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
-| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
-| t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
-| t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
-| BooleanLiteral()
-| NullLiteral()
+  NumericLiteral()
+| StringLiteral()
+| CharLiteral()
+| ("true" { jjtThis.setTrue(); } | "false") #BooleanLiteral
+| "null"                                    #NullLiteral
 }
 
-void BooleanLiteral() :
+
+void NumericLiteral():
+{
+  Token t;
+}
+{
+  (  t=<INTEGER_LITERAL> {  jjtThis.setIntLiteral();}
+  | t=<FLOATING_POINT_LITERAL> {  jjtThis.setFloatLiteral();}
+  | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); jjtThis.setFloatLiteral();}
+  )
+  {
+    checkForBadNumericalLiteralslUsage(t);
+    jjtThis.setImage(t.image);
+  }
+}
+
+void CharLiteral():
 {}
 {
-  "true" { jjtThis.setTrue(); } | "false"
+  <CHARACTER_LITERAL> {jjtThis.setImage(getToken(0).getImage());}
 }
 
-void NullLiteral() :
+void StringLiteral():
 {}
-{ "null" }
+{
+   <STRING_LITERAL> { jjtThis.setImage(getToken(0).getImage()); }
+}
 
 void Arguments() :
 {}
