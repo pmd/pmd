@@ -1522,7 +1522,7 @@ public class Foo {
     <rule name="UseTryWithResources"
           language="java"
           minimumLanguageVersion="1.7"
-          since="6.11.0"
+          since="6.12.0"
           typeResolution="true"
           message="Consider using a try-with-resources statement instead of explicitly closing the resource"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
