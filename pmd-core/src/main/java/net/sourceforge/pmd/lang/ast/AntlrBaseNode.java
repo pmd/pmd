@@ -25,7 +25,7 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
      * Constructor required by {@link ParserRuleContext}
      */
     public AntlrBaseNode() {
-
+        // Nothing to be done
     }
 
     /**
