@@ -2130,7 +2130,21 @@ void PrimitiveType() :
 void ResultType() :
 {}
 {
+  TypeOrVoid()
+}
+
+void TypeOrVoid() #void:
+{}
+{
   "void" | Type()
+}
+/**
+ * May only be used if we're sure that only a single identifier is acceptable.
+ */
+void SimpleName() #Name:
+{}
+{
+  <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
 }
 
 void Name() :
@@ -2166,7 +2180,7 @@ void NameList() :
  * Expression syntax follows.
  */
 
-void Expression() :
+void Expression() #void:
 /*
  * This expansion has been written this way instead of:
  *   Assignment() | ConditionalExpression()
@@ -2345,6 +2359,7 @@ void CastExpression() :
 | "(" (TypeAnnotation())* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
 }
 
+
 void SwitchExpression() :
 {}
 {
@@ -2352,19 +2367,20 @@ void SwitchExpression() :
     "switch" "(" Expression() ")" SwitchBlock()
 }
 
-void PrimaryExpression() :
+void PrimaryExpression() #void :
 {}
 {
   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
 }
 
-void MemberSelector():
+void MemberSelector() #void :
 {
 Token t;
 }
 {
-  "." TypeArguments() t=<IDENTIFIER> {jjtThis.setImage(t.image);}
-| MethodReference()
+  // if there are type arguments, this is a method call
+  ("." TypeArguments() SimpleName() ArgumentList()) #MethodCall { wrapLeft(); }
+| MethodReference()  { wrapLeft(); }
 }
 
 void MethodReference() :
@@ -2373,21 +2389,21 @@ void MethodReference() :
   "::" [TypeArguments()] ( "new" {jjtThis.setImage("new");} | t=<IDENTIFIER> {jjtThis.setImage(t.image);} )
 }
 
-void PrimaryPrefix() :
+void PrimaryPrefix() #void :
 {Token t;}
 {
   Literal()
-| LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
-| "super" {jjtThis.setUsesSuperModifier();}
+| LOOKAHEAD(2) "this"                     #ThisExpression
+| "super"                                 #SuperExpression
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD(3) "(" Expression() ")"
+| LOOKAHEAD(3) ("(" Expression() ")")     #ParenthesizedExpression
 | AllocationExpression()
-| LOOKAHEAD( ResultType() "." "class" ) (ResultType() #void "." "class") #ClassLiteral
-| LOOKAHEAD( Name() "::" ) Name()
-| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference()
-| Name()
+| LOOKAHEAD( TypeOrVoid() "." "class" ) (TypeOrVoid() "." "class") #ClassLiteral
+| LOOKAHEAD( Name() "::" ) Name() // TODO #AmbiguousName
+| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference() { wrapLeft(); }
+| Name() // TODO #AmbiguousName
 }
 
 void LambdaExpression() :
@@ -2426,16 +2442,19 @@ void LambdaParameterType() #void :
     | Type()
 }
 
-void PrimarySuffix() :
-{Token t;}
-{ LOOKAHEAD(2) "." "this"
-| LOOKAHEAD(2) "." "super"
+void PrimarySuffix() #void :
+{}
+{ LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); } // those will enclose the Name
+| LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
+
 | LOOKAHEAD(2) "." AllocationExpression()
 | LOOKAHEAD(3) MemberSelector()
-| "[" Expression() "]" {jjtThis.setIsArrayDereference();}
-| "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
-| Arguments() {jjtThis.setIsArguments();}
+| ("[" Expression() "]")     #ArrayAccess { wrapLeft(); }
+| ("." SimpleName())         #FieldAccess { wrapLeft(); }
+| Arguments()                #MethodCall  { wrapLeft(); }
 }
+
+// TODO compound expression abstraction
 
 void Literal() #void :
 { Token t;}
@@ -2485,6 +2504,13 @@ void ArgumentList() :
 {}
 {
   Expression() ( "," Expression() )*
+}
+
+// FIXME merge, this is temporary
+void ArgumentListBis() #ArgumentList :
+{}
+{
+ "(" [ Expression() ( "," Expression() )* ] ")"
 }
 
 void AllocationExpression():

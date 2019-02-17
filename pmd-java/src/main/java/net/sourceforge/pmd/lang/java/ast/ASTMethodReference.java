@@ -6,7 +6,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTMethodReference extends AbstractJavaNode {
+/**
+ * Method reference expression.
+ *
+ * <pre>
+ *
+ * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
+ *                   | {@link ASTClassOrInterfaceType ClassType} "::" {@link ASTTypeArguments TypeArguments}? "new"
+ *                   | {@link ASTArrayType ArrayType} "::" "new"
+ *
+ * </pre>
+ */
+public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression {
     public ASTMethodReference(int id) {
         super(id);
     }

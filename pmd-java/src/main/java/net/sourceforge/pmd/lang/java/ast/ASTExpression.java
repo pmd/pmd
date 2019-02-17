@@ -17,52 +17,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTExpression extends AbstractJavaTypeNode {
-    public ASTExpression(int id) {
-        super(id);
-    }
-
-    public ASTExpression(JavaParser p, int id) {
-        super(p, id);
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+public interface ASTExpression extends JavaNode, TypeNode {
 
 
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    public boolean isStandAlonePrimitive() {
-        if (jjtGetNumChildren() != 1) {
-            return false;
-        }
-
-        ASTPrimaryExpression primaryExpression = getFirstChildOfType(ASTPrimaryExpression.class);
-
-        if (primaryExpression == null || primaryExpression.jjtGetNumChildren() != 1) {
-            return false;
-        }
-
-        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
-
-        if (primaryPrefix == null || primaryPrefix.jjtGetNumChildren() != 1) {
-            return false;
-        }
-
-        ASTLiteral literal = primaryPrefix.getFirstChildOfType(ASTLiteral.class);
-
-        // if it is not a string literal and not a null, then it is one of
-        // byte, short, char, int, long, float, double, boolean
-        return literal != null && !literal.isStringLiteral()
-                && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
-    }
 }
