@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
-
-
 /**
  * An ambigous name occurring in an expression context. Ideally we'd use a disambiguation pass to remove
  * all of those nodes from the AST passed to the rules. It's a crutch for now.
@@ -26,11 +23,6 @@ public final class ASTAmbiguousNameExpr extends ASTName implements ASTPrimaryExp
 
     ASTAmbiguousNameExpr(JavaParser p, int id) {
         super(p, id);
-    }
-
-
-    public Optional<ASTName> getQualifier() {
-        return jjtGetNumChildren() > 0 ? Optional.of((ASTName) jjtGetChild(0)) : Optional.empty();
     }
 
 

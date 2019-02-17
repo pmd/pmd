@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Optional;
+
+
 /**
  * A field access expression.
  *
@@ -22,6 +25,11 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
 
     ASTFieldAccess(JavaParser p, int id) {
         super(p, id);
+    }
+
+
+    public Optional<ASTPrimaryExpression> getLeftHandSide() {
+        return Optional.ofNullable(getFirstChildOfType(ASTPrimaryExpression.class));
     }
 
 

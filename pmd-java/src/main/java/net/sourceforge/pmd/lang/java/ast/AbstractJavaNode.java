@@ -115,7 +115,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     // The implementation of jjtAddChild in AbstractNode overwrites nodes
     // -> probably unexpected and to be changed
     // visible to parser only
-    void insertChild(JavaNode child, int index, boolean expandTextSpan) {
+    JavaNode insertChild(AbstractJavaNode child, int index) {
         // Allow to insert a child at random index without overwriting
         // If the child is null, it is replaced. If it is not null, children are shifted
         if (children != null && index < children.length && children[index] != null) {
@@ -134,28 +134,51 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         super.jjtAddChild(child, index);
         child.jjtSetParent(this);
 
-        // The text coordinates of this node will be enlarged with those of the child 
-        if (expandTextSpan) {
-            AbstractJavaNode childImpl = (AbstractJavaNode) child;
-
-            if (this.beginLine > childImpl.beginLine) {
-                this.beginLine = childImpl.beginLine;
-                this.beginColumn = childImpl.beginColumn;
-            } else if (this.beginLine == childImpl.beginLine
-                    && this.beginColumn > childImpl.beginColumn) {
-                this.beginColumn = childImpl.beginColumn;
-            }
-
-            if (this.endLine < childImpl.endLine) {
-                this.endLine = childImpl.endLine;
-                this.endColumn = childImpl.endColumn;
-            } else if (this.endLine == childImpl.endLine
-                    && this.endColumn < childImpl.endColumn) {
-                this.endColumn = childImpl.endColumn;
-            }
-
-            // TODO tokens
+        for (int j = index + 1; j < jjtGetNumChildren(); j++) {
+            children[j].jjtSetChildIndex(j); // shift the children to the right
         }
+
+        // The text coordinates of this node will be enlarged with those of the child
+
+        if (this.beginLine > child.beginLine) {
+            this.beginLine = child.beginLine;
+            this.beginColumn = child.beginColumn;
+        } else if (this.beginLine == child.beginLine
+            && this.beginColumn > child.beginColumn) {
+            this.beginColumn = child.beginColumn;
+        }
+
+        if (this.endLine < child.endLine) {
+            this.endLine = child.endLine;
+            this.endColumn = child.endColumn;
+        } else if (this.endLine == child.endLine
+            && this.endColumn < child.endColumn) {
+            this.endColumn = child.endColumn;
+        }
+        // TODO tokens
+
+        return child;
+    }
+
+
+    // same length so we don't need to enlarge the offsets of this node
+    void replaceChildSameLength(int index, AbstractJavaNode replacement) {
+        children[index] = replacement;
+        replacement.jjtSetParent(this);
+    }
+
+
+    void shiftColumns(int beginShift, int endShift) {
+        this.beginColumn += beginShift;
+        this.endColumn += endShift;
+    }
+
+
+    void copyTextCoordinates(Node copy) {
+        this.beginLine = copy.getBeginLine();
+        this.beginColumn = copy.getBeginColumn();
+        this.endLine = copy.getEndLine();
+        this.endColumn = copy.getEndColumn();
     }
 
 

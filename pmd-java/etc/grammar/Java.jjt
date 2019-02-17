@@ -465,7 +465,7 @@ public class JavaParser {
     AbstractJavaNode lastSegment = (AbstractJavaNode) jjtree.popNode();
     Node previousSegment = jjtree.popNode();
 
-    lastSegment.insertChild((JavaNode) previousSegment, 0, true);
+    lastSegment.insertChild((AbstractJavaNode) previousSegment, 0);
     jjtree.pushNode(lastSegment);
   }
 
@@ -2147,7 +2147,21 @@ void SimpleName() #Name:
   <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
 }
 
-void Name() :
+void Name():
+{String image;}
+{
+    image=VoidName()
+    {jjtThis.setImage(image); }
+}
+
+void AmbiguousNameExpr():
+{String image;}
+{
+    image=VoidName()
+    {jjtThis.setImage(image); }
+}
+
+String VoidName() #void:
 /*
  * A lookahead of 2 is required below since "Name" can be followed
  * by a ".*" when used in the context of an "ImportDeclaration".
@@ -2164,7 +2178,7 @@ void Name() :
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>
     {s.append('.').append(t.image);}
   )*
-  {jjtThis.setImage(s.toString());}
+  {return s.toString();}
 }
 
 void NameList() :
@@ -2378,8 +2392,12 @@ void MemberSelector() #void :
 Token t;
 }
 {
+  LOOKAHEAD(3) // "." IDENT "(" or "." IDENT "<"
   // if there are type arguments, this is a method call
-  ("." TypeArguments() SimpleName() ArgumentList()) #MethodCall { wrapLeft(); }
+  ("." TypeArguments() SimpleName() ArgumentsList()) #MethodCall { wrapLeft(); }
+| LOOKAHEAD(3)
+  ("." SimpleName() ArgumentsList())                 #MethodCall { wrapLeft(); }
+| ("." SimpleName())                                 #FieldAccess { wrapLeft(); }
 | MethodReference()  { wrapLeft(); }
 }
 
@@ -2401,9 +2419,9 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD(3) ("(" Expression() ")")     #ParenthesizedExpression
 | AllocationExpression()
 | LOOKAHEAD( TypeOrVoid() "." "class" ) (TypeOrVoid() "." "class") #ClassLiteral
-| LOOKAHEAD( Name() "::" ) Name() #AmbiguousNameExpr
-| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference() { wrapLeft(); }
-| Name()  #AmbiguousNameExpr
+| LOOKAHEAD( Name() "::" ) AmbiguousNameExpr()
+| LOOKAHEAD( ReferenceType() MethodReference() ) ReferenceType() MethodReference() { wrapLeft(); } // the reference type will be a child
+| (AmbiguousNameExpr() [ArgumentsList()]) #MethodCall(>1)
 }
 
 void LambdaExpression() :
@@ -2446,12 +2464,11 @@ void PrimarySuffix() #void :
 {}
 { LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); } // those will enclose the Name
 | LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
-
 | LOOKAHEAD(2) "." AllocationExpression()
-| LOOKAHEAD(3) MemberSelector()
+| LOOKAHEAD(".") MemberSelector()
 | ("[" Expression() "]")     #ArrayAccess { wrapLeft(); }
-| ("." SimpleName())         #FieldAccess { wrapLeft(); }
-| Arguments()                #MethodCall  { wrapLeft(); }
+// this applies only if the previous was an AmbiguousNameExpr
+| ArgumentsList()            #MethodCall  { wrapLeft(); }
 }
 
 // TODO compound expression abstraction
@@ -2494,20 +2511,13 @@ void StringLiteral():
    <STRING_LITERAL> { jjtThis.setImage(getToken(0).getImage()); }
 }
 
-void Arguments() :
+void Arguments() : // TODO remove
 {}
 {
-  "(" [ ArgumentList() ] ")"
+  ArgumentsList()
 }
 
-void ArgumentList() :
-{}
-{
-  Expression() ( "," Expression() )*
-}
-
-// FIXME merge, this is temporary
-void ArgumentListBis() #ArgumentList :
+void ArgumentsList() #ArgumentList :
 {}
 {
  "(" [ Expression() ( "," Expression() )* ] ")"

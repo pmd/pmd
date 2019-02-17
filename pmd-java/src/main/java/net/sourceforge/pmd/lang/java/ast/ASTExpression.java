@@ -19,5 +19,13 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public interface ASTExpression extends JavaNode, TypeNode {
 
+    /**
+     * Always returns true. This is to allow XPath queries
+     * to query like {@code /*[@Expression=true()]}, but is
+     * useless in Java code.
+     */
+    default boolean isExpression() {
+        return true;
+    }
 
 }

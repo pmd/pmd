@@ -5,7 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTArgumentList extends AbstractJavaNode {
+import java.util.Iterator;
+
+
+public class ASTArgumentList extends AbstractJavaNode implements Iterable<ASTExpression> {
     public ASTArgumentList(int id) {
         super(id);
     }
@@ -26,5 +29,11 @@ public class ASTArgumentList extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    @Override
+    public Iterator<ASTExpression> iterator() {
+        return new NodeChildrenIterator<>(this, ASTExpression.class);
     }
 }

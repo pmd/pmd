@@ -5,17 +5,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.javacc.jjtree.JJTreeParserConstants;
+import org.javacc.jjtree.JJTreeParserTreeConstants;
+
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ASTName extends AbstractJavaTypeNode {
 
     private NameDeclaration nd;
 
-    public ASTName(int id) {
+
+    /**
+     * Constructor for a synthetic node.
+     * @param image Image of the new node
+     */
+    public ASTName(String image) {
+        super(JavaParserTreeConstants.JJTNAME);
+        setImage(image);
+    }
+
+    ASTName(int id) {
         super(id);
     }
 
-    public ASTName(JavaParser p, int id) {
+    ASTName(JavaParser p, int id) {
         super(p, id);
     }
 
