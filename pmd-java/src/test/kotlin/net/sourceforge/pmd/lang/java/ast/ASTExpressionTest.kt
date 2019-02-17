@@ -335,4 +335,119 @@ class ASTExpressionTest : FunSpec({
         }
     }
 
+    testGroup("Class instance creation") {
+
+        "new Foo(a)" should matchExpr<ASTClassInstanceCreationExpression> {
+
+            it.typeNode shouldBe child {
+                it.typeImage shouldBe "Foo"
+            }
+
+            it.arguments shouldBe child {
+
+                child<ASTAmbiguousNameExpr> { }
+            }
+        }
+
+        "new <Bar> Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+
+            it.explicitTypeArguments shouldBePresent child {
+                unspecifiedChild()
+            }
+
+            it.typeNode shouldBe child {
+                it.typeImage shouldBe "Foo"
+
+                it.typeArguments shouldBePresent child {
+                    unspecifiedChild()
+                }
+            }
+
+            it.arguments shouldBe child {}
+        }
+
+        "new @Lol Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+
+            it.explicitTypeArguments.shouldBeEmpty()
+
+            child<ASTAnnotation>(ignoreChildren = true) {}
+
+            it.typeNode shouldBe child {
+                it.typeImage shouldBe "Foo"
+
+                it.typeArguments shouldBePresent child {
+                    unspecifiedChild()
+                }
+            }
+
+            it.arguments shouldBe child {}
+        }
+    }
+    testGroup("Qualified class instance creation") {
+
+        "a.g.c.new Foo(a)" should matchExpr<ASTClassInstanceCreationExpression> {
+
+            it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "a.g.c"
+            }
+
+            it.typeNode shouldBe child {
+                it.typeImage shouldBe "Foo"
+            }
+
+            it.arguments shouldBe child {
+
+                child<ASTAmbiguousNameExpr> { }
+            }
+        }
+
+        "new O().new <Bar> Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+
+            it.lhsExpression shouldBePresent child<ASTClassInstanceCreationExpression> {
+
+                it.typeNode shouldBe child {
+                    it.typeImage shouldBe "O"
+                }
+
+                it.arguments shouldBe child {}
+            }
+
+            it.explicitTypeArguments shouldBePresent child {
+                unspecifiedChild()
+            }
+
+            it.typeNode shouldBe child {
+                it.typeImage shouldBe "Foo"
+
+                it.typeArguments shouldBePresent child {
+                    unspecifiedChild()
+                }
+            }
+
+            it.arguments shouldBe child {}
+        }
+
+        "method().new @Lol Foo<F>()" should matchExpr<ASTClassInstanceCreationExpression> {
+
+            it.lhsExpression shouldBePresent child<ASTMethodCall> {
+                it.methodName shouldBe "method"
+                it.arguments shouldBe child {}
+            }
+
+            it.explicitTypeArguments.shouldBeEmpty()
+
+            child<ASTAnnotation>(ignoreChildren = true) {}
+
+            it.typeNode shouldBe child {
+                it.typeImage shouldBe "Foo"
+
+                it.typeArguments shouldBePresent child {
+                    unspecifiedChild()
+                }
+            }
+
+            it.arguments shouldBe child {}
+        }
+    }
+
 })

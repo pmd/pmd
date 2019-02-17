@@ -348,10 +348,13 @@ public class JavaParser {
   }
   private void checkForBadAnonymousDiamondUsage() {
     if (jdkVersion < 9) {
-      ASTAllocationExpression node = (ASTAllocationExpression)jjtree.peekNode();
-      ASTTypeArguments types = node.getFirstChildOfType(ASTClassOrInterfaceType.class).getFirstChildOfType(ASTTypeArguments.class);
-      if (node.isAnonymousClass() && types != null && types.isDiamond()) {
-        throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
+      Node node = jjtree.peekNode();
+      if (node instanceof ASTClassInstanceCreationExpression) {
+        ASTClassInstanceCreationExpression expr = (ASTClassInstanceCreationExpression) node;
+        ASTTypeArguments types = expr.getTypeNode().getTypeArguments().orElse(null);
+        if (expr.isAnonymousClass() && types != null && types.isDiamond()) {
+          throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
+        }
       }
     }
   }
@@ -2352,6 +2355,15 @@ void SwitchExpression() :
     "switch" "(" Expression() ")" SwitchBlock()
 }
 
+/**
+ * A primary expression. This includes call chains, etc.
+ *
+ * A PrimaryPrefix corresponds to an unqualified primary expression,
+ * e.g "new Foo()". Then, if any, suffixes of the form e.g. ".method()",
+ * ".field" or "::ref" are added, each time enclosing the previous node.
+ *
+ * The resulting subtree looks left-recursive, but the parsing is iterative.
+ */
 void PrimaryExpression() #void :
 {}
 {
@@ -2376,7 +2388,6 @@ void MethodReference(): // LHS is injected
   "::" [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
 }
 
-// TODO remove Name nodes from method calls and field accesses, setting the image is enough
 void PrimaryPrefix() #void :
 {Token t;}
 {
@@ -2387,7 +2398,7 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD(3) ("(" Expression() ")")     #ParenthesizedExpression
-| AllocationExpression()
+| UnqualifiedAllocationExpr()
 | LOOKAHEAD( TypeOrVoid() "." "class" ) (TypeOrVoid() "." "class") #ClassLiteral
 // lookahead <IDENTIFIER> "(", higher than the method reference ones because they're more frequent
 // unqualified method call
@@ -2408,7 +2419,8 @@ void PrimarySuffix() #void :
 | ArgumentsList()            #MethodCall      { wrapLeft(); }
 | LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); } // those will enclose the Name
 | LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
-| LOOKAHEAD(2) "." AllocationExpression() // TODO
+// lookahead "." "new"
+| LOOKAHEAD(2) QualifiedAllocationExpr()      { wrapLeft(); }
 | LOOKAHEAD(1) MemberSelector() // starts with "."
 | ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
 }
@@ -2500,18 +2512,19 @@ void ArgumentsList() #ArgumentList :
  "(" [ Expression() ( "," Expression() )* ] ")"
 }
 
+ // TODO remove
 void AllocationExpression():
 {}
 {
   "new" (TypeAnnotation())*
-  (LOOKAHEAD(2)
+  (
     PrimitiveType() ArrayDimsAndInits()
   |
     ClassOrInterfaceType()
      (
       ArrayDimsAndInits()
      |
-      Arguments()
+      ArgumentsList()
         [
             { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
             ClassOrInterfaceBody()
@@ -2521,6 +2534,60 @@ void AllocationExpression():
     { checkForBadAnonymousDiamondUsage(); }
   )
 }
+
+// more straightforward because can't be an array creation expr
+void QualifiedAllocationExpr() #ClassInstanceCreationExpression:
+{}
+{
+   "."
+   "new"
+   [ TypeArguments() ]
+   (TypeAnnotation())*
+   ClassOrInterfaceType()
+   ArgumentsList()
+   [
+       { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
+       ClassOrInterfaceBody() #AnonymousClassDeclaration
+       { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
+   ]
+   { checkForBadAnonymousDiamondUsage(); }
+
+}
+
+
+// this is much weaker than the JLS but since we parse compilable code
+// the actual terms we get respect the JLS.
+
+// only used in PrimaryPrefix
+void UnqualifiedAllocationExpr() #void :
+{}
+{
+   (
+     (
+       "new" [ TypeArguments() ] (TypeAnnotation())*
+       (
+         PrimitiveType() ArrayDimsAndInits()
+       |
+         ClassOrInterfaceType()
+           (
+             ArrayDimsAndInits()
+           |
+             ArgumentsList()
+               [
+                   { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
+                   ClassOrInterfaceBody() #AnonymousClassDeclaration
+                   { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
+               ]
+           )
+       )
+     )
+     #ArrayCreationExpression(jjtree.peekNode() instanceof ASTArrayDimsAndInits)
+   )
+   #ClassInstanceCreationExpression(>1) // corresponds to "no ArrayCreationExpression has been pushed"
+   { checkForBadAnonymousDiamondUsage(); }
+
+}
+
 
 /*
  * The second LOOKAHEAD specification below is to parse to PrimarySuffix
