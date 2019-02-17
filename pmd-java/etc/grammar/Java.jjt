@@ -1830,6 +1830,7 @@ void VariableDeclarator() :
   VariableDeclaratorId() [ "=" VariableInitializer() ]
 }
 
+// TODO use ArrayTypeDims
 void VariableDeclaratorId() :
 {
   Token t;
@@ -1881,7 +1882,7 @@ void MethodDeclarator() :
     checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
-  FormalParameters() ( "[" "]" )*
+  FormalParameters() ( "[" "]" )* // TODO use ArrayTypeDims
 }
 
 
@@ -2079,8 +2080,8 @@ void TypeArguments():
 }
 
 /**
-* We could make this #void and instead have a node WildcardType extending ReferenceType.
-* This would remove this level of nesting, which is unnecessary.
+* TODO We could make this #void and instead have a node WildcardType extending ReferenceType.
+*      This would remove this level of nesting, which is unnecessary.
 */
 void TypeArgument():
 {}
@@ -2495,6 +2496,7 @@ void AllocationExpression():
 /*
  * The second LOOKAHEAD specification below is to parse to PrimarySuffix
  * if there is an expression between the "[...]".
+ * TODO use ArrayTypeDims
  */
 void ArrayDimsAndInits() :
 {}

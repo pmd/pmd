@@ -4,6 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents an array dimension in an {@linkplain ASTArrayType array type}.
+ * This is always a child of {@link ASTArrayTypeDims ArrayTypeDims}.
+ *
+ * <pre>
+ *
+ * ArrayTypeDim ::= {@link ASTAnnotation TypeAnnotation}* "[" "]"
+ *
+ * </pre>
+ *
+ */
 public class ASTArrayTypeDim extends AbstractJavaTypeNode {
     public ASTArrayTypeDim(int id) {
         super(id);

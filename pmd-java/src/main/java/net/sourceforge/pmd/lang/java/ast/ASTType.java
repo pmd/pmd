@@ -19,6 +19,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  *
  * Note: it is not exactly the same the "UnnanType" defined in JLS.
+ *
+ * TODO implement {@link Annotatable}. Ideally, any type annotations
+ * would be children of this node, not of the parent node.
  */
 public interface ASTType extends JavaNode, TypeNode {
 

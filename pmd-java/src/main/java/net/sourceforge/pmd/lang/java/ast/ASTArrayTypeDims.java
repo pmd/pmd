@@ -8,11 +8,17 @@ import java.util.Iterator;
 
 
 /**
- * Represents array type dimensions, as occurring in {@linkplain ASTArrayType array types}.
+ * Represents array type dimensions. This node may occur in several contexts:
+ * <ul>
+ * <li>In an {@linkplain ASTArrayType array type}</li>
+ * <li>TODO At the end {@linkplain ASTMethodDeclarator method declarator}</li>
+ * <li>TODO After an {@link ASTVariableDeclaratorId variable declarator id}</li>
+ * <li>TODO inside an array creation expression (currently {@link ASTAllocationExpression})</li>
+ * </ul>
  *
  * <pre>
  *
- * ArrayTypeDims ::= {@linkplain ASTArrayTypeDim ArrayTypeDim} *
+ * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}*
  *
  * </pre>
  */

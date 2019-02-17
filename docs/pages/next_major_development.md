@@ -28,11 +28,13 @@ subtrees, and allows to explore them more easily and consistently.
 TODO document that when we're done discussing the semantic rewrite phase.
 
 * **Migrating**:
+  * There is currently no way to match abstract types with XPath, so `Type`
+  and `ReferenceType` name tests won't match anything anymore.
   * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
   * `Type/PrimitiveType` -> `PrimitiveType`.
   * `Type/ReferenceType[@ArrayDepth>1]/ClassOrInterfaceType` -> `ArrayType/ClassOrInterfaceType`.
   * `Type/ReferenceType/PrimitiveType` -> `ArrayType/PrimitiveType`.
-  * Note that in most cases you should check the type of a variable with
+  * Note that in most cases you should check the type of a variable with e.g.
   `VariableDeclaratorId[pmd-java:typeIs("java.lang.String[]")]` because it
   considers the additional dimensions on declarations like `String foo[];`.
   The Java equivalent is `TypeHelper.isA(id, String[].class);`
