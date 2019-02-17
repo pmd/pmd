@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New Rules
+
+*   The new Java rule {% rule "java/bestpractices/UseTryWithResources" %) (`java-bestpractices`) searches
+    for try-blocks, that could be changed to a try-with-resources statement. This statement ensures that
+    each resource is closed at the end of the statement and is available since Java 7.
+
 #### Modified Rules
 
 *   The Apex rule {% rule "apex/codestyle/MethodNamingConventions" %} (apex-codestyle) has a new
@@ -24,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-bestpractices
     *   [#808](https://github.com/pmd/pmd/issues/808): \[java] AccessorMethodGeneration false positives with compile time constants
+    *   [#1405](https://github.com/pmd/pmd/issues/1405): \[java] New Rule: UseTryWithResources - Replace close and IOUtils.closeQuietly with try-with-resources
     *   [#1555](https://github.com/pmd/pmd/issues/1555): \[java] UnusedImports false positive for method parameter type in @see Javadoc
 *   java-codestyle
     *   [#1543](https://github.com/pmd/pmd/issues/1543): \[java] LinguisticNaming should ignore overriden methods
