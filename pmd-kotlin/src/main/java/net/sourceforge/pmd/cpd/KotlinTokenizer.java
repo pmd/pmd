@@ -45,7 +45,6 @@ public class KotlinTokenizer extends AntlrTokenizer {
 
         @Override
         protected void analyzeToken(final AntlrToken currentToken) {
-            super.analyzeToken(currentToken);
             skipPackageAndImport(currentToken);
             skipNewLines(currentToken);
         }
@@ -65,7 +64,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingPackageAndImport || discardingNL || super.isLanguageSpecificDiscarding();
+            return discardingPackageAndImport || discardingNL;
         }
     }
 }
