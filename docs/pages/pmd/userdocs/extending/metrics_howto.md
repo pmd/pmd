@@ -237,16 +237,16 @@ the Java framework but it's symmetrical in the Apex framework.
 * **Metrics should be stateless**. In any case, instances of the same metric class
   are considered `equals`. The same instance of your metric will be used to
   compute the metric on the AST of different nodes so it should really be
-  "functionnally pure". That rule also makes you keep it simple and understandable
+  "functionally pure". That rule also makes you keep it simple and understandable
   which is nice.
 * **Implementation patterns:** You can implement your `computeFor` method as you
   like it. But most metrics in our library are implemented following a few
   patterns you may want to look at:
   * *Visitor metrics:* Those metrics use one or more AST visitor to compute their
     value. That's especially good to implement metrics that count some kind of node,
-    e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NpathMetric.java)
-    or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java).
     Additionnally, it makes your metric more easily generalisable to other node types.
+    e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/internal/NpathMetric.java)
+    or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/internal/NcssMetric.java).
 
   * *Signature matching metrics:* That's even more straightforward when you want
     to count the number of methods or fields that match a specific signature, e.g.
