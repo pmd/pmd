@@ -6,7 +6,7 @@ import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public abstract class AbstractAntrlNode extends ParserRuleContext implements AntlrNode {
+public class AbstractAntrlNode extends ParserRuleContext implements AntlrNode {
 
     // TODO: what should we do with parent? how do we handle data flows in this scenario? it's ok to ignore
     // TODO: our parent data flow in case we don't have one?
@@ -16,16 +16,24 @@ public abstract class AbstractAntrlNode extends ParserRuleContext implements Ant
     private Object userData;
 
     @Override
-    public abstract int getBeginLine();
+    public int getBeginLine() {
+        return start.getLine();
+    }
 
     @Override
-    public abstract int getBeginColumn();
+    public int getBeginColumn() {
+        return start.getCharPositionInLine();
+    }
 
     @Override
-    public abstract int getEndLine();
+    public int getEndLine() {
+        return stop.getLine();
+    }
 
     @Override
-    public abstract int getEndColumn();
+    public int getEndColumn() {
+        return stop.getCharPositionInLine();
+    }
 
     @Override
     public DataFlowNode getDataFlowNode() {
