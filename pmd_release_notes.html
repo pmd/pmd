@@ -1286,10 +1286,10 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="modified-rules">Modified Rules</h4>
+<h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The Apex rule <a href="pmd_rules_apex_codestyle.html#methodnamingconventions"><code class="highlighter-rouge">MethodNamingConventions</code></a> (apex-codestyle) has a new
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#usetrywithresources"><code class="highlighter-rouge">UseTryWithResources</code></a> (apex-codestyle) has a new
 property <code class="highlighter-rouge">skipTestMethodUnderscores</code>, which is by default disabled. The new property allows for ignoring
 all test methods, either using the <code class="highlighter-rouge">testMethod</code> modifier or simply annotating them <code class="highlighter-rouge">@isTest</code>.</li>
 </ul>
@@ -1300,6 +1300,7 @@ all test methods, either using the <code class="highlighter-rouge">testMethod</c
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/808">#808</a>: [java] AccessorMethodGeneration false positives with compile time constants</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1405">#1405</a>: [java] New Rule: UseTryWithResources - Replace close and IOUtils.closeQuietly with try-with-resources</li>
       <li><a href="https://github.com/pmd/pmd/issues/1555">#1555</a>: [java] UnusedImports false positive for method parameter type in @see Javadoc</li>
     </ul>
   </li>
@@ -1365,7 +1366,7 @@ all test methods, either using the <code class="highlighter-rouge">testMethod</c
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 9, 2019 <br />
+ Site last generated: Feb 17, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
