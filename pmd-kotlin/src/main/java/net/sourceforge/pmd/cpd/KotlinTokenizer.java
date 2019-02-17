@@ -23,7 +23,7 @@ public class KotlinTokenizer extends AntlrTokenizer {
     }
 
     @Override
-    protected AntlrTokenFilter getTokenFilter(AntlrTokenManager tokenManager) {
+    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
         return new KotlinTokenFilter(tokenManager);
     }
 
