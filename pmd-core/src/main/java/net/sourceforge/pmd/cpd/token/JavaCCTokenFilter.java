@@ -25,9 +25,4 @@ public class JavaCCTokenFilter extends BaseTokenFilter<GenericToken> {
     protected boolean shouldStopProcessing(final GenericToken currentToken) {
         return currentToken.getImage().isEmpty();
     }
-
-    @Override
-    protected void analyzeToken(final GenericToken currentToken) {
-        // noop
-    }
 }

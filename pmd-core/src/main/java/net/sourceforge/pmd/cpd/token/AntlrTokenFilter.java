@@ -14,8 +14,6 @@ import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
  */
 public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
 
-    private boolean discardingHiddenTokens = false;
-
     /**
      * Creates a new AntlrTokenFilter
      * @param tokenManager The token manager from which to retrieve tokens to be filtered
@@ -27,19 +25,5 @@ public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
     @Override
     protected boolean shouldStopProcessing(final AntlrToken currentToken) {
         return currentToken.getType() == EOF;
-    }
-
-    @Override
-    protected void analyzeToken(final AntlrToken currentToken) {
-        analyzeHiddenTokens(currentToken);
-    }
-
-    @Override
-    protected boolean isLanguageSpecificDiscarding() {
-        return super.isLanguageSpecificDiscarding() || discardingHiddenTokens;
-    }
-
-    private void analyzeHiddenTokens(final AntlrToken token) {
-        discardingHiddenTokens = token.isHidden();
     }
 }
