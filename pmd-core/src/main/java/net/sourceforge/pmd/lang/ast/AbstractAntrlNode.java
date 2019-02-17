@@ -1,12 +1,10 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
-import java.util.List;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import org.jaxen.JaxenException;
 
-public class AbstractAntrlNode implements AntlrNode {
+public abstract class AbstractAntrlNode implements AntlrNode {
 
     protected Node parent;
 
@@ -14,24 +12,16 @@ public class AbstractAntrlNode implements AntlrNode {
     private Object userData;
 
     @Override
-    public int getBeginLine() {
-        return 0;
-    }
+    public abstract int getBeginLine();
 
     @Override
-    public int getBeginColumn() {
-        return 0;
-    }
+    public abstract int getBeginColumn();
 
     @Override
-    public int getEndLine() {
-        return 0;
-    }
+    public abstract int getEndLine();
 
     @Override
-    public int getEndColumn() {
-        return 0;
-    }
+    public abstract int getEndColumn();
 
     @Override
     public DataFlowNode getDataFlowNode() {
@@ -47,67 +37,6 @@ public class AbstractAntrlNode implements AntlrNode {
     @Override
     public void setDataFlowNode(final DataFlowNode dataFlowNode) {
         this.dataFlowNode = dataFlowNode;
-    }
-
-    @Override
-    public Node getNthParent(final int n) {
-        return null;
-    }
-
-    @Override
-    public <T> T getFirstParentOfType(final Class<T> parentType) {
-        return null;
-    }
-
-    @Override
-    public <T> List<T> getParentsOfType(final Class<T> parentType) {
-        return null;
-    }
-
-    @Override
-    public <T> T getFirstParentOfAnyType(final Class<? extends T>[] parentTypes) {
-        return null;
-    }
-
-    @Override
-    public <T> List<T> findChildrenOfType(final Class<T> childType) {
-        return null;
-    }
-
-    @Override
-    public <T> List<T> findDescendantsOfType(final Class<T> targetType) {
-        return null;
-    }
-
-    @Override
-    public <T> void findDescendantsOfType(final Class<T> targetType, final List<T> results,
-        final boolean crossFindBoundaries) {
-
-    }
-
-    @Override
-    public <T> T getFirstChildOfType(final Class<T> childType) {
-        return null;
-    }
-
-    @Override
-    public <T> T getFirstDescendantOfType(final Class<T> descendantType) {
-        return null;
-    }
-
-    @Override
-    public <T> boolean hasDescendantOfType(final Class<T> type) {
-        return false;
-    }
-
-    @Override
-    public List<? extends Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
-        return null;
-    }
-
-    @Override
-    public boolean hasDescendantMatchingXPath(final String xpathString) {
-        return false;
     }
 
     @Override
@@ -127,7 +56,5 @@ public class AbstractAntrlNode implements AntlrNode {
     }
 
     @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        return null;
-    }
+    public abstract Iterator<Attribute> getXPathAttributesIterator();
 }
