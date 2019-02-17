@@ -3100,28 +3100,6 @@ void ModuleName():
   {jjtThis.setImage(s.toString());}
 }
 
-
-void FieldName() #void:
-{}
-{
-    SimpleName()
-}
-
-void MethodName() #void:
-{}
-{
-    SimpleName()
-}
-
-/**
- * May only be used if we're sure that only a single identifier is acceptable.
- */
-void SimpleName() #Name:
-{}
-{
-  <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
-}
-
 void Name():
 {String image;}
 {
