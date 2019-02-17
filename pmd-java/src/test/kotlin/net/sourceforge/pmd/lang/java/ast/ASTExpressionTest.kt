@@ -450,4 +450,110 @@ class ASTExpressionTest : FunSpec({
         }
     }
 
+    testGroup("Array creation") {
+
+        "new int[2][]" should matchExpr<ASTArrayCreationExpression > {
+
+            it.elementTypeNode shouldBe child<ASTPrimitiveType> {
+                it.modelConstant shouldBe net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+                it.typeImage shouldBe "int"
+            }
+
+            it.arrayDims shouldBe child {
+                it.arrayDepth shouldBe 2
+
+                child<ASTNumericLiteral> {}
+            }
+        }
+
+        "new @Foo int[3][2]" should matchExpr<ASTArrayCreationExpression> {
+
+        }
+
+        "(new int[3])[2]" should matchExpr<ASTArrayAccess> {
+            child<ASTParenthesizedExpression> {
+
+                it.wrappedExpression shouldBe child<ASTArrayCreationExpression> {
+
+                    it.elementTypeNode shouldBe child<ASTPrimitiveType> {
+                        it.typeImage shouldBe "int"
+                    }
+
+                    it.arrayDims shouldBe child {
+                        it.isArray shouldBe true
+                        it.arrayDepth shouldBe 1
+
+                        child<ASTNumericLiteral> {}
+                    }
+                }
+            }
+            child<ASTNumericLiteral> {}
+        }
+
+        "new Foo[0]" should matchExpr<ASTArrayCreationExpression> {
+
+        }
+
+
+        "new Foo[] { f, g }" should matchExpr<ASTArrayCreationExpression> {
+
+            it.elementTypeNode shouldBe child<ASTClassOrInterfaceType> {
+                it.isAnonymousClass shouldBe false
+                it.isReferenceToClassSameCompilationUnit shouldBe true
+                it.typeImage shouldBe "Foo"
+            }
+
+            it.arrayDims shouldBe child {
+                it.isArray shouldBe true
+                it.arrayDepth shouldBe 1
+
+                child<ASTArrayInitializer> {
+                    child<ASTVariableInitializer> {
+                        child<ASTAmbiguousNameExpr> {}
+                    }
+                    child<ASTVariableInitializer> {
+                        child<ASTAmbiguousNameExpr> {}
+                    }
+                }
+            }
+        }
+
+        "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayCreationExpression> {
+
+        }
+
+        "new int[][] { { 1 , 2 }, null }" should matchExpr<ASTArrayCreationExpression> {
+
+            it.elementTypeNode shouldBe child<ASTPrimitiveType> {
+                it.typeImage shouldBe "int"
+            }
+
+            it.arrayDims shouldBe child {
+                it.isArray shouldBe true
+                it.arrayDepth shouldBe 2
+
+                child<ASTArrayInitializer> {
+                    child<ASTVariableInitializer> {
+                        child<ASTArrayInitializer> {
+                            child<ASTVariableInitializer> {
+                                child<ASTNumericLiteral> {
+                                    it.valueAsInt shouldBe 1
+                                }
+                            }
+                            child<ASTVariableInitializer> {
+                                child<ASTNumericLiteral> {
+                                    it.valueAsInt shouldBe 2
+                                }
+                            }
+                        }
+                    }
+                    child<ASTVariableInitializer> {
+                        child<ASTNullLiteral> {}
+                    }
+                }
+            }
+        }
+
+    }
+
 })
