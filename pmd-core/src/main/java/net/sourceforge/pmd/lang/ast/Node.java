@@ -7,17 +7,17 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import org.w3c.dom.Element;
 
 /**
  * All AST nodes must implement this interface. It provides basic
@@ -273,11 +273,11 @@ public interface Node {
         final String elementName = docNav.getElementName(this);
         final Element element = ownerDocument.createElement(elementName);
         parentNode.appendChild(element);
-        for (final Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext(); ) {
+        for (final Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
             final Attribute attr = iter.next();
             element.setAttribute(attr.getName(), attr.getStringValue());
         }
-        for (final Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext(); ) {
+        for (final Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
             final AbstractNode child = (AbstractNode) iter.next();
             child.appendElement(element);
         }

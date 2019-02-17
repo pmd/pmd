@@ -1,10 +1,16 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.Iterator;
+
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 public class AntrlBaseNode extends ParserRuleContext implements AntlrNode {
 
@@ -17,22 +23,22 @@ public class AntrlBaseNode extends ParserRuleContext implements AntlrNode {
 
     @Override
     public int getBeginLine() {
-        return start.getLine();
-    }
-
-    @Override
-    public int getBeginColumn() {
-        return start.getCharPositionInLine();
+        return start.getLine(); // This goes from 1 to n
     }
 
     @Override
     public int getEndLine() {
-        return stop.getLine();
+        return stop.getLine(); // This goes from 1 to n
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return start.getCharPositionInLine(); // This goes from 0 to (n - 1)
     }
 
     @Override
     public int getEndColumn() {
-        return stop.getCharPositionInLine();
+        return stop.getCharPositionInLine(); // This goes from 0 to (n - 1)
     }
 
     @Override
