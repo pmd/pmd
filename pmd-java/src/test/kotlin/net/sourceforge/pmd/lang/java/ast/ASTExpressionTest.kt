@@ -175,6 +175,7 @@ class ASTExpressionTest : FunSpec({
 
         "this::foo" should matchExpr<ASTMethodReference> {
 
+            it.image shouldBe "foo"
             it.methodName shouldBePresent "foo"
             it.lhsType.shouldBeEmpty()
             it.isConstructorReference shouldBe false
@@ -183,12 +184,11 @@ class ASTExpressionTest : FunSpec({
             it.lhsExpression shouldBePresent child<ASTThisExpression> {
 
             }
-
-            it.nameNode shouldBePresent child { }
         }
 
         "foobar.b::foo" should matchExpr<ASTMethodReference> {
 
+            it.image shouldBe "foo"
             it.methodName shouldBePresent "foo"
             it.lhsType.shouldBeEmpty()
             it.isConstructorReference shouldBe false
@@ -197,12 +197,11 @@ class ASTExpressionTest : FunSpec({
             it.lhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
                 it.image shouldBe "foobar.b"
             }
-
-            it.nameNode shouldBePresent child { }
         }
 
         "foobar.b::<B>foo" should matchExpr<ASTMethodReference> {
 
+            it.image shouldBe "foo"
             it.methodName shouldBePresent "foo"
             it.lhsType.shouldBeEmpty()
             it.isConstructorReference shouldBe false
@@ -215,12 +214,12 @@ class ASTExpressionTest : FunSpec({
                 unspecifiedChild()
             }
 
-            it.nameNode shouldBePresent child { }
         }
 
 
         "foobar.b<B>::foo" should matchExpr<ASTMethodReference> {
 
+            it.image shouldBe "foo"
             it.methodName shouldBePresent "foo"
             it.isConstructorReference shouldBe false
             it.lhsExpression.shouldBeEmpty()
@@ -236,17 +235,14 @@ class ASTExpressionTest : FunSpec({
                     }
                 }
             }
-
-            it.nameNode shouldBePresent child { }
         }
-
     }
 
     testGroup("Constructor reference") {
 
         "foobar.b::new" should matchExpr<ASTMethodReference> {
 
-            it.nameNode.shouldBeEmpty()
+            it.image shouldBe "new"
             it.methodName.shouldBeEmpty()
             it.isConstructorReference shouldBe true
             it.typeArguments.shouldBeEmpty()
@@ -261,7 +257,7 @@ class ASTExpressionTest : FunSpec({
 
         "foobar.b<B>::new" should matchExpr<ASTMethodReference> {
 
-            it.nameNode.shouldBeEmpty()
+            it.image shouldBe "new"
             it.methodName.shouldBeEmpty()
             it.isConstructorReference shouldBe true
             it.typeArguments.shouldBeEmpty()
@@ -282,7 +278,7 @@ class ASTExpressionTest : FunSpec({
 
         "int[]::new" should matchExpr<ASTMethodReference> {
 
-            it.nameNode.shouldBeEmpty()
+            it.image shouldBe "new"
             it.methodName.shouldBeEmpty()
             it.isConstructorReference shouldBe true
             it.typeArguments.shouldBeEmpty()
@@ -303,7 +299,7 @@ class ASTExpressionTest : FunSpec({
 
         "ArrayList<String>::new" should matchExpr<ASTMethodReference> {
 
-            it.nameNode.shouldBeEmpty()
+            it.image shouldBe "new"
             it.methodName.shouldBeEmpty()
             it.isConstructorReference shouldBe true
             it.typeArguments.shouldBeEmpty()
@@ -324,7 +320,7 @@ class ASTExpressionTest : FunSpec({
 
         "ArrayList::<String>new" should matchExpr<ASTMethodReference> {
 
-            it.nameNode.shouldBeEmpty()
+            it.image shouldBe "new"
             it.methodName.shouldBeEmpty()
             it.isConstructorReference shouldBe true
 

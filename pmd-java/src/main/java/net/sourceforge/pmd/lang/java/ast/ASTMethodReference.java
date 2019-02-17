@@ -8,16 +8,14 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 
 /**
  * Method or constructor reference expression.
  *
  * <pre>
  *
- * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? {@link ASTName MethodName}
- *                   | {@link ASTReferenceType ReferenceType} "::" {@link ASTTypeArguments TypeArguments}? {@link ASTName MethodName}
+ * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
+ *                   | {@link ASTReferenceType ReferenceType} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
  *                   | {@link ASTClassOrInterfaceType ClassType} "::" {@link ASTTypeArguments TypeArguments}? "new"
  *                   | {@link ASTArrayType ArrayType} "::" "new"
  *
@@ -45,18 +43,8 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * e.g. {@code ArrayList::new}.
      */
     public boolean isConstructorReference() {
-        return jjtGetLastToken().getImage().equals("new");
+        return getImage().equals("new");
     }
-
-
-    public Optional<ASTName> getNameNode() {
-        if (isConstructorReference()) {
-            return Optional.empty();
-        }
-        Node last = jjtGetChild(jjtGetNumChildren() - 1);
-        return last instanceof ASTName ? Optional.of((ASTName) last) : Optional.empty();
-    }
-
 
     /**
      * Returns the type node to the left of the "::" if it exists.
@@ -99,7 +87,7 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * this is a {@linkplain #isConstructorReference() constructor reference}.
      */
     public Optional<String> getMethodName() {
-        return getNameNode().map(Node::getImage);
+        return Optional.of(getImage()).filter(it -> !"new".equals(it));
     }
 
 

@@ -2371,7 +2371,7 @@ Token t;
 void MethodReference(): // LHS is injected
 {checkForBadMethodReferenceUsage();}
 {
-  "::" [TypeArguments()] ( "new" | MethodName() )
+  "::" [TypeArguments()] ( "new" | <IDENTIFIER>){jjtThis.setImage(getToken(0).getImage());}
 }
 
 // TODO remove Name nodes from method calls and field accesses, setting the image is enough

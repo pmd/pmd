@@ -88,6 +88,10 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
     }
 
 
+    /**
+     * TODO nobody needs this, setting the image would be enough, but
+     * we need a procedure to delete nodes.
+     */
     public ASTName getNameNode() {
         return methodName;
     }
