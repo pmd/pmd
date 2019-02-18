@@ -70,6 +70,12 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
 
+                it::getImage shouldBe "b"
+
+                it::getAmbiguousLhs shouldBePresent child {
+                    it::getName shouldBe "foobar"
+                }
+
                 it::getTypeArguments shouldBePresent child {
                     child<ASTTypeArgument> {
                         child<ASTClassOrInterfaceType> {
@@ -92,7 +98,12 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             it::getLhsExpression.shouldBeEmpty()
             it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
+                it::getImage shouldBe "b"
                 it::getTypeImage shouldBe "foobar.b"
+
+                it::getAmbiguousLhs shouldBePresent child<ASTAmbiguousName> {
+                    it::getName shouldBe "foobar"
+                }
             }
 
         }
@@ -108,6 +119,13 @@ class ASTMethodReferenceTest : ParserTestSpec({
             it::getLhsExpression.shouldBeEmpty()
             it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
                 it::getTypeImage shouldBe "foobar.b"
+                it::getImage shouldBe "b"
+
+                it::getAmbiguousLhs shouldBePresent child {
+                    it::getName shouldBe "foobar"
+                    it::getTypeImage shouldBe "foobar"
+                }
+
 
                 it::getTypeArguments shouldBePresent child {
                     child<ASTTypeArgument> {

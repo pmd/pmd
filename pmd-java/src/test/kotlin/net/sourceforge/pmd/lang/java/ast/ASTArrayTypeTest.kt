@@ -12,11 +12,12 @@ class ASTArrayTypeTest : ParserTestSpec({
     parserTest("Multi-Dim Array") {
         "ArrayTypes[][][]" should matchType<ASTArrayType> {
 
-            it.elementType shouldBe child<ASTClassOrInterfaceType> {
-                it.typeImage shouldBe "ArrayTypes"
+            it::getElementType shouldBe child<ASTClassOrInterfaceType> {
+                it::getTypeImage shouldBe "ArrayTypes"
+                it::getImage shouldBe "ArrayTypes"
             }
 
-            it.dimensions shouldBe child {
+            it::getDimensions shouldBe child {
 
                 child<ASTArrayTypeDim> {}
                 child<ASTArrayTypeDim> {}
@@ -30,7 +31,8 @@ class ASTArrayTypeTest : ParserTestSpec({
 
             // not an array type
             child<ASTClassOrInterfaceType> {
-                it.typeImage shouldBe "ArrayTypes"
+                it::getTypeImage shouldBe "ArrayTypes"
+                it::getImage shouldBe "ArrayTypes"
             }
 
             child<ASTArrayDimsAndInits> {

@@ -58,7 +58,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> { // TODO should be a field access
                 it::getImage shouldBe "a.g.c"
             }
 

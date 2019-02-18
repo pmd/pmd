@@ -2020,36 +2020,39 @@ void ReferenceType() #void:
  * but the node exists (declared inline within the production).
  */
 void ClassOrInterfaceType() #void:
+{}
 {
-  StringBuilder imageBuilder = new StringBuilder();
-  Token t;
-}
-{
-  /*
-    First, gobble up all identifiers until the first type arguments
-    or annotation is found. This builds a single ClassOrInterfaceType
-    with the given image and the type arguments if any.
-   */
-  (
-    t=<IDENTIFIER> { imageBuilder.append(t.getImage()); }
+
+
+
     /*
-      FIXME We gobble up all identifiers until we find
-        either type arguments or annotations, because
-        it may be a FQCN, e.g. java.util.List is a single node.
+         FIXME We gobble up all identifiers until we find
+           either type arguments or annotations, because
+           it may be a FQCN, e.g. java.util.List is a single node.
 
-        But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
-        I would have said this doesn't matter but the other fixme comment just
-        below shows we need a rewrite phase anyway
-    */
+           But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
+           I would have said this doesn't matter but the other fixme comment just
+           below shows we need a rewrite phase anyway
+       */
 
-    ( LOOKAHEAD("." <IDENTIFIER>)
-      "." t=<IDENTIFIER> { imageBuilder.append('.').append(t.getImage()); }
-    )*
-    [ LOOKAHEAD( "<" ) TypeArguments() ]
-  ) #ClassOrInterfaceType
+
+  /*
+   First, gobble up all identifiers until the first type arguments
+   or annotation is found. The name is ambiguous between package or
+   type name unless type arguments are present, in which case we can
+   be sure that the last segment is a type name.
+  */
+
+  ( AmbiguousName() [ TypeArguments() ]) #ClassOrInterfaceType(>1)
   {
-    // At this point the first ClassOrInterfaceType is on top of the stack
-    jjtree.peekNode().setImage(imageBuilder.toString());
+    // At this point the first ClassOrInterfaceType may be on top of the stack,
+    // but its image is not set
+    Node first = jjtree.peekNode();
+    if (!(first instanceof ASTAmbiguousName)) {
+      // then we saw type arguments, so the last segment is definitely a type name
+      ASTAmbiguousName name = (ASTAmbiguousName) first.jjtGetChild(0);
+      name.shrinkOrDeleteInParentSetImage();
+    }
   }
 
   /*
@@ -2060,22 +2063,25 @@ void ClassOrInterfaceType() #void:
     previous one. The resulting structure appears left-recursive, but the parser just
     executes a loop. That scheme preserves the position of type arguments and annotations.
     See #1150.
-
-    FIXME this doesn't account for annotated AND qualified types
-      e.g. java.util.@Annot List, in which java.util should not be a ClassOrInterfaceType
-      We can only fix that through rewrite, later on, with knowledge of the classpath.
   */
-
   ( LOOKAHEAD(2)
       (
         "."
         (TypeAnnotation())*
-        t=<IDENTIFIER> { jjtThis.setImage(t.getImage()); }
+        <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
         [ LOOKAHEAD( "<" ) TypeArguments() ]
       ) #ClassOrInterfaceType
       // inject the previous segment into the last one
       { wrapLeft(); }
   )*
+  {
+    Node top = jjtree.peekNode();
+    if (top instanceof ASTAmbiguousName) {
+      Node replacement = ((ASTAmbiguousName) top).disambiguateInTypeContext();
+      jjtree.popNode();
+      jjtree.pushNode(replacement);
+    }
+  }
 }
 
 
@@ -2148,12 +2154,6 @@ void TypeOrVoid() #void:
   "void" | Type()
 }
 
-void AmbiguousName():
-{String image;}
-{
-    image=VoidName()
-    {jjtThis.setImage(image); }
-}
 
 void NameList() :
 {}
@@ -3121,6 +3121,14 @@ void ModuleName():
 }
 
 void Name():
+{String image;}
+{
+    image=VoidName()
+    {jjtThis.setImage(image); }
+}
+
+
+void AmbiguousName():
 {String image;}
 {
     image=VoidName()

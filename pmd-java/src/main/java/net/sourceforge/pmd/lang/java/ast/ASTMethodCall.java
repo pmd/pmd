@@ -107,17 +107,7 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
         // the cast serves as an assert
         ASTAmbiguousName fstChild = (ASTAmbiguousName) jjtGetChild(0);
 
-        fstChild.shrinkOneSegment(
-            (simpleName) -> {
-                // normally never called
-                setImage(simpleName.getImage());
-                return null;
-            },
-            (ambiguous, methodName) -> {
-                this.setImage(methodName);
-                return null;
-            }
-        );
+        fstChild.shrinkOrDeleteInParentSetImage();
 
         assert getImage() != null;
     }

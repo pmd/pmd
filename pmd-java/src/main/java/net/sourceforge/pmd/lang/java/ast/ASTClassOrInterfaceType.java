@@ -19,7 +19,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * chain of identifiers. May have type arguments.
  *
  * <p>The second is a left-recursive variant, allowing to preserve the position of
- * type parameters and annotations. The resulting node's {@linkplain #getLeftHandSide() left-hand-side type}
+ * type parameters and annotations. The resulting node's {@linkplain #getLhsType () left-hand-side type}
  * addresses the type parent of the type. The position of type arguments and annotations are
  * preserved.
  *
@@ -82,10 +82,14 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
      *
      * @return A type, or an empty optional if this is a base type
      */
-    public Optional<ASTClassOrInterfaceType> getLeftHandSide() {
+    public Optional<ASTClassOrInterfaceType> getLhsType() {
         return Optional.ofNullable(getFirstChildOfType(ASTClassOrInterfaceType.class));
     }
 
+
+    public Optional<ASTAmbiguousName> getAmbiguousLhs() {
+        return Optional.ofNullable(getFirstChildOfType(ASTAmbiguousName.class));
+    }
 
     /**
      * Returns the type arguments of this segment if some are specified.
@@ -122,7 +126,8 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
     @Override
     @Experimental
     public String getTypeImage() {
-        return getLeftHandSide().map(t -> t.getTypeImage() + ".").orElse("") + getImage();
+        String ambiguousName = getAmbiguousLhs().map(s -> s.getName() + ".").orElse("");
+        return getLhsType().map(s -> s.getTypeImage() + ".").orElse(ambiguousName) + getImage();
     }
 
 

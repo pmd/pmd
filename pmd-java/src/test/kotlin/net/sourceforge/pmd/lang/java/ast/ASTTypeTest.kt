@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
  * @author Clément Fournier
@@ -8,61 +8,87 @@ import io.kotlintest.shouldBe
  */
 class ASTTypeTest : ParserTestSpec({
 
-    parserTest("Test non-recursive ClassOrInterfaceTypes") {
+    parserTest("Test ambiguous qualified names") {
 
         "java.util.List" should matchType<ASTClassOrInterfaceType> {
-            it.typeImage shouldBe "java.util.List"
-            it.typeArguments.shouldBeEmpty()
-            it.leftHandSide.shouldBeEmpty()
+            it::getTypeImage shouldBe "java.util.List"
+            it::getImage shouldBe "List"
+            it::getTypeArguments.shouldBeEmpty()
+            it::getLhsType.shouldBeEmpty()
+
+            it::getAmbiguousLhs shouldBePresent child {
+                it::getName shouldBe "java.util"
+            }
         }
 
         "java.util.List<F>" should matchType<ASTClassOrInterfaceType> {
 
-            it.leftHandSide.shouldBeEmpty()
+            it::getLhsType.shouldBeEmpty()
+            it::getImage shouldBe "List"
 
-            it.typeArguments shouldBePresent child {
+            it::getAmbiguousLhs shouldBePresent child {
+                it::getName shouldBe "java.util"
+            }
+
+            it::getTypeArguments shouldBePresent child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
-                        it.typeImage shouldBe "F"
+                        it::getTypeImage shouldBe "F"
                     }
                 }
             }
         }
     }
 
-    parserTest("Test recursive ClassOrInterfaceTypes") {
+    parserTest("Test simple names") {
+
+        "foo" should matchType<ASTClassOrInterfaceType> {
+            it::getTypeImage shouldBe "foo"
+            it::getImage shouldBe "foo"
+
+            it::getAmbiguousLhs.shouldBeEmpty()
+            it::getLhsType.shouldBeEmpty()
+        }
+
+    }
+
+    parserTest("Test non-ambiguous segments") {
 
         "java.util.Map.@Foo Entry<K, V>" should matchType<ASTClassOrInterfaceType> {
-            it.typeImage shouldBe "java.util.Map.Entry"
-            it.image shouldBe "Entry"
+            it::getTypeImage shouldBe "java.util.Map.Entry"
+            it::getImage shouldBe "Entry"
 
-            it.leftHandSide shouldBePresent child {
-                it.typeImage shouldBe "java.util.Map"
+            it::getLhsType.shouldBeEmpty()
+
+            it::getAmbiguousLhs shouldBePresent child {
+                it::getTypeImage shouldBe "java.util.Map"
+                it::getImage shouldBe "java.util.Map"
+                it::getName shouldBe "java.util.Map"
             }
 
             child<ASTAnnotation> {
-                it.annotationName shouldBe "Foo"
+                it::getAnnotationName shouldBe "Foo"
 
                 child<ASTMarkerAnnotation> {
                     child<ASTName> { }
                 }
             }
 
-            it.typeArguments shouldBePresent child {
+            it::getTypeArguments shouldBePresent child {
 
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
-                        it.typeImage shouldBe "K"
-                        it.typeArguments.shouldBeEmpty()
-                        it.leftHandSide.shouldBeEmpty()
+                        it::getTypeImage shouldBe "K"
+                        it::getTypeArguments.shouldBeEmpty()
+                        it::getLhsType.shouldBeEmpty()
                     }
                 }
 
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
-                        it.typeImage shouldBe "V"
-                        it.typeArguments.shouldBeEmpty()
-                        it.leftHandSide.shouldBeEmpty()
+                        it::getTypeImage shouldBe "V"
+                        it::getTypeArguments.shouldBeEmpty()
+                        it::getLhsType.shouldBeEmpty()
                     }
                 }
             }
@@ -70,27 +96,27 @@ class ASTTypeTest : ParserTestSpec({
 
         "Foo<K>.@A Bar.Brew<V>" should matchType<ASTClassOrInterfaceType> {
 
-            it.typeImage shouldBe "Foo.Bar.Brew"
+            it::getTypeImage shouldBe "Foo.Bar.Brew"
 
-            it.leftHandSide shouldBePresent child {
-                it.typeImage shouldBe "Foo.Bar"
+            it::getLhsType shouldBePresent child {
+                it::getTypeImage shouldBe "Foo.Bar"
 
-                it.typeArguments.shouldBeEmpty()
+                it::getTypeArguments.shouldBeEmpty()
 
-                it.leftHandSide shouldBePresent child {
-                    it.typeImage shouldBe "Foo"
+                it::getLhsType shouldBePresent child {
+                    it::getTypeImage shouldBe "Foo"
 
-                    it.typeArguments shouldBePresent child {
+                    it::getTypeArguments shouldBePresent child {
                         child<ASTTypeArgument> {
                             child<ASTClassOrInterfaceType> {
-                                it.typeImage shouldBe "K"
+                                it::getTypeImage shouldBe "K"
                             }
                         }
                     }
                 }
 
                 child<ASTAnnotation> {
-                    it.annotationName shouldBe "A"
+                    it::getAnnotationName shouldBe "A"
 
                     child<ASTMarkerAnnotation> {
                         child<ASTName> { }
@@ -98,10 +124,10 @@ class ASTTypeTest : ParserTestSpec({
                 }
             }
 
-            it.typeArguments shouldBePresent child {
+            it::getTypeArguments shouldBePresent child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
-                        it.typeImage shouldBe "V"
+                        it::getTypeImage shouldBe "V"
                     }
                 }
             }

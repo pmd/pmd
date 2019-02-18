@@ -111,9 +111,11 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      *
      * To the left of .super:: in a method reference expression (§15.13)
      */
-    //    ASTClassOrInterfaceType disambiguateInTypeContext() {
-    //
-    //    }
+    ASTClassOrInterfaceType disambiguateInTypeContext() {
+        // same, there's no parent here
+        return shrinkOneSegment(ASTClassOrInterfaceType::new, ASTClassOrInterfaceType::new);
+    }
+
 
     <T> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
                            BiFunction<ASTAmbiguousName, String, T> splitConsumer) {
@@ -136,6 +138,21 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
         shiftColumns(0, -lastSegment.length() - 1);
         setImage(remainingAmbiguous);
         return res;
+    }
+
+
+    void shrinkOrDeleteInParentSetImage() {
+        shrinkOneSegment(
+            simpleName -> {
+                simpleName.jjtGetParent().setImage(simpleName.getImage());
+                simpleName.jjtGetParent().removeChildAtIndex(simpleName.jjtGetChildIndex());
+                return null;
+            },
+            (ambig, simpleName) -> {
+                ambig.jjtGetParent().setImage(simpleName);
+                return null;
+            }
+        );
     }
 
 
