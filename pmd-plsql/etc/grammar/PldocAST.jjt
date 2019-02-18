@@ -1318,6 +1318,8 @@ void Condition2() #void :
  |
     LOOKAHEAD(<EXISTS>) ExistsCondition()
  |
+    LOOKAHEAD({isKeyword("XMLEXISTS")}) XMLExists()
+ |
     LOOKAHEAD(MultisetCondition()) MultisetCondition()
  |
     LOOKAHEAD(FloatingPointCondition()) FloatingPointCondition()
@@ -1633,6 +1635,17 @@ ASTXMLPassingClause XMLPassingClause() :
     KEYWORD("PASSING")
     [ <BY> "VALUE" ]
     ( LOOKAHEAD(2) SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] (",")? )+
+    { return jjtThis; }
+}
+
+ASTXMLExists XMLExists() :
+{}
+{
+    KEYWORD("XMLEXISTS")
+    "("
+        StringLiteral()
+        [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ]
+    ")"
     { return jjtThis; }
 }
 

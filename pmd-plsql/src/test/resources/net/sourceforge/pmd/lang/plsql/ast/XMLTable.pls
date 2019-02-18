@@ -14,7 +14,6 @@ SELECT warehouse_name warehouse,
          "Rail" varchar2(6) PATH 'RailAccess')
       warehouse2;
 
-/*
 --
 -- Samples from https://docs.oracle.com/en/database/oracle/oracle-database/18/adxdb/xquery-and-XML-DB.html
 --
@@ -36,6 +35,8 @@ SELECT OBJECT_VALUE
   FROM purchaseorder
   WHERE XMLExists('/PurchaseOrder[SpecialInstructions="Expedite"]'
                   PASSING OBJECT_VALUE);
+
+/*
 SELECT XMLCast(XMLQuery('/PurchaseOrder/Reference' PASSING OBJECT_VALUE
                                                    RETURNING CONTENT)
                AS VARCHAR2(100)) "REFERENCE"
