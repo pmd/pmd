@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * A class instance creation expression. Represents both {@linkplain #isQualifiedInstanceCreation() qualified}
- * and unqualified instance creation. May declare an anonymous class body. TODO API
+ * and unqualified instance creation. May declare an anonymous class body.
  *
  *
  * <pre>
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
+public final class ASTConstructorCall extends AbstractLateInitNode implements ASTPrimaryExpression {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -111,7 +111,7 @@ public final class ASTConstructorCall extends AbstractJavaTypeNode implements AS
 
 
     @Override
-    public void onInjectFinished() {
+    void onInjectFinished() {
         /* JLS:
          *  A name is syntactically classified as an ExpressionName in these contexts:
          *       ...

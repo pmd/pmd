@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
 
+import com.sun.org.apache.bcel.internal.generic.ALOAD;
+
 
 /**
  * The "super" reference. Technically not an expression but it's easier to analyse that way.
@@ -18,7 +20,7 @@ import java.util.Optional;
  *
  * </pre>
  */
-public final class ASTSuperExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
+public final class ASTSuperExpression extends AbstractLateInitNode implements ASTPrimaryExpression {
     ASTSuperExpression(int id) {
         super(id);
     }
@@ -49,7 +51,7 @@ public final class ASTSuperExpression extends AbstractJavaTypeNode implements AS
 
 
     @Override
-    public void onInjectFinished() {
+    void onInjectFinished() {
         // If this method is called, then a qualifier was injected
         ASTAmbiguousName name = (ASTAmbiguousName) jjtGetChild(0);
         this.replaceChildAt(0, name.forceTypeContext());

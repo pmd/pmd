@@ -469,8 +469,8 @@ public class JavaParser {
     Node previousSegment = jjtree.popNode();
 
     lastSegment.insertChild((AbstractJavaNode) previousSegment, 0);
-    if (lastSegment instanceof LateInitNode) {
-        ((LateInitNode) lastSegment).onInjectFinished();
+    if (lastSegment instanceof AbstractLateInitNode) {
+        ((AbstractLateInitNode) lastSegment).onInjectFinished();
     }
     jjtree.pushNode(lastSegment);
   }
@@ -2078,7 +2078,7 @@ void ClassOrInterfaceType() #void:
   {
     Node top = jjtree.peekNode();
     if (top instanceof ASTAmbiguousName) {
-      Node replacement = ((ASTAmbiguousName) top).disambiguateInTypeContext();
+      Node replacement = ((ASTAmbiguousName) top).forceTypeContext();
       jjtree.popNode();
       jjtree.pushNode(replacement);
     }
@@ -2375,7 +2375,7 @@ void PrimaryExpression() #void :
 
       if (top instanceof ASTAmbiguousName) {
           // see doc on the method
-          Node replacement = ((ASTAmbiguousName) top).disambiguateInExprContext();
+          Node replacement = ((ASTAmbiguousName) top).forceExprContext();
           jjtree.popNode();
           jjtree.pushNode(replacement);
       }
@@ -2401,6 +2401,9 @@ void MethodReference(): // LHS is injected
 }
 /*
   Expressions that may be present at the start of a primary expression.
+
+  TODO some lookaheads can be simplified if we're ok with loosing some strictness
+
  */
 void PrimaryPrefix() #void :
 {Token t;}
@@ -2412,21 +2415,19 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD(3)
-    ("(" Expression() ")")     #ParenthesizedExpression
+| ("(" Expression() ")")     #ParenthesizedExpression
 | UnqualifiedAllocationExpr()
 | LOOKAHEAD( TypeOrVoid() "." "class" )
     (TypeOrVoid() "." "class") #ClassLiteral
-// lookahead <IDENTIFIER> "(", higher than the method reference ones because they're more frequent
-// unqualified method call
-| LOOKAHEAD(2)
-    (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall
 | LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" )
     ReferenceType()
 // not a constructor reference, and is just a sequence of identifiers: could be an expression or a type
 | LOOKAHEAD( Name() "::"  )
     AmbiguousName()
-// we know it's not just a sequence of identifiers, so if ReferenceType matches, the prefix may be
+// we know it's not just a sequence of identifiers, so if
+// ReferenceType matches, there are type parameters or annots,
+// which means we shouldn't parse as an ambiguous name otherwise
+// we choke on the type parameters
 | LOOKAHEAD( ReferenceType() "::" )
     ReferenceType()
 | AmbiguousName()
@@ -2444,12 +2445,13 @@ void PrimarySuffix() #void :
 {
   MethodReference()                           { wrapLeft(); }
 | ArgumentsList()            #MethodCall      { wrapLeft(); }
+| ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
+// all the following start with a "."
 | LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); }
 | LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
 // lookahead("." "new")
 | LOOKAHEAD(2) QualifiedAllocationExpr()      { wrapLeft(); }
 | LOOKAHEAD(1) MemberSelector() // starts with "."
-| ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
 }
 
 void LambdaExpression() :

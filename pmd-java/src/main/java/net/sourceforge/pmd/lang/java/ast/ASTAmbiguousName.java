@@ -41,11 +41,11 @@ import java.util.function.Function;
  * We don't know at the moment the name is parsed that it will be followed by "." "new" and a constructor
  * call. But as soon as the {@link ASTConstructorCall} is pushed, we know that the LHS must be an
  * expression. In that case, the name can be reclassified, and e.g. if it's a simple name be promoted
- * to {@link ASTVariableReference}. This type of immediate disambiguation is carried out by {@link LateInitNode}.
+ * to {@link ASTVariableReference}. This type of immediate disambiguation is carried out by {@link AbstractLateInitNode#onInjectFinished()}.
  *
  * <p>Another mechanism is {@link #forceExprContext()} and {@link #forceTypeContext()}, which are
  * called by the parser to promote an ambiguous name to an expression or a type when it's sure they
- * must be one, but there's no {@link LateInitNode} that follows them.
+ * must be one, but there's no {@link AbstractLateInitNode} that follows them.
  *
  * <p>These two mechanisms perform the first classification step, the one that only depends on the
  * syntactic context and not on semantic information. A second pass on the AST after building the
@@ -170,7 +170,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      * A specialized version of {@link #shrinkOneSegment(Function, BiFunction)} for nodes
      * that carry the unambiguous part as their own image. E.g. when the parser sees an ambiguous
      * name as primary prefix, then method arguments immediately after, it pushes an {@link ASTMethodCall},
-     * calls wrapLeft(), which calls {@link LateInitNode#onInjectFinished()}, which calls this method
+     * calls wrapLeft(), which calls {@link AbstractLateInitNode#onInjectFinished()}, which calls this method
      * to shrink the ambiguous name because it's necessarily the method's name. The last part is set
      * on the parent.
      */

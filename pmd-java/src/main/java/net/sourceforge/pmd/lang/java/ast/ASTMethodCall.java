@@ -21,7 +21,7 @@ import java.util.Optional;
  *              |  {@link ASTClassOrInterfaceType ClassName} "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
+public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrimaryExpression {
 
 
 
@@ -97,7 +97,7 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
 
 
     @Override
-    public void onInjectFinished() {
+    void onInjectFinished() {
         if (getImage() != null) {
             return;
         }

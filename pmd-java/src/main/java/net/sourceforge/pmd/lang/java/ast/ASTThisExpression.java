@@ -18,7 +18,7 @@ import java.util.Optional;
  *
  * </pre>
  */
-public final class ASTThisExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
+public final class ASTThisExpression extends AbstractLateInitNode implements ASTPrimaryExpression {
     ASTThisExpression(int id) {
         super(id);
     }
@@ -50,7 +50,7 @@ public final class ASTThisExpression extends AbstractJavaTypeNode implements AST
 
 
     @Override
-    public void onInjectFinished() {
+    void onInjectFinished() {
         // If this method is called, then a qualifier was injected
         ASTAmbiguousName name = (ASTAmbiguousName) jjtGetChild(0);
         this.replaceChildAt(0, name.forceTypeContext());

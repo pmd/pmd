@@ -5,8 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
-
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -19,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
+public final class ASTArrayAccess extends AbstractLateInitNode implements ASTPrimaryExpression {
     ASTArrayAccess(int id) {
         super(id);
     }
@@ -58,7 +56,7 @@ public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPri
 
 
     @Override
-    public void onInjectFinished() {
+    void onInjectFinished() {
         /* JLS:
          *  A name is syntactically classified as an ExpressionName in these contexts:
          *       ...
