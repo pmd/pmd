@@ -61,4 +61,11 @@ public class SelectIntoStatementTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
     }
+
+    @Test
+    public void testParsingIntoRecordField() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectIntoStatementRecordField.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+    }
 }

@@ -1951,7 +1951,7 @@ which makes the code also more readable.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//VariableInitializer
+//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred="false"]
 //PrimaryExpression[not(PrimarySuffix)]
 [not(ancestor::ArgumentList)]
 /PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]

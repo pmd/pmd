@@ -135,4 +135,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1633 [java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.commons.lang3.time.FastDateFormat;
+
+public class Foo {
+    private static final FastDateFormat FDF = FastDateFormat.getInstance("dd.MM.yyyy HH:mm:ss");
+    public void format() {
+        FDF.format(new Date());
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

@@ -21,5 +21,11 @@ BEGIN
     FROM mytable
     WHERE colname = utils.get_colname('COLUMN_ID');
 
+  SELECT foo
+    INTO bar
+    FROM DUAL
+    WHERE a = 1 AND b = 2 AND NVL(INSTR(c || d), 3) = 3
+    ORDER BY 1;
+
 END;
 /

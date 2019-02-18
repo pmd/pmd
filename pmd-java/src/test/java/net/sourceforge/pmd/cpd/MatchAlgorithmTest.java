@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class MatchAlgorithmTest {
     }
 
     @Test
-    public void testSimple() {
+    public void testSimple() throws IOException {
         JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
         Tokens tokens = new Tokens();
@@ -63,7 +64,7 @@ public class MatchAlgorithmTest {
     }
 
     @Test
-    public void testIgnore() {
+    public void testIgnore() throws IOException {
         JavaTokenizer tokenizer = new JavaTokenizer();
         tokenizer.setIgnoreLiterals(true);
         tokenizer.setIgnoreIdentifiers(true);

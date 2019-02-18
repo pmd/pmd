@@ -65,21 +65,27 @@ public class AbstractLombokAwareRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        boolean oldValue = classHasLombokAnnotation;
         classHasLombokAnnotation = hasLombokAnnotation(node);
-        return super.visit(node, data);
+        Object result = super.visit(node, data);
+        classHasLombokAnnotation = oldValue;
+        return result;
     }
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
+        boolean oldValue = classHasLombokAnnotation;
         classHasLombokAnnotation = hasLombokAnnotation(node);
-        return super.visit(node, data);
+        Object result = super.visit(node, data);
+        classHasLombokAnnotation = oldValue;
+        return result;
     }
 
     /**
      * Returns whether there have been class level Lombok annotations found.
      * Note: this can only be queried after the class declaration node has been
      * processed.
-     * 
+     *
      * @return <code>true</code> if a lombok annotation at the class level has
      *         been found
      */
