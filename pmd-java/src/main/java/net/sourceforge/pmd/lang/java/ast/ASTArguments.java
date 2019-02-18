@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * @deprecated Replaced by {@link ASTArgumentList}
+ */
+@Deprecated
 public class ASTArguments extends AbstractJavaNode {
     public ASTArguments(int id) {
         super(id);

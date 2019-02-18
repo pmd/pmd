@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * The boolean literal, either "true" or "false".
+ */
 public final class ASTBooleanLiteral extends AbstractJavaTypeNode implements ASTLiteral {
 
     private boolean isTrue;
