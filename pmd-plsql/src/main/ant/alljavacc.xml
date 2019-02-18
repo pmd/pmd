@@ -44,6 +44,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/TokenMgrError.java" />
 
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTArguments.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTComparisonCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTCompoundCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTDatatype.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTFormalParameter.java" />
@@ -62,6 +63,7 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimaryPrefix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTPrimarySuffix.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTProgramUnit.java" />
+        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTRegexpLikeCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectIntoStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSubqueryOperation.java" />

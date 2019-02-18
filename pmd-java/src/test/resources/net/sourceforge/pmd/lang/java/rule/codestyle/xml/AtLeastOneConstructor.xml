@@ -117,12 +117,56 @@ public class TestAtLeastOneConstructor {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Ignore classes with lombok-generated constructors</description>
+        <description>Ignore classes with lombok-generated constructors (Value)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import lombok.Value;
 
 @Value
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (Required)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (No)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (All)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public class TestAtLeastOneConstructor {
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Ignore classes with lombok-generated constructors (Builder)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Builder;
+
+@Builder
 public class TestAtLeastOneConstructor {
 }
         ]]></code>

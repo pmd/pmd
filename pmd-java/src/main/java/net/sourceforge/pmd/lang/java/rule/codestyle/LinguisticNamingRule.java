@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,11 +21,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class LinguisticNamingRule extends AbstractJavaRule {
+public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     private static final PropertyDescriptor<Boolean> CHECK_BOOLEAN_METHODS =
             booleanProperty("checkBooleanMethod").defaultValue(true).desc("Check method names and types for inconsistent naming.").build();
     private static final PropertyDescriptor<Boolean> CHECK_GETTERS =
@@ -71,27 +74,34 @@ public class LinguisticNamingRule extends AbstractJavaRule {
     }
 
     @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        return Collections.checkedList(Arrays.asList("java.lang.Override"), String.class);
+    }
+
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        String nameOfMethod = node.getMethodName();
+        if (!hasIgnoredAnnotation(node)) {
+            String nameOfMethod = node.getMethodName();
 
-        if (getProperty(CHECK_BOOLEAN_METHODS)) {
-            checkBooleanMethods(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_SETTERS)) {
-            checkSetters(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_GETTERS)) {
-            checkGetters(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
-            checkPrefixedTransformMethods(node, data, nameOfMethod);
-        }
-
-        if (getProperty(CHECK_TRANSFORM_METHODS)) {
-            checkTransformMethods(node, data, nameOfMethod);
+            if (getProperty(CHECK_BOOLEAN_METHODS)) {
+                checkBooleanMethods(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_SETTERS)) {
+                checkSetters(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_GETTERS)) {
+                checkGetters(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
+                checkPrefixedTransformMethods(node, data, nameOfMethod);
+            }
+    
+            if (getProperty(CHECK_TRANSFORM_METHODS)) {
+                checkTransformMethods(node, data, nameOfMethod);
+            }
         }
 
         return data;

@@ -1519,6 +1519,67 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseTryWithResources"
+          language="java"
+          minimumLanguageVersion="1.7"
+          since="6.12.0"
+          typeResolution="true"
+          message="Consider using a try-with-resources statement instead of explicitly closing the resource"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usetrywithresources">
+        <description>
+Java 7 introduced the try-with-resources statement. This statement ensures that each resource is closed at the end
+of the statement. It avoids the need of explicitly closing the resources in a finally block. Additionally exceptions
+are better handled: If an exception occurred both in the `try` block and `finally` block, then the exception from
+the try block was suppressed. With the `try`-with-resources statement, the exception thrown from the try-block is
+preserved.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="closeMethods" type="List[String]" delimiter="," description="Method names in finally block, which trigger this rule" value="close,closeQuietly"/>
+            <property name="version" value="2.0" />
+            <property name="xpath">
+                <value>
+<![CDATA[
+//TryStatement[FinallyStatement//Name[
+    tokenize(@Image, '\.')[last()] = $closeMethods
+][
+    pmd-java:typeIs('java.lang.AutoCloseable')
+    or
+    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+]]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) in.close();
+            } catch (IOException ignored) {
+                // ignored
+            }
+        }
+
+        // better use try-with-resources
+        try (InputStream in2 = openInputStream()) {
+            int i = in2.read();
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseVarargs"
           language="java"
           minimumLanguageVersion="1.5"
