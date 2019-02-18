@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
 
-import com.sun.org.apache.bcel.internal.generic.ALOAD;
-
 
 /**
  * The "super" reference. Technically not an expression but it's easier to analyse that way.

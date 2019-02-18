@@ -95,6 +95,9 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
         }
 
+    }
+
+    parserTest("With array initializer") {
 
         "new Foo[] { f, g }" should matchExpr<ASTArrayAllocation> {
 
@@ -109,12 +112,8 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 it::getArrayDepth shouldBe 1
 
                 child<ASTArrayInitializer> {
-                    child<ASTVariableInitializer> {
-                        child<ASTVariableReference> {}
-                    }
-                    child<ASTVariableInitializer> {
-                        child<ASTVariableReference> {}
-                    }
+                    child<ASTVariableReference> {}
+                    child<ASTVariableReference> {}
                 }
             }
         }
@@ -132,22 +131,14 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 it::getArrayDepth shouldBe 2
 
                 child<ASTArrayInitializer> {
-                    child<ASTVariableInitializer> {
-                        child<ASTArrayInitializer> {
-                            child<ASTVariableInitializer> {
-                                child<ASTNumericLiteral> {
-                                    it::getValueAsInt shouldBe 1
-                                }
-                            }
+                    child<ASTArrayInitializer> {
+                        child<ASTNumericLiteral> {
+                            it::getValueAsInt shouldBe 1
                         }
                     }
-                    child<ASTVariableInitializer> {
-                        child<ASTArrayInitializer> {
-                            child<ASTVariableInitializer> {
-                                child<ASTNumericLiteral> {
-                                    it::getValueAsInt shouldBe 2
-                                }
-                            }
+                    child<ASTArrayInitializer> {
+                        child<ASTNumericLiteral> {
+                            it::getValueAsInt shouldBe 2
                         }
                     }
                 }
@@ -165,23 +156,15 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 it::getArrayDepth shouldBe 2
 
                 child<ASTArrayInitializer> {
-                    child<ASTVariableInitializer> {
-                        child<ASTArrayInitializer> {
-                            child<ASTVariableInitializer> {
-                                child<ASTNumericLiteral> {
-                                    it::getValueAsInt shouldBe 1
-                                }
-                            }
-                            child<ASTVariableInitializer> {
-                                child<ASTNumericLiteral> {
-                                    it::getValueAsInt shouldBe 2
-                                }
-                            }
+                    child<ASTArrayInitializer> {
+                        child<ASTNumericLiteral> {
+                            it::getValueAsInt shouldBe 1
+                        }
+                        child<ASTNumericLiteral> {
+                            it::getValueAsInt shouldBe 2
                         }
                     }
-                    child<ASTVariableInitializer> {
-                        child<ASTNullLiteral> {}
-                    }
+                    child<ASTNullLiteral> {}
                 }
             }
         }

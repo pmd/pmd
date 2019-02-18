@@ -1858,7 +1858,7 @@ void VariableDeclaratorId() :
   }
 }
 
-void VariableInitializer() :
+void VariableInitializer() #void:
 {}
 {
   ArrayInitializer()
