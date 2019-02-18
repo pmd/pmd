@@ -18,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public final class ASTAssignmentExpression extends AbstractJavaTypeNode implements ASTExpression {
 
-    private AssignmentOperator operator;
+    private AssignmentOp operator;
 
 
     ASTAssignmentExpression(int id) {
@@ -31,7 +31,7 @@ public final class ASTAssignmentExpression extends AbstractJavaTypeNode implemen
     }
 
 
-    void setOp(AssignmentOperator op) {
+    void setOp(AssignmentOp op) {
         this.operator = op;
     }
 
@@ -57,7 +57,7 @@ public final class ASTAssignmentExpression extends AbstractJavaTypeNode implemen
     /**
      * Returns the assignment operator.
      */
-    public AssignmentOperator getOperator() {
+    public AssignmentOp getOp() {
         return operator;
     }
 

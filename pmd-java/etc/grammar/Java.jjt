@@ -2187,7 +2187,7 @@ void Expression() #AssignmentExpression(>1):
  //
  // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
  // as a workaround.
-{AssignmentOperator op = null;}
+{AssignmentOp op = null;}
 {
   ConditionalExpression()
   [
@@ -2211,7 +2211,7 @@ AssignmentOperator AssignmentOperator() #void:
     | "^="
     | "|="
     )
-    {return AssignmentOperator.fromImage(getToken(0).getImage());}
+    {return AssignmentOp.fromImage(getToken(0).getImage());}
 }
 
 // TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
@@ -2320,15 +2320,15 @@ void PreDecrementExpression() :
   "--" PrimaryExpression()
 }
 
-void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImage() != null)):
+void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)):
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
 /*
- * This is really ugly... we are repeating the CastExpression lookahead and full expression...
+ * TODO This is really ugly... we are repeating the CastExpression lookahead and full expression...
  * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
  * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
-*/
+ */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
 | LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
@@ -2718,7 +2718,7 @@ void EmptyStatement() :
 }
 
 void StatementExpression() :
-{AssignmentOperator op = null;}
+{AssignmentOp op = null;}
 {
   PreIncrementExpression()
 |

@@ -18,7 +18,9 @@ package net.sourceforge.pmd.lang.java.ast;
  * UnaryExpressionNotPlusMinus ::=  ( "~" | "!" ) {@linkplain ASTUnaryExpression UnaryExpression}
  *
  * </pre>
+ * @deprecated Merged into {@link ASTUnaryExpression}
  */
+@Deprecated
 public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode implements ASTExpression {
     public ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);

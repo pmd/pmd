@@ -4,10 +4,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * Represents a binary operator.
  *
  * TODO create interface binary expression.
- *
- * @author Clément Fournier
  */
-public enum BinaryOperator {
+public enum BinaryOp {
     ADD("+"),
     SUB("-"),
     MUL("*"),
@@ -22,7 +20,7 @@ public enum BinaryOperator {
     private final String code;
 
 
-    BinaryOperator(String code) {
+    BinaryOp(String code) {
         this.code = code;
     }
 

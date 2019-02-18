@@ -1,15 +1,15 @@
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.ADD;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.AND;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.DIV;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.LEFT_SHIFT;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.MUL;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.OR;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.RIGHT_SHIFT;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.SUB;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.UNSIGNED_RIGHT_SHIFT;
-import static net.sourceforge.pmd.lang.java.ast.BinaryOperator.XOR;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.AND;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.DIV;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LEFT_SHIFT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.OR;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.RIGHT_SHIFT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.UNSIGNED_RIGHT_SHIFT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.XOR;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * An assignment operator for {@link ASTAssignmentExpression}.
  */
-public enum AssignmentOperator {
+public enum AssignmentOp {
     EQ("=", null),
     AND_EQ("&=", AND),
     OR_EQ("|=", OR),
@@ -33,17 +33,17 @@ public enum AssignmentOperator {
     RIGHT_SHIFT_EQ(">>=", RIGHT_SHIFT),
     UNSIGNED_RIGHT_SHIFT_EQ(">>>=", UNSIGNED_RIGHT_SHIFT);
 
-    private static final Map<String, AssignmentOperator> LOOKUP = Collections.unmodifiableMap(
+    private static final Map<String, AssignmentOp> LOOKUP = Collections.unmodifiableMap(
         Arrays.stream(values()).collect(Collectors.toMap(Object::toString, op -> op))
     );
 
     private final String code;
-    private final BinaryOperator binaryOperator;
+    private final BinaryOp binaryOp;
 
 
-    AssignmentOperator(String code, BinaryOperator binaryOperator) {
+    AssignmentOp(String code, BinaryOp binaryOp) {
         this.code = code;
-        this.binaryOperator = binaryOperator;
+        this.binaryOp = binaryOp;
     }
 
 
@@ -66,13 +66,13 @@ public enum AssignmentOperator {
      * if this is a compound operator, otherwise returns
      * null.
      */
-    public BinaryOperator getBinaryOp() {
-        return binaryOperator;
+    public BinaryOp getBinaryOp() {
+        return binaryOp;
     }
 
 
     // parser only for now
-    static AssignmentOperator fromImage(String image) {
+    static AssignmentOp fromImage(String image) {
         return LOOKUP.get(image);
     }
 }

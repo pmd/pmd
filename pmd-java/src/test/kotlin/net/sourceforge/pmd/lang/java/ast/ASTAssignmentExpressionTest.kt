@@ -12,7 +12,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
     parserTest("Simple assignment expressions") {
 
         "a = b -> { foo(b); }" should matchExpr<ASTAssignmentExpression> {
-            it::getOperator shouldBe AssignmentOperator.EQ
+            it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
             it::getLeftHandSide shouldBe child<ASTVariableReference> {
@@ -25,7 +25,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
         }
 
         "a = 2" should matchExpr<ASTAssignmentExpression> {
-            it::getOperator shouldBe AssignmentOperator.EQ
+            it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
             it::getLeftHandSide shouldBe child<ASTVariableReference> {
@@ -36,7 +36,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
         }
 
         "a.b().f *= 2" should matchExpr<ASTAssignmentExpression> {
-            it::getOperator shouldBe AssignmentOperator.MUL_EQ
+            it::getOp shouldBe AssignmentOp.MUL_EQ
             it::isCompound shouldBe true
 
             it::getLeftHandSide shouldBe child<ASTFieldAccess> {
@@ -50,7 +50,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
         }
 
         "a >>>= 2" should matchExpr<ASTAssignmentExpression> {
-            it::getOperator shouldBe AssignmentOperator.UNSIGNED_RIGHT_SHIFT_EQ
+            it::getOp shouldBe AssignmentOp.UNSIGNED_RIGHT_SHIFT_EQ
             it::isCompound shouldBe true
 
 
@@ -66,7 +66,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
     parserTest("Right associativity") {
 
         "a = b = 3" should matchExpr<ASTAssignmentExpression> {
-            it::getOperator shouldBe AssignmentOperator.EQ
+            it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
             it::getLeftHandSide shouldBe child<ASTVariableReference> {
@@ -74,7 +74,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             }
 
             it::getRightHandSide shouldBe child<ASTAssignmentExpression> {
-                it::getOperator shouldBe AssignmentOperator.EQ
+                it::getOp shouldBe AssignmentOp.EQ
                 it::isCompound shouldBe false
 
                 it::getLeftHandSide shouldBe child<ASTVariableReference> {
