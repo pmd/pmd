@@ -54,6 +54,7 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
 ### Fixed Issues
 
 *   all
+    *   [#1462](https://github.com/pmd/pmd/issues/1462): \[core] Failed build on Windows with source zip archive
     *   [#1559](https://github.com/pmd/pmd/issues/1559): \[core] CPD: Lexical error in file (no file name provided)
 *   java-bestpractices
     *   [#808](https://github.com/pmd/pmd/issues/808): \[java] AccessorMethodGeneration false positives with compile time constants
