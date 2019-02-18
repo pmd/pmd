@@ -6,11 +6,14 @@ package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssOperationMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.NpathMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric.AtfdOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric.LocOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NpathMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 
@@ -22,7 +25,7 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
     /**
      * Access to Foreign Data.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric
+     * @see AtfdMetric
      */
     ATFD(new AtfdOperationMetric()),
 
@@ -36,14 +39,14 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
     /**
      * Non Commenting Source Statements.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
+     * @see NcssMetric
      */
     NCSS(new NcssOperationMetric()),
 
     /**
      * Lines of Code.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
+     * @see LocMetric
      */
     LOC(new LocOperationMetric()),
 

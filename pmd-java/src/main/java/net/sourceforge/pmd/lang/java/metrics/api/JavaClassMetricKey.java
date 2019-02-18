@@ -5,14 +5,17 @@
 package net.sourceforge.pmd.lang.java.metrics.api;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric.AtfdClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.LocMetric.LocClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric.NcssClassMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.NoamMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.NopaMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.TccMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.WmcMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.WocMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric.AtfdClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric.LocClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric.NcssClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NoamMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.NopaMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.TccMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.WmcMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.WocMetric;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
 /**
@@ -23,7 +26,7 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
     /**
      * Access to Foreign Data.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.AtfdMetric
+     * @see AtfdMetric
      */
     ATFD(new AtfdClassMetric()),
 
@@ -37,14 +40,14 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
     /**
      * Non Commenting Source Statements.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.NcssMetric
+     * @see NcssMetric
      */
     NCSS(new NcssClassMetric()),
 
     /**
      * Lines of Code.
      *
-     * @see net.sourceforge.pmd.lang.java.metrics.impl.LocMetric
+     * @see LocMetric
      */
     LOC(new LocClassMetric()),
 

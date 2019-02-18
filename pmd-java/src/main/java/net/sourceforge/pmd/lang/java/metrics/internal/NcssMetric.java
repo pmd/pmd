@@ -2,13 +2,15 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.impl.internal.NcssVisitor;
+import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.visitors.NcssVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 

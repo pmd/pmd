@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.internal;
+package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
 
 
 /**

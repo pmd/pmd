@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.metrics.impl.internal.TccAttributeAccessCollector;
+import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.visitors.TccAttributeAccessCollector;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 /**

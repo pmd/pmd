@@ -8,7 +8,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 
 /**
