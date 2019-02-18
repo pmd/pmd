@@ -1306,6 +1306,15 @@ and resume again with a comment containing <code class="highlighter-rouge">CPD-O
 
 <p>More information is available in <a href="pmd_userdocs_cpd.html#suppression">the user documentation</a>.</p>
 
+<h4 id="plsql-grammar-improvements">PL/SQL Grammar improvements</h4>
+
+<ul>
+  <li>In this release, many more parser bugs in our PL/SQL support have been fixed. This adds more complete
+support for UPDATE statements and subqueries and hierarchical queries in SELECT statements.</li>
+  <li>Support for analytic functions such as LISTAGG has been added.</li>
+  <li>Conditions in WHERE clauses support now REGEX_LIKE and multiset conditions.</li>
+</ul>
+
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
@@ -1354,6 +1363,14 @@ all test methods, either using the <code class="highlighter-rouge">testMethod</c
   <li>java-performance
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1632">#1632</a>: [java] ConsecutiveLiteralAppends false positive over catch</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1587">#1587</a>: [plsql] ParseException with EXISTS</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1589">#1589</a>: [plsql] ParseException with subqueries in WHERE clause</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1590">#1590</a>: [plsql] ParseException when using hierarchical query clause</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1656">#1656</a>: [plsql] ParseException with analytic functions, trim and subqueries</li>
     </ul>
   </li>
 </ul>
