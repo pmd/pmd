@@ -14,7 +14,9 @@ import java.util.Optional;
  * <pre>
  *
  * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
- *
+ *               |  {@link ASTClassOrInterfaceType TypeName} "." &lt;IDENTIFIER&gt;
+ *               (: Nothing can be done if this is not a :)
+ *               |  {@link ASTAmbiguousName AmbiguousName} "." &lt;IDENTIFIER&gt;
  * </pre>
  */
 public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression {
@@ -29,12 +31,29 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
 
 
     /**
-     * TODO this is for now always non-empty, since field accesses without qualifier
-     *   are classified as {@link ASTAmbiguousNameExpr}. But the symbol table could
-     *   easily provide a way to reclassify those as field accesses too.
+     * Promotes an ambiguous name to the LHS of this node.
      */
-    public Optional<ASTPrimaryExpression> getLeftHandSide() {
+    ASTFieldAccess(ASTAmbiguousName lhs, String fieldName) {
+        super(JavaParserTreeConstants.JJTFIELDACCESS);
+        this.jjtAddChild(lhs, 0);
+        this.setImage(fieldName);
+        copyTextCoordinates(lhs);
+    }
+
+
+    /**
+     * Returns the expression to the left of the "." if it exists.
+     */
+    public Optional<ASTPrimaryExpression> getLhsExpression() {
         return Optional.ofNullable(getFirstChildOfType(ASTPrimaryExpression.class));
+    }
+
+
+    /**
+     * Returns the type to the left of the "." if it exists.
+     */
+    public Optional<ASTClassOrInterfaceType> getLhsType() {
+        return Optional.ofNullable(getFirstChildOfType(ASTClassOrInterfaceType.class));
     }
 
 

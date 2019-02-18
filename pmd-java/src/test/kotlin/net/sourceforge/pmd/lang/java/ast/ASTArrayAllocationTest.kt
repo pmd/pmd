@@ -110,10 +110,10 @@ class ASTArrayAllocationTest : ParserTestSpec({
 
                 child<ASTArrayInitializer> {
                     child<ASTVariableInitializer> {
-                        child<ASTAmbiguousNameExpr> {}
+                        child<ASTVariableReference> {}
                     }
                     child<ASTVariableInitializer> {
-                        child<ASTAmbiguousNameExpr> {}
+                        child<ASTVariableReference> {}
                     }
                 }
             }

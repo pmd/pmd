@@ -36,16 +36,33 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre>
  *
- * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt; ) *  {@link ASTTypeArguments TypeArguments}?
- *                        | ClassOrInterfaceType ( "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}? )+
+ * ClassOrInterfaceType ::= (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName} | &lt;IDENTIFIER&gt;)
+ *                          "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
  */
 // @formatter:on
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
-    public ASTClassOrInterfaceType(String identifier) {
+
+    ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
-        setImage(identifier);
+        this.jjtAddChild(lhs, 0);
+        this.setImage(image);
+        copyTextCoordinates(lhs);
+    }
+
+
+    ASTClassOrInterfaceType(ASTAmbiguousName simpleName) {
+        super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+        this.setImage(simpleName.getImage());
+        copyTextCoordinates(simpleName);
+    }
+
+
+    // Just for one usage in Symbol table
+    public ASTClassOrInterfaceType(String simpleName) {
+        super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
+        this.setImage(simpleName);
     }
 
 

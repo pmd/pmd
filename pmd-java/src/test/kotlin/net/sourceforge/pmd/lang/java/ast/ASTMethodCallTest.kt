@@ -15,12 +15,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBePresent child<ASTThisExpression> {
-                it::getQualifier shouldBePresent child<ASTAmbiguousNameExpr> {
-                    it::getImage shouldBe "Type"
-                }
-            }
-
+            it::getLhsExpression shouldBePresent child<ASTThisExpression>(ignoreChildren = true) {}
 
             it::getArguments shouldBe child {}
 
@@ -46,7 +41,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "baz"
             it::getImage shouldBe "baz"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo.bar"
             }
 
@@ -57,7 +52,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "f"
             it::getImage shouldBe "f"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo"
             }
 
@@ -77,7 +72,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo"
             }
 

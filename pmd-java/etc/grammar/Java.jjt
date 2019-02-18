@@ -2148,7 +2148,7 @@ void TypeOrVoid() #void:
   "void" | Type()
 }
 
-void AmbiguousNameExpr():
+void AmbiguousName():
 {String image;}
 {
     image=VoidName()
@@ -2369,7 +2369,16 @@ void SwitchExpression() :
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )*
+  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* {
+      Node top = jjtree.peekNode();
+
+      if (top instanceof ASTAmbiguousName) {
+          // see doc on the method
+          Node replacement = ((ASTAmbiguousName) top).disambiguateInExprContext();
+          jjtree.popNode();
+          jjtree.pushNode(replacement);
+      }
+  }
 }
 
 /**
@@ -2389,13 +2398,16 @@ void MethodReference(): // LHS is injected
 {
   "::" [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
 }
-
+/*
+  Expressions that may be present at the start of a primary expression.
+ */
 void PrimaryPrefix() #void :
 {Token t;}
 {
   Literal()
-| LOOKAHEAD(2) "this"                     #ThisExpression
+| "this"                                  #ThisExpression
 | "super"                                 #SuperExpression
+// todo we can probably simplify the lambda lookaheads
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
@@ -2406,22 +2418,28 @@ void PrimaryPrefix() #void :
 // unqualified method call
 | LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall
 | LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" ) ReferenceType()
-// not a constructor reference, could be an expression
-| LOOKAHEAD( Name() "::"  ) AmbiguousNameExpr()
-// Still need to allow type name
+// not a constructor reference, and is just a sequence of identifiers: could be an expression or a type
+| LOOKAHEAD( Name() "::"  ) AmbiguousName()
+// we know it's not just a sequence of identifiers, so if referencetype matches, the prefix may be
 | LOOKAHEAD( ReferenceType() "::" ) ReferenceType()
-| AmbiguousNameExpr()
+| AmbiguousName()
 }
 
-
+/*
+ * Productions that may be present after a PrimaryPrefix. The way this is written makes for a nice tree,
+ * but also allows many invalid things to be written (which is fine because we parse compilable code).
+ * E.g. this allows `foo().this.super::bar[0].this`
+ *
+ * Not all PrimaryPrefix expressions are here, eg
+ */
 void PrimarySuffix() #void :
 {}
 {
   MethodReference()                           { wrapLeft(); }
 | ArgumentsList()            #MethodCall      { wrapLeft(); }
-| LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); } // those will enclose the Name
+| LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); }
 | LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
-// lookahead "." "new"
+// lookahead("." "new")
 | LOOKAHEAD(2) QualifiedAllocationExpr()      { wrapLeft(); }
 | LOOKAHEAD(1) MemberSelector() // starts with "."
 | ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
@@ -3128,4 +3146,14 @@ String VoidName() #void:
     {s.append('.').append(t.image);}
   )*
   {return s.toString();}
+}
+
+// This is used to get JJTree to generate a node.
+// Since variable references are most of the time ambiguous, they're
+// not created directly by the parser
+//noinspection JavaCCJccUnusedProduction
+void VariableReference():
+{}
+{
+   <IDENTIFIER>
 }

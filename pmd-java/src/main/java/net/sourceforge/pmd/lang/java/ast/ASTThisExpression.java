@@ -14,11 +14,11 @@ import java.util.Optional;
  * <pre>
  *
  * ThisExpression ::= "this"
- *                  | {@link ASTName Name} "." "this"
+ *                  | {@link ASTClassOrInterfaceType TypeName} "." "this"
  *
  * </pre>
  */
-public final class ASTThisExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTThisExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
     ASTThisExpression(int id) {
         super(id);
     }
@@ -29,8 +29,8 @@ public final class ASTThisExpression extends AbstractJavaTypeNode implements AST
     }
 
 
-    public Optional<ASTName> getQualifier() {
-        return jjtGetNumChildren() > 0 ? Optional.of((ASTName) jjtGetChild(0)) : Optional.empty();
+    public Optional<ASTClassOrInterfaceType> getQualifier() {
+        return jjtGetNumChildren() > 0 ? Optional.of((ASTClassOrInterfaceType) jjtGetChild(0)) : Optional.empty();
     }
 
 
@@ -46,5 +46,16 @@ public final class ASTThisExpression extends AbstractJavaTypeNode implements AST
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    @Override
+    public void onInjectFinished() {
+        // If this method is called, then a qualifier was injected
+
+        ASTAmbiguousName name = (ASTAmbiguousName) jjtGetChild(0);
+
+        ASTClassOrInterfaceType replacement = name.shrinkOneSegment(ASTClassOrInterfaceType::new, ASTClassOrInterfaceType::new);
+        this.replaceChildAt(0, replacement);
     }
 }

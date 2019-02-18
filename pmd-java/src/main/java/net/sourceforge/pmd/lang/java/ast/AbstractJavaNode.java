@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 
@@ -184,6 +185,31 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         this.endColumn += endShift;
     }
 
+
+    void copyTextCoordinates(Node copy) {
+        this.beginLine = copy.getBeginLine();
+        this.beginColumn = copy.getBeginColumn();
+        this.endLine = copy.getEndLine();
+        this.endColumn = copy.getEndColumn();
+    }
+
+    void replaceChildAt(int idx, AbstractJavaNode newChild) {
+
+        AbstractJavaNode oldChild = (AbstractJavaNode) children[idx];
+
+        oldChild.jjtSetParent(null);
+        oldChild.jjtSetChildIndex(-1);
+
+        newChild.copyTextCoordinates(oldChild);
+        newChild.jjtSetParent(this);
+        newChild.jjtSetChildIndex(idx);
+
+        children[idx] = newChild;
+    }
+
+    void replaceInParent(AbstractJavaNode newChild) {
+        ((AbstractJavaNode) jjtGetParent()).replaceChildAt(jjtGetChildIndex(), newChild);
+    }
 
     @Override
     public final String getXPathNodeName() {

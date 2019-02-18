@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
@@ -27,8 +28,11 @@ class ASTExpressionTest : ParserTestSpec({
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLeftHandSide shouldBePresent child<ASTThisExpression> {
-                it::getQualifier shouldBePresent child<ASTAmbiguousNameExpr> { }
+            it::getLhsExpression shouldBePresent child<ASTThisExpression> {
+                it::getQualifier shouldBePresent child {
+                    it.typeArguments.shouldBeEmpty()
+                    it.typeImage shouldBe "Type"
+                }
             }
         }
 
@@ -37,7 +41,7 @@ class ASTExpressionTest : ParserTestSpec({
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLeftHandSide shouldBePresent child<ASTMethodCall> {
+            it::getLhsExpression shouldBePresent child<ASTMethodCall> {
                 it::getLhsExpression.shouldBeEmpty()
                 it::getMethodName shouldBe "foo"
                 it::getImage shouldBe "foo"
@@ -51,12 +55,18 @@ class ASTExpressionTest : ParserTestSpec({
 
     parserTest("Ambiguous names") {
 
-        "a.b.c" should matchExpr<ASTAmbiguousNameExpr> {
-            it::getImage shouldBe "a.b.c"
+        "a.b.c" should matchExpr<ASTFieldAccess> {
+            it::getImage shouldBe "c"
+            it::getFieldName shouldBe "c"
+
+            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+                it.name shouldBe "a.b"
+            }
+
         }
 
-        "a" should matchExpr<ASTAmbiguousNameExpr> {
-            it::getImage shouldBe "a"
+        "a" should matchExpr<ASTVariableReference> {
+            it::getVariableName shouldBe "a"
         }
     }
 })

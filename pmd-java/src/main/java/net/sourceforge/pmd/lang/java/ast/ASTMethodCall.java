@@ -35,39 +35,6 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
     }
 
 
-    @Override
-    public void onInjectFinished() {
-        // perform some preliminary disambiguation before we have a true rewrite pass
-
-        if (getImage() != null) {
-            return;
-        }
-
-        // the cast serves as an assert
-        ASTAmbiguousNameExpr fstChild = (ASTAmbiguousNameExpr) jjtGetChild(0);
-
-        String childImage = fstChild.getImage();
-        int lastDotIdx = childImage.lastIndexOf('.');
-
-        if (lastDotIdx < 0) {
-            // no dot, this is just a method call like foo()
-            // so we remove the ambiguous expr bc it's not ambiguous, it's the method name
-            setImage(childImage);
-            removeChildAtIndex(0);
-        } else {
-            String methodName = childImage.substring(lastDotIdx + 1);
-            String remainingAmbiguous = childImage.substring(0, lastDotIdx);
-
-            fstChild.setImage(remainingAmbiguous);
-            // update bounds of the ambiguous name
-            fstChild.shiftColumns(0, -(methodName.length() + 1));
-
-            this.setImage(methodName);
-        }
-
-        assert getImage() != null;
-    }
-
 
     /**
      * Returns the name of the called method.
@@ -82,14 +49,28 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
      * this call is not qualified (no "."), or if the qualifier is a type
      * instead of an expression.
      *
-     * TODO For now if the qualifier is a type name it's always parsed as
-     *   an {@link ASTAmbiguousNameExpr} so it's returned as a primary expression.
+     * <p>If the LHS is an {@link ASTAmbiguousName}, returns it.
      */
     public Optional<ASTPrimaryExpression> getLhsExpression() {
         // note: getNameNode must be called before jjtGetChild here because it changes the first child
         return Optional.of(jjtGetChild(0))
                        .filter(it -> it instanceof ASTPrimaryExpression)
                        .map(it -> (ASTPrimaryExpression) it);
+    }
+
+
+    /**
+     * Gets the type name preceding the ".", if any. May return empty if
+     * this call is not qualified (no "."), or if the qualifier is a type
+     * instead of an expression.
+     *
+     * <p>If the LHS is an {@link ASTAmbiguousName}, returns it.
+     */
+    public Optional<ASTClassOrInterfaceType> getLhsType() {
+        // note: getNameNode must be called before jjtGetChild here because it changes the first child
+        return Optional.of(jjtGetChild(0))
+                       .filter(it -> it instanceof ASTClassOrInterfaceType)
+                       .map(it -> (ASTClassOrInterfaceType) it);
     }
 
 
@@ -113,4 +94,32 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
+
+
+    @Override
+    public void onInjectFinished() {
+        // perform some preliminary disambiguation before we have a true rewrite pass
+
+        if (getImage() != null) {
+            return;
+        }
+
+        // the cast serves as an assert
+        ASTAmbiguousName fstChild = (ASTAmbiguousName) jjtGetChild(0);
+
+        fstChild.shrinkOneSegment(
+            (simpleName) -> {
+                // normally never called
+                setImage(simpleName.getImage());
+                return null;
+            },
+            (ambiguous, methodName) -> {
+                this.setImage(methodName);
+                return null;
+            }
+        );
+
+        assert getImage() != null;
+    }
+
 }

@@ -15,7 +15,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOperator shouldBe AssignmentOperator.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+            it::getLeftHandSide shouldBe child<ASTVariableReference> {
                 it::getImage shouldBe "a"
             }
 
@@ -28,7 +28,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOperator shouldBe AssignmentOperator.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+            it::getLeftHandSide shouldBe child<ASTVariableReference> {
                 it::getImage shouldBe "a"
             }
 
@@ -54,7 +54,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::isCompound shouldBe true
 
 
-            it::getLeftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+            it::getLeftHandSide shouldBe child<ASTVariableReference> {
                 it::getImage shouldBe "a"
             }
 
@@ -69,7 +69,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOperator shouldBe AssignmentOperator.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+            it::getLeftHandSide shouldBe child<ASTVariableReference> {
                 it::getImage shouldBe "a"
             }
 
@@ -77,7 +77,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
                 it::getOperator shouldBe AssignmentOperator.EQ
                 it::isCompound shouldBe false
 
-                it::getLeftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+                it::getLeftHandSide shouldBe child<ASTVariableReference> {
                     it::getImage shouldBe "b"
                 }
 

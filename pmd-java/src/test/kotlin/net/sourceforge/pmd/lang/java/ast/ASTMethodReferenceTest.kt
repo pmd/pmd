@@ -29,25 +29,29 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             it::getImage shouldBe "foo"
             it::getMethodName shouldBePresent "foo"
-            it::getLhsType.shouldBeEmpty()
             it::isConstructorReference shouldBe false
             it::getTypeArguments.shouldBeEmpty()
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+            val lhs = child<ASTAmbiguousName> {
                 it::getImage shouldBe "foobar.b"
             }
+
+            it::getLhsExpression shouldBePresent lhs
+            it::getLhsType shouldBePresent lhs
         }
 
         "foobar.b::<B>foo" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "foo"
             it::getMethodName shouldBePresent "foo"
-            it::getLhsType.shouldBeEmpty()
             it::isConstructorReference shouldBe false
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousNameExpr> {
+            val lhs = child<ASTAmbiguousName> {
                 it::getImage shouldBe "foobar.b"
             }
+
+            it::getLhsExpression shouldBePresent lhs
+            it::getLhsType shouldBePresent lhs
 
             it::getTypeArguments shouldBePresent child {
                 unspecifiedChild()
