@@ -9,16 +9,16 @@ import java.util.Optional;
 
 
 /**
- * The "super" reference. Technically not an expression but it's probably easier to analyse that way.
+ * The "super" reference. Technically not an expression but it's easier to analyse that way.
  *
  * <pre>
  *
- * SuperExpression ::= "this"
- *  *                | {@link ASTName Name} "." "super"
+ * SuperExpression ::= "super"
+ *  *                | {@link ASTClassOrInterfaceType TypeName} "." "super"
  *
  * </pre>
  */
-public final class ASTSuperExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTSuperExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
     ASTSuperExpression(int id) {
         super(id);
     }
@@ -29,8 +29,8 @@ public final class ASTSuperExpression extends AbstractJavaTypeNode implements AS
     }
 
 
-    public Optional<ASTName> getQualifier() {
-        return jjtGetNumChildren() > 0 ? Optional.of((ASTName) jjtGetChild(0)) : Optional.empty();
+    public Optional<ASTClassOrInterfaceType> getQualifier() {
+        return jjtGetNumChildren() > 0 ? Optional.of((ASTClassOrInterfaceType) jjtGetChild(0)) : Optional.empty();
     }
 
     /**
@@ -45,5 +45,13 @@ public final class ASTSuperExpression extends AbstractJavaTypeNode implements AS
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    @Override
+    public void onInjectFinished() {
+        // If this method is called, then a qualifier was injected
+        ASTAmbiguousName name = (ASTAmbiguousName) jjtGetChild(0);
+        this.replaceChildAt(0, name.forceTypeContext());
     }
 }

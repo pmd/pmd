@@ -11,6 +11,8 @@ import net.sourceforge.pmd.annotation.Experimental;
 /**
  * Represents a type reference.
  *
+ * <p>Corresponds to the JLS's <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-Type">Type</a>.
+ *
  * <pre>
  *
  * Type ::= {@link ASTReferenceType ReferenceType}

@@ -98,8 +98,6 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
 
     @Override
     public void onInjectFinished() {
-        // perform some preliminary disambiguation before we have a true rewrite pass
-
         if (getImage() != null) {
             return;
         }

@@ -120,7 +120,7 @@ public final class ASTConstructorCall extends AbstractJavaTypeNode implements AS
         Node firstChild = jjtGetChild(0);
 
         if (firstChild instanceof ASTAmbiguousName) {
-            replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).disambiguateInExprContext());
+            replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).forceExprContext());
         }
     }
 }

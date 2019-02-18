@@ -2412,17 +2412,23 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD(3) ("(" Expression() ")")     #ParenthesizedExpression
+| LOOKAHEAD(3)
+    ("(" Expression() ")")     #ParenthesizedExpression
 | UnqualifiedAllocationExpr()
-| LOOKAHEAD( TypeOrVoid() "." "class" ) (TypeOrVoid() "." "class") #ClassLiteral
+| LOOKAHEAD( TypeOrVoid() "." "class" )
+    (TypeOrVoid() "." "class") #ClassLiteral
 // lookahead <IDENTIFIER> "(", higher than the method reference ones because they're more frequent
 // unqualified method call
-| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall
-| LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" ) ReferenceType()
+| LOOKAHEAD(2)
+    (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall
+| LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" )
+    ReferenceType()
 // not a constructor reference, and is just a sequence of identifiers: could be an expression or a type
-| LOOKAHEAD( Name() "::"  ) AmbiguousName()
-// we know it's not just a sequence of identifiers, so if referencetype matches, the prefix may be
-| LOOKAHEAD( ReferenceType() "::" ) ReferenceType()
+| LOOKAHEAD( Name() "::"  )
+    AmbiguousName()
+// we know it's not just a sequence of identifiers, so if ReferenceType matches, the prefix may be
+| LOOKAHEAD( ReferenceType() "::" )
+    ReferenceType()
 | AmbiguousName()
 }
 

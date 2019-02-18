@@ -52,10 +52,7 @@ public final class ASTThisExpression extends AbstractJavaTypeNode implements AST
     @Override
     public void onInjectFinished() {
         // If this method is called, then a qualifier was injected
-
         ASTAmbiguousName name = (ASTAmbiguousName) jjtGetChild(0);
-
-        ASTClassOrInterfaceType replacement = name.shrinkOneSegment(ASTClassOrInterfaceType::new, ASTClassOrInterfaceType::new);
-        this.replaceChildAt(0, replacement);
+        this.replaceChildAt(0, name.forceTypeContext());
     }
 }

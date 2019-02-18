@@ -13,30 +13,15 @@ import net.sourceforge.pmd.annotation.Experimental;
 // @formatter:off
 /**
  * Represents a class or interface type, possibly parameterised with type arguments.
- * This node comes in two productions (see below):
  *
- * <p>The first is a simple, flat variant. The image of the node corresponds to the
- * chain of identifiers. May have type arguments.
- *
- * <p>The second is a left-recursive variant, allowing to preserve the position of
- * type parameters and annotations. The resulting node's {@linkplain #getLhsType () left-hand-side type}
- * addresses the type parent of the type. The position of type arguments and annotations are
- * preserved.
- *
- * <p>Parsing types left-recursively has a caveat though: fully-qualified type names. The
- * parser can't disambiguate between a reference to a type member (e.g. {@code Map.Entry}, where
- * both segments refer to a type, and which would ideally be parsed left-recursively), and a
- * qualified type name (e.g. {@code java.util.List}, where the full sequence refers to a unique
- * type, but individual segments don't).
- *
- * <p>TODO I expect to fix that before 7.0.0
- *      We can add an analysis phase that rewrites nodes using semantic info from the symbol table.
- *      That could be useful for many things (eg disambiguate obscured expression names in the
- *      expression grammar).
+ * <p>This node corresponds to the JLS' <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-ClassOrInterfaceType">ClassOrInterfaceType</a>,
+ * and also to the related productions TypeIdentifier and TypeName. Merging those allow
+ * to treat them uniformly.
  *
  * <pre>
  *
- * ClassOrInterfaceType ::= (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName} | &lt;IDENTIFIER&gt;)
+ * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName})
  *                          "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
@@ -77,8 +62,12 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
 
 
     /**
-     * Gets the left-hand side type of this segment. This is a type we know for sure
-     * that this type is a member of.
+     * Gets the owner type of this type if it's not ambiguous. This is a
+     * type we know for sure that this type is a member of.
+     *
+     * TODO for now, all lhs are classified as ambiguous because they may be
+     *   a package name. This must be taken care of by a disambiguation phase
+     *   that takes the symbol table into account.
      *
      * @return A type, or an empty optional if this is a base type
      */
@@ -87,6 +76,10 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
     }
 
 
+    /**
+     * Returns the left-hand side is an ambiguous name that has not been reclassified.
+     * If it's a class name
+     */
     public Optional<ASTAmbiguousName> getAmbiguousLhs() {
         return Optional.ofNullable(getFirstChildOfType(ASTAmbiguousName.class));
     }

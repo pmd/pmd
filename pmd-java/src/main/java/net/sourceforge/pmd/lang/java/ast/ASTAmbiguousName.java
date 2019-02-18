@@ -20,24 +20,22 @@ import java.util.function.Function;
  * <p>This node corresponds simultaneously to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-AmbiguousName">AmbiguousName</a>
  * and PackageOrTypeName productions of the JLS.
  *
- *
  * <pre>
  *
  * AmbiguousNameExpr ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt;)*
  *
  * </pre>
  *
- * @implNote
- * <h3>Disambiguation</h3>
+ * @implNote <h3>Disambiguation</h3>
  *
  * <p>Some ambiguous names are pushed by the expression parser because we don't want to look too
  * far ahead (in primary prefix). But it can happen that the next segment (primary suffix) constrains
  * the name to be e.g. a type name or an expression name. E.g. From the JLS:
  *
  * <blockquote>
- *  A name is syntactically classified as an ExpressionName in these contexts:
- *       ...
- *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
+ * A name is syntactically classified as an ExpressionName in these contexts:
+ * ...
+ * - As the qualifying expression in a qualified class instance creation expression (§15.9)*
  * </blockquote>
  *
  * We don't know at the moment the name is parsed that it will be followed by "." "new" and a constructor
@@ -45,9 +43,13 @@ import java.util.function.Function;
  * expression. In that case, the name can be reclassified, and e.g. if it's a simple name be promoted
  * to {@link ASTVariableReference}. This type of immediate disambiguation is carried out by {@link LateInitNode}.
  *
- * <p>Another mechanism is {@link #disambiguateInExprContext()} and {@link #disambiguateInTypeContext()},
- * which are called by the parser to promote an ambiguous name to an expression or a type when it's sure
- * they must be one, but there's no {@link LateInitNode} that follows them.
+ * <p>Another mechanism is {@link #forceExprContext()} and {@link #forceTypeContext()}, which are
+ * called by the parser to promote an ambiguous name to an expression or a type when it's sure they
+ * must be one, but there's no {@link LateInitNode} that follows them.
+ *
+ * <p>These two mechanisms perform the first classification step, the one that only depends on the
+ * syntactic context and not on semantic information. A second pass on the AST after building the
+ * symbol tables would allow us to remove all the remaining ambiguous names.
  */
 public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTReferenceType, ASTPrimaryExpression {
 
@@ -91,6 +93,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
 
     // Package-private construction methods:
 
+
     /**
      * Called by the parser if this ambiguous name was a full expression.
      * Then, since the node was in an expression syntactic context,
@@ -103,7 +106,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      *
      * @return the node which will replace this node in the tree
      */
-    ASTExpression disambiguateInExprContext() {
+    ASTExpression forceExprContext() {
         // by the time this is called, this node is on top of the stack,
         // meaning, it has no parent
         return shrinkOneSegment(ASTVariableReference::new, ASTFieldAccess::new);
@@ -117,7 +120,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      *
      * @return the node which will replace this node in the tree
      */
-    ASTClassOrInterfaceType disambiguateInTypeContext() {
+    ASTClassOrInterfaceType forceTypeContext() {
         // same, there's no parent here
         return shrinkOneSegment(ASTClassOrInterfaceType::new, ASTClassOrInterfaceType::new);
     }
@@ -129,7 +132,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      *
      * @param simpleNameHandler Called with this name as parameter if this ambiguous name
      *                          is a simple name. No resizing of the node is performed.
-     * @param splitConsumer     Called with this node as first parameter, and the last name
+     * @param splitNameConsumer Called with this node as first parameter, and the last name
      *                          segment as second parameter. After the handler is executed,
      *                          the text bounds of this node are shrunk to fit to only the
      *                          left part. The handler may e.g. move the node to another
@@ -139,8 +142,8 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      * @return The result of either the first handler or the second, depending on whether this
      * is a simple name or not
      */
-    <T> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
-                           BiFunction<ASTAmbiguousName, String, T> splitConsumer) {
+    private <T> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
+                                   BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
 
         String image = getImage();
 
@@ -155,7 +158,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
 
         // execute the handler before shrinking the text bounds,
         // to allow the new node to copy the full text coordinates
-        T res = splitConsumer.apply(this, lastSegment);
+        T res = splitNameConsumer.apply(this, lastSegment);
 
         shiftColumns(0, -lastSegment.length() - 1);
         setImage(remainingAmbiguous);
@@ -172,6 +175,9 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      * on the parent.
      */
     void shrinkOrDeleteInParentSetImage() {
+        // the params of the lambdas here are this object,
+        // but if we use them instead of this, we avoid capturing the this reference
+        // and the lambdas can be optimised to a singleton
         shrinkOneSegment(
             simpleName -> {
                 simpleName.jjtGetParent().setImage(simpleName.getImage());

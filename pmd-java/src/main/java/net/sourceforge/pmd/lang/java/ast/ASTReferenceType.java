@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * <pre>
  *
  *  ReferenceType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType}
- *                  | {@link ASTArrayType}
+ *                  | {@link ASTArrayType ArrayType}
  *
  * </pre>
  */
