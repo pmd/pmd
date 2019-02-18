@@ -2168,7 +2168,7 @@ void NameList() :
  * Expression syntax follows.
  */
 
-void Expression() #void:
+void Expression() #AssignmentExpression(>1):
 /*
  * This expansion has been written this way instead of:
  *   Assignment() | ConditionalExpression()
@@ -2186,29 +2186,31 @@ void Expression() #void:
  //
  // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
  // as a workaround.
-{}
+{AssignmentOperator op = null;}
 {
   ConditionalExpression()
   [
-    LOOKAHEAD(2) AssignmentOperator() Expression()
+    LOOKAHEAD(2) op=AssignmentOperator() {jjtThis.setOp(op);} Expression()
   ]
 }
 
-void AssignmentOperator() :
+AssignmentOperator AssignmentOperator() #void:
 {}
 {
-      "="     {jjtThis.setImage("=");}
-    | "*="    {jjtThis.setImage("*="); jjtThis.setCompound();}
-    | "/="    {jjtThis.setImage("/="); jjtThis.setCompound();}
-    | "%="    {jjtThis.setImage("%="); jjtThis.setCompound();}
-    | "+="    {jjtThis.setImage("+="); jjtThis.setCompound();}
-    | "-="    {jjtThis.setImage("-="); jjtThis.setCompound();}
-    | "<<="   {jjtThis.setImage("<<="); jjtThis.setCompound();}
-    | ">>="   {jjtThis.setImage(">>="); jjtThis.setCompound();}
-    | ">>>="  {jjtThis.setImage(">>>="); jjtThis.setCompound();}
-    | "&="    {jjtThis.setImage("&="); jjtThis.setCompound();}
-    | "^="    {jjtThis.setImage("^="); jjtThis.setCompound();}
-    | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
+    ( "="
+    | "*="
+    | "/="
+    | "%="
+    | "+="
+    | "-="
+    | "<<="
+    | ">>="
+    | ">>>="
+    | "&="
+    | "^="
+    | "|="
+    )
+    {return AssignmentOperator.fromImage(getToken(0).getImage());}
 }
 
 // TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
@@ -2689,15 +2691,15 @@ void EmptyStatement() :
 }
 
 void StatementExpression() :
-{}
+{AssignmentOperator op = null;}
 {
   PreIncrementExpression()
 |
   PreDecrementExpression()
 |
-  LOOKAHEAD( PrimaryExpression() AssignmentOperator() ) PrimaryExpression() AssignmentOperator() Expression()
-|
-  PostfixExpression()
+  // using PostfixExpression here allows us the part of the production tree
+  // between Expression() and PostfixExpression()
+  (PostfixExpression() [ op=AssignmentOperator() {jjtThis.setOp(op);} Expression() ]) #AssignmentExpression(>1)
 }
 
 void SwitchStatement():

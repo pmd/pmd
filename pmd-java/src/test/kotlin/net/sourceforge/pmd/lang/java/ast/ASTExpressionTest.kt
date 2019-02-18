@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FunSpec
-
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 /**
  * @author Clément Fournier
  * @since 7.0.0
@@ -124,7 +124,7 @@ class ASTExpressionTest : FunSpec({
 
             it.arguments shouldBe child {
                 child<ASTLambdaExpression> {
-                    child<ASTVariableDeclaratorId> {  }
+                    child<ASTVariableDeclaratorId> { }
 
                     child<ASTMethodCall> {
                         it.methodName shouldBe "f"
@@ -315,24 +315,74 @@ class ASTExpressionTest : FunSpec({
         }
     }
 
-    testGroup("Test ambiguous names") {
+    testGroup("Ambiguous names") {
 
         "a.b.c" should matchExpr<ASTAmbiguousNameExpr> {
             it.image shouldBe "a.b.c"
         }
 
-        "java.util.List<F>" should matchType<ASTClassOrInterfaceType> {
+        "a" should matchExpr<ASTAmbiguousNameExpr> {
+            it.image shouldBe "a"
+        }
+    }
 
-            it.leftHandSide.shouldBeEmpty()
+    testGroup("Assignment expressions") {
 
-            it.typeArguments shouldBePresent child {
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it.typeImage shouldBe "F"
-                    }
+        "a = 2" should matchExpr<ASTAssignmentExpression> {
+            it::getOperator shouldBe AssignmentOperator.EQ
+            it::isCompound shouldBe false
+
+            it.leftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "a"
+            }
+
+            it.rightHandSide shouldBe child<ASTNumericLiteral> {}
+        }
+
+        "a *= 2" should matchExpr<ASTAssignmentExpression> {
+            it::getOperator shouldBe AssignmentOperator.MUL_EQ
+            it::isCompound shouldBe true
+
+            it.leftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "a"
+            }
+
+            it.rightHandSide shouldBe child<ASTNumericLiteral> {}
+
+        }
+
+        "a >>>= 2" should matchExpr<ASTAssignmentExpression> {
+            it::getOperator shouldBe AssignmentOperator.UNSIGNED_RIGHT_SHIFT_EQ
+            it::isCompound shouldBe true
+
+
+            it.leftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "a"
+            }
+
+            it.rightHandSide shouldBe child<ASTNumericLiteral> {}
+        }
+
+        "a = b = 3" should matchExpr<ASTAssignmentExpression> {
+            it::getOperator shouldBe AssignmentOperator.EQ
+            it::isCompound shouldBe false
+
+            it.leftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+                it.image shouldBe "a"
+            }
+
+            it.rightHandSide shouldBe child<ASTAssignmentExpression> {
+                it::getOperator shouldBe AssignmentOperator.EQ
+                it::isCompound shouldBe false
+
+                it.leftHandSide shouldBe child<ASTAmbiguousNameExpr> {
+                    it.image shouldBe "b"
                 }
+
+                it.rightHandSide shouldBe child<ASTNumericLiteral> {}
             }
         }
+
     }
 
     testGroup("Class instance creation") {
@@ -383,6 +433,8 @@ class ASTExpressionTest : FunSpec({
             it.arguments shouldBe child {}
         }
     }
+
+
     testGroup("Qualified class instance creation") {
 
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
@@ -467,7 +519,35 @@ class ASTExpressionTest : FunSpec({
         }
 
         "new @Foo int[3][2]" should matchExpr<ASTArrayAllocation> {
+            child<ASTAnnotation> {
+                it.annotationName shouldBe "Foo"
 
+                child<ASTMarkerAnnotation> {
+                    it.annotationName shouldBe "Foo"
+
+                    child<ASTName> {
+                        it.nameDeclaration shouldBe null
+                    }
+                }
+            }
+
+            it.elementTypeNode shouldBe child<ASTPrimitiveType> {
+                it.isBoolean shouldBe false
+                it.modelConstant shouldBe net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+                it.typeImage shouldBe "int"
+            }
+
+            it.arrayDims shouldBe child {
+                it.isArray shouldBe true
+                it.arrayDepth shouldBe 2
+
+                child<ASTNumericLiteral> {
+                    it.valueAsInt shouldBe 3
+                }
+                child<ASTNumericLiteral> {
+                    it.valueAsInt shouldBe 2
+                }
+            }
         }
 
         "(new int[3])[2]" should matchExpr<ASTArrayAccess> {
@@ -491,7 +571,20 @@ class ASTExpressionTest : FunSpec({
         }
 
         "new Foo[0]" should matchExpr<ASTArrayAllocation> {
+            it.elementTypeNode shouldBe child<ASTClassOrInterfaceType> {
+                it.isAnonymousClass shouldBe false
+                it.isReferenceToClassSameCompilationUnit shouldBe true
+                it.typeImage shouldBe "Foo"
+            }
 
+            it.arrayDims shouldBe child {
+                it.isArray shouldBe true
+                it.arrayDepth shouldBe 1
+
+                child<ASTNumericLiteral> {
+                    it.valueAsInt shouldBe 0
+                }
+            }
         }
 
 
@@ -520,6 +613,37 @@ class ASTExpressionTest : FunSpec({
 
         "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayAllocation> {
 
+            it.elementTypeNode shouldBe child<ASTPrimitiveType> {
+                it.isBoolean shouldBe false
+                it.modelConstant shouldBe net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+                it.typeImage shouldBe "int"
+            }
+
+            it.arrayDims shouldBe child {
+                it.isArray shouldBe true
+                it.arrayDepth shouldBe 2
+
+                child<ASTArrayInitializer> {
+                    child<ASTVariableInitializer> {
+                        child<ASTArrayInitializer> {
+                            child<ASTVariableInitializer> {
+                                child<ASTNumericLiteral> {
+                                    it.valueAsInt shouldBe 1
+                                }
+                            }
+                        }
+                    }
+                    child<ASTVariableInitializer> {
+                        child<ASTArrayInitializer> {
+                            child<ASTVariableInitializer> {
+                                child<ASTNumericLiteral> {
+                                    it.valueAsInt shouldBe 2
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         "new int[][] { { 1 , 2 }, null }" should matchExpr<ASTArrayAllocation> {
@@ -553,7 +677,5 @@ class ASTExpressionTest : FunSpec({
                 }
             }
         }
-
     }
-
 })
