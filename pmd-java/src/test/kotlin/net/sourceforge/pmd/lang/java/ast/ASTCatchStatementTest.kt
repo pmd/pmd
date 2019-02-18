@@ -1,9 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -50,7 +48,7 @@ class ASTCatchStatementTest : ParserTestSpec({
                     }
 
                     val aerr = child<ASTType>(ignoreChildren = true) {
-                        it.type shouldBe java.lang.AssertionError::class.java
+                        it.type shouldBe AssertionError::class.java
                     }
 
                     child<ASTVariableDeclaratorId> {

@@ -1,16 +1,15 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ASTLiteralTest : FunSpec({
+class ASTLiteralTest : ParserTestSpec({
 
-    testGroup("String literal") {
+    parserTest("String literal") {
 
         "\"\"" should matchExpr<ASTStringLiteral> {
             it::isStringLiteral shouldBe true
@@ -31,7 +30,7 @@ class ASTLiteralTest : FunSpec({
     }
 
 
-    testGroup("String literal escapes") {
+    parserTest("String literal escapes") {
         "\"abc\u1234abc\"" should matchExpr<ASTStringLiteral> {
             it::getUnescapedValue shouldBe "abc\u1234abc"
             it::getImage shouldBe "\"abc\u1234abc\""
@@ -49,7 +48,7 @@ class ASTLiteralTest : FunSpec({
 
 
 
-    testGroup("Char literal") {
+    parserTest("Char literal") {
 
         "'c'" should matchExpr<ASTCharLiteral> {
             it::isCharLiteral shouldBe true
@@ -68,7 +67,7 @@ class ASTLiteralTest : FunSpec({
         }
     }
 
-    testGroup("Class literals") {
+    parserTest("Class literals") {
 
         "void.class" should matchExpr<ASTClassLiteral> {
             it::isClassLiteral shouldBe true
@@ -105,7 +104,7 @@ class ASTLiteralTest : FunSpec({
     }
 
 
-    testGroup("Boolean literals") {
+    parserTest("Boolean literals") {
 
         "true" should matchExpr<ASTBooleanLiteral> {
             it::isBooleanLiteral shouldBe true
@@ -118,7 +117,7 @@ class ASTLiteralTest : FunSpec({
         }
     }
 
-    testGroup("Null literal") {
+    parserTest("Null literal") {
 
         "null" should matchExpr<ASTNullLiteral> {
             it::isBooleanLiteral shouldBe false
@@ -127,7 +126,7 @@ class ASTLiteralTest : FunSpec({
         }
     }
 
-    testGroup("Numeric literals") {
+    parserTest("Numeric literals") {
 
         "12" should matchExpr<ASTNumericLiteral> {
             it::isStringLiteral shouldBe false

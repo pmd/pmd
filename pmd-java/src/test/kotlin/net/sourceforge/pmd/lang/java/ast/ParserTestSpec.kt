@@ -29,7 +29,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
      * with separate tests for separate versions.
      *
      * Calls to "should" in the block are intercepted to create
-     * a new test.
+     * a new test, with the given [name] as a common prefix.
      *
      * This is useful to make a batch of grammar specs for grammar
      * regression tests without bothering to find a name.

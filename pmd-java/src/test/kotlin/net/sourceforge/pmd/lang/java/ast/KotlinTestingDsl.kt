@@ -92,7 +92,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      *
      */
-    inline fun <reified N : Node> matchExpr(ignoreChildren: Boolean = false,
+    inline fun <reified N : ASTExpression> matchExpr(ignoreChildren: Boolean = false,
                                             noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(ExpressionParsingCtx(this), ignoreChildren, nodeSpec)
 
@@ -109,7 +109,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * Returns a String matcher that parses the node using [parseType] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
-    inline fun <reified N : Node> matchType(ignoreChildren: Boolean = false,
+    inline fun <reified N : ASTType> matchType(ignoreChildren: Boolean = false,
                                             noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(TypeParsingCtx(this), ignoreChildren, nodeSpec)
 

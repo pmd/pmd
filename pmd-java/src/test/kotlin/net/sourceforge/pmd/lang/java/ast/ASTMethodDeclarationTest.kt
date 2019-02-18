@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 class ASTMethodDeclarationTest : ParserTestSpec({
 
     // notes about dsl:
-    // * testGroup generates one test per "should" assertion that
+    // * parserTest generates one test per "should" assertion that
     //   uses a node matcher, which is nice to know which one failed
     //   (without explicitly giving them each a specific name)
     // * the it::isPublic syntax allows including the property name in the error message in case of failure
