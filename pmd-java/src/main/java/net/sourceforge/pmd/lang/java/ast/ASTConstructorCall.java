@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 
 /**
  * A class instance creation expression. Represents both {@linkplain #isQualifiedInstanceCreation() qualified}
@@ -25,7 +27,7 @@ import java.util.Optional;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTConstructorCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, LateInitNode {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -108,4 +110,17 @@ public final class ASTConstructorCall extends AbstractJavaTypeNode implements AS
     }
 
 
+    @Override
+    public void onInjectFinished() {
+        /* JLS:
+         *  A name is syntactically classified as an ExpressionName in these contexts:
+         *       ...
+         *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
+         */
+        Node firstChild = jjtGetChild(0);
+
+        if (firstChild instanceof ASTAmbiguousName) {
+            replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).disambiguateInExprContext());
+        }
+    }
 }

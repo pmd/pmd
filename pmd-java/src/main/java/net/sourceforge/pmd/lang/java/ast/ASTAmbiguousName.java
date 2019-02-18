@@ -20,11 +20,34 @@ import java.util.function.Function;
  * <p>This node corresponds simultaneously to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-AmbiguousName">AmbiguousName</a>
  * and PackageOrTypeName productions of the JLS.
  *
+ *
  * <pre>
  *
  * AmbiguousNameExpr ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt;)*
  *
  * </pre>
+ *
+ * @implNote
+ * <h3>Disambiguation</h3>
+ *
+ * <p>Some ambiguous names are pushed by the expression parser because we don't want to look too
+ * far ahead (in primary prefix). But it can happen that the next segment (primary suffix) constrains
+ * the name to be e.g. a type name or an expression name. E.g. From the JLS:
+ *
+ * <blockquote>
+ *  A name is syntactically classified as an ExpressionName in these contexts:
+ *       ...
+ *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
+ * </blockquote>
+ *
+ * We don't know at the moment the name is parsed that it will be followed by "." "new" and a constructor
+ * call. But as soon as the {@link ASTConstructorCall} is pushed, we know that the LHS must be an
+ * expression. In that case, the name can be reclassified, and e.g. if it's a simple name be promoted
+ * to {@link ASTVariableReference}. This type of immediate disambiguation is carried out by {@link LateInitNode}.
+ *
+ * <p>Another mechanism is {@link #disambiguateInExprContext()} and {@link #disambiguateInTypeContext()},
+ * which are called by the parser to promote an ambiguous name to an expression or a type when it's sure
+ * they must be one, but there's no {@link LateInitNode} that follows them.
  */
 public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTReferenceType, ASTPrimaryExpression {
 
@@ -61,6 +84,13 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
     }
 
 
+    @Override
+    public String getTypeImage() {
+        return getImage();
+    }
+
+    // Package-private construction methods:
+
     /**
      * Called by the parser if this ambiguous name was a full expression.
      * Then, since the node was in an expression syntactic context,
@@ -81,35 +111,11 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
 
 
     /**
-     * Called by the parser if this ambiguous name occurred in a type name context.
+     * Called by the parser if this ambiguous name was expected to be a type name.
+     * Then we simply promote it to an {@link ASTClassOrInterfaceType} with the appropriate
+     * {@link ASTClassOrInterfaceType#getAmbiguousLhs()}.
      *
-     * From JLS:
-     *
-     * A name is syntactically classified as a TypeName in these contexts:
-     *
-     * The first eleven non-generic contexts (§6.1):
-     *
-     * In a uses or provides directive in a module declaration (§7.7.1)
-     *
-     * In a single-type-import declaration (§7.5.1)
-     *
-     * To the left of the . in a single-static-import declaration (§7.5.3)
-     *
-     * To the left of the . in a static-import-on-demand declaration (§7.5.4)
-     *
-     * To the left of the ( in a constructor declaration (§8.8)
-     *
-     * After the @ sign in an annotation (§9.7)
-     *
-     * To the left of .class in a class literal (§15.8.2)
-     *
-     * To the left of .this in a qualified this expression (§15.8.4)
-     *
-     * To the left of .super in a qualified superclass field access expression (§15.11.2)
-     *
-     * To the left of .Identifier or .super.Identifier in a qualified method invocation expression (§15.12)
-     *
-     * To the left of .super:: in a method reference expression (§15.13)
+     * @return the node which will replace this node in the tree
      */
     ASTClassOrInterfaceType disambiguateInTypeContext() {
         // same, there's no parent here
@@ -117,6 +123,22 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
     }
 
 
+    /**
+     * Low level method to reclassify this ambiguous name. Basically the name is split
+     * in two: the part before the last dot, and the part after it.
+     *
+     * @param simpleNameHandler Called with this name as parameter if this ambiguous name
+     *                          is a simple name. No resizing of the node is performed.
+     * @param splitConsumer     Called with this node as first parameter, and the last name
+     *                          segment as second parameter. After the handler is executed,
+     *                          the text bounds of this node are shrunk to fit to only the
+     *                          left part. The handler may e.g. move the node to another
+     *                          parent.
+     * @param <T>               Result type
+     *
+     * @return The result of either the first handler or the second, depending on whether this
+     * is a simple name or not
+     */
     <T> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
                            BiFunction<ASTAmbiguousName, String, T> splitConsumer) {
 
@@ -141,6 +163,14 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
     }
 
 
+    /**
+     * A specialized version of {@link #shrinkOneSegment(Function, BiFunction)} for nodes
+     * that carry the unambiguous part as their own image. E.g. when the parser sees an ambiguous
+     * name as primary prefix, then method arguments immediately after, it pushes an {@link ASTMethodCall},
+     * calls wrapLeft(), which calls {@link LateInitNode#onInjectFinished()}, which calls this method
+     * to shrink the ambiguous name because it's necessarily the method's name. The last part is set
+     * on the parent.
+     */
     void shrinkOrDeleteInParentSetImage() {
         shrinkOneSegment(
             simpleName -> {
@@ -153,11 +183,5 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
                 return null;
             }
         );
-    }
-
-
-    @Override
-    public String getTypeImage() {
-        return getImage();
     }
 }

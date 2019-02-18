@@ -53,13 +53,22 @@ class ASTConstructorCallTest : ParserTestSpec({
         }
     }
 
-
-    parserTest("Qualified class instance creation") {
+    parserTest("Qualified class instance auto disambiguation") {
+        /* JLS:
+         *  A name is syntactically classified as an ExpressionName in these contexts:
+         *       ...
+         *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
+         */
+        // hence here it must be a field access
 
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> { // TODO should be a field access
-                it::getImage shouldBe "a.g.c"
+            it::getLhsExpression shouldBePresent child<ASTFieldAccess> {
+                it::getFieldName shouldBe "c"
+
+                it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+                    it::getName shouldBe "a.g"
+                }
             }
 
             it::getTypeNode shouldBe child {
@@ -71,6 +80,27 @@ class ASTConstructorCallTest : ParserTestSpec({
                 child<ASTVariableReference> { }
             }
         }
+
+        // and here a variable reference
+        "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
+
+            it::getLhsExpression shouldBePresent child<ASTVariableReference> {
+                it::getVariableName shouldBe "a"
+            }
+
+            it::getTypeNode shouldBe child {
+                it::getTypeImage shouldBe "Foo"
+            }
+
+            it::getArguments shouldBe child {
+
+                child<ASTVariableReference> { }
+            }
+        }
+    }
+
+
+    parserTest("Qualified class instance creation") {
 
         "new O().new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
 

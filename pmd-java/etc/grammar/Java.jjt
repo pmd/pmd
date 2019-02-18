@@ -2046,7 +2046,8 @@ void ClassOrInterfaceType() #void:
   ( AmbiguousName() [ TypeArguments() ]) #ClassOrInterfaceType(>1)
   {
     // At this point the first ClassOrInterfaceType may be on top of the stack,
-    // but its image is not set
+    // but its image is not set. If it is on the stack we need to shrink the bounds
+    // of the ambiguous name, or delete it.
     Node first = jjtree.peekNode();
     if (!(first instanceof ASTAmbiguousName)) {
       // then we saw type arguments, so the last segment is definitely a type name
