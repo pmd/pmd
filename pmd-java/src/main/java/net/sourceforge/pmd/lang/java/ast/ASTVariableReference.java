@@ -6,22 +6,23 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * An ambiguous name occurring in an expression context. Ideally we'd use a disambiguation pass to remove
- * all of those nodes from the AST passed to the rules. It's a placeholder for now.
+ * A reference to an unqualified variable. {@linkplain ASTAmbiguousNameExpr Ambiguous names} are promoted
+ * to this status in the syntactic contexts, where we know they're definitely variable references.
+ * This node represents both references to fields and to variables (for now?).
  *
  * <pre>
  *
- * AmbiguousNameExpr ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt;)
+ * AmbiguousNameExpr ::= &lt;IDENTIFIER&gt;
  *
  * </pre>
  */
-public final class ASTAmbiguousNameExpr extends ASTName implements ASTPrimaryExpression {
-    ASTAmbiguousNameExpr(int id) {
+public final class ASTVariableReference extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+    ASTVariableReference(int id) {
         super(id);
     }
 
 
-    ASTAmbiguousNameExpr(JavaParser p, int id) {
+    ASTVariableReference(JavaParser p, int id) {
         super(p, id);
     }
 
