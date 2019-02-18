@@ -14,7 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-### CPD Suppression for Antlr-based languages
+#### Call For Logo
+
+PMD’s logo was great for a long time. But now we want to take the opportunity with the next major release to change
+our logo in order to use a more "politically correct" one.
+
+Learn more about how to participate on [github issue 1663](https://github.com/pmd/pmd/issues/1663).
+
+#### CPD Suppression for Antlr-based languages
 
 [ITBA](https://www.itba.edu.ar/) students [Matías Fraga](https://github.com/matifraga),
 [Tomi De Lucca](https://github.com/tomidelucca) and [Lucas Soncini](https://github.com/lsoncini)
