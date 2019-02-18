@@ -69,7 +69,7 @@ public abstract class BaseTokenFilter<T extends GenericToken> implements TokenFi
      * @param currentToken The token to be analyzed
      * @see #isLanguageSpecificDiscarding()
      */
-    protected void analyzeToken(final GenericToken currentToken) {
+    protected void analyzeToken(final T currentToken) {
         // noop
     }
 
