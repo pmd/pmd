@@ -256,7 +256,11 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
                 && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
     }
 
-    public Optional<ASTVariableInitializer> getInitializer() {
+
+    /**
+     * Returns the initializer of the variable, or null if it doesn't exist.
+     */
+    public Optional<ASTExpression> getInitializer() {
         if (parent instanceof ASTVariableDeclarator) {
             return Optional.ofNullable(((ASTVariableDeclarator) parent).getInitializer());
         }

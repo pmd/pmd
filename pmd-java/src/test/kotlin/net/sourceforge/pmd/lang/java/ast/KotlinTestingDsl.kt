@@ -251,7 +251,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 """.trimIndent()
 
 
-            override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTVariableInitializer::class.java) as ASTExpression
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTExpression::class.java)!!
         }
 
         class StatementParsingCtx(ctx: ParserTestCtx) : NodeParsingCtx<ASTBlockStatement>("statement", ctx) {

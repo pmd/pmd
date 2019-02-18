@@ -9,17 +9,21 @@ import java.util.Iterator;
 
 
 /**
- * The array initializer shorthand.
+ * An array initializer. May occur in two syntactic contexts:
+ * <ul>
+ * <li>The right-hand side of a {@linkplain ASTVariableDeclarator variable declarator}
+ * <li>Inside an {@linkplain ASTArrayAllocation array allocation expression}
+ * </ul>
  *
  * <pre>
  *
  * ArrayInitializer ::= "{" ( "," )? "}"
- *                    | "{" {@link ASTVariableInitializer VariableInitializer} ( "," {@link ASTVariableInitializer VariableInitializer} )* ( "," )? "}"
+ *                    | "{" {@link ASTExpression Expression} ( "," {@link ASTExpression Expression} )* ( "," )? "}"
  *
  * </pre>
  *
  */
-public class ASTArrayInitializer extends AbstractJavaNode implements ASTVariableInitializer, Iterable<ASTVariableInitializer> {
+public class ASTArrayInitializer extends AbstractJavaTypeNode implements ASTExpression, Iterable<ASTExpression> {
     public ASTArrayInitializer(int id) {
         super(id);
     }
@@ -41,7 +45,7 @@ public class ASTArrayInitializer extends AbstractJavaNode implements ASTVariable
 
 
     @Override
-    public Iterator<ASTVariableInitializer> iterator() {
-        return new NodeChildrenIterator<>(this, ASTVariableInitializer.class);
+    public Iterator<ASTExpression> iterator() {
+        return new NodeChildrenIterator<>(this, ASTExpression.class);
     }
 }

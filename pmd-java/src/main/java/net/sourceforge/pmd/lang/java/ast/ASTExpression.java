@@ -11,18 +11,21 @@ package net.sourceforge.pmd.lang.java.ast;
  * of the JLS. One difference though, is that this production
  * also matches lambda expressions, contrary to the JLS.
  *
+ * <p>From 7.0.0 on, this is an interface which all expression nodes
+ * implement.
+ *
  * <pre>
  *
- * Expression ::= {@linkplain ASTConditionalExpression ConditionalExpression} ( {@linkplain ASTAssignmentOperator AssignmentOperator} Expression )?
+ * Expression ::= (many subtypes...)
  *
  * </pre>
  */
-public interface ASTExpression extends JavaNode, TypeNode, ASTVariableInitializer {
+public interface ASTExpression extends JavaNode, TypeNode {
 
     /**
      * Always returns true. This is to allow XPath queries
-     * to query like {@code /*[@Expression=true()]}, but is
-     * useless in Java code.
+     * to query like {@code /*[@Expression=true()]} to match
+     * any expression, but is useless in Java code.
      */
     default boolean isExpression() {
         return true;
