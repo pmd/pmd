@@ -13,7 +13,9 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 /**
  * An expression starting with "new". Represents both {@linkplain #isQualifiedInstanceCreation() qualified}
  * and unqualified instance creation. Also represents array creation expressions. May declare an anonymous
- * class body. TODO API
+ * class body.
+ *
+ * TODO Make interface to be implemented by the new nodes
  *
  */
 @Deprecated
