@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * </pre>
  *
  */
-public class ASTConditionalExpression extends AbstractJavaTypeNode {
+public class ASTConditionalExpression extends AbstractJavaTypeNode implements ASTExpression {
 
 
     public ASTConditionalExpression(int id) {

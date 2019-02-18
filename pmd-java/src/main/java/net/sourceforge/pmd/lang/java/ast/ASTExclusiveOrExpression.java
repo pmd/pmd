@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTExclusiveOrExpression extends AbstractJavaTypeNode {
+public class ASTExclusiveOrExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTExclusiveOrExpression(int id) {
         super(id);
     }

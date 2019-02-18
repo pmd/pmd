@@ -20,7 +20,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTEqualityExpression extends AbstractJavaTypeNode {
+public class ASTEqualityExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTEqualityExpression(int id) {
         super(id);
     }

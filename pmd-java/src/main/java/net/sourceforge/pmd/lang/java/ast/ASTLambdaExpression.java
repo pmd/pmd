@@ -6,7 +6,14 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTLambdaExpression extends AbstractMethodLikeNode {
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
+
+public class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
+
+    private JavaTypeDefinition typeDefinition;
+
+
     public ASTLambdaExpression(int id) {
         super(id);
     }
@@ -39,6 +46,32 @@ public class ASTLambdaExpression extends AbstractMethodLikeNode {
     @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.LAMBDA;
+    }
+
+    // TODO these are copied from AbstractJavaTypeNode because it's easier to extend abstractMethodLikeNode
+
+
+    @Override
+    public Class<?> getType() {
+        return typeDefinition == null ? null : typeDefinition.getType();
+    }
+
+
+    @Override
+    public void setType(Class<?> type) {
+        typeDefinition = JavaTypeDefinition.forClass(type);
+    }
+
+
+    @Override
+    public JavaTypeDefinition getTypeDefinition() {
+        return typeDefinition;
+    }
+
+
+    @Override
+    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+        this.typeDefinition = typeDefinition;
     }
 }
 /*

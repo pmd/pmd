@@ -3,6 +3,8 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a binary operator.
  *
+ * TODO create interface binary expression.
+ *
  * @author Clément Fournier
  */
 public enum BinaryOperator {

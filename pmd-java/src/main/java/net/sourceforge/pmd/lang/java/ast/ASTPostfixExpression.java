@@ -16,7 +16,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTPostfixExpression extends AbstractJavaTypeNode {
+public class ASTPostfixExpression extends AbstractJavaTypeNode implements ASTExpression {
 
     public ASTPostfixExpression(int id) {
         super(id);

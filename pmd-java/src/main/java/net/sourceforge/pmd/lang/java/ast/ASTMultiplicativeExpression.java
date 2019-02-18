@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTMultiplicativeExpression extends AbstractJavaTypeNode {
+public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTMultiplicativeExpression(int id) {
         super(id);
     }

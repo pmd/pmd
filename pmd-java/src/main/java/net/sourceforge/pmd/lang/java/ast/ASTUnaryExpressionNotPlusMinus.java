@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
+public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode implements ASTExpression {
     public ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
     }
