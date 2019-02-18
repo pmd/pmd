@@ -32,6 +32,13 @@ and resume again with a comment containing `CPD-ON`.
 
 More information is available in [the user documentation](pmd_userdocs_cpd.html#suppression).
 
+#### PL/SQL Grammar improvements
+
+*   In this release, many more parser bugs in our PL/SQL support have been fixed. This adds more complete
+    support for UPDATE statements and subqueries and hierarchical queries in SELECT statements.
+*   Support for analytic functions such as LISTAGG has been added.
+*   Conditions in WHERE clauses support now REGEX_LIKE and multiset conditions.
+
 #### New Rules
 
 *   The new Java rule {% rule "java/bestpractices/UseTryWithResources" %) (`java-bestpractices`) searches
@@ -64,6 +71,11 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     *   [#1633](https://github.com/pmd/pmd/issues/1633): \[java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat
 *   java-performance
     *   [#1632](https://github.com/pmd/pmd/issues/1632): \[java] ConsecutiveLiteralAppends false positive over catch
+*   plsql
+    *   [#1587](https://github.com/pmd/pmd/issues/1587): \[plsql] ParseException with EXISTS
+    *   [#1589](https://github.com/pmd/pmd/issues/1589): \[plsql] ParseException with subqueries in WHERE clause
+    *   [#1590](https://github.com/pmd/pmd/issues/1590): \[plsql] ParseException when using hierarchical query clause
+    *   [#1656](https://github.com/pmd/pmd/issues/1656): \[plsql] ParseException with analytic functions, trim and subqueries
 
 ### API Changes
 

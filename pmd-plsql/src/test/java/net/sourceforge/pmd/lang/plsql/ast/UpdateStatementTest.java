@@ -21,4 +21,16 @@ public class UpdateStatementTest extends AbstractPLSQLParserTst {
         Assert.assertEquals(2, updateStatements.get(1).getFirstChildOfType(ASTUpdateSetClause.class)
                 .findChildrenOfType(ASTColumn.class).size());
     }
+
+    @Test
+    public void parseUpdateStatementExample2() {
+        ASTInput input = parsePLSQL(loadTestResource("UpdateStatementExample2.pls"));
+        Assert.assertNotNull(input);
+    }
+
+    @Test
+    public void parseUpdateStatementRef() {
+        ASTInput input = parsePLSQL(loadTestResource("UpdateStatementRef.pls"));
+        Assert.assertNotNull(input);
+    }
 }
