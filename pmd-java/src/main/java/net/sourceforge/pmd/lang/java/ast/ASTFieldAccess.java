@@ -37,7 +37,6 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
         super(JavaParserTreeConstants.JJTFIELDACCESS);
         this.jjtAddChild(lhs, 0);
         this.setImage(fieldName);
-        copyTextCoordinates(lhs);
     }
 
 

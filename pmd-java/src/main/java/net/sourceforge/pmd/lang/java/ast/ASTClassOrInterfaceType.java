@@ -33,14 +33,12 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
         super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
         this.jjtAddChild(lhs, 0);
         this.setImage(image);
-        copyTextCoordinates(lhs);
     }
 
 
     ASTClassOrInterfaceType(ASTAmbiguousName simpleName) {
         super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
         this.setImage(simpleName.getImage());
-        copyTextCoordinates(simpleName);
     }
 
 
@@ -78,7 +76,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
 
     /**
      * Returns the left-hand side is an ambiguous name that has not been reclassified.
-     * If it's a class name
+     * The ambiguous name can be a package or type name.
      */
     public Optional<ASTAmbiguousName> getAmbiguousLhs() {
         return Optional.ofNullable(getFirstChildOfType(ASTAmbiguousName.class));

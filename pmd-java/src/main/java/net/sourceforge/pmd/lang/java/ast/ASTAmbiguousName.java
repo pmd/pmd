@@ -139,26 +139,31 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
      *                          parent.
      * @param <T>               Result type
      *
-     * @return The result of either the first handler or the second, depending on whether this
-     * is a simple name or not
+     * @return The node that will replace this one.
      */
-    private <T> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
-                                   BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
+    private <T extends AbstractJavaNode> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
+                                                            BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
 
         String image = getImage();
 
         int lastDotIdx = image.lastIndexOf('.');
 
         if (lastDotIdx < 0) {
-            return simpleNameHandler.apply(this);
+            T res = simpleNameHandler.apply(this);
+            if (res != null) {
+                res.copyTextCoordinates(this);
+            }
+            return res;
         }
 
         String lastSegment = image.substring(lastDotIdx + 1);
         String remainingAmbiguous = image.substring(0, lastDotIdx);
 
-        // execute the handler before shrinking the text bounds,
-        // to allow the new node to copy the full text coordinates
         T res = splitNameConsumer.apply(this, lastSegment);
+        // copy coordinates before shrinking
+        if (res != null) {
+            res.copyTextCoordinates(this);
+        }
 
         shiftColumns(0, -lastSegment.length() - 1);
         setImage(remainingAmbiguous);

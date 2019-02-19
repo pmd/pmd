@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 
@@ -144,23 +143,24 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         // The text coordinates of this node will be enlarged with those of the child
 
         if (this.beginLine > child.beginLine) {
+            this.firstToken = child.firstToken;
             this.beginLine = child.beginLine;
             this.beginColumn = child.beginColumn;
         } else if (this.beginLine == child.beginLine
             && this.beginColumn > child.beginColumn) {
+            this.firstToken = child.firstToken;
             this.beginColumn = child.beginColumn;
         }
 
         if (this.endLine < child.endLine) {
+            this.lastToken = child.lastToken;
             this.endLine = child.endLine;
             this.endColumn = child.endColumn;
         } else if (this.endLine == child.endLine
             && this.endColumn < child.endColumn) {
+            this.lastToken = child.lastToken;
             this.endColumn = child.endColumn;
         }
-
-        // TODO set the tokens, assert they're correctly linked
-
     }
 
     /**
@@ -183,16 +183,24 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     void shiftColumns(int beginShift, int endShift) {
         this.beginColumn += beginShift;
         this.endColumn += endShift;
+
+        // TODO change the tokens. We need to link index
+        //  the tokens probably...
     }
 
-
-    void copyTextCoordinates(Node copy) {
+    void copyTextCoordinates(AbstractJavaNode copy) {
         this.beginLine = copy.getBeginLine();
         this.beginColumn = copy.getBeginColumn();
         this.endLine = copy.getEndLine();
         this.endColumn = copy.getEndColumn();
+        this.firstToken = copy.jjtGetFirstToken();
+        this.lastToken = copy.jjtGetLastToken();
     }
 
+
+    // assumes that the child has the same text bounds
+    // as the old one. Used to replace an ambiguous name
+    // with an unambiguous representation
     void replaceChildAt(int idx, AbstractJavaNode newChild) {
 
         AbstractJavaNode oldChild = (AbstractJavaNode) children[idx];
@@ -207,9 +215,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         children[idx] = newChild;
     }
 
-    void replaceInParent(AbstractJavaNode newChild) {
-        ((AbstractJavaNode) jjtGetParent()).replaceChildAt(jjtGetChildIndex(), newChild);
-    }
 
     @Override
     public final String getXPathNodeName() {

@@ -24,7 +24,6 @@ public final class ASTVariableReference extends AbstractJavaTypeNode implements 
     ASTVariableReference(ASTAmbiguousName name) {
         super(JavaParserTreeConstants.JJTVARIABLEREFERENCE);
         setImage(name.getImage());
-        copyTextCoordinates(name);
     }
 
 
