@@ -205,12 +205,12 @@ public class ParserTstUtil {
     }
 
 
-    public static LanguageVersionHandler getLanguageVersionHandler(String version) {
-        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
+    public static AbstractJavaHandler getLanguageVersionHandler(String version) {
+        return (AbstractJavaHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
     }
 
-    public static LanguageVersionHandler getDefaultLanguageVersionHandler() {
-        return LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+    public static AbstractJavaHandler getDefaultLanguageVersionHandler() {
+        return (AbstractJavaHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
     }
 
 

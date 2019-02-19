@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.reactfx.value.Val;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
@@ -38,6 +39,20 @@ public class ASTTreeCell extends TreeCell<Node> {
 
     public ASTTreeCell(MainDesignerController controller) {
         this.controller = controller;
+
+        // Binds the cell to its treeItem
+        Val.wrap(treeItemProperty())
+            .map(ASTTreeItem.class::cast)
+            .changes()
+            .subscribe(change -> {
+                if (change.getOldValue() != null) {
+                    change.getOldValue().treeCellProperty().setValue(null);
+                }
+                if (change.getNewValue() != null) {
+                    change.getNewValue().treeCellProperty().setValue(this);
+                }
+            });
+
     }
 
 

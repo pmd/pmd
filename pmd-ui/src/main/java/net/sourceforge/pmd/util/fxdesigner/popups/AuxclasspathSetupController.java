@@ -42,7 +42,7 @@ public class AuxclasspathSetupController implements Initializable {
     @FXML
     private Button selectFilesButton;
     @FXML
-    private ListView<File> fileListView = new ListView<>();
+    private ListView<File> fileListView;
     @FXML
     private Button moveItemUpButton;
     @FXML

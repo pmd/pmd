@@ -32,7 +32,7 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         List<ASTInnerCrossJoinClause> joins = input.findDescendantsOfType(ASTInnerCrossJoinClause.class);
-        Assert.assertEquals(1, joins.size());
+        Assert.assertEquals(2, joins.size());
         Assert.assertFalse(joins.get(0).isCross());
         Assert.assertTrue(joins.get(0).isNatural());
     }
@@ -98,5 +98,19 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
         Assert.assertEquals(ASTOuterJoinType.Type.RIGHT, type.getType());
         Assert.assertNotNull(joins.get(0).getFirstChildOfType(ASTQueryPartitionClause.class));
+    }
+
+    @Test
+    public void testFullOuterJoin() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("FullOuterJoin.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+    }
+
+    @Test
+    public void testInnerJoinSubquery() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("InnerJoinSubquery.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
     }
 }

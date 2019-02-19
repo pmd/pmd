@@ -13,4 +13,8 @@ IF V_BUF IS NOT NULL THEN
   null;
 end if;
 
+IF (V_BUF.x IS NOT NULL) THEN
+  null;
+end if;
+
 end;

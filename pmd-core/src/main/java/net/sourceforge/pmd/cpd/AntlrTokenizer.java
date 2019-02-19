@@ -6,15 +6,20 @@ package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.Token;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cpd.token.AntlrToken;
+import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
+ * 
+ * @deprecated This is an internal API.
  */
+@Deprecated
+@InternalApi
 public abstract class AntlrTokenizer implements Tokenizer {
 
     protected abstract AntlrTokenManager getLexerForSource(SourceCode sourceCode);
@@ -22,19 +27,16 @@ public abstract class AntlrTokenizer implements Tokenizer {
     @Override
     public void tokenize(final SourceCode sourceCode, final Tokens tokenEntries) {
 
-        AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
+        final AntlrTokenManager tokenManager = getLexerForSource(sourceCode);
+        tokenManager.setFileName(sourceCode.getFileName());
+
+        final AntlrTokenFilter tokenFilter = getTokenFilter(tokenManager);
 
         try {
-            AntlrToken token = (AntlrToken) tokenManager.getNextToken();
-
-            while (token.getType() != Token.EOF) {
-                if (!token.isHidden()) {
-                    final TokenEntry tokenEntry =
-                            new TokenEntry(token.getImage(), tokenManager.getFileName(), token.getBeginLine());
-
-                    tokenEntries.add(tokenEntry);
-                }
-                token = (AntlrToken) tokenManager.getNextToken();
+            AntlrToken currentToken = tokenFilter.getNextToken();
+            while (currentToken != null) {
+                processToken(tokenEntries, tokenManager.getFileName(), currentToken);
+                currentToken = tokenFilter.getNextToken();
             }
         } catch (final AntlrTokenManager.ANTLRSyntaxError err) {
             // Wrap exceptions of the ANTLR tokenizer in a TokenMgrError, so they are correctly handled
@@ -47,8 +49,17 @@ public abstract class AntlrTokenizer implements Tokenizer {
         }
     }
 
+    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
+        return new AntlrTokenFilter(tokenManager);
+    }
+
     /* default */ static CharStream getCharStreamFromSourceCode(final SourceCode sourceCode) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         return CharStreams.fromString(buffer.toString());
+    }
+
+    private void processToken(final Tokens tokenEntries, final String fileName, final AntlrToken token) {
+        final TokenEntry tokenEntry = new TokenEntry(token.getImage(), fileName, token.getBeginLine());
+        tokenEntries.add(tokenEntry);
     }
 }

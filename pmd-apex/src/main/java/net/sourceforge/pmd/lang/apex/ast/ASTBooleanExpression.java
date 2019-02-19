@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import apex.jorje.data.ast.BooleanOp;
 import apex.jorje.semantic.ast.expression.BooleanExpression;
+
 
 public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
 
@@ -12,8 +14,15 @@ public class ASTBooleanExpression extends AbstractApexNode<BooleanExpression> {
         super(booleanExpression);
     }
 
+
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    public BooleanOp getOperator() {
+        return this.node.getOp();
+    }
+
 }

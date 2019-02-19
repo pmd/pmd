@@ -73,6 +73,16 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.11.0
+
+* {% jdoc core::lang.rule.stat.StatisticalRule %} and the related helper classes and base rule classes
+are deprecated for removal in 7.0.0. This includes all of {% jdoc_package core::stat %} and {% jdoc_package core::lang.rule.stat %},
+and also {% jdoc java::lang.java.rule.AbstractStatisticalJavaRule %}, {% jdoc apex::lang.apex.rule.AbstractStatisticalApexRule %} and the like.
+The methods {% jdoc !c!core::Report#addMetric(core::stat.Metric) %} and {% jdoc core::ThreadSafeReportListener#metricAdded(core::stat.Metric) %}
+will also be removed.
+* {% jdoc core::properties.PropertySource#setProperty(core::properties.MultiValuePropertyDescriptor, Object[]) %} is deprecated,
+because {% jdoc core::properties.MultiValuePropertyDescriptor %} is deprecated as well
+
 #### 6.10.0
 
 ##### Properties framework
@@ -369,10 +379,10 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 *   The Java rule {% rule java/codestyle/AbstractNaming %} is deprecated
     in favour of {% rule java/codestyle/ClassNamingConventions %}.
 
-*   The Java rules {% rule java/codestyle/WhileLoopsMustUseBraces %}, {% rule java/codestyle/ForLoopMustUseBraces %}, {% rule java/codestyle/IfStmtMustUseBraces %}, and {% rule java/codestyle/IfElseStmtMustUseBraces %}
-    are deprecated. They will be replaced by the new rule {% rule java/codestyle/ControlStatementBraces %}
+*   The Java rules {% rule java/codestyle/WhileLoopsMustUseBraces %}, {% rule java/codestyle/ForLoopsMustUseBraces %}, {% rule java/codestyle/IfStmtsMustUseBraces %}, and {% rule java/codestyle/IfElseStmtsMustUseBraces %}
+    are deprecated. They will be replaced by the new rule {% rule java/codestyle/ControlStatementBraces %}.
 
-*   The Java rules {% rule java/codestyle/NcssConstructorCount %}, {% rule java/codestyle/NcssMethodCount %}, and {% rule java/codestyle/NcssTypeCount %} have been
+*   The Java rules {% rule java/design/NcssConstructorCount %}, {% rule java/design/NcssMethodCount %}, and {% rule java/design/NcssTypeCount %} have been
     deprecated. They will be replaced by the new rule {% rule java/design/NcssCount %} in the category `design`.
 
 *   The Java rule `LooseCoupling` in ruleset `java-typeresolution` is deprecated. Use the rule with the same name from category `bestpractices` instead.
@@ -388,6 +398,10 @@ large projects, with many duplications, it was causing `OutOfMemoryError`s (see 
 
 *   The Java rules `GuardDebugLogging` (ruleset `java-logging-jakarta-commons`) and `GuardLogStatementJavaUtil`
     (ruleset `java-logging-java`) have been deprecated. Use the rule {% rule java/bestpractices/GuardLogStatement %}, which covers all cases regardless of the logging framework.
+
+*   The Java rule {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general
+    {% rule "java/multithreading/UnsynchronizedStaticFormatter" %}.
 
 
 

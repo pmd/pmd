@@ -40,11 +40,11 @@ public class ASTManager {
     /**
      * Most up-to-date compilation unit. Is null if the current source cannot be parsed.
      */
-    private Var<Node> compilationUnit = Var.newSimpleVar(null);
+    private final Var<Node> compilationUnit = Var.newSimpleVar(null);
     /**
      * Selected language version.
      */
-    private Var<LanguageVersion> languageVersion = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage().getDefaultVersion());
+    private final Var<LanguageVersion> languageVersion = Var.newSimpleVar(LanguageRegistry.getDefaultLanguage().getDefaultVersion());
 
 
     public ASTManager(DesignerRoot owner) {
@@ -104,7 +104,7 @@ public class ASTManager {
         try {
             languageVersionHandler.getQualifiedNameResolutionFacade(classLoader).start(node);
         } catch (Exception e) {
-            designerRoot.getLogger().logEvent(new LogEntry(e, Category.QUALIFIED_NAME_RESOLUTION_EXCEPTION));
+            designerRoot.getLogger().logEvent(new LogEntry(e, Category.QNAME_RESOLUTION_EXCEPTION));
         }
 
         try {
@@ -116,6 +116,10 @@ public class ASTManager {
         compilationUnit.setValue(node);
         lastValidSource = source;
         lastLanguageVersion = getLanguageVersion();
+
+        // Notify that the parse went OK so we can avoid logging very recent exceptions
+        designerRoot.getLogger().logEvent(new LogEntry(null, Category.PARSE_OK));
+
         return getCompilationUnit();
     }
 

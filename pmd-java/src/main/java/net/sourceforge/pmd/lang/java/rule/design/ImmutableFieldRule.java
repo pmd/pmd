@@ -55,7 +55,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
             AccessNode accessNodeParent = field.getAccessNodeParent();
             if (accessNodeParent.isStatic() || !accessNodeParent.isPrivate() || accessNodeParent.isFinal()
                     || accessNodeParent.isVolatile()
-                    || hasClassLombokAnnotation()
+                    || hasLombokAnnotation(node)
                     || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }

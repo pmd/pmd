@@ -55,6 +55,8 @@ public class SidebarGeneratorTest {
         }
         String yaml = new Yaml(options).dump(result);
 
-        assertEquals(IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8), yaml);
+        String expected = MockedFileWriter.normalizeLineSeparators(
+                IOUtils.toString(SidebarGeneratorTest.class.getResourceAsStream("sidebar.yml"), StandardCharsets.UTF_8));
+        assertEquals(expected, yaml);
     }
 }

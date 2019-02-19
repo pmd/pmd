@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -175,7 +176,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
             if (count == 0) {
                 // look if the message is defined in a field
-                final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfType(ASTClassOrInterfaceBody.class)
+                final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfAnyType(ASTClassOrInterfaceBody.class, ASTEnumBody.class)
                         .findDescendantsOfType(ASTFieldDeclaration.class);
                 // only look for ASTVariableDeclarator that are Fields
                 final List<ASTVariableDeclarator> fields = new ArrayList<>(fieldlist.size());

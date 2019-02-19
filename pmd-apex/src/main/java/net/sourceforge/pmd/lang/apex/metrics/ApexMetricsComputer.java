@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.metrics;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
@@ -18,7 +19,13 @@ import net.sourceforge.pmd.lang.metrics.AbstractMetricsComputer;
  */
 public class ApexMetricsComputer extends AbstractMetricsComputer<ASTUserClassOrInterface<?>, ASTMethod> {
 
-    static final ApexMetricsComputer INSTANCE = new ApexMetricsComputer();
+    private static final ApexMetricsComputer INSTANCE = new ApexMetricsComputer();
+
+
+    @InternalApi
+    public static ApexMetricsComputer getInstance() {
+        return INSTANCE;
+    }
 
 
     @Override
