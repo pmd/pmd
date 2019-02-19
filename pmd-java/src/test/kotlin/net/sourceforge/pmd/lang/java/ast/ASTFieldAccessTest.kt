@@ -5,25 +5,10 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
  * @author Clément Fournier
- * @since 7.0.0
  */
-class ASTExpressionTest : ParserTestSpec({
-
-    parserTest("this keyword") {
-
-        "this" should matchExpr<ASTThisExpression> { }
-
-        "Type.this" should matchExpr<ASTThisExpression> {
-
-            it::getQualifier shouldBePresent child {
-                it::getImage shouldBe "Type"
-            }
-        }
-
-    }
+class ASTFieldAccessTest : ParserTestSpec({
 
     parserTest("Field access exprs") {
-
         "Type.this.foo" should matchExpr<ASTFieldAccess> {
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
@@ -50,10 +35,6 @@ class ASTExpressionTest : ParserTestSpec({
             }
         }
 
-    }
-
-
-    parserTest("Ambiguous names") {
 
         "a.b.c" should matchExpr<ASTFieldAccess> {
             it::getImage shouldBe "c"
@@ -62,8 +43,8 @@ class ASTExpressionTest : ParserTestSpec({
             it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
                 it.name shouldBe "a.b"
             }
-
         }
+
 
         "a" should matchExpr<ASTVariableReference> {
             it::getVariableName shouldBe "a"
