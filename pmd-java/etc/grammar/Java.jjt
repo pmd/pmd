@@ -2195,7 +2195,7 @@ void Expression() #AssignmentExpression(>1):
   ]
 }
 
-AssignmentOperator AssignmentOperator() #void:
+AssignmentOp AssignmentOperator() #void:
 {}
 {
     ( "="

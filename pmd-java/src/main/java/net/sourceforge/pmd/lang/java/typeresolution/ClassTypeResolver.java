@@ -86,7 +86,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -729,13 +728,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTExpression node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
     public Object visit(ASTConditionalExpression node, Object data) {
         super.visit(node, data);
 
@@ -822,7 +814,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTUnaryExpression node, Object data) {
         super.visit(node, data);
-        rollupTypeUnaryNumericPromotion(node);
+
+        switch (node.getOp()) {
+        case BOOLEAN_NOT:
+            populateType(node, "boolean");
+            break;
+        case BITWISE_INVERSE:
+            rollupTypeUnary(node);
+            break;
+        default:
+            rollupTypeUnaryNumericPromotion(node);
+        }
+
         return data;
     }
 
@@ -837,17 +840,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTPreDecrementExpression node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
-        super.visit(node, data);
-        if ("!".equals(node.getImage())) {
-            populateType(node, "boolean");
-        } else {
-            rollupTypeUnary(node);
-        }
         return data;
     }
 
