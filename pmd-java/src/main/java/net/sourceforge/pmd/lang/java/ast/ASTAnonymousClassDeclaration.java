@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  *
  * </pre>
  */
-public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode implements JavaQualifiableNode, ASTPrimaryExpression {
+public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode implements JavaQualifiableNode {
 
     private JavaTypeQualifiedName qualifiedName;
 

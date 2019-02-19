@@ -17,11 +17,12 @@ import java.util.Optional;
  * TODO the third branch is ambiguous with the second and won't be matched without a rewrite phase
  *
  * MethodCall ::=  &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
- *              |  {@link ASTPrimaryExpression PrimaryExpression} "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
- *              |  {@link ASTClassOrInterfaceType ClassName} "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
+ *              |  Lhs "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
+ *
+ * Lhs        ::= {@link ASTPrimaryExpression PrimaryExpression} | {@link ASTClassOrInterfaceType ClassName} | {@link ASTAmbiguousName AmbiguousName}
  * </pre>
  */
-public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrimaryExpression {
+public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrimaryExpression, ASTQualifiableExpression {
 
 
 
@@ -35,29 +36,12 @@ public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrim
     }
 
 
-
     /**
      * Returns the name of the called method.
      */
     public String getMethodName() {
         return getImage();
     }
-
-
-    /**
-     * Gets the expression preceding the ".", if any. May return empty if
-     * this call is not qualified (no "."), or if the qualifier is a type
-     * instead of an expression.
-     *
-     * <p>If the LHS is an {@link ASTAmbiguousName}, returns it.
-     */
-    public Optional<ASTPrimaryExpression> getLhsExpression() {
-        // note: getNameNode must be called before jjtGetChild here because it changes the first child
-        return Optional.of(jjtGetChild(0))
-                       .filter(it -> it instanceof ASTPrimaryExpression)
-                       .map(it -> (ASTPrimaryExpression) it);
-    }
-
 
     /**
      * Gets the type name preceding the ".", if any. May return empty if
@@ -67,10 +51,7 @@ public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrim
      * <p>If the LHS is an {@link ASTAmbiguousName}, returns it.
      */
     public Optional<ASTClassOrInterfaceType> getLhsType() {
-        // note: getNameNode must be called before jjtGetChild here because it changes the first child
-        return Optional.of(jjtGetChild(0))
-                       .filter(it -> it instanceof ASTClassOrInterfaceType)
-                       .map(it -> (ASTClassOrInterfaceType) it);
+        return getChildAs(0, ASTClassOrInterfaceType.class);
     }
 
 

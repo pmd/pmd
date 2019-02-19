@@ -34,7 +34,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -49,6 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -1109,36 +1109,30 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTBooleanLiteral node, Object data) {
-        populateType(node, "boolean");
-        return super.visit(node, data);
-    }
 
     @Override
     public Object visit(ASTLiteral node, Object data) {
         super.visit(node, data);
-        if (node.jjtGetNumChildren() != 0) {
-            rollupTypeUnary(node);
+        if (node.isIntLiteral()) {
+            populateType(node, "int");
+        } else if (node.isLongLiteral()) {
+            populateType(node, "long");
+        } else if (node.isFloatLiteral()) {
+            populateType(node, "float");
+        } else if (node.isDoubleLiteral()) {
+            populateType(node, "double");
+        } else if (node.isCharLiteral()) {
+            populateType(node, "char");
+        } else if (node.isStringLiteral()) {
+            populateType(node, "java.lang.String");
+        } else if (node.isBooleanLiteral()) {
+            populateType(node, "boolean");
         } else {
-            if (node.isIntLiteral()) {
-                populateType(node, "int");
-            } else if (node.isLongLiteral()) {
-                populateType(node, "long");
-            } else if (node.isFloatLiteral()) {
-                populateType(node, "float");
-            } else if (node.isDoubleLiteral()) {
-                populateType(node, "double");
-            } else if (node.isCharLiteral()) {
-                populateType(node, "char");
-            } else if (node.isStringLiteral()) {
-                populateType(node, "java.lang.String");
-            } else {
-                throw new IllegalStateException("PMD error, unknown literal type!");
-            }
+            throw new IllegalStateException("PMD error, unknown literal type!");
         }
         return data;
     }
+
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {

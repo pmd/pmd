@@ -17,17 +17,18 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre>
  *
- * ClassInstanceCreationExpression ::= UnqualifiedAlloc
- *                                   | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc
+ * ClassInstanceCreationExpression   ::= UnqualifiedAlloc
+ *                                     | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc
  *
- * UnqualifiedAlloc ::= "new" {@link ASTTypeArguments TypeArguments}? ClassOrInterfaceTypeToInstantiate {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
+ * UnqualifiedAlloc                  ::=
+ *      "new" {@link ASTTypeArguments TypeArguments}? ClassOrInterfaceTypeToInstantiate {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * ClassOrInterfaceTypeToInstantiate ::=
- *                          {@link ASTAnnotation TypeAnnotation}* {@link ASTClassOrInterfaceType ClassOrInterfaceType}
+ *      {@link ASTAnnotation TypeAnnotation}* {@link ASTClassOrInterfaceType ClassOrInterfaceType}
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractLateInitNode implements ASTPrimaryExpression {
+public final class ASTConstructorCall extends AbstractLateInitNode implements ASTPrimaryExpression, ASTQualifiableExpression {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -67,10 +68,9 @@ public final class ASTConstructorCall extends AbstractLateInitNode implements AS
      * Returns the left-hand-side of this expression, if this is a
      * {@linkplain #isQualifiedInstanceCreation() qualified allocation expression}.
      */
+    @Override
     public Optional<ASTPrimaryExpression> getLhsExpression() {
-        return isQualifiedInstanceCreation()
-               ? Optional.of((ASTPrimaryExpression) jjtGetChild(0))
-               : Optional.empty();
+        return ASTQualifiableExpression.super.getLhsExpression();
     }
 
 

@@ -15,11 +15,10 @@ import java.util.Optional;
  *
  * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
  *               |  {@link ASTClassOrInterfaceType TypeName} "." &lt;IDENTIFIER&gt;
- *               (: Nothing can be done if this is not a :)
  *               |  {@link ASTAmbiguousName AmbiguousName} "." &lt;IDENTIFIER&gt;
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
     ASTFieldAccess(int id) {
         super(id);
     }
@@ -41,18 +40,13 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
 
 
     /**
-     * Returns the expression to the left of the "." if it exists.
-     */
-    public Optional<ASTPrimaryExpression> getLhsExpression() {
-        return Optional.ofNullable(getFirstChildOfType(ASTPrimaryExpression.class));
-    }
-
-
-    /**
      * Returns the type to the left of the "." if it exists.
+     * That may be an {@linkplain ASTAmbiguousName ambiguous name}.
+     * May return empty if this call is not qualified (no "."),
+     * or if the qualifier is an expression instead of a type.
      */
     public Optional<ASTClassOrInterfaceType> getLhsType() {
-        return Optional.ofNullable(getFirstChildOfType(ASTClassOrInterfaceType.class));
+        return getChildAs(0, ASTClassOrInterfaceType.class);
     }
 
 

@@ -21,7 +21,7 @@ import java.util.Optional;
  *
  * </pre>
  */
-public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
 
     public ASTMethodReference(int id) {
         super(id);
@@ -45,17 +45,14 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
         return getImage().equals("new");
     }
 
+
     /**
      * Returns the type node to the left of the "::" if it exists.
      * Otherwise, this method returns an empty optional and {@link #getLhsExpression()}
      * returns a non-empty optional.
      */
     public Optional<ASTReferenceType> getLhsType() {
-        // TODO rewrite, if this is a constructor reference, then we know
-        // that the lhs is a type
-        return Optional.of(jjtGetChild(0))
-                       .filter(it -> it instanceof ASTType)
-                       .map(it -> (ASTReferenceType) it);
+        return getChildAs(0, ASTReferenceType.class);
     }
 
 
@@ -64,10 +61,9 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * Otherwise, this method returns an empty optional and {@link #getLhsType()}
      * returns a non-empty optional.
      */
+    @Override
     public Optional<ASTPrimaryExpression> getLhsExpression() {
-        return Optional.of(jjtGetChild(0))
-                       .filter(it -> it instanceof ASTPrimaryExpression)
-                       .map(it -> (ASTPrimaryExpression) it);
+        return ASTQualifiableExpression.super.getLhsExpression();
     }
 
 
@@ -82,8 +78,8 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
 
 
     /**
-     * Returns the method name, or an empty optional if
-     * this is a {@linkplain #isConstructorReference() constructor reference}.
+     * Returns the method name, or an empty optional if this is a
+     * {@linkplain #isConstructorReference() constructor reference}.
      */
     public Optional<String> getMethodName() {
         return Optional.of(getImage()).filter(it -> !"new".equals(it));
