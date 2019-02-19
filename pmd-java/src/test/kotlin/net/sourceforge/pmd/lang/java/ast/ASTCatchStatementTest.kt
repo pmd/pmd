@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import java.io.IOException
 
 
-class ASTCatchStatementTest : FunSpec({
+class ASTCatchStatementTest : ParserTestSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 

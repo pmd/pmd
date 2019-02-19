@@ -1,9 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.Matcher
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
-import io.kotlintest.specs.AbstractFunSpec
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ParserTstUtil
@@ -35,109 +33,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     }
 }
 
-
-/**
- * Specify several tests at once for different java versions.
- * One test will be generated per version in [javaVersions].
- * Use [focusOn] to execute one test in isolation.
- *
- * @param name Name of the test. Will be postfixed by the specific
- *             java version used to run it
- * @param javaVersions Language versions for which to generate tests
- * @param focusOn Sets the java version of the test to isolate
- * @param assertions Assertions and further configuration
- *                   to perform with the parsing context
- */
-fun AbstractFunSpec.parserTest(name: String,
-                               javaVersions: List<JavaVersion>,
-                               focusOn: JavaVersion? = null,
-                               assertions: ParserTestCtx.() -> Unit) {
-
-    javaVersions.forEach {
-
-        val focus = if (focusOn != null && focusOn == it) "f:" else ""
-
-        test("$focus$name (Java ${it.pmdName})") {
-            ParserTestCtx(it).assertions()
-        }
-    }
-}
-
-/**
- * Specify a new test for a single java version. To execute the test in isolation,
- * prefix the name with `"f:"`.
- *
- * @param name Name of the test. Will be postfixed by the [javaVersion]
- * @param javaVersion Language version to use when parsing
- * @param assertions Assertions and further configuration
- *                   to perform with the parsing context
- */
-fun AbstractFunSpec.parserTest(name: String,
-                               javaVersion: JavaVersion = JavaVersion.Latest,
-                               assertions: ParserTestCtx.() -> Unit) {
-    parserTest(name, listOf(javaVersion), null, assertions)
-}
-
-
-/**
- * Defines a group of tests that should be named similarly,
- * executed on several java versions. Calls to "should" in
- * the block are intercepted to create a new test, with the
- * given [name] as a common prefix.
- *
- * This is useful to make a batch of grammar specs for grammar
- * regression tests without bothering to find a name.
- *
- * @param name Common prefix for the test names
- * @param javaVersions Language versions for which to generate tests
- * @param spec Assertions. Each call to [io.kotlintest.should] on a string
- *             receiver is replaced by a [GroupTestCtx.should], which creates a
- *             new parser test.
- */
-fun AbstractFunSpec.testGroup(name: String,
-                              javaVersions: List<JavaVersion>,
-                              spec: GroupTestCtx.() -> Unit) {
-    javaVersions.forEach {
-        testGroup(name, it, spec)
-    }
-}
-
-
-/**
- * Defines a group of tests that should be named similarly.
- * Calls to "should" in the block are intercepted to create
- * a new test, with the given [name] as a common prefix.
- *
- * This is useful to make a batch of grammar specs for grammar
- * regression tests without bothering to find a name.
- *
- * @param name Common prefix for the test names
- * @param javaVersion Language versions to use when parsing
- * @param spec Assertions. Each call to [io.kotlintest.should] on a string
- *             receiver is replaced by a [GroupTestCtx.should], which creates a
- *             new parser test.
- *
- */
-fun AbstractFunSpec.testGroup(name: String,
-                              javaVersion: JavaVersion = JavaVersion.Latest,
-                              spec: GroupTestCtx.() -> Unit) {
-    GroupTestCtx(this, name, javaVersion).spec()
-}
-
-class GroupTestCtx(private val funspec: AbstractFunSpec, private val groupName: String, javaVersion: JavaVersion) : ParserTestCtx(javaVersion) {
-
-    infix fun String.should(matcher: Assertions<String>) {
-        funspec.parserTest("$groupName: '$this'", javaVersion = javaVersion) {
-            this@should kotlintestShould matcher
-        }
-    }
-
-}
-
-
 /**
  * Extensible environment to describe parse/match testing workflows in a concise way.
- * Can be used inside of a [io.kotlintest.specs.FunSpec] with [parserTest].
+ * Can be used inside of a [ParserTestSpec] with [ParserTestSpec.parserTest].
  *
  * Parsing contexts allow to parse a string containing only the node you're interested
  * in instead of writing up a full class that the parser can handle. See [parseAstExpression],
@@ -219,9 +117,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
-    inline fun <reified N : ASTAnyTypeDeclaration> matchToplevelType(
-            ignoreChildren: Boolean = false,
-            noinline nodeSpec: NWrapper<N>.() -> Unit) =
+    inline fun <reified N : ASTAnyTypeDeclaration> matchToplevelType(ignoreChildren: Boolean = false,
+                                                                     noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(TopLevelTypeDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
 
     /**
@@ -232,7 +129,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      */
     inline fun <reified N : Node> matchDeclaration(
             ignoreChildren: Boolean = false,
-            noinline nodeSpec: NWrapper<N>.() -> Unit) = makeMatcher(EnclosedDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
+            noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
 
 
     /**
