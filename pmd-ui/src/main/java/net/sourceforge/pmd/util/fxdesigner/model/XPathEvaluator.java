@@ -19,7 +19,6 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.util.fxdesigner.util.PropertyDescriptorSpec;
 
 
 /**

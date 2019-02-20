@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util;
 
+import static net.sourceforge.pmd.internal.util.IteratorUtil.toIterable;
+
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -19,21 +21,26 @@ import javafx.scene.control.TreeItem;
  */
 public final class DesignerIteratorUtil {
 
-    // TODO move that into PMD core I can't stand it anymore
+    // TODO move that into PMD core with Java 8
+
 
     private DesignerIteratorUtil() {
 
     }
 
 
-    /** Counts the items in this iterator, exhausting it. */
-    public static int count(Iterator<?> it) {
-        int count = 0;
-        while (it.hasNext()) {
-            it.next();
-            count++;
+    public static boolean isParent(Node parent, Node child) {
+        return any(parentIterator(child, false), p -> parent == p);
+    }
+
+
+    public static <T> boolean any(Iterator<? extends T> it, Predicate<? super T> predicate) {
+        for (T t : toIterable(it)) {
+            if (predicate.test(t)) {
+                return true;
+            }
         }
-        return count;
+        return false;
     }
 
 

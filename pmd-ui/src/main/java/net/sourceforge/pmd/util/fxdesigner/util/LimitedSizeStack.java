@@ -30,9 +30,7 @@ public class LimitedSizeStack<E> extends Stack<E> {
             return null;
         }
 
-        if (this.contains(item)) {
-            this.remove(item);
-        }
+        this.remove(item);
 
         super.push(item);
 

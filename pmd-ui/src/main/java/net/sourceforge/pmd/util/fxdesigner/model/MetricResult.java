@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.fxdesigner.model;
 
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Map.Entry;
 
 import net.sourceforge.pmd.lang.metrics.MetricKey;
 
@@ -20,11 +19,6 @@ public class MetricResult {
 
     public MetricResult(MetricKey<?> key, Double value) {
         simpleEntry = new SimpleEntry<>(key, value);
-    }
-
-
-    MetricResult(Entry<? extends MetricKey<?>, ? extends Double> entry) {
-        simpleEntry = new SimpleEntry<>(entry);
     }
 
 

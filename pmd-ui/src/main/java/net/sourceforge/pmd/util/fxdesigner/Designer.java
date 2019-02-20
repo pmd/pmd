@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.application.Application;
@@ -23,39 +24,39 @@ import javafx.stage.Stage;
 
 
 /**
- * Main class for the designer.
+ * Main class for the designer, launched only if {@link DesignerStarter} detected JavaFX support.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
 public class Designer extends Application {
 
-    private void parseParameters(Parameters params) {
+    private boolean parseParameters(Parameters params) {
         List<String> raw = params.getRaw();
         if (!raw.contains("-v")
             && !raw.contains("--verbose")) {
             // error output is disabled by default
             
             System.err.close();
+            return false;
         }
-
+        return true;
     }
 
 
     @Override
     public void start(Stage stage) throws IOException {
-        parseParameters(getParameters());
+        boolean isDeveloperMode = parseParameters(getParameters());
 
 
-        FXMLLoader loader
-            = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
+        FXMLLoader loader = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
 
-        DesignerRoot owner = new DesignerRoot(stage);
+        DesignerRoot owner = new DesignerRoot(stage, isDeveloperMode);
         MainDesignerController mainController = new MainDesignerController(owner);
 
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(mainController);
-        XPathPanelController xpathPanelController = new XPathPanelController(owner, mainController);
-        SourceEditorController sourceEditorController = new SourceEditorController(owner, mainController);
+        XPathPanelController xpathPanelController = new XPathPanelController(mainController);
+        SourceEditorController sourceEditorController = new SourceEditorController(mainController);
 
         loader.setControllerFactory(type -> {
             if (type == MainDesignerController.class) {
