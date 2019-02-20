@@ -98,4 +98,9 @@ SELECT XMLQuery('declare default element namespace
                 PASSING CFG AS "XML", 81 as "PORTNO" RETURNING CONTENT)
   FROM DUAL;
 
+SELECT XMLELEMENT("Emp", 
+   XMLFOREST(e.employee_id AS foo, e.last_name, e.salary))
+   "Emp Element"
+   FROM employees e WHERE employee_id = 204;
+
 END;

@@ -1551,6 +1551,7 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.image)}) "(" Expression() <AS> Datatype() ")"
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
+      | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.image)}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
       | Arguments()
     )
 
