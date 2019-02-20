@@ -1548,6 +1548,9 @@ ASTFunctionCall FunctionCall() :
     name = FunctionName()
     (
         LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
+      | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.image)}) "(" Expression() <AS> Datatype() ")"
+      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
+      | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | Arguments()
     )
 
@@ -1634,7 +1637,8 @@ ASTXMLPassingClause XMLPassingClause() :
 {
     KEYWORD("PASSING")
     [ <BY> "VALUE" ]
-    ( LOOKAHEAD(2) SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] (",")? )+
+    ( SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] )
+    ( "," SqlExpression() [ LOOKAHEAD(2) <AS> ID() ] )*
     { return jjtThis; }
 }
 
@@ -5189,7 +5193,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <CONSTRAINTS>
 | <CONSTRUCTOR>
 //| <CONTAINER>
-//| <CONTENT>
 //| <CONTENTS>
 | <CONTEXT>
 | <CONTINUE>

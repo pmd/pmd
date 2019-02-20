@@ -36,7 +36,7 @@ SELECT OBJECT_VALUE
   WHERE XMLExists('/PurchaseOrder[SpecialInstructions="Expedite"]'
                   PASSING OBJECT_VALUE);
 
-/*
+
 SELECT XMLCast(XMLQuery('/PurchaseOrder/Reference' PASSING OBJECT_VALUE
                                                    RETURNING CONTENT)
                AS VARCHAR2(100)) "REFERENCE"
@@ -97,6 +97,5 @@ SELECT XMLQuery('declare default element namespace
                                return $NEWXML}'
                 PASSING CFG AS "XML", 81 as "PORTNO" RETURNING CONTENT)
   FROM DUAL;
-*/
 
 END;
