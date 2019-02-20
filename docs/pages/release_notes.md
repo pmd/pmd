@@ -14,7 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-### CPD Suppression for Antlr-based languages
+#### Call For Logo
+
+PMD’s logo was great for a long time. But now we want to take the opportunity with the next major release to change
+our logo in order to use a more "politically correct" one.
+
+Learn more about how to participate on [github issue 1663](https://github.com/pmd/pmd/issues/1663).
+
+#### CPD Suppression for Antlr-based languages
 
 [ITBA](https://www.itba.edu.ar/) students [Matías Fraga](https://github.com/matifraga),
 [Tomi De Lucca](https://github.com/tomidelucca) and [Lucas Soncini](https://github.com/lsoncini)
@@ -77,6 +84,8 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     *   [#1589](https://github.com/pmd/pmd/issues/1589): \[plsql] ParseException with subqueries in WHERE clause
     *   [#1590](https://github.com/pmd/pmd/issues/1590): \[plsql] ParseException when using hierarchical query clause
     *   [#1656](https://github.com/pmd/pmd/issues/1656): \[plsql] ParseException with analytic functions, trim and subqueries
+*   designer
+    *   [#1679](https://github.com/pmd/pmd/issues/1679): \[ui] No default language version selected
 
 ### API Changes
 
