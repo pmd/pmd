@@ -163,6 +163,8 @@ public class SourceEditorController extends AbstractController {
                     });
 
         languageVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(languageToggleGroup);
+        // this will be overwritten by property restore if needed
+        languageVersionUIProperty.setValue(DesignerUtil.defaultLanguageVersion());
     }
 
 
