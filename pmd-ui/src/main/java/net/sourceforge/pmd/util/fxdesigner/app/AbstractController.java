@@ -28,9 +28,9 @@ import javafx.fxml.Initializable;
  * TODO I'm more and more convinced we should avoid that and stop having the controllers
  *  hold a reference to their parent. They should only communicate by exposing properties
  *  their parent binds to, but they shouldn't know about their parent.
- *  {@link MessageChannel}s can allow us to decouple them event more.
+ *  {@link MessageChannel}s can allow us to decouple them even more.
  *
- * <p>This class mainly to make the initialization cycle of JavaFX clearer. Children controllers
+ * <p>This class mainly exists to make the initialization cycle of JavaFX clearer. Children controllers
  * are initialized before their parent, but sometimes they should only
  * perform some actions after its parent has been initialized, e.g. binding
  * properties that depend on a restored setting or stuff. This is part
@@ -44,7 +44,7 @@ import javafx.fxml.Initializable;
  * @param <T> Type of the parent controller
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public abstract class AbstractController<T extends AbstractController<?>> implements Initializable, SettingsOwner, ApplicationComponent {
 

@@ -20,6 +20,9 @@ import javafx.scene.control.TextArea;
  */
 public final class SimplePopups {
 
+    private static final String LICENSE_FILE_PATH = "/net/sourceforge/pmd/util/fxdesigner/LICENSE";
+
+
     private SimplePopups() {
 
     }
@@ -32,7 +35,7 @@ public final class SimplePopups {
 
         ScrollPane scroll = new ScrollPane();
         try {
-            scroll.setContent(new TextArea(IOUtils.toString(SimplePopups.class.getResourceAsStream("LICENSE"), StandardCharsets.UTF_8)));
+            scroll.setContent(new TextArea(IOUtils.toString(SimplePopups.class.getResourceAsStream(LICENSE_FILE_PATH), StandardCharsets.UTF_8)));
         } catch (IOException e) {
             e.printStackTrace();
         }

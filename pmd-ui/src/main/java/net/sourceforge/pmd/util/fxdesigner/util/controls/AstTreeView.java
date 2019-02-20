@@ -28,7 +28,7 @@ import javafx.scene.control.TreeView;
 
 /**
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.12.0
  */
 public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 

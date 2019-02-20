@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -232,10 +233,16 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
     @Override
     public void setFocusNode(Node node) {
-        xpathResultListView.getItems().stream()
+        Optional<TextAwareNodeWrapper> firstResult = xpathResultListView.getItems().stream()
                            .filter(wrapper -> wrapper.getNode().equals(node))
-                           .findFirst()
-                           .ifPresent(item -> selectionEvents.suspendWhile(() -> xpathResultListView.getSelectionModel().select(item)));
+                           .findFirst();
+
+        // with Java 9, Optional#ifPresentOrElse can be used
+        if (firstResult.isPresent()) {
+            selectionEvents.suspendWhile(() -> xpathResultListView.getSelectionModel().select(firstResult.get()));
+        } else {
+            xpathResultListView.getSelectionModel().clearSelection();
+        }
     }
 
 
