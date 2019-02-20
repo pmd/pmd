@@ -84,6 +84,8 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     *   [#1589](https://github.com/pmd/pmd/issues/1589): \[plsql] ParseException with subqueries in WHERE clause
     *   [#1590](https://github.com/pmd/pmd/issues/1590): \[plsql] ParseException when using hierarchical query clause
     *   [#1656](https://github.com/pmd/pmd/issues/1656): \[plsql] ParseException with analytic functions, trim and subqueries
+*   designer
+    *   [#1679](https://github.com/pmd/pmd/issues/1679): \[ui] No default language version selected
 
 ### API Changes
 
