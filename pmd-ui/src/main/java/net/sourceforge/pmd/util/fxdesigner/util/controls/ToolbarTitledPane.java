@@ -10,6 +10,8 @@ import java.util.Objects;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -24,7 +26,7 @@ import javafx.scene.layout.StackPane;
  * Supported by some CSS in designer.less.
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public final class ToolbarTitledPane extends TitledPane {
 
@@ -63,12 +65,10 @@ public final class ToolbarTitledPane extends TitledPane {
                 // The title region is provided by the skin,
                 // this is the only way to access it outside of css
                 StackPane titleRegion = (StackPane) parent;
-                toolBar.maxHeightProperty().unbind();
-                toolBar.maxHeightProperty().bind(titleRegion.heightProperty());
-                toolBar.minHeightProperty().unbind();
-                toolBar.minHeightProperty().bind(titleRegion.heightProperty());
-                toolBar.prefHeightProperty().unbind();
-                toolBar.prefHeightProperty().bind(titleRegion.heightProperty());
+
+                DesignerUtil.rewire(toolBar.maxHeightProperty(), titleRegion.heightProperty());
+                DesignerUtil.rewire(toolBar.minHeightProperty(), titleRegion.heightProperty());
+                DesignerUtil.rewire(toolBar.prefHeightProperty(), titleRegion.heightProperty());
             });
 
     }
