@@ -31,10 +31,10 @@ import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeEditionCodeArea.StyleLayerIds;
 
 import javafx.application.Platform;
+import javafx.beans.NamedArg;
 import javafx.css.PseudoClass;
 
 
@@ -52,14 +52,18 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
     private DesignerRoot designerRoot;
 
 
-    public NodeEditionCodeArea() {
+    public NodeEditionCodeArea(@NamedArg("designerRoot") DesignerRoot root) {
         super(StyleLayerIds.class);
+
+        this.designerRoot = root;
 
         setParagraphGraphicFactory(lineNumberFactory());
 
         currentRuleResultsProperty().values().subscribe(this::highlightXPathResults);
         currentErrorNodesProperty().values().subscribe(this::highlightErrorNodes);
         currentNameOccurrences.values().subscribe(this::highlightNameOccurrences);
+
+        initNodeSelectionHandling();
     }
 
     /** Scroll the editor to a node and makes it visible. */
@@ -181,12 +185,6 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
     @Override
     public DesignerRoot getDesignerRoot() {
         return designerRoot;
-    }
-
-
-    public void setDesignerRoot(DesignerRoot designerRoot) {
-        this.designerRoot = designerRoot;
-        initNodeSelectionHandling();
     }
 
 

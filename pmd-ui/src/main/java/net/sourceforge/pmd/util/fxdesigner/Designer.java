@@ -10,10 +10,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
+import com.sun.javafx.fxml.builder.ProxyBuilder;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -57,6 +60,19 @@ public class Designer extends Application {
         NodeInfoPanelController nodeInfoPanelController = new NodeInfoPanelController(mainController);
         XPathPanelController xpathPanelController = new XPathPanelController(mainController);
         SourceEditorController sourceEditorController = new SourceEditorController(mainController);
+
+        loader.setBuilderFactory(type -> {
+
+            boolean needsRoot = Arrays.stream(type.getConstructors()).anyMatch(it -> ArrayUtils.contains(it.getParameterTypes(), DesignerRoot.class));
+
+            if (needsRoot) {
+                ProxyBuilder<Object> builder = new ProxyBuilder<>(type);
+                builder.put("designerRoot", owner);
+                return builder;
+            } else {
+                return null; //use default
+            }
+        });
 
         loader.setControllerFactory(type -> {
             if (type == MainDesignerController.class) {

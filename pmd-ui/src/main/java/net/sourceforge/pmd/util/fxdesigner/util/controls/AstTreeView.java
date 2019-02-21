@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 
+import javafx.beans.NamedArg;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -41,7 +42,9 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
     private DesignerRoot designerRoot;
 
 
-    public AstTreeView() {
+    public AstTreeView(@NamedArg("designerRoot") DesignerRoot root) {
+        designerRoot = root;
+
         EventSource<Node> eventSink = new EventSource<>();
         selectionEvents = eventSink.suppressible();
 
@@ -58,6 +61,8 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
                 eventSink.push(n);
             }
         }));
+
+        initNodeSelectionHandling();
     }
 
 
@@ -141,8 +146,4 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
     }
 
 
-    public void setDesignerRoot(DesignerRoot designerRoot) {
-        this.designerRoot = designerRoot;
-        initNodeSelectionHandling();
-    }
 }

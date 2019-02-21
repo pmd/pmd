@@ -78,16 +78,11 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
     public SourceEditorController(MainDesignerController mainController) {
         super(mainController);
         astManager = new ASTManager(mainController.getDesignerRoot());
-
     }
 
 
     @Override
     protected void beforeParentInit() {
-
-        astTreeView.setDesignerRoot(getDesignerRoot());
-        nodeEditionCodeArea.setDesignerRoot(getDesignerRoot());
-
         initializeLanguageSelector(); // languageVersionProperty() must be initialized
 
         languageVersionProperty().values()
