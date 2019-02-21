@@ -9,12 +9,10 @@ import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.pare
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.reactfx.EventSource;
 import org.reactfx.EventStreams;
 import org.reactfx.SuspendableEventStream;
-import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
@@ -33,7 +31,6 @@ import javafx.scene.control.TreeView;
 public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
 
-    private final Var<Consumer<Node>> onNodeClickedHandler = Var.newSimpleVar(n -> {});
     private final TreeViewWrapper<Node> myWrapper = new TreeViewWrapper<>(this);
 
     private ASTTreeItem selectedTreeItem;
@@ -48,6 +45,10 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
         selectionEvents = eventSink.suppressible();
 
         initNodeSelectionHandling(root, selectionEvents, false);
+
+        // this needs to be done even if the selection originates from this node
+        EventStreams.changesOf(getSelectionModel().selectedItemProperty())
+                    .subscribe(item -> highlightFocusNodeParents((ASTTreeItem) item.getOldValue(), (ASTTreeItem) item.getNewValue()));
 
         // push a node selection event whenever...
         //  * The selection changes
@@ -90,8 +91,6 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
                 selectionEvents.suspendWhile(() -> selectionModel.select(found));
             }
 
-            highlightFocusNodeParents(selectedTreeItem, found);
-
             selectedTreeItem = found;
 
             getFocusModel().focus(selectionModel.getSelectedIndex());
@@ -132,11 +131,6 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
      */
     private boolean isIndexVisible(int index) {
         return myWrapper.isIndexVisible(index);
-    }
-
-
-    public Var<Consumer<Node>> onNodeClickedHandlerProperty() {
-        return onNodeClickedHandler;
     }
 
 
