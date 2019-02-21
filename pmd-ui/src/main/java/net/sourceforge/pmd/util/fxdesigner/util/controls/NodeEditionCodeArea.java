@@ -16,7 +16,6 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.LineNumberFactory;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -57,13 +56,14 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
 
         this.designerRoot = root;
 
+        // never emits selection events itself for now, but handles events from other sources
+        initNodeSelectionHandling(root, EventStreams.never());
+
         setParagraphGraphicFactory(lineNumberFactory());
 
         currentRuleResultsProperty().values().subscribe(this::highlightXPathResults);
         currentErrorNodesProperty().values().subscribe(this::highlightErrorNodes);
         currentNameOccurrences.values().subscribe(this::highlightNameOccurrences);
-
-        initNodeSelectionHandling();
     }
 
     /** Scroll the editor to a node and makes it visible. */
@@ -149,13 +149,6 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
     public void moveCaret(int line, int column) {
         moveTo(line, column);
         requestFollowCaret();
-    }
-
-
-    @Override
-    public EventStream<Node> getSelectionEvents() {
-        // never emits selection events itself for now
-        return EventStreams.never();
     }
 
 

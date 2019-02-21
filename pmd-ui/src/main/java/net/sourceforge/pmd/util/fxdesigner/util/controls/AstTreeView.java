@@ -48,6 +48,8 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
         EventSource<Node> eventSink = new EventSource<>();
         selectionEvents = eventSink.suppressible();
 
+        initNodeSelectionHandling(root, selectionEvents);
+
         // push a node selection event whenever...
         //  * The selection changes
         EventStreams.valuesOf(getSelectionModel().selectedItemProperty())
@@ -62,14 +64,8 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
             }
         }));
 
-        initNodeSelectionHandling();
     }
 
-
-    @Override
-    public EventStream<Node> getSelectionEvents() {
-        return selectionEvents;
-    }
 
 
     /**

@@ -101,18 +101,14 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
         // suppress as early as possible in the pipeline
         myScopeItemSelectionEvents = EventStreams.valuesOf(scopeHierarchyTreeView.getSelectionModel().selectedItemProperty()).suppressible();
 
-        initNodeSelectionHandling();
+        EventStream<Node> selectionEvents = myScopeItemSelectionEvents.filter(Objects::nonNull)
+                                                                      .map(TreeItem::getValue)
+                                                                      .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
+                                                                      .map(NameDeclaration::getNode);
+
+        initNodeSelectionHandling(getDesignerRoot(), selectionEvents);
     }
 
-
-    @Override
-    public EventStream<Node> getSelectionEvents() {
-        return myScopeItemSelectionEvents.filter(Objects::nonNull)
-                                         .map(TreeItem::getValue)
-                                         .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
-                                         .map(NameDeclaration::getNode);
-
-    }
 
 
     /**

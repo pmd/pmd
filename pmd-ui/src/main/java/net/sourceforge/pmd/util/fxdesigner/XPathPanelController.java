@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.SuspendableEventStream;
 import org.reactfx.collection.LiveArrayList;
@@ -134,7 +133,8 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
         selectionEvents = EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty()).suppressible();
 
-        initNodeSelectionHandling();
+        initNodeSelectionHandling(getDesignerRoot(),
+                                  selectionEvents.filter(Objects::nonNull).map(TextAwareNodeWrapper::getNode));
     }
 
 
@@ -222,14 +222,6 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
             }
         });
     }
-
-
-    @Override
-    public EventStream<Node> getSelectionEvents() {
-        return selectionEvents.filter(Objects::nonNull)
-                              .map(TextAwareNodeWrapper::getNode);
-    }
-
 
     @Override
     public void setFocusNode(Node node) {

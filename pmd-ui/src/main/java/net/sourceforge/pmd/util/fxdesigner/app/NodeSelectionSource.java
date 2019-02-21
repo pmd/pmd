@@ -24,19 +24,6 @@ public interface NodeSelectionSource extends ApplicationComponent {
 
 
     /**
-     * Returns a stream of events that should push an event each time
-     * this source or one of its sub components records a change in node
-     * selection. This one needs to be implemented in sub classes.
-     *
-     * <p>You can't trust that this method will return the same stream
-     * when called several times. In fact it's just called one time.
-     * That's why you can't abstract the suppressible behaviour here.
-     * You'd need Scala traits.
-     */
-    EventStream<Node> getSelectionEvents();
-
-
-    /**
      * Updates the UI to react to a change in focus node. This is called whenever some selection source
      * in the tree records a change.
      */
@@ -45,10 +32,17 @@ public interface NodeSelectionSource extends ApplicationComponent {
 
     /**
      * Initialises this component. Must be called by the component somewhere.
+     *
+     * @param root              Instance of the app. Should be the same as {@link #getDesignerRoot()},
+     *                          but a parameter here to make it clear that {@link #getDesignerRoot()}
+     *                          must be initialized before this method is called.
+     * @param mySelectionEvents Stream of nodes that should push an event each
+     *                          time this source records a change in node selection
      */
-    default void initNodeSelectionHandling() {
-        MessageChannel<Node> channel = getDesignerRoot().getNodeSelectionChannel();
-        getSelectionEvents().subscribe(n -> channel.pushEvent(this, n));
+    default void initNodeSelectionHandling(DesignerRoot root,
+                                           EventStream<? extends Node> mySelectionEvents) {
+        MessageChannel<Node> channel = root.getNodeSelectionChannel();
+        mySelectionEvents.subscribe(n -> channel.pushEvent(this, n));
         channel.messageStream(this).subscribe(this::setFocusNode);
     }
 
