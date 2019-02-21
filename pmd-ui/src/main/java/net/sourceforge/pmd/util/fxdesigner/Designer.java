@@ -34,23 +34,30 @@ import javafx.stage.Stage;
  */
 public class Designer extends Application {
 
-    private boolean parseParameters(Parameters params) {
+    private boolean isDeveloperMode;
+    private long initStartTimeMillis;
+
+    public Designer() {
+        initStartTimeMillis = System.currentTimeMillis();
+    }
+
+    private void parseParameters(Parameters params) {
         List<String> raw = params.getRaw();
-        if (!raw.contains("-v")
-            && !raw.contains("--verbose")) {
-            // error output is disabled by default
-            
-            System.err.close();
-            return false;
+        // error output is disabled by default
+        if (raw.contains("-v") || raw.contains("--verbose")) {
+            isDeveloperMode = true;
         }
-        return true;
     }
 
 
     @Override
     public void start(Stage stage) throws IOException {
-        boolean isDeveloperMode = parseParameters(getParameters());
+        parseParameters(getParameters());
 
+        stage.setTitle("PMD Rule Designer (v " + PMDVersion.VERSION + ')');
+        setIcons(stage);
+
+        System.out.print(stage.getTitle() + " initializing... ");
 
         FXMLLoader loader = new FXMLLoader(DesignerUtil.getFxml("designer.fxml"));
 
@@ -66,6 +73,10 @@ public class Designer extends Application {
             boolean needsRoot = Arrays.stream(type.getConstructors()).anyMatch(it -> ArrayUtils.contains(it.getParameterTypes(), DesignerRoot.class));
 
             if (needsRoot) {
+                // Controls that need the DesignerRoot can declare a constructor
+                // with a parameter w/ signature @NamedArg("designerRoot") DesignerRoot
+                // to be injected with the relevant instance of the app.
+                // TODO Not everything has been refactored to use this mechanism for now
                 ProxyBuilder<Object> builder = new ProxyBuilder<>(type);
                 builder.put("designerRoot", owner);
                 return builder;
@@ -99,11 +110,20 @@ public class Designer extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        stage.setTitle("PMD Rule Designer (v " + PMDVersion.VERSION + ')');
-        setIcons(stage);
-
         stage.setScene(scene);
+
+        if (owner.isDeveloperMode()) {
+            // only close after initialization succeeded.
+            // but before stage.show to reduce unwanted noise
+            System.err.close();
+        }
+
         stage.show();
+
+        long initTime = System.currentTimeMillis() - initStartTimeMillis;
+
+        System.out.println("done in " + initTime + "ms.");
+        System.out.println("Run with --verbose parameter to enable error output.");
     }
 
 

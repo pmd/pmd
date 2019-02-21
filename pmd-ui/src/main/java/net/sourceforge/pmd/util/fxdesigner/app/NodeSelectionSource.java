@@ -34,7 +34,7 @@ public interface NodeSelectionSource extends ApplicationComponent {
      * Initialises this component. Must be called by the component somewhere.
      *
      * @param root                  Instance of the app. Should be the same as {@link #getDesignerRoot()},
-     *                              but a parameter here to make it clear that {@link #getDesignerRoot()}
+     *                              but the parameter here is to make it clear that {@link #getDesignerRoot()}
      *                              must be initialized before this method is called.
      * @param mySelectionEvents     Stream of nodes that should push an event each
      * @param alwaysHandleSelection Whether the component should handle selection events that originated from itself.
