@@ -26,11 +26,12 @@ import javafx.scene.control.TreeView;
  * VM option.
  *
  * @param <T> Element type of the treeview
+ *
  * @author Clément Fournier
  * @since 6.4.0
  */
 class TreeViewWrapper<T> {
-    
+
 
     private final TreeView<T> wrapped;
     private Method treeViewFirstVisibleMethod;
@@ -38,6 +39,8 @@ class TreeViewWrapper<T> {
     // We can't use strong typing
     // because the class has moved packages over different java versions
     private Object virtualFlow = null;
+
+    private boolean reflectionImpossibleWarning = false;
 
 
     TreeViewWrapper(TreeView<T> wrapped) {
@@ -75,6 +78,10 @@ class TreeViewWrapper<T> {
      * is visible in the TreeView.
      */
     boolean isIndexVisible(int index) {
+        if (reflectionImpossibleWarning) {
+            return false;
+        }
+
         if (virtualFlow == null && wrapped.getSkin() == null) {
             return false;
         } else if (virtualFlow == null && wrapped.getSkin() != null) {
@@ -120,7 +127,7 @@ class TreeViewWrapper<T> {
     }
 
 
-    private static Object getVirtualFlow(Skin<?> skin) {
+    private Object getVirtualFlow(Skin<?> skin) {
         try {
             // On JRE 9 and 10, the field is declared in TreeViewSkin
             // http://hg.openjdk.java.net/openjfx/9/rt/file/c734b008e3e8/modules/javafx.controls/src/main/java/javafx/scene/control/skin/TreeViewSkin.java#l85
@@ -131,6 +138,22 @@ class TreeViewWrapper<T> {
             return FieldUtils.readField(skin, "flow", true);
         } catch (IllegalAccessException ignored) {
 
+        } catch (RuntimeException re) {
+            if (!reflectionImpossibleWarning && "java.lang.reflect.InaccessibleObjectException".equals(re.getClass().getName())) {
+                // that exception was introduced for Jigsaw (JRE 9)
+                // so we can't refer to it without breaking compat with Java 8
+
+                // TODO log that properly, System.err is closed when not in developer mode
+
+                System.err.println();
+                System.err.println("On JRE 9+, the following VM argument makes the controls smarter:");
+                System.err.println("--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED");
+                System.err.println("Please consider adding it to the command-line.");
+
+                reflectionImpossibleWarning = true;
+            } else {
+                throw re;
+            }
         }
         return null;
     }

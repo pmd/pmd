@@ -33,17 +33,20 @@ public interface NodeSelectionSource extends ApplicationComponent {
     /**
      * Initialises this component. Must be called by the component somewhere.
      *
-     * @param root              Instance of the app. Should be the same as {@link #getDesignerRoot()},
-     *                          but a parameter here to make it clear that {@link #getDesignerRoot()}
-     *                          must be initialized before this method is called.
-     * @param mySelectionEvents Stream of nodes that should push an event each
-     *                          time this source records a change in node selection
+     * @param root                  Instance of the app. Should be the same as {@link #getDesignerRoot()},
+     *                              but a parameter here to make it clear that {@link #getDesignerRoot()}
+     *                              must be initialized before this method is called.
+     * @param mySelectionEvents     Stream of nodes that should push an event each
+     * @param alwaysHandleSelection Whether the component should handle selection events that originated from itself.
+     *                              For now some must, because they aggregate several selection sources (the {@link net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController}).
+     *                              Splitting it into separate controls will remove the need for that.
      */
     default void initNodeSelectionHandling(DesignerRoot root,
-                                           EventStream<? extends Node> mySelectionEvents) {
+                                           EventStream<? extends Node> mySelectionEvents,
+                                           boolean alwaysHandleSelection) {
         MessageChannel<Node> channel = root.getNodeSelectionChannel();
         mySelectionEvents.subscribe(n -> channel.pushEvent(this, n));
-        channel.messageStream(this).subscribe(this::setFocusNode);
+        channel.messageStream(alwaysHandleSelection, this).subscribe(this::setFocusNode);
     }
 
 }

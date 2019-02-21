@@ -106,7 +106,8 @@ public class NodeInfoPanelController extends AbstractController<MainDesignerCont
                                                                       .filterMap(o -> o instanceof NameDeclaration, o -> (NameDeclaration) o)
                                                                       .map(NameDeclaration::getNode);
 
-        initNodeSelectionHandling(getDesignerRoot(), selectionEvents);
+        // TODO split this into independent NodeSelectionSources
+        initNodeSelectionHandling(getDesignerRoot(), selectionEvents, true);
     }
 
 

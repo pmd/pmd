@@ -58,8 +58,10 @@ public class MessageChannel<T> {
      *
      * @return A stream of messages
      */
-    public EventStream<T> messageStream(ApplicationComponent component) {
+    public EventStream<T> messageStream(boolean alwaysHandle,
+                                        ApplicationComponent component) {
         return distinct.hook(message -> component.logMessageTrace(message, () -> component.getDebugName() + " is handling message " + message))
+                       .filter(message -> alwaysHandle || !component.equals(message.getOrigin()))
                        .map(Message::getContent);
     }
 

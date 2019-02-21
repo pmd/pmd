@@ -57,7 +57,7 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
         this.designerRoot = root;
 
         // never emits selection events itself for now, but handles events from other sources
-        initNodeSelectionHandling(root, EventStreams.never());
+        initNodeSelectionHandling(root, EventStreams.never(), false);
 
         setParagraphGraphicFactory(lineNumberFactory());
 

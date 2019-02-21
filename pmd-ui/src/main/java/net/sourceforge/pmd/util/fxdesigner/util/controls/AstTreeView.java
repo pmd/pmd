@@ -12,7 +12,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.reactfx.EventSource;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.SuspendableEventStream;
 import org.reactfx.value.Var;
@@ -48,7 +47,7 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
         EventSource<Node> eventSink = new EventSource<>();
         selectionEvents = eventSink.suppressible();
 
-        initNodeSelectionHandling(root, selectionEvents);
+        initNodeSelectionHandling(root, selectionEvents, false);
 
         // push a node selection event whenever...
         //  * The selection changes
@@ -81,6 +80,11 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
             // && node is not null
 
             ASTTreeItem found = ((ASTTreeItem) getRoot()).findItem(node);
+
+            if (found != null && found.equals(selectedTreeItem)) {
+                return;
+            }
+
             if (found != null) {
                 // don't fire any selection event while itself setting the selected item
                 selectionEvents.suspendWhile(() -> selectionModel.select(found));

@@ -134,7 +134,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
         selectionEvents = EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty()).suppressible();
 
         initNodeSelectionHandling(getDesignerRoot(),
-                                  selectionEvents.filter(Objects::nonNull).map(TextAwareNodeWrapper::getNode));
+                                  selectionEvents.filter(Objects::nonNull).map(TextAwareNodeWrapper::getNode), false);
     }
 
 
