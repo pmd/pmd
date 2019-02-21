@@ -13,11 +13,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.EventStreams;
 import org.reactfx.SuspendableEventStream;
 import org.reactfx.collection.LiveArrayList;
@@ -55,6 +58,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
@@ -78,6 +82,8 @@ import javafx.stage.StageStyle;
  */
 public class XPathPanelController extends AbstractController<MainDesignerController> implements NodeSelectionSource {
 
+    private static final Pattern EXCEPTION_PREFIX_PATTERN = Pattern.compile("(?:(?:\\w+\\.)*\\w+:\\s*)*\\s*(.*)$", Pattern.DOTALL);
+    private static final String NO_MATCH_MESSAGE = "No match in text";
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
     private final ObservableXPathRuleBuilder ruleBuilder = new ObservableXPathRuleBuilder();
@@ -135,7 +141,10 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
         initNodeSelectionHandling(getDesignerRoot(),
                                   selectionEvents.filter(Objects::nonNull).map(TextAwareNodeWrapper::getNode), false);
+
+        violationsTitledPane.titleProperty().bind(currentResults.map(List::size).map(n -> "Matched nodes (" + n + ")"));
     }
+
 
 
     @Override
@@ -252,7 +261,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
         try {
             String xpath = getXpathExpression();
             if (StringUtils.isBlank(xpath)) {
-                invalidateResults(false);
+                updateResults(false, false, Collections.emptyList(), "Type an XPath expression to show results");
                 return;
             }
 
@@ -262,13 +271,12 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
                                                                                  getXpathVersion(),
                                                                                  xpath,
                                                                                  ruleBuilder.getRuleProperties()));
-            xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
-            this.currentResults.setValue(results);
-            violationsTitledPane.setTitle("Matched nodes (" + results.size() + ")");
+
+            updateResults(false, false, results, NO_MATCH_MESSAGE);
             // Notify that everything went OK so we can avoid logging very recent exceptions
             raiseParsableXPathFlag();
         } catch (XPathEvaluationException e) {
-            invalidateResults(true);
+            updateResults(true, false, Collections.emptyList(), sanitizeExceptionMessage(e));
             logUserException(e, Category.XPATH_EVALUATION_EXCEPTION);
         }
 
@@ -280,10 +288,12 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
     }
 
 
-    public void invalidateResults(boolean error) {
-        xpathResultListView.getItems().clear();
-        this.currentResults.setValue(Collections.emptyList());
-        violationsTitledPane.setTitle("Matched nodes" + (error ? "\t(error)" : ""));
+    /**
+     * Called by the rest of the app.
+     */
+    public void invalidateResultsExternal(boolean error) {
+        String placeholder = error ? "Compilation unit is invalid" : NO_MATCH_MESSAGE;
+        updateResults(false, true, Collections.emptyList(), placeholder);
     }
 
 
@@ -355,5 +365,28 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
         return Collections.singletonList(getRuleBuilder());
     }
 
+
+    private void updateResults(boolean xpathError,
+                               boolean otherError,
+                               List<Node> results,
+                               String emptyResultsPlaceholder) {
+
+        Label emptyLabel = xpathError || otherError
+                           ? new Label(emptyResultsPlaceholder, new FontIcon("fas-exclamation"))
+                           : new Label(emptyResultsPlaceholder);
+
+        xpathResultListView.setPlaceholder(emptyLabel);
+
+        xpathResultListView.setItems(results.stream().map(parent::wrapNode).collect(Collectors.toCollection(LiveArrayList::new)));
+        this.currentResults.setValue(results);
+        // only show the error label here when it's an xpath error
+        expressionTitledPane.errorMessageProperty().setValue(xpathError ? emptyResultsPlaceholder : "");
+    }
+
+
+    private static String sanitizeExceptionMessage(Throwable exception) {
+        Matcher matcher = EXCEPTION_PREFIX_PATTERN.matcher(exception.getMessage());
+        return matcher.matches() ? matcher.group(1) : exception.getMessage();
+    }
 
 }

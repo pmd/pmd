@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import java.util.Collection;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -18,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
 
@@ -33,9 +35,21 @@ public final class ToolbarTitledPane extends TitledPane {
 
     private final ToolBar toolBar = new ToolBar();
     private final Var<String> title = Var.newSimpleVar("Title");
+    private final Var<String> errorMessage = Var.newSimpleVar("");
 
 
     public ToolbarTitledPane() {
+
+        Label errorLabel = new Label();
+
+        FontIcon errorIcon = new FontIcon("fas-exclamation-triangle");
+        errorLabel.setGraphic(errorIcon);
+        errorLabel.tooltipProperty().bind(errorMessage.map(message -> StringUtils.isBlank(message) ? null : new Tooltip(message)));
+        errorLabel.visibleProperty().bind(errorMessage.map(StringUtils::isNotBlank));
+        // makes the label zero-width when it's not visible
+        errorLabel.managedProperty().bind(errorLabel.visibleProperty());
+
+        toolBar.getItems().add(errorLabel);
 
         getStyleClass().add("tool-bar-title");
 
@@ -79,11 +93,6 @@ public final class ToolbarTitledPane extends TitledPane {
     }
 
 
-    public void setToolbarItems(Collection<? extends Node> nodes) {
-        toolBar.getItems().setAll(nodes);
-    }
-
-
     public String getTitle() {
         return title.getValue();
     }
@@ -93,6 +102,10 @@ public final class ToolbarTitledPane extends TitledPane {
         this.title.setValue(title);
     }
 
+
+    public Var<String> errorMessageProperty() {
+        return errorMessage;
+    }
 
     /** Title of the pane, not equivalent to {@link #textProperty()}. */
     public Var<String> titleProperty() {

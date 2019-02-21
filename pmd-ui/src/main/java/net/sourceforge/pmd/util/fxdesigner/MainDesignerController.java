@@ -165,7 +165,7 @@ public class MainDesignerController extends AbstractController<AbstractControlle
         if (root.isPresent()) {
             xpathPanelController.evaluateXPath(root.get(), getLanguageVersion());
         } else {
-            xpathPanelController.invalidateResults(true);
+            xpathPanelController.invalidateResultsExternal(true);
         }
     }
 
@@ -276,7 +276,7 @@ public class MainDesignerController extends AbstractController<AbstractControlle
      */
     public void invalidateAst() {
         nodeInfoPanelController.setFocusNode(null);
-        xpathPanelController.invalidateResults(false);
+        xpathPanelController.invalidateResultsExternal(false);
         getDesignerRoot().getNodeSelectionChannel().pushEvent(this, null);
     }
 
