@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.sanitizeExceptionMessage;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -82,7 +84,6 @@ import javafx.stage.StageStyle;
  */
 public class XPathPanelController extends AbstractController<MainDesignerController> implements NodeSelectionSource {
 
-    private static final Pattern EXCEPTION_PREFIX_PATTERN = Pattern.compile("(?:(?:\\w+\\.)*\\w+:\\s*)*\\s*(.*)$", Pattern.DOTALL);
     private static final String NO_MATCH_MESSAGE = "No match in text";
     private static final Duration XPATH_REFRESH_DELAY = Duration.ofMillis(100);
     private final XPathEvaluator xpathEvaluator = new XPathEvaluator();
@@ -372,7 +373,7 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
                                String emptyResultsPlaceholder) {
 
         Label emptyLabel = xpathError || otherError
-                           ? new Label(emptyResultsPlaceholder, new FontIcon("fas-exclamation"))
+                           ? new Label(emptyResultsPlaceholder, new FontIcon("fas-exclamation-triangle"))
                            : new Label(emptyResultsPlaceholder);
 
         xpathResultListView.setPlaceholder(emptyLabel);
@@ -384,9 +385,5 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
     }
 
 
-    private static String sanitizeExceptionMessage(Throwable exception) {
-        Matcher matcher = EXCEPTION_PREFIX_PATTERN.matcher(exception.getMessage());
-        return matcher.matches() ? matcher.group(1) : exception.getMessage();
-    }
 
 }

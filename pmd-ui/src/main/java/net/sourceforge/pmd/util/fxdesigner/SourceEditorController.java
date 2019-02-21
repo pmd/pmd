@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.fxdesigner;
 
 import static java.util.Collections.emptyList;
+import static net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,7 +113,7 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
     @Override
     protected void afterParentInit() {
-        DesignerUtil.rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
+        rewire(astManager.languageVersionProperty(), languageVersionUIProperty);
         nodeEditionCodeArea.moveCaret(0, 0);
     }
 
@@ -121,7 +122,7 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
         ToggleGroup languageToggleGroup = new ToggleGroup();
 
-        DesignerUtil.getSupportedLanguageVersions()
+        getSupportedLanguageVersions()
                     .stream()
                     .sorted(LanguageVersion::compareTo)
                     .map(lv -> {
@@ -134,9 +135,9 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
                         languageSelectionMenuButton.getItems().add(item);
                     });
 
-        languageVersionUIProperty = DesignerUtil.mapToggleGroupToUserData(languageToggleGroup, DesignerUtil::defaultLanguageVersion);
+        languageVersionUIProperty = mapToggleGroupToUserData(languageToggleGroup, DesignerUtil::defaultLanguageVersion);
         // this will be overwritten by property restore if needed
-        languageVersionUIProperty.setValue(DesignerUtil.defaultLanguageVersion());
+        languageVersionUIProperty.setValue(defaultLanguageVersion());
     }
 
     /**
@@ -155,7 +156,7 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
         try {
             current = astManager.updateIfChanged(source, auxclasspathClassLoader.getValue());
         } catch (ParseAbortedException e) {
-            astTitledPane.setTitle("Abstract syntax tree (error)");
+            editorTitledPane.errorMessageProperty().setValue(sanitizeExceptionMessage(e));
             return Optional.empty();
         }
 
@@ -171,7 +172,7 @@ public class SourceEditorController extends AbstractController<MainDesignerContr
 
     private void setUpToDateCompilationUnit(Node node) {
         parent.invalidateAst();
-        astTitledPane.setTitle("Abstract syntax tree");
+        editorTitledPane.errorMessageProperty().setValue("");
         ASTTreeItem root = ASTTreeItem.getRoot(node);
         astTreeView.setRoot(root);
     }
