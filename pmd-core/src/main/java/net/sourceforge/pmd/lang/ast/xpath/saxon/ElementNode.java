@@ -122,6 +122,13 @@ public class ElementNode extends AbstractNodeInfo {
         return result;
     }
 
+
+    @Override
+    public String getDisplayName() {
+        return getLocalPart();
+    }
+
+
     @SuppressWarnings("PMD.MissingBreakInSwitch")
     @Override
     public AxisIterator iterateAxis(byte axisNumber) {

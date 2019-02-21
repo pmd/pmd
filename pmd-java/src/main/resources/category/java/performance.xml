@@ -850,7 +850,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
                 <value>
 <![CDATA[
 //Statement[
-    (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral='true' and @Image='0']) and (count(.//IfStatement)=0)
+    (ForStatement) and (ForStatement//VariableInitializer//Literal[@IntLiteral= true() and @Image='0']) and (count(.//IfStatement)=0)
    ]
    //StatementExpression[
     PrimaryExpression/PrimaryPrefix/Name[
@@ -870,7 +870,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
    [
-     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType="true"]/@Image
+     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType=true()]/@Image
      or
      @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Image
    ]

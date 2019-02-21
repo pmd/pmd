@@ -734,7 +734,7 @@ public String bar(String string) {
   @Name='onStart'
   ]
     /Block[not(
-      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name]))]
+      (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier= true()]]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name]))]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
   pmd-java:typeIs('android.app.Activity') or
   pmd-java:typeIs('android.app.Application') or
@@ -779,7 +779,7 @@ Super should be called at the end of the method
   @Name='onTerminate'
   ]
    /Block/BlockStatement[last()]
-    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name])]
+    [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier= true()]]/PrimarySuffix[@Image= ancestor::MethodDeclaration/@Name])]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
   pmd-java:typeIs('android.app.Activity') or
   pmd-java:typeIs('android.app.Application') or
@@ -892,7 +892,7 @@ Object.clone (which is protected) with a public method."
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Public='false']
+//MethodDeclaration[@Public= false()]
   [@Name = 'clone']
   [@Arity = 0]
 ]]>
@@ -1013,7 +1013,7 @@ and count(NameList/Name[contains
 (@Image,'CloneNotSupportedException')]) = 0
 ]
 [
-../../../../ClassOrInterfaceDeclaration[@Final = 'false']
+../../../../ClassOrInterfaceDeclaration[@Final = false()]
 ]
 ]]>
                 </value>
@@ -1474,7 +1474,7 @@ or reported.
                 <value>
 <![CDATA[
 //CatchStatement
- [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
+ [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != true() or Block/@containsComment = false())]
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
@@ -1882,13 +1882,13 @@ a block whose last statement is NOT a call to super.finalize -->
    /Block
       /BlockStatement[last()]
       [not(Statement/StatementExpression/PrimaryExpression
-            [./PrimaryPrefix[@SuperModifier='true']]
+            [./PrimaryPrefix[@SuperModifier= true()]]
             [./PrimarySuffix[@Image='finalize']]
           )
       ]
       [not(Statement/TryStatement/FinallyStatement
        /Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-            [./PrimaryPrefix[@SuperModifier='true']]
+            [./PrimaryPrefix[@SuperModifier= true()]]
             [./PrimarySuffix[@Image='finalize']]
           )
       ]
@@ -1924,7 +1924,7 @@ If the finalize() is implemented, it should do something besides just calling su
    /Block[count(BlockStatement)=1]
      /BlockStatement[
        Statement/StatementExpression/PrimaryExpression
-       [./PrimaryPrefix[@SuperModifier='true']]
+       [./PrimaryPrefix[@SuperModifier= true()]]
        [./PrimarySuffix[@Image='finalize']]
      ]
 ]]>
@@ -1990,7 +1990,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Protected="false"][@Name='finalize'][@Arity = 0]
+//MethodDeclaration[@Protected=false()][@Name='finalize'][@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -2199,7 +2199,7 @@ The suite() method in a JUnit test needs to be both public and static.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[not(@Static='true') or not(@Public='true')]
+//MethodDeclaration[not(@Static= true()) or not(@Public= true())]
 [@Name='suite']
 [@Arity = 0]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
@@ -2248,7 +2248,7 @@ The rule is replaced by {% rule java/errorprone/ProperLogger %}.
  [../Type/ReferenceType
   /ClassOrInterfaceType[@Image='Logger']
    and
-  (..[@Final='false'] or ..[@Static = 'false'] ) ]
+  (..[@Final= false()] or ..[@Static = false()] ) ]
 ]]>
                 </value>
             </property>
@@ -2333,7 +2333,7 @@ Either the check is useless (the variable will never be "null") or it is incorre
 public class Foo {
     void bar() {
         if (a.equals(baz) && a != null) {} // a could be null, misplaced null check
-        
+
         if (a != null && a.equals(baz)) {} // correct null check
     }
 }
@@ -2344,7 +2344,7 @@ public class Foo {
 public class Foo {
     void bar() {
         if (a.equals(baz) || a == null) {} // a could be null, misplaced null check
-        
+
         if (a == null || a.equals(baz)) {} // correct null check
     }
 }
@@ -2372,7 +2372,7 @@ may indicate problematic behaviour. Empty cases are ignored as these indicate an
  + count(BlockStatement//Statement/ReturnStatement)
  + count(BlockStatement//Statement/ContinueStatement)
  + count(BlockStatement//Statement/ThrowStatement)
- + count(BlockStatement//Statement/IfStatement[@Else='true' and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
+ + count(BlockStatement//Statement/IfStatement[@Else= true() and Statement[2][ReturnStatement|ContinueStatement|ThrowStatement]]/Statement[1][ReturnStatement|ContinueStatement|ThrowStatement])
  + count(SwitchLabel[name(following-sibling::node()) = 'SwitchLabel'])
  + count(SwitchLabel[count(following-sibling::node()) = 0])
   < count (SwitchLabel))]
@@ -2421,7 +2421,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration
-    [@Interface = 'false']
+    [@Interface = false()]
     [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
         /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
@@ -2460,14 +2460,13 @@ See the property `annotations`.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested=false()]
+//ClassOrInterfaceDeclaration[@Nested= false()]
 [
   (
     (: at least one constructor :)
     ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
     and
-    (: only private constructors :)
-    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private=true()])
+    (: only private constructors :)count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private= true()])
     and
     (: all constructors must not be annotated :)
     (every $x in $annotations satisfies
@@ -2475,24 +2474,20 @@ See the property `annotations`.
             ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs($x)]))
   )
   and
-  (: no static methods :)
-  not(.//MethodDeclaration[@Static=true()])
+  (: no static methods :)not(.//MethodDeclaration[@Static= true()])
   and
-  (: no (public, package-private, protected) static fields :)
-  not(.//FieldDeclaration[@Private=false()][@Static=true()])
+  (: no (public, package-private, protected) static fields :)not(.//FieldDeclaration[@Private= false()][@Static= true()])
   and
   (: no nested classes, that are public and static, and have no constructors at all or a public constructor :)
   (: and have a method returning the outer class type :)
-  (: or the inner class extends the outer class :)
-  not(.//ClassOrInterfaceDeclaration[@Nested=true()]
-           [@Public=true()]
-           [@Static=true()]
-           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
-               or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public=true()]]
+  (: or the inner class extends the outer class :)not(.//ClassOrInterfaceDeclaration[@Nested= true()]
+           [@Public= true()]
+           [@Static= true()]
+           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public= true()]]
            [(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-                [@Public=true()]
+                [@Public= true()]
                 [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@SimpleName]
+                    [@Image = //ClassOrInterfaceDeclaration[@Nested= false()]/@SimpleName]
                 ]
             ) or (
                 ./ExtendsList/ClassOrInterfaceType[@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@SimpleName]
@@ -2788,7 +2783,7 @@ NullPointerExceptions.
 <![CDATA[
 //MethodDeclaration
 [
-(./ResultType/Type[@ArrayType='true'])
+(./ResultType/Type[@ArrayType= true()])
 and
 (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
 ]
@@ -2967,9 +2962,9 @@ behavior especially when instances are distributed by the container on several J
     )
     and
     (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
-         (./FieldDeclaration[@Static = 'true'])
+         (./FieldDeclaration[@Static = true()])
          and
-         (./FieldDeclaration[@Final = 'false'])
+         (./FieldDeclaration[@Final = false()])
     ])
 ]
 ]]>
@@ -3377,7 +3372,7 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [Type//ClassOrInterfaceType[@Image='Log']]
 /VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
-[PrimarySuffix/Arguments[@Size='1']]
+[PrimarySuffix/Arguments[@Size= 1]]
 [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
 ]]>
                 </value>

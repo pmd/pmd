@@ -23,9 +23,9 @@ This rule helps improve code portability due to differences in browser treatment
             <property name="xpath">
                 <value>
 <![CDATA[
-//ObjectLiteral[$allowObjectLiteral = "false" and @TrailingComma = 'true']
+//ObjectLiteral[$allowObjectLiteral = false() and @TrailingComma = true()]
 |
-//ArrayLiteral[$allowArrayLiteral = "false" and @TrailingComma = 'true']
+//ArrayLiteral[$allowArrayLiteral = false() and @TrailingComma = true()]
 ]]>
                 </value>
             </property>
@@ -62,7 +62,7 @@ same type. The === operator avoids the casting.
 <![CDATA[
 //InfixExpression[(@Image = "==" or @Image = "!=")
   and
- (child::KeywordLiteral[@Image = "true" or @Image = "false"]
+ (child::KeywordLiteral[@Image = true() or @Image = false()]
  or
  child::NumberLiteral)
 ]

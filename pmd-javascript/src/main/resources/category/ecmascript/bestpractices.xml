@@ -82,7 +82,7 @@ Global variables can lead to side-effects that are hard to debug.
             <property name="xpath">
                 <value>
 <![CDATA[
-//Assignment[Name/@GlobalName = 'true']
+//Assignment[Name/@GlobalName = true()]
 ]]>
                 </value>
             </property>

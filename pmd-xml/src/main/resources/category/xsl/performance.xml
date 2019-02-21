@@ -38,7 +38,7 @@ cutting through 100% of the document.
   or
   contains(@select,'descendant-self::')
   or (
-    ($checkSelfDescendantAbreviation = 'true' )
+    ($checkSelfDescendantAbreviation = true() )
     and
     contains(@select,'//')
     )

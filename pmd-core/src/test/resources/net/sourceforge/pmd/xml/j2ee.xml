@@ -324,9 +324,9 @@ behavior especially when instances are distributed by the container on several J
     )
     and
     (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
-         (./FieldDeclaration[@Static = 'true'])
+         (./FieldDeclaration[@Static = true()])
          and
-         (./FieldDeclaration[@Final = 'false'])
+         (./FieldDeclaration[@Final = false()])
     ])
 ]
     		 ]]></value>

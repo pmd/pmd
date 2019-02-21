@@ -23,7 +23,7 @@ gets it.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//MethodDeclaration[@Synchronized='true']</value>
+                <value>//MethodDeclaration[@Synchronized= true()]</value>
             </property>
         </properties>
         <example>
@@ -102,7 +102,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//FieldDeclaration[contains(@Volatile,'true')]</value>
+                <value>//FieldDeclaration[@Volatile = true()]</value>
             </property>
         </properties>
         <example>
@@ -379,7 +379,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
                 <value>
 <![CDATA[
 //StatementExpression/PrimaryExpression
-[PrimarySuffix/Arguments[@Size = '0']]
+[PrimarySuffix/Arguments[@Size = 0]]
 [
     PrimaryPrefix[
         ./Name[@Image='notify' or ends-with(@Image,'.notify')]
