@@ -36,7 +36,8 @@ public interface NodeSelectionSource extends ApplicationComponent {
      * @param root                  Instance of the app. Should be the same as {@link #getDesignerRoot()},
      *                              but the parameter here is to make it clear that {@link #getDesignerRoot()}
      *                              must be initialized before this method is called.
-     * @param mySelectionEvents     Stream of nodes that should push an event each
+     * @param mySelectionEvents     Stream of nodes that should push an event each time the user selects a node
+     *                              from this control. The whole app will sync to this new selection.
      * @param alwaysHandleSelection Whether the component should handle selection events that originated from itself.
      *                              For now some must, because they aggregate several selection sources (the {@link net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController}).
      *                              Splitting it into separate controls will remove the need for that.
