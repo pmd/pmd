@@ -143,12 +143,12 @@ class TreeViewWrapper<T> {
                 // that exception was introduced for Jigsaw (JRE 9)
                 // so we can't refer to it without breaking compat with Java 8
 
-                // TODO log that properly, System.err is closed when not in developer mode
+                // TODO find a way to report errors in the app directly, System.out is too shitty
 
-                System.err.println();
-                System.err.println("On JRE 9+, the following VM argument makes the controls smarter:");
-                System.err.println("--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED");
-                System.err.println("Please consider adding it to the command-line.");
+                System.out.println();
+                System.out.println("On JRE 9+, the following VM argument makes the controls smarter:");
+                System.out.println("--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED");
+                System.out.println("Please consider adding it to your command-line or using the launch script bundled with PMD's binary distribution.");
 
                 reflectionImpossibleWarning = true;
             } else {
