@@ -103,6 +103,10 @@ public final class ToolbarTitledPane extends TitledPane {
     }
 
 
+    /**
+     * If non-blank, an error icon with this message as the tooltip
+     * will appear.
+     */
     public Var<String> errorMessageProperty() {
         return errorMessage;
     }

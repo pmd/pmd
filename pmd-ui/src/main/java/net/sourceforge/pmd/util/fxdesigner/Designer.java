@@ -123,7 +123,9 @@ public class Designer extends Application {
         long initTime = System.currentTimeMillis() - initStartTimeMillis;
 
         System.out.println("done in " + initTime + "ms.");
-        System.out.println("Run with --verbose parameter to enable error output.");
+        if (!owner.isDeveloperMode()) {
+            System.out.println("Run with --verbose parameter to enable error output.");
+        }
     }
 
 

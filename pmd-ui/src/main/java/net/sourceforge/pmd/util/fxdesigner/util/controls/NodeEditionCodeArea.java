@@ -48,8 +48,13 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
     private final Var<List<Node>> currentRuleResults = Var.newSimpleVar(Collections.emptyList());
     private final Var<List<Node>> currentErrorNodes = Var.newSimpleVar(Collections.emptyList());
     private final Var<List<NameOccurrence>> currentNameOccurrences = Var.newSimpleVar(Collections.emptyList());
-    private DesignerRoot designerRoot;
+    private final DesignerRoot designerRoot;
 
+    /** Only provided for scenebuilder, not used at runtime. */
+    public NodeEditionCodeArea() {
+        super(StyleLayerIds.class);
+        designerRoot = null;
+    }
 
     public NodeEditionCodeArea(@NamedArg("designerRoot") DesignerRoot root) {
         super(StyleLayerIds.class);

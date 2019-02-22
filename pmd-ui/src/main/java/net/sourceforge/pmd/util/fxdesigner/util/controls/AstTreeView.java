@@ -35,7 +35,14 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
     private ASTTreeItem selectedTreeItem;
     private final SuspendableEventStream<Node> selectionEvents;
-    private DesignerRoot designerRoot;
+    private final DesignerRoot designerRoot;
+
+
+    /** Only provided for scenebuilder, not used at runtime. */
+    public AstTreeView() {
+        designerRoot = null;
+        selectionEvents = null;
+    }
 
 
     public AstTreeView(@NamedArg("designerRoot") DesignerRoot root) {
