@@ -112,7 +112,7 @@ public class Designer extends Application {
 
         stage.setScene(scene);
 
-        if (owner.isDeveloperMode()) {
+        if (!owner.isDeveloperMode()) {
             // only close after initialization succeeded.
             // but before stage.show to reduce unwanted noise
             System.err.close();
