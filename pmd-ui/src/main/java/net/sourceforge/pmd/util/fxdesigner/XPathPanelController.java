@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +60,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
@@ -67,6 +70,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -365,14 +372,18 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
     }
 
 
+    private static final Pattern JAXEN_MISSING_PROPERTY_EXTRACTOR = Pattern.compile("Variable (\\w+)");
+    private static final Pattern SAXON_MISSING_PROPERTY_EXTRACTOR = Pattern.compile("Undeclared variable in XPath expression: \\$(\\w+)");
+
+
     private void updateResults(boolean xpathError,
                                boolean otherError,
                                List<Node> results,
                                String emptyResultsPlaceholder) {
 
-        Label emptyLabel = xpathError || otherError
-                           ? new Label(emptyResultsPlaceholder, new FontIcon("fas-exclamation-triangle"))
-                           : new Label(emptyResultsPlaceholder);
+        javafx.scene.Node emptyLabel = xpathError || otherError
+                                       ? getErrorPlaceholder(emptyResultsPlaceholder)
+                                       : new Label(emptyResultsPlaceholder);
 
         xpathResultListView.setPlaceholder(emptyLabel);
 
@@ -383,5 +394,31 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
     }
 
 
+    private javafx.scene.Node getErrorPlaceholder(String message) {
+        VBox vbox = getMissingPropertyName(message).map(
+            name -> {
+                Hyperlink hyperlink = new Hyperlink("Add property");
+                hyperlink.setOnAction(e -> propertyTableView.onAddPropertyClicked(name));
+                return new VBox(new Text("Undeclared property in XPath expression: $" + name), hyperlink);
+            }
+        ).orElse(new VBox(new Text(message)));
 
+        HBox hbox = new HBox(new FontIcon("fas-exclamation-triangle"), vbox);
+        hbox.setSpacing(10);
+        hbox.maxHeightProperty().bind(hbox.heightProperty());
+        hbox.maxWidthProperty().bind(vbox.widthProperty());
+        hbox.setFillHeight(false);
+        vbox.setFillWidth(false);
+        return hbox;
+    }
+
+
+    private Optional<String> getMissingPropertyName(String errorMessage) {
+        Pattern nameExtractor = XPathRuleQuery.XPATH_1_0.equals(getXpathVersion())
+                                ? JAXEN_MISSING_PROPERTY_EXTRACTOR
+                                : SAXON_MISSING_PROPERTY_EXTRACTOR;
+
+        Matcher matcher = nameExtractor.matcher(errorMessage);
+        return matcher.matches() ? Optional.of(matcher.group(1)) : Optional.empty();
+    }
 }
