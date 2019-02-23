@@ -70,6 +70,7 @@ import javafx.util.StringConverter;
  */
 public final class DesignerUtil {
 
+    private static final Pattern EXCEPTION_PREFIX_PATTERN = Pattern.compile("(?:(?:\\w+\\.)*\\w+:\\s*)*\\s*(.*)$", Pattern.DOTALL);
 
     private static final Path PMD_SETTINGS_DIR = Paths.get(System.getProperty("user.home"), ".pmd");
     private static final File DESIGNER_SETTINGS_FILE = PMD_SETTINGS_DIR.resolve("designer.xml").toFile();
@@ -287,6 +288,11 @@ public final class DesignerUtil {
         return lines.isEmpty() ? Optional.empty() : Optional.of("//" + String.join("/", lines));
     }
 
+
+    public static String sanitizeExceptionMessage(Throwable exception) {
+        Matcher matcher = EXCEPTION_PREFIX_PATTERN.matcher(exception.getMessage());
+        return matcher.matches() ? matcher.group(1) : exception.getMessage();
+    }
 
     /**
      * Works out an xpath query that matches the node

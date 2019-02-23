@@ -9,18 +9,16 @@ import static net.sourceforge.pmd.util.fxdesigner.util.DesignerIteratorUtil.pare
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.reactfx.EventSource;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.SuspendableEventStream;
-import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 
+import javafx.beans.NamedArg;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -33,17 +31,31 @@ import javafx.scene.control.TreeView;
 public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
 
 
-    private final Var<Consumer<Node>> onNodeClickedHandler = Var.newSimpleVar(n -> {});
     private final TreeViewWrapper<Node> myWrapper = new TreeViewWrapper<>(this);
 
     private ASTTreeItem selectedTreeItem;
     private final SuspendableEventStream<Node> selectionEvents;
-    private DesignerRoot designerRoot;
+    private final DesignerRoot designerRoot;
 
 
+    /** Only provided for scenebuilder, not used at runtime. */
     public AstTreeView() {
+        designerRoot = null;
+        selectionEvents = null;
+    }
+
+
+    public AstTreeView(@NamedArg("designerRoot") DesignerRoot root) {
+        designerRoot = root;
+
         EventSource<Node> eventSink = new EventSource<>();
         selectionEvents = eventSink.suppressible();
+
+        initNodeSelectionHandling(root, selectionEvents, false);
+
+        // this needs to be done even if the selection originates from this node
+        EventStreams.changesOf(getSelectionModel().selectedItemProperty())
+                    .subscribe(item -> highlightFocusNodeParents((ASTTreeItem) item.getOldValue(), (ASTTreeItem) item.getNewValue()));
 
         // push a node selection event whenever...
         //  * The selection changes
@@ -58,13 +70,9 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
                 eventSink.push(n);
             }
         }));
+
     }
 
-
-    @Override
-    public EventStream<Node> getSelectionEvents() {
-        return selectionEvents;
-    }
 
 
     /**
@@ -80,12 +88,15 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
             // && node is not null
 
             ASTTreeItem found = ((ASTTreeItem) getRoot()).findItem(node);
+
+            if (found != null && found.equals(selectedTreeItem)) {
+                return;
+            }
+
             if (found != null) {
                 // don't fire any selection event while itself setting the selected item
                 selectionEvents.suspendWhile(() -> selectionModel.select(found));
             }
-
-            highlightFocusNodeParents(selectedTreeItem, found);
 
             selectedTreeItem = found;
 
@@ -130,19 +141,10 @@ public class AstTreeView extends TreeView<Node> implements NodeSelectionSource {
     }
 
 
-    public Var<Consumer<Node>> onNodeClickedHandlerProperty() {
-        return onNodeClickedHandler;
-    }
-
-
     @Override
     public DesignerRoot getDesignerRoot() {
         return designerRoot;
     }
 
 
-    public void setDesignerRoot(DesignerRoot designerRoot) {
-        this.designerRoot = designerRoot;
-        initNodeSelectionHandling();
-    }
 }

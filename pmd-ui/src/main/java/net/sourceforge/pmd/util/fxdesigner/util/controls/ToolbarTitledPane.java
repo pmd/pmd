@@ -4,11 +4,14 @@
 
 package net.sourceforge.pmd.util.fxdesigner.util.controls;
 
-import java.util.Collection;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
+
+import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -16,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 
 
@@ -24,16 +28,28 @@ import javafx.scene.layout.StackPane;
  * Supported by some CSS in designer.less.
  *
  * @author Clément Fournier
- * @since 7.0.0
+ * @since 6.11.0
  */
 public final class ToolbarTitledPane extends TitledPane {
 
 
     private final ToolBar toolBar = new ToolBar();
     private final Var<String> title = Var.newSimpleVar("Title");
+    private final Var<String> errorMessage = Var.newSimpleVar("");
 
 
     public ToolbarTitledPane() {
+
+        Label errorLabel = new Label();
+
+        FontIcon errorIcon = new FontIcon("fas-exclamation-triangle");
+        errorLabel.setGraphic(errorIcon);
+        errorLabel.tooltipProperty().bind(errorMessage.map(message -> StringUtils.isBlank(message) ? null : new Tooltip(message)));
+        errorLabel.visibleProperty().bind(errorMessage.map(StringUtils::isNotBlank));
+        // makes the label zero-width when it's not visible
+        errorLabel.managedProperty().bind(errorLabel.visibleProperty());
+
+        toolBar.getItems().add(errorLabel);
 
         getStyleClass().add("tool-bar-title");
 
@@ -63,12 +79,10 @@ public final class ToolbarTitledPane extends TitledPane {
                 // The title region is provided by the skin,
                 // this is the only way to access it outside of css
                 StackPane titleRegion = (StackPane) parent;
-                toolBar.maxHeightProperty().unbind();
-                toolBar.maxHeightProperty().bind(titleRegion.heightProperty());
-                toolBar.minHeightProperty().unbind();
-                toolBar.minHeightProperty().bind(titleRegion.heightProperty());
-                toolBar.prefHeightProperty().unbind();
-                toolBar.prefHeightProperty().bind(titleRegion.heightProperty());
+
+                DesignerUtil.rewire(toolBar.maxHeightProperty(), titleRegion.heightProperty());
+                DesignerUtil.rewire(toolBar.minHeightProperty(), titleRegion.heightProperty());
+                DesignerUtil.rewire(toolBar.prefHeightProperty(), titleRegion.heightProperty());
             });
 
     }
@@ -76,11 +90,6 @@ public final class ToolbarTitledPane extends TitledPane {
 
     public ObservableList<Node> getToolbarItems() {
         return toolBar.getItems();
-    }
-
-
-    public void setToolbarItems(Collection<? extends Node> nodes) {
-        toolBar.getItems().setAll(nodes);
     }
 
 
@@ -93,6 +102,14 @@ public final class ToolbarTitledPane extends TitledPane {
         this.title.setValue(title);
     }
 
+
+    /**
+     * If non-blank, an error icon with this message as the tooltip
+     * will appear.
+     */
+    public Var<String> errorMessageProperty() {
+        return errorMessage;
+    }
 
     /** Title of the pane, not equivalent to {@link #textProperty()}. */
     public Var<String> titleProperty() {

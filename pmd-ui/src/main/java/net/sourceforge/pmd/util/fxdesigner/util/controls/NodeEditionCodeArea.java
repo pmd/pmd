@@ -16,7 +16,6 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 import org.fxmisc.richtext.LineNumberFactory;
-import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
@@ -31,10 +30,10 @@ import net.sourceforge.pmd.util.fxdesigner.app.NodeSelectionSource;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.AvailableSyntaxHighlighters;
 import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea;
-import net.sourceforge.pmd.util.fxdesigner.util.codearea.HighlightLayerCodeArea.LayerId;
 import net.sourceforge.pmd.util.fxdesigner.util.controls.NodeEditionCodeArea.StyleLayerIds;
 
 import javafx.application.Platform;
+import javafx.beans.NamedArg;
 import javafx.css.PseudoClass;
 
 
@@ -49,11 +48,21 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
     private final Var<List<Node>> currentRuleResults = Var.newSimpleVar(Collections.emptyList());
     private final Var<List<Node>> currentErrorNodes = Var.newSimpleVar(Collections.emptyList());
     private final Var<List<NameOccurrence>> currentNameOccurrences = Var.newSimpleVar(Collections.emptyList());
-    private DesignerRoot designerRoot;
+    private final DesignerRoot designerRoot;
 
-
+    /** Only provided for scenebuilder, not used at runtime. */
     public NodeEditionCodeArea() {
         super(StyleLayerIds.class);
+        designerRoot = null;
+    }
+
+    public NodeEditionCodeArea(@NamedArg("designerRoot") DesignerRoot root) {
+        super(StyleLayerIds.class);
+
+        this.designerRoot = root;
+
+        // never emits selection events itself for now, but handles events from other sources
+        initNodeSelectionHandling(root, EventStreams.never(), false);
 
         setParagraphGraphicFactory(lineNumberFactory());
 
@@ -149,13 +158,6 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
 
 
     @Override
-    public EventStream<Node> getSelectionEvents() {
-        // never emits selection events itself for now
-        return EventStreams.never();
-    }
-
-
-    @Override
     public void setFocusNode(Node node) {
         // editor is always scrolled when re-selecting a node
         if (node != null) {
@@ -184,19 +186,13 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
     }
 
 
-    public void setDesignerRoot(DesignerRoot designerRoot) {
-        this.designerRoot = designerRoot;
-        initNodeSelectionHandling();
-    }
-
-
     public void updateSyntaxHighlighter(Language language) {
         setSyntaxHighlighter(AvailableSyntaxHighlighters.getHighlighterForLanguage(language).orElse(null));
     }
 
 
     /** Style layers for the code area. */
-    enum StyleLayerIds implements LayerId {
+    enum StyleLayerIds implements HighlightLayerCodeArea.LayerId {
         // caution, the name of the constants are used as style classes
 
         /** For the currently selected node. */

@@ -24,19 +24,6 @@ public interface NodeSelectionSource extends ApplicationComponent {
 
 
     /**
-     * Returns a stream of events that should push an event each time
-     * this source or one of its sub components records a change in node
-     * selection. This one needs to be implemented in sub classes.
-     *
-     * <p>You can't trust that this method will return the same stream
-     * when called several times. In fact it's just called one time.
-     * That's why you can't abstract the suppressible behaviour here.
-     * You'd need Scala traits.
-     */
-    EventStream<Node> getSelectionEvents();
-
-
-    /**
      * Updates the UI to react to a change in focus node. This is called whenever some selection source
      * in the tree records a change.
      */
@@ -45,11 +32,22 @@ public interface NodeSelectionSource extends ApplicationComponent {
 
     /**
      * Initialises this component. Must be called by the component somewhere.
+     *
+     * @param root                  Instance of the app. Should be the same as {@link #getDesignerRoot()},
+     *                              but the parameter here is to make it clear that {@link #getDesignerRoot()}
+     *                              must be initialized before this method is called.
+     * @param mySelectionEvents     Stream of nodes that should push an event each time the user selects a node
+     *                              from this control. The whole app will sync to this new selection.
+     * @param alwaysHandleSelection Whether the component should handle selection events that originated from itself.
+     *                              For now some must, because they aggregate several selection sources (the {@link net.sourceforge.pmd.util.fxdesigner.NodeInfoPanelController}).
+     *                              Splitting it into separate controls will remove the need for that.
      */
-    default void initNodeSelectionHandling() {
-        MessageChannel<Node> channel = getDesignerRoot().getNodeSelectionChannel();
-        getSelectionEvents().subscribe(n -> channel.pushEvent(this, n));
-        channel.messageStream(this).subscribe(this::setFocusNode);
+    default void initNodeSelectionHandling(DesignerRoot root,
+                                           EventStream<? extends Node> mySelectionEvents,
+                                           boolean alwaysHandleSelection) {
+        MessageChannel<Node> channel = root.getNodeSelectionChannel();
+        mySelectionEvents.subscribe(n -> channel.pushEvent(this, n));
+        channel.messageStream(alwaysHandleSelection, this).subscribe(this::setFocusNode);
     }
 
 }
