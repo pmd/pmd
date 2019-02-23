@@ -192,7 +192,7 @@ public class NodeEditionCodeArea extends HighlightLayerCodeArea<StyleLayerIds> i
 
 
     /** Style layers for the code area. */
-    enum StyleLayerIds implements LayerId {
+    enum StyleLayerIds implements HighlightLayerCodeArea.LayerId {
         // caution, the name of the constants are used as style classes
 
         /** For the currently selected node. */
