@@ -8,6 +8,7 @@ package net.sourceforge.pmd.util.fxdesigner.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.reactfx.EventStream;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
@@ -200,4 +201,15 @@ public class PropertyDescriptorSpec implements SettingsOwner {
     public static ObservableList<PropertyDescriptorSpec> observableList() {
         return FXCollections.observableArrayList(extractor());
     }
+
+
+    /**
+     * Pushes an event every time the rule owning this property needs to be re-evaluated.
+     */
+    public EventStream<?> modificationTicks() {
+        return nameProperty().values()
+                             .or(valueProperty().values())
+                             .or(typeIdProperty().values());
+    }
+
 }

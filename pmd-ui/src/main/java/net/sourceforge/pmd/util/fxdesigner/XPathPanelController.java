@@ -71,7 +71,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -136,12 +135,9 @@ public class XPathPanelController extends AbstractController<MainDesignerControl
 
         exportXpathToRuleButton.setOnAction(e -> showExportXPathToRuleWizard());
 
-        xpathExpressionArea.richChanges()
-                           .filter(t -> !t.isIdentity())
-                           .successionEnds(XPATH_REFRESH_DELAY)
-                           // Reevaluate XPath anytime the expression or the XPath version changes
-                           .or(xpathVersionProperty().changes())
-                           .subscribe(tick -> parent.refreshXPathResults());
+        getRuleBuilder().modificationsTicks()
+                        .successionEnds(XPATH_REFRESH_DELAY)
+                        .subscribe(tick -> parent.refreshXPathResults());
 
         selectionEvents = EventStreams.valuesOf(xpathResultListView.getSelectionModel().selectedItemProperty()).suppressible();
 
