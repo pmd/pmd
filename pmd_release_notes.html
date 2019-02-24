@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.12.0</li>
+    <li class="sidebarTitle">PMD 6.13.0</li>
     
     
     
@@ -1278,137 +1278,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-february-2019---6120">??-February-2019 - 6.12.0</h2>
+  <h2 id="-march-2019---6130">??-March-2019 - 6.13.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.12.0.</p>
+<p>The PMD team is pleased to announce PMD 6.13.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="call-for-logo">Call For Logo</h4>
-
-<p>PMD’s logo was great for a long time. But now we want to take the opportunity with the next major release to change
-our logo in order to use a more “politically correct” one.</p>
-
-<p>Learn more about how to participate on <a href="https://github.com/pmd/pmd/issues/1663">github issue 1663</a>.</p>
-
-<h4 id="cpd-suppression-for-antlr-based-languages">CPD Suppression for Antlr-based languages</h4>
-
-<p><a href="https://www.itba.edu.ar/">ITBA</a> students <a href="https://github.com/matifraga">Matías Fraga</a>,
-<a href="https://github.com/tomidelucca">Tomi De Lucca</a> and <a href="https://github.com/lsoncini">Lucas Soncini</a>
-keep working on bringing full Antlr support to PMD. For this release, they have implemented
-token filtering in an equivalent way as we did for JavaCC languages, adding support for CPD
-suppressions through <code class="highlighter-rouge">CPD-OFF</code> and <code class="highlighter-rouge">CPD-ON</code> comments for all Antlr-based languages.</p>
-
-<p>This means, you can now ignore arbitrary blocks of code on:</p>
-<ul>
-  <li>Go</li>
-  <li>Kotlin</li>
-  <li>Swift</li>
-</ul>
-
-<p>Simply start the suppression with any comment (single or multiline) containing <code class="highlighter-rouge">CPD-OFF</code>,
-and resume again with a comment containing <code class="highlighter-rouge">CPD-ON</code>.</p>
-
-<p>More information is available in <a href="pmd_userdocs_cpd.html#suppression">the user documentation</a>.</p>
-
-<h4 id="plsql-grammar-improvements">PL/SQL Grammar improvements</h4>
-
-<ul>
-  <li>In this release, many more parser bugs in our PL/SQL support have been fixed. This adds more complete
-support for UPDATE statements and subqueries and hierarchical queries in SELECT statements.</li>
-  <li>Support for analytic functions such as LISTAGG has been added.</li>
-  <li>Conditions in WHERE clauses support now REGEX_LIKE and multiset conditions.</li>
-</ul>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#usetrywithresources"><code class="highlighter-rouge">UseTryWithResources</code></a> (apex-codestyle) has a new
-property <code class="highlighter-rouge">skipTestMethodUnderscores</code>, which is by default disabled. The new property allows for ignoring
-all test methods, either using the <code class="highlighter-rouge">testMethod</code> modifier or simply annotating them <code class="highlighter-rouge">@isTest</code>.</li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>all
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1462">#1462</a>: [core] Failed build on Windows with source zip archive</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1559">#1559</a>: [core] CPD: Lexical error in file (no file name provided)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1671">#1671</a>: [doc] Wrong escaping in suppressing warnings for nopmd-comment</li>
-      <li><a href="https://github.com/pmd/pmd/pull/1693">#1693</a>: [ui] Improved error reporting for the designer</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/808">#808</a>: [java] AccessorMethodGeneration false positives with compile time constants</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1405">#1405</a>: [java] New Rule: UseTryWithResources - Replace close and IOUtils.closeQuietly with try-with-resources</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1555">#1555</a>: [java] UnusedImports false positive for method parameter type in @see Javadoc</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1543">#1543</a>: [java] LinguisticNaming should ignore overriden methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1547">#1547</a>: [java] AtLeastOneConstructorRule: false-positive with lombok.AllArgsConstructor</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1624">#1624</a>: [java] UseDiamondOperator false positive with var initializer</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1641">#1641</a>: [java] False-positive with Lombok and inner classes</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/780">#780</a>: [java] BeanMembersShouldSerializeRule does not recognize lombok accessors</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1633">#1633</a>: [java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1632">#1632</a>: [java] ConsecutiveLiteralAppends false positive over catch</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1587">#1587</a>: [plsql] ParseException with EXISTS</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1589">#1589</a>: [plsql] ParseException with subqueries in WHERE clause</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1590">#1590</a>: [plsql] ParseException when using hierarchical query clause</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1656">#1656</a>: [plsql] ParseException with analytic functions, trim and subqueries</li>
-    </ul>
-  </li>
-  <li>designer
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1679">#1679</a>: [ui] No default language version selected</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1623">#1623</a>: [java] Fix lombok.AllArgsConstructor support - <a href="https://github.com/CasualSuperman">Bobby Wertman</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1625">#1625</a>: [java] UnusedImports false positive for method parameter type in @see Javadoc - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1628">#1628</a>: [java] LinguisticNaming should ignore overriden methods - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1634">#1634</a>: [java] BeanMembersShouldSerializeRule does not recognize lombok accessors - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1635">#1635</a>: [java] UnsynchronizedStaticFormatter reports commons lang FastDateFormat - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1637">#1637</a>: [java] Compile time constants initialized by literals avoided by AccessorMethodGenerationRule - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1640">#1640</a>: [java] Update instead of override classHasLombokAnnotation flag - <a href="https://github.com/fluxroot">Phokham Nonava</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1644">#1644</a>: [apex] Add property to allow apex test methods to contain underscores - <a href="https://github.com/tomdaly">Tom</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1645">#1645</a>: [java] ConsecutiveLiteralAppends false positive - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1646">#1646</a>: [java] UseDiamondOperator doesn’t work with var - <a href="https://github.com/Shubham-2k17">Shubham</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1654">#1654</a>: [core] Antlr token filter - <a href="https://github.com/tomidelucca">Tomi De Lucca</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1655">#1655</a>: [kotlin] Kotlin tokenizer refactor - <a href="https://github.com/lsoncini">Lucas Soncini</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1686">#1686</a>: [doc] Replaced wrong escaping with “&gt;” - <a href="https://github.com/hpandeycodeit">Himanshu Pandey</a></li>
-</ul>
 
 
 
@@ -1426,7 +1308,7 @@ all test methods, either using the <code class="highlighter-rouge">testMethod</c
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 23, 2019 <br />
+ Site last generated: Feb 24, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
