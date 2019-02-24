@@ -12,7 +12,9 @@ import org.w3c.dom.Element;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 
-
+/**
+ * Remove when we have Java 9 support, and make all methods private on Node interface
+ */
 /* default */ final class DocumentUtils {
 
     private DocumentUtils() {

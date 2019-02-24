@@ -4,17 +4,12 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -88,6 +83,11 @@ public abstract class AbstractNode implements Node {
         }
         children[index] = child;
         child.jjtSetChildIndex(index);
+    }
+
+    @Override
+    public void setDataFlowNode(final DataFlowNode dataFlowNode) {
+        this.dataFlowNode = dataFlowNode;
     }
 
     @Override
@@ -185,68 +185,6 @@ public abstract class AbstractNode implements Node {
         return dataFlowNode;
     }
 
-    @Override
-    public void setDataFlowNode(final DataFlowNode dataFlowNode) {
-        this.dataFlowNode = dataFlowNode;
-    }
-
-    @Override
-    public <T> List<T> findDescendantsOfType(final Class<T> targetType) {
-        final List<T> list = new ArrayList<>();
-        findDescendantsOfType(this, targetType, list, false);
-        return list;
-    }
-
-    @Override
-    public <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
-        final List<T> list = new ArrayList<>();
-        findDescendantsOfType(this, targetType, list, crossBoundaries);
-        return list;
-    }
-
-    @Override
-    public <T> void findDescendantsOfType(final Class<T> targetType, final List<T> results,
-        final boolean crossBoundaries) {
-        findDescendantsOfType(this, targetType, results, crossBoundaries);
-    }
-
-    private static <T> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
-        final boolean crossFindBoundaries) {
-
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            final Node child = node.jjtGetChild(i);
-            if (targetType.isAssignableFrom(child.getClass())) {
-                results.add(targetType.cast(child));
-            }
-
-            if (crossFindBoundaries || !child.isFindBoundary()) {
-                findDescendantsOfType(child, targetType, results, crossFindBoundaries);
-            }
-        }
-    }
-
-    @Override
-    public <T> T getFirstDescendantOfType(final Class<T> descendantType) {
-        return getFirstDescendantOfType(descendantType, this);
-    }
-
-    private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
-        final int n = node.jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
-            final Node n1 = node.jjtGetChild(i);
-            if (descendantType.isAssignableFrom(n1.getClass())) {
-                return descendantType.cast(n1);
-            }
-            if (!n1.isFindBoundary()) {
-                final T n2 = getFirstDescendantOfType(descendantType, n1);
-                if (n2 != null) {
-                    return n2;
-                }
-            }
-        }
-        return null;
-    }
-
     /**
      * Returns true if this node has a descendant of any type among the provided types.
      *
@@ -332,10 +270,5 @@ public abstract class AbstractNode implements Node {
             + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
             + ".");
         return toString();
-    }
-
-    @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        return new AttributeAxisIterator(this);
     }
 }

@@ -76,27 +76,6 @@ public interface AntlrNode extends Node {
     }
 
     @Override
-    default <T> List<T> findDescendantsOfType(final Class<T> targetType) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default <T> void findDescendantsOfType(final Class<T> targetType, final List<T> results,
-        final boolean crossFindBoundaries) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default <T> T getFirstDescendantOfType(final Class<T> descendantType) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
     default List<Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }

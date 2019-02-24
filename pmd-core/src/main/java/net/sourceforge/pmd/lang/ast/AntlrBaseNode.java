@@ -4,12 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Iterator;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
@@ -99,10 +95,5 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     @Override
     public String getXPathNodeName() {
         return toString();
-    }
-
-    @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        return new AttributeAxisIterator(this);
     }
 }

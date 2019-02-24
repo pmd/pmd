@@ -17,6 +17,7 @@ import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
@@ -229,7 +230,11 @@ public interface Node {
      * @param targetType class which you want to find.
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    <T> List<T> findDescendantsOfType(Class<T> targetType);
+    default <T> List<T> findDescendantsOfType(Class<T> targetType) {
+        final List<T> list = new ArrayList<>();
+        TraversalUtils.findDescendantsOfType(this, targetType, list, false);
+        return list;
+    }
 
     /**
      * Traverses down the tree to find all the descendant instances of type targetType
@@ -239,7 +244,11 @@ public interface Node {
      * <code>true</code>
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries);
+    default <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
+        final List<T> list = new ArrayList<>();
+        TraversalUtils.findDescendantsOfType(this, targetType, list, crossBoundaries);
+        return list;
+    }
 
     /**
      * Traverses down the tree to find all the descendant instances of type descendantType.
@@ -249,7 +258,9 @@ public interface Node {
      * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
      * is <code>true</code>
      */
-    <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries);
+    default <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
+        TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
+    }
 
     /**
      * Traverses the children to find the first instance of type childType.
@@ -276,7 +287,9 @@ public interface Node {
      * @param descendantType class which you want to find.
      * @return Node of type descendantType. Returns <code>null</code> if none found.
      */
-    <T> T getFirstDescendantOfType(Class<T> descendantType);
+    default <T> T getFirstDescendantOfType(Class<T> descendantType) {
+        return TraversalUtils.getFirstDescendantOfType(descendantType, this);
+    }
 
     /**
      * Finds if this node contains a descendant of the given type without crossing find boundaries.
@@ -379,5 +392,7 @@ public interface Node {
      *
      * @return An attribute iterator for this node
      */
-    Iterator<Attribute> getXPathAttributesIterator();
+    default Iterator<Attribute> getXPathAttributesIterator() {
+        return new AttributeAxisIterator(this);
+    }
 }
