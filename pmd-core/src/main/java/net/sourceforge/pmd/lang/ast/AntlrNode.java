@@ -87,6 +87,11 @@ public interface AntlrNode extends Node {
     }
 
     @Override
+    default <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
+        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
+    }
+
+    @Override
     default <T> T getFirstDescendantOfType(final Class<T> descendantType) {
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }

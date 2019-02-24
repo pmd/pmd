@@ -197,7 +197,7 @@ public abstract class AbstractNode implements Node {
         return list;
     }
 
-    // TODO : Add to Node interface in 7.0.0
+    @Override
     public <T> List<T> findDescendantsOfType(final Class<T> targetType, final boolean crossBoundaries) {
         final List<T> list = new ArrayList<>();
         findDescendantsOfType(this, targetType, list, crossBoundaries);

@@ -232,6 +232,16 @@ public interface Node {
     <T> List<T> findDescendantsOfType(Class<T> targetType);
 
     /**
+     * Traverses down the tree to find all the descendant instances of type targetType
+     *
+     * @param targetType class which you want to find.
+     * @param crossBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()} is
+     * <code>true</code>
+     * @return List of all children of type targetType. Returns an empty list if none found.
+     */
+    <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries);
+
+    /**
      * Traverses down the tree to find all the descendant instances of type descendantType.
      *
      * @param targetType class which you want to find.
