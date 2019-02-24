@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex unit test assert statements - assert should have 2/3 params</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+     @isTest
+    static void methodATest() {
+        System.assertNotEquals('123', o.StageName); // not good
+        System.assertEquals('123', o.StageName, o); // good
+        System.assert(1==1); // not good
+        System.assert(1==1, 2); // good
+    }
+}
+		]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[apex] assert should have 2 param and assertEquals should have 3 param.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest(seeAllData = true)
+public class Foo {
+     @isTest
+    static void methodATest() {
+        System.assertEquals('123', o.StageName, o); // good
+        System.assert(1==1, 2); // good
+    }
+}
+		]]></code>
+    </test-code>
+</test-data>

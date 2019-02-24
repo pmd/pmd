@@ -233,6 +233,24 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+   <rule ref="category/apex/bestpractices.xml/ApexUnitTestAssertStatement" message="System.assert() should have 2 parameters, System.assertEquals.assertNotEquals should have 3 parameters.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation" message="Apex test methods should have @isTest annotation either in the same line or in previous line.">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="100" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
 
    <!-- SECURITY -->
    <rule ref="category/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
