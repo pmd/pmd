@@ -11,13 +11,10 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -194,58 +191,6 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public Node getNthParent(final int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException();
-        }
-        Node result = this.jjtGetParent();
-        for (int i = 1; i < n; i++) {
-            if (result == null) {
-                return null;
-            }
-            result = result.jjtGetParent();
-        }
-        return result;
-    }
-
-    @Override
-    public <T> T getFirstParentOfType(final Class<T> parentType) {
-        Node parentNode = jjtGetParent();
-        while (parentNode != null && !parentType.isInstance(parentNode)) {
-            parentNode = parentNode.jjtGetParent();
-        }
-        return parentType.cast(parentNode);
-    }
-
-    @Override
-    public <T> List<T> getParentsOfType(final Class<T> parentType) {
-        final List<T> parents = new ArrayList<>();
-        Node parentNode = jjtGetParent();
-        while (parentNode != null) {
-            if (parentType.isInstance(parentNode)) {
-                parents.add(parentType.cast(parentNode));
-            }
-            parentNode = parentNode.jjtGetParent();
-        }
-        return parents;
-    }
-
-    @SafeVarargs
-    @Override
-    public final <T> T getFirstParentOfAnyType(final Class<? extends T>... parentTypes) {
-        Node parentNode = jjtGetParent();
-        while (parentNode != null) {
-            for (final Class<? extends T> c : parentTypes) {
-                if (c.isInstance(parentNode)) {
-                    return c.cast(parentNode);
-                }
-            }
-            parentNode = parentNode.jjtGetParent();
-        }
-        return null;
-    }
-
-    @Override
     public <T> List<T> findDescendantsOfType(final Class<T> targetType) {
         final List<T> list = new ArrayList<>();
         findDescendantsOfType(this, targetType, list, false);
@@ -281,32 +226,8 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public <T> List<T> findChildrenOfType(final Class<T> targetType) {
-        final List<T> list = new ArrayList<>();
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            final Node child = jjtGetChild(i);
-            if (targetType.isInstance(child)) {
-                list.add(targetType.cast(child));
-            }
-        }
-        return list;
-    }
-
-    @Override
     public <T> T getFirstDescendantOfType(final Class<T> descendantType) {
         return getFirstDescendantOfType(descendantType, this);
-    }
-
-    @Override
-    public <T> T getFirstChildOfType(final Class<T> childType) {
-        int n = jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
-            final Node child = jjtGetChild(i);
-            if (childType.isInstance(child)) {
-                return childType.cast(child);
-            }
-        }
-        return null;
     }
 
     private static <T> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
@@ -326,22 +247,6 @@ public abstract class AbstractNode implements Node {
         return null;
     }
 
-    @Override
-    public final <T> boolean hasDescendantOfType(final Class<T> type) {
-        return getFirstDescendantOfType(type) != null;
-    }
-
-    /**
-     * Returns true if this node has a descendant of any type among the provided types.
-     *
-     * @param types Types to test
-     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
-     */
-    @Deprecated
-    public final boolean hasDecendantOfAnyType(final Class<?>... types) {
-        return hasDescendantOfAnyType(types);
-    }
-
     /**
      * Returns true if this node has a descendant of any type among the provided types.
      *
@@ -359,21 +264,6 @@ public abstract class AbstractNode implements Node {
             }
         }
         return false;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
-        return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
-    }
-
-    @Override
-    public boolean hasDescendantMatchingXPath(final String xpathString) {
-        try {
-            return !findChildNodesWithXPath(xpathString).isEmpty();
-        } catch (final JaxenException e) {
-            throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
-        }
     }
 
     @Override
