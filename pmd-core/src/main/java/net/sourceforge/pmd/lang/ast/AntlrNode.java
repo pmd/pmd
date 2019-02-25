@@ -74,9 +74,4 @@ public interface AntlrNode extends Node {
     default void removeChildAtIndex(final int childIndex) {
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }
-
-    @Override
-    default List<Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
 }

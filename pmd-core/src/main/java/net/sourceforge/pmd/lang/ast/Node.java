@@ -231,9 +231,7 @@ public interface Node {
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
     default <T> List<T> findDescendantsOfType(Class<T> targetType) {
-        final List<T> list = new ArrayList<>();
-        TraversalUtils.findDescendantsOfType(this, targetType, list, false);
-        return list;
+        return findDescendantsOfType(targetType, false);
     }
 
     /**
