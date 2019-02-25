@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.List;
-
-import org.jaxen.JaxenException;
-
 /**
  * Base interface for all Antlr-based implementation of Node interface.
  * <p>
