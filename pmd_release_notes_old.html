@@ -1293,8 +1293,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <ul>
       <li><a href="#call-for-logo">Call For Logo</a></li>
       <li><a href="#cpd-suppression-for-antlr-based-languages">CPD Suppression for Antlr-based languages</a></li>
-      <li><a href="#pl/sql-grammar-improvements">PL/SQL Grammar improvements</a></li>
+      <li><a href="#pl-sql-grammar-improvements">PL/SQL Grammar improvements</a></li>
       <li><a href="#new-rules">New Rules</a></li>
+      <li><a href="#modified-rules">Modified Rules</a></li>
     </ul>
   </li>
   <li><a href="#fixed-issues">Fixed Issues</a></li>
@@ -1343,7 +1344,15 @@ support for UPDATE statements and subqueries and hierarchical queries in SELECT 
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The new Java rule <a href="https://pmd.github.io/pmd-6.12.0/pmd_rules_java_bestpractices.html#usetrywithresources"><code class="highlighter-rouge">UseTryWithResources</code></a> (apex-codestyle) has a new
+  <li>The new Java rule <a href="https://pmd.github.io/pmd-6.12.0/pmd_rules_java_bestpractices.html#usetrywithresources"><code class="highlighter-rouge">UseTryWithResources</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) searches
+for try-blocks, that could be changed to a try-with-resources statement. This statement ensures that
+each resource is closed at the end of the statement and is available since Java 7.</li>
+</ul>
+
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Apex rule <a href="https://pmd.github.io/pmd-6.12.0/pmd_rules_apex_codestyle.html#methodnamingconventions"><code class="highlighter-rouge">MethodNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) has a new
 property <code class="highlighter-rouge">skipTestMethodUnderscores</code>, which is by default disabled. The new property allows for ignoring
 all test methods, either using the <code class="highlighter-rouge">testMethod</code> modifier or simply annotating them <code class="highlighter-rouge">@isTest</code>.</li>
 </ul>
@@ -1409,6 +1418,8 @@ all test methods, either using the <code class="highlighter-rouge">testMethod</c
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<p>No changes.</p>
 
 <h3 id="external-contributions">External Contributions</h3>
 
@@ -1497,7 +1508,7 @@ can be inferred now.</p>
   </li>
 </ul>
 
-<h4 id="modified-rules">Modified Rules</h4>
+<h4 id="modified-rules-1">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <a href="https://pmd.github.io/pmd-6.11.0/pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="highlighter-rouge">LocalVariableCouldBeFinal</code></a> (<code class="highlighter-rouge">java-codestyle</code>) has a new
@@ -1665,7 +1676,7 @@ verifies that numeric literals over a given length (4 chars by default, but conf
 underscores every 3 digits for readability. The rule only applies to Java 7+ codebases.</li>
 </ul>
 
-<h4 id="modified-rules-1">Modified Rules</h4>
+<h4 id="modified-rules-2">Modified Rules</h4>
 
 <ul>
   <li>
@@ -2200,7 +2211,7 @@ sanity rules for such docs (no missing parameters, parameters’ order, and retu
 method overrides and test classes are allowed to not include ApexDoc.</li>
 </ul>
 
-<h4 id="modified-rules-2">Modified Rules</h4>
+<h4 id="modified-rules-3">Modified Rules</h4>
 
 <ul>
   <li>The rule <a href="https://pmd.github.io/pmd-6.8.0/pmd_rules_java_errorprone.html#missingserialversionuid"><code class="highlighter-rouge">MissingSerialVersionUID</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been modified
@@ -2307,7 +2318,7 @@ a RuleSetReference. Furthermore the following methods are deprecated: <code clas
 
 <h3 id="new-and-noteworthy-5">New and noteworthy</h3>
 
-<h4 id="modified-rules-3">Modified Rules</h4>
+<h4 id="modified-rules-4">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <a href="pmd_rules_java_bestpractices.html#onedeclarationperline"><code class="highlighter-rouge">OneDeclarationPerLine</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) has been revamped to
@@ -2479,7 +2490,7 @@ parameters and lambda parameters (considering whether they are explicitly typed 
   </li>
 </ul>
 
-<h4 id="modified-rules-4">Modified Rules</h4>
+<h4 id="modified-rules-5">Modified Rules</h4>
 
 <ul>
   <li>The Java rules <a href="pmd_rules_java_bestpractices.html#accessorclassgeneration"><code class="highlighter-rouge">AccessorClassGeneration</code></a> and
@@ -2576,7 +2587,7 @@ In the future, use of such non-existent annotations could result in broken Apex 
 A full list of supported annotations can be found <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm">here</a></li>
 </ul>
 
-<h4 id="modified-rules-5">Modified Rules</h4>
+<h4 id="modified-rules-6">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <a href="pmd_rules_java_codestyle.html#unnecessarymodifier">UnnecessaryModifier</a> (<code class="highlighter-rouge">java-codestyle</code>)
@@ -2747,7 +2758,7 @@ multi-catch try statement.</p>
   </li>
 </ul>
 
-<h4 id="modified-rules-6">Modified Rules</h4>
+<h4 id="modified-rules-7">Modified Rules</h4>
 
 <ul>
   <li>
@@ -2970,7 +2981,7 @@ detects hard coded initialization vectors used in cryptographic operations. It i
 a randomly generated IV.</li>
 </ul>
 
-<h4 id="modified-rules-7">Modified Rules</h4>
+<h4 id="modified-rules-8">Modified Rules</h4>
 
 <ul>
   <li>
@@ -3157,7 +3168,7 @@ deprecated rules <code class="highlighter-rouge">WhileLoopMustUseBraces</code>, 
   </li>
 </ul>
 
-<h4 id="modified-rules-8">Modified Rules</h4>
+<h4 id="modified-rules-9">Modified Rules</h4>
 
 <ul>
   <li>
@@ -3750,7 +3761,7 @@ The 5 rules are migrated for Apex from the equivalent Java rules and include:
 loops, to avoid governor issues, and hitting the database too often.</li>
 </ul>
 
-<h4 id="modified-rules-9">Modified Rules</h4>
+<h4 id="modified-rules-10">Modified Rules</h4>
 
 <ul>
   <li>
@@ -4295,7 +4306,7 @@ defined in the <em>java-codesize</em> ruleset (see also <a href="https://github.
 <p>Since this work is still in progress, the metrics API (package <code class="highlighter-rouge">net.sourceforge.pmd.lang.java.oom</code>)
 is not finalized yet and is expected to change.</p>
 
-<h4 id="modified-rules-10">Modified Rules</h4>
+<h4 id="modified-rules-11">Modified Rules</h4>
 
 <ul>
   <li>
@@ -4432,7 +4443,7 @@ by a new CyclomaticComplexity rule based on the metrics framework. See also <a h
 
 <h3 id="new-and-noteworthy-14">New and noteworthy</h3>
 
-<h4 id="modified-rules-11">Modified Rules</h4>
+<h4 id="modified-rules-12">Modified Rules</h4>
 
 <ul>
   <li>
@@ -4861,7 +4872,7 @@ be avoided by changing the visibility of the field / method from private to pack
 
 <p>This new rule is part of the <code class="highlighter-rouge">java-design</code> ruleset.</p>
 
-<h4 id="modified-rules-12">Modified Rules</h4>
+<h4 id="modified-rules-13">Modified Rules</h4>
 
 <ul>
   <li>
@@ -5268,7 +5279,7 @@ be avoided by changing the visibility of the field / method from private to pack
 
 <p>This new rule is part of the <code class="highlighter-rouge">java-design</code> ruleset.</p>
 
-<h4 id="modified-rules-13">Modified Rules</h4>
+<h4 id="modified-rules-14">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <code class="highlighter-rouge">UnusedModifier</code> (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
@@ -5515,7 +5526,7 @@ attacks if unescaped.</p>
 <p>Makes sure that all values obtained from URL parameters are properly escaped / sanitized
 to avoid XSS attacks.</p>
 
-<h4 id="modified-rules-14">Modified Rules</h4>
+<h4 id="modified-rules-15">Modified Rules</h4>
 
 <p>The Java rule “UseLocaleWithCaseConversions” (ruleset java-design) has been modified, to detect calls
 to <code class="highlighter-rouge">toLowerCase</code> and to <code class="highlighter-rouge">toUpperCase</code> also within method call chains. This leads to more detected cases
@@ -6105,7 +6116,7 @@ hides member variable</li>
 
 <h3 id="new-and-noteworthy-18">New and noteworthy</h3>
 
-<h4 id="modified-rules-15">Modified Rules</h4>
+<h4 id="modified-rules-16">Modified Rules</h4>
 
 <ul>
   <li>The Java rule <code class="highlighter-rouge">UnusedModifier</code> (ruleset java-unusedcode) has been expanded to consider more redundant modifiers.
@@ -6189,7 +6200,7 @@ making it over 500X faster, and <code class="highlighter-rouge">PreserveStackTra
 
 <p>This is a bug fixing release, no major changes were introduced.</p>
 
-<h4 id="modified-rules-16">Modified Rules</h4>
+<h4 id="modified-rules-17">Modified Rules</h4>
 
 <p>The Java rule “UseLocaleWithCaseConversions” (ruleset java-design) has been modified, to detect calls
 to <code class="highlighter-rouge">toLowerCase</code> and to <code class="highlighter-rouge">toUpperCase</code> also within method call chains. This leads to more detected cases
@@ -9515,7 +9526,7 @@ Added new HTML report format
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Feb 24, 2019 <br />
+ Site last generated: Feb 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
