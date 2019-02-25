@@ -16,8 +16,9 @@ This is a minor release.
 * [New and noteworthy](#new-and-noteworthy)
     * [Call For Logo](#call-for-logo)
     * [CPD Suppression for Antlr-based languages](#cpd-suppression-for-antlr-based-languages)
-    * [PL/SQL Grammar improvements](#pl/sql-grammar-improvements)
+    * [PL/SQL Grammar improvements](#pl-sql-grammar-improvements)
     * [New Rules](#new-rules)
+    * [Modified Rules](#modified-rules)
 * [Fixed Issues](#fixed-issues)
 * [API Changes](#api-changes)
 * [External Contributions](#external-contributions)
@@ -58,7 +59,13 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
 
 #### New Rules
 
-*   The new Java rule [`UseTryWithResources`](https://pmd.github.io/pmd-6.12.0/pmd_rules_java_bestpractices.html#usetrywithresources) (apex-codestyle) has a new
+*   The new Java rule [`UseTryWithResources`](https://pmd.github.io/pmd-6.12.0/pmd_rules_java_bestpractices.html#usetrywithresources) (`java-bestpractices`) searches
+    for try-blocks, that could be changed to a try-with-resources statement. This statement ensures that
+    each resource is closed at the end of the statement and is available since Java 7.
+
+#### Modified Rules
+
+*   The Apex rule [`MethodNamingConventions`](https://pmd.github.io/pmd-6.12.0/pmd_rules_apex_codestyle.html#methodnamingconventions) (`apex-codestyle`) has a new
     property `skipTestMethodUnderscores`, which is by default disabled. The new property allows for ignoring
     all test methods, either using the `testMethod` modifier or simply annotating them `@isTest`.
 
@@ -94,6 +101,8 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     *   [#1679](https://github.com/pmd/pmd/issues/1679): \[ui] No default language version selected
 
 ### API Changes
+
+No changes.
 
 ### External Contributions
 
