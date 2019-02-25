@@ -5,25 +5,34 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
+import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
- * All AST nodes must implement this interface. It provides basic
- * machinery for constructing the parent and child relationships
- * between nodes.
+ * All AST nodes must implement this interface. It provides basic machinery for constructing the parent and child
+ * relationships between nodes.
  */
 public interface Node {
 
+    // COMMENT: is it ok to take the opportunity on PMD 7 to rename this API and take out of there the methods
+    // that are only needed for javaCC implementations?
+
     /**
-     * This method is called after the node has been made the current node. It
-     * indicates that child nodes can now be added to it.
+     * This method is called after the node has been made the current node. It indicates that child nodes can now be
+     * added to it.
      */
     void jjtOpen();
 
@@ -32,14 +41,12 @@ public interface Node {
      */
     void jjtClose();
 
-
     /**
      * Sets the parent of this node.
      *
      * @param parent The parent
      */
     void jjtSetParent(Node parent);
-
 
     /**
      * Returns the parent of this node.
@@ -48,10 +55,8 @@ public interface Node {
      */
     Node jjtGetParent();
 
-
     /**
-     * This method tells the node to add its argument to the node's list of
-     * children.
+     * This method tells the node to add its argument to the node's list of children.
      *
      * @param child The child to add
      * @param index The index to which the child will be added
@@ -59,14 +64,12 @@ public interface Node {
     void jjtAddChild(Node child, int index);
 
     /**
-     * Sets the index of this node from the perspective of its parent. This
-     * means: this.jjtGetParent().jjtGetChild(index) == this.
+     * Sets the index of this node from the perspective of its parent. This means: this.jjtGetParent().jjtGetChild(index)
+     * == this.
      *
-     * @param index
-     *            the child index
+     * @param index the child index
      */
     void jjtSetChildIndex(int index);
-
 
     /**
      * Gets the index of this node in the children of its parent.
@@ -76,12 +79,9 @@ public interface Node {
     int jjtGetChildIndex();
 
     /**
-     * This method returns a child node. The children are numbered from zero,
-     * left to right.
+     * This method returns a child node. The children are numbered from zero, left to right.
      *
-     * @param index
-     *            the child index. Must be nonnegative and less than
-     *            {@link #jjtGetNumChildren}.
+     * @param index the child index. Must be nonnegative and less than {@link #jjtGetNumChildren}.
      */
     Node jjtGetChild(int index);
 
@@ -92,11 +92,10 @@ public interface Node {
 
     int jjtGetId();
 
-
     /**
-     * Returns a string token, usually filled-in by the parser, which describes some textual
-     * characteristic of this node. This is usually an identifier, but you should check that
-     * using the Designer. On most nodes though, this method returns {@code null}.
+     * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
+     * node. This is usually an identifier, but you should check that using the Designer. On most nodes though, this
+     * method returns {@code null}.
      */
     String getImage();
 
@@ -121,167 +120,233 @@ public interface Node {
 
     void setDataFlowNode(DataFlowNode dataFlowNode);
 
-
     /**
-     * Returns true if this node is considered a boundary by traversal methods.
-     * Traversal methods such as {@link #getFirstDescendantOfType(Class)} don't
-     * look past such boundaries by default, which is usually the expected thing
-     * to do. For example, in Java, lambdas and nested classes are considered
-     * find boundaries.
+     * Returns true if this node is considered a boundary by traversal methods. Traversal methods such as {@link
+     * #getFirstDescendantOfType(Class)} don't look past such boundaries by default, which is usually the expected thing
+     * to do. For example, in Java, lambdas and nested classes are considered find boundaries.
      */
-    boolean isFindBoundary();
-
+    default boolean isFindBoundary() {
+        return false;
+    }
 
     /**
      * Returns the n-th parent or null if there are less than {@code n} ancestors.
      *
      * @param n how many ancestors to iterate over.
-     *
      * @return the n-th parent or null.
-     *
      * @throws IllegalArgumentException if {@code n} is negative or zero.
      */
-    Node getNthParent(int n);
-
+    default Node getNthParent(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException();
+        }
+        Node result = this.jjtGetParent();
+        for (int i = 1; i < n; i++) {
+            if (result == null) {
+                return null;
+            }
+            result = result.jjtGetParent();
+        }
+        return result;
+    }
 
     /**
-     * Traverses up the tree to find the first parent instance of type
-     * parentType or one of its subclasses.
+     * Traverses up the tree to find the first parent instance of type parentType or one of its subclasses.
      *
      * @param parentType Class literal of the type you want to find
-     * @param <T>        The type you want to find
-     *
+     * @param <T> The type you want to find
      * @return Node of type parentType. Returns null if none found.
      */
-    <T> T getFirstParentOfType(Class<T> parentType);
-
+    default <T> T getFirstParentOfType(Class<T> parentType) {
+        Node parentNode = jjtGetParent();
+        while (parentNode != null && !parentType.isInstance(parentNode)) {
+            parentNode = parentNode.jjtGetParent();
+        }
+        return parentType.cast(parentNode);
+    }
 
     /**
-     * Traverses up the tree to find all of the parent instances of type
-     * parentType or one of its subclasses. The nodes are ordered
-     * deepest-first.
+     * Traverses up the tree to find all of the parent instances of type parentType or one of its subclasses. The nodes
+     * are ordered deepest-first.
      *
      * @param parentType Class literal of the type you want to find
-     * @param <T>        The type you want to find
-     *
+     * @param <T> The type you want to find
      * @return List of parentType instances found.
      */
-    <T> List<T> getParentsOfType(Class<T> parentType);
-
+    default <T> List<T> getParentsOfType(Class<T> parentType) {
+        final List<T> parents = new ArrayList<>();
+        Node parentNode = jjtGetParent();
+        while (parentNode != null) {
+            if (parentType.isInstance(parentNode)) {
+                parents.add(parentType.cast(parentNode));
+            }
+            parentNode = parentNode.jjtGetParent();
+        }
+        return parents;
+    }
 
     /**
      * Gets the first parent that's an instance of any of the given types.
      *
      * @param parentTypes Types to look for
-     * @param <T>         Most specific common type of the parameters
-     *
-     * @return The first parent with a matching type. Returns null if there
-     * is no such parent
+     * @param <T> Most specific common type of the parameters
+     * @return The first parent with a matching type. Returns null if there is no such parent
      */
-    <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes);
+    default <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
+        Node parentNode = jjtGetParent();
+        while (parentNode != null) {
+            for (final Class<? extends T> c : parentTypes) {
+                if (c.isInstance(parentNode)) {
+                    return c.cast(parentNode);
+                }
+            }
+            parentNode = parentNode.jjtGetParent();
+        }
+        return null;
+    }
 
     /**
-     * Traverses the children to find all the instances of type childType or
-     * one of its subclasses.
+     * Traverses the children to find all the instances of type childType or one of its subclasses.
      *
-     * @see #findDescendantsOfType(Class) if traversal of the entire tree is
-     *      needed.
-     *
-     * @param childType
-     *            class which you want to find.
-     * @return List of all children of type childType. Returns an empty list if
-     *         none found.
+     * @param childType class which you want to find.
+     * @return List of all children of type childType. Returns an empty list if none found.
+     * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
      */
-    <T> List<T> findChildrenOfType(Class<T> childType);
+    default <T> List<T> findChildrenOfType(Class<T> childType) {
+        final List<T> list = new ArrayList<>();
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
+            final Node child = jjtGetChild(i);
+            if (childType.isInstance(child)) {
+                list.add(childType.cast(child));
+            }
+        }
+        return list;
+    }
 
     /**
-     * Traverses down the tree to find all the descendant instances of type
-     * descendantType without crossing find boundaries.
+     * Traverses down the tree to find all the descendant instances of type descendantType without crossing find
+     * boundaries.
      *
-     * @param targetType
-     *            class which you want to find.
-     * @return List of all children of type targetType. Returns an empty list if
-     *         none found.
+     * @param targetType class which you want to find.
+     * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    <T> List<T> findDescendantsOfType(Class<T> targetType);
+    default <T> List<T> findDescendantsOfType(Class<T> targetType) {
+        final List<T> list = new ArrayList<>();
+        TraversalUtils.findDescendantsOfType(this, targetType, list, false);
+        return list;
+    }
 
     /**
-     * Traverses down the tree to find all the descendant instances of type
-     * descendantType.
+     * Traverses down the tree to find all the descendant instances of type targetType
      *
-     * @param targetType
-     *            class which you want to find.
-     * @param results
-     *            list to store the matching descendants
-     * @param crossFindBoundaries
-     *            if <code>false</code>, recursion stops for nodes for which
-     *            {@link #isFindBoundary()} is <code>true</code>
+     * @param targetType class which you want to find.
+     * @param crossBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()} is
+     * <code>true</code>
+     * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries);
+    default <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
+        final List<T> list = new ArrayList<>();
+        TraversalUtils.findDescendantsOfType(this, targetType, list, crossBoundaries);
+        return list;
+    }
+
+    /**
+     * Traverses down the tree to find all the descendant instances of type descendantType.
+     *
+     * @param targetType class which you want to find.
+     * @param results list to store the matching descendants
+     * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
+     * is <code>true</code>
+     */
+    default <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
+        TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
+    }
 
     /**
      * Traverses the children to find the first instance of type childType.
      *
-     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is
-     *      needed.
-     *
-     * @param childType
-     *            class which you want to find.
+     * @param childType class which you want to find.
      * @return Node of type childType. Returns <code>null</code> if none found.
+     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
      */
-    <T> T getFirstChildOfType(Class<T> childType);
+    default <T> T getFirstChildOfType(Class<T> childType) {
+        int n = jjtGetNumChildren();
+        for (int i = 0; i < n; i++) {
+            final Node child = jjtGetChild(i);
+            if (childType.isInstance(child)) {
+                return childType.cast(child);
+            }
+        }
+        return null;
+    }
 
     /**
-     * Traverses down the tree to find the first descendant instance of type
-     * descendantType without crossing find boundaries.
+     * Traverses down the tree to find the first descendant instance of type descendantType without crossing find
+     * boundaries.
      *
-     * @param descendantType
-     *            class which you want to find.
-     * @return Node of type descendantType. Returns <code>null</code> if none
-     *         found.
+     * @param descendantType class which you want to find.
+     * @return Node of type descendantType. Returns <code>null</code> if none found.
      */
-    <T> T getFirstDescendantOfType(Class<T> descendantType);
+    default <T> T getFirstDescendantOfType(Class<T> descendantType) {
+        return TraversalUtils.getFirstDescendantOfType(descendantType, this);
+    }
 
     /**
      * Finds if this node contains a descendant of the given type without crossing find boundaries.
      *
-     * @param type
-     *            the node type to search
-     * @return <code>true</code> if there is at least one descendant of the
-     *         given type
+     * @param type the node type to search
+     * @return <code>true</code> if there is at least one descendant of the given type
      */
-    <T> boolean hasDescendantOfType(Class<T> type);
+    default <T> boolean hasDescendantOfType(Class<T> type) {
+        return getFirstDescendantOfType(type) != null;
+    }
 
     /**
      * Returns all the nodes matching the xpath expression.
      *
-     * @param xpathString
-     *            the expression to check
+     * @param xpathString the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
      * @throws JaxenException if the xpath is incorrect or fails altogether
      */
-    List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
+    @SuppressWarnings("unchecked")
+    default List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException {
+        return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
+    }
 
     /**
      * Checks whether at least one descendant matches the xpath expression.
      *
-     * @param xpathString
-     *            the expression to check
+     * @param xpathString the expression to check
      * @return true if there is a match
      */
-    boolean hasDescendantMatchingXPath(String xpathString);
+    default boolean hasDescendantMatchingXPath(String xpathString) {
+        try {
+            return !findChildNodesWithXPath(xpathString).isEmpty();
+        } catch (final JaxenException e) {
+            throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
+        }
+    }
 
     /**
-     * Get a DOM Document which contains Elements and Attributes representative
-     * of this Node and it's children. Essentially a DOM tree representation of
-     * the Node AST, thereby allowing tools which can operate upon DOM to also
+     * Get a DOM Document which contains Elements and Attributes representative of this Node and it's children.
+     * Essentially a DOM tree representation of the Node AST, thereby allowing tools which can operate upon DOM to also
      * indirectly operate on the AST.
      */
-    Document getAsDocument();
+    default Document getAsDocument() {
+        try {
+            final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder db = dbf.newDocumentBuilder();
+            final Document document = db.newDocument();
+            DocumentUtils.appendElement(this, document);
+            return document;
+        } catch (final ParserConfigurationException pce) {
+            throw new RuntimeException(pce);
+        }
+    }
 
     /**
-     * Get the user data associated with this node. By default there is no data,
-     * unless it has been set via {@link #setUserData(Object)}.
+     * Get the user data associated with this node. By default there is no data, unless it has been set via {@link
+     * #setUserData(Object)}.
      *
      * @return The user data set on this node.
      */
@@ -289,17 +354,16 @@ public interface Node {
 
     /**
      * Set the user data associated with this node.
-     *
+     * <p>
      * <p>PMD itself will never set user data onto a node. Nor should any Rule
-     * implementation, as the AST nodes are shared between concurrently
-     * executing Rules (i.e. it is <strong>not</strong> thread-safe).
-     *
+     * implementation, as the AST nodes are shared between concurrently executing Rules (i.e. it is <strong>not</strong>
+     * thread-safe).
+     * <p>
      * <p>This API is most useful for external applications looking to leverage
-     * PMD's robust support for AST structures, in which case application
-     * specific annotations on the AST nodes can be quite useful.
+     * PMD's robust support for AST structures, in which case application specific annotations on the AST nodes can be
+     * quite useful.
      *
-     * @param userData
-     *            The data to set on this node.
+     * @param userData The data to set on this node.
      */
     void setUserData(Object userData);
 
@@ -309,14 +373,12 @@ public interface Node {
     void remove();
 
     /**
-     * This method tells the node to remove the child node at the given index from the node's list of
-     * children, if any; if not, no changes are done.
+     * This method tells the node to remove the child node at the given index from the node's list of children, if any;
+     * if not, no changes are done.
      *
-     * @param childIndex
-     *          The index of the child to be removed
+     * @param childIndex The index of the child to be removed
      */
     void removeChildAtIndex(int childIndex);
-
 
     /**
      * Gets the name of the node that is used to match it with XPath queries.
@@ -325,13 +387,12 @@ public interface Node {
      */
     String getXPathNodeName();
 
-
     /**
-     * Returns an iterator enumerating all the attributes that are available
-     * from XPath for this node.
+     * Returns an iterator enumerating all the attributes that are available from XPath for this node.
      *
      * @return An attribute iterator for this node
      */
-    Iterator<Attribute> getXPathAttributesIterator();
-
+    default Iterator<Attribute> getXPathAttributesIterator() {
+        return new AttributeAxisIterator(this);
+    }
 }

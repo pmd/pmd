@@ -195,25 +195,26 @@ public class PMD {
     /**
      * This method is the main entry point for command line usage.
      *
-     * @param configuration
-     *            the configure to use
+     * @param configuration the configuration to use
      * @return number of violations found.
      */
-    public static int doPMD(PMDConfiguration configuration) {
+    public static int doPMD(final PMDConfiguration configuration) {
 
         // Load the RuleSets
-        RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
-        RuleSets ruleSets = RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
+        final RuleSetFactory ruleSetFactory =
+            RulesetsFactoryUtils.getRulesetFactory(configuration, new ResourceLoader());
+        final RuleSets ruleSets =
+            RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
             return 0;
         }
 
-        Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
-        List<DataSource> files = getApplicableFiles(configuration, languages);
+        final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
+        final List<DataSource> files = getApplicableFiles(configuration, languages);
 
         try {
             Renderer renderer;
-            List<Renderer> renderers;
+            final List<Renderer> renderers;
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                 renderer = configuration.createRenderer();
                 renderers = Collections.singletonList(renderer);
@@ -222,16 +223,16 @@ public class PMD {
                 renderer.start();
             }
 
-            RuleContext ctx = new RuleContext();
+            final RuleContext ctx = new RuleContext();
             final AtomicInteger violations = new AtomicInteger(0);
             ctx.getReport().addListener(new ThreadSafeReportListener() {
                 @Override
-                public void ruleViolationAdded(RuleViolation ruleViolation) {
+                public void ruleViolationAdded(final RuleViolation ruleViolation) {
                     violations.getAndIncrement();
                 }
 
                 @Override
-                public void metricAdded(Metric metric) {
+                public void metricAdded(final Metric metric) {
                     // ignored - not needed for counting violations
                 }
             });
@@ -245,12 +246,12 @@ public class PMD {
                 renderer.flush();
                 return violations.get();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             String message = e.getMessage();
-            if (message != null) {
-                LOG.severe(message);
-            } else {
+            if (message == null) {
                 LOG.log(Level.SEVERE, "Exception during processing", e);
+            } else {
+                LOG.severe(message);
             }
             LOG.log(Level.FINE, "Exception during processing", e);
             LOG.info(PMDCommandLineInterface.buildUsageText());
@@ -464,14 +465,14 @@ public class PMD {
      *         <code>1</code> means error, <code>4</code> means there have been
      *         violations found.
      */
-    public static int run(String[] args) {
+    public static int run(final String[] args) {
         final PMDParameters params = PMDCommandLineInterface.extractParameters(new PMDParameters(), args, "pmd");
         
         if (params.isBenchmark()) {
             TimeTracker.startGlobalTracking();
         }
         
-        int status = 0;
+        int status;
         final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
