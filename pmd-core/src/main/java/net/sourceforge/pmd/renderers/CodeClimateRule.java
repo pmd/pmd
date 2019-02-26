@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 
