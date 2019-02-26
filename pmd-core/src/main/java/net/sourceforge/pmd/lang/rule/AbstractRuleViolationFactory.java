@@ -18,6 +18,11 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     private static final Object[] NO_ARGS = new Object[0];
 
     private String cleanup(String message, Object[] args) {
+        
+        // when args is null or empty, skip MessageFormat 
+        if (args == null || args.length == 0) {
+            return message;
+        }
 
         if (message != null) {
             // Escape PMD specific variable message format, specifically the {

@@ -82,7 +82,7 @@ END;
         <expected-messages>
             <message>Join condition "caddr.cmp_id = cmer.cmp_id" should be on line 15</message>
             <message>Join condition "insert_entry.cmer_id = cmer.cmer_id" should be on line 13</message>
-            <message>Join condition "insert_entry.operation = I" should be on line 14</message>
+            <message>Join condition "insert_entry.operation = 'I'" should be on line 14</message>
             <message>OuterJoinClause should be on line 15</message>
         </expected-messages>
         <code><![CDATA[
