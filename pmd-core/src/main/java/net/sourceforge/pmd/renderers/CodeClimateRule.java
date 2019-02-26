@@ -4,16 +4,10 @@
 
 package net.sourceforge.pmd.renderers;
 
-import static net.sourceforge.pmd.renderers.CodeClimateRenderer.REMEDIATION_POINTS_DEFAULT;
+import net.sourceforge.pmd.Rule;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.EnumeratedMultiProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
 
 /**
  * This interface tags a Rule specifying properties required for the Code
