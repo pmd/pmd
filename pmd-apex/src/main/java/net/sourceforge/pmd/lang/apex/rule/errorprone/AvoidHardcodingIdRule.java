@@ -28,10 +28,6 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
     }
     
     public AvoidHardcodingIdRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-        
         addRuleChainVisit(ASTLiteralExpression.class);
     }
 

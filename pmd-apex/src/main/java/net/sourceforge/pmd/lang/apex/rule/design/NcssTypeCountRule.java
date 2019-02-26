@@ -26,9 +26,6 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
     public NcssTypeCountRule() {
         super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 500d);
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 250);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override

@@ -90,11 +90,6 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         for (PropertyDescriptor<List<String>> property : suffixOrPrefixProperties()) {
             definePropertyDescriptor(property);
         }
-
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        // Note: x10 as Apex has not automatic refactoring
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 5);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     private static List<PropertyDescriptor<List<String>>> suffixOrPrefixProperties() {
