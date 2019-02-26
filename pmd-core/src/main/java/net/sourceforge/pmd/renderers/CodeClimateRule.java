@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.Rule;
-
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+
+import net.sourceforge.pmd.Rule;
 
 /**
  * This interface tags a Rule specifying properties required for the Code
