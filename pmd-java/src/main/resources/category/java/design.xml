@@ -1139,6 +1139,24 @@ public void foo() throws Exception {
 ]]>
         </example>
     </rule>
+	
+	<rule name="SignatureDeclareThrowsRuntimeException"
+          since="1.2"
+          message="A method/constructor should not explicitly declare java.lang.RuntimeException or it's subclasses in throws clause of it's signature"
+          class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsRuntimeExceptionRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#signaturedeclarethrowsruntimeexception">
+        <description>
+A method/constructor should not explicitly declare java.lang.RuntimeException or it's subclasses in throws clause of it's signature, since it is advised to avoid declaring unchecked exceptions in method signature.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public void foo() throws RuntimeException {
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="SimplifiedTernary"
           language="java"
