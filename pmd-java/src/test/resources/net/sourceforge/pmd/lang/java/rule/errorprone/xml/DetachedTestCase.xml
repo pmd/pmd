@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>correct test case annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  @Test
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on package visible test case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>static method is not an issue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  static void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotated methods are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  @After
+  void destroy() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>methods with arguments are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public void help(int arg) {}
+}
+     ]]></code>
+    <test-code>
+        <description>methods with return values are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public int help() { return 0; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>no tests</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotATest {
+  public void notATest() {}
+
+  public void notATestEither() { }
+}
+     ]]></code>
+    </test-code>
+</test-data>
