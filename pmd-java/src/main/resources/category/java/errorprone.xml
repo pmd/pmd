@@ -1118,12 +1118,17 @@ public void foo() {
 
     <rule name="DetachedTestCase"
           language="java"
-          since="6.13"
+          since="6.13.0"
           message="Probable detached JUnit test case."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#detachedtestcase">
         <description>
-The method appears to be a test case since it has public or default visibility, non-static access, no arguments, no return value, has no annotations, but is a member of a class that has one or more JUnit test cases. If it is a utility method, it should likely have private visibility. If it is an ignored test, it should be annotated with @Test and @Ignore.
+The method appears to be a test case since it has public or default visibility,
+non-static access, no arguments, no return value, has no annotations, but is a
+member of a class that has one or more JUnit test cases. If it is a utility
+method, it should likely have private visibility. If it is an ignored test, it
+should be annotated with @Test and @Ignore.
         </description>
         <priority>3</priority>
         <properties>
@@ -1131,7 +1136,12 @@ The method appears to be a test case since it has public or default visibility, 
                 <value><![CDATA[
 //ClassOrInterfaceBodyDeclaration
 [../ClassOrInterfaceBodyDeclaration/Annotation/*/Name
-        [pmd-java:typeIs('org.junit.Test') or pmd-java:typeIs('org.junit.jupiter.api.Test')]
+        [pmd-java:typeIs('org.junit.Test')
+         or pmd-java:typeIs('org.junit.jupiter.api.Test')
+         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+         or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+         or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')]
 ]
 [not(Annotation)]
 [MethodDeclaration[(@Public = 'true' or @PackagePrivate = 'true') and @Static = 'false' and
