@@ -282,7 +282,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.4.0</pmd.build-tools.version>
+        <pmd.build-tools.version>1.5.0-SNAPSHOT</pmd.build-tools.version>
 
     </properties>
 
@@ -558,12 +558,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.9.0</version>
+                            <version>6.12.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.9.0</version>
+                            <version>6.12.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
