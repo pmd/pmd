@@ -1140,13 +1140,13 @@ public void foo() throws Exception {
         </example>
     </rule>
 	
-	<rule name="SignatureDeclareThrowsRuntimeException"
+	<rule name="AvoidUncheckedExceptionsInSignatures"
           since="6.13.0"
           language="java"
           message="A method or constructor should not explicitly declare unchecked exceptions in its ''throws'' clause"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#signaturedeclarethrowsruntimeexception">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
 A method or constructor should not explicitly declare unchecked exceptions in its
 `throws` clause. Java doesn't force the caller to handle an unchecked exception, 
