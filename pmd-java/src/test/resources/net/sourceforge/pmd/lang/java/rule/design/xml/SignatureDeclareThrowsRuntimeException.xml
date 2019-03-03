@@ -8,9 +8,7 @@
 method throws RuntimeException
      ]]></description>
         <expected-problems>1</expected-problems>
-        <code><![CDATA[
-import java.lang.RuntimeException;
-     
+        <code><![CDATA[     
 public class Foo {
  void foo() throws RuntimeException {}
 }
@@ -21,9 +19,7 @@ public class Foo {
 method throws a subclass of RuntimeException
      ]]></description>
         <expected-problems>1</expected-problems>
-        <code><![CDATA[
-import java.lang.IllegalArgumentException;
-     
+        <code><![CDATA[     
 public class Foo {
  void foo() throws IllegalArgumentException {}
 }
@@ -71,9 +67,7 @@ public class Foo {
 constructor throws RuntimeException
      ]]></description>
         <expected-problems>1</expected-problems>
-        <code><![CDATA[
-import java.lang.RuntimeException;
-         
+        <code><![CDATA[         
 public class Foo {
  Foo() throws RuntimeException {}
 }
