@@ -269,7 +269,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
 
         <javacc.version>5.0</javacc.version>
-        <surefire.version>2.22.0</surefire.version>
+        <surefire.version>2.22.1</surefire.version>
         <checkstyle.version>3.0.0</checkstyle.version>
         <pmd.plugin.version>3.11.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
@@ -436,21 +436,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
                     </configuration>
                     <dependencies>
-                        <!-- Junit 5 = Platform + Jupiter (5) + Vintage (3 & 4)-->
-
-                        <!-- Junit platform -->
-                        <!-- Needed to use kotlintest -->
-                        <dependency>
-                            <groupId>org.junit.platform</groupId>
-                            <artifactId>junit-platform-surefire-provider</artifactId>
-                            <version>1.2.0</version>
-                        </dependency>
-
                         <!-- Junit 3 & 4 engine -->
                         <dependency>
                             <groupId>org.junit.vintage</groupId>
                             <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.3.0-M1</version>
+                            <version>5.4.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
