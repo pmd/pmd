@@ -23,18 +23,24 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  * @author <a href="prakashbp2020@gmail.com">Bhanu Prakash Pamidi</a>
  */
 public class SignatureDeclareThrowsRuntimeExceptionRule extends AbstractJavaRule {
+    
+    public SignatureDeclareThrowsRuntimeExceptionRule() {
+        super();
+        addRuleChainVisit(ASTMethodDeclaration.class);
+        addRuleChainVisit(ASTConstructorDeclaration.class);
+    } 
 
     @Override
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
         checkExceptions(methodDeclaration, o);
-        return super.visit(methodDeclaration, o);
+        return o;
     }
 
 
     @Override
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
         checkExceptions(constructorDeclaration, o);
-        return super.visit(constructorDeclaration, o);
+        return o;
     }
 
     /**
@@ -61,21 +67,21 @@ public class SignatureDeclareThrowsRuntimeExceptionRule extends AbstractJavaRule
      */
     private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
         for (ASTName exception : exceptionList) {
-            if (hasDeclaredRunTimeExceptionInSignature(exception)) {
+            if (isRuntimeException(exception)) {
                 addViolation(context, exception);
             }
         }
     }
 
     /**
-     * Checks if the given value is defined as <code>Exception</code> and the
+     * Checks if the given value is defined as <code>RuntimeException</code> and the
      * parent is either a method or constructor declaration.
      *
      * @param exception
      *            to evaluate
      * @return true if <code>Exception</code> is declared and has proper parents
      */
-    private boolean hasDeclaredRunTimeExceptionInSignature(ASTName exception) {
+    private boolean isRuntimeException(ASTName exception) {
         return exception.getType() != null && TypeHelper.isA(exception, RuntimeException.class);
     }
 }

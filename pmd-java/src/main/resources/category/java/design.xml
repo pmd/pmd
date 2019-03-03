@@ -1152,6 +1152,8 @@ A method/constructor should not explicitly declare java.lang.RuntimeException or
         <priority>3</priority>
         <example>
 <![CDATA[
+import java.lang.RuntimeException;
+
 public void foo() throws RuntimeException {
 }
 ]]>

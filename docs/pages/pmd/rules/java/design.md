@@ -1356,6 +1356,8 @@ A method/constructor should not explicitly declare java.lang.RuntimeException or
 **Example(s):**
 
 ``` java
+import java.lang.RuntimeException;
+
 public void foo() throws RuntimeException {
 }
 ```
