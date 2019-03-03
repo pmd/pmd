@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description><![CDATA[
+method throws RuntimeException
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.RuntimeException;
+     
+public class Foo {
+ void foo() throws RuntimeException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method throws a subclass of RuntimeException
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.IllegalArgumentException;
+     
+public class Foo {
+ void foo() throws IllegalArgumentException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {}
+}
+     ]]></code>
+     </test-code>
+     <test-code>
+        <description><![CDATA[
+declaring checked exceptions like IOException is fine
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+       
+public class Foo {
+ void foo() throws IOException{}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constructor throws RuntimeException
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.RuntimeException;
+         
+public class Foo {
+ Foo() throws RuntimeException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface method throws RuntimeException
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.RuntimeException;
+         
+public interface Foo {
+ public void method1() throws RuntimeException;
+}
+     ]]></code>
+    </test-code>
+</test-data>
