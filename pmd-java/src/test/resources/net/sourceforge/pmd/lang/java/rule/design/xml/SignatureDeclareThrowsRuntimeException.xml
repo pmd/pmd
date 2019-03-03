@@ -42,7 +42,7 @@ public class Foo {
      </test-code>
      <test-code>
         <description><![CDATA[
-declaring checked exceptions like IOException is fine
+method declaring checked exceptions like IOException is fine
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -50,6 +50,19 @@ import java.io.IOException;
        
 public class Foo {
  void foo() throws IOException{}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constructor declaring checked exceptions like IOException is fine
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[ 
+import java.io.IOException;
+              
+public class Foo {
+ Foo() throws IOException{}
 }
      ]]></code>
     </test-code>
@@ -72,8 +85,6 @@ interface method throws RuntimeException
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-import java.lang.RuntimeException;
-         
 public interface Foo {
  public void method1() throws RuntimeException;
 }
