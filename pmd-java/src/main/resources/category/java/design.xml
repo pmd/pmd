@@ -1142,18 +1142,28 @@ public void foo() throws Exception {
 	
 	<rule name="SignatureDeclareThrowsRuntimeException"
           since="6.13.0"
+          language="java"
           message="A method/constructor should not explicitly declare java.lang.RuntimeException or it's subclasses in throws clause of it's signature"
-          class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsRuntimeExceptionRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           typeResolution="true"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#signaturedeclarethrowsruntimeexception">
         <description>
 A method/constructor should not explicitly declare java.lang.RuntimeException or it's subclasses in throws clause of it's signature, since it is advised to avoid declaring unchecked exceptions in method signature.
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration/NameList/Name[pmd-java:typeIs("java.lang.RuntimeException")]
+|
+//ConstructorDeclaration/NameList/Name[pmd-java:typeIs("java.lang.RuntimeException")]
+]]>
+                </value>
+            </property>
+        </properties>
         <example>
 <![CDATA[
-import java.lang.RuntimeException;
-
 public void foo() throws RuntimeException {
 }
 ]]>
