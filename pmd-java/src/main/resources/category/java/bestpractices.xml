@@ -1633,4 +1633,38 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="WhileLoopWithLiteralBoolean"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          language="java"
+          since="6.13.0"
+          message="The loop can be simplified."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#whileloopwithliteralboolean">
+        <description>
+'do {} while (true);' requires reading the end of the statement before it is
+apparent that it loops forever, whereas 'while (true) {}' is easier to understand.
+
+'do {} while (false);' is redundant, and if an inner variable scope is required,
+a block '{}' is sufficient.
+
+'while (false) {}' will never execute the block and can be removed in its entirety.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+//DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
+//WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = 'false']]
+                </value>
+            </property>
+        </properties>
+        <example>
+public class Example {
+  {
+    while (true) { } // allowed
+    while (false) { } // disallowed
+    do { } while (true); // disallowed
+    do { } while (false); // disallowed
+        </example>
+    </rule>
+
 </ruleset>
