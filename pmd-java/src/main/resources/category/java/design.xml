@@ -1141,7 +1141,7 @@ public void foo() throws Exception {
     </rule>
 	
 	<rule name="SignatureDeclareThrowsRuntimeException"
-          since="1.2"
+          since="6.13.0"
           message="A method/constructor should not explicitly declare java.lang.RuntimeException or it's subclasses in throws clause of it's signature"
           class="net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsRuntimeExceptionRule"
           typeResolution="true"
