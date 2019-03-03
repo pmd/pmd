@@ -22,4 +22,26 @@ private class ATest {
 }
 		]]></code>
     </test-code>
+    <test-code>
+        <description>Test methods should have @isTest annotation.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+private class ATest {
+    @setUp
+    static void setUp(){
+    }
+    @isTest
+    static void methodATestOne() {
+    }
+    @isTest
+    static void methodBTest() {
+    }
+    @isTest static void methodCTest() {
+    }
+    private void fetchData() {
+    }
+}
+		]]></code>
+    </test-code>
 </test-data>

@@ -30,6 +30,10 @@ public class ApexUnitTestAssertStatementRule extends AbstractApexUnitTestRule {
         ASSERT_METHODS.add(ASSERT_NOT_EQUALS);
     }
 
+    public ApexUnitTestAssertStatementRule() {
+        addRuleChainVisit(ASTMethodCallExpression.class);
+    }
+
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
         if (!ASSERT_METHODS.contains(node.getFullMethodName().toLowerCase(Locale.ROOT))) {

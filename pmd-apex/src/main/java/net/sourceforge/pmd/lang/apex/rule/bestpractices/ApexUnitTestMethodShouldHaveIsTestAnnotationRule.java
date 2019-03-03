@@ -26,6 +26,10 @@ import apex.jorje.services.Version;
 public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractApexUnitTestRule {
     private static final String TEST = "test";
 
+    public ApexUnitTestMethodShouldHaveIsTestAnnotationRule() {
+        addRuleChainVisit(ASTUserClass.class);
+    }
+
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
         // test methods should have @isTest annotation.
@@ -36,7 +40,7 @@ public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractAp
         }
 
         checkForIsTestAnnotation(node, data);
-        return super.visit(node, data);
+        return data;
     }
 
     private Object checkForIsTestAnnotation(final ApexNode<?> node, final Object data) {

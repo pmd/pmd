@@ -7,15 +7,16 @@
     <test-code>
         <description>Problematic apex unit test assert statements - assert should have 2/3 params</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
         <code><![CDATA[
 @isTest
 public class Foo {
      @isTest
     static void methodATest() {
         System.assertNotEquals('123', o.StageName); // not good
-        System.assertEquals('123', o.StageName, o); // good
-        System.assert(1==1); // not good
-        System.assert(1==1, 2); // good
+        System.assertEquals('123', o.StageName, 'Opportunity stageName is wrong.'); // good
+        System.assert(o.isClosed); // not good
+        System.assert(o.isClosed, 'Opportunity is not closed.'); // good
     }
 }
 		]]></code>
@@ -29,8 +30,8 @@ public class Foo {
 public class Foo {
      @isTest
     static void methodATest() {
-        System.assertEquals('123', o.StageName, o); // good
-        System.assert(1==1, 2); // good
+        System.assertEquals('Test opportunity', o.Name, 'Opportunity Name' + o.Name + 'is wrong.'); // good
+        System.assert(o.isClosed, 'Opportunity is not closed.'); // good
     }
 }
 		]]></code>
