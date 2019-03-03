@@ -3,6 +3,9 @@
 First off, thanks for taking the time to contribute!
 
 
+| NB: the rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer). Please refer to the specific [contributor documentation](https://github.com/pmd/pmd-designer#contributing) if your issue, feature request or PR touches the designer.  |
+| --- |
+
 ## Pull requests
 
 *   Please create your pull request against the `master` branch. We will rebase/merge it to the maintenance
