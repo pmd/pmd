@@ -7,10 +7,15 @@ permalink: pmd_userdocs_extending_writing_xpath_rules.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 
+TODO create more technical reference page for XPath rules
+
 {% include note.html content="For a translation to Georgian, see [webhostinggeeks.com/science/xpath-sourceforge-ka](http://webhostinggeeks.com/science/xpath-sourceforge-ka)" %}
 
 
-Since the AST is a tree, conceptually similar to a DOM, it can be queried with an *XPath expression* that matches the nodes your rule is looking for. XPath rules are defined using a single XPath expression, specified directly in the ruleset XML. The next section walks you through the development of an XPath rule.
+Since the AST is a tree, conceptually similar to a DOM, it can be queried with an
+ *XPath expression* that matches the nodes your rule is looking for. XPath rules
+ are defined using a single XPath expression, specified directly in the ruleset
+ XML. The next section walks you through the development of an XPath rule.
 
 {% include note.html content="This page assumes you already know what XPath is and how to read basic XPath queries. W3C has a good tutorial [here](https://www.w3schools.com/xml/xpath_syntax.asp) if you don't." %}
 
@@ -21,20 +26,29 @@ Since the AST is a tree, conceptually similar to a DOM, it can be queried with a
 
 > See [Designer Reference](pmd_userdocs_extending_designer_reference.html) for a more detailed explanation on how to use the designer.
 
-The rule designer is a tool that packs a lot of features to help you develop XPath rules quickly and painlessly. Basically, it allows you to examine the AST of a code snippet and evaluate an XPath expression against it.
 
-As for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix and `designer.bat` on Windows. The interface looks like the following:
+The rule designer is a tool that packs a lot of features to help you develop XPath
+rules quickly and painlessly. Basically, it allows you to examine the AST of a code
+snippet and evaluate an XPath expression against it.
 
-{% include image.html file="userdocs/designer-overview-with-numbers.png" alt="Designer overview" %}
+As for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix and
+`designer.bat` on Windows. The interface looks like the following:
 
-The zone (1) is the **main editor**. If you write a code snippet in it, you'll see that the zone (2) will be updated automatically: it's the AST of the code. Note that the code snippet must be a syntactically valid compilation unit for the language you've chosen, e.g. for Java, a compilation unit necessarily has a top-level type declaration.
+{% include image.html file="userdocs/designer-overview-with-nums.png" alt="Designer overview" %}
 
-If you select a node in the AST, its specific properties will also be displayed on the left (panel (3)): they're the XPath attributes of the node.
+The zone (2) is the **main editor**. When you write a code snippet in the
+ code area to the left, you'll see that the tree to the right will be updated
+ automatically: it's the AST of the code.
+ Note that the code snippet must be a syntactically valid compilation unit for the
+ language you've chosen, e.g. for Java, a compilation unit necessarily has a top-level
+ type declaration.
 
-The zone (4) is the **XPath editor**. If you enter an XPath query in that area, it will be evaluated on the current AST and the results will be added to the list in zone (5).
+If you select a node in the AST, its specific properties will also be displayed
+on the left (panel (1)): they're the XPath attributes of the node.
 
-In the center of the window, a toolbar lets you *select the language version* and *XPath version* you want to use.
-
+The zone (3) is the **XPath editor**. If you enter an XPath query in that area,
+it will be evaluated on the current AST and the results will be added to the
+list to the bottom right.
 
 ### Rule development process
 
@@ -44,14 +58,17 @@ The basic development process is straightforward:
 1.  Write a code snippet in the main editor that features the offending code you're looking for
 2.  Examine the AST and determine what node the violation should be reported on
 3.  Write an XPath expression matching that node in the XPath editor
-4.  Refine the XPath expression iteratively using different code snippets, so that it matches violation cases, but no other node
+4.  Refine the XPath expression iteratively using different code snippets, so that
+    it matches violation cases, but no other node
 5.  Export your XPath expression to an XML rule element, and place it in your ruleset
 
 In the following sections, we walk through several examples to refine your rule.
 
 ## A simple rule
 
-Let's say you want to prevent your coding team from naming variables of type `short` after your boss, whose name is Bill. You try the designer on the following offending code snippet:
+Let's say you want to prevent your coding team from naming variables of type
+`short` after your boss, whose name is Bill. You try the designer on the following
+ offending code snippet:
 
 ```java
 
@@ -65,7 +82,9 @@ public class KeepingItSerious {
 
 ```
 
-Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId descendant, whose `Image` XPath attribute is exactly `bill`. You thus write your first attempt in the XPath editor:
+Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
+descendant, whose `Image` XPath attribute is exactly `bill`. You thus write your first attempt
+in the XPath editor:
 ```xpath
 //VariableDeclaratorId[@Image = "bill"]
 ```
@@ -105,7 +124,7 @@ copy-paste into your ruleset XML. The resulting element looks like so:
 ```xml
 <rule name="DontCallBossShort"
       language="java"
-      message="Meet me in my office at 5."
+      message="Boss wants to talk to you."
       class="net.sourceforge.pmd.lang.rule.XPathRule" >
     <description>
 TODO
@@ -123,13 +142,21 @@ TODO
 </rule>
 ```
 
-You can notice that your XPath expression ends up inside a [property](pmd_userdocs_configuring_rules.html#rule-properties) of a rule of type XPathRule, which is how XPath rules are implemented.
+You can notice that your XPath expression ends up inside a [property](pmd_userdocs_configuring_rules.html#rule-properties)
+of a rule of type XPathRule, which is how XPath rules are implemented.
 
 ### Defining rule properties
 
-Some time later, your boss' boss decides he doesn't want to be called short in Java too, and would like you to add him to the rule. There are several ways to do that, but you decide to use a rule property to make your rule extensible. Doing that directly in the XML is [explained on that page](pmd_userdocs_extending_defining_properties.html#for-xpath-rules), and we'll explain here how to do that in the designer.
+Some time later, your boss' boss decides he doesn't want to be called short in Java
+too, and would like you to add him to the rule. There are several ways to do that,
+but you decide to use a rule property to make your rule extensible. Doing that
+directly in the XML is [explained on that page](pmd_userdocs_extending_defining_properties.html#for-xpath-rules),
+ and we'll explain here how to do that in the designer.
 
-The zone (6) in the screenshot above is a list of properties defined for your rule. Right-clicking the table and selecting "Add property..", you may add a property of type `List[String]` to represent your boss names. You can then use it in your XPath query with a dollar prefix, i.e.
+The zone (6) in the screenshot above is a list of properties defined for your rule.
+Right-clicking the table and selecting "Add property..", you may add a property of
+type `List[String]` to represent your boss names. You can then use it in your XPath
+query with a dollar prefix, i.e.
 
 ```xpath
 //VariableDeclaratorId[@Image = $bossNames and ../../Type[@TypeImage = "short"]]
