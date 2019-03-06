@@ -10,11 +10,16 @@ author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelis
 
 {% jdoc_nspace :props core::properties %}
 
-## Defining properties
+Rule properties are a way to make your rules configurable directly from the
+ruleset XML. Their use cases and usage is described on the [Configuring Rules](pmd_userdocs_configuring_rules.html#rule-properties) page.
 
-If you're a rule developer, you may want to think about what would be useful for a user of your rule to parameterise. It could be a numeric report level, a boolean flag changing the behaviour of your rule... PMD ships with many types of properties ready to use!
+If you're a rule developer, you may want to think about what would be useful for
+a user of your rule to parameterise. It could be a numeric report level, a boolean
+flag changing the behaviour of your rule... Chances are there *is* some detail
+that can be abstracted away from your implementation, and in that case, a
+property would improve your rule.
 
-### Overview of properties
+## Overview of properties
 
 The basic thing you need to do as a developer is to define a **property descriptor** and declare that your rule uses it. A property descriptor defines a number of attributes for your property:
 * Its *name*, with which the user will refer to your property;
@@ -49,7 +54,7 @@ Each of these is complemented by a multivalued variant, whose name ends with "Mu
 
 Note that RegexProperty doesn't have a multivalued variant, since the delimiters could be part of a specific value.
 
-### For Java rules
+## For Java rules
 
 The procedure to define a property is quite straightforward:
 * Create a property descriptor of the type you want, using its builder;
@@ -57,7 +62,7 @@ The procedure to define a property is quite straightforward:
 
 You can then retrieve the value of the property at any time using {% jdoc !a!props::PropertySource#getProperty(props::PropertyDescriptor) %}.
 
-#### Creating a descriptor
+### Creating a descriptor
 
 From version 6.0.0 on, properties can be built using specific **builders**. For example, to build a string property, you'd call
 ```java
@@ -100,7 +105,7 @@ static EnumeratedProperty<ModeStrategy> modeProperty
 
 Note that you're required to fill in the type of the values too, using `type()`.
 
-#### Example
+### Example
 
 You can see an example of properties used in a PMD rule [here](https://github.com/pmd/pmd/blob/ac2ff0f6af8d16f739584ba8d00b7ea1a6311ccc/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/complexity/AvoidDeeplyNestedIfStmtsRule.java#L17).
 There are several things to notice here:
@@ -110,7 +115,7 @@ There are several things to notice here:
 
 
 
-### For XPath rules
+## For XPath rules
 
 XPath rules can also define their own properties. To do so, you must add a `property` element in the `properties` element of your rule, which **declares the `type` attribute**. This attribute conditions what type the underlying property has, and can have the following values:
 
@@ -150,7 +155,7 @@ You can then use the property in XPath with the syntax `$propertyName`, for exam
 </rule>
 ```
 
-#### Multivalued properties
+### Multivalued properties
 
 Multivalued properties are also allowed and their `type` attribute has the form `List[Boolean]` or `List[Character]`, with every above type allowed. These properties **require XPath 2.0** to work properly, and make use of the **sequence datatype** provided by that language. You thus need to set the `version` property to `2.0` to use them. Properties can also declare the `delimiter` attribute.
 
