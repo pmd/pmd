@@ -2152,6 +2152,15 @@
 ,
 
 {
+"title": "AvoidUncheckedExceptionsInSignatures (Java, Design)",
+"tags": "",
+"keywords": "AvoidUncheckedExceptionsInSignatures",
+"url": "pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
 "title": "ClassWithOnlyPrivateConstructorsShouldBeFinal (Java, Design)",
 "tags": "",
 "keywords": "ClassWithOnlyPrivateConstructorsShouldBeFinal",
@@ -2372,15 +2381,6 @@
 "tags": "",
 "keywords": "SignatureDeclareThrowsException",
 "url": "pmd_rules_java_design.html#signaturedeclarethrowsexception",
-"summary": "Rules that help you discover design issues."
-}
-,
-
-{
-"title": "AvoidUncheckedExceptionsInSignatures (Java, Design)",
-"tags": "",
-"keywords": "AvoidUncheckedExceptionsInSignatures",
-"url": "pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures",
 "summary": "Rules that help you discover design issues."
 }
 ,
@@ -3212,6 +3212,15 @@
 "tags": "",
 "keywords": "DataflowAnomalyAnalysis",
 "url": "pmd_rules_java_errorprone.html#dataflowanomalyanalysis",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
+"title": "DetachedTestCase (Java, Error Prone)",
+"tags": "",
+"keywords": "DetachedTestCase",
+"url": "pmd_rules_java_errorprone.html#detachedtestcase",
 "summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
 }
 ,
