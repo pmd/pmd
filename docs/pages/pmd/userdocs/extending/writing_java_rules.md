@@ -13,6 +13,8 @@ author: Tom Copeland <tomcopeland@users.sourceforge.net>
 {% jdoc_nspace :jast java::lang.java.ast %}
 {% jdoc_nspace :jrule java::lang.java.rule %}
 
+{% include note.html content="All that should be written in the Javadocs.." %}
+
 This page covers the specifics of writing a rule in Java. The basic development
 process is very similar to the process for XPath rules, which is described in
 [Using the Designer](pmd_userdocs_extending_designer_intro.html#rule-development-process).
@@ -26,10 +28,6 @@ e.g. {% jdoc jrule::AbstractJavaRule %}.
 
 In this page we'll talk about rules for the Java language, but the process is
 very similar for other languages.
-
-## Rule instantiation
-
-Rules need to define a no-arg constructor, that will be
 
 ## Rule execution
 
@@ -115,6 +113,56 @@ independent way is to override the method `apply` of the rule (and call super).
 The apply method is called exactly once per file.
 
 <!-- We don't support language-independent rules anyway... -->
+
+
+
+## Rule lifecycle reference
+
+### Construction
+
+Exactly once:
+
+1. The rule's no-arg constructor is called when loading the ruleset.
+The rule's constructor must define:
+  * [Rulechain visits](#economic-traversal-the-rulechain)
+  * [Property descriptors](pmd_userdocs_extending_defining_properties#for-java-rules)
+2. If the rule was included in the ruleset as a rule reference,
+some properties [may be overridden](pmd_userdocs_configuring_rules.html#rule-properties).
+If an overridden property is unknown, an error is reported.
+3. Misconfigured rules are removed from the ruleset
+
+### Execution
+
+For each thread, a deep copy of the rule is created.
+Then, for each thread, for each analysed file:
+
+3. {% jdoc core::Rule#start(core::RuleContext) %} is called once, before parsing
+4. {% jdoc core::Rule#apply(java.util.List,core::RuleContext) %} is called with the root 
+of the AST. That method performs the AST traversal that ultimately calls visit methods. 
+It's not called for RuleChain rules.
+5. {% jdoc core::Rule#end(core::RuleContext) %} is called when the rule is done processing 
+the file
+
+### FIXME
+
+without specific order:
+* There's no hook for "after construction", or "after analysis" we only have "before file"
+and "after file"
+* What's the point of having `Rule#start` ? The globally accepted pattern is to override
+the visit method for the root node. We have `visit(<root type>)`, `apply`, and `start`
+that are called at the same lifecycle point...
+* Rule#apply is not called for RuleChain visits
+* Why is Rule#apply overridable? Anyone can break it
+* Sooo much code is duplicated everywhere in rulechain visitor implementations, which are 
+all the same modulo a cast...
+* Converting a rule to the rulechain shouldn't force removing `super.visit` calls... We 
+could just provide a base class for rulechain rules that overrides eg `visit(JavaNode)`
+to be a noop
+* RuleSets is unnecessary, we should just rely on a good RuleSet implementation
+* Initializer.initialize() is called for each file instead of once per language module loading
+* For each file all the rules in all rulesets are checked to use typeres or other 
+analysis passes
+
 
 
 
