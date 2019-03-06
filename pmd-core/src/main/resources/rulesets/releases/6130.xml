@@ -9,6 +9,7 @@ This ruleset contains links to rules that are new in PMD v6.13.0
   </description>
 
     <rule ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures"/>
+    <rule ref="category/java/errorprone.xml/DetachedTestCase"/>
 
 </ruleset>
 

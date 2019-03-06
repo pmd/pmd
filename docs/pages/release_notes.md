@@ -20,14 +20,21 @@ This is a {{ site.pmd.release_type }} release.
     that declare unchecked exceptions in their `throws` clause. This forces the caller to handle the exception,
     even though it is a runtime exception.
 
+*   The new Java rule {% rule "java/errorprone/DetachedTestCase" %} (`java-errorprone`) searches for public
+    methods in test classes, which are not annotated with `@Test`. These methods might be test cases where
+    the annotation has been forgotten. Because of that those test cases are never executed.
+
 ### Fixed Issues
+
 *   java-design
     *   [#1692](https://github.com/pmd/pmd/issues/1692): \[java] Add rule to avoid declaration of throwing unchecked exception
 
 ### API Changes
 
 ### External Contributions
+
 *   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
+*   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
 
 {% endtocmaker %}
 
