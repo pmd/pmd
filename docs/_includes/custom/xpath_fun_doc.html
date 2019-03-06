@@ -28,12 +28,12 @@
                 {% elsif fun.params_are_same_as %}
                     (Same as for `{{ fun.params_are_same_as }}`)
                 {% elsif fun.parameters.size == 1 %}
-                    0: {{ fun.parameters[0].description }}
+                    1: {{ fun.parameters[0].description }}
                 {% else %}
                 <ul>
                     {% for i in 0..fun.parameters.size %}
                     {{ assign param = fun.parameters[i] }}
-                    <li>{{ i }} : {{ param.description }}</li>
+                    <li>{{ i + 1 }} : {{ param.description }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}

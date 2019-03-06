@@ -19,6 +19,8 @@ also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_desi
 
 <!-- Later we can document the specific subset of XPath features our wrappers support -->
 
+<!-- TODO describe value representation quirks -->
+
 ## XPath version
 
 PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
@@ -86,8 +88,8 @@ On XPath 2.0, the namespace of custom PMD function must be explicitly mentioned.
 {% include custom/xpath_fun_doc.html %}
 {% endrender %}
 
-There is also a `typeOf` function which is deprecated and whose usages
-should be replaced with uses of `typeIs` or `typeIsExactly`. That one will
-be removed with PMD 7.0.0.
+{% include note.html content='There is also a `typeOf` function which is
+deprecated and whose usages should be replaced with uses of `typeIs` or
+`typeIsExactly`. That one will be removed with PMD 7.0.0.' %}
 
 
