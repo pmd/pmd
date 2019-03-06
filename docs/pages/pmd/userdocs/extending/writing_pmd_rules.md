@@ -7,6 +7,9 @@ permalink: pmd_userdocs_extending_writing_pmd_rules.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
 
+
+{% include warning.html content="This is going away" %}
+
 # How to write a PMD rule
 
 Writing PMD rules is cool because you don’t have to wait for us to get around to implementing feature requests.
