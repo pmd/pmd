@@ -2377,6 +2377,15 @@
 ,
 
 {
+"title": "SignatureDeclareThrowsRuntimeException (Java, Design)",
+"tags": "",
+"keywords": "SignatureDeclareThrowsRuntimeException",
+"url": "pmd_rules_java_design.html#signaturedeclarethrowsruntimeexception",
+"summary": "Rules that help you discover design issues."
+}
+,
+
+{
 "title": "SimplifiedTernary (Java, Design)",
 "tags": "",
 "keywords": "SimplifiedTernary",
