@@ -1,0 +1,29 @@
+langs:
+  - name: "Java"
+    ns: "pmd-java"
+    funs:
+      - name: typeIs
+        returnType: "xs:boolean"
+        description: "Returns true if the context node's static type is a subtype of the given type"
+        notes: "The context node must be a {% jdoc jast::TypeNode %}"
+        parameters:
+          - name: javaQualifiedName
+            type: "xs:string"
+            description: "the qualified name of a class, possibly with pairs of brackets to indicate an array type.
+              Can also be a primitive type name."
+
+      - name: typeIsExactly
+        returnType: "xs:boolean"
+        description: "Returns true if the context node's static type is exactly the given type.
+                      In particular, returns false if the context node's type is
+                      a subtype of the given type."
+        notes_are_same_as: typeIs
+        params_are_same_as: typeIs
+
+      - name: metric
+        returnType: "xs:decimal?"
+        description: "Returns the value of the metric as evaluated on the context node"
+        notes: "The context node must be a {% jdoc jast::ASTAnyTypeDeclaration %} or a {% jdoc jast::MethodLikeNode %}"
+        parameters:
+          - name: "metricKey"
+            type: "xs:string"

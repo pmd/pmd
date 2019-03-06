@@ -1,0 +1,56 @@
+{% for lang in site.data.xpath_funs.langs %}
+
+### {{ lang.name }}
+
+{{ lang.name }} functions are in the namespace `{{ lang.ns }}`.
+
+{% for fun in lang.funs %}
+
+
+
+<h4><code>{{ fun.name }}</code></h4>
+
+{{ fun.description }} {{ fun.notes }}
+
+{% unless fun.parameters.size == 0 %}
+
+<h5>Parameters</h5>
+
+<table>
+
+    {% for param in fun.parameters %}
+
+    <tr>
+        <td>{{ param.name }}</td>
+        <td>{{ param.description }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endunless %}
+
+{% unless fun.examples.size == 0 %}
+
+<h5>Examples</h5>
+
+<table>
+
+    {% for example in fun.examples %}
+
+    <tr>
+        <td><code>{{ example.code }}</code></td>
+        <td>{{ example.description }}</td>
+    </tr>
+
+    {% endfor %}
+</table>
+
+{% endunless %}
+
+{% endfor %}
+
+
+
+{% endfor %}

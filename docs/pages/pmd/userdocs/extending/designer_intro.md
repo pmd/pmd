@@ -1,78 +1,28 @@
 ---
-title:  Writing XPath rules
+title:  Using the Rule Designer
 tags: [extending, userdocs]
-summary: "This page describes XPath rule support in more details"
+summary: "This page is a gentle introduction to the Rule Designer, a tool made
+to help developers write new rules."
 last_updated: July 2018 (6.6.0)
-permalink: pmd_userdocs_extending_writing_xpath_rules.html
-author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
+permalink: pmd_userdocs_extending_designer_intro.html
+author: Miguel Griffa <mikkey@users.sourceforge.net>
 ---
 
-
-{% jdoc_nspace :coremx core::lang.metrics %}
-{% jdoc_nspace :coreast core::lang.ast %}
-{% jdoc_nspace :jmx java::lang.java.metrics %}
-{% jdoc_nspace :jast java::lang.java.ast %}
-
-
-
-## PMD extension functions
-
-PMD provides some language-specific XPath functions to access semantic
-information from the AST.
-
-On XPath 2.0, the namespace must be explicitly provided.
-
-### Java
-
-Java functions are in the namespace `pmd-java`.
-
-| Function name   | Arguments                                                                                                                        | Returns                                                                                                                                                   | Notes                                                                                                  |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| `typeIs`        |  1: the qualified name of a class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name. | True if the context node's static type is a subtype of the given type                                                                                     | The context node must be a {% jdoc jast::TypeNode %}                                                   |
-| `typeIsExactly` | (Same as for `typeIs`)                                                                                                           | True if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type. | (Same as for `typeIs`)                                                                                 |
-| `metric`        | 1: the name of an enum constant in {% jdoc jmx::api.JavaOperationMetricKey %} or {% jdoc jmx::api.JavaClassMetricKey %}          | A decimal value representing the value of the metric as evaluated on the context node                                                                     | The context node must be a {% jdoc jast::ASTAnyTypeDeclaration %} or a {% jdoc jast::MethodLikeNode %} |
-
-{% render %}
-{% include custom/xpath_fun_doc.html %}
- {% endrender %}
-
-There is also a `typeOf` function which is deprecated and whose usages
-should be replaced with uses of `typeIs` or `typeIsExactly`. That one will
-be removed with PMD 7.0.0.
-
-## XPath version
-
-PMD supports three XPath versions: 1.0, 2.0, and 1.0 compatibility mode. The
-version can be specified with the `version` property in the rule definition,
-like so:
-
-```xml
-<property version="2.0" /> <!-- or "1.0", or "1.0 compatibility" -->
-```
-
-As of PMD version 6.13.0, XPath versions 1.0 and the 1.0 compatibility mode are
-deprecated. It is recommended that you migrate to 2.0, which shouldn't be too
-hard.
-
-### Migrating
-
-TODO
-
-
-
+This page is a gentle introduction to the Rule Designer, a tool made to help
+developers write new rules. Using the designer is useful both to write Java
+rules and XPath rules, but it's more specifically geared towards XPath rules.
+This page uses a simple XPath rule to illustrate the common workflow. We assume
+here that you already know what XPath is and how to read basic XPath queries. W3C
+has a good tutorial [here](https://www.w3schools.com/xml/xpath_syntax.asp) if you don't.
 
 ## The Rule Designer
-
-
-> See [Designer Reference](pmd_userdocs_extending_designer_reference.html) for a more detailed explanation on how to use the designer.
-
 
 The rule designer is a tool that packs a lot of features to help you develop XPath
 rules quickly and painlessly. Basically, it allows you to examine the AST of a code
 snippet and evaluate an XPath expression against it.
 
-As for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix and
-`designer.bat` on Windows. The interface looks like the following:
+Like for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix
+and `designer.bat` on Windows. The interface looks like the following:
 
 {% include image.html file="userdocs/designer-overview-with-nums.png" alt="Designer overview" %}
 
@@ -84,10 +34,10 @@ The zone (2) is the **main editor**. When you write a code snippet in the
  type declaration.
 
 If you select a node in the AST, its specific properties will also be displayed
-on the left (panel (1)): they're the XPath attributes of the node.
+in the panel (1): they're the XPath attributes of the node. More on that later.
 
 The zone (3) is the **XPath editor**. If you enter an XPath query in that area,
-it will be evaluated on the current AST and the results will be added to the
+it will be evaluated on the current AST and the results will be displayed in the
 list to the bottom right.
 
 ### Rule development process
@@ -193,7 +143,8 @@ but you decide to use a rule property to make your rule extensible. Doing that
 directly in the XML is [explained on that page](pmd_userdocs_extending_defining_properties.html#for-xpath-rules),
  and we'll explain here how to do that in the designer.
 
-The zone (6) in the screenshot above is a list of properties defined for your rule.
+The table to the left of the zone (3) in the screenshot above is a list of
+properties defined for your rule.
 Right-clicking the table and selecting "Add property..", you may add a property of
 type `List[String]` to represent your boss names. You can then use it in your XPath
 query with a dollar prefix, i.e.

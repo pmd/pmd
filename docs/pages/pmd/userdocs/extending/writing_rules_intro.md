@@ -27,11 +27,11 @@ Conceptually, PMD rules work by *matching a "pattern" against the AST* of a file
 Rules explore the AST and find nodes that satisfy some conditions that are characteristic
 of the specific thing the rule is trying to flag. Rules then report a violation on these nodes.
 
-## Defining rules
+## Writing new rules
 
 PMD supports two ways to define rules: using an **XPath query**, or using a
 **Java visitor**. XPath rules are much easier to set up, since they're defined
-directly in your ruleset XML, and are expressive enough for most tasks.
+directly in your ruleset XML, and are expressive enough for nearly any task.
 
 On the other hand, some parts of PMD's API are only accessible from Java, e.g.
 accessing the usages of a declaration. And Java rules allow you to do some

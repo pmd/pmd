@@ -64,6 +64,12 @@ entries:
         - title: Writing a rule
           url: /pmd_userdocs_extending_writing_pmd_rules.html
           output: web, pdf
+        - title: Introduction to writing rules
+          url: /pmd_userdocs_extending_writing_rules_intro.html
+          output: web, pdf
+        - title: Using the Rule Designer
+          url: /pmd_userdocs_extending_designer_intro.html
+          output: web, pdf
         - title: Writing XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
           output: web, pdf

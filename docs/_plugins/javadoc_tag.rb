@@ -161,7 +161,7 @@ class JavadocTag < Liquid::Tag
   end
 
   def markup_link(rname, link)
-    "[`#{rname}`](#{link})"
+    "<a href=\"#{link}\"><code>#{rname}</code></a>"
   end
 
 
