@@ -11,8 +11,7 @@ class RenderBlock < Liquid::Block
 
   def render(context)
     template = @body.render(context)
-    pp template
-    pp Liquid::Template.parse(template).render(context)
+    Liquid::Template.parse(template).render(context)
   end
 end
 

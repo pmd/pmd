@@ -14,193 +14,47 @@ author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement
 {% jdoc_nspace :jast java::lang.java.ast %}
 
 
+This page describes some points of XPath rule support in more details. See
+also [the tutorial about how to write an XPath rule](pmd_userdocs_extending_designer_intro.html).
 
-## PMD extension functions
-
-PMD provides some language-specific XPath functions to access semantic
-information from the AST.
-
-On XPath 2.0, the namespace must be explicitly provided.
-
-### Java
-
-Java functions are in the namespace `pmd-java`.
-
-| Function name   | Arguments                                                                                                                        | Returns                                                                                                                                                   | Notes                                                                                                  |
-|-----------------|----------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| `typeIs`        |  1: the qualified name of a class, possibly with pairs of brackets to indicate an array type. Can also be a primitive type name. | True if the context node's static type is a subtype of the given type                                                                                     | The context node must be a {% jdoc jast::TypeNode %}                                                   |
-| `typeIsExactly` | (Same as for `typeIs`)                                                                                                           | True if the context node's static type is exactly the given type. In particular, returns false if the context node's type is a subtype of the given type. | (Same as for `typeIs`)                                                                                 |
-| `metric`        | 1: the name of an enum constant in {% jdoc jmx::api.JavaOperationMetricKey %} or {% jdoc jmx::api.JavaClassMetricKey %}          | A decimal value representing the value of the metric as evaluated on the context node                                                                     | The context node must be a {% jdoc jast::ASTAnyTypeDeclaration %} or a {% jdoc jast::MethodLikeNode %} |
-
-{% render %}
-{% include custom/xpath_fun_doc.html %}
- {% endrender %}
-
-There is also a `typeOf` function which is deprecated and whose usages
-should be replaced with uses of `typeIs` or `typeIsExactly`. That one will
-be removed with PMD 7.0.0.
+<!-- Later we can document the specific subset of XPath features our wrappers support -->
 
 ## XPath version
 
-PMD supports three XPath versions: 1.0, 2.0, and 1.0 compatibility mode. The
-version can be specified with the `version` property in the rule definition,
-like so:
+PMD supports three XPath versions for now: 1.0, 2.0, and 1.0 compatibility mode.
+The version can be specified with the `version` property in the rule definition, like so:
 
 ```xml
 <property version="2.0" /> <!-- or "1.0", or "1.0 compatibility" -->
 ```
 
 As of PMD version 6.13.0, XPath versions 1.0 and the 1.0 compatibility mode are
-deprecated. It is recommended that you migrate to 2.0, which shouldn't be too
-hard.
+deprecated. XPath 2.0 is superior in many ways, for example for its support for
+type checking, sequence values, or quantified expressions. For a detailed
+but approachable review of the features of XPath 2.0 and above, see [the Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions).
+
+
+It is recommended that you migrate to 2.0 before 7.0.0, but we expect
+to be able to provide an automatic migration tool when releasing 7.0.0. The
+following section describes incompatibilities between 1.0 and 2.0 for PMD rules.
 
 ### Migrating
 
 TODO
 
+## PMD extension functions
+
+PMD provides some language-specific XPath functions to access semantic
+information from the AST.
+
+On XPath 2.0, the namespace of custom PMD function must be explicitly mentioned.
+
+{% render %}
+{% include custom/xpath_fun_doc.html %}
+{% endrender %}
+
+There is also a `typeOf` function which is deprecated and whose usages
+should be replaced with uses of `typeIs` or `typeIsExactly`. That one will
+be removed with PMD 7.0.0.
 
 
-
-## The Rule Designer
-
-
-> See [Designer Reference](pmd_userdocs_extending_designer_reference.html) for a more detailed explanation on how to use the designer.
-
-
-The rule designer is a tool that packs a lot of features to help you develop XPath
-rules quickly and painlessly. Basically, it allows you to examine the AST of a code
-snippet and evaluate an XPath expression against it.
-
-As for PMD and CPD, you can launch it using `run.sh designer` on Linux/Unix and
-`designer.bat` on Windows. The interface looks like the following:
-
-{% include image.html file="userdocs/designer-overview-with-nums.png" alt="Designer overview" %}
-
-The zone (2) is the **main editor**. When you write a code snippet in the
- code area to the left, you'll see that the tree to the right will be updated
- automatically: it's the AST of the code.
- Note that the code snippet must be a syntactically valid compilation unit for the
- language you've chosen, e.g. for Java, a compilation unit necessarily has a top-level
- type declaration.
-
-If you select a node in the AST, its specific properties will also be displayed
-on the left (panel (1)): they're the XPath attributes of the node.
-
-The zone (3) is the **XPath editor**. If you enter an XPath query in that area,
-it will be evaluated on the current AST and the results will be added to the
-list to the bottom right.
-
-### Rule development process
-
-
-The basic development process is straightforward:
-
-1.  Write a code snippet in the main editor that features the offending code you're looking for
-2.  Examine the AST and determine what node the violation should be reported on
-3.  Write an XPath expression matching that node in the XPath editor
-4.  Refine the XPath expression iteratively using different code snippets, so that
-    it matches violation cases, but no other node
-5.  Export your XPath expression to an XML rule element, and place it in your ruleset
-
-In the following sections, we walk through several examples to refine your rule.
-
-## A simple rule
-
-Let's say you want to prevent your coding team from naming variables of type
-`short` after your boss, whose name is Bill. You try the designer on the following
- offending code snippet:
-
-```java
-
-public class KeepingItSerious {
-
-    public void method() {
-        short bill; // LocalVariableDeclaration
-    }
-
-}
-
-```
-
-Examining the AST, you find out that the LocalVariableDeclaration has a VariableDeclaratorId
-descendant, whose `Image` XPath attribute is exactly `bill`. You thus write your first attempt
-in the XPath editor:
-```xpath
-//VariableDeclaratorId[@Image = "bill"]
-```
-
-You can see the XPath result list is updated with the variable declarator.
-If you try the query against the following updated snippet though, you can
-see that the field declaration id is matched even though it's not of type `short`.
-
-```java
-public class KeepingItSerious {
-
-    Delegator bill; // FieldDeclaration
-
-    public void method() {
-        short bill; // LocalVariableDeclaration
-    }
-
-}
-```
-
-
-You thus refine your XPath expression with an additional predicate,
-based on your examination of the Type node of the field and local variable
-declaration nodes.
-
-```xpath
-//VariableDeclaratorId[@Image = "bill" and ../../Type[@TypeImage = "short"]]
-```
-
-### Exporting to XML
-
-You estimate that your rule is now production ready, and you'd like to use it in your ruleset.
-The `File > Export XPath to rule...` allows you to do that in a few clicks: just enter some
-additional metadata for your rule, and the popup will generate an XML element that you can
-copy-paste into your ruleset XML. The resulting element looks like so:
-
-```xml
-<rule name="DontCallBossShort"
-      language="java"
-      message="Boss wants to talk to you."
-      class="net.sourceforge.pmd.lang.rule.XPathRule" >
-    <description>
-TODO
-    </description>
-    <priority>3</priority>
-    <properties>
-        <property name="xpath">
-            <value>
-<![CDATA[
-//VariableDeclaratorId[../../Type[@TypeImage="short"] and @Image = "bill"]
-]]>
-            </value>
-        </property>
-    </properties>
-</rule>
-```
-
-You can notice that your XPath expression ends up inside a [property](pmd_userdocs_configuring_rules.html#rule-properties)
-of a rule of type XPathRule, which is how XPath rules are implemented.
-
-### Defining rule properties
-
-Some time later, your boss' boss decides he doesn't want to be called short in Java
-too, and would like you to add him to the rule. There are several ways to do that,
-but you decide to use a rule property to make your rule extensible. Doing that
-directly in the XML is [explained on that page](pmd_userdocs_extending_defining_properties.html#for-xpath-rules),
- and we'll explain here how to do that in the designer.
-
-The zone (6) in the screenshot above is a list of properties defined for your rule.
-Right-clicking the table and selecting "Add property..", you may add a property of
-type `List[String]` to represent your boss names. You can then use it in your XPath
-query with a dollar prefix, i.e.
-
-```xpath
-//VariableDeclaratorId[@Image = $bossNames and ../../Type[@TypeImage = "short"]]
-```
-
-
-{% include note.html content="Using a property of type `List[String]` requires you to use XPath 2.0" %}

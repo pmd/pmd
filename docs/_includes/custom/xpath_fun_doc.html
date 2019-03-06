@@ -4,53 +4,67 @@
 
 {{ lang.name }} functions are in the namespace `{{ lang.ns }}`.
 
-{% for fun in lang.funs %}
+<div class="table-responsive">
+    <table>
+
+        <thead>
+        <tr>
+            <th>Function name</th>
+            <th>Parameters</th>
+            <th>Description</th>
+            <th>Notes</th>
+        </tr>
+        </thead>
 
 
+        {% for fun in lang.funs %}
 
-<h4><code>{{ fun.name }}</code></h4>
+        <tr>
 
-{{ fun.description }} {{ fun.notes }}
+            <td>{{ fun.name }}</td>
+            <td>
+                {% if fun.parameters.size == 0 %}
+                    None
+                {% elsif fun.params_are_same_as %}
+                    (Same as for `{{ fun.params_are_same_as }}`)
+                {% elsif fun.parameters.size == 1 %}
+                    0: {{ fun.parameters[0].description }}
+                {% else %}
+                <ul>
+                    {% for i in 0..fun.parameters.size %}
+                    {{ assign param = fun.parameters[i] }}
+                    <li>{{ i }} : {{ param.description }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </td>
+            <td>{{ fun.description }}</td>
+            <td>
+                {% if fun.notes_are_same_as %}
+                    (Same as for `{{ fun.notes_are_same_as }}`)
+                {% else %}
+                    {{ fun.notes }}
+                {% endif %}
+            </td>
+        </tr>
 
-{% unless fun.parameters.size == 0 %}
+        {% endfor %}
 
-<h5>Parameters</h5>
+    </table>
 
-<table>
+</div>
 
-    {% for param in fun.parameters %}
+{% unless lang.examples.size == 0 %}
 
-    <tr>
-        <td>{{ param.name }}</td>
-        <td>{{ param.description }}</td>
-    </tr>
+#### Examples
 
-    {% endfor %}
 
-</table>
-
-{% endunless %}
-
-{% unless fun.examples.size == 0 %}
-
-<h5>Examples</h5>
-
-<table>
-
-    {% for example in fun.examples %}
-
-    <tr>
-        <td><code>{{ example.code }}</code></td>
-        <td>{{ example.description }}</td>
-    </tr>
-
-    {% endfor %}
-</table>
-
-{% endunless %}
-
+{% for example in lang.examples %}
+* `{{ example.code }}`<br/>&nbsp;&nbsp;&nbsp;&nbsp;{{example.outcome }}
 {% endfor %}
 
+
+{% endunless %}
 
 
 {% endfor %}

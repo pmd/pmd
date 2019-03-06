@@ -27,3 +27,12 @@ langs:
         parameters:
           - name: "metricKey"
             type: "xs:string"
+            description: "The name of an enum constant in {% jdoc jmx::api.JavaOperationMetricKey %} or {% jdoc jmx::api.JavaClassMetricKey %}"
+
+    examples:
+      - code: '//FormalParameter[pmd-java:typeIs("java.lang.String[]")]'
+        outcome: "Matches formal parameters of type `String[]` (including vararg parameters)"
+      - code: '//VariableDeclaratorId[pmd-java:typeIs("java.lang.List")]'
+        outcome: "Matches variable declarators of type `List` or any of its subtypes (including e.g. `ArrayList`)"
+      - code: '//VariableDeclaratorId[pmd-java:typeIsExactly("java.lang.List")]'
+        outcome: "Matches variable declarators of type `List` (but not e.g. `ArrayList`)"

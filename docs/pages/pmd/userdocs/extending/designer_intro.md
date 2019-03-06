@@ -13,7 +13,10 @@ developers write new rules. Using the designer is useful both to write Java
 rules and XPath rules, but it's more specifically geared towards XPath rules.
 This page uses a simple XPath rule to illustrate the common workflow. We assume
 here that you already know what XPath is and how to read basic XPath queries. W3C
-has a good tutorial [here](https://www.w3schools.com/xml/xpath_syntax.asp) if you don't.
+has a good tutorial [here](https://www.w3schools.com/xml/xpath_syntax.asp) if
+you don't (in the context of XML only), and [the Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions)
+features a comprehensive but approachable description of the syntax of XPath
+expressions.
 
 ## The Rule Designer
 
