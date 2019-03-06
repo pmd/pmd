@@ -26,9 +26,6 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-*   java-design
-    *   [#1692](https://github.com/pmd/pmd/issues/1692): \[java] Add rule to avoid declaration of throwing unchecked exception
-
 ### API Changes
 
 ### External Contributions
