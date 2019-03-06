@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### New Rules
 
-*   The new Java rule {% rule "java/design/AvoidUncheckedExceptionsInSignatures" %} finds methods or constructors
+*   The new Java rule {% rule "java/design/AvoidUncheckedExceptionsInSignatures" %} (`java-design`) finds methods or constructors
     that declare unchecked exceptions in their `throws` clause. This forces the caller to handle the exception,
     even though it is a runtime exception.
 
