@@ -1289,25 +1289,27 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The new Java rule <a href="pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures"><code class="highlighter-rouge">AvoidUncheckedExceptionsInSignatures</code></a> (<code class="highlighter-rouge">java-design</code>) finds methods or constructors
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures"><code class="highlighter-rouge">AvoidUncheckedExceptionsInSignatures</code></a> (<code class="highlighter-rouge">java-design</code>) finds methods or constructors
 that declare unchecked exceptions in their <code class="highlighter-rouge">throws</code> clause. This forces the caller to handle the exception,
-even though it is a runtime exception.</li>
+even though it is a runtime exception.</p>
+  </li>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_errorprone.html#detachedtestcase"><code class="highlighter-rouge">DetachedTestCase</code></a> (<code class="highlighter-rouge">java-errorprone</code>) searches for public
+methods in test classes, which are not annotated with <code class="highlighter-rouge">@Test</code>. These methods might be test cases where
+the annotation has been forgotten. Because of that those test cases are never executed.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
-<ul>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1692">#1692</a>: [java] Add rule to avoid declaration of throwing unchecked exception</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
+
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1704">#1704</a>: [java] Added AvoidUncheckedExceptionsInSignatures Rule - <a href="https://github.com/pamidi99">Bhanu Prakash Pamidi</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1706">#1706</a>: [java] Add DetachedTestCase rule - <a href="https://github.com/davidburstromspotify">David Burström</a></li>
 </ul>
 
 
