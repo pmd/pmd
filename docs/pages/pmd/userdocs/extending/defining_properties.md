@@ -11,13 +11,13 @@ author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelis
 {% jdoc_nspace :props core::properties %}
 
 Rule properties are a way to make your rules configurable directly from the
-ruleset XML. Their use cases and usage is described on the [Configuring Rules](pmd_userdocs_configuring_rules.html#rule-properties) page.
+ruleset XML. Their usage is described on the [Configuring Rules](pmd_userdocs_configuring_rules.html#rule-properties) page.
 
 If you're a rule developer, you may want to think about what would be useful for
 a user of your rule to parameterise. It could be a numeric report level, a boolean
 flag changing the behaviour of your rule... Chances are there *is* some detail
-that can be abstracted away from your implementation, and in that case, a
-property would improve your rule.
+that can be abstracted away from your implementation, and in that case, this
+page can help you squeeze that sweet flexibility out of your rule.
 
 ## Overview of properties
 

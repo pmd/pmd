@@ -1,6 +1,6 @@
 ---
 title: Intro to writing PMD rules
-tags: [extending, userdocs]
+tags: [extending, userdocs, getting_started]
 summary: "Writing your own PMD rules TODO"
 last_updated: July 2018 (6.6.0)
 permalink: pmd_userdocs_extending_writing_rules_intro.html
@@ -23,7 +23,8 @@ their enclosing class. This representation is thus much richer than the original
 source code (which, for a program, is just a chain of characters), or the token
 chain produced by a lexer (which is e.g. what Checkstyle works on).
 
-Conceptually, PMD rules work by *matching a "pattern" against the AST* of a file.
+Conceptually, PMD rules work by **matching a "pattern" against the AST** of a
+file.
 Rules explore the AST and find nodes that satisfy some conditions that are characteristic
 of the specific thing the rule is trying to flag. Rules then report a violation on these nodes.
 
@@ -40,7 +41,21 @@ complicated processing, to which an XPath rule couldn't scale.
 In the end, choosing one strategy or the other depends on the difficulty of what
 your rule does. I'd advise to keep to XPath unless you have no other choice.
 
+## Resource index
 
-## Testing rules
+To learn how to write a rule:
 
-TODO link to the page
+* [Using the Rule Designer](pmd_userdocs_extending_designer_intro.html)
+introduces the basic development process of a rule with a running example
+* [Writing XPath Rules](pmd_userdocs_extending_writing_xpath_rules.html)
+explains a bit more about XPath rules and our XPath API
+* [Writing Java Rules](pmd_userdocs_extending_writing_java_rules.html)
+describes how to write a rule in Java
+
+To go further:
+* [Defining Properties](pmd_userdocs_extending_defining_properties.html)
+describes how to make your rules more configurable with rule properties
+* [Testing your Rules](pmd_userdocs_extending_testing.html) introduces
+our testing framework and how you can use it to safeguard the quality of
+your rule
+
