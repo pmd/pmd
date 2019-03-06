@@ -55,6 +55,9 @@ The basic development process is straightforward:
     it matches violation cases, but no other node
 5.  Export your XPath expression to an XML rule element, and place it in your ruleset
 
+Each time you test your rule against a different snippet, it's a good idea to
+save it to [make test cases](pmd_userdocs_extending_testing.html).
+
 In the following sections, we walk through several examples to refine your rule.
 
 ## A simple rule

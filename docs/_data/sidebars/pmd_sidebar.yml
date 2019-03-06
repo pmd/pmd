@@ -73,6 +73,9 @@ entries:
         - title: Writing XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
           output: web, pdf
+        - title: Writing Java rules
+          url: /pmd_userdocs_extending_writing_java_rules.html
+          output: web, pdf
         - title: Rule designer reference
           url: /pmd_userdocs_extending_designer_reference.html
           output: web, pdf
