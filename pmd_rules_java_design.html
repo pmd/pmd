@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that help you discover design issues.">
-<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, SignatureDeclareThrowsRuntimeException, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
+<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, ClassWithOnlyPrivateConstructorsShouldBeFinal, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveClassLength, ExcessiveImports, ExcessiveMethodLength, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, LawOfDemeter, LogicInversion, LoosePackageCoupling, ModifiedCyclomaticComplexity, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, NPathComplexity, SignatureDeclareThrowsException, AvoidUncheckedExceptionsInSignatures, SimplifiedTernary, SimplifyBooleanAssertion, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, StdCyclomaticComplexity, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
 <title>Design | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1553,6 +1553,33 @@ Exception, or Error, use a subclassed exception or error instead.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/AvoidThrowingRawExceptionTypes"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoiduncheckedexceptionsinsignatures">AvoidUncheckedExceptionsInSignatures</h2>
+
+<p><strong>Since:</strong> PMD 6.13.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>A method or constructor should not explicitly declare unchecked exceptions in its
+<code class="highlighter-rouge">throws</code> clause. Java doesn’t force the caller to handle an unchecked exception, 
+so it’s unnecessary except for documentation. A better practice is to document the
+exceptional cases with a <code class="highlighter-rouge">@throws</code> Javadoc tag, which allows being more descriptive.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="o">/</span><span class="nt">NameList</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"java.lang.RuntimeException"</span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">ConstructorDeclaration</span><span class="o">/</span><span class="nt">NameList</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"java.lang.RuntimeException"</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RuntimeException</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/AvoidUncheckedExceptionsInSignatures"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="classwithonlyprivateconstructorsshouldbefinal">ClassWithOnlyPrivateConstructorsShouldBeFinal</h2>
 
 <p><strong>Since:</strong> PMD 4.1</p>
@@ -2922,28 +2949,6 @@ derived from RuntimeException or a checked exception.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/SignatureDeclareThrowsException"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<h2 id="signaturedeclarethrowsruntimeexception">SignatureDeclareThrowsRuntimeException</h2>
-
-<p><strong>Since:</strong> PMD 1.2</p>
-
-<p><strong>Priority:</strong> Medium (3)</p>
-
-<p>A method/constructor should not explicitly declare java.lang.RuntimeException or it’s subclasses in throws clause of it’s signature, since it is advised to avoid declaring unchecked exceptions in method signature.</p>
-
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/SignatureDeclareThrowsRuntimeExceptionRule.java">net.sourceforge.pmd.lang.java.rule.design.SignatureDeclareThrowsRuntimeExceptionRule</a></p>
-
-<p><strong>Example(s):</strong></p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.lang.RuntimeException</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">RuntimeException</span> <span class="o">{</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p><strong>Use this rule by referencing it:</strong></p>
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/SignatureDeclareThrowsRuntimeException"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="simplifiedternary">SimplifiedTernary</h2>
