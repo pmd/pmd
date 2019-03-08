@@ -135,7 +135,7 @@ public class PLSQLParser {
       throws ParseException {
 
     PLSQLParser parser = new PLSQLParser(System.in);
-    PLSQLNode node = parser.Input();
+    PLSQLNode node = parser.Input("");
 
     String s;
     s = "qwerty";
@@ -203,7 +203,7 @@ PARSER_END(PLSQLParser)
 /**
  * 2006-05-22 - Matthias Hendler - added globalBody()
  */
-ASTInput Input() : {}
+ASTInput Input(String sourcecode) : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
@@ -229,7 +229,7 @@ ASTInput Input() : {}
 	 ("/")*
 	)*
 	<EOF>
-      { return jjtThis ; }
+      { jjtThis.setSourcecode(sourcecode); return jjtThis ; }
 }
 
 ASTDDLCommand DDLCommand() :
