@@ -5,27 +5,35 @@
 package net.sourceforge.pmd.util.fxdesigner.util;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.reactfx.EventSource;
 import org.reactfx.EventStream;
 import org.reactfx.EventStreams;
 import org.reactfx.collection.LiveList;
@@ -36,7 +44,12 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
+import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
@@ -44,6 +57,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.util.Callback;
@@ -56,6 +70,7 @@ import javafx.util.StringConverter;
  */
 public final class DesignerUtil {
 
+    private static final Pattern EXCEPTION_PREFIX_PATTERN = Pattern.compile("(?:(?:\\w+\\.)*\\w+:\\s*)*\\s*(.*)$", Pattern.DOTALL);
 
     private static final Path PMD_SETTINGS_DIR = Paths.get(System.getProperty("user.home"), ".pmd");
     private static final File DESIGNER_SETTINGS_FILE = PMD_SETTINGS_DIR.resolve("designer.xml").toFile();
@@ -142,16 +157,37 @@ public final class DesignerUtil {
      * maps the selected toggle property to a Var&lt;T>
      */
     @SuppressWarnings("unchecked")
-    public static <T> Var<T> mapToggleGroupToUserData(ToggleGroup toggleGroup) {
+    public static <T> Var<T> mapToggleGroupToUserData(ToggleGroup toggleGroup, Supplier<T> defaultValue) {
         return Var.fromVal(toggleGroup.selectedToggleProperty(), toggleGroup::selectToggle)
                   .mapBidirectional(
                       item -> (T) item.getUserData(),
-                      t -> toggleGroup.getToggles()
-                                      .stream()
-                                      .filter(toggle -> toggle.getUserData().equals(t))
-                                      .findFirst()
-                                      .orElseThrow(() -> new IllegalStateException("Unknown toggle " + t))
+                      t -> selectFirst(
+                          () -> findToggleWithUserData(toggleGroup, t),
+                          () -> findToggleWithUserData(toggleGroup, defaultValue.get())
+                      )
+                          .orElseThrow(() -> new IllegalStateException("Unknown toggle " + t))
                   );
+    }
+
+
+    /** Returns the first non-empty optional in the arguments, or else Optional.empty. */
+    @SafeVarargs
+    public static <T> Optional<T> selectFirst(Supplier<Optional<T>>... opts) {
+        for (Supplier<Optional<T>> optGetter : opts) {
+            Optional<T> o = optGetter.get();
+            if (o.isPresent()) {
+                return o;
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    private static <T> Optional<Toggle> findToggleWithUserData(ToggleGroup toggleGroup, T data) {
+        return toggleGroup.getToggles()
+                          .stream()
+                          .filter(toggle -> toggle.getUserData().equals(data))
+                          .findFirst();
     }
 
 
@@ -253,6 +289,11 @@ public final class DesignerUtil {
     }
 
 
+    public static String sanitizeExceptionMessage(Throwable exception) {
+        Matcher matcher = EXCEPTION_PREFIX_PATTERN.matcher(exception.getMessage());
+        return matcher.matches() ? matcher.group(1) : exception.getMessage();
+    }
+
     /**
      * Works out an xpath query that matches the node
      * which was being visited during the failure.
@@ -307,5 +348,136 @@ public final class DesignerUtil {
 
     public static Val<Integer> countNotMatching(ObservableList<? extends ObservableValue<Boolean>> list) {
         return countMatching(list, b -> !b);
+    }
+
+
+    /**
+     * Reduces the given stream on the given duration. If reduction of two values is not possible
+     * (canReduce returns false), then the last value is emitted and the new one will
+     * be tested for reduction with the next ones. If no new event is pushed during the duration, the last reduction
+     * result is emitted.
+     */
+    public static <T> EventStream<T> reduceIfPossible(EventStream<T> input, BiPredicate<T, T> canReduce, BinaryOperator<T> reduction, Duration duration) {
+        EventSource<T> source = new EventSource<>();
+
+        input.reduceSuccessions(
+            (last, t) -> {
+                if (canReduce.test(last, t)) {
+                    return reduction.apply(last, t);
+                } else {
+                    source.push(last);
+                    return t;
+                }
+            }, duration)
+             .subscribe(source::push);
+
+        return source;
+    }
+
+
+    /**
+     * Like reduce if possible, but can be used if the events to reduce are emitted in extremely close
+     * succession, so close that some unrelated events may be mixed up. This reduces each new event
+     * with a related event in the pending notification chain instead of just considering the last one
+     * as a possible reduction target.
+     */
+    public static <T> EventStream<T> reduceEntangledIfPossible(EventStream<T> input, BiPredicate<T, T> canReduce, BinaryOperator<T> reduction, Duration duration) {
+        EventSource<T> source = new EventSource<>();
+
+        input.reduceSuccessions(
+            () -> new ArrayList<>(),
+            (List<T> pending, T t) -> {
+
+                for (int i = 0; i < pending.size(); i++) {
+                    if (canReduce.test(pending.get(i), t)) {
+                        pending.set(i, reduction.apply(pending.get(i), t));
+                        return pending;
+                    }
+                }
+                pending.add(t);
+
+                return pending;
+            },
+            duration
+        )
+             .subscribe(pending -> {
+                 for (T t : pending) {
+                     source.push(t);
+                 }
+             });
+
+        return source;
+    }
+
+
+    /**
+     * Returns an event stream that reduces successions of the input stream, and deletes the latest
+     * event if a new event that matches the isCancelSignal predicate is recorded during a reduction
+     * period. Cancel events are also emitted.
+     */
+    public static <T> EventStream<T> deleteOnSignal(EventStream<T> input, Predicate<T> isCancelSignal, Duration duration) {
+        return reduceIfPossible(input, (last, t) -> isCancelSignal.test(t), (last, t) -> t, duration);
+    }
+
+
+    public static <T, R> EventStream<T> mapFilter(EventStream<T> input, Function<? super T, ? extends R> mapper, Predicate<R> filter) {
+        return input.filter(t -> filter.test(mapper.apply(t)));
+    }
+
+
+    public static List<NameOccurrence> getNameOccurrences(ScopedNode node) {
+
+        // For MethodNameDeclaration the scope is the method scope, which is not the scope it is declared
+        // in but the scope it declares! That means that getDeclarations().get(declaration) returns null
+        // and no name occurrences are found. We thus look in the parent, but ultimately the name occurrence
+        // finder is broken since it can't find e.g. the use of a method in another scope. Plus in case of
+        // overloads both overloads are reported to have a usage.
+
+        // Plus this is some serious law of Demeter breaking there...
+
+        Set<NameDeclaration> candidates = new HashSet<>(node.getScope().getDeclarations().keySet());
+
+        Optional.ofNullable(node.getScope().getParent())
+                .map(Scope::getDeclarations)
+                .map(Map::keySet)
+                .ifPresent(candidates::addAll);
+
+        return candidates.stream()
+                         .filter(nd -> node.equals(nd.getNode()))
+                         .findFirst()
+                         .map(nd -> {
+                             // nd.getScope() != nd.getNode().getScope()?? wtf?
+
+                             List<NameOccurrence> usages = nd.getNode().getScope().getDeclarations().get(nd);
+
+                             if (usages == null) {
+                                 usages = nd.getNode().getScope().getParent().getDeclarations().get(nd);
+                             }
+
+                             return usages;
+                         })
+                         .orElse(Collections.emptyList());
+    }
+
+
+    /**
+     * Attempts to retrieve the type of a java TypeNode reflectively.
+     */
+    public static Optional<Class<?>> getResolvedType(Node node) {
+        // TODO maybe put some equivalent to TypeNode inside pmd-core
+
+        try {
+            return Optional.of(node.getClass().getMethod("getType"))
+                           .filter(m -> m.getReturnType() == Class.class)
+                           .map(m -> {
+                               try {
+                                   return m.invoke(node);
+                               } catch (IllegalAccessException | InvocationTargetException e) {
+                                   return null;
+                               }
+                           }).map(type -> (Class<?>) type);
+        } catch (NoSuchMethodException e) {
+            return Optional.empty();
+        }
     }
 }

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>correct test case annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  @Test
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 4 test class (marker annotation)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 4 test class (regular annotation)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test(expected = NullPointerException.class)
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 5 test class (test)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 5 test class (repeated test)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.RepeatedTest;
+
+public class MyTest {
+  @RepeatedTest
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 5 test class (test factory)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.TestFactory;
+
+public class MyTest {
+  @TestFactory
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 5 test class (test template)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.TestTemplate;
+
+public class MyTest {
+  @TestTemplate
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on public test case in JUnit 5 test class (parameterized test)</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.params.ParameterizedTest;
+
+public class MyTest {
+  @ParameterizedTest
+  public void someTest() {}
+
+  public void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>missing annotation on package visible test case</description>
+        <expected-problems>1</expected-problems>
+	<expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>static method is not an issue</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  static void someOtherTest() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotated methods are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  @After
+  void destroy() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>methods with arguments are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public void help(int arg) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>methods with return values are ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+
+public class MyTest {
+  @Test
+  public void someTest() {}
+
+  public int help() { return 0; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>no tests</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class NotATest {
+  public void notATest() {}
+
+  public void notATestEither() { }
+}
+     ]]></code>
+    </test-code>
+</test-data>

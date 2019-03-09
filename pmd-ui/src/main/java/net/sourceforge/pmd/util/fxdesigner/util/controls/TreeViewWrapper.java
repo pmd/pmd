@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
+import javafx.application.Platform;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeView;
@@ -25,11 +26,12 @@ import javafx.scene.control.TreeView;
  * VM option.
  *
  * @param <T> Element type of the treeview
+ *
  * @author Clément Fournier
  * @since 6.4.0
  */
-public class TreeViewWrapper<T> {
-    
+class TreeViewWrapper<T> {
+
 
     private final TreeView<T> wrapped;
     private Method treeViewFirstVisibleMethod;
@@ -38,11 +40,13 @@ public class TreeViewWrapper<T> {
     // because the class has moved packages over different java versions
     private Object virtualFlow = null;
 
+    private boolean reflectionImpossibleWarning = false;
 
-    public TreeViewWrapper(TreeView<T> wrapped) {
+
+    TreeViewWrapper(TreeView<T> wrapped) {
         Objects.requireNonNull(wrapped);
         this.wrapped = wrapped;
-        initialiseTreeViewReflection();
+        Platform.runLater(this::initialiseTreeViewReflection);
     }
 
 
@@ -73,7 +77,11 @@ public class TreeViewWrapper<T> {
      * Returns true if the item at the given index
      * is visible in the TreeView.
      */
-    public boolean isIndexVisible(int index) {
+    boolean isIndexVisible(int index) {
+        if (reflectionImpossibleWarning) {
+            return false;
+        }
+
         if (virtualFlow == null && wrapped.getSkin() == null) {
             return false;
         } else if (virtualFlow == null && wrapped.getSkin() != null) {
@@ -119,7 +127,7 @@ public class TreeViewWrapper<T> {
     }
 
 
-    private static Object getVirtualFlow(Skin<?> skin) {
+    private Object getVirtualFlow(Skin<?> skin) {
         try {
             // On JRE 9 and 10, the field is declared in TreeViewSkin
             // http://hg.openjdk.java.net/openjfx/9/rt/file/c734b008e3e8/modules/javafx.controls/src/main/java/javafx/scene/control/skin/TreeViewSkin.java#l85
@@ -130,6 +138,22 @@ public class TreeViewWrapper<T> {
             return FieldUtils.readField(skin, "flow", true);
         } catch (IllegalAccessException ignored) {
 
+        } catch (RuntimeException re) {
+            if (!reflectionImpossibleWarning && "java.lang.reflect.InaccessibleObjectException".equals(re.getClass().getName())) {
+                // that exception was introduced for Jigsaw (JRE 9)
+                // so we can't refer to it without breaking compat with Java 8
+
+                // TODO find a way to report errors in the app directly, System.out is too shitty
+
+                System.out.println();
+                System.out.println("On JRE 9+, the following VM argument makes the controls smarter:");
+                System.out.println("--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED");
+                System.out.println("Please consider adding it to your command-line or using the launch script bundled with PMD's binary distribution.");
+
+                reflectionImpossibleWarning = true;
+            } else {
+                throw re;
+            }
         }
         return null;
     }

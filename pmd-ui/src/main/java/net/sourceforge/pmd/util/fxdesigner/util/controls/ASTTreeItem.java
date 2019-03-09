@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import org.reactfx.value.Var;
 
@@ -78,7 +77,9 @@ public final class ASTTreeItem extends TreeItem<Node> {
         // depth-first traversal over all the tree (was at worst O(size of the tree),
         // now it's at worst O(number of parents of the searched node))
 
-        Objects.requireNonNull(node, "Cannot find a null item");
+        if (node == null) {
+            return null;
+        }
 
         Iterator<Node> pathToNode = reverse(parentIterator(node, true));
 

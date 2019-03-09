@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.util.fxdesigner.model.PropertyDescriptorSpec;
 import net.sourceforge.pmd.util.fxdesigner.popups.EditPropertyDialogController;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
-import net.sourceforge.pmd.util.fxdesigner.util.PropertyDescriptorSpec;
 import net.sourceforge.pmd.util.fxdesigner.util.SoftReferenceCache;
 
 import javafx.application.Platform;
@@ -100,14 +100,14 @@ public class PropertyTableView extends TableView<PropertyDescriptorSpec> {
         });
 
         MenuItem addItem = new MenuItem("Add property...");
-        addItem.setOnAction(e -> onAddPropertyClicked());
+        addItem.setOnAction(e -> onAddPropertyClicked("name"));
 
         ContextMenu fullMenu = new ContextMenu();
         fullMenu.getItems().addAll(editItem, removeItem, new SeparatorMenuItem(), addItem);
 
         // Reduced context menu, for when there are no properties or none is selected
         MenuItem addItem2 = new MenuItem("Add property...");
-        addItem2.setOnAction(e -> onAddPropertyClicked());
+        addItem2.setOnAction(e -> onAddPropertyClicked("name"));
 
         ContextMenu smallMenu = new ContextMenu();
         smallMenu.getItems().add(addItem2);
@@ -129,8 +129,12 @@ public class PropertyTableView extends TableView<PropertyDescriptorSpec> {
     }
 
 
-    private void onAddPropertyClicked() {
+    /**
+     * Call this to pop the "new property" popup.
+     */
+    public void onAddPropertyClicked(String name) {
         PropertyDescriptorSpec spec = new PropertyDescriptorSpec();
+        spec.setName(name);
         this.getItems().add(spec);
         popEditPropertyDialog(spec);
     }

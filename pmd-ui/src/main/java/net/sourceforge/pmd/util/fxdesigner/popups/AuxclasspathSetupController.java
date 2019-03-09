@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import org.reactfx.collection.LiveList;
 import org.reactfx.value.Val;
 
-import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
+import net.sourceforge.pmd.util.fxdesigner.app.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.binding.Bindings;

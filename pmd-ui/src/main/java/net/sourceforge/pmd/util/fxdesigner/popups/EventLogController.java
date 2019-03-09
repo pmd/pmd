@@ -4,26 +4,26 @@
 
 package net.sourceforge.pmd.util.fxdesigner.popups;
 
+import static org.reactfx.EventStreams.valuesOf;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.reactfx.EventStreams;
 import org.reactfx.Subscription;
 import org.reactfx.value.Val;
 import org.reactfx.value.Var;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.util.fxdesigner.DesignerRoot;
 import net.sourceforge.pmd.util.fxdesigner.MainDesignerController;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry;
-import net.sourceforge.pmd.util.fxdesigner.model.LogEntry.Category;
-import net.sourceforge.pmd.util.fxdesigner.util.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.AbstractController;
+import net.sourceforge.pmd.util.fxdesigner.app.EventLogger;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry;
+import net.sourceforge.pmd.util.fxdesigner.app.LogEntry.Category;
 import net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil;
 
 import javafx.beans.property.SimpleObjectProperty;
@@ -47,19 +47,16 @@ import javafx.stage.Stage;
 
 
 /**
- * A presenter over the {@link net.sourceforge.pmd.util.fxdesigner.model.EventLogger}.
+ * A presenter over the {@link EventLogger}.
  * There's not necessarily one in the app, it can be garbage collected and recreated.
  * Each of these necessarily has a live UI component though.
  *
  * @author Clément Fournier
  * @since 6.0.0
  */
-public final class EventLogController extends AbstractController {
+public final class EventLogController extends AbstractController<MainDesignerController> {
 
     private static final PseudoClass NEW_ENTRY = PseudoClass.getPseudoClass("new-entry");
-
-    private final DesignerRoot designerRoot;
-    private final MainDesignerController mediator;
 
     @FXML
     private TableView<LogEntry> eventLogTableView;
@@ -77,22 +74,18 @@ public final class EventLogController extends AbstractController {
 
     private final Stage myPopupStage;
 
-    // subscription allowing to unbind from the popup.
-    private Subscription popupBinding = () -> {};
 
-    public EventLogController(DesignerRoot owner, MainDesignerController mediator) {
-        this.designerRoot = owner;
-        this.mediator = mediator;
+    public EventLogController(MainDesignerController mediator) {
+        super(mediator);
         // the FXML fields are injected and initialize is called in createStage
-        this.myPopupStage = createStage(owner.getMainStage());
+        this.myPopupStage = createStage(getMainStage());
     }
+
 
 
     // this is only called each time a popup is created
     @Override
     protected void beforeParentInit() {
-
-        popupBinding.unsubscribe();
 
         final DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         logDateColumn.setCellValueFactory(entry -> new SimpleObjectProperty<>(entry.getValue()));
@@ -122,6 +115,7 @@ public final class EventLogController extends AbstractController {
             }
         });
 
+        logCategoryColumn.setResizable(true);
         logCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         logMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
         logMessageColumn.setSortable(false);
@@ -142,7 +136,7 @@ public final class EventLogController extends AbstractController {
 
         logMessageColumn.prefWidthProperty()
                         .bind(eventLogTableView.widthProperty()
-                                               .subtract(logCategoryColumn.getPrefWidth())
+                                               .subtract(logCategoryColumn.getWidth())
                                                .subtract(logDateColumn.getPrefWidth())
                                                .subtract(2)); // makes it work
 
@@ -176,27 +170,14 @@ public final class EventLogController extends AbstractController {
     private Subscription bindPopupToThisController() {
 
         Subscription binding =
-            EventStreams.valuesOf(eventLogTableView.getSelectionModel().selectedItemProperty())
-                        .distinct()
-                        .subscribe(this::onExceptionSelectionChanges);
+            valuesOf(eventLogTableView.getSelectionModel().selectedItemProperty())
+                .distinct()
+                .subscribe(this::onExceptionSelectionChanges);
 
-        binding = binding.and(
-            EventStreams.valuesOf(eventLogTableView.focusedProperty())
-                        .successionEnds(Duration.ofMillis(100))
-                        .subscribe(b -> {
-                            if (b) {
-                                mediator.handleSelectedNodeInError(selectedErrorNodes.getValue());
-                            } else {
-                                mediator.resetSelectedErrorNodes();
-                            }
-                        })
-        );
+        // reset error nodes on closing
+        binding = binding.and(() -> selectedErrorNodes.setValue(Collections.emptyList()));
 
-        binding = binding.and(
-            selectedErrorNodes.values().subscribe(mediator::handleSelectedNodeInError)
-        );
-
-        SortedList<LogEntry> logEntries = new SortedList<>(designerRoot.getLogger().getLog(), Comparator.reverseOrder());
+        SortedList<LogEntry> logEntries = new SortedList<>(getLogger().getLog(), Comparator.reverseOrder());
         eventLogTableView.itemsProperty().setValue(logEntries);
         binding = binding.and(
             () -> eventLogTableView.itemsProperty().setValue(FXCollections.emptyObservableList())
@@ -212,51 +193,40 @@ public final class EventLogController extends AbstractController {
 
 
     private void handleSelectedEntry(LogEntry entry) {
+        selectedErrorNodes.setValue(Collections.emptyList());
+
         if (entry == null) {
-            selectedErrorNodes.setValue(Collections.emptyList());
             return;
         }
 
         entry.setExamined(true);
 
-        switch (entry.getCategory()) {
-        case OTHER:
-            break;
-        case PARSE_EXCEPTION:
-            // TODO
-            break;
-        case TYPERESOLUTION_EXCEPTION:
-        case SYMBOL_FACADE_EXCEPTION:
-            DesignerUtil.stackTraceToXPath(entry.getThrown()).map(mediator::runXPathQuery).ifPresent(selectedErrorNodes::setValue);
-            break;
-        default:
-            break;
+        if (entry.getCategory().isUserException()) {
+            DesignerUtil.stackTraceToXPath(entry.getDetails()).map(parent::runXPathQuery).ifPresent(selectedErrorNodes::setValue);
         }
     }
 
 
-    public void showPopup() {
+    public void showPopup(Subscription extSub) {
         myPopupStage.show();
-        popupBinding = bindPopupToThisController();
-    }
-
-
-    public void hidePopup() {
-        myPopupStage.hide();
-        popupBinding.unsubscribe();
-        popupBinding = () -> {};
-
+        Subscription popupBinding = bindPopupToThisController().and(extSub);
+        eventLogTableView.refresh();
+        myPopupStage.setOnCloseRequest(e -> popupBinding.unsubscribe());
     }
 
 
     private void onExceptionSelectionChanges(LogEntry newVal) {
-        logDetailsTextArea.setText(newVal == null ? "" : newVal.getStackTrace());
+        logDetailsTextArea.setText(newVal == null ? "" : newVal.getDetails());
         handleSelectedEntry(newVal);
     }
 
 
+    public Val<List<Node>> errorNodesProperty() {
+        return selectedErrorNodes;
+    }
+
     private Val<String> titleProperty() {
-        return designerRoot.getLogger().numNewLogEntriesProperty().map(i -> "Exception log (" + (i > 0 ? i : "no") + " new)");
+        return getLogger().numNewLogEntriesProperty().map(i -> "Event log (" + (i > 0 ? i : "no") + " new)");
     }
 
 
