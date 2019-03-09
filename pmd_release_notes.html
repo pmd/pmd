@@ -1320,10 +1320,16 @@ the annotation has been forgotten. Because of that those test cases are never ex
 <h4 id="deprecated-api">Deprecated API</h4>
 
 <ul>
-  <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.13.0/net/sourceforge/pmd/renderers/CodeClimateRule.html#"><code class="highlighter-rouge">CodeClimateRule</code></a> is deprecated in 7.0.0 because it was unused for 2 years and
+  <li>
+    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.13.0/net/sourceforge/pmd/renderers/CodeClimateRule.html#"><code class="highlighter-rouge">CodeClimateRule</code></a> is deprecated in 7.0.0 because it was unused for 2 years and
 created an unwanted dependency.
 Properties “cc_categories”, “cc_remediation_points_multiplier”, “cc_block_highlighting” will also be removed.
-See <a href="https://github.com/pmd/pmd/pull/1702">#1702</a> for more.</li>
+See <a href="https://github.com/pmd/pmd/pull/1702">#1702</a> for more.</p>
+  </li>
+  <li>
+    <p>The Apex ruleset <code class="highlighter-rouge">rulesets/apex/ruleset.xml</code> has been deprecated and will be removed in 7.0.0. Please use the new
+quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml</code> instead.</p>
+  </li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
