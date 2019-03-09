@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
@@ -61,10 +61,11 @@ public final class ASTAllocationExpression extends AbstractJavaTypeNode implemen
      * Returns the left-hand-side of this expression, if this is a
      * {@linkplain #isQualifiedInstanceCreation() qualified allocation expression}.
      */
-    public Optional<ASTPrimaryExpression> getLhsExpression() {
+    @Nullable
+    public ASTPrimaryExpression getLhsExpression() {
         return isQualifiedInstanceCreation()
-               ? Optional.of((ASTPrimaryExpression) jjtGetChild(0))
-               : Optional.empty();
+               ? (ASTPrimaryExpression) jjtGetChild(0)
+               : null;
     }
 
 
@@ -82,8 +83,9 @@ public final class ASTAllocationExpression extends AbstractJavaTypeNode implemen
     /**
      * Returns the dimensions of the array if this is an array creation expression.
      */
-    public Optional<ASTArrayDimsAndInits> getArrayDims() {
-        return Optional.ofNullable(getFirstChildOfType(ASTArrayDimsAndInits.class));
+    @Nullable
+    public ASTArrayDimsAndInits getArrayDims() {
+        return getFirstChildOfType(ASTArrayDimsAndInits.class);
     }
 
 

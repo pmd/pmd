@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -69,13 +69,15 @@ public final class ASTConstructorCall extends AbstractLateInitNode implements AS
      * {@linkplain #isQualifiedInstanceCreation() qualified allocation expression}.
      */
     @Override
-    public Optional<ASTPrimaryExpression> getLhsExpression() {
+    @Nullable
+    public ASTPrimaryExpression getLhsExpression() {
         return ASTQualifiableExpression.super.getLhsExpression();
     }
 
 
-    public Optional<ASTTypeArguments> getExplicitTypeArguments() {
-        return Optional.ofNullable(getFirstChildOfType(ASTTypeArguments.class));
+    @Nullable
+    public ASTTypeArguments getExplicitTypeArguments() {
+        return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
@@ -103,10 +105,11 @@ public final class ASTConstructorCall extends AbstractLateInitNode implements AS
     }
 
 
-    public Optional<ASTAnonymousClassDeclaration> getAnonymousClassDeclaration() {
+    @Nullable
+    public ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
         return isAnonymousClass()
-               ? Optional.of((ASTAnonymousClassDeclaration) jjtGetChild(jjtGetNumChildren() - 1))
-               : Optional.empty();
+               ? (ASTAnonymousClassDeclaration) jjtGetChild(jjtGetNumChildren() - 1)
+               : null;
     }
 
 

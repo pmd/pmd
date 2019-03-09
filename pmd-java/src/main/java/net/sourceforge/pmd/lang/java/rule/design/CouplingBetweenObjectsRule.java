@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -72,9 +73,9 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTResultType node, Object data) {
-        node.getTypeNode()
-            .filter(ASTType::isClassOrInterfaceType)
-            .ifPresent(this::checkVariableType);
+        Optional.ofNullable(node.getTypeNode())
+                .filter(ASTType::isClassOrInterfaceType)
+                .ifPresent(this::checkVariableType);
 
         return super.visit(node, data);
     }

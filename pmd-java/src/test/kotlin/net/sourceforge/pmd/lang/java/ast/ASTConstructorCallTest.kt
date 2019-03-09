@@ -20,14 +20,14 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         "new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
 
-            it::getExplicitTypeArguments shouldBePresent child {
+            it::getExplicitTypeArguments shouldBe child {
                 unspecifiedChild()
             }
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     unspecifiedChild()
                 }
             }
@@ -37,14 +37,14 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         "new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
 
-            it::getExplicitTypeArguments.shouldBeEmpty()
+            it::getExplicitTypeArguments shouldBe null
 
             child<ASTAnnotation>(ignoreChildren = true) {}
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     unspecifiedChild()
                 }
             }
@@ -63,10 +63,10 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBePresent child<ASTFieldAccess> {
+            it::getLhsExpression shouldBe child<ASTFieldAccess> {
                 it::getFieldName shouldBe "c"
 
-                it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
                     it::getName shouldBe "a.g"
                 }
             }
@@ -84,7 +84,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         // and here a variable reference
         "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBePresent child<ASTVariableReference> {
+            it::getLhsExpression shouldBe child<ASTVariableReference> {
                 it::getVariableName shouldBe "a"
             }
 
@@ -104,7 +104,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         "new O().new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBePresent child<ASTConstructorCall> {
+            it::getLhsExpression shouldBe child<ASTConstructorCall> {
 
                 it::getTypeNode shouldBe child {
                     it::getTypeImage shouldBe "O"
@@ -113,14 +113,14 @@ class ASTConstructorCallTest : ParserTestSpec({
                 it::getArguments shouldBe child {}
             }
 
-            it::getExplicitTypeArguments shouldBePresent child {
+            it::getExplicitTypeArguments shouldBe child {
                 unspecifiedChild()
             }
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     unspecifiedChild()
                 }
             }
@@ -130,19 +130,19 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         "method().new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBePresent child<ASTMethodCall> {
+            it::getLhsExpression shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "method"
                 it::getArguments shouldBe child {}
             }
 
-            it::getExplicitTypeArguments.shouldBeEmpty()
+            it::getExplicitTypeArguments shouldBe null
 
             child<ASTAnnotation>(ignoreChildren = true) {}
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     unspecifiedChild()
                 }
             }

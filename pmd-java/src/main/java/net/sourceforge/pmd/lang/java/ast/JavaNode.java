@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -65,11 +65,12 @@ public interface JavaNode extends ScopedNode {
     void setScope(Scope scope);
 
 
-    default <T extends Node> Optional<T> getChildAs(int idx, Class<T> type) {
-        if (jjtGetNumChildren() <= idx) {
-            return Optional.empty();
+    @Nullable
+    default <T extends Node> T getChildAs(int idx, Class<T> type) {
+        if (jjtGetNumChildren() <= idx || idx < 0) {
+            return null;
         }
         Node child = jjtGetChild(idx);
-        return type.isInstance(child) ? Optional.of(type.cast(child)) : Optional.empty();
+        return type.isInstance(child) ? type.cast(child) : null;
     }
 }

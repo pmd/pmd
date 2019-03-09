@@ -17,7 +17,7 @@ class ASTArrayAccessTest : ParserTestSpec({
             it::getLhsExpression shouldBe child<ASTFieldAccess> {
                 it::getFieldName shouldBe "b"
 
-                it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
                     it::getName shouldBe "a"
                 }
             }

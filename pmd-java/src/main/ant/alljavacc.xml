@@ -2,6 +2,7 @@
 
     <property name="javacc-home.path" value="target/lib" />
     <property name="target-package-dir" value="${target}/net/sourceforge/pmd/lang/java/ast" />
+    <property name="stamp-file" value="${target}/../../last-generated-timestamp"/>
 
     <!-- Matches the names of deprecated node types to add a @Deprecated annotation -->
     <property name="deprecated-nodes-pattern" value="ASTR(UN)?SIGNEDSHIFT" />
@@ -21,7 +22,7 @@
             depends="checkUpToDate,init,javajjtree,cleanup" />
 
     <target name="checkUpToDate">
-        <uptodate property="javaccBuildNotRequired" targetfile="${target}/last-generated-timestamp">
+        <uptodate property="javaccBuildNotRequired" targetfile="${stamp-file}">
             <srcfiles dir="etc/grammar" includes="*.jj*"/>
             <srcfiles file="src/main/ant/alljavacc.xml" />
         </uptodate>
@@ -33,7 +34,7 @@
         <copy file="${javacc.jar}" tofile="${javacc-home.path}/javacc.jar" />
 
         <mkdir dir="${target}"/>
-        <touch file="${target}/last-generated-timestamp"/>
+        <touch file="${stamp-file}"/>
     </target>
 
     <target name="cleanup">
@@ -74,13 +75,19 @@
         <!-- We perform most changes like adding default methods, etc on this one -->
         <!-- Changes are then copied on other visitors -->
         <replace file="${base-visitor-interface-file}">
+            <replacefilter token="public interface" value="
+import javax.annotation.Nonnull;
+import net.sourceforge.pmd.annotation.UnknownNullabilityApi;
+
+@UnknownNullabilityApi
+public interface" />
             <replacefilter token="JavaParserVisitor" value="${base-visitor-interface-name}" />
             <replacefilter token="SimpleNode" value="JavaNode" />
             <!-- Default methods -->
-            <replacefilter token="public Object" value="default Object" />
+            <replacefilter token="public Object visit(" value="default Object visit(@Nonnull " />
             <replacefilter token=");" value=") { return visit((JavaNode) node, data); }" />
-            <replacefilter token="default Object visit(JavaNode node, Object data) { return visit((JavaNode) node, data); }"
-                           value="default Object visit(JavaNode node, Object data) { return node.childrenAccept(this, data); }" />
+            <replacefilter token="default Object visit(@Nonnull JavaNode node, Object data) { return visit((JavaNode) node, data); }"
+                           value="default Object visit(@Nonnull JavaNode node, Object data) { return node.childrenAccept(this, data); }" />
         </replace>
 
         <!-- Deprecated nodes -->

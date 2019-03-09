@@ -72,26 +72,26 @@ class ASTLiteralTest : ParserTestSpec({
         "void.class" should matchExpr<ASTClassLiteral> {
             it::isClassLiteral shouldBe true
             it::isVoid shouldBe true
-            it.typeNode.shouldBeEmpty()
+            it.typeNode shouldBe null
         }
 
         "Integer.class" should matchExpr<ASTClassLiteral> {
             it::isClassLiteral shouldBe true
             it::isVoid shouldBe false
 
-            it.typeNode shouldBePresent child<ASTClassOrInterfaceType> {}
+            it.typeNode shouldBe child<ASTClassOrInterfaceType> {}
         }
 
         "int.class" should matchExpr<ASTClassLiteral> {
             it::isVoid shouldBe false
 
-            it.typeNode shouldBePresent child<ASTPrimitiveType> {}
+            it.typeNode shouldBe child<ASTPrimitiveType> {}
         }
 
         "int[].class" should matchExpr<ASTClassLiteral> {
             it::isVoid shouldBe false
 
-            it.typeNode shouldBePresent child<ASTArrayType> {
+            it.typeNode shouldBe child<ASTArrayType> {
                 it.elementType shouldBe child<ASTPrimitiveType> {}
                 it.dimensions shouldBe child {
                     it.size shouldBe 1

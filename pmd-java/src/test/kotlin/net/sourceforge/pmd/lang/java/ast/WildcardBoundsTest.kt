@@ -8,7 +8,7 @@ class WildcardBoundsTest : ParserTestSpec({
 
         "SomeClass<? extends Another>" should matchType<ASTClassOrInterfaceType> {
 
-            it.typeArguments shouldBePresent child {
+            it.typeArguments shouldBe child {
                 child<ASTTypeArgument> {
                     child<ASTWildcardBounds> {
                         val ref = child<ASTClassOrInterfaceType> {

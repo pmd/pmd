@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -91,7 +92,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        boolean isVoidOrPrimitive = node.getResultType().getTypeNode().map(ASTType::isPrimitiveType).orElse(true);
+        boolean isVoidOrPrimitive =
+            Optional.ofNullable(node.getResultType().getTypeNode()).map(ASTType::isPrimitiveType).orElse(true);
         if (isVoidOrPrimitive) {
             return super.visit(node, data);
         }

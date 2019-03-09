@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 
 /**
@@ -36,10 +37,11 @@ public class ASTResultType extends AbstractJavaNode {
 
 
     /**
-     * Returns the enclosed type node, or an empty optional if this is void.
+     * Returns the enclosed type node, or an null if this is void.
      */
-    public Optional<ASTType> getTypeNode() {
-        return isVoid() ? Optional.empty() : Optional.of((ASTType) jjtGetChild(0));
+    @Nullable
+    public ASTType getTypeNode() {
+        return isVoid() ? null : (ASTType) jjtGetChild(0);
     }
 
     /**

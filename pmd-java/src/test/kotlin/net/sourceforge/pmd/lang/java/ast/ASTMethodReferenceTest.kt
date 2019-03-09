@@ -15,12 +15,12 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "this::foo" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "foo"
-            it::getMethodName shouldBePresent "foo"
-            it::getLhsType.shouldBeEmpty()
+            it::getMethodName shouldBe "foo"
+            it::getLhsType shouldBe null
             it::isConstructorReference shouldBe false
-            it::getTypeArguments.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
 
-            it::getLhsExpression shouldBePresent child<ASTThisExpression> {
+            it::getLhsExpression shouldBe child<ASTThisExpression> {
 
             }
         }
@@ -28,32 +28,32 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "foobar.b::foo" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "foo"
-            it::getMethodName shouldBePresent "foo"
+            it::getMethodName shouldBe "foo"
             it::isConstructorReference shouldBe false
-            it::getTypeArguments.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
 
             val lhs = child<ASTAmbiguousName> {
                 it::getImage shouldBe "foobar.b"
             }
 
-            it::getLhsExpression shouldBePresent lhs
-            it::getLhsType shouldBePresent lhs
+            it::getLhsExpression shouldBe lhs
+            it::getLhsType shouldBe lhs
         }
 
         "foobar.b::<B>foo" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "foo"
-            it::getMethodName shouldBePresent "foo"
+            it::getMethodName shouldBe "foo"
             it::isConstructorReference shouldBe false
 
             val lhs = child<ASTAmbiguousName> {
                 it::getImage shouldBe "foobar.b"
             }
 
-            it::getLhsExpression shouldBePresent lhs
-            it::getLhsType shouldBePresent lhs
+            it::getLhsExpression shouldBe lhs
+            it::getLhsType shouldBe lhs
 
-            it::getTypeArguments shouldBePresent child {
+            it::getTypeArguments shouldBe child {
                 unspecifiedChild()
             }
 
@@ -63,20 +63,20 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "foobar.b<B>::foo" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "foo"
-            it::getMethodName shouldBePresent "foo"
+            it::getMethodName shouldBe "foo"
             it::isConstructorReference shouldBe false
-            it::getLhsExpression.shouldBeEmpty()
-            it::getTypeArguments.shouldBeEmpty()
+            it::getLhsExpression shouldBe null
+            it::getTypeArguments shouldBe null
 
-            it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
+            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
 
                 it::getImage shouldBe "b"
 
-                it::getAmbiguousLhs shouldBePresent child {
+                it::getAmbiguousLhs shouldBe child {
                     it::getName shouldBe "foobar"
                 }
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     child<ASTTypeArgument> {
                         child<ASTClassOrInterfaceType> {
                             it::getTypeImage shouldBe "B"
@@ -92,16 +92,16 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "foobar.b::new" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "new"
-            it::getMethodName.shouldBeEmpty()
+            it::getMethodName shouldBe null
             it::isConstructorReference shouldBe true
-            it::getTypeArguments.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
 
-            it::getLhsExpression.shouldBeEmpty()
-            it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
                 it::getImage shouldBe "b"
                 it::getTypeImage shouldBe "foobar.b"
 
-                it::getAmbiguousLhs shouldBePresent child<ASTAmbiguousName> {
+                it::getAmbiguousLhs shouldBe child<ASTAmbiguousName> {
                     it::getName shouldBe "foobar"
                 }
             }
@@ -112,22 +112,22 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "foobar.b<B>::new" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "new"
-            it::getMethodName.shouldBeEmpty()
+            it::getMethodName shouldBe null
             it::isConstructorReference shouldBe true
-            it::getTypeArguments.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
 
-            it::getLhsExpression.shouldBeEmpty()
-            it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
                 it::getTypeImage shouldBe "foobar.b"
                 it::getImage shouldBe "b"
 
-                it::getAmbiguousLhs shouldBePresent child {
+                it::getAmbiguousLhs shouldBe child {
                     it::getName shouldBe "foobar"
                     it::getTypeImage shouldBe "foobar"
                 }
 
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     child<ASTTypeArgument> {
                         child<ASTClassOrInterfaceType> {
                             it::getTypeImage shouldBe "B"
@@ -140,12 +140,12 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "int[]::new" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "new"
-            it::getMethodName.shouldBeEmpty()
+            it::getMethodName shouldBe null
             it::isConstructorReference shouldBe true
-            it::getTypeArguments.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
 
-            it::getLhsExpression.shouldBeEmpty()
-            it::getLhsType shouldBePresent child<ASTArrayType> {
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe child<ASTArrayType> {
                 it::getTypeImage shouldBe "int"
 
                 it::getElementType shouldBe child<ASTPrimitiveType> {
@@ -161,15 +161,15 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "ArrayList<String>::new" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "new"
-            it::getMethodName.shouldBeEmpty()
+            it::getMethodName shouldBe null
             it::isConstructorReference shouldBe true
-            it::getTypeArguments.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
 
-            it::getLhsExpression.shouldBeEmpty()
-            it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
                 it::getTypeImage shouldBe "ArrayList"
 
-                it::getTypeArguments shouldBePresent child {
+                it::getTypeArguments shouldBe child {
                     child<ASTTypeArgument> {
                         child<ASTClassOrInterfaceType> {
                             it::getTypeImage shouldBe "String"
@@ -182,16 +182,16 @@ class ASTMethodReferenceTest : ParserTestSpec({
         "ArrayList::<String>new" should matchExpr<ASTMethodReference> {
 
             it::getImage shouldBe "new"
-            it::getMethodName.shouldBeEmpty()
+            it::getMethodName shouldBe null
             it::isConstructorReference shouldBe true
 
-            it::getLhsExpression.shouldBeEmpty()
-            it::getLhsType shouldBePresent child<ASTClassOrInterfaceType> {
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
                 it::getTypeImage shouldBe "ArrayList"
-                it::getTypeArguments.shouldBeEmpty()
+                it::getTypeArguments shouldBe null
             }
 
-            it::getTypeArguments shouldBePresent child {
+            it::getTypeArguments shouldBe child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it::getTypeImage shouldBe "String"

@@ -15,7 +15,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBePresent child<ASTThisExpression>(ignoreChildren = true) {}
+            it::getLhsExpression shouldBe child<ASTThisExpression>(ignoreChildren = true) {}
 
             it::getArguments shouldBe child {}
 
@@ -25,11 +25,11 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhsExpression shouldBePresent child<ASTMethodCall> {
+            it::getLhsExpression shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "foo"
                 it::getImage shouldBe "foo"
 
-                it::getLhsExpression.shouldBeEmpty()
+                it::getLhsExpression shouldBe null
 
                 it::getArguments shouldBe child {}
             }
@@ -41,7 +41,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "baz"
             it::getImage shouldBe "baz"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo.bar"
             }
 
@@ -52,11 +52,11 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "f"
             it::getImage shouldBe "f"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo"
             }
 
-            it::getExplicitTypeArguments shouldBePresent child {
+            it::getExplicitTypeArguments shouldBe child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it::getTypeImage shouldBe "B"
@@ -72,7 +72,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo"
             }
 

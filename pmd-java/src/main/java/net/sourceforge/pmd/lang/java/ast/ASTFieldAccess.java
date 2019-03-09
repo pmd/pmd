@@ -5,8 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
-
+import javax.annotation.Nullable;
 
 /**
  * A field access expression.
@@ -45,7 +44,8 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
      * May return empty if this call is not qualified (no "."),
      * or if the qualifier is an expression instead of a type.
      */
-    public Optional<ASTClassOrInterfaceType> getLhsType() {
+    @Nullable
+    public ASTClassOrInterfaceType getLhsType() {
         return getChildAs(0, ASTClassOrInterfaceType.class);
     }
 

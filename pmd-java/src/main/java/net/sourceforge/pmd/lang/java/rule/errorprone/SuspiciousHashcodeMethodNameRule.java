@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import java.util.Optional;
+
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
@@ -19,10 +21,9 @@ public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
          */
 
         boolean isIntReturn =
-            node.getResultType()
-                .getTypeNode()
-                .map(t -> t.isPrimitiveType() && t.getTypeImage().equals("int"))
-                .orElse(false);
+            Optional.ofNullable(node.getResultType().getTypeNode())
+                    .map(t -> t.isPrimitiveType() && t.getTypeImage().equals("int"))
+                    .orElse(false);
 
         String name = node.getMethodName();
         if ("hashcode".equalsIgnoreCase(name) && (!"hashCode".equals(name) || !isIntReturn)) {

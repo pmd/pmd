@@ -13,24 +13,24 @@ class ASTTypeTest : ParserTestSpec({
         "java.util.List" should matchType<ASTClassOrInterfaceType> {
             it::getTypeImage shouldBe "java.util.List"
             it::getImage shouldBe "List"
-            it::getTypeArguments.shouldBeEmpty()
-            it::getLhsType.shouldBeEmpty()
+            it::getTypeArguments shouldBe null
+            it::getLhsType shouldBe null
 
-            it::getAmbiguousLhs shouldBePresent child {
+            it::getAmbiguousLhs shouldBe child {
                 it::getName shouldBe "java.util"
             }
         }
 
         "java.util.List<F>" should matchType<ASTClassOrInterfaceType> {
 
-            it::getLhsType.shouldBeEmpty()
+            it::getLhsType shouldBe null
             it::getImage shouldBe "List"
 
-            it::getAmbiguousLhs shouldBePresent child {
+            it::getAmbiguousLhs shouldBe child {
                 it::getName shouldBe "java.util"
             }
 
-            it::getTypeArguments shouldBePresent child {
+            it::getTypeArguments shouldBe child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it::getTypeImage shouldBe "F"
@@ -46,8 +46,8 @@ class ASTTypeTest : ParserTestSpec({
             it::getTypeImage shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getAmbiguousLhs.shouldBeEmpty()
-            it::getLhsType.shouldBeEmpty()
+            it::getAmbiguousLhs shouldBe null
+            it::getLhsType shouldBe null
         }
 
     }
@@ -58,9 +58,9 @@ class ASTTypeTest : ParserTestSpec({
             it::getTypeImage shouldBe "java.util.Map.Entry"
             it::getImage shouldBe "Entry"
 
-            it::getLhsType.shouldBeEmpty()
+            it::getLhsType shouldBe null
 
-            it::getAmbiguousLhs shouldBePresent child {
+            it::getAmbiguousLhs shouldBe child {
                 it::getTypeImage shouldBe "java.util.Map"
                 it::getImage shouldBe "java.util.Map"
                 it::getName shouldBe "java.util.Map"
@@ -74,21 +74,21 @@ class ASTTypeTest : ParserTestSpec({
                 }
             }
 
-            it::getTypeArguments shouldBePresent child {
+            it::getTypeArguments shouldBe child {
 
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it::getTypeImage shouldBe "K"
-                        it::getTypeArguments.shouldBeEmpty()
-                        it::getLhsType.shouldBeEmpty()
+                        it::getTypeArguments shouldBe null
+                        it::getLhsType shouldBe null
                     }
                 }
 
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it::getTypeImage shouldBe "V"
-                        it::getTypeArguments.shouldBeEmpty()
-                        it::getLhsType.shouldBeEmpty()
+                        it::getTypeArguments shouldBe null
+                        it::getLhsType shouldBe null
                     }
                 }
             }
@@ -98,15 +98,15 @@ class ASTTypeTest : ParserTestSpec({
 
             it::getTypeImage shouldBe "Foo.Bar.Brew"
 
-            it::getLhsType shouldBePresent child {
+            it::getLhsType shouldBe child {
                 it::getTypeImage shouldBe "Foo.Bar"
 
-                it::getTypeArguments.shouldBeEmpty()
+                it::getTypeArguments shouldBe null
 
-                it::getLhsType shouldBePresent child {
+                it::getLhsType shouldBe child {
                     it::getTypeImage shouldBe "Foo"
 
-                    it::getTypeArguments shouldBePresent child {
+                    it::getTypeArguments shouldBe child {
                         child<ASTTypeArgument> {
                             child<ASTClassOrInterfaceType> {
                                 it::getTypeImage shouldBe "K"
@@ -124,7 +124,7 @@ class ASTTypeTest : ParserTestSpec({
                 }
             }
 
-            it::getTypeArguments shouldBePresent child {
+            it::getTypeArguments shouldBe child {
                 child<ASTTypeArgument> {
                     child<ASTClassOrInterfaceType> {
                         it::getTypeImage shouldBe "V"

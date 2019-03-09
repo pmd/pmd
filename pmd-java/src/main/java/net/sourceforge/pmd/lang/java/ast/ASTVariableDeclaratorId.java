@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -260,11 +260,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     /**
      * Returns the initializer of the variable, or null if it doesn't exist.
      */
-    public Optional<ASTExpression> getInitializer() {
+    @Nullable
+    public ASTExpression getInitializer() {
         if (parent instanceof ASTVariableDeclarator) {
-            return Optional.ofNullable(((ASTVariableDeclarator) parent).getInitializer());
+            return ((ASTVariableDeclarator) parent).getInitializer();
         }
-        return Optional.empty();
+        return null;
     }
 
     /**
@@ -273,6 +274,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * type.
      */
     // TODO unreliable, not typesafe and not useful, should be deprecated
+    @Nullable
     public Node getTypeNameNode() {
         return getTypeNode();
     }
@@ -289,6 +291,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * @return the type node, or {@code null} if there is no explicit type,
      * e.g. if {@link #isTypeInferred()} returns true.
      */
+    @Nullable
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             // ASTResource is a subclass of ASTFormal parameter for now but this will change

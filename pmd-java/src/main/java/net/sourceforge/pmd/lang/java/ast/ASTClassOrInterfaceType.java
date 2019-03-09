@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 
@@ -67,10 +68,11 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
      *   a package name. This must be taken care of by a disambiguation phase
      *   that takes the symbol table into account.
      *
-     * @return A type, or an empty optional if this is a base type
+     * @return A type, or null if this is a base type
      */
-    public Optional<ASTClassOrInterfaceType> getLhsType() {
-        return Optional.ofNullable(getFirstChildOfType(ASTClassOrInterfaceType.class));
+    @Nullable
+    public ASTClassOrInterfaceType getLhsType() {
+        return getFirstChildOfType(ASTClassOrInterfaceType.class);
     }
 
 
@@ -78,15 +80,17 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
      * Returns the left-hand side is an ambiguous name that has not been reclassified.
      * The ambiguous name can be a package or type name.
      */
-    public Optional<ASTAmbiguousName> getAmbiguousLhs() {
-        return Optional.ofNullable(getFirstChildOfType(ASTAmbiguousName.class));
+    @Nullable
+    public ASTAmbiguousName getAmbiguousLhs() {
+        return getFirstChildOfType(ASTAmbiguousName.class);
     }
 
     /**
      * Returns the type arguments of this segment if some are specified.
      */
-    public Optional<ASTTypeArguments> getTypeArguments() {
-        return Optional.ofNullable(getFirstChildOfType(ASTTypeArguments.class));
+    @Nullable
+    public ASTTypeArguments getTypeArguments() {
+        return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
@@ -117,8 +121,8 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
     @Override
     @Experimental
     public String getTypeImage() {
-        String ambiguousName = getAmbiguousLhs().map(s -> s.getName() + ".").orElse("");
-        return getLhsType().map(s -> s.getTypeImage() + ".").orElse(ambiguousName) + getImage();
+        String ambiguousName = Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("");
+        return Optional.ofNullable(getLhsType()).map(s -> s.getTypeImage() + ".").orElse(ambiguousName) + getImage();
     }
 
 

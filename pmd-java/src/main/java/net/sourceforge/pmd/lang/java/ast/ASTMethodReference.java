@@ -6,7 +6,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 
 /**
@@ -51,7 +51,8 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * Otherwise, this method returns an empty optional and {@link #getLhsExpression()}
      * returns a non-empty optional.
      */
-    public Optional<ASTReferenceType> getLhsType() {
+    @Nullable
+    public ASTReferenceType getLhsType() {
         return getChildAs(0, ASTReferenceType.class);
     }
 
@@ -62,7 +63,8 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * returns a non-empty optional.
      */
     @Override
-    public Optional<ASTPrimaryExpression> getLhsExpression() {
+    @Nullable
+    public ASTPrimaryExpression getLhsExpression() {
         return ASTQualifiableExpression.super.getLhsExpression();
     }
 
@@ -72,8 +74,9 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * Type arguments mentioned before the "::", if any, are contained within
      * the {@linkplain #getLhsType() lhs type}.
      */
-    public Optional<ASTTypeArguments> getTypeArguments() {
-        return Optional.ofNullable(getFirstChildOfType(ASTTypeArguments.class));
+    @Nullable
+    public ASTTypeArguments getTypeArguments() {
+        return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
@@ -81,8 +84,9 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
      * Returns the method name, or an empty optional if this is a
      * {@linkplain #isConstructorReference() constructor reference}.
      */
-    public Optional<String> getMethodName() {
-        return Optional.of(getImage()).filter(it -> !"new".equals(it));
+    @Nullable
+    public String getMethodName() {
+        return getImage().equals("new") ? null : getImage();
     }
 
 

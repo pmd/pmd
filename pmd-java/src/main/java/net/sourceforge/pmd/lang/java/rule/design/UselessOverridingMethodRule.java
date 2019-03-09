@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -75,10 +76,9 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodType(ASTMethodDeclaration node, String methodType) {
-        return node.getResultType()
-                   .getTypeNode()
-                   .map(it -> it.isClassOrInterfaceType() && it.getTypeImage().equals(methodType))
-                   .orElse(false);
+        return Optional.ofNullable(node.getResultType().getTypeNode())
+                       .map(it -> it.isClassOrInterfaceType() && it.getTypeImage().equals(methodType))
+                       .orElse(false);
     }
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?

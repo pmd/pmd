@@ -351,7 +351,7 @@ public class JavaParser {
       Node node = jjtree.peekNode();
       if (node instanceof ASTConstructorCall) {
         ASTConstructorCall expr = (ASTConstructorCall) node;
-        ASTTypeArguments types = expr.getTypeNode().getTypeArguments().orElse(null);
+        ASTTypeArguments types = expr.getTypeNode().getTypeArguments();
         if (expr.isAnonymousClass() && types != null && types.isDiamond()) {
           throwParseException("Cannot use '<>' with anonymous inner classes when running in JDK inferior to 9 mode!");
         }

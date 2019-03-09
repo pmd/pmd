@@ -17,19 +17,19 @@ class ASTThisExpressionTest : ParserTestSpec({
     parserTest("Qualified this") {
         "Type.this" should matchExpr<ASTThisExpression> {
 
-            it::getQualifier shouldBePresent child {
+            it::getQualifier shouldBe child {
                 it::getImage shouldBe "Type"
             }
         }
 
         "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.this" should matchExpr<ASTThisExpression> {
 
-            it::getQualifier shouldBePresent child {
+            it::getQualifier shouldBe child {
                 it::getImage shouldBe "ASTThisExpression"
-                it::getTypeArguments.shouldBeEmpty()
-                it::getLhsType.shouldBeEmpty()
+                it::getTypeArguments shouldBe null
+                it::getLhsType shouldBe null
 
-                it::getAmbiguousLhs shouldBePresent child {
+                it::getAmbiguousLhs shouldBe child {
                     it::getName shouldBe "net.sourceforge.pmd.lang.java.ast"
                 }
             }

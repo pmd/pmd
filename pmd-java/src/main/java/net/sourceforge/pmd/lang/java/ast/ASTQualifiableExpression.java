@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 
 /**
@@ -17,10 +17,11 @@ interface ASTQualifiableExpression extends ASTExpression {
     /**
      * Returns the expression to the left of the "." if it exists.
      * That may be an {@linkplain ASTAmbiguousName ambiguous name}.
-     * May return empty if this call is not qualified (no "."), or
+     * May return null if this call is not qualified (no "."), or
      * if the qualifier is a type instead of an expression.
      */
-    default Optional<ASTPrimaryExpression> getLhsExpression() {
+    @Nullable
+    default ASTPrimaryExpression getLhsExpression() {
         return getChildAs(0, ASTPrimaryExpression.class);
     }
 }

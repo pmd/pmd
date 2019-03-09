@@ -13,9 +13,9 @@ class ASTFieldAccessTest : ParserTestSpec({
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBePresent child<ASTThisExpression> {
-                it::getQualifier shouldBePresent child {
-                    it.typeArguments.shouldBeEmpty()
+            it::getLhsExpression shouldBe child<ASTThisExpression> {
+                it::getQualifier shouldBe child {
+                    it.typeArguments shouldBe null
                     it.typeImage shouldBe "Type"
                 }
             }
@@ -26,8 +26,8 @@ class ASTFieldAccessTest : ParserTestSpec({
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBePresent child<ASTMethodCall> {
-                it::getLhsExpression.shouldBeEmpty()
+            it::getLhsExpression shouldBe child<ASTMethodCall> {
+                it::getLhsExpression shouldBe null
                 it::getMethodName shouldBe "foo"
                 it::getImage shouldBe "foo"
 
@@ -40,7 +40,7 @@ class ASTFieldAccessTest : ParserTestSpec({
             it::getImage shouldBe "c"
             it::getFieldName shouldBe "c"
 
-            it::getLhsExpression shouldBePresent child<ASTAmbiguousName> {
+            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
                 it.name shouldBe "a.b"
             }
         }

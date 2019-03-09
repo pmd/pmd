@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 
 /**
@@ -51,7 +52,8 @@ public final class ASTClassLiteral extends AbstractJavaTypeNode implements ASTLi
     /**
      * Returns the enclosed type node, or an empty optional if this is void.
      */
-    public Optional<ASTType> getTypeNode() {
-        return isVoid() ? Optional.empty() : Optional.of((ASTType) jjtGetChild(0));
+    @Nullable
+    public ASTType getTypeNode() {
+        return isVoid() ? null : (ASTType) jjtGetChild(0);
     }
 }

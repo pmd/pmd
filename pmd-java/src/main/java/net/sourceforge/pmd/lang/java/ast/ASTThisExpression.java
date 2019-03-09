@@ -5,7 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 
 /**
@@ -29,8 +29,9 @@ public final class ASTThisExpression extends AbstractLateInitNode implements AST
     }
 
 
-    public Optional<ASTClassOrInterfaceType> getQualifier() {
-        return jjtGetNumChildren() > 0 ? Optional.of((ASTClassOrInterfaceType) jjtGetChild(0)) : Optional.empty();
+    @Nullable
+    public ASTClassOrInterfaceType getQualifier() {
+        return jjtGetNumChildren() > 0 ? (ASTClassOrInterfaceType) jjtGetChild(0) : null;
     }
 
 

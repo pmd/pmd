@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.Optional;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
@@ -20,10 +22,9 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
         // only boolean methods should be inspected
 
         boolean isBooleanReturn =
-            node.getResultType()
-                .getTypeNode()
-                .map(t -> t.isPrimitiveType() && t.getTypeImage().equals("boolean"))
-                .orElse(false);
+            Optional.ofNullable(node.getResultType().getTypeNode())
+                    .map(t -> t.isPrimitiveType() && t.getTypeImage().equals("boolean"))
+                    .orElse(false);
 
         if (isBooleanReturn) {
             return super.visit(node, data);
@@ -155,7 +156,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
      * Checks, whether there is a statement after the given if statement, and if
      * so, whether this is just a return boolean statement.
      *
-     * @param node
+     * @param ifNode
      *            the if statement
      * @return
      */
@@ -174,7 +175,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
      * Checks whether the given ifstatement just returns a boolean in the if
      * clause.
      *
-     * @param node
+     * @param ifNode
      *            the if statement
      * @return
      */

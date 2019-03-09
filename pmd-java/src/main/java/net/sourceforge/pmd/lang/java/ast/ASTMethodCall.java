@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 
 /**
@@ -50,7 +51,8 @@ public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrim
      *
      * <p>If the LHS is an {@link ASTAmbiguousName}, returns it.
      */
-    public Optional<ASTClassOrInterfaceType> getLhsType() {
+    @Nullable
+    public ASTClassOrInterfaceType getLhsType() {
         return getChildAs(0, ASTClassOrInterfaceType.class);
     }
 
@@ -60,8 +62,9 @@ public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrim
     }
 
 
-    public Optional<ASTTypeArguments> getExplicitTypeArguments() {
-        return Optional.ofNullable(getFirstChildOfType(ASTTypeArguments.class));
+    @Nullable
+    public ASTTypeArguments getExplicitTypeArguments() {
+        return getFirstChildOfType(ASTTypeArguments.class);
     }
 
 
