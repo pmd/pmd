@@ -30,9 +30,10 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated API
 
-*   CodeClimateRule is deprecated in 7.0.0 because it was unused for 2 years and created an unwanted dependency.
-Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed. 
-See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
+*   {% jdoc core::renderers.CodeClimateRule %} is deprecated in 7.0.0 because it was unused for 2 years and
+    created an unwanted dependency.
+    Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed.
+    See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
 
 ### External Contributions
 

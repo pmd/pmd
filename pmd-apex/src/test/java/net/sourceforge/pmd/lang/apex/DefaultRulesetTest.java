@@ -13,10 +13,17 @@ import net.sourceforge.pmd.RuleSetFactory;
 
 public class DefaultRulesetTest {
 
+    private RuleSetFactory factory = new RuleSetFactory();
+
     @Test
     public void loadDefaultRuleset() throws Exception {
-        RuleSetFactory factory = new RuleSetFactory();
         RuleSet ruleset = factory.createRuleSet("rulesets/apex/ruleset.xml");
+        assertNotNull(ruleset);
+    }
+
+    @Test
+    public void loadQuickstartRuleset() throws Exception {
+        RuleSet ruleset = factory.createRuleSet("rulesets/apex/quickstart.xml");
         assertNotNull(ruleset);
     }
 }
