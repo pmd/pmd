@@ -449,22 +449,7 @@ public class RuleDocGenerator {
                                 description = description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
                             }
 
-                            String defaultValue = "";
-                            if (propertyDescriptor.defaultValue() != null) {
-                                if (propertyDescriptor.isMultiValue()) {
-                                    @SuppressWarnings("unchecked") // multi valued properties are using a List
-                                    MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
-                                    defaultValue = multiPropertyDescriptor.asDelimitedString(multiPropertyDescriptor.defaultValue());
-
-                                    // surround the delimiter with spaces, so that the browser can wrap
-                                    // the value nicely
-                                    defaultValue = defaultValue.replaceAll(Pattern.quote(
-                                            String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
-                                            " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
-                                } else {
-                                    defaultValue = String.valueOf(propertyDescriptor.defaultValue());
-                                }
-                            }
+                            String defaultValue = determineDefaultValueAsString(propertyDescriptor);
 
                             String multiValued = "no";
                             if (propertyDescriptor.isMultiValue()) {
@@ -483,17 +468,56 @@ public class RuleDocGenerator {
                         lines.add("");
                     }
 
-                    lines.add("**Use this rule by referencing it:**");
+                    if (properties.isEmpty()) {
+                        lines.add("**Use this rule by referencing it:**");
+                    } else {
+                        lines.add("**Use this rule with the default properties by just referencing it:**");
+                    }
                     lines.add("``` xml");
                     lines.add("<rule ref=\"category/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\" />");
                     lines.add("```");
                     lines.add("");
+
+                    if (!properties.isEmpty()) {
+                        lines.add("**Use this rule and customize it:**");
+                        lines.add("``` xml");
+                        lines.add("<rule ref=\"category/" + languageTersename + "/" + rulesetFilename + ".xml/" + rule.getName() + "\">");
+                        lines.add("    <properties>");
+                        for (PropertyDescriptor<?> propertyDescriptor : properties) {
+                            String defaultValue = determineDefaultValueAsString(propertyDescriptor);
+                            lines.add("        <property name=\"" + propertyDescriptor.name() + "\" value=\"" + defaultValue + "\" />");
+                        }
+                        lines.add("    </properties>");
+                        lines.add("</rule>");
+                        lines.add("```");
+                        lines.add("");
+                    }
                 }
 
                 writer.write(path, lines);
                 System.out.println("Generated " + path);
             }
         }
+    }
+
+    private String determineDefaultValueAsString(PropertyDescriptor<?> propertyDescriptor) {
+        String defaultValue = "";
+        if (propertyDescriptor.defaultValue() != null) {
+            if (propertyDescriptor.isMultiValue()) {
+                @SuppressWarnings("unchecked") // multi valued properties are using a List
+                MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
+                defaultValue = multiPropertyDescriptor.asDelimitedString(multiPropertyDescriptor.defaultValue());
+
+                // surround the delimiter with spaces, so that the browser can wrap
+                // the value nicely
+                defaultValue = defaultValue.replaceAll(Pattern.quote(
+                        String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
+                        " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
+            } else {
+                defaultValue = String.valueOf(propertyDescriptor.defaultValue());
+            }
+        }
+        return defaultValue;
     }
 
     private static String stripIndentation(String description) {
