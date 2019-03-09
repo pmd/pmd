@@ -14,6 +14,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Quickstart Ruleset for Apex
+
+PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
+get your custom ruleset started. You can reference it with `rulesets/apex/quickstart.xml`.
+You are strongly encouraged to [create your own ruleset](https://pmd.github.io/pmd-6.12.0/pmd_userdocs_making_rulesets.html)
+though.
+
+The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
+references only rules, that are most likely to apply everywhere.
+
+Any feedback would be greatly appreciated.
+
+
 #### New Rules
 
 *   The new Java rule {% rule "java/design/AvoidUncheckedExceptionsInSignatures" %} (`java-design`) finds methods or constructors
