@@ -48,6 +48,9 @@ Any feedback would be greatly appreciated.
     Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed.
     See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
 
+*   The Apex ruleset `rulesets/apex/ruleset.xml` has been deprecated and will be removed in 7.0.0. Please use the new
+    quickstart ruleset `rulesets/apex/quickstart.xml` instead.
+
 ### External Contributions
 
 *   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
