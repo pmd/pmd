@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>method declares RuntimeException</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[     
+public class Foo {
+ void foo() throws RuntimeException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>method decalres a subclass of RuntimeException</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[     
+public class Foo {
+ void foo() throws IllegalArgumentException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>method does not declare any exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {}
+}
+     ]]></code>
+     </test-code>
+     <test-code>
+        <description>method declaring checked exceptions like IOException is fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.IOException;
+       
+public class Foo {
+ void foo() throws IOException{}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>constructor declaring checked exceptions like IOException is fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[ 
+import java.io.IOException;
+              
+public class Foo {
+ Foo() throws IOException{}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>constructor does not declare any exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Foo() {}
+}
+     ]]></code>
+     </test-code>
+    <test-code>
+        <description>constructor declares RuntimeException</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[         
+public class Foo {
+ Foo() throws RuntimeException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>constructor declares a subclass of RuntimeException</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[         
+public class Foo {
+ Foo() throws IllegalArgumentException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>interface method declares RuntimeException</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public interface Foo {
+ public void foo() throws RuntimeException;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>interface method declares a subclass of RuntimeException</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+public interface Foo {
+ public void foo() throws IllegalArgumentException;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>interface method declaring a checked exception is fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public void foo() throws IOException;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>interface method does not declare any exception</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public void foo();
+}
+     ]]></code>
+    </test-code>
+</test-data>

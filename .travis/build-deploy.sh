@@ -31,7 +31,7 @@ function upload_baseline() {
     log_info "Generating and uploading baseline for pmdtester..."
     cd ..
     bundle config --local gemfile pmd/Gemfile
-    bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
+    pmd/.travis/travis_wait "bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f"
     cd target/reports
     BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
