@@ -432,17 +432,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <configuration>
                         <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
-                        <testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
-                        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
                     </configuration>
-                    <dependencies>
-                        <!-- Junit 3 & 4 engine -->
-                        <dependency>
-                            <groupId>org.junit.vintage</groupId>
-                            <artifactId>junit-vintage-engine</artifactId>
-                            <version>5.4.0</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -817,11 +807,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>net.sourceforge.pmd</groupId>
-                <artifactId>pmd-test</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>net.sourceforge.saxon</groupId>
                 <artifactId>saxon</artifactId>
                 <version>9.1.0.8</version>
@@ -836,21 +821,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <groupId>org.mozilla</groupId>
                 <artifactId>rhino</artifactId>
                 <version>1.7.7.2</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>pl.pragmatists</groupId>
-                <artifactId>JUnitParams</artifactId>
-                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>net.java.dev.javacc</groupId>
@@ -905,7 +875,12 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
-
+            <dependency>
+                <groupId>net.sourceforge.pmd</groupId>
+                <artifactId>pmd-test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
@@ -914,8 +889,48 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <scope>test</scope>
             </dependency>
 
-            <!-- Kotlin -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>pl.pragmatists</groupId>
+                <artifactId>JUnitParams</artifactId>
+                <version>1.1.1</version>
+                <scope>test</scope>
+            </dependency>
 
+            <!-- Junit 5 Engine -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.4.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>5.4.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Junit 3 & 4 engine -->
+            <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>5.4.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Kotlin -->
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
@@ -943,7 +958,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                 <version>3.1.8</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
