@@ -1653,9 +1653,10 @@ a block `{}` is sufficient.
             <property name="xpath">
                 <value>
 //DoStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral] |
-//WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = 'false']]
+//WhileStatement[Expression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral[@True = false()]]
                 </value>
             </property>
+            <property name="version" value="2.0" />
         </properties>
         <example>
 public class Example {
