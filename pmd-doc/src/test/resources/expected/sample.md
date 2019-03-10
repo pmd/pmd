@@ -86,8 +86,7 @@ public class JumbledIncrementerRule1 {
 <rule ref="category/java/sample.xml/JumbledIncrementer">
     <properties>
         <property name="sampleAdditionalProperty" value="the value" />
-        <property name="sampleMultiStringProperty" value="Value1 | Value2" />
-        <property name="sampleDeprecatedProperty" value="test" />
+        <property name="sampleMultiStringProperty" value="Value1|Value2" />
         <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
         <property name="sampleRegexProperty2" value="[a-z]*" />
         <property name="sampleRegexProperty3" value="\s+" />
@@ -251,8 +250,7 @@ public class JumbledIncrementerRule1 {
 <rule ref="category/java/sample.xml/RenamedRule">
     <properties>
         <property name="sampleAdditionalProperty" value="the value" />
-        <property name="sampleMultiStringProperty" value="Value1 | Value2" />
-        <property name="sampleDeprecatedProperty" value="test" />
+        <property name="sampleMultiStringProperty" value="Value1|Value2" />
         <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
         <property name="sampleRegexProperty2" value="[a-z]*" />
         <property name="sampleRegexProperty3" value="\s+" />
