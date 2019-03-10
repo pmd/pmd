@@ -29,13 +29,15 @@ public interface StatisticalRule extends Rule {
 
     /** @deprecated Not useful, will not be replaced. */
     @Deprecated
-    DoubleProperty SIGMA_DESCRIPTOR = new DoubleProperty("sigma", "Sigma value", -10000000d, 1000000d, null, 1.0f);
+    DoubleProperty SIGMA_DESCRIPTOR = new DoubleProperty("sigma", "deprecated! Sigma value", -10000000d, 1000000d, null,
+                                                         1.0f);
     // TODO we should have one such property descriptor pro rule, and *not* share it, to allow setting specific defaults
     DoubleProperty MINIMUM_DESCRIPTOR = new DoubleProperty("minimum", "Minimum reporting threshold", -10000000d, 1000000000d, null,
             2.0f);
     /** @deprecated Not useful, will not be replaced. */
     @Deprecated
-    IntegerProperty TOP_SCORE_DESCRIPTOR = new IntegerProperty("topscore", "Top score value", 1, 100, null, 3.0f);
+    IntegerProperty TOP_SCORE_DESCRIPTOR = new IntegerProperty("topscore", "deprecated! Top score value", 1, 100,
+                                                               null, 3.0f);
 
     void addDataPoint(DataPoint point);
 
