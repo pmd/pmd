@@ -26,7 +26,7 @@ references only rules, that are most likely to apply everywhere.
 
 Any feedback would be greatly appreciated.
 
-### PMD Designer
+#### PMD Designer
 
 The rule designer's codebase has been moved out of the main repository and
 will be developed at [pmd/pmd-designer](https://github.com/pmd/pmd-designer)
