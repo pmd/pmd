@@ -242,7 +242,7 @@
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-ui</artifactId>
-                    <version>${project.version}</version>
+                    <version>${pmd-designer.version}</version>
                 </dependency>
             </dependencies>
         </profile>

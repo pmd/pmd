@@ -1265,8 +1265,8 @@ should be annotated with @Test and @Ignore.
          or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')]
 ]
 [not(Annotation)]
-[MethodDeclaration[(@Public = 'true' or @PackagePrivate = 'true') and @Static = 'false' and
-        ResultType[@Void = 'true'] and
+[MethodDeclaration[(@Public = true() or @PackagePrivate = true()) and @Static = false() and
+        ResultType[@Void = true()] and
         MethodDeclarator/FormalParameters[@ParameterCount = 0]
     ]
 ]

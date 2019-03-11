@@ -31,6 +31,12 @@ references only rules, that are most likely to apply everywhere.
 
 Any feedback would be greatly appreciated.
 
+#### PMD Designer
+
+The rule designer's codebase has been moved out of the main repository and
+will be developed at [pmd/pmd-designer](https://github.com/pmd/pmd-designer)
+from now on. The maven coordinates will stay the same for the time being.
+The designer will still be shipped with PMD's binaries.
 
 #### New Rules
 
@@ -41,6 +47,10 @@ Any feedback would be greatly appreciated.
 *   The new Java rule {% rule "java/errorprone/DetachedTestCase" %} (`java-errorprone`) searches for public
     methods in test classes, which are not annotated with `@Test`. These methods might be test cases where
     the annotation has been forgotten. Because of that those test cases are never executed.
+
+*   The new Java rule {% rule "java/bestpractices/WhileLoopWithLiteralBoolean" %} (`java-bestpractices`) finds
+    Do-While-Loops and While-Loops that can be simplified since they use simply `true` or `false` as their
+    loop condition.
 
 ### Fixed Issues
 
@@ -53,10 +63,14 @@ Any feedback would be greatly appreciated.
     Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed.
     See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
 
+*   The Apex ruleset `rulesets/apex/ruleset.xml` has been deprecated and will be removed in 7.0.0. Please use the new
+    quickstart ruleset `rulesets/apex/quickstart.xml` instead.
+
 ### External Contributions
 
 *   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
 *   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
+*   [#1709](https://github.com/pmd/pmd/pull/1709): \[java] Detect while loops with literal booleans conditions - [David Burström](https://github.com/davidburstromspotify)
 
 {% endtocmaker %}
 
