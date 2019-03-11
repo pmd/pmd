@@ -33,8 +33,10 @@ The date and the version must be updated in `docs/_config.yml`,  e.g.
 pmd:
     version: 6.0.0
     date: 2017-12-15
+    release_type: minor
 ```
 
+The release type could be one of "bugfix", "minor", or "major".
 
 The release notes usual mention any new rules that have been added since the last release.
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
@@ -42,6 +44,10 @@ that all new rules are listed.
 
 We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
 changes from the current release notes to this document: `docs/pages/next_major_development.md`.
+
+The designer lives at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
+Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release.
+See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases.
 
 Check in all (version) changes to branch master or any other branch, from which the release takes place:
 
