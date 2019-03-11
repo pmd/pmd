@@ -1304,7 +1304,10 @@ $ git status
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd:
     version: 6.0.0
     date: 2017-12-15
+    release_type: minor
 </code></pre></div></div>
+
+<p>The release type could be one of “bugfix”, “minor”, or “major”.</p>
 
 <p>The release notes usual mention any new rules that have been added since the last release.
 Please double check the file <code class="highlighter-rouge">pmd-core/src/main/resources/rulesets/releases/&lt;version&gt;.xml</code>, so
@@ -1312,6 +1315,10 @@ that all new rules are listed.</p>
 
 <p>We maintain a documentation for the <a href="pmd_next_major_development.html">next major release</a>. Copy the API
 changes from the current release notes to this document: <code class="highlighter-rouge">docs/pages/next_major_development.md</code>.</p>
+
+<p>The designer lives at <a href="https://github.com/pmd/pmd-designer">pmd/pmd-designer</a>.
+Update property <code class="highlighter-rouge">pmd-designer.version</code> in <strong>pom.xml</strong> to reference the latest pmd-designer release.
+See <a href="https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&amp;core=gav">https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&amp;core=gav</a> for the available releases.</p>
 
 <p>Check in all (version) changes to branch master or any other branch, from which the release takes place:</p>
 
@@ -1493,7 +1500,7 @@ and <code class="highlighter-rouge">mvn versions:set -DnewVersion=5.7.0-SNAPSHOT
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 9, 2019 <br />
+ Site last generated: Mar 11, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
