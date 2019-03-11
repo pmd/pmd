@@ -284,6 +284,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <pmd.build-tools.version>1.5.0-SNAPSHOT</pmd.build-tools.version>
 
+        <pmd-designer.version>6.12.0</pmd-designer.version>
     </properties>
 
     <build>
@@ -1145,7 +1146,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-apex-jorje</module>
         <module>pmd-apex</module>
         <module>pmd-java8</module>
-        <module>pmd-ui</module>
         <module>pmd-doc</module>
         <module>pmd-lang-test</module>
     </modules>
