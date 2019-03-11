@@ -43,6 +43,10 @@ The designer will still be shipped with PMD's binaries.
     methods in test classes, which are not annotated with `@Test`. These methods might be test cases where
     the annotation has been forgotten. Because of that those test cases are never executed.
 
+*   The new Java rule {% rule "java/bestpractices/WhileLoopWithLiteralBoolean" %} (`java-bestpractices`) finds
+    Do-While-Loops and While-Loops that can be simplified since they use simply `true` or `false` as their
+    loop condition.
+
 ### Fixed Issues
 
 ### API Changes
@@ -61,6 +65,7 @@ The designer will still be shipped with PMD's binaries.
 
 *   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
 *   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
+*   [#1709](https://github.com/pmd/pmd/pull/1709): \[java] Detect while loops with literal booleans conditions - [David Burström](https://github.com/davidburstromspotify)
 
 {% endtocmaker %}
 
