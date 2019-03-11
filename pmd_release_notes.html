@@ -1298,7 +1298,7 @@ references only rules, that are most likely to apply everywhere.</p>
 
 <p>Any feedback would be greatly appreciated.</p>
 
-<h3 id="pmd-designer">PMD Designer</h3>
+<h4 id="pmd-designer">PMD Designer</h4>
 
 <p>The rule designer’s codebase has been moved out of the main repository and
 will be developed at <a href="https://github.com/pmd/pmd-designer">pmd/pmd-designer</a>
@@ -1317,6 +1317,11 @@ even though it is a runtime exception.</p>
     <p>The new Java rule <a href="pmd_rules_java_errorprone.html#detachedtestcase"><code class="highlighter-rouge">DetachedTestCase</code></a> (<code class="highlighter-rouge">java-errorprone</code>) searches for public
 methods in test classes, which are not annotated with <code class="highlighter-rouge">@Test</code>. These methods might be test cases where
 the annotation has been forgotten. Because of that those test cases are never executed.</p>
+  </li>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_bestpractices.html#whileloopwithliteralboolean"><code class="highlighter-rouge">WhileLoopWithLiteralBoolean</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) finds
+Do-While-Loops and While-Loops that can be simplified since they use simply <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code> as their
+loop condition.</p>
   </li>
 </ul>
 
@@ -1344,6 +1349,7 @@ quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml<
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1704">#1704</a>: [java] Added AvoidUncheckedExceptionsInSignatures Rule - <a href="https://github.com/pamidi99">Bhanu Prakash Pamidi</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1706">#1706</a>: [java] Add DetachedTestCase rule - <a href="https://github.com/davidburstromspotify">David Burström</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1709">#1709</a>: [java] Detect while loops with literal booleans conditions - <a href="https://github.com/davidburstromspotify">David Burström</a></li>
 </ul>
 
 
