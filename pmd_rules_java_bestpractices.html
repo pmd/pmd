@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseTryWithResources, UseVarargs">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidPrintStackTrace, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LooseCoupling, MethodReturnsInternalArray, MissingOverride, OneDeclarationPerLine, PositionLiteralsFirstInCaseInsensitiveComparisons, PositionLiteralsFirstInComparisons, PreserveStackTrace, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SwitchStmtsShouldHaveDefault, SystemPrintln, UnusedFormalParameter, UnusedImports, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseAssertEqualsInsteadOfAssertTrue, UseAssertNullInsteadOfAssertTrue, UseAssertSameInsteadOfAssertTrue, UseAssertTrueInsteadOfAssertEquals, UseCollectionIsEmpty, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -3095,6 +3095,41 @@ having to deal with the creation of an array.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UseVarargs"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="whileloopwithliteralboolean">WhileLoopWithLiteralBoolean</h2>
+
+<p><strong>Since:</strong> PMD 6.13.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><code class="highlighter-rouge">do {} while (true);</code> requires reading the end of the statement before it is
+apparent that it loops forever, whereas <code class="highlighter-rouge">while (true) {}</code> is easier to understand.</p>
+
+<p><code class="highlighter-rouge">do {} while (false);</code> is redundant, and if an inner variable scope is required,
+a block <code class="highlighter-rouge">{}</code> is sufficient.</p>
+
+<p><code class="highlighter-rouge">while (false) {}</code> will never execute the block and can be removed in its entirety.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">DoStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">]</span><span class="w"> </span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">WhileStatement</span><span class="p">[</span><span class="nt">Expression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Literal</span><span class="o">/</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="na">@True</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+  <span class="o">{</span>
+    <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// allowed</span>
+    <span class="k">while</span> <span class="o">(</span><span class="kc">false</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// disallowed</span>
+    <span class="k">do</span> <span class="o">{</span> <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">);</span> <span class="c1">// disallowed</span>
+    <span class="k">do</span> <span class="o">{</span> <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="kc">false</span><span class="o">);</span> <span class="c1">// disallowed</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/WhileLoopWithLiteralBoolean"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 

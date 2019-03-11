@@ -690,6 +690,15 @@
 "url": "pmd_rules_java_bestpractices.html#usevarargs",
 "summary": "Rules which enforce generally accepted best practices."
 }
+,
+
+{
+"title": "WhileLoopWithLiteralBoolean (Java, Best Practices)",
+"tags": "",
+"keywords": "WhileLoopWithLiteralBoolean",
+"url": "pmd_rules_java_bestpractices.html#whileloopwithliteralboolean",
+"summary": "Rules which enforce generally accepted best practices."
+}
 
 
 
