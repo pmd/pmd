@@ -368,6 +368,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
                     <configuration>
+                        <!-- Bug with incremental compilation -->
+                        <!-- https://issues.apache.org/jira/browse/MCOMPILER-209 -->
+                        <useIncrementalCompilation>false</useIncrementalCompilation>
                         <release>${java.version}</release>
                     </configuration>
                     <executions>
