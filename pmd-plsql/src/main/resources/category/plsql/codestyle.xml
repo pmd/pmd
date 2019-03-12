@@ -195,4 +195,19 @@ END;
 ]]>
         </example>
     </rule>
+
+    <rule name="LineLength"
+          language="plsql"
+          since="6.13.0"
+          message="The line is too long."
+          class="net.sourceforge.pmd.lang.plsql.rule.codestyle.LineLengthRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#linelength">
+        <description>
+This rule checks for long lines. Please note that comments are not ignored.
+
+This rule is the PMD equivalent of checkstyle's [LineLength](http://checkstyle.sourceforge.net/config_sizes.html#LineLength) check.
+        </description>
+        <priority>3</priority>
+    </rule>
+
 </ruleset>
