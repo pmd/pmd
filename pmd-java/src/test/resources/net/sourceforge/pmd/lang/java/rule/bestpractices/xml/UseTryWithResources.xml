@@ -189,4 +189,28 @@ public class TryWithResources {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Custom close methods with multiple arguments</description>
+        <rule-property name="closeMethods">myClose2,myClose</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null, in2 = null;
+        try {
+            in = openInputStream();
+            in2 = openInputStream();
+            int i = in.read(), j = in2.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            myClose(in, in2);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
