@@ -39,6 +39,9 @@ Any feedback would be greatly appreciated.
 
 ### Fixed Issues
 
+*   java-bestpractices
+    *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
+
 ### API Changes
 
 #### Deprecated API
@@ -55,6 +58,7 @@ Any feedback would be greatly appreciated.
 
 *   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
 *   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
+*   [#1717](https://github.com/pmd/pmd/pull/1717): \[java] Fix false positive in useTryWithResources when using a custom close method with multiple arguments - [Rishabh Jain](https://github.com/jainrish)
 
 {% endtocmaker %}
 
