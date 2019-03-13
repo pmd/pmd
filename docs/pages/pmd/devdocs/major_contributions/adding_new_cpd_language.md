@@ -3,9 +3,9 @@ title: How to add a new CPD language
 short_title: Add a new CPD language
 tags: [devdocs, extending]
 summary: How to add a new CPD language
-last_updated: July 3, 2016
+last_updated: March 20, 2019
 permalink: pmd_devdocs_major_adding_new_cpd_language.html
-author: Romain PELISSE <belaran@gmail.com>
+author: Matías Fraga <fragamati@gmail.com>
 ---
 
 First of all, thanks for the contribution!     
@@ -33,6 +33,9 @@ Happily for you, to add CPD support for a new language is now easier than ever!
 ```
 
 	
+- For JavaCC grammars you should subclass [JavaCCTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/JavaCCTokenizer.java) wich has many examples you could follow, you should also take the [Python implementation](https://github.com/pmd/pmd/blob/master/pmd-python/src/main/java/net/sourceforge/pmd/cpd/PythonTokenizer.java) as reference
+
+
 - For any other scenario you can use [AnyTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AnyTokenizer.java)
 
 3. Create your [Language](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AbstractLanguage.java) class     
@@ -66,4 +69,4 @@ If that's your case , you came to the right place!
   Why do you want GO to solve all your problems?     
   You should take a look to [Kotlin token filter implementation](https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/cpd/KotlinTokenizer.java)
 
-- For non-Antlr grammars you can use [BaseTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java) directly or take a peek to [Java's mbngjht8 token filter](https://github.com/pmd/pmd/blob/91e3f699f5b741b4cbc9b0cf07da91211c7a20b6/pmd-java/src/main/java/net/sourceforge/pmd/cpd/JavaTokenizer.java)  
+- For non-Antlr grammars you can use [BaseTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java) directly or take a peek to [Java's token filter](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/cpd/JavaTokenizer.java)  
