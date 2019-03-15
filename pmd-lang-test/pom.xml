@@ -129,13 +129,5 @@
             <version>2.0.1</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- Use pmd-java for tests -->
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-java</artifactId>
-            <version>6.12.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
