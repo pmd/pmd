@@ -1,10 +1,13 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
+import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ParserTstUtil
+import java.beans.PropertyDescriptor
 import io.kotlintest.should as kotlintestShould
 
 /**
@@ -31,6 +34,43 @@ enum class JavaVersion : Comparable<JavaVersion> {
         val Latest = values().last()
         val Earliest = values().first()
     }
+}
+
+
+object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) {
+
+    // dump the 'it::getName' instead of 'it.name' syntax
+
+    override fun formatPropertyAssertion(expected: Any?, actualPropertyAccess: String): String? {
+        val javaGetterName = convertKtPropAccessToGetterAccess(actualPropertyAccess)
+        return super.formatPropertyAssertion(expected, "it::$javaGetterName")
+    }
+
+    override fun getContextAroundChildAssertion(node: Node, childIndex: Int, actualPropertyAccess: String): Pair<String, String> {
+        val javaGetterName = convertKtPropAccessToGetterAccess(actualPropertyAccess)
+        return super.getContextAroundChildAssertion(node, childIndex, "it::$javaGetterName")
+    }
+
+    private fun convertKtPropAccessToGetterAccess(ktPropAccess: String): String {
+        val ktPropName = ktPropAccess.split('.')[1]
+
+        return when {
+            // boolean getter
+            ktPropName matches Regex("is[A-Z].*") -> ktPropName
+            else -> "get" + ktPropName.capitalize()
+        }
+    }
+
+}
+
+
+val JavaMatchingConfig = DefaultMatchingConfig.copy(
+        errorPrinter = CustomTreePrinter
+)
+
+/** Java-specific matching method. */
+inline fun <reified N : Node> JavaNode?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>) {
+    this.baseShouldMatchSubtree(JavaMatchingConfig, ignoreChildren, nodeSpec)
 }
 
 /**
@@ -83,7 +123,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             return types + otherImports.map { "import $it;" }
         }
 
-    inline fun <reified N : Node> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NodeSpec<N>)
+    inline fun <reified N : JavaNode> makeMatcher(nodeParsingCtx: NodeParsingCtx<*>, ignoreChildren: Boolean, noinline nodeSpec: NodeSpec<N>)
             : Assertions<String> = { nodeParsingCtx.parseAndFind<N>(it).shouldMatchNode(ignoreChildren, nodeSpec) }
 
 
@@ -100,8 +140,8 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * Returns a String matcher that parses the node using [parseStatement] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
-    inline fun <reified N : Node> matchStmt(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NodeSpec<N>) =
+    inline fun <reified N : JavaNode> matchStmt(ignoreChildren: Boolean = false,
+                                                noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(StatementParsingCtx(this), ignoreChildren, nodeSpec)
 
 
@@ -127,7 +167,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      *
      * Note that the enclosing type declaration can be customized by changing [genClassHeader].
      */
-    inline fun <reified N : Node> matchDeclaration(
+    inline fun <reified N : JavaNode> matchDeclaration(
             ignoreChildren: Boolean = false,
             noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx(this), ignoreChildren, nodeSpec)
 
