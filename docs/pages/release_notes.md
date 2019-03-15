@@ -49,6 +49,8 @@ The designer will still be shipped with PMD's binaries.
 
 ### Fixed Issues
 
+*   doc
+    *   [#1721](https://github.com/pmd/pmd/issues/1721): \[doc] Documentation provides an invalid property configuration example
 *   java-bestpractices
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
 
@@ -70,6 +72,7 @@ The designer will still be shipped with PMD's binaries.
 *   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
 *   [#1709](https://github.com/pmd/pmd/pull/1709): \[java] Detect while loops with literal booleans conditions - [David Burström](https://github.com/davidburstromspotify)
 *   [#1717](https://github.com/pmd/pmd/pull/1717): \[java] Fix false positive in useTryWithResources when using a custom close method with multiple arguments - [Rishabh Jain](https://github.com/jainrish)
+*   [#1724](https://github.com/pmd/pmd/pull/1724): \[doc] Correct property override example - [Felix W. Dekker](https://github.com/FWDekker)
 
 {% endtocmaker %}
 
