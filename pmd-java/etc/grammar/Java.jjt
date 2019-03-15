@@ -378,6 +378,21 @@ public class JavaParser {
       throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
     }
   }
+  private void checkForMultipleCaseLabels() {
+    if (jdkVersion < 12) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 12");
+    }
+  }
+  private void checkForSwitchRules() {
+    if (jdkVersion < 12) {
+      throwParseException("Switch rules in switch statements are only supported with Java 12");
+    }
+  }
+  private void checkForSwitchExpression() {
+    if (jdkVersion < 12) {
+      throwParseException("Switch expressions are only supported with Java 12");
+    }
+  }
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -2006,10 +2021,14 @@ void Expression() :
  // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
 {}
 {
+  LOOKAHEAD((<IDENTIFIER>|LambdaParameters()) "->" ) LambdaExpression()
+  |
+  (
   ConditionalExpression()
   [
     LOOKAHEAD(2) AssignmentOperator() Expression()
   ]
+  )
 }
 
 void AssignmentOperator() :
@@ -2140,13 +2159,14 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
 /*
- * This is really ugly... we are repeting the CastExpression lookahead and full expression...
+ * This is really ugly... we are repeating the CastExpression lookahead and full expression...
  * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
  * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
 */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
 | LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
+| SwitchExpression()
 }
 
 void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
@@ -2162,6 +2182,13 @@ void CastExpression() :
     "(" (Annotation())* PrimitiveType() ")"
   ) "(" (TypeAnnotation())* Type() ")" UnaryExpression()
 | "(" (TypeAnnotation())* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
+}
+
+void SwitchExpression() :
+{}
+{
+    {checkForSwitchExpression();}
+    "switch" "(" Expression() ")" "{" SwitchBlock() "}"
 }
 
 void PrimaryExpression() :
@@ -2191,9 +2218,9 @@ void PrimaryPrefix() :
   Literal()
 | LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
-| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ) LambdaExpression()
-| LOOKAHEAD( FormalParameters() "->" ) LambdaExpression()
+//| LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
+//| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ) LambdaExpression()
+//| LOOKAHEAD( FormalParameters() "->" ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -2415,20 +2442,51 @@ void StatementExpression() :
   PostfixExpression()
 }
 
-void SwitchStatement() :
+void SwitchStatement():
 {}
 {
   "switch" "(" Expression() ")" "{"
-    ( SwitchLabel() ( BlockStatement() )* )*
+      SwitchBlock()
   "}"
+}
+
+void SwitchBlock() #void :
+{}
+{
+(
+    SwitchLabel()
+    (
+        "->" ( Expression() ";" | Block() | ThrowStatement() )
+    |
+        ":" (SwitchLabel() ":")* ( BlockStatement() )*
+    )
+)*
+/*
+    LOOKAHEAD(SwitchLabel() "->") SwitchLabeledRule() ( SwitchLabeledRule() )*
+    |
+    ( SwitchLabeledStatementGroup() )*
+*/
+}
+
+void SwitchLabeledStatementGroup() #void:
+{}
+{
+    SwitchLabel() ":" (SwitchLabel() ":")* ( BlockStatement() )*
 }
 
 void SwitchLabel() :
 {}
 {
-  "case" Expression() ":"
+  "case" ConditionalExpression() ({checkForMultipleCaseLabels();} "," ConditionalExpression())*
 |
-  "default" {jjtThis.setDefault();} ":"
+  "default" {jjtThis.setDefault();}
+}
+
+void SwitchLabeledRule():
+{}
+{
+    {checkForSwitchRules();}
+    SwitchLabel() "->" ( Expression() ";" | Block() | ThrowStatement() )
 }
 
 void IfStatement() :
