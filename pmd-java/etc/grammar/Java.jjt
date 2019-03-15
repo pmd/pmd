@@ -383,6 +383,15 @@ public class JavaParser {
       throwParseException("Multiple case labels in switch statements are only supported with Java 12");
     }
   }
+  /**
+   * Keeps track during tree construction, whether we are currently building a switch label.
+   * A switch label must not contain a LambdaExpression.
+   * Unfortunately, we have added LambdaExpression as part of PrimaryPrefix, which is wrong.
+   * To keep compatibility, this flag is used, whether a LambdaExpression should be parsed
+   * in PrimaryPrefix.
+   * See also comment at #Expression().
+   */
+  private boolean inSwitchLabel = false;
   private void checkForSwitchRules() {
     if (jdkVersion < 12) {
       throwParseException("Switch rules in switch statements are only supported with Java 12");
@@ -422,6 +431,26 @@ public class JavaParser {
    */
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
+  }
+
+  /**
+   * Semantic lookahead needed to distinguish between switch rules
+   * and switch statement. Using the syntactic lookahead for SwitchLabel()
+   * does not work, during lookahead the javacode is not executed, so
+   * that "->" is already consumed as a LambdaExpression, when it is actually
+   * part of the switch rule. See also #inSwitchLabel.
+   */
+  private boolean switchLabeledRuleLookahead(int maxTokens) {
+    int pos = 0;
+
+    while (pos < maxTokens) {
+        Token token = getToken(pos);
+        pos++;
+
+        if (token.kind == COLON) return false;
+        if (token.kind == LAMBDA) return true;
+    }
+    return false;
   }
 
   public Map<Integer, String> getSuppressMap() {
@@ -2019,16 +2048,15 @@ void Expression() :
  // separated from the AssignmentExpression production. Their use is restricted
  // to method and constructor argument, cast operand, and the RHS of assignments.
  // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
+ //
+ // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
+ // as a workaround.
 {}
 {
-  LOOKAHEAD((<IDENTIFIER>|LambdaParameters()) "->" ) LambdaExpression()
-  |
-  (
   ConditionalExpression()
   [
     LOOKAHEAD(2) AssignmentOperator() Expression()
   ]
-  )
 }
 
 void AssignmentOperator() :
@@ -2188,7 +2216,7 @@ void SwitchExpression() :
 {}
 {
     {checkForSwitchExpression();}
-    "switch" "(" Expression() ")" "{" SwitchBlock() "}"
+    "switch" "(" Expression() ")" SwitchBlock()
 }
 
 void PrimaryExpression() :
@@ -2218,9 +2246,9 @@ void PrimaryPrefix() :
   Literal()
 | LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-//| LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
-//| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ) LambdaExpression()
-//| LOOKAHEAD( FormalParameters() "->" ) LambdaExpression()
+| LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -2445,41 +2473,37 @@ void StatementExpression() :
 void SwitchStatement():
 {}
 {
-  "switch" "(" Expression() ")" "{"
-      SwitchBlock()
-  "}"
+  "switch" "(" Expression() ")" SwitchBlock()
 }
 
 void SwitchBlock() #void :
 {}
 {
-(
-    SwitchLabel()
-    (
-        "->" ( Expression() ";" | Block() | ThrowStatement() )
-    |
-        ":" (SwitchLabel() ":")* ( BlockStatement() )*
-    )
-)*
-/*
-    LOOKAHEAD(SwitchLabel() "->") SwitchLabeledRule() ( SwitchLabeledRule() )*
-    |
-    ( SwitchLabeledStatementGroup() )*
-*/
+    "{"
+        (
+            LOOKAHEAD( { switchLabeledRuleLookahead(10) } ) ( SwitchLabeledRule() )+
+        |
+            (LOOKAHEAD(3) SwitchLabeledStatementGroup() )* (SwitchLabel() ":")*
+        )
+    "}"
 }
 
 void SwitchLabeledStatementGroup() #void:
 {}
 {
-    SwitchLabel() ":" (SwitchLabel() ":")* ( BlockStatement() )*
+    (SwitchLabel() ":")+ ( BlockStatement() )+
 }
 
 void SwitchLabel() :
 {}
 {
-  "case" ConditionalExpression() ({checkForMultipleCaseLabels();} "," ConditionalExpression())*
+{ inSwitchLabel = true; }
+(
+  "case" ( ConditionalExpression() #Expression ) ({checkForMultipleCaseLabels();} "," ( ConditionalExpression() #Expression ) )*
 |
   "default" {jjtThis.setDefault();}
+)
+{ inSwitchLabel = false; }
 }
 
 void SwitchLabeledRule():
