@@ -64,17 +64,6 @@ public final class ASTConstructorCall extends AbstractLateInitNode implements AS
     }
 
 
-    /**
-     * Returns the left-hand-side of this expression, if this is a
-     * {@linkplain #isQualifiedInstanceCreation() qualified allocation expression}.
-     */
-    @Override
-    @Nullable
-    public ASTPrimaryExpression getLhsExpression() {
-        return ASTQualifiableExpression.super.getLhsExpression();
-    }
-
-
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);

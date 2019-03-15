@@ -48,8 +48,8 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
 
     /**
      * Returns the type node to the left of the "::" if it exists.
-     * Otherwise, this method returns an empty optional and {@link #getLhsExpression()}
-     * returns a non-empty optional.
+     * Otherwise, this method returns null and {@link #getLhsExpression()}
+     * returns non-null.
      */
     @Nullable
     public ASTReferenceType getLhsType() {
@@ -59,8 +59,8 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
 
     /**
      * Returns the expression node to the left of the "::" if it exists.
-     * Otherwise, this method returns an empty optional and {@link #getLhsType()}
-     * returns a non-empty optional.
+     * Otherwise, this method returns null and {@link #getLhsType()}
+     * returns non-null.
      */
     @Override
     @Nullable
