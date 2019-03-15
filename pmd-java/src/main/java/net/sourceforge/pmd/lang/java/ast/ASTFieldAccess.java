@@ -34,6 +34,7 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
     ASTFieldAccess(ASTAmbiguousName lhs, String fieldName) {
         super(JavaParserTreeConstants.JJTFIELDACCESS);
         this.jjtAddChild(lhs, 0);
+        lhs.jjtSetParent(this);
         this.setImage(fieldName);
     }
 
