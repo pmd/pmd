@@ -83,6 +83,7 @@ public abstract class AbstractNode implements Node {
         }
         children[index] = child;
         child.jjtSetChildIndex(index);
+        child.jjtSetParent(this);
     }
 
     @Override
