@@ -39,6 +39,17 @@ enum class JavaVersion : Comparable<JavaVersion> {
 
 object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) {
 
+    override fun takePropertyDescriptorIf(node: Node, prop: PropertyDescriptor): Boolean =
+            when {
+                prop.readMethod?.declaringClass !== node.javaClass -> false
+                // avoid outputting too much, it's bad for readability
+                node is ASTNumericLiteral -> when {
+                    node.isIntLiteral || node.isLongLiteral -> prop.name == "valueAsInt"
+                    else -> prop.name == "valueAsDouble"
+                }
+                else -> true
+            }
+
     // dump the 'it::getName' instead of 'it.name' syntax
 
     override fun formatPropertyAssertion(expected: Any?, actualPropertyAccess: String): String? {
