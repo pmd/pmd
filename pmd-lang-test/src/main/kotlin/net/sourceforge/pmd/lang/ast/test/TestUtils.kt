@@ -52,4 +52,3 @@ private fun <N, V> assertWrapper(callable: KCallable<N>, right: V, asserter: (N,
 infix fun <N, V : N> KCallable<N>.shouldBe(expected: V?) = this.shouldEqual(expected)
 
 infix fun <T> KCallable<T>.shouldMatch(expected: T.() -> Unit) = assertWrapper(this, expected) { n, v -> n should v }
-

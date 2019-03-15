@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ast.test
 
 import com.github.oowekyala.treeutils.DoublyLinkedTreeLikeAdapter
-import com.github.oowekyala.treeutils.TreeLikeAdapter
 import com.github.oowekyala.treeutils.matchers.MatchingConfig
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
@@ -27,7 +26,11 @@ typealias NodeSpec<N> = TreeNodeWrapper<Node, N>.() -> Unit
 /** A function feedable to [io.kotlintest.should], which fails the test if an [AssertionError] is thrown. */
 typealias Assertions<M> = (M) -> Unit
 
-val DefaultMatchingConfig = MatchingConfig(adapter = NodeTreeLikeAdapter, errorPrinter = KotlintestBeanTreePrinter(NodeTreeLikeAdapter))
+val DefaultMatchingConfig = MatchingConfig(
+        adapter = NodeTreeLikeAdapter,
+        errorPrinter = KotlintestBeanTreePrinter(NodeTreeLikeAdapter),
+        implicitAssertions = { it.assertTextRangeIsOk() }
+)
 
 /** A shorthand for [baseShouldMatchSubtree] providing the [NodeTreeLikeAdapter]. */
 inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>) {
