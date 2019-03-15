@@ -136,7 +136,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
             children = ArrayUtils.insert(index, children, child);
         }
         super.jjtAddChild(child, index);
-        child.jjtSetParent(this);
 
         updateChildrenIndices(index);
 
@@ -205,8 +204,9 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
         AbstractJavaNode oldChild = (AbstractJavaNode) children[idx];
 
-        oldChild.jjtSetParent(null);
-        oldChild.jjtSetChildIndex(-1);
+        // parent of the old child must not be reset to null
+        // as chances are we're reusing it as a child of the
+        // new child
 
         newChild.copyTextCoordinates(oldChild);
         newChild.jjtSetParent(this);

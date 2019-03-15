@@ -33,7 +33,6 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
         this.jjtAddChild(lhs, 0);
-        lhs.jjtSetParent(this);
         this.setImage(image);
     }
 

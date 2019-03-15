@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
  * Node that may be qualified by an expression, e.g. an instance method call or
  * inner class constructor invocation.
  */
-interface ASTQualifiableExpression extends ASTExpression {
+public interface ASTQualifiableExpression extends ASTExpression {
 
     /**
      * Returns the expression to the left of the "." if it exists.

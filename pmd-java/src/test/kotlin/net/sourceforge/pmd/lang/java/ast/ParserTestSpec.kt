@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.AbstractSpec
-import io.kotlintest.TestContext
-import io.kotlintest.TestType
+import io.kotlintest.*
 import io.kotlintest.specs.IntelliMarker
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import io.kotlintest.should as kotlintestShould
