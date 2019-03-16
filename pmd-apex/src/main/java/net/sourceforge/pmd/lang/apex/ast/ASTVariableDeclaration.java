@@ -37,4 +37,8 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
         }
         return false;
     }
+
+    public String getTypeName() {
+        return String.valueOf(node.getTypeNameUsed());
+    }
 }

@@ -70,6 +70,6 @@ public class MethodNamingConventionsRule extends AbstractApexRule {
 
     private boolean isTestMethod(ASTMethod node) {
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
-        return modifierNode != null && modifierNode.getNode().getModifiers().isTest();
+        return modifierNode != null && modifierNode.isTest();
     }
 }

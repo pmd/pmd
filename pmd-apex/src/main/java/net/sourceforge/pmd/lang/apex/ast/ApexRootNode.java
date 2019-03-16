@@ -21,4 +21,8 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
         this.endLine = positioner.getLastLine();
         this.endColumn = positioner.getLastLineColumn();
     }
+
+    public double getApexVersion() {
+        return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+    }
 }
