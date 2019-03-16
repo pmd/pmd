@@ -1194,21 +1194,27 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             } else if (body instanceof ASTBlock) {
                 List<ASTBreakStatement> breaks = body.findDescendantsOfType(ASTBreakStatement.class);
                 if (!breaks.isEmpty()) {
-                    //TODO: check for break statements
-                    //type = breaks.get(0).getExpression().getType();
-                    //break;
+                    ASTExpression expression = breaks.get(0).getFirstChildOfType(ASTExpression.class);
+                    if (expression != null) {
+                        type = expression.getTypeDefinition();
+                        break;
+                    }
                 }
             }
         }
         if (type == null) {
-            // now check the labels and their expressions, breaks
+            // now check the labels and their expressions of break statements
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
                 Node child = node.jjtGetChild(i);
                 if (child instanceof ASTBlockStatement) {
-                    List<ASTBreakStatement> breakStatement = child.findDescendantsOfType(ASTBreakStatement.class);
-                    //TODO: check for break statements
-                    //type = breakStatement.getExpression().getType();
-                    //break;
+                    List<ASTBreakStatement> breaks = child.findDescendantsOfType(ASTBreakStatement.class);
+                    if (!breaks.isEmpty()) {
+                        ASTExpression expression = breaks.get(0).getFirstChildOfType(ASTExpression.class);
+                        if (expression != null) {
+                            type = expression.getTypeDefinition();
+                            break;
+                        }
+                    }
                 }
             }
         }

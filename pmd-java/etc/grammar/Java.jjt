@@ -405,6 +405,12 @@ public class JavaParser {
 
   private boolean inFallthroughSwitchCase = false;
 
+  private void checkForBreakExpression() {
+    if (jdkVersion < 12) {
+      throwParseException("Expressions in break statements are only supported with Java 12");
+    }
+  }
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
@@ -2560,7 +2566,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
+  "break" [ LOOKAHEAD(1) t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() {checkForBreakExpression();} ] ";"
 }
 
 void ContinueStatement() :
