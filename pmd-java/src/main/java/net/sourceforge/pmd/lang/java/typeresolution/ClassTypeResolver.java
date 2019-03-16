@@ -31,7 +31,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -72,6 +75,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -1171,6 +1176,44 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTStatementExpression node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTSwitchExpression node, Object data) {
+        super.visit(node, data);
+
+        JavaTypeDefinition type = null;
+        // first try to determine the type based on the first expression/break of a switch rule
+        List<ASTSwitchLabeledRule> rules = node.findChildrenOfType(ASTSwitchLabeledRule.class);
+        for (ASTSwitchLabeledRule rule : rules) {
+            Node body = rule.jjtGetChild(1); // second child is either Expression, Block, ThrowStatement
+            if (body instanceof ASTExpression) {
+                type = ((ASTExpression) body).getTypeDefinition();
+                break;
+            } else if (body instanceof ASTBlock) {
+                List<ASTBreakStatement> breaks = body.findDescendantsOfType(ASTBreakStatement.class);
+                if (!breaks.isEmpty()) {
+                    //TODO: check for break statements
+                    //type = breaks.get(0).getExpression().getType();
+                    //break;
+                }
+            }
+        }
+        if (type == null) {
+            // now check the labels and their expressions, breaks
+            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+                Node child = node.jjtGetChild(i);
+                if (child instanceof ASTBlockStatement) {
+                    List<ASTBreakStatement> breakStatement = child.findDescendantsOfType(ASTBreakStatement.class);
+                    //TODO: check for break statements
+                    //type = breakStatement.getExpression().getType();
+                    //break;
+                }
+            }
+        }
+
+        node.setTypeDefinition(type);
         return data;
     }
 
