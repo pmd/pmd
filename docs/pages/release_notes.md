@@ -14,6 +14,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Java 12 Support
+
+This release of PMD brings support for Java 12. PMD can parse the new [Switch Expressions](http://openjdk.java.net/jeps/325)
+and resolve the type of such an expression.
+
+Note: The Switch Expressions are a preview language feature of OpenJDK 12 and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you'll need to enable it via the new environment
+variable `PMD_JAVA_OPTS`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd ...
+
 #### Quickstart Ruleset for Apex
 
 PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
@@ -51,6 +63,8 @@ The designer will still be shipped with PMD's binaries.
 
 *   doc
     *   [#1721](https://github.com/pmd/pmd/issues/1721): \[doc] Documentation provides an invalid property configuration example
+*   java
+    *   [#1537](https://github.com/pmd/pmd/issues/1537): \[java] Java 12 support
 *   java-bestpractices
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
 
