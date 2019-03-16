@@ -403,6 +403,8 @@ public class JavaParser {
     }
   }
 
+  private boolean inFallthroughSwitchCase = false;
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
@@ -431,26 +433,6 @@ public class JavaParser {
    */
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
-  }
-
-  /**
-   * Semantic lookahead needed to distinguish between switch rules
-   * and switch statement. Using the syntactic lookahead for SwitchLabel()
-   * does not work, during lookahead the javacode is not executed, so
-   * that "->" is already consumed as a LambdaExpression, when it is actually
-   * part of the switch rule. See also #inSwitchLabel.
-   */
-  private boolean switchLabeledRuleLookahead(int maxTokens) {
-    int pos = 0;
-
-    while (pos < maxTokens) {
-        Token token = getToken(pos);
-        pos++;
-
-        if (token.kind == COLON) return false;
-        if (token.kind == LAMBDA) return true;
-    }
-    return false;
   }
 
   public Map<Integer, String> getSuppressMap() {
@@ -2480,18 +2462,9 @@ void SwitchBlock() #void :
 {}
 {
     "{"
-        (
-            LOOKAHEAD( { switchLabeledRuleLookahead(10) } ) ( SwitchLabeledRule() )+
-        |
-            (LOOKAHEAD(3) SwitchLabeledStatementGroup() )* (SwitchLabel() ":")*
-        )
-    "}"
-}
 
-void SwitchLabeledStatementGroup() #void:
-{}
-{
-    (SwitchLabel() ":")+ ( BlockStatement() )+
+        (SwitchLabeledRule())*
+    "}"
 }
 
 void SwitchLabel() :
@@ -2506,11 +2479,22 @@ void SwitchLabel() :
 { inSwitchLabel = false; }
 }
 
-void SwitchLabeledRule():
-{}
+// only pushed if it's not a fallthrough, for compatibility
+void SwitchLabeledRule() #SwitchLabeledRule(!inFallthroughSwitchCase):
 {
-    {checkForSwitchRules();}
-    SwitchLabel() "->" ( Expression() ";" | Block() | ThrowStatement() )
+ boolean prevFallthrough = inFallthroughSwitchCase;
+ inFallthroughSwitchCase = false;
+}
+{
+    SwitchLabel()
+    ( "->" {checkForSwitchRules();} | ":" {inFallthroughSwitchCase = true;})
+    (LOOKAHEAD({inFallthroughSwitchCase})
+      ( BlockStatement() )*
+    | ( Expression() ";" | Block () | ThrowStatement() )
+    )
+    {
+        inFallthroughSwitchCase = prevFallthrough; // restore
+    }
 }
 
 void IfStatement() :

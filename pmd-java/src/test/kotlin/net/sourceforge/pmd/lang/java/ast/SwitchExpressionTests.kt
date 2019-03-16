@@ -122,6 +122,162 @@ class ASTSwitchExpressionTests : ParserTestSpec({
     }
 
 
+    parserTest("Nested switch expressions") {
+
+
+        """
+            switch (day) {
+                case FRIDAY -> 6;
+                case WEDNESDAY      -> switch (foo) {
+                  case 2 -> 5;
+                  default -> 3;
+                };
+                default             -> 3;
+            }
+        """.trimIndent() should matchExpr<ASTSwitchExpression> {
+
+            child<ASTExpression> {
+
+                child<ASTPrimaryExpression> {
+
+                    child<ASTPrimaryPrefix> {
+
+                        child<ASTName> {
+                            it.image shouldBe "day"
+                        }
+                    }
+                }
+            }
+
+            child<ASTSwitchLabeledRule> {
+
+                child<ASTSwitchLabel> {
+                    it.isDefault shouldBe false
+
+                    child<ASTExpression> {
+                        child<ASTPrimaryExpression> {
+                            child<ASTPrimaryPrefix> {
+                                child<ASTName> {
+                                    it.image shouldBe "FRIDAY"
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+                child<ASTExpression>(ignoreChildren = true) {}
+
+            }
+
+            child<ASTSwitchLabeledRule> {
+
+                child<ASTSwitchLabel> {
+                    it.isDefault shouldBe false
+
+                    child<ASTExpression>(ignoreChildren = true) {}
+                }
+
+                child<ASTExpression> {
+
+
+                    child<ASTSwitchExpression> {
+                        child<ASTExpression>(ignoreChildren = true) {}
+
+                        child<ASTSwitchLabeledRule> {
+                            child<ASTSwitchLabel> {
+                                it.isDefault shouldBe false
+
+                                child<ASTExpression>(ignoreChildren = true) {}
+                            }
+                            child<ASTExpression>(ignoreChildren = true) {}
+
+                        }
+                        child<ASTSwitchLabeledRule> {
+                            child<ASTSwitchLabel> {
+                                it.isDefault shouldBe true
+                            }
+                            child<ASTExpression>(ignoreChildren = true) {}
+                        }
+                    }
+
+                }
+            }
+
+            child<ASTSwitchLabeledRule> {
+
+                child<ASTSwitchLabel> {
+                    it.isDefault shouldBe true
+                }
+
+                child<ASTExpression>(ignoreChildren = true) {}
+            }
+        }
+    }
+
+
+    parserTest("Non-fallthrough nested in fallthrough") {
+
+
+        """
+            switch (day) {
+                case FRIDAY: foo(); break;
+                case WEDNESDAY  : switch (foo) {
+                  case 2 -> 5;
+                  default -> 3;
+                }
+                default             : bar();
+            }
+        """.trimIndent() should matchStmt<ASTSwitchStatement> {
+            it.isExhaustiveEnumSwitch shouldBe false
+
+            it.testedExpression shouldBe child(ignoreChildren = true) {}
+            child<ASTSwitchLabel> {
+                it.isDefault shouldBe false
+
+                child<ASTExpression>(ignoreChildren = true) {}
+
+            }
+            child<ASTBlockStatement> {
+                child<ASTStatement> {
+                    child<ASTStatementExpression>(ignoreChildren = true) {}
+                }
+            }
+            child<ASTBlockStatement> {
+                child<ASTStatement> {
+                    child<ASTBreakStatement> {}
+                }
+            }
+            child<ASTSwitchLabel> {
+                it.isDefault shouldBe false
+
+                child<ASTExpression>(ignoreChildren = true) {}
+
+            }
+            child<ASTBlockStatement> {
+                child<ASTStatement> {
+                    child<ASTSwitchStatement> {
+
+                        it.testedExpression shouldBe child(ignoreChildren = true) {}
+
+                        child<ASTSwitchLabeledRule>(ignoreChildren = true) {}
+                        child<ASTSwitchLabeledRule>(ignoreChildren = true) {}
+
+                    }
+                }
+            }
+            child<ASTSwitchLabel> {
+                it.isDefault shouldBe true
+            }
+            child<ASTBlockStatement> {
+                child<ASTStatement> {
+                    child<ASTStatementExpression>(ignoreChildren = true) {}
+                }
+            }
+        }
+    }
+
+
     parserTest("Switch statement with non-fallthrough labels") {
 
         """
