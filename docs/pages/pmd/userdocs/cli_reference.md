@@ -150,6 +150,16 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
 </table>
 
+## Additional Java Runtime Options
+
+PMD is executed via a Java runtime. In some cases, you might need to set additional runtime options, e.g.
+if you want to analyze a project, that uses one of OpenJDK's [Preview Language Features](http://openjdk.java.net/jeps/12).
+
+Just set the environment variable `PMD_JAVA_OPTS` before executing PMD, e.g.
+
+    export PMD_JAVA_OPTS="--enable-preview"
+    ./run.sh pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+
 ## Exit Status
 
 Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).

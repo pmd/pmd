@@ -56,6 +56,14 @@ The designer will still be shipped with PMD's binaries.
 
 ### API Changes
 
+#### Command Line Interface
+
+The start scripts `run.sh`, `pmd.bat` and `cpd.bat` support the new environment variable `PMD_JAVA_OPTS`.
+This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. `PMD_JAVA_OPTS=-Xmx512m`)
+or enable preview language features (e.g. `PMD_JAVA_OPTS=--enable-preview`).
+
+The previously available variables such as `OPTS` or `HEAPSIZE` are deprecated and will be removed with PMD 7.0.0.
+
 #### Deprecated API
 
 *   {% jdoc core::renderers.CodeClimateRule %} is deprecated in 7.0.0 because it was unused for 2 years and
