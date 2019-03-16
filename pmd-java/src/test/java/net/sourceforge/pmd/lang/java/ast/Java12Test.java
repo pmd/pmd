@@ -85,6 +85,8 @@ public class Java12Test {
         Assert.assertEquals(6, switchExpression.jjtGetNumChildren());
         Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
         Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabeledRule.class).size());
+
+        Assert.assertEquals(Integer.TYPE, switchExpression.getType());
     }
 
 }
