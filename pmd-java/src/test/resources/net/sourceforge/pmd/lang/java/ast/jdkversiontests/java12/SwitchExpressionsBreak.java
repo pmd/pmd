@@ -7,12 +7,13 @@ public class SwitchExpressionsBreak {
     private static final int SATURDAY = 6;
     private static final int SUNDAY = 7;
 
+    private static final int SIX = 6;
 
     public static void main(String[] args) {
         int day = FRIDAY;
 
         var numLetters = switch (day) {
-                    case MONDAY, FRIDAY, SUNDAY: break 6;
+                    case MONDAY, FRIDAY, SUNDAY: break SwitchExpressionsBreak.SIX;
                     case TUESDAY               : break 7;
                     case THURSDAY, SATURDAY    : break 8;
                     case WEDNESDAY             : break 9;

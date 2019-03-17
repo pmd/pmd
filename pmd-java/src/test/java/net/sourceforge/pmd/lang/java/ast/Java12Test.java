@@ -104,6 +104,10 @@ public class Java12Test {
         Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
         Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabel.class).size());
 
+        ASTBreakStatement breakStatement = switchExpression.getFirstDescendantOfType(ASTBreakStatement.class);
+        Assert.assertEquals("SwitchExpressionsBreak.SIX", breakStatement.getImage());
+        Assert.assertTrue(breakStatement.jjtGetChild(0) instanceof ASTExpression);
+
         ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(1);
         ASTVariableDeclarator localVarDecl = localVar.getFirstChildOfType(ASTVariableDeclarator.class);
         Assert.assertEquals(Integer.TYPE, localVarDecl.getType());
