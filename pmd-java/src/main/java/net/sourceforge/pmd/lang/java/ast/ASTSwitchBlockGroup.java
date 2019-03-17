@@ -7,18 +7,36 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTSwitchLabeledRule extends AbstractJavaNode {
-    ASTSwitchLabeledRule(int id) {
+public class ASTSwitchBlockGroup extends AbstractJavaNode {
+    private boolean rule;
+
+    ASTSwitchBlockGroup(int id) {
         super(id);
     }
 
-    ASTSwitchLabeledRule(JavaParser p, int id) {
+    ASTSwitchBlockGroup(JavaParser p, int id) {
         super(p, id);
     }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    void setRule(boolean rule) {
+        this.rule = rule;
+    }
+
+    /**
+     * Returns true if this group contains a switch label with a rule, such as
+     * a expression, a block, or a throw statement.
+     *
+     * <p>Since Java12.
+     *
+     * @return <code>true</code> if this is a java12 switch labeled rule group
+     */
+    public boolean isRule() {
+        return rule;
     }
 }
 /* JavaCC - OriginalChecksum=8b1747ca53f66203ee212a3699a9a2f3 (do not edit this line) */

@@ -403,7 +403,7 @@ public class JavaParser {
     }
   }
 
-  private boolean inFallthroughSwitchCase = false;
+  private boolean inSwitchLabeledRuleGroup = true;
 
   private void checkForBreakExpression() {
     if (jdkVersion < 12) {
@@ -2469,7 +2469,7 @@ void SwitchBlock() #void :
 {
     "{"
 
-        (SwitchLabeledRule())*
+        (SwitchBlockGroup())*
     "}"
 }
 
@@ -2485,21 +2485,22 @@ void SwitchLabel() :
 { inSwitchLabel = false; }
 }
 
-// only pushed if it's not a fallthrough, for compatibility
-void SwitchLabeledRule() #SwitchLabeledRule(!inFallthroughSwitchCase):
+// only pushed if it's a new java12 switch label rule group, for compatibility
+void SwitchBlockGroup() #SwitchBlockGroup(inSwitchLabeledRuleGroup):
 {
- boolean prevFallthrough = inFallthroughSwitchCase;
- inFallthroughSwitchCase = false;
+ boolean prevInSwitchLabeledRuleGroup = inSwitchLabeledRuleGroup;
+ inSwitchLabeledRuleGroup = true;
 }
 {
     SwitchLabel()
-    ( "->" {checkForSwitchRules();} | ":" {inFallthroughSwitchCase = true;})
-    (LOOKAHEAD({inFallthroughSwitchCase})
+    ( "->" {checkForSwitchRules();} | ":" {inSwitchLabeledRuleGroup = false;})
+    (LOOKAHEAD({!inSwitchLabeledRuleGroup})
       ( BlockStatement() )*
     | ( Expression() ";" | Block () | ThrowStatement() )
     )
     {
-        inFallthroughSwitchCase = prevFallthrough; // restore
+        jjtThis.setRule(inSwitchLabeledRuleGroup);
+        inSwitchLabeledRuleGroup = prevInSwitchLabeledRuleGroup; // restore
     }
 }
 

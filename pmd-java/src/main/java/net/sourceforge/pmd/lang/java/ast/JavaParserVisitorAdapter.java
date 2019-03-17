@@ -602,7 +602,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     @Override
-    public Object visit(ASTSwitchLabeledRule node, Object data) {
+    public Object visit(ASTSwitchBlockGroup node, Object data) {
         return visit((JavaNode) node, data);
     }
 
