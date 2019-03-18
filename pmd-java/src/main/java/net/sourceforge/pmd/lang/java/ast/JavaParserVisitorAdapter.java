@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nonnull;
+
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 
@@ -24,7 +26,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  */
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
-    // TODO set up delegation
 
     public Object visit(ASTExpression node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
@@ -32,13 +33,91 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     public Object visit(ASTPrimaryExpression node, Object data) {
-        return JavaParserVisitor.super.visit(node, data);
+        return visit((ASTExpression) node, data);
     }
 
+
+    @Override
+    public Object visit(@Nonnull ASTMethodCall node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+    @Override
+    public Object visit(@Nonnull ASTFieldAccess node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+    @Override
+    public Object visit(@Nonnull ASTConstructorCall node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTArrayAllocation node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTArrayAccess node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTVariableReference node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTParenthesizedExpression node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTMethodReference node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTThisExpression node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
+    @Override
+    public Object visit(@Nonnull ASTSuperExpression node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
 
     public Object visit(ASTLiteral node, Object data) {
-        return JavaParserVisitor.super.visit(node, data);
+        return visit((ASTPrimaryExpression) node, data);
     }
 
+    public Object visit(ASTBooleanLiteral node, Object data) {
+        return visit((ASTLiteral) node, data);
+    }
 
+    public Object visit(ASTNullLiteral node, Object data) {
+        return visit((ASTLiteral) node, data);
+    }
+
+    public Object visit(ASTNumericLiteral node, Object data) {
+        return visit((ASTLiteral) node, data);
+    }
+
+    public Object visit(ASTStringLiteral node, Object data) {
+        return visit((ASTLiteral) node, data);
+    }
+
+    public Object visit(ASTCharLiteral node, Object data) {
+        return visit((ASTLiteral) node, data);
+    }
+
+    public Object visit(ASTClassLiteral node, Object data) {
+        return visit((ASTLiteral) node, data);
+    }
 }
