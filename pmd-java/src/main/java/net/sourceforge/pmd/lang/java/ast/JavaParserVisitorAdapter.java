@@ -29,6 +29,32 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
+    public Object visit(@Nonnull ASTType node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTPrimitiveType node, Object data) {
+        return visit((ASTType) node, data);
+    }
+
+    public Object visit(@Nonnull ASTReferenceType node, Object data) {
+        return visit((ASTType) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTArrayType node, Object data) {
+        return visit((ASTReferenceType) node, data);
+    }
+
+    @Override
+    public Object visit(@Nonnull ASTClassOrInterfaceType node, Object data) {
+        return visit((ASTReferenceType) node, data);
+    }
+
+
     public Object visit(@Nonnull ASTExpression node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
     }
