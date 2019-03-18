@@ -47,12 +47,20 @@ The designer will still be shipped with PMD's binaries.
     Do-While-Loops and While-Loops that can be simplified since they use simply `true` or `false` as their
     loop condition.
 
+*   The new PLSQL rule {% rule "plsql/codestyle/AvoidTabCharacter" %} (`plsql-codestyle`) checks, that there are
+    no tab characters ("\t") in the source file.
+
+*   The new PLSQL rule {% rule "plsql/codestyle/LineLength" %} (`plsql-codestyle`) helps to enforce a maximum
+    line length.
+
 ### Fixed Issues
 
 *   doc
     *   [#1721](https://github.com/pmd/pmd/issues/1721): \[doc] Documentation provides an invalid property configuration example
 *   java-bestpractices
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
+*   plsql
+    *   [#1716](https://github.com/pmd/pmd/issues/1716): \[plsql] Support access to whole plsql code
 
 ### API Changes
 
