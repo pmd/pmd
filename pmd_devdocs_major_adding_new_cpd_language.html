@@ -1280,23 +1280,79 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <p>If you wish CPD to parse a unsupported language, you can easily develop a new parser for CPD. All you need to is implements the following interface:</p>
+  <p>First of all, thanks for the contribution!</p>
 
-<ul>
-  <li>net.sourceforge.pmd.cpd.Language</li>
-  <li>net.sourceforge.pmd.cpd.Tokenizer</li>
-</ul>
+<p>Happily for you, to add CPD support for a new language is now easier than ever!</p>
 
-<p>Do not forget to the follow the proper naming convention, as the CPD parser factory use this convention:</p>
+<div class="bs-callout bs-callout-primary"><strong>Pro Tip</strong>: If you wish to add a new language, there are more than 50 languages you could easily add with just an <a href="https://github.com/antlr/grammars-v4">Antlr grammar</a>.</div>
 
-<ul>
-  <li>Language Name + “Language”</li>
-  <li>Tokenizer Name + “Tokenizer”</li>
-</ul>
+<p>All you need to do is follow this few steps:</p>
 
-<p>For instance, if you develop a python parser, you should have two classes named PythonLanguage and PythonTokenizer.</p>
+<ol>
+  <li>Create a new module for your language, you can take <a href="https://github.com/pmd/pmd/tree/master/pmd-go">GO as an example</a></li>
+  <li>
+    <p>Create a Tokenizer</p>
 
-<p>To test your parser, just package it in a jar and add your jar to the classpath.</p>
+    <ul>
+      <li>For Antlr grammars you can take the grammar from <a href="https://github.com/antlr/grammars-v4">here</a>  and extend <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AntlrTokenizer.java">AntlrTokenizer</a>  taking Go as an example</li>
+    </ul>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoTokenizer</span> <span class="kd">extends</span> <span class="n">AntlrTokenizer</span> <span class="o">{</span>    
+        
+       <span class="nd">@Override</span> <span class="kd">protected</span> <span class="n">AntlrTokenManager</span> <span class="nf">getLexerForSource</span><span class="o">(</span><span class="n">SourceCode</span> <span class="n">sourceCode</span><span class="o">)</span> <span class="o">{</span>   
+           <span class="n">CharStream</span> <span class="n">charStream</span> <span class="o">=</span> <span class="n">AntlrTokenizer</span><span class="o">.</span><span class="na">getCharStreamFromSourceCode</span><span class="o">(</span><span class="n">sourceCode</span><span class="o">);</span>   
+           <span class="k">return</span> <span class="k">new</span> <span class="nf">AntlrTokenManager</span><span class="o">(</span><span class="k">new</span> <span class="n">GolangLexer</span><span class="o">(</span><span class="n">charStream</span><span class="o">),</span> <span class="n">sourceCode</span><span class="o">.</span><span class="na">getFileName</span><span class="o">());</span>   
+       <span class="o">}</span>
+   <span class="o">}</span>
+</code></pre></div>    </div>
+
+    <ul>
+      <li>For JavaCC grammars you should subclass <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/JavaCCTokenizer.java">JavaCCTokenizer</a> wich has many examples you could follow, you should also take the <a href="https://github.com/pmd/pmd/blob/master/pmd-python/src/main/java/net/sourceforge/pmd/cpd/PythonTokenizer.java">Python implementation</a> as reference</li>
+      <li>For any other scenario you can use <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AnyTokenizer.java">AnyTokenizer</a></li>
+    </ul>
+  </li>
+  <li>
+    <p>Create your <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AbstractLanguage.java">Language</a> class</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoLanguage</span> <span class="kd">extends</span> <span class="n">AbstractLanguage</span> <span class="o">{</span>    
+        
+     <span class="kd">public</span> <span class="nf">GoLanguage</span><span class="o">()</span> <span class="o">{</span>   
+         <span class="kd">super</span><span class="o">(</span><span class="s">"Go"</span><span class="o">,</span> <span class="s">"go"</span><span class="o">,</span> <span class="k">new</span> <span class="n">GoTokenizer</span><span class="o">(),</span> <span class="s">".go"</span><span class="o">);</span>   
+     <span class="o">}</span>  
+ <span class="o">}</span> 
+</code></pre></div>    </div>
+
+    <div class="bs-callout bs-callout-primary"><strong>Pro Tip</strong>: Yes, keep looking at Go!</div>
+
+    <p><strong>You are almost there!</strong></p>
+  </li>
+  <li>
+    <p>Please don’t forget to add some test, you can again.. look at Go implementation ;)</p>
+
+    <p>If you read this far, I’m keen to think you would also love to support some extra CPD configuration (ignore imports or crazy things like that)  <br />
+ If that’s your case , you came to the right place!</p>
+  </li>
+  <li>
+    <p>You can add your custom properties using a Token filter</p>
+
+    <ul>
+      <li>
+        <p>For Antlr grammars all you need to do is implement your own <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java">AntlrTokenFilter</a></p>
+
+        <p>And by now, I know where you are going to look…</p>
+
+        <p><strong>WRONG</strong></p>
+
+        <p>Why do you want GO to solve all your problems?</p>
+
+        <p>You should take a look to <a href="https://github.com/pmd/pmd/blob/master/pmd-kotlin/src/main/java/net/sourceforge/pmd/cpd/KotlinTokenizer.java">Kotlin token filter implementation</a></p>
+      </li>
+      <li>
+        <p>For non-Antlr grammars you can use <a href="https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java">BaseTokenFilter</a> directly or take a peek to <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/cpd/JavaTokenizer.java">Java’s token filter</a></p>
+      </li>
+    </ul>
+  </li>
+</ol>
 
 
     <div class="tags">
@@ -1325,7 +1381,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 3, 2016<br/> Site last generated: Mar 15, 2019 <br />
+<span>Page last updated:</span> March 18, 2019 (6.13.0)<br/> Site last generated: Mar 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
