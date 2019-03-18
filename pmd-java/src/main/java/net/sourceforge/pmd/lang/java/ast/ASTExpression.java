@@ -16,7 +16,22 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * Expression ::= (many subtypes...)
+ * (: In order of precedence :)
+ * Expression ::= {@link ASTAssignmentExpression AssignmentExpression}
+ *              | {@link ASTConditionalExpression ConditionalExpression}
+ *              | {@link ASTConditionalOrExpression ConditionalOrExpression}
+ *              | {@link ASTConditionalAndExpression ConditionalAndExpression}
+ *              | {@link ASTInclusiveOrExpression InclusiveOrExpression}
+ *              | {@link ASTExclusiveOrExpression ExclusiveOrExpression}
+ *              | {@link ASTAndExpression AndExpression}
+ *              | {@link ASTEqualityExpression AndExpression}
+ *              | {@link ASTRelationalExpression RelationalExpression} | {@link ASTInstanceOfExpression InstanceOfExpression}
+ *              | {@link ASTShiftExpression ShiftExpression}
+ *              | {@link ASTAdditiveExpression AdditiveExpression}
+ *              | {@link ASTMultiplicativeExpression MultiplicativeExpression}
+ *              | {@link ASTUnaryExpression UnaryExpression} | {@link ASTPreIncrementExpression PreIncrementExpression} | {@link ASTPreDecrementExpression PreDecrementExpression} | {@link ASTCastExpression CastExpression}
+ *              | {@link ASTPostfixExpression PostfixExpression}
+ *              | {@link ASTPrimaryExpression PrimaryExpression}
  *
  * </pre>
  */
