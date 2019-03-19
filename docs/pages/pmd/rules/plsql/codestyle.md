@@ -81,9 +81,18 @@ END;
 |----|-------------|-----------|-----------|
 |indentation|2|Indentation to be used for blocks|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/codestyle.xml/CodeFormat" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/codestyle.xml/CodeFormat">
+    <properties>
+        <property name="indentation" value="2" />
+    </properties>
+</rule>
 ```
 
 ## ForLoopNaming
@@ -145,9 +154,20 @@ END;
 |cursorPattern|\[a-zA-Z\_0-9\]{5,}|The pattern used for the curosr loop variable|no|
 |indexPattern|\[a-zA-Z\_0-9\]{5,}|The pattern used for the index loop variable|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/codestyle.xml/ForLoopNaming" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/codestyle.xml/ForLoopNaming">
+    <properties>
+        <property name="allowSimpleLoops" value="false" />
+        <property name="cursorPattern" value="[a-zA-Z_0-9]{5,}" />
+        <property name="indexPattern" value="[a-zA-Z_0-9]{5,}" />
+    </properties>
+</rule>
 ```
 
 ## MisplacedPragma
