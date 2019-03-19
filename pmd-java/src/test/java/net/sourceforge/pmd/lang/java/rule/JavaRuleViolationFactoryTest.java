@@ -19,7 +19,7 @@ public class JavaRuleViolationFactoryTest {
     @Test
     public void messageWithSingleBrace() {
         RuleViolationFactory factory = JavaRuleViolationFactory.INSTANCE;
-        factory.addViolation(new RuleContext(), new DuplicateImportsRule(), null, "message with \"{\"", null);
+        factory.addViolation(new RuleContext(), new DuplicateImportsRule(), null, "message with \"'{'\"", null);
     }
 
 }
