@@ -1320,13 +1320,13 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <tbody>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>200</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1345,8 +1345,16 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/AvoidDeeplyNestedIfStmts"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/AvoidDeeplyNestedIfStmts"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"problemDepth"</span> <span class="na">value=</span><span class="s">"3"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="cyclomaticcomplexity">CyclomaticComplexity</h2>
@@ -1444,8 +1452,17 @@ into subcomponents.</p>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/CyclomaticComplexity"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/CyclomaticComplexity"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"classReportLevel"</span> <span class="na">value=</span><span class="s">"40"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"methodReportLevel"</span> <span class="na">value=</span><span class="s">"10"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="excessiveclasslength">ExcessiveClassLength</h2>
@@ -1493,24 +1510,24 @@ apart the code becomes more managable and ripe for reuse.</p>
     <tr>
       <td>topscore</td>
       <td> </td>
-      <td>Top score value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value</td>
       <td>no</td>
     </tr>
     <tr>
       <td>minimum</td>
-      <td> </td>
+      <td>1000.0</td>
       <td>Minimum reporting threshold</td>
       <td>no</td>
     </tr>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>150</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1523,14 +1540,22 @@ apart the code becomes more managable and ripe for reuse.</p>
     <tr>
       <td>sigma</td>
       <td> </td>
-      <td>Sigma value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value</td>
       <td>no</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/ExcessiveClassLength"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/ExcessiveClassLength"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimum"</span> <span class="na">value=</span><span class="s">"1000.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="excessiveparameterlist">ExcessiveParameterList</h2>
@@ -1571,24 +1596,24 @@ same datatype. These situations usually denote the need for new objects to wrap 
     <tr>
       <td>topscore</td>
       <td> </td>
-      <td>Top score value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value</td>
       <td>no</td>
     </tr>
     <tr>
       <td>minimum</td>
-      <td> </td>
+      <td>4.0</td>
       <td>Minimum reporting threshold</td>
       <td>no</td>
     </tr>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>50</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1601,14 +1626,22 @@ same datatype. These situations usually denote the need for new objects to wrap 
     <tr>
       <td>sigma</td>
       <td> </td>
-      <td>Sigma value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value</td>
       <td>no</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/ExcessiveParameterList"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/ExcessiveParameterList"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimum"</span> <span class="na">value=</span><span class="s">"4.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="excessivepubliccount">ExcessivePublicCount</h2>
@@ -1654,24 +1687,24 @@ developed easily.</p>
     <tr>
       <td>topscore</td>
       <td> </td>
-      <td>Top score value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value</td>
       <td>no</td>
     </tr>
     <tr>
       <td>minimum</td>
-      <td> </td>
+      <td>20.0</td>
       <td>Minimum reporting threshold</td>
       <td>no</td>
     </tr>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>150</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1684,14 +1717,22 @@ developed easily.</p>
     <tr>
       <td>sigma</td>
       <td> </td>
-      <td>Sigma value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value</td>
       <td>no</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/ExcessivePublicCount"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/ExcessivePublicCount"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimum"</span> <span class="na">value=</span><span class="s">"20.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="ncssconstructorcount">NcssConstructorCount</h2>
@@ -1736,24 +1777,24 @@ lines of code that are split are counted as one.</p>
     <tr>
       <td>topscore</td>
       <td> </td>
-      <td>Top score value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value</td>
       <td>no</td>
     </tr>
     <tr>
       <td>minimum</td>
-      <td> </td>
+      <td>20.0</td>
       <td>Minimum reporting threshold</td>
       <td>no</td>
     </tr>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>50</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1766,14 +1807,22 @@ lines of code that are split are counted as one.</p>
     <tr>
       <td>sigma</td>
       <td> </td>
-      <td>Sigma value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value</td>
       <td>no</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssConstructorCount"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssConstructorCount"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimum"</span> <span class="na">value=</span><span class="s">"20.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="ncssmethodcount">NcssMethodCount</h2>
@@ -1817,24 +1866,24 @@ lines of code that are split are counted as one.</p>
     <tr>
       <td>topscore</td>
       <td> </td>
-      <td>Top score value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value</td>
       <td>no</td>
     </tr>
     <tr>
       <td>minimum</td>
-      <td> </td>
+      <td>40.0</td>
       <td>Minimum reporting threshold</td>
       <td>no</td>
     </tr>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>50</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1847,14 +1896,22 @@ lines of code that are split are counted as one.</p>
     <tr>
       <td>sigma</td>
       <td> </td>
-      <td>Sigma value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value</td>
       <td>no</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssMethodCount"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssMethodCount"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimum"</span> <span class="na">value=</span><span class="s">"40.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="ncsstypecount">NcssTypeCount</h2>
@@ -1900,24 +1957,24 @@ lines of code that are split are counted as one.</p>
     <tr>
       <td>topscore</td>
       <td> </td>
-      <td>Top score value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value</td>
       <td>no</td>
     </tr>
     <tr>
       <td>minimum</td>
-      <td> </td>
+      <td>500.0</td>
       <td>Minimum reporting threshold</td>
       <td>no</td>
     </tr>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>250</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -1930,14 +1987,22 @@ lines of code that are split are counted as one.</p>
     <tr>
       <td>sigma</td>
       <td> </td>
-      <td>Sigma value</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value</td>
       <td>no</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssTypeCount"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssTypeCount"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"minimum"</span> <span class="na">value=</span><span class="s">"500.0"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="stdcyclomaticcomplexity">StdCyclomaticComplexity</h2>
@@ -2007,13 +2072,13 @@ high complexity, and 11+ is very high complexity.</p>
   <tbody>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>250</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -2044,8 +2109,18 @@ high complexity, and 11+ is very high complexity.</p>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/StdCyclomaticComplexity"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/StdCyclomaticComplexity"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportLevel"</span> <span class="na">value=</span><span class="s">"10"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"showClassesComplexity"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"showMethodsComplexity"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="toomanyfields">TooManyFields</h2>
@@ -2092,13 +2167,13 @@ city/state/zip fields could park them within a single Address field.</p>
   <tbody>
     <tr>
       <td>cc_categories</td>
-      <td>Style</td>
+      <td>Complexity</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
       <td>yes. Delimiter is ‘|’.</td>
     </tr>
     <tr>
       <td>cc_remediation_points_multiplier</td>
-      <td>1</td>
+      <td>200</td>
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
       <td>no</td>
     </tr>
@@ -2117,8 +2192,16 @@ city/state/zip fields could park them within a single Address field.</p>
   </tbody>
 </table>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/TooManyFields"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/TooManyFields"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxfields"</span> <span class="na">value=</span><span class="s">"15"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 
