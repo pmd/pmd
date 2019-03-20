@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
+
 
 /**
  * Lazy stream of AST nodes. Conceptually identical to a {@link java.util.stream.Stream}, but exposes
@@ -308,6 +310,19 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     default NodeStream<T> drop(int n) {
         return () -> toStream().skip(n);
+    }
+
+
+    /**
+     * Returns the longest prefix of elements that satisfy the given predicate.
+     *
+     * @param predicate The predicate used to test elements.
+     *
+     * @return the longest prefix of this stream whose elements all satisfy
+     *     the predicate `p`.
+     */
+    default NodeStream<T> takeWhile(Predicate<? super T> predicate) {
+        return () -> IteratorUtil.takeWhile(toStream(), predicate);
     }
 
 
