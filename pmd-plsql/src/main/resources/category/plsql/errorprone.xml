@@ -23,13 +23,9 @@ TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-v
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression
-    [PrimaryPrefix/Name/@Image='TO_DATE']
-    [count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1]
-    [.//PrimaryExpression
-        [PrimaryPrefix/Name/@Image='TO_CHAR']
-        [count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1]
-    ]
+//FunctionCall[@Image='TO_DATE']
+  [count(Arguments/ArgumentList/Argument) = 1]
+  [Arguments/ArgumentList/Argument//FunctionCall[@Image='TO_CHAR']]
 ]]>
                 </value>
             </property>
