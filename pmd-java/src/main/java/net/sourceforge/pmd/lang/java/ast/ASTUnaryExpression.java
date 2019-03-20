@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * This has a precedence greater than {@link ASTMultiplicativeExpression}.
  *
  * <p>UnaryExpression has the same precedence as {@linkplain ASTPreIncrementExpression PreIncrementExpression},
- * {@linkplain ASTPreDecrementExpression PreDecrementExpression}.
+ * {@linkplain ASTPreDecrementExpression PreDecrementExpression}, and {@linkplain ASTCastExpression CastExpression}.
  *
  * <p>Note that the child of this node is not necessarily a UnaryExpression,
  * rather, it can be an expression with an operator precedence greater or equal

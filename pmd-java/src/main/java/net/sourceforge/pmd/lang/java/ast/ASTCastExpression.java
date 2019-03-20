@@ -5,14 +5,23 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTCastExpression extends AbstractJavaTypeNode {
+/**
+ * Represents a type cast expression.
+ *
+ * <pre>
+ *
+ * CastExpression ::= "(" ({@link ASTAnnotation TypeAnnotation}))* {@link ASTType Type} ("&" {@linkplain ASTReferenceType ReferenceType})* ")" {@linkplain ASTUnaryExpression UnaryExpression}
+ *
+ * </pre>
+ */
+public final class ASTCastExpression extends AbstractJavaTypeNode implements ASTExpression {
     private boolean intersectionTypes = false;
 
     public ASTCastExpression(int id) {
         super(id);
     }
 
-    public ASTCastExpression(JavaParser p, int id) {
+    ASTCastExpression(JavaParser p, int id) {
         super(p, id);
     }
 
