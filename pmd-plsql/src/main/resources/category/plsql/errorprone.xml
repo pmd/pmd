@@ -63,7 +63,8 @@ TO_DATE without date format- use TO_DATE(expression, date-format)
             <property name="xpath">
                 <value>
 <![CDATA[
-//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ]
+//FunctionCall[@Image='TO_DATE']
+  [count(Arguments/ArgumentList/Argument) = 1]
 ]]>
                 </value>
             </property>
