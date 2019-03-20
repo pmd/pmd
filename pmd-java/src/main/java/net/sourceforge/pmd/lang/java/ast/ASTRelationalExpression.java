@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTRelationalExpression extends AbstractJavaTypeNode {
+public class ASTRelationalExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTRelationalExpression(int id) {
         super(id);
     }
