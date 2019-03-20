@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import apex.jorje.data.ast.AssignmentOp;
 import apex.jorje.semantic.ast.expression.AssignmentExpression;
 
 public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpression> {
@@ -15,5 +16,9 @@ public class ASTAssignmentExpression extends AbstractApexNode<AssignmentExpressi
     @Override
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public AssignmentOp getOperator() {
+        return node.getOp();
     }
 }

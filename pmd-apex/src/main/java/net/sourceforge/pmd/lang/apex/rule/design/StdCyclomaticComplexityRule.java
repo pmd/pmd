@@ -82,10 +82,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
-
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 250);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override

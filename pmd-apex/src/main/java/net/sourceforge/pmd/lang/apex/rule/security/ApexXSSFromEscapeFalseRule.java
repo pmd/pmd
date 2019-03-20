@@ -21,12 +21,6 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     private static final String ADD_ERROR = "addError";
 
-    public ApexXSSFromEscapeFalseRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {

@@ -80,6 +80,9 @@ echo "    the new release based on the release notes"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
+echo "*   Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release"
+echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
+echo
 echo "Press enter to continue..."
 read
 

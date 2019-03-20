@@ -51,12 +51,6 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     private final Set<String> safeVariables = new HashSet<>();
     private final Map<String, Boolean> selectContainingVariables = new HashMap<>();
 
-    public ApexSOQLInjectionRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTUserClass node, Object data) {
 

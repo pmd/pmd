@@ -39,9 +39,9 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |problemDepth|3|The if statement depth reporting threshold|no|
 
 **Use this rule by referencing it:**
@@ -104,9 +104,9 @@ public class Complicated {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |classReportLevel|40|Total class complexity reporting threshold|no|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
 
@@ -152,9 +152,9 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |topscore||Top score value|no|
 |minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
@@ -192,9 +192,9 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 |----|-------------|-----------|-----------|
 |topscore||Top score value|no|
 |minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
@@ -237,9 +237,9 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |topscore||Top score value|no|
 |minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
@@ -281,9 +281,9 @@ public class Foo extends Bar {
 |----|-------------|-----------|-----------|
 |topscore||Top score value|no|
 |minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
@@ -324,9 +324,9 @@ public class Foo extends Bar {
 |----|-------------|-----------|-----------|
 |topscore||Top score value|no|
 |minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
@@ -369,9 +369,9 @@ public class Foo extends Bar {
 |----|-------------|-----------|-----------|
 |topscore||Top score value|no|
 |minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |sigma||Sigma value|no|
 
 **Use this rule by referencing it:**
@@ -437,9 +437,9 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 |showClassesComplexity|true|Add class average violations to the report|no|
 |showMethodsComplexity|true|Add method average violations to the report|no|
@@ -484,9 +484,9 @@ public class Person {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |maxfields|15|Max allowable fields|no|
 
 **Use this rule by referencing it:**

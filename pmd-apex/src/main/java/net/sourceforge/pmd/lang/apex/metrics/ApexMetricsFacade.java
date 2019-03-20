@@ -27,7 +27,7 @@ public class ApexMetricsFacade extends AbstractMetricsFacade<ASTUserClassOrInter
 
     @Override
     protected MetricsComputer<ASTUserClassOrInterface<?>, ASTMethod> getLanguageSpecificComputer() {
-        return ApexMetricsComputer.INSTANCE;
+        return ApexMetricsComputer.getInstance();
     }
 
 

@@ -31,14 +31,15 @@ function upload_baseline() {
     log_info "Generating and uploading baseline for pmdtester..."
     cd ..
     bundle config --local gemfile pmd/Gemfile
-    bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
+    pmd/.travis/travis_wait "bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f"
     cd target/reports
     BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-    rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/
+    ../../pmd/.travis/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
     if [ $? -ne 0 ]; then
         log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
         log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
+        exit 1
     else
         log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to sourceforge"
     fi
@@ -89,10 +90,11 @@ elif travis_isPush; then
 
         echo -e "\n\n"
         log_info "Uploading pmd distribution to sourceforge..."
-        rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/
+        .travis/travis_wait "rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/"
         if [ $? -ne 0 ]; then
             log_error "Error while uploading pmd-*-${VERSION}.zip to sourceforge!"
             log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
+            exit 1
         else
             log_success "Successfully uploaded pmd-*-${VERSION}.zip to sourceforge"
         fi
@@ -113,7 +115,7 @@ elif travis_isPush; then
 
         RELEASE_NOTES_TMP=$(mktemp -t)
 
-        .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
+        bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
 
         rsync -avh "$RELEASE_NOTES_TMP" ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
 
@@ -127,8 +129,6 @@ elif travis_isPush; then
         set +e
 
         upload_baseline
-
-        true
     )
 
 else

@@ -5,7 +5,7 @@ permalink: pmd_rules_java_errorprone.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/errorprone.xml
-keywords: Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
+keywords: Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
 language: Java
 ---
 <!-- DO NOT EDIT THIS FILE. This file is generated from file ../pmd-java/src/main/resources/category/java/errorprone.xml. -->
@@ -738,6 +738,7 @@ private int getMoreFoo(){
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.Data \| lombok.Getter \| lombok.Value|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |prefix||A variable prefix to skip, i.e., m\_|no|
 
 **Use this rule by referencing it:**
@@ -1238,6 +1239,57 @@ public void foo() {
 **Use this rule by referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" />
+```
+
+## DetachedTestCase
+
+**Since:** PMD 6.13.0
+
+**Priority:** Medium (3)
+
+The method appears to be a test case since it has public or default visibility,
+non-static access, no arguments, no return value, has no annotations, but is a
+member of a class that has one or more JUnit test cases. If it is a utility
+method, it should likely have private visibility. If it is an ignored test, it
+should be annotated with @Test and @Ignore.
+
+**This rule is defined by the following XPath expression:**
+``` xpath
+//ClassOrInterfaceBodyDeclaration
+[../ClassOrInterfaceBodyDeclaration/Annotation/*/Name
+        [pmd-java:typeIs('org.junit.Test')
+         or pmd-java:typeIs('org.junit.jupiter.api.Test')
+         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+         or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+         or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')]
+]
+[not(Annotation)]
+[MethodDeclaration[(@Public = true() or @PackagePrivate = true()) and @Static = false() and
+        ResultType[@Void = true()] and
+        MethodDeclarator/FormalParameters[@ParameterCount = 0]
+    ]
+]
+```
+
+**Example(s):**
+
+``` java
+public class MyTest {
+    @Test
+    public void someTest() {
+    }
+
+    // violation: Not annotated
+    public void someOtherTest () {
+    }
+
+}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/errorprone.xml/DetachedTestCase" />
 ```
 
 ## DoNotCallGarbageCollectionExplicitly

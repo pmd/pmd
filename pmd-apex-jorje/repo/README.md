@@ -12,6 +12,3 @@ In order to download the jar file, minimize it and add a the jar files to the lo
 
     ./create-local-repo.sh
 
-For the PMD 6.0.0 Release, the versions from
-<https://github.com/forcedotcom/salesforcedx-vscode/tree/54b127925eebfcfd14cd9988018438ba49ec3d43/packages/salesforcedx-vscode-apex/out>
-have been taken.

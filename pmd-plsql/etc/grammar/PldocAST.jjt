@@ -91,9 +91,9 @@ options {
   CACHE_TOKENS = true;
 
 
-  MULTI = true; 
+  MULTI = true;
   VISITOR = true;
-  NODE_USES_PARSER = true; 
+  NODE_USES_PARSER = true;
   NODE_PACKAGE="net.sourceforge.pmd.lang.plsql.ast";
   NODE_CLASS = "net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode";
 }
@@ -153,7 +153,7 @@ public class PLSQLParser {
   */
   public static String canonicalName(String name)
   {
-    StringBuilder s =  null ; 
+    StringBuilder s =  null ;
 
 
     if (null == name) {
@@ -181,9 +181,9 @@ public class PLSQLParser {
         }
         else
         {
-          s.append( quotedCharacter 
-                    ? s.charAt(i) 
-                    : Character.toUpperCase(s.charAt(i)) 
+          s.append( quotedCharacter
+                    ? s.charAt(i)
+                    : Character.toUpperCase(s.charAt(i))
                   );
         }
       }
@@ -207,88 +207,90 @@ ASTInput Input() : {}
 {
 	// SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced (attachLibrary())*
 	(
-	 (LOOKAHEAD(7) PackageSpecification()  
-	 | LOOKAHEAD(7) PackageBody()  
-	 | LOOKAHEAD(6) TypeSpecification()  
-	 | LOOKAHEAD(6) Table()  
-	 | LOOKAHEAD(6) View()   
-	 | LOOKAHEAD(6) TriggerUnit()  
-	 | LOOKAHEAD(6) AlterTrigger()  
-	 | LOOKAHEAD(6) Synonym()   
-	 | LOOKAHEAD(6) Directory()   
-	 | LOOKAHEAD(6) DatabaseLink()   
-	 | LOOKAHEAD(6) Global()  
-         | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event 
+	 (LOOKAHEAD(7) PackageSpecification()
+	 | LOOKAHEAD(7) PackageBody()
+	 | LOOKAHEAD(6) TypeSpecification()
+	 | LOOKAHEAD(6) Table()
+	 | LOOKAHEAD(6) View()
+	 | LOOKAHEAD(6) TriggerUnit()
+	 | LOOKAHEAD(6) AlterTrigger()
+	 | LOOKAHEAD(6) Synonym()
+	 | LOOKAHEAD(6) Directory()
+	 | LOOKAHEAD(6) DatabaseLink()
+	 | LOOKAHEAD(6) Global()
+         | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
 	 | LOOKAHEAD(2) SqlPlusCommand()
-	 | LOOKAHEAD(2) UpdateStatement() 
-	 | LOOKAHEAD(2) DeleteStatement()
-	 |(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
-	 )	
+	 | UpdateStatement()
+	 | DeleteStatement()
+	 | InsertStatement()
+	 | SelectStatement() (";")?
+	 |(<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<LOCK><TABLE>|<MERGE>|<WITH>) SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) //Ignore SQL statements in scripts
+	 )
 	 ("/")*
 	)*
 	<EOF>
       { return jjtThis ; }
 }
 
-ASTDDLCommand DDLCommand() : 
-{ 
+ASTDDLCommand DDLCommand() :
+{
  PLSQLNode simpleNode = null ;
 }
 {
   (
     simpleNode = DDLEvent()
-    SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR) 
+    SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR)
   )
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTSqlPlusCommand SqlPlusCommand() :
-{ 
+{
  StringBuilder sb = new StringBuilder() ;
 }
 {
   (
   // e.g. SHOW ERRORS, GRANT EXECUTE ON ... TO ...
   // SQLPLUS commands
-  ( "@" 
+  ( "@"
   | <ACCEPT>
   | <COLUMN>
   | <CONNECT>
   | <COPY>
   | <DEFINE>
   | <DISCONNECT>
-  | <EXECUTE> 
-  | <EXIT> 
-  | <HOST> 
-  | <PRINT> 
-  | <PROMPT> 
-  | <QUIT> 
-  | <REMARK> 
-  | <SET> 
-  | <SHOW> 
-  | <SPOOL> 
-  | <START> 
-  | <UNDEFINE> 
-  | <VARIABLE> 
-  | <WHENEVER> 
+  | <EXECUTE>
+  | <EXIT>
+  | <HOST>
+  | <PRINT>
+  | <PROMPT>
+  | <QUIT>
+  | <REMARK>
+  | <SET>
+  | <SHOW>
+  | <SPOOL>
+  | <START>
+  | <UNDEFINE>
+  | <VARIABLE>
+  | <WHENEVER>
   // DDL that might be encountered
   | <COMMENT>
   | <GRANT>
   | <REVOKE>
   | <DROP>
   | <IDENTIFIER>
-  // Attach Library 
+  // Attach Library
   | "." <ATTACH>
   )
-  { sb.append(token.image) ; sb.append(" ...") ; }  
-  Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token   
+  { sb.append(token.image) ; sb.append(" ...") ; }
+  Skip2NextTokenOccurrence(EOL) //Tracker Issue 1433480 skip until next EOL Special Token
   //[";" | "-"]
   )
   { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
 
 /*
-SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced  in PL/SQL 
+SRT 2011-04-17 This syntax breaks the parser when fields of record.attach* are referenced  in PL/SQL
 void attachLibrary() :
 {}
 {
@@ -299,30 +301,30 @@ void attachLibrary() :
 /**
  * All global definitions of triggers, functions and procedures are evaluated here.
  * Every occurence goes under a new PACKAGE-Node in the XML document.
- * This happens, cause a global "block" does not have a definied start and end token 
+ * This happens, cause a global "block" does not have a definied start and end token
  * like a package specification or a package body.
  * Thats why every construct is handled like a new part of the global package.
- * To overcome this problem, I could use an infinity lookahead - which should solve the problem 
+ * To overcome this problem, I could use an infinity lookahead - which should solve the problem
  * and slow down the whole parsing.
  * Another idea would be to lookahead the next tokens and decide wether they belong to a package definition or not.
  * Then I could decide to stay in this global parsing state. By now lookahead gives the parser a hint to
  * choose the correct way on a given base. So we can't negate it easily.
- * On the other hand I could also hold the global state in a global variable. 
+ * On the other hand I could also hold the global state in a global variable.
  * But this does not seems the correct way to solve the problem, I think.
  *
  * 2006-05-17 - Matthias Hendler - added
  */
 ASTGlobal Global()  :
-{ 
+{
 }
 {
 
 	/*
 	  Remove triggers from global processing because their schema may be defined in the trigger code itself
-	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema 
-	  defaulting to the globalPackageName if it cannot be found 
+	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema
+	  defaulting to the globalPackageName if it cannot be found
 	*/
-	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) ( Label() )* Block() ";" | LOOKAHEAD (4) ProgramUnit() 
+	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) ( Label() )* Block() ";" | LOOKAHEAD (4) ProgramUnit()
 	)
 
 
@@ -332,36 +334,36 @@ ASTGlobal Global()  :
 
 
 ASTBlock Block()  :
-{ 
+{
 }
 {
-    // Included as part of statement() 
+    // Included as part of statement()
     [
     <DECLARE>
     DeclarativeSection()
     ]
-    
-    <BEGIN> 
-    (Statement())* 
-    (ExceptionHandler())? 
-    <END> [ <IDENTIFIER> ] // Optional END Identifier has to match the label 
+
+    <BEGIN>
+    (Statement())*
+    (ExceptionHandler())?
+    <END> [ <IDENTIFIER> ] // Optional END Identifier has to match the label
     { return jjtThis ; }
 }
 
 
 
 ASTPackageSpecification PackageSpecification()  :
-{ 
+{
  PLSQLNode simpleNode = null ;
 }
 {
       (
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<PACKAGE> simpleNode = ObjectNameDeclaration()
 
         (
 	  (<AUTHID> (<CURRENT_USER> | <DEFINER>))
-          | AccessibleByClause() 
+          | AccessibleByClause()
         )*
 
         (
@@ -374,7 +376,7 @@ ASTPackageSpecification PackageSpecification()  :
 
 	    DeclarativeSection()
 
-	    <END> [ID()] ";" 
+	    <END> [ID()] ";"
 	  )
 	)
       )
@@ -382,12 +384,12 @@ ASTPackageSpecification PackageSpecification()  :
 }
 
 ASTPackageBody PackageBody()  :
-{ 
+{
  PLSQLNode simpleNode = null ;
 }
 {
     (
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	( <PACKAGE> | <TYPE> ) <BODY> simpleNode = ObjectNameDeclaration()
 
 	(
@@ -398,11 +400,11 @@ ASTPackageBody PackageBody()  :
 	  (
 	    (<IS> | <AS>)
 
-	    DeclarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies 
+	    DeclarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies
 
-						    
-	  [ <BEGIN> (Statement())* (ExceptionHandler())? ] <END> [ID()] ";" 
-	  
+
+	  [ <BEGIN> (Statement())* (ExceptionHandler())? ] <END> [ID()] ";"
+
 	  )
 	)
     )
@@ -418,7 +420,7 @@ ASTDeclarativeUnit DeclarativeUnit()  :
 		ExceptionDeclaration() |
 		LOOKAHEAD((<TYPE>|<SUBTYPE>) QualifiedID() (<IS> | <AS> )  ) //SRT 20110616 - make sue soen't break object type
 		SubTypeDefinition() |
-		LOOKAHEAD((<FUNCTION>|<PROCEDURE>) QualifiedID() ) //SRT 20111117 - Special case of parameterless methods:choose method in preference to variable 
+		LOOKAHEAD((<FUNCTION>|<PROCEDURE>) QualifiedID() ) //SRT 20111117 - Special case of parameterless methods:choose method in preference to variable
 		ProgramUnit()  |
 		LOOKAHEAD(4)
 		VariableOrConstantDeclaration() |
@@ -426,10 +428,10 @@ ASTDeclarativeUnit DeclarativeUnit()  :
 		CursorSpecification() |
 		CursorBody() |
 		CollectionDeclaration() |
-		//ProgramUnit() 
-		//|TypeMethod() 
+		//ProgramUnit()
+		//|TypeMethod()
                 MethodDeclaration()
-		|CompilationDeclarationFragment() 
+		|CompilationDeclarationFragment()
     )
     { return jjtThis ; }
 }
@@ -438,39 +440,39 @@ ASTDeclarativeSection DeclarativeSection()  :
 {}
 {
 	(
-		DeclarativeUnit() 
+		DeclarativeUnit()
 	)*
       { return jjtThis ; }
 }
 
 ASTCompilationDeclarationFragment CompilationDeclarationFragment()  :
-{ 
+{
 }
 {
-	( //SRT 20110601 
-	  <CC_IF>  
-	  ConditionalOrExpression()  
-	  <CC_THEN>  
+	( //SRT 20110601
+	  <CC_IF>
+	  ConditionalOrExpression()
+	  <CC_THEN>
 	    (DeclarativeUnit()
-	     | <CC_ERROR> Expression() <CC_END> 
-	    )* 
+	     | <CC_ERROR> Expression() <CC_END>
+	    )*
 
-	  ( 
-	    <CC_ELSIF> 
-	    ConditionalOrExpression() 
-	    <CC_THEN> 
+	  (
+	    <CC_ELSIF>
+	    ConditionalOrExpression()
+	    <CC_THEN>
 	    (DeclarativeUnit()
-	     | <CC_ERROR> Expression() <CC_END> 
-	    )* 
-	  )* 
-
-	  ( 
-	    <CC_ELSE> 
-	    (DeclarativeUnit()
-	     | <CC_ERROR> Expression() <CC_END> 
-	    )* 
+	     | <CC_ERROR> Expression() <CC_END>
+	    )*
 	  )*
-	  <CC_END> 
+
+	  (
+	    <CC_ELSE>
+	    (DeclarativeUnit()
+	     | <CC_ERROR> Expression() <CC_END>
+	    )*
+	  )*
+	  <CC_END>
 	)
       { return jjtThis ; }
 }
@@ -489,7 +491,7 @@ ASTProgramUnit ProgramUnit()  :
 {
 	(
 
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 
         MethodDeclarator()
 
@@ -497,25 +499,25 @@ ASTProgramUnit ProgramUnit()  :
         WrappedObject()
         |
 	/*
-	//SRT 20110516  Cope with AUTHID  for schema level functions and procedures 
+	//SRT 20110516  Cope with AUTHID  for schema level functions and procedures
 	(tokenIsAs=<AUTHID> (<CURRENT_USER> | <DEFINER>))?
 	*/
 
-	( (<AUTHID> ( <CURRENT_USER> | <DEFINER> ) ) | <DETERMINISTIC> 
-           | AccessibleByClause() 
-	   | <PARALLEL_ENABLE>  [ ParallelClause() ] [ <USING> ID() ["." ID()] ] 
-	   | <PIPELINED> [ ( <USING> ID() ["." ID()] ) 
+	( (<AUTHID> ( <CURRENT_USER> | <DEFINER> ) ) | <DETERMINISTIC>
+           | AccessibleByClause()
+	   | <PARALLEL_ENABLE>  [ ParallelClause() ] [ <USING> ID() ["." ID()] ]
+	   | <PIPELINED> [ ( <USING> ID() ["." ID()] )
 	                   |  //20110531
-			   (( <ORDER> | <CLUSTER> ) [ID()] <BY> "(" ID() ( "," ID() )*  ")" ) 
+			   (( <ORDER> | <CLUSTER> ) [ID()] <BY> "(" ID() ( "," ID() )*  ")" )
 			 ] //  drvparx.IndexMapDocuments
 	   | <RESULT_CACHE> [ <RELIES_ON> "(" ID() ["." ID()] ( "," ID() ["." ID()])*  ")" ]
 	) *
-	
-	[ <AGGREGATE> <USING> ID() ] 
+
+	[ <AGGREGATE> <USING> ID() ]
 
 	// body
 	[
-	        
+
 		(<IS> | <AS>)
 		//SRT (<IS> | <AS>)
 		(
@@ -533,14 +535,14 @@ ASTProgramUnit ProgramUnit()  :
 	";" //SRT 20110416 { System.err.println("Found terminating semi-colon") ; }
 
 	) //UnwrappedCode
-	) 
+	)
       { return jjtThis ; }
 }
 
 ASTObjectNameDeclaration ObjectNameDeclaration() :
 {PLSQLNode schemaName = null, objectName = null ; }
 {
-  [ LOOKAHEAD(2) schemaName = ID() "." ] objectName = ID() 
+  [ LOOKAHEAD(2) schemaName = ID() "." ] objectName = ID()
   { jjtThis.setImage(  (null == schemaName) ?  objectName.getImage() : (schemaName.getImage() + "." + objectName.getImage() )  )  ; }
   { return jjtThis ; }
 }
@@ -555,7 +557,7 @@ ASTFormalParameter FormalParameter()  :
 	simpleNode = ID()
 	// the order of outer "|" is important !
 	( LOOKAHEAD(2) ( LOOKAHEAD(2) ( (<OUT>|(<IN> <OUT>)) (LOOKAHEAD(2) <NOCOPY>  )? ) | <IN> ) )?
-	("..."    | Datatype())    
+	("..."    | Datatype())
 	( (":" "="|<_DEFAULT>) Expression() )?
    )
    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
@@ -580,32 +582,32 @@ ASTMethodDeclarator MethodDeclarator() :
  PLSQLNode simpleNode = null ;
 }
 {
-  ( <FUNCTION> 
-    simpleNode = ObjectNameDeclaration() 
+  ( <FUNCTION>
+    simpleNode = ObjectNameDeclaration()
     (
       [ FormalParameters() ]
 
       {
-        Token nextToken; 
+        Token nextToken;
 	nextToken = getToken(1); //ReadAhead
-        if (!nextToken.image.equalsIgnoreCase("WRAPPED") 
-	    && 
+        if (!nextToken.image.equalsIgnoreCase("WRAPPED")
+	    &&
 	    !nextToken.image.equalsIgnoreCase("RETURN")
 	   )
         {
           throw new ParseException("FUNCTION must RETURN a value or must be WRAPPED : found \""
 		                              + nextToken.image
 		                              + "\" at line "+nextToken.beginLine
-		                              + ", column "+nextToken.beginColumn 
+		                              + ", column "+nextToken.beginColumn
 		                             );
         }
       }
        // There is no RETURN for a WRAPPED object
       [ <RETURN> Datatype() ]
-      
+
     )
-  | <PROCEDURE> 
-    simpleNode = ObjectNameDeclaration() 
+  | <PROCEDURE>
+    simpleNode = ObjectNameDeclaration()
     (
       [ FormalParameters() ]
     )
@@ -623,8 +625,8 @@ ASTFormalParameters FormalParameters() :
   (
   "("  {sb.append("(");}
       [ simpleNode = FormalParameter() { sb.append(simpleNode.getImage());}
-        ( "," simpleNode = FormalParameter() { sb.append(","+simpleNode.getImage());}  )* 
-      ] 
+        ( "," simpleNode = FormalParameter() { sb.append(","+simpleNode.getImage());}  )*
+      ]
    ")"{sb.append(")");}
   )
   { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
@@ -643,7 +645,7 @@ ASTVariableOrConstantDeclarator VariableOrConstantDeclarator() :
   simpleNode = VariableOrConstantDeclaratorId() { sb.append(simpleNode.getImage());}
   [LOOKAHEAD(2) <CONSTANT> {sb.append(" " + token.image);} ] simpleNode = Datatype() { sb.append(" " + simpleNode.getImage());}
   [[<NOT> {sb.append(" " + token.image);} ] <NULL> {sb.append(" " + token.image);} ]
-  [ ( ":" "=" {sb.append(" :=");}| <_DEFAULT> {sb.append(" " + token.image);})  
+  [ ( ":" "=" {sb.append(" :=");}| <_DEFAULT> {sb.append(" " + token.image);})
     simpleNode = VariableOrConstantInitializer() { sb.append(" " + simpleNode.getImage());}
   ]
   )
@@ -672,7 +674,7 @@ ASTVariableOrConstantInitializer VariableOrConstantInitializer() :
 
 
 ASTDatatype Datatype() :
-{ 
+{
  PLSQLNode simpleNode = null ;
  StringBuilder sb = new StringBuilder();
 }
@@ -680,13 +682,13 @@ ASTDatatype Datatype() :
 	(
 		// this should be first
 		simpleNode = CompilationDataType() {sb.append(simpleNode.getImage());} |
-		LOOKAHEAD(2) simpleNode = ScalarDataTypeName() {sb.append(simpleNode.getImage());} 
+		LOOKAHEAD(2) simpleNode = ScalarDataTypeName() {sb.append(simpleNode.getImage());}
 		|
 		(
-		  ( [LOOKAHEAD(2) <REF>  {sb.append(token.image);}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());} 
-		    //Bug 35352414 - datatype may include dblink 
+		  ( [LOOKAHEAD(2) "REF"  {sb.append(token.image);}  ] simpleNode = QualifiedName() {sb.append(simpleNode.getImage());}
+		    //Bug 35352414 - datatype may include dblink
 		    ["@" simpleNode = QualifiedName() {sb.append("@"+simpleNode.getImage());}  ]
-		    ["%" (<TYPE>|<ROWTYPE>){sb.append("%"+token.image);} ] 
+		    ["%" (<TYPE>|<ROWTYPE>){sb.append("%"+token.image);} ]
                   )
 		)
 	)
@@ -695,32 +697,32 @@ ASTDatatype Datatype() :
 
 
 ASTCompilationDataType CompilationDataType() :
-{ 
+{
   PLSQLNode simpleNode = null;
   StringBuilder sb = new StringBuilder() ;
 }
 {
 	(
-	  <CC_IF> {sb.append(" "); sb.append(token.image) ; } 
-	  simpleNode= ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
-	  <CC_THEN> {sb.append(" "); sb.append(token.image); } 
-	  simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	  <CC_IF> {sb.append(" "); sb.append(token.image) ; }
+	  simpleNode= ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
+	  <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	  simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); }
 
-	  ( 
-	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); } 
-	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }  
-	    <CC_THEN> {sb.append(" "); sb.append(token.image); } 
-	    simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); } 
-	  )* 
-
-	  ( 
-	    <CC_ELSE> {sb.append(" "); sb.append(token.image); } 
-	    simpleNode = Datatype()  {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	  (
+	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); }
+	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
+	    <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	    simpleNode = Datatype() {sb.append(" "); sb.append(simpleNode.getImage()); }
 	  )*
 
-	  <CC_END> {sb.append(" "); sb.append(token.image); } 
+	  (
+	    <CC_ELSE> {sb.append(" "); sb.append(token.image); }
+	    simpleNode = Datatype()  {sb.append(" "); sb.append(simpleNode.getImage()); }
+	  )*
+
+	  <CC_END> {sb.append(" "); sb.append(token.image); }
 	)
- { 
+ {
  jjtThis.setImage(sb.toString()) ;  return jjtThis;
  }
 }
@@ -732,7 +734,7 @@ ASTCollectionTypeName CollectionTypeName() :
 {
      (
 	// Collection types
-  	<TABLE> | <VARRAY> | (<VARYING><ARRAY> {sb.append( "VARYING ARRAY") ;}) 
+  	<TABLE> | <VARRAY> | (<VARYING><ARRAY> {sb.append( "VARYING ARRAY") ;})
      )
 
     {
@@ -762,7 +764,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 	<CHAR_BASE> |
 	<CLOB_BASE> |
 	<DATE_BASE> |
-	<NUMBER_BASE> | 
+	<NUMBER_BASE> |
 
 	// scalar types - numeric:
   	<BINARY_INTEGER> | <DEC> | <DECIMAL> | (<DOUBLE><PRECISION> {name.append("DOUBLE PRECISION");}) |
@@ -773,17 +775,17 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 	// scalar types - character:
 	(
 	  (
-	  <CHAR> | <CHARACTER> 
-	  //SRT | LOOKAHEAD(2) (<LONG><RAW> {name = "LONG RAW";}) | LOOKAHEAD(2) <LONG> | 
-	  | LOOKAHEAD(2) (<LONG><RAW> {name.append("LONG RAW");}) | <LONG> | 
+	  <CHAR> | <CHARACTER>
+	  //SRT | LOOKAHEAD(2) (<LONG><RAW> {name = "LONG RAW";}) | LOOKAHEAD(2) <LONG> |
+	  | LOOKAHEAD(2) (<LONG><RAW> {name.append("LONG RAW");}) | <LONG> |
 	  <NCHAR> | <NVARCHAR2> | <RAW> | <ROWID> |
-	  <STRING> | <UROWID> | <VARCHAR> | <VARCHAR2> | <CLOB> | <NCLOB> 
+	  <STRING> | <UROWID> | <VARCHAR> | <VARCHAR2> | <CLOB> | <NCLOB>
 	  )
 	)
 	|
 	  // scalar types - boolean:
-	  <BOOLEAN> 
-	
+	  <BOOLEAN>
+
 	|
 
 	// composite types
@@ -795,7 +797,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 
 	// reference types
   	<SYS_REFCURSOR> | //SRT Added to support pre-defined weak REF CURSOR
-  	(<REF><CURSOR> {name.append("REF CURSOR");}) |
+  	("REF" <CURSOR> {name.append("REF CURSOR");}) |
 	//<REF> object_type - defined elsewhere
 
 	// scalar types - date/time:
@@ -804,7 +806,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
         LOOKAHEAD(2) (<INTERVAL><DAY> {name.append("INTERVAL DAY");}) |
 	<TIME> |
 	<TIMESTAMP> |
-        (<SELF><AS><RESULT> {name.append("SELF AS RESULT");})  //SRT Added to support CONSTRUCTOR methods 
+        (<SELF><AS><RESULT> {name.append("SELF AS RESULT");})  //SRT Added to support CONSTRUCTOR methods
      )
 
     {
@@ -829,7 +831,7 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 
             INTERVAL '2-6' YEAR TO MONTH
             INTERVAL '3 12:30:06.7' DAY TO SECOND(1)
-            
+
           Add any fractional_seconds_precision
         */
     [
@@ -843,11 +845,11 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 
 
     (<CHARACTER> <SET> characterSet = Name() {name.append( " CHARACTER SET ") ;  name.append(characterSet.getImage()) ;} ) |
-	  
+
     LOOKAHEAD(4) (<WITH><LOCAL><TIME><ZONE> {name.append(" WITH LOCAL TIME ZONE");}) |
     LOOKAHEAD(3) (<WITH><TIME><ZONE> {name.append( " WITH TIME ZONE");}) |
     LOOKAHEAD(2) (<TO><MONTH> {name.append( " TO MONTH");}) |
-    LOOKAHEAD(2) (<TO><SECOND> {name.append( " TO SECOND");} 
+    LOOKAHEAD(2) (<TO><SECOND> {name.append( " TO SECOND");}
 			(
 			  LOOKAHEAD(2) "(" precision=NumericLiteral() {name.append( "(" + precision) ;}
 					")" {name.append( ")");}
@@ -859,10 +861,10 @@ ASTScalarDataTypeName ScalarDataTypeName() :
 }
 
 ASTDateTimeLiteral DateTimeLiteral() :
-{ 
- Token t = null ; 
+{
+ Token t = null ;
  PLSQLNode simpleNode = null ;
- StringBuilder sb = new StringBuilder() ; 
+ StringBuilder sb = new StringBuilder() ;
 }
 {
   /*
@@ -879,33 +881,33 @@ ASTDateTimeLiteral DateTimeLiteral() :
   */
     (
 	(
-        <INTERVAL> 
-	|<TIMESTAMP> 
-	|<DATE> // ANSI DATE Literal 
+        <INTERVAL>
+	|<TIMESTAMP>
+	|<DATE> // ANSI DATE Literal
         )
         { sb.append(token.image); }
-        
+
 
         (
-         // 20110526 <STRING_LITERAL> 
+         // 20110526 <STRING_LITERAL>
          <CHARACTER_LITERAL>  { sb.append(" ");  sb.append(token.image); }
-         |simpleNode = StringLiteral(){ sb.append(" ");  sb.append(simpleNode.getImage()); }  
+         |simpleNode = StringLiteral(){ sb.append(" ");  sb.append(simpleNode.getImage()); }
         )
-        (  <YEAR>  
+        (  <YEAR>
          | <MONTH>
          | <DAY>
          | <HOUR>
          | <MINUTE>
          | <SECOND>
         )?
-        { 
+        {
            if (null != t)
            {
-            sb.append(" ");  sb.append(token.image); 
-            t = null; 
+            sb.append(" ");  sb.append(token.image);
+            t = null;
            }
         }
-        
+
 
 	(LOOKAHEAD(2) "(" simpleNode = NumericLiteral()  { sb.append("(");  sb.append(simpleNode.getImage()); }
 	")"  { sb.append("}"); }
@@ -913,12 +915,12 @@ ASTDateTimeLiteral DateTimeLiteral() :
 
 
     [
-     (<WITH> {sb.append(" "); sb.append(token.toString()) ;}   
-      (<LOCAL>   {sb.append(" "); sb.append(token.toString()) ;} )? 
-      <TIME><ZONE> {sb.append(" "); sb.append("TIME ZONE") ;}  
-     ) 
-    |(<TO> {sb.append(" "); sb.append(token.toString()) ;} 
-        (  <YEAR>  
+     (<WITH> {sb.append(" "); sb.append(token.toString()) ;}
+      (<LOCAL>   {sb.append(" "); sb.append(token.toString()) ;} )?
+      <TIME><ZONE> {sb.append(" "); sb.append("TIME ZONE") ;}
+     )
+    |(<TO> {sb.append(" "); sb.append(token.toString()) ;}
+        (  <YEAR>
          | <MONTH>
          | <DAY>
          | <HOUR>
@@ -926,14 +928,14 @@ ASTDateTimeLiteral DateTimeLiteral() :
          | <SECOND>
         )
         { sb.append(token.image); }
-         
+
 	(LOOKAHEAD(2) "(" simpleNode = NumericLiteral()  { sb.append("(");  sb.append(simpleNode.getImage()); }
 	")"   { sb.append("}"); }
         )?
     )
    ]
    )
-   { 
+   {
     jjtThis.setImage(sb.toString()) ;  return jjtThis ;
    }
 }
@@ -972,7 +974,7 @@ void Skip2NextTerminator(String initiator,String terminator) :
 }
 
 /*
- Read Tokens up to but not including the target String. 
+ Read Tokens up to but not including the target String.
 */
 void Skip2NextOccurrence(String target) :
 {
@@ -991,20 +993,20 @@ void Skip2NextOccurrence(String target) :
 }
 
 /*
- Read Tokens up to and including the target String. 
+ Read Tokens up to and including the target String.
 */
 void SkipPastNextOccurrence(String target) :
 {
   Token t = null;
   Skip2NextOccurrence(target) ;
-  t = getNextToken(); // Chomp this one 
+  t = getNextToken(); // Chomp this one
 }
 {
 	{ return; }
 }
 
 /*
- Read Tokens up to but not including the target Token.kind. 
+ Read Tokens up to but not including the target Token.kind.
 */
 void Skip2NextTokenOccurrence(int target) :
 {
@@ -1016,7 +1018,7 @@ void Skip2NextTokenOccurrence(int target) :
         )
   {
     /*
-	Check if the target appears as a SpecialToken 
+	Check if the target appears as a SpecialToken
 
 
 	nextToken.specialToken points to the _LAST_ of any SpecialTokens before the current normal Token.
@@ -1027,19 +1029,19 @@ void Skip2NextTokenOccurrence(int target) :
 	The ${specialToken}.next field POINTS FORWARDS to to the LAST occurring SpecialToken
 
 	This means that if the program is interested in a specific SpecialToken, it must examine the linked list for every Token which has nexToken.specialToken != null.
-    
+
     */
     specToken = nextToken.specialToken;
-    if (null!= specToken) 
+    if (null!= specToken)
     {
-	//Walk backwards through the list looking for this Token as a Special Token 
-        while (specToken != null && specToken.kind != target) 
+	//Walk backwards through the list looking for this Token as a Special Token
+        while (specToken != null && specToken.kind != target)
 	{
 		specToken = specToken.specialToken;
 	}
 
 	//We have found the target as a SpecialToken - break out of normal Token search
-        if (null != specToken && specToken.kind == target) 
+        if (null != specToken && specToken.kind == target)
 	{
 		break;
         }
@@ -1054,27 +1056,27 @@ void Skip2NextTokenOccurrence(int target) :
 }
 
 /*
- Read Tokens up to and including the target Token.kind. 
+ Read Tokens up to and including the target Token.kind.
 */
 void SkipPastNextTokenOccurrence(int target) :
 {
   Token t = null;
   Skip2NextTokenOccurrence(target) ;
-  t = getNextToken(); // Chomp this one 
+  t = getNextToken(); // Chomp this one
 }
 {
 	{ return; }
 }
 
 /*
- Read Tokens up to but not including the target String. 
+ Read Tokens up to but not including the target String.
 */
 ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 {
   StringBuilder sb = new StringBuilder();
   Token nextToken = getToken(1);
   while (!nextToken.image.equals(target)
-	 && nextToken.kind!=EOF 
+	 && nextToken.kind!=EOF
         )
   {
     nextToken = getNextToken();
@@ -1087,14 +1089,14 @@ ASTRead2NextOccurrence Read2NextOccurrence(String target) :
 }
 
 /*
- Read Tokens up to and including the target String. 
+ Read Tokens up to and including the target String.
 */
 ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 {
   StringBuilder sb = new StringBuilder();
   Token t = null;
   sb.append(Read2NextOccurrence(target)) ;
-  t = getNextToken(); // Chomp this one 
+  t = getNextToken(); // Chomp this one
   sb.append(t.image);
 }
 {
@@ -1121,7 +1123,7 @@ void AbstractSelectStatement(AbstractSelectStatement node) #void :
     [    <DISTINCT> { node.setDistinct(true); }
        | <UNIQUE> { node.setUnique(true); }
        | <ALL> { node.setAll(true); }
-    ] 
+    ]
 }
 
 /**
@@ -1144,7 +1146,11 @@ void RestOfStatement() #void :
 {
     FromClause()
     [ WhereClause() ]
+    [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
+    
+    (LOOKAHEAD(2) ( SubqueryOperation() ) Subquery() )*
+    
     [ OrderByClause() ]
     [ RowLimitingClause() ]
 }
@@ -1187,9 +1193,9 @@ ASTOrderByClause OrderByClause() :
 void OrderByEntry() #void :
 {}
 {
-    ( LOOKAHEAD(2) ColumnAlias() | LOOKAHEAD(2) SqlExpression() )
+    SqlExpression()
     [ <ASC> | <DESC> ]
-    [ LOOKAHEAD(2) <NULLS> <FIRST> | LOOKAHEAD(2) <NULLS> <LAST> ]
+    [ <NULLS> ( KEYWORD("FIRST") | "LAST" ) ]
 }
 
 /**
@@ -1201,7 +1207,7 @@ ASTRowLimitingClause RowLimitingClause() :
   (
     <OFFSET> NumericLiteral() ( <ROW> | <ROWS> )
   |
-    <FETCH> ( <FIRST> | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
+    <FETCH> ( KEYWORD("FIRST") | <NEXT> ) [ NumericLiteral() [ <PERCENT> ] ] ( <ROW> | <ROWS> ) ( <ONLY> | <WITH> <TIES> )
   )
     { return jjtThis; }
 }
@@ -1214,7 +1220,7 @@ ASTQueryBlock QueryBlock() :
     SelectList()
     FromClause()
     [ WhereClause() ]
-    // [ HierarchicalQueryClause() ]
+    [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
     // [ ModelClause() ]
     { return jjtThis; }
@@ -1288,7 +1294,7 @@ ASTCondition Condition() :
     LOOKAHEAD(4) CompoundCondition()
  |
     LOOKAHEAD(4) Condition2()
- ) 
+ )
     { return jjtThis; }
 }
 
@@ -1298,21 +1304,27 @@ void Condition2() #void :
 {
  (
     // a IS OF Type condition that starts with a function...
-    LOOKAHEAD(FunctionCall() <IS> <OF>) IsOfTypeCondition()
+    LOOKAHEAD(FunctionCall() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
-    LOOKAHEAD(9) ComparisonCondition()
+    LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
  |
-    LOOKAHEAD(9) FloatingPointCondition()
+    LOOKAHEAD(<EXISTS>) ExistsCondition()
  |
-    LOOKAHEAD(4) InCondition()
+    LOOKAHEAD(MultisetCondition()) MultisetCondition()
  |
-    LOOKAHEAD(4) LikeCondition()
+    LOOKAHEAD(FloatingPointCondition()) FloatingPointCondition()
  |
-    LOOKAHEAD(4) BetweenCondition()
+    LOOKAHEAD(SqlExpression() [<NOT>] <IN>) InCondition()
  |
-    LOOKAHEAD(4) IsNullCondition()
+    LOOKAHEAD(LikeCondition()) LikeCondition()
  |
-    LOOKAHEAD(4) IsOfTypeCondition()
+    LOOKAHEAD(BetweenCondition()) BetweenCondition()
+ |
+    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>) IsNullCondition()
+ |
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) IsOfTypeCondition()
+ |
+    ComparisonCondition()
  )
 }
 
@@ -1337,15 +1349,76 @@ ASTLikeCondition LikeCondition() :
     { return jjtThis; }
 }
 
+ASTRegexpLikeCondition RegexpLikeCondition() :
+{
+    Token matchParam = null;
+}
+{
+    <REGEXP_LIKE> "("
+        SqlExpression() ","
+        SqlExpression()
+        [ "," ( matchParam = <CHARACTER_LITERAL> | matchParam = <STRING_LITERAL> ) {jjtThis.setMatchParam(matchParam.toString());} ]
+    ")"
+    { return jjtThis; }
+}
+
+ASTExistsCondition ExistsCondition() :
+{}
+{
+    <EXISTS> "(" Subquery() ")"
+
+    { return jjtThis; }
+}
+
+void MultisetCondition() #void :
+{}
+{
+    LOOKAHEAD(4) IsASetCondition()
+  |
+    LOOKAHEAD(4) IsEmptyCondition()
+  |
+    LOOKAHEAD(4) MemberCondition()
+  |
+    LOOKAHEAD(4) SubmultisetCondition()
+}
+
+ASTIsASetCondition IsASetCondition() :
+{}
+{
+    TableName() <IS> [<NOT>] <A> <SET>
+    { return jjtThis; }
+}
+
+ASTIsEmptyCondition IsEmptyCondition() :
+{}
+{
+    TableName() <IS> [<NOT>] <EMPTY>
+    { return jjtThis; }
+}
+
+ASTMemberCondition MemberCondition() :
+{}
+{
+    SqlExpression() [<NOT>] <MEMBER> [<OF>] TableName()
+    { return jjtThis; }
+}
+
+ASTSubmultisetCondition SubmultisetCondition() :
+{}
+{
+    TableName() [<NOT>] <SUBMULTISET> [<OF>] TableName()
+    { return jjtThis; }
+}
+
 ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-    LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) Condition() )*
+    LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
-    LOOKAHEAD(3) <NOT> Condition()
+    LOOKAHEAD(3) <NOT> { jjtThis.setType(token.getImage()); } Condition()
  |
-    LOOKAHEAD(3) Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) Condition() )*
+    LOOKAHEAD(3) Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  )
     { return jjtThis; }
 }
@@ -1362,12 +1435,12 @@ ASTComparisonCondition ComparisonCondition() :
 {
     (
     // SimpleComparisonCondition
-      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) SqlExpression() )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
-    
+      LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.image); } SqlExpression() )
+    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.image); } "(" ( LOOKAHEAD(3) ExpressionList() | LOOKAHEAD(3) Subquery() ) ")" )
+
     // GroupComparisonCondition
-    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
-    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
+    | LOOKAHEAD(3) (SqlExpression() ( "=" | "!=" | "^=" | "<>" | ">" | "<" | ">=" | "<=" ) { jjtThis.setOperator(token.image); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListSingle() | LOOKAHEAD(3) Subquery() ) ")" )
+    | LOOKAHEAD(3) ( "(" SqlExpression() ("," SqlExpression())* ")" ( "=" | "!=" | "^=" | "<>" ) { jjtThis.setOperator(token.image); } ( <ANY> | <SOME> | <ALL> ) "(" ( LOOKAHEAD(3) ExpressionListMultiple() ("," ExpressionListMultiple())* | LOOKAHEAD(3) Subquery() ) ")" )
     )
     { return jjtThis; }
 }
@@ -1400,29 +1473,149 @@ ASTExpressionList ExpressionList() :
  * @see https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-SQL-Expressions.html
  */
 ASTSqlExpression SqlExpression() :
-{}
+{ PLSQLNode simpleNode = null; }
 {
- // SimpleExpression
  (
-    LOOKAHEAD(FunctionCall()) FunctionCall()
- |
-    LOOKAHEAD(5) SchemaName() "." TableName() "." Column()
- |
-    LOOKAHEAD(3) TableName() "." Column()
- |
-    LOOKAHEAD(2) Column()
- |
-    LOOKAHEAD(2) <ROWNUM>
- |
-    LOOKAHEAD(2) AdditiveExpression() // this can be a literal or a simple expression, but no conditional
+    // AdditiveExpression includes literals and simple expressions, but no conditional
+    ( simpleNode = AdditiveExpression() ) { jjtThis.setImage(simpleNode.getImage()); }
  )
     { return jjtThis; }
 }
 
-ASTFunctionCall FunctionCall() :
-{ ASTID id; }
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Simple-Expressions.html
+ */
+ASTSimpleExpression SimpleExpression() :
+{ StringBuilder sb = new StringBuilder(); }
 {
-    id = ID() { jjtThis.setImage(id.getImage()); } Arguments()
+ (
+    LOOKAHEAD(2) <ROWNUM> { sb.append(token.image); }
+ |
+    StringLiteral() { sb.append(token.image); }
+ |
+    NumericLiteral() { sb.append(token.image); }
+ |
+    LOOKAHEAD(2) NullLiteral() { sb.append(token.image); }
+ |
+    // sequence
+    LOOKAHEAD(4) ID() "." ( <CURRVAL> | <NEXTVAL> )
+ |
+    LOOKAHEAD(6)
+        SchemaName() { sb.append(token.image); } "." { sb.append(token.image); }
+        TableName() { sb.append(token.image); } "." { sb.append(token.image); }
+        Column() { sb.append(token.image); }
+ |
+    LOOKAHEAD(4)
+        TableName() { sb.append(token.image); } "." { sb.append(token.image); }
+        Column() { sb.append(token.image); }
+ |
+    LOOKAHEAD(2)
+        Column() { sb.append(token.image); }
+ )
+ {
+    jjtThis.setImage(sb.toString());
+    return jjtThis;
+ }
+}
+
+/**
+ * Built-in function call or a user defined function call.
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Functions.html#GUID-D079EFD3-C683-441F-977E-2C9503089982
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/About-User-Defined-Functions.html#GUID-4EB3E236-8216-471C-BA44-23D87BDFEA67
+ *
+ * A function reference/name might be:
+ * function_name
+ * package.function_name
+ * package.schema.function_name
+ * optional: @ dblink
+ *
+ */
+ASTFunctionCall FunctionCall() :
+{
+    ASTFunctionName name;
+}
+{
+    name = FunctionName()
+    (
+      LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
+      |
+      Arguments()
+    )
+
+    {
+        jjtThis.setImage(name.getImage());
+        return jjtThis;
+    }
+}
+
+ASTFunctionName FunctionName() :
+{
+    ASTID id;
+    StringBuilder name = new StringBuilder();
+}
+{
+    id = ID() { name.append(id.getImage()); }
+    [ "." id = ID() { name.append('.').append(id.getImage()); }
+      [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+    ]
+    [ "@" id = ID() { name.append('@').append(id.getImage()); } ]
+    {
+        jjtThis.setImage(name.toString());
+        return jjtThis;
+    }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Analytic-Functions.html
+ */
+ASTAnalyticClause AnalyticClause() :
+{}
+{
+    "OVER" "(" [ QueryPartitionClause() ] [ OrderByClause() [ WindowingClause() ] ] ")"
+    { return jjtThis; }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Analytic-Functions.html
+ */
+ASTWindowingClause WindowingClause() :
+{}
+{
+    ( <ROWS> | <RANGE> )
+    (
+        ( <BETWEEN>
+          ( LOOKAHEAD(3) "UNBOUNDED" "PRECEDING" | LOOKAHEAD(2) <CURRENT> <ROW> | SqlExpression() ( "PRECEDING" | "FOLLOWING" ) )
+          <AND>
+          ( LOOKAHEAD(3) "UNBOUNDED" "FOLLOWING" | LOOKAHEAD(2) <CURRENT> <ROW> | SqlExpression() ( "PRECEDING" | "FOLLOWING" ) )
+        )
+        |
+        ( LOOKAHEAD(3) "UNBOUNDED" "PRECEDING" | LOOKAHEAD(2) <CURRENT> <ROW> | SqlExpression() "PRECEDING" )
+    )
+    { return jjtThis; }
+}
+
+/**
+ * Within Clause is used for the following analytic functions: CUME_DIST, DENSE_RANK, LISTAGG, PERCENT_RANK, PERCENTILE_CONT,
+ * PERCENTILE_DISC, RANK.
+ *
+ * See e.g. https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/LISTAGG.html
+ */
+ASTWithinClause WithinClause() :
+{}
+{
+    "WITHIN" <GROUP> "(" OrderByClause() ")" [ LOOKAHEAD(2) "OVER" "(" QueryPartitionClause() ")" ]
+    { return jjtThis; }
+}
+
+ASTListaggOverflowClause ListaggOverflowClause() :
+{}
+{
+    <ON> "OVERFLOW"
+    (
+      "ERROR"
+    |
+      <TRUNCATE> [ StringLiteral() ] [ ( <WITH> | "WITHOUT" ) "COUNT" ]
+    )
     { return jjtThis; }
 }
 
@@ -1430,6 +1623,20 @@ ASTColumn Column() :
 { ASTID id; }
 {
     id = ID() { jjtThis.setImage(id.getImage()); }
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6__I2126079
+ */
+ASTHierarchicalQueryClause HierarchicalQueryClause() :
+{}
+{
+  (
+    ( <CONNECT> <BY> [ LOOKAHEAD(2) <NOCYCLE>] Condition() [ <START> <WITH> Condition() ] )
+    |
+    ( <START> <WITH> Condition() <CONNECT> <BY> [ LOOKAHEAD(2) <NOCYCLE>] Condition() )
+  )
     { return jjtThis; }
 }
 
@@ -1471,22 +1678,17 @@ ASTSelectList SelectList() :
     { return jjtThis; }
 }
 
-void SelectListEntry() #void : 
+void SelectListEntry() #void :
 {}
 {
-  (
-    LOOKAHEAD(3) TableAlias() "." "*"
-  |
-    LOOKAHEAD(FunctionCall()) FunctionCall() [ [<AS>] ColumnAlias() ]
-  |
-    LOOKAHEAD(3) Expression() [ [<AS>] ColumnAlias() ]
-  )
+  [ LOOKAHEAD(2) <CONNECT_BY_ROOT> ]
+  SqlExpression() [LOOKAHEAD(2, {!(getToken(1).kind == BULK)}) [LOOKAHEAD(2) <AS>] ColumnAlias() ]
 }
 
 ASTColumnAlias ColumnAlias() :
-{}
+{ ASTID id; }
 {
-    ( <IDENTIFIER> | <QUOTED_LITERAL> ) { jjtThis.setImage(token.image); }
+    id = ID() {jjtThis.setImage(id.getImage());}
     { return jjtThis; }
 }
 
@@ -1506,10 +1708,14 @@ ASTIntoClause IntoClause() :
 }
 
 ASTVariableName VariableName() :
-{ ASTID id; }
+{ ASTID id; StringBuilder name = new StringBuilder(); }
 {
-    id = ID() {jjtThis.setImage(id.getImage());}
-    { return jjtThis; }
+    id = ID() { name.append(id.getImage()); }
+    [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+    {
+        jjtThis.setImage(name.toString());
+        return jjtThis;
+    }
 }
 
 ASTBulkCollectIntoClause BulkCollectIntoClause() :
@@ -1542,15 +1748,38 @@ ASTHostArrayName HostArrayName() :
 ASTTableReference TableReference() :
 {}
 {
-    // QueryTableExpression
-    (
-        [ LOOKAHEAD(2) SchemaName() "." ] TableName()
-    |
-        "(" Subquery() ")"
-    )
+    QueryTableExpression()
 
     [ LOOKAHEAD(2) TableAlias() ]
-    
+
+    { return jjtThis; }
+}
+
+void QueryTableExpression() #void :
+{}
+{
+  (
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName()
+  |
+    TableCollectionExpression()
+  |
+    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  )
+}
+
+ASTSubqueryRestrictionClause SubqueryRestrictionClause() :
+{}
+{
+    <WITH> ( <READ> <ONLY> | <CHECK> <OPTION> ) [ <CONSTRAINT> ID() ]
+
+    { return jjtThis; }
+}
+
+ASTTableCollectionExpression TableCollectionExpression() :
+{}
+{
+    <TABLE> "(" (LOOKAHEAD(3) Subquery() | Expression()) ")" [ "(" "+" ")" ]
+
     { return jjtThis; }
 }
 
@@ -1563,12 +1792,7 @@ ASTTableReference TableReference() :
 ASTTableReference TableReferenceInJoin() #TableReference :
 {}
 {
-    // QueryTableExpression
-    (
-        [ LOOKAHEAD(2) SchemaName() "." ] TableName()
-    |
-        "(" Subquery() ")"
-    )
+    QueryTableExpression()
 
     [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
         && getToken(1).kind != CROSS
@@ -1687,7 +1911,7 @@ ASTCrossOuterApplyClause CrossOuterApplyClause() :
 /**
  * 2011-05-15 - SRT - Added to cope with wrapped objects
   A wrapped function looks like this (always terminated by one or more equals signs "="):-
-  
+
   <pre>
   "  CREATE OR REPLACE FUNCTION "TESTUSER"."GET_DATE_STRING"
 / ** Return SYSDATE formatted using the provided template.
@@ -1731,17 +1955,17 @@ void WrappedObject()  :
 {
 	<WRAPPED>
 	{
-	   Token nextToken; 
-		
+	   Token nextToken;
+
 		nextToken = getToken(1); //ReadAhead
 		while (
 		     null != nextToken && nextToken.kind!=EOF
-		     )  
+		     )
 		{
-		        nextToken = getNextToken(); 
+		        nextToken = getNextToken();
 
-			//Execute manual readahead 
-			nextToken = getToken(1); //ReadAhead 1 Token 
+			//Execute manual readahead
+			nextToken = getToken(1); //ReadAhead 1 Token
 		}
 		return;
 	}
@@ -1759,10 +1983,18 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 {}
 {
        (
-       SelectIntoStatement() ";" |
+       // small optimization: SelectIntoStatement and SelectStatement both begin with SELECT
+       // but to distinguish the two, a complete lookahead of SelectIntoStatement needs to be parsed.
+       // Using a lookahead of a single token first avoids this the syntatic lookahead for all other choices
+       // not related to SELECT statements.
+       LOOKAHEAD(<SELECT>) (
+            LOOKAHEAD(SelectIntoStatement()) SelectIntoStatement() ";" |
+            SelectStatement() ";"
+       ) |
        UpdateStatement() ";" |
        DeleteStatement() ";" |
-	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"] 
+       InsertStatement() ";" |
+	LOOKAHEAD(["("] <SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>) SqlStatement(null,";") [";"]
 	| LOOKAHEAD(3)  ContinueStatement()  ";" // CONTINUE keyword was added in 11G, so Oracle compilation supports CONTINUE as a variable name
 	| CaseStatement()  ";"
 	| IfStatement()  ";"
@@ -1781,7 +2013,7 @@ ASTUnlabelledStatement UnlabelledStatement()  :
 	| Block()  ";"
 	| EmbeddedSqlStatement()  ";"
 	| PipelineStatement()  ";"
-	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules 
+	| ConditionalCompilationStatement()  // Conditional Compilation works outside the normal parsing rules
         | InlinePragma() ";"
         | Expression() ";"
       )
@@ -1793,9 +2025,9 @@ ASTStatement Statement()  :
 {}
 {
       (
-       //SQL Developer compiler allows 0, 1 or many labels immediately before a statement 
-       //SQL Developer compiler requires a statement after a sequence of labels  
-       LabelledStatement() 
+       //SQL Developer compiler allows 0, 1 or many labels immediately before a statement
+       //SQL Developer compiler requires a statement after a sequence of labels
+       LabelledStatement()
        |
        UnlabelledStatement()
       )
@@ -1812,15 +2044,15 @@ PLSQLNode simpleNode = null;
 }
 {
       (
-       //SQL Developer compiler allows 0, 1 or many labels immediately before a statement 
-       //SQL Developer compiler requires a statement after a sequence of labels  
-       //Use the last label 
+       //SQL Developer compiler allows 0, 1 or many labels immediately before a statement
+       //SQL Developer compiler requires a statement after a sequence of labels
+       //Use the last label
        (simpleNode = Label() )+
        UnlabelledStatement()
       )
-      { 
-        jjtThis.setImage( simpleNode.getImage() ) ;  
-       return jjtThis ; 
+      {
+        jjtThis.setImage( simpleNode.getImage() ) ;
+       return jjtThis ;
       }
 }
 
@@ -1831,7 +2063,7 @@ ASTCaseStatement CaseStatement()  :
 	 <CASE> ( Expression() )?
 	( CaseWhenClause() )*
 	[ ElseClause() ]
-	<END> <CASE>  [<IDENTIFIER>]  
+	<END> <CASE>  [<IDENTIFIER>]
        )
       { return jjtThis ; }
 }
@@ -1839,28 +2071,28 @@ ASTCaseStatement CaseStatement()  :
 ASTCaseWhenClause CaseWhenClause()  :
 {}
 {
-	<WHEN> Expression() <THEN> (Statement())+ 
+	<WHEN> Expression() <THEN> (Statement())+
       { return jjtThis ; }
 }
 
 ASTElseClause ElseClause()  :
 {}
 {
-	<ELSE> (Statement())+ 
+	<ELSE> (Statement())+
       { return jjtThis ; }
 }
 
 ASTElsifClause ElsifClause()  :
 {}
 {
-      <ELSIF>  Expression() <THEN> (Statement())+ 
+      <ELSIF>  Expression() <THEN> (Statement())+
       { return jjtThis ; }
 }
 
 ASTLoopStatement LoopStatement()  :
 {}
 {
-       <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
+       <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>]
       { return jjtThis ; }
 }
 
@@ -1869,6 +2101,55 @@ ASTCursorForLoopStatement CursorForLoopStatement() :
 {
     <FOR> ForIndex() <IN> "(" SelectStatement() ")" <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>]
     { return jjtThis ; }
+}
+
+/**
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/INSERT.html#GUID-903F8043-0254-4EE9-ACC1-CB8AC0AF3423
+ */
+ASTInsertStatement InsertStatement() :
+{}
+{
+    <INSERT> ( SingleTableInsert() | MultiTableInsert() )
+    { return jjtThis; }
+}
+
+ASTSingleTableInsert SingleTableInsert() :
+{}
+{
+    InsertIntoClause() ( ValuesClause() | Subquery() )
+    { return jjtThis; }
+}
+
+ASTInsertIntoClause InsertIntoClause() :
+{}
+{
+    <INTO> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ] [ LOOKAHEAD(2) "(" Column() ( "," Column() )* ")" ]
+    { return jjtThis; }
+}
+
+ASTValuesClause ValuesClause() :
+{}
+{
+    <VALUES> "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
+    { return jjtThis; }
+}
+ASTMultiTableInsert MultiTableInsert() :
+{}
+{
+  (
+    LOOKAHEAD(2) <ALL> ( InsertIntoClause() [ ValuesClause() ] )+ Subquery()
+  |
+    ConditionalInsertClause()
+  )
+    { return jjtThis; }
+}
+
+ASTConditionalInsertClause ConditionalInsertClause() :
+{}
+{
+    [ <ALL> | KEYWORD("FIRST") ] ( <WHEN> Condition() <THEN> ( InsertIntoClause() [ ValuesClause() ] )+ )+
+        [ <ELSE> ( InsertIntoClause() [ ValuesClause() ] )+ ]
+    { return jjtThis; }
 }
 
 ASTSelectStatement SelectStatement() :
@@ -1892,23 +2173,85 @@ ASTSelectStatement SelectStatement() :
 ASTUpdateStatement UpdateStatement() :
 {}
 {
-    <UPDATE> SqlExpression()
+    <UPDATE> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ]
     UpdateSetClause()
     [ WhereClause() ]
+    [ ReturningClause() ]
+    [ ErrorLoggingClause() ]
     { return jjtThis; }
 }
 
+ASTDMLTableExpressionClause DMLTableExpressionClause() :
+{}
+{
+  (
+    TableCollectionExpression()
+  |
+    LOOKAHEAD(2) [ LOOKAHEAD(2) SchemaName() "." ] TableName() [ "@" ID() | PartitionExtensionClause() ]
+  |
+    [ <LATERAL> ] "(" Subquery() [ SubqueryRestrictionClause() ] ")"
+  )
+
+  { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__CHDBBDEI
+ */
+ASTPartitionExtensionClause PartitionExtensionClause() :
+{}
+{
+    (<PARTITION> | "SUBPARTITION") ( "(" ID() ")" | <FOR> "(" ( ID() (",")? )+ ")" )
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__I2126876
+ */
 ASTUpdateSetClause UpdateSetClause() :
 {}
 {
     <SET>
     (
-        <ROW> "=" ID()
+        LOOKAHEAD(1) <ROW> "=" ID()
     |
-        Column() "=" ( Expression() | <_DEFAULT> )
+        "VALUE" "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
+    |
+      (
+        (
+          ( "(" ( [ LOOKAHEAD(2) TableName() "." ] Column() (",")? )+ ")" "=" "(" Subquery() ")" )
+          |
+          ( [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )
+        )
+        (",")?
+      )+
     )
     { return jjtThis; }
 }
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__I2126358
+ */
+ASTReturningClause ReturningClause() :
+{}
+{
+    ( <RETURN> | <RETURNING> ) ( Expression() (",")? )+ <INTO> ( ID() (",")? )+
+    { return jjtThis; }
+}
+
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/UPDATE.html#GUID-027A462D-379D-4E35-8611-410F3AC8FDA5__BCEEAAGC
+ */
+ASTErrorLoggingClause ErrorLoggingClause() :
+{}
+{
+    "LOG" "ERRORS"
+    [ <INTO> [ LOOKAHEAD(2) SchemaName() "." ] TableName() ]
+    [ "(" SqlExpression() ")" ]
+    [ "REJECT" <LIMIT> ( NumericLiteral() | "UNLIMITED" ) ]
+    { return jjtThis; }
+}
+
 
 ASTDeleteStatement DeleteStatement() :
 {}
@@ -1923,14 +2266,14 @@ ASTDeleteStatement DeleteStatement() :
 ASTForStatement ForStatement()  :
 {}
 {
-	 <FOR> ForIndex() <IN> [<REVERSE>] Expression()[".."Expression()] <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
+	 <FOR> ForIndex() <IN> [<REVERSE>] Expression()[".."Expression()] <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>]
       { return jjtThis ; }
 }
 
 ASTWhileStatement WhileStatement()  :
 {}
 {
-	 <WHILE> Expression() <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>] 
+	 <WHILE> Expression() <LOOP> (Statement())+ <END> <LOOP> [<IDENTIFIER>]
       { return jjtThis ; }
 }
 
@@ -1940,7 +2283,7 @@ ASTIfStatement IfStatement()  :
 	<IF> Expression() <THEN> (Statement())+
 	( ElsifClause() {jjtThis.setHasElse();} )*
 	[ ElseClause() {jjtThis.setHasElse();} ]
-	<END> <IF> 
+	<END> <IF>
       { return jjtThis ; }
 }
 
@@ -1953,7 +2296,7 @@ ASTForIndex ForIndex()  :
  PLSQLNode simpleNode = null ;
 }
 {
- simpleNode = ID() 
+ simpleNode = ID()
  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
@@ -1965,19 +2308,19 @@ ASTForAllIndex ForAllIndex()  :
  PLSQLNode simpleNode = null;
 }
 {
- simpleNode = ID() 
+ simpleNode = ID()
  { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTForAllStatement ForAllStatement()  :
 {}
 {
-	 <FORALL> ForAllIndex() <IN> 
+	 <FORALL> ForAllIndex() <IN>
 			    (
 	                     ( <INDICES> | <VALUES> ) <OF> Expression() // Add support for sparse collections
 	                     | Expression() [".." Expression()]
 			    )
-			    [ <SAVE> <EXCEPTIONS> ] SqlStatement(null,";") 
+			    [ <SAVE> <EXCEPTIONS> ] SqlStatement(null,";")
       { return jjtThis ; }
 }
 
@@ -1986,14 +2329,14 @@ ASTGotoStatement GotoStatement()  :
  PLSQLNode label = null;
 }
 {
-	<GOTO> label = QualifiedName() 
+	<GOTO> label = QualifiedName()
       { jjtThis.setImage(label.getImage()) ; return jjtThis ; }
 }
 
 ASTReturnStatement ReturnStatement()  :
 {}
 {
-	<RETURN> [Expression()] 
+	<RETURN> [Expression()]
       { return jjtThis ; }
 }
 
@@ -2002,7 +2345,7 @@ ASTContinueStatement ContinueStatement()  :
  PLSQLNode label = null;
 }
 {
-	<CONTINUE> [ label = UnqualifiedID() ] [ <WHEN> Expression() ] 
+	<CONTINUE> [ label = UnqualifiedID() ] [ <WHEN> Expression() ]
       { if (null != label) { jjtThis.setImage(label.getImage()) ; } return jjtThis ; }
 }
 
@@ -2011,14 +2354,14 @@ ASTExitStatement ExitStatement()  :
  PLSQLNode label = null;
 }
 {
-	<EXIT> [ label = UnqualifiedID() ] [ <WHEN> Expression() ] 
+	<EXIT> [ label = UnqualifiedID() ] [ <WHEN> Expression() ]
       { if (null != label) { jjtThis.setImage(label.getImage()) ; } return jjtThis ; }
 }
 
 ASTRaiseStatement RaiseStatement()  :
 {PLSQLNode exception = null ;  }
 {
-       <RAISE> [exception = QualifiedName()] 
+       <RAISE> [exception = QualifiedName()]
       { if (null != exception) { jjtThis.setImage(exception.getImage()) ; }  return jjtThis ; }
 }
 
@@ -2026,7 +2369,7 @@ ASTCloseStatement CloseStatement()  :
 {PLSQLNode cursor = null ;
 }
 {
-      <CLOSE> cursor = QualifiedName() 
+      <CLOSE> cursor = QualifiedName()
       { jjtThis.setImage(cursor.getImage()) ; return jjtThis ; }
 }
 
@@ -2035,7 +2378,7 @@ ASTOpenStatement OpenStatement()  :
 {
 	 <OPEN> [Expression()]
 		//[LOOKAHEAD(functionCall()) functionCall() | QualifiedName()]
-		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]] 
+		[<FOR> Expression() [<USING> (<IN> | <OUT> | <IN_OUT>)? Expression() ("," (<IN> | <OUT> | <IN_OUT>)? Expression())*]]
       { return jjtThis ; }
 }
 
@@ -2044,7 +2387,7 @@ ASTFetchStatement FetchStatement()  :
 {
 	 <FETCH> QualifiedName() [<BULK> <COLLECT>]
 	  //MMUE 04/08/2005 <INTO> (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()) ("," (LOOKAHEAD(functionCall()) functionCall() | QualifiedName()))* ";"
-	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()] 
+	  <INTO> Expression() ("," Expression())* [<LIMIT> Expression()]
 	//
       { return jjtThis ; }
 }
@@ -2052,11 +2395,11 @@ ASTFetchStatement FetchStatement()  :
 ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 {}
 {
-   <EXECUTE> <IMMEDIATE> Expression() // StringLiteral() /* <STRING_LITERAL> */ 
+   <EXECUTE> <IMMEDIATE> Expression() // StringLiteral() /* <STRING_LITERAL> */
 	//SRT 20110429 | <EXECUTE> <IMMEDIATE> StringExpression()  [<USING> Expression() ("," Expression())*] ";"
-	//SRT 20121126 | <EXECUTE> <IMMEDIATE> StringExpression()  
-	[ <INTO> Name() ("," Name())* ] 
-	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ] 
+	//SRT 20121126 | <EXECUTE> <IMMEDIATE> StringExpression()
+	[ <INTO> Name() ("," Name())* ]
+	[ <USING> [ <IN> [ <OUT> ] | <OUT> ]  Expression() ("," [ <IN> [ <OUT> ] | <OUT> ] Expression())* ]
 	[ ( <RETURN> | <RETURNING> )  <INTO> Expression() ("," Expression())*] ";"
 	// PIPELINED FUNCTION OUTPUT
       { return jjtThis ; }
@@ -2065,7 +2408,7 @@ ASTEmbeddedSqlStatement EmbeddedSqlStatement()  :
 ASTPipelineStatement PipelineStatement()  :
 {}
 {
-	<PIPE> <ROW> Expression()  
+	<PIPE> <ROW> Expression()
       { return jjtThis ; }
 }
 
@@ -2075,8 +2418,8 @@ ASTConditionalCompilationStatement ConditionalCompilationStatement()  :
 	( <CC_IF> ConditionalOrExpression() <CC_THEN> (Statement())*
 		( <CC_ELSIF> ConditionalOrExpression() <CC_THEN> (Statement())+ )*
 		( <CC_ELSE> (Statement())+ )*
-		<CC_END> 
-	 | <CC_ERROR> Expression() <CC_END> 
+		<CC_END>
+	 | <CC_ERROR> Expression() <CC_END>
 	)
       { return jjtThis ; }
 }
@@ -2093,9 +2436,9 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 {
 
 	(
-		( 
-		  <SUBTYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standard need to allow normally reserved words which are low-level types 
-			<IS> Datatype() 
+		(
+		  <SUBTYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standard need to allow normally reserved words which are low-level types
+			<IS> Datatype()
 			[
 			  ( "(" <IDENTIFIER> ")") // SRT 20110604 [<NOT> <NULL> ]
 			  |
@@ -2104,20 +2447,20 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 			[<NOT> <NULL> ] //SRT 20110604
 		)
 		 |
-		( <TYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types 
+		( <TYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types
 			(<IS>|<AS>)
 			(
 				LOOKAHEAD(2) <NEW> (
-				                    <CHAR_BASE> 
-				                    |<DATE_BASE> 
-				                    |<CLOB_BASE> 
-				                    |<BLOB_BASE> 
-				                    |<BFILE_BASE> 
-				                    |<NUMBER_BASE> 
-				                   ) 
-				  
+				                    <CHAR_BASE>
+				                    |<DATE_BASE>
+				                    |<CLOB_BASE>
+				                    |<BLOB_BASE>
+				                    |<BFILE_BASE>
+				                    |<NUMBER_BASE>
+				                   )
+
 				|
-				//SRT 20110606 SYS.STANDRD 
+				//SRT 20110606 SYS.STANDRD
 				(<OBJECT>  "(" FieldDeclaration() ("," FieldDeclaration())* ")" )
 				|
 				(<RECORD>  "(" FieldDeclaration() ("," FieldDeclaration())* ")" )
@@ -2125,15 +2468,15 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 				((<TABLE> | <VARRAY> | <VARYING> <ARRAY>)["(" NumericLiteral() ")"]
 				<OF> Datatype() (<NOT> <NULL>)? (<INDEX> <BY> Datatype())?)
 				|
-				<REF> <CURSOR> [<RETURN> Datatype()]
-				//Enumeration 
-				| ( "(" 
-				      Expression()  
-				              ( "," Expression()  )* 
-				    ")"  
+				"REF" <CURSOR> [<RETURN> Datatype()]
+				//Enumeration
+				| ( "("
+				      Expression()
+				              ( "," Expression()  )*
+				    ")"
 			          )
-				//Alias for existing type  
-				| Datatype() 
+				//Alias for existing type
+				| Datatype()
 			)
 		)
 	)
@@ -2148,7 +2491,7 @@ ASTFieldDeclaration FieldDeclaration()  :
 	PLSQLNode defaultValue = null;
 }
 {
-	name = ID() Datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]  
+	name = ID() Datatype() [[<NOT>] <NULL>] [ (":" "=" | <_DEFAULT>) Expression() ]
       { jjtThis.setImage(name.getImage()) ;  return jjtThis ; }
 }
 
@@ -2174,8 +2517,8 @@ ASTCallSpecTail CallSpecTail() : {
 		  )
 		  |
 		  ( <NAME> (<IDENTIFIER>  | <QUOTED_LITERAL> /* C */| StringLiteral() /* JAVA */ ) )
-		  //SRT 20110517  Need to cope with  CallSpecTails in ObjectTypes  // Skip2NextTerminator(null,";") 
-		  //SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")" 
+		  //SRT 20110517  Need to cope with  CallSpecTails in ObjectTypes  // Skip2NextTerminator(null,";")
+		  //SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")"
 		  |
 		  (
 		    <WITH> <CONTEXT>
@@ -2183,7 +2526,7 @@ ASTCallSpecTail CallSpecTail() : {
 		  |
 		  (
 		    <PARAMETERS>
-		    SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")" 
+		    SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")"
 		  )
 		)*
 	)
@@ -2217,14 +2560,14 @@ ASTCallSpecTail CallSpecTail() : {
   <NAME> <IDENTIFIER>
   <LIBRARY> <IDENTIFIER>
   [ <WITH> <CONTEXT> ]
-  [<PARAMETERS> 
+  [<PARAMETERS>
     "("
-     <CONTEXT> 
+     <CONTEXT>
      ( ","
              (
 	       <SELF> [ <TDO> | [ ( <INDICATOR> [ <STRUCT> |  <TDO>] ) |  <LENGTH> |  <MAXLEN> |  <CHARSETID> |  <CHARSETFORM> ] ]
-	     | ( 
-	         (<IDENTIFIER> | <RETURN> )  
+	     | (
+	         (<IDENTIFIER> | <RETURN> )
 		 [ <TDO> | [ ( <INDICATOR> [ <STRUCT> |  <TDO>] ) |  <LENGTH> |  <MAXLEN> |  <CHARSETID> |  <CHARSETFORM> ] ]
 		 [<BY> <REFERENCE> ]
 		 [ <IDENTIFIER> ]
@@ -2254,7 +2597,7 @@ ASTCursorUnit CursorUnit()  :
 {
 	(
 	<CURSOR> simpleNode = ID()
-	[ FormalParameters() ] 
+	[ FormalParameters() ]
 	[<RETURN> Datatype()
 	]
 	)
@@ -2294,50 +2637,50 @@ String expression() :
 
 
 ASTExpression Expression() :
-{ 
+{
   PLSQLNode simpleNode = null;
   StringBuilder sb = new StringBuilder() ;
 }
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment()) {sb.append(simpleNode.getImage());  }  
-	| (simpleNode = ConditionalOrExpression() )  {sb.append(simpleNode.getImage()); }  
-	| (simpleNode = CompilationExpression() )  {sb.append(simpleNode.getImage()); }  
+  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment()) {sb.append(simpleNode.getImage());  }
+	| (simpleNode = ConditionalOrExpression() )  {sb.append(simpleNode.getImage()); }
+	| (simpleNode = CompilationExpression() )  {sb.append(simpleNode.getImage()); }
 	)
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
 ASTCompilationExpression CompilationExpression() :
-{ 
+{
   PLSQLNode simpleNode = null;
   StringBuilder sb = new StringBuilder() ;
 }
 {
 	(
-	  <CC_IF> {sb.append(" "); sb.append(token.image) ; } 
-	   simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
-	  <CC_THEN> {sb.append(" "); sb.append(token.image); } 
-	  simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	  <CC_IF> {sb.append(" "); sb.append(token.image) ; }
+	   simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
+	  <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	  simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); }
 
-	  ( 
-	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); } 
-	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }  
-	    <CC_THEN> {sb.append(" "); sb.append(token.image); } 
-	    simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); } 
-	  )* 
-
-	  ( 
-	    <CC_ELSE> {sb.append(" "); sb.append(token.image); } 
-	    simpleNode = Expression()  {sb.append(" "); sb.append(simpleNode.getImage()); } 
+	  (
+	    <CC_ELSIF> {sb.append(" "); sb.append(token.image); }
+	    simpleNode = ConditionalOrExpression() {sb.append(" "); sb.append(simpleNode.getImage()); }
+	    <CC_THEN> {sb.append(" "); sb.append(token.image); }
+	    simpleNode = Expression() {sb.append(" "); sb.append(simpleNode.getImage()); }
 	  )*
 
-	  <CC_END> {sb.append(" "); sb.append(token.image); } 
+	  (
+	    <CC_ELSE> {sb.append(" "); sb.append(token.image); }
+	    simpleNode = Expression()  {sb.append(" "); sb.append(simpleNode.getImage()); }
+	  )*
+
+	  <CC_END> {sb.append(" "); sb.append(token.image); }
 	)
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2346,12 +2689,12 @@ ASTAssignment Assignment() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-  (simpleNode = PrimaryExpression() ) {sb.append(simpleNode.getImage());} 
-  (":" "="  ) {sb.append(" := ");} 
-  (simpleNode = Expression()) {sb.append(simpleNode.getImage());} 
+  (simpleNode = PrimaryExpression() ) {sb.append(simpleNode.getImage());}
+  (":" "="  ) {sb.append(" := ");}
+  (simpleNode = Expression()) {sb.append(simpleNode.getImage());}
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2359,20 +2702,20 @@ ASTCaseExpression CaseExpression() :
 { Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	thisToken = <CASE> { sb.append(thisToken.image);} 
+	thisToken = <CASE> { sb.append(thisToken.image);}
 	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )?
-          ( thisToken = <WHEN> { sb.append("  "); sb.append(thisToken.image); } 
+          ( thisToken = <WHEN> { sb.append("  "); sb.append(thisToken.image); }
 	        simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	     thisToken = <THEN>  { sb.append(" "); sb.append(thisToken.image); }
-	          Expression() { sb.append(" "); sb.append(simpleNode.getImage()); } 
+	          Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	   )+
-	  [ thisToken = <ELSE> { sb.append(" "); sb.append(thisToken.image);} 
+	  [ thisToken = <ELSE> { sb.append(" "); sb.append(thisToken.image);}
 	        Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	  ]
 	  thisToken = <END> { sb.append(" "); sb.append(thisToken.image);}
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2384,37 +2727,39 @@ ASTLikeExpression LikeExpression() :
 {
   (
         simpleNode = PrimaryExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	(thisToken = <LIKE> ) { sb.append(thisToken.image);} 
+	(thisToken = <LIKE> ) { sb.append(thisToken.image);}
 	//["(" { sb.append("(");} ]
 	( simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
 	//[ ")" { sb.append(")");} ]
 	[
-	<ESCAPE> { sb.append(" ESCAPE ");} 
-	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }  
-	  | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }  
+	<ESCAPE> { sb.append(" ESCAPE ");}
+	(  <CHARACTER_LITERAL>{ sb.append(" "); sb.append(token.toString()); }
+	  | simpleNode = StringLiteral() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	)
 	]
   )
   ( "." simpleNode = Expression() { sb.append("."); sb.append(simpleNode.getImage()); } )*
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/TRIM.html
+ */
 ASTTrimExpression TrimExpression() :
-{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	(thisToken = <TRIM> ) { sb.append(thisToken.image);} 
-	"(" { sb.append("(");} 
+	"(" { sb.append("(");}
 	 [ ( <LEADING> | <TRAILING> | <BOTH> ){ sb.append(" "); sb.append(token.toString()); }  ]
 	 [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-	 ( <FROM>  )  { sb.append(thisToken.image);} 
-	 simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }  
-	")" { sb.append(")");} 
+	 ( <FROM>  )  { sb.append(token.image);}
+	 simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+	")" { sb.append(")");}
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2427,19 +2772,19 @@ ASTObjectExpression ObjectExpression() :
 { Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.image);} 
-	"(" { sb.append("(");} 
+	(thisToken = <CAST> | thisToken = <TREAT> ) { sb.append(thisToken.image);}
+	"(" { sb.append("(");}
 	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
 	[
 	 <AT> <TIME> <ZONE> simpleNode = PrimaryExpression() { sb.append(" AT TIME ZONE "); sb.append(simpleNode.getImage()); }
 	]
-	<AS> { sb.append(" AS ");} 
+	<AS> { sb.append(" AS ");}
 	( simpleNode = Datatype() { sb.append(" "); sb.append(simpleNode.getImage()); }  )
-	")" { sb.append(")");} 
+	")" { sb.append(")");}
   )
   ( "." Expression() )*
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2448,12 +2793,12 @@ ASTConditionalOrExpression ConditionalOrExpression() #ConditionalOrExpression(>1
 {
   (
   (simpleNode = ConditionalAndExpression() ) { sb.append(simpleNode.getImage());}
-  ( (<OR>) {sb.append(" OR ");}  
+  ( (<OR>) {sb.append(" OR ");}
     (simpleNode = ConditionalAndExpression() ) {sb.append(simpleNode.getImage());}
   )*
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2462,12 +2807,12 @@ ASTConditionalAndExpression ConditionalAndExpression() #ConditionalAndExpression
 {
   (
    (simpleNode = EqualityExpression() ) { sb.append(simpleNode.getImage());}
-   ( (<AND> ) {sb.append(" AND ");}  
+   ( (<AND> ) {sb.append(" AND ");}
      (simpleNode = EqualityExpression() ) { sb.append(simpleNode.getImage());}
    )*
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2477,21 +2822,21 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
 	  (
-	   simpleNode = RelationalExpression() 
-	  ) {sb.append(simpleNode.getImage());} 
-	  ( 
+	   simpleNode = RelationalExpression()
+	  ) {sb.append(simpleNode.getImage());}
+	  (
 	   ( ("=" ) {sb.append(" = ");}
 	   | ("!" "=" ) {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");}  
+	   | (<IS>) {sb.append(" IS ");}
            )
 	   (
-	   simpleNode = RelationalExpression() 
-	   ) {sb.append(simpleNode.getImage());} 
+	   simpleNode = RelationalExpression()
+	   ) {sb.append(simpleNode.getImage());}
 	  )*
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2518,7 +2863,7 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
         | (">" { sb.append(" > "); } )
       )
 
-      { sb.append(" "); } 
+      { sb.append(" "); }
       | [(<NOT>) { sb.append(" NOT "); }]
       (
         (<IN>) { sb.append(" IN "); }
@@ -2559,8 +2904,8 @@ ASTRelationalExpression RelationalExpression() #RelationalExpression(>1) :
     ]
   )*
  )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2569,16 +2914,16 @@ ASTAdditiveExpression AdditiveExpression() #AdditiveExpression(>1) :
 {
  (
   (simpleNode = MultiplicativeExpression() ) { sb.append(simpleNode.getImage()); }
-  ( 
+  (
     ( ("+" ) { sb.append(" + "); }
     | ("-" ) { sb.append(" - "); }
     | ("||" ) { sb.append(" || "); }
-    ) 
+    )
     (simpleNode = MultiplicativeExpression() ) { sb.append(simpleNode.getImage()); }
   )*
  )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2587,13 +2932,13 @@ ASTStringExpression StringExpression() :
 {
  (
   (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
-  ( 
+  (
      ("||" ) { sb.append(" || "); }
     (simpleNode = PrimaryExpression() ) { sb.append(simpleNode.getImage()); }
   )*
  )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2604,17 +2949,17 @@ ASTMultiplicativeExpression MultiplicativeExpression() #MultiplicativeExpression
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
  (
   (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
-  ( 
-    ( ("**"  ) { sb.append(" ** "); } //Exponentiation 
+  (
+    ( ("**"  ) { sb.append(" ** "); } //Exponentiation
     | ("*"  ) { sb.append(" * "); }
     | ("/"  ) { sb.append(" / "); }
     | (<MOD>  ) { sb.append(" MOD "); }
-    ) 
+    )
     (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
   )*
  )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2624,13 +2969,14 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) #UnaryExpression(>1) :
  (
    ( ("+" ) { sb.append(isUnarySign ? " +" : " + "); }
    | ("-" ) { sb.append(isUnarySign ? " -" : " - "); }
-   ) 
+   | (<PRIOR>) { sb.append(" PRIOR "); }
+   )
    (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
    (simpleNode = UnaryExpressionNotPlusMinus() ) { sb.append(simpleNode.getImage()); }
  )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2638,13 +2984,13 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-  (<NOT>) {sb.append(" NOT "); } 
+  (<NOT>) {sb.append(" NOT "); }
   (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
   |
-   (simpleNode = IsNullCondition() ) {sb.append(simpleNode.getImage()); } 
+   (simpleNode = IsNullCondition() ) {sb.append(simpleNode.getImage()); }
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
@@ -2653,14 +2999,14 @@ ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
   (
     LOOKAHEAD(Name() <IS> [<NOT>] <NULL>)
     (
-		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");} 
+		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
 	)
     |
 	(
-		simpleNode = IsOfTypeCondition() 
-	) 
-	{ 
-		sb.append(simpleNode.getImage()); 
+		simpleNode = IsOfTypeCondition()
+	)
+	{
+		sb.append(simpleNode.getImage());
 	}
   )
   {
@@ -2691,29 +3037,29 @@ ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
 
 /**
  * 2006-05-23 - Matthias Hendler - Added lookahead otherwise warning encountered.
- *                                 Warning arised while adding methode triggerUnit(). 
+ *                                 Warning arised while adding methode triggerUnit().
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
 ASTPrimaryExpression PrimaryExpression() #PrimaryExpression(>1) :
 { Token thisToken ; PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ;
 }
 {
-  ( 
-    ( // Explicitly cope with case where "NEW" is a Primary Prefix, such as in a Trigger WHEN clause  
-	    (<NEW_DOT> simpleNode = QualifiedID()  ) { sb.append(" NEW."); sb.append(simpleNode.getImage()); }  
+  (
+    ( // Explicitly cope with case where "NEW" is a Primary Prefix, such as in a Trigger WHEN clause
+	    (<NEW_DOT> simpleNode = QualifiedID()  ) { sb.append(" NEW."); sb.append(simpleNode.getImage()); }
       )
     |
     (
-      LOOKAHEAD( <NEW>  PrimaryPrefix() ) // Lookahead so that we can recover and treat NEW as an identifier 
-        <NEW> { sb.append(" NEW "); } (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}  
-      |       (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}  
-	  
+      LOOKAHEAD(<NEW>  PrimaryPrefix() ) // Lookahead so that we can recover and treat NEW as an identifier
+        <NEW> { sb.append(" NEW "); } (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}
+      |       (simpleNode = PrimaryPrefix() ) {sb.append(simpleNode.getImage());}
+
 	  )
 	  ( LOOKAHEAD(2) (simpleNode = PrimarySuffix() ) { sb.append(simpleNode.getImage()); }  )*
   )
 
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2723,29 +3069,31 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
-  ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; } 
+  // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
+  LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
-| LOOKAHEAD(TrimExpression()) simpleNode = TrimExpression() //SRT 20110613.3
 | LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
-//| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604 
-| ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; } 
-| LOOKAHEAD(<SELECT>) (<SELECT>) {sb.append("SELECT ..."); }  Skip2NextTerminator(null,";")  
-| LOOKAHEAD(("(")+ <SELECT>) ("(") {sb.append("(SELECT ..."); }  Skip2NextTerminator("(",")") ")"   
-| LOOKAHEAD(<WITH>) (<WITH>) {sb.append("WITH ..."); }  Skip2NextTerminator(null,";")  
-| LOOKAHEAD(("(")+ <WITH>) ("(") {sb.append("(WITH ..."); }  Skip2NextTerminator("(",")") ")"   
+//| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
+| LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
+| LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
+| ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
+| SelectStatement()
+| LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
+| LOOKAHEAD(<WITH>) (<WITH>) {sb.append("WITH ..."); }  Skip2NextTerminator(null,";")
+| LOOKAHEAD(("(")+ <WITH>) ("(") {sb.append("(WITH ..."); }  Skip2NextTerminator("(",")") ")"
 |
-  ("(" ) {sb.append("("); } 
-  (simpleNode = Expression() ) {sb.append(simpleNode.getImage()); } 
+  ("(" ) {sb.append("("); }
+  (simpleNode = Expression() ) {sb.append(simpleNode.getImage()); }
   (
-    (",") {sb.append(", "); }  
-    (simpleNode = Expression() ) {sb.append(simpleNode.getImage()); } 
-  )* 
-  (")") {sb.append(")"); } 
+    (",") {sb.append(", "); }
+    (simpleNode = Expression() ) {sb.append(simpleNode.getImage()); }
+  )*
+  (")") {sb.append(")"); }
 
 )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
@@ -2753,43 +3101,43 @@ ASTPrimarySuffix PrimarySuffix() :
 { PLSQLNode suffixNode = null ; PLSQLNode arguments = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-  (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
-  //Bug 3535118 - Method call may include dblink 
+  (".") {sb.append(".");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.getImage()) ; }
+  //Bug 3535118 - Method call may include dblink
   //String dblink = null;
   //["@" dblink = qualifiedName() {sb.append("@"); sb.append(dblink); } ]
-  | //Possible dblink 
-  ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.toString()) ; }
-  | //Possible Date Time Expression - Bug 3553725  
-  ( <AT> {sb.append(" "); sb.append(token.image.toUpperCase());}  
+  | //Possible dblink
+  ("@") {sb.append("@");}  (suffixNode = QualifiedID() ) { sb.append(suffixNode.getImage()) ; }
+  | //Possible Date Time Expression - Bug 3553725
+  ( <AT> {sb.append(" "); sb.append(token.image.toUpperCase());}
           (  <LOCAL> {sb.append(" "); sb.append(token.image.toUpperCase());}
-            | ( <TIME> <ZONE> {sb.append(" TIME ZONE");} 
+            | ( <TIME> <ZONE> {sb.append(" TIME ZONE");}
 		(   <DBTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
 		  | <SESSIONTIMEZONE> {sb.append(" "); sb.append(token.image.toUpperCase());}
-		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.toString());}
-		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.toString());}
-		) 
+		  | suffixNode = StringLiteral() {sb.append(" "); sb.append(suffixNode.getImage());}
+		  | suffixNode = Expression() {sb.append(" "); sb.append(suffixNode.getImage());}
+		)
 	      )
-         )   
-  ) 
+         )
+  )
   |
   ( arguments = Arguments() ) {sb.append(arguments) ; }
   )
- { 
- jjtThis.setImage(sb.toString()); return jjtThis; 
+ {
+ jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
 
 
 ASTLiteral Literal() :
-{ 
+{
  PLSQLNode simpleNode = null;
  Token t = null ;
 }
 {
   (
-  simpleNode = NumericLiteral() 
+  simpleNode = NumericLiteral()
 |
-  t = <CHARACTER_LITERAL> 
+  t = <CHARACTER_LITERAL>
 |
   //<STRING_LITERAL> {literal = token.toString(); }
   simpleNode = StringLiteral() //SRT 2010526 Cope with Q-QuotedStrings
@@ -2801,33 +3149,33 @@ ASTLiteral Literal() :
   simpleNode = DateTimeLiteral()
   )
 
- { 
+ {
    if (null != simpleNode)
    {
-     jjtThis.setImage( simpleNode.getImage() ) ;  
+     jjtThis.setImage( simpleNode.getImage() ) ;
    }
    else if (null != t)
    {
-     jjtThis.setImage( t.image ) ;  
+     jjtThis.setImage( t.image ) ;
    }
-   return jjtThis ; 
+   return jjtThis ;
  }
 }
 
 ASTStringLiteral  StringLiteral() :
 {
 	Token thisToken = null;
-	StringBuilder literal = new StringBuilder() ; 
-	char startDelimiter ; 
-	char endDelimiter ; 
-	String terminator = null; 
+	StringBuilder literal = new StringBuilder() ;
+	char startDelimiter ;
+	char endDelimiter ;
+	String terminator = null;
 }
 {
   //Essentially unchanged
  (
-  thisToken = <STRING_LITERAL> 
-  { 
-   literal.append(thisToken.image); 
+  thisToken = <STRING_LITERAL>
+  {
+   literal.append(thisToken.image);
    /*
    This might be Q-Quoted string and this might be only a partial string
    The token will only match up to the first single quote.
@@ -2846,11 +3194,11 @@ ASTStringLiteral  StringLiteral() :
      */
      switch (startDelimiter)
      {
-      case '<' : endDelimiter = '>' ; break ; 
-      case '{' : endDelimiter = '}' ;  break ; 
-      case '(' : endDelimiter = ')' ;  break ; 
-      case '[' : endDelimiter = ']' ;  break ; 
-      default: endDelimiter = startDelimiter ; 
+      case '<' : endDelimiter = '>' ; break ;
+      case '{' : endDelimiter = '}' ;  break ;
+      case '(' : endDelimiter = ')' ;  break ;
+      case '[' : endDelimiter = ']' ;  break ;
+      default: endDelimiter = startDelimiter ;
      }
 
      terminator = new String(endDelimiter + "'");
@@ -2871,13 +3219,13 @@ ASTBooleanLiteral BooleanLiteral() :
 {
   //Essentially unchanged
  (
-  <TRUE> 
+  <TRUE>
 	|
-  <FALSE> 
+  <FALSE>
  )
-  { 
-   jjtThis.setImage(token.image) ;  
-   return jjtThis; 
+  {
+   jjtThis.setImage(token.image) ;
+   return jjtThis;
   }
 }
 
@@ -2886,11 +3234,11 @@ ASTNullLiteral NullLiteral() :
 {
   //Essentially unchanged
   (
-  <NULL> 
+  <NULL>
   )
- { 
-  jjtThis.setImage(token.image) ;  
-  return jjtThis ; 
+ {
+  jjtThis.setImage(token.image) ;
+  return jjtThis ;
  }
 }
 
@@ -2899,12 +3247,12 @@ ASTMultiSetCondition MultiSetCondition() :
 {
   //Essentially unchanged
   (
-  <A> <SET> 
+  <A> <SET>
   |
-  <EMPTY> 
+  <EMPTY>
   )
- { 
-  return jjtThis; 
+ {
+  return jjtThis;
   }
 }
 
@@ -2914,32 +3262,32 @@ ASTMultiSetCondition MultiSetCondition() :
 * (here, we have tokens "i", "+" and "1")
 */
 ASTNumericLiteral NumericLiteral() :
-{ 
+{
  Token t = null ;
 }
 {
 	(
-	  //Essentially unchanged, as it previouly returned a Token 
+	  //Essentially unchanged, as it previouly returned a Token
 		t = <UNSIGNED_NUMERIC_LITERAL>
 	)
-	{ 
-	 jjtThis.setImage(t.image) ;  
-         return jjtThis; 
+	{
+	 jjtThis.setImage(t.image) ;
+         return jjtThis;
 	}
 }
 
 /** This cannot be a token because these are valid labels '&lt;&lt; next_msg &gt;&gt;", '&lt;&lt;"OUTER LOOP"&gt;&gt;'
 */
 ASTLabel Label() :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
 	(
-	"<<" simpleNode = UnqualifiedID() ">>" 
+	"<<" simpleNode = UnqualifiedID() ">>"
 	)
-	{ 
-        jjtThis.setImage( simpleNode.getImage() ) ;  
+	{
+        jjtThis.setImage( simpleNode.getImage() ) ;
         return jjtThis;
 	}
 }
@@ -2952,14 +3300,14 @@ ASTName Name() :
 }
 {
   //UnqualifiedID() (LOOKAHEAD(2) ("." | "%") QualifiedID())*
-  (simpleNode = UnqualifiedID()  { sb.append(simpleNode.getImage()) ; } ) 
+  (simpleNode = UnqualifiedID()  { sb.append(simpleNode.getImage()) ; } )
   (
-   LOOKAHEAD(2) 
-    ("."  { sb.append(".") ; } | "%" { sb.append("%") ; }) //QualifiedID() 
+   LOOKAHEAD(2)
+    ("."  { sb.append(".") ; } | "%" { sb.append("%") ; }) //QualifiedID()
     simpleNode = QualifiedID()  { sb.append(simpleNode.getImage()) ; }
   )*
   {
-  jjtThis.setImage(sb.toString()) ;  
+  jjtThis.setImage(sb.toString()) ;
   return jjtThis;
   }
 }
@@ -2970,36 +3318,35 @@ ASTQualifiedName QualifiedName() :
  StringBuilder sb = new StringBuilder();
 }
 {
-  //Essentially unchanged as it previously returned a String 
-	(simpleNode = UnqualifiedID() { sb.append(simpleNode.getImage()) ; } ) 
+  //Essentially unchanged as it previously returned a String
+	(simpleNode = UnqualifiedID() { sb.append(simpleNode.getImage()) ; } )
 	( ("." simpleNode = QualifiedID())  { sb.append(".") ; sb.append(simpleNode.getImage()) ; } )*
-	{ 
-         jjtThis.setImage(sb.toString()) ;  
-	 return jjtThis ; 
+	{
+         jjtThis.setImage(sb.toString()) ;
+	 return jjtThis ;
 	}
 }
 
 ASTArguments Arguments() :
+{}
 {
-}
-{
-  //"(" [ ArgumentList() ] ")"
+  "("
+      [ [<ALL> | <DISTINCT> | <UNIQUE>] ("*" | ArgumentList()) ]
+      // Note: ListaggOverflowClause is only allowed for LISTAGG function, but this grammar allows it for all functions.
+      [ ListaggOverflowClause() ]
+  ")"
 
-  "(" [ [<ALL> | <DISTINCT> | <UNIQUE>] ("*" | ArgumentList()) ] ")"
- { 
- return jjtThis ; 
- }
+ { return jjtThis; }
 }
 
 ASTArgumentList ArgumentList() :
-{
-}
+{}
 {
   //Argument() ("," token=Argument())*
-  (Argument())  
+  (Argument())
   (("," )   (Argument())  )*
- { 
- return jjtThis ; 
+ {
+ return jjtThis ;
  }
 }
 
@@ -3009,26 +3356,24 @@ ASTArgument Argument() :
 }
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
-	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ] 
-        (Expression() )  
-	//Allow Using CharacterSet suffix clause  
+	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ]
+        (Expression() )
+	//Allow Using CharacterSet suffix clause
 	[
-	   ( <USING>  )   
-	   ( <CHAR_CS> | <NCHAR_CS>  )   
+	   ( <USING>  )
+	   ( <CHAR_CS> | <NCHAR_CS>  )
 	]
- { 
+ {
  if (null != simpleNode) { jjtThis.setImage(simpleNode.getImage()) ; }
- return jjtThis ; 
+ return jjtThis ;
  }
 }
-
-
 
 // ============================================================================
 // D E C L A R A T I O N S
 // ============================================================================
 ASTVariableOrConstantDeclaration VariableOrConstantDeclaration() :
-{ 
+{
 }
 {
   VariableOrConstantDeclarator() ";"
@@ -3036,16 +3381,16 @@ ASTVariableOrConstantDeclaration VariableOrConstantDeclaration() :
 }
 
 
-ASTDatatypeDeclaration DatatypeDeclaration() : 
+ASTDatatypeDeclaration DatatypeDeclaration() :
 {
  Token t ;
-} 
-{ t = <IDENTIFIER> 
-  { jjtThis.setImage(t.image) ;  return jjtThis ; } 
+}
+{ t = <IDENTIFIER>
+  { jjtThis.setImage(t.image) ;  return jjtThis ; }
 }
 
 ASTPragma Pragma() :
-{ 
+{
 }
 {
 	<PRAGMA>
@@ -3062,24 +3407,24 @@ ASTPragma Pragma() :
 		<EXCEPTION_INIT> "(" <IDENTIFIER> "," ["+"|"-"] NumericLiteral() ")"
 		|
 		<INTERFACE> "(" <IDENTIFIER> "," ID() [ "," NumericLiteral() ] ")"
-		| //SRT 20110531 
-		QualifiedName() "(" ReadPastNextOccurrence(")") 
+		| //SRT 20110531
+		QualifiedName() "(" ReadPastNextOccurrence(")")
 	)
 	";"
       { return jjtThis ; }
 }
 
 ASTInlinePragma InlinePragma() :
-{ 
+{
 }
 {
 	<PRAGMA> <INLINE> "(" QualifiedName() "," StringLiteral() ")"
-		
+
       { return jjtThis ; }
 }
 
 ASTExceptionDeclaration ExceptionDeclaration() :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
@@ -3092,15 +3437,15 @@ ASTParallelClause ParallelClause() :
 }
 {
     (
-	    ( "(" <PARTITION> ID()  <BY> 
-	       (<ANY> 
+	    ( "(" <PARTITION> ID()  <BY>
+	       (<ANY>
 	        |
 	        ( (<HASH> | <RANGE> ) "(" ID() ( "," ID() )* ")" )
                )
-	    ")"  
+	    ")"
 	    )
     )
-    [ ( <ORDER> | <CLUSTER> ) <BY> "(" ID() ( "," ID() )*  ")" ] 
+    [ ( <ORDER> | <CLUSTER> ) <BY> "(" ID() ( "," ID() )*  ")" ]
 
       { return jjtThis ; }
 }
@@ -3109,13 +3454,13 @@ ASTAccessibleByClause AccessibleByClause() :
 {
 }
 {
-    (<ACCESSIBLE> <BY>  
-     "(" 
-        [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ] QualifiedName()  
-       ("," 
-        [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ] QualifiedName() 
-       )*  
-     ")" 
+    (<ACCESSIBLE> <BY>
+     "("
+        [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ] QualifiedName()
+       (","
+        [ <FUNCTION> | <PROCEDURE> | <PACKAGE> | <TRIGGER> | <TYPE> ] QualifiedName()
+       )*
+     ")"
     )
       { return jjtThis ; }
 }
@@ -3129,7 +3474,7 @@ ASTAccessibleByClause AccessibleByClause() :
 // SRT *
 ASTTable Table()  :
 
-{ 
+{
 }
 {
   <CREATE> [ ( <GLOBAL> | <PRIVATE> ) <TEMPORARY> | <SHARDED> | <DUPLICATED> ]
@@ -3141,12 +3486,12 @@ ASTTable Table()  :
   //### [physicalProperties()]
   //### [tableProperties()]
   [";"]
-  
+
       { return jjtThis ; }
 }
 
 ASTTableColumn TableColumn()  :
-{ 
+{
 }
 {
   ID() Datatype() [<_DEFAULT> Expression()] [[<NOT> ] <NULL>]
@@ -3175,11 +3520,11 @@ ASTReferencesClause ReferencesClause() :
 }
 
 ASTView View()  :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> <REPLACE>]
+  <CREATE> [<OR> KEYWORD("REPLACE")]
   [[<NO>] <FORCE>]
   <VIEW> simpleNode = ObjectNameDeclaration()
   ["(" ViewColumn() ("," ViewColumn())* ")"]
@@ -3187,57 +3532,57 @@ ASTView View()  :
   <AS>
   SqlStatement(null,";")
   (";" | "/")
-  
+
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTSynonym Synonym()  :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> <REPLACE>]
+  <CREATE> [<OR> KEYWORD("REPLACE")]
   [<PUBLIC>] <SYNONYM>
   simpleNode = ObjectNameDeclaration()
   <FOR>
   ObjectNameDeclaration()
   (";" | "/")
-  
+
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTDirectory Directory()  :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> [<OR> <REPLACE>]
+  <CREATE> [<OR> KEYWORD("REPLACE")]
    <DIRECTORY>
   simpleNode = ObjectNameDeclaration()
   <AS>
   StringLiteral()
   (";" | "/")
-  
+
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTDatabaseLink DatabaseLink()  :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-  <CREATE> 
+  <CREATE>
    [ <SHARED> ] [ <PUBLIC> ]
    <DATABASE> <LINK>
   simpleNode = ObjectNameDeclaration()
   (
-   <CONNECT> <TO> 
+   <CONNECT> <TO>
     (
     	(<CURRENT_USER> )
 	|
 	(
 	UnqualifiedID() <IDENTIFIED> <BY> UnqualifiedID()
-	<AUTHENTICATED> <BY> 
+	<AUTHENTICATED> <BY>
 	UnqualifiedID() <IDENTIFIED> <BY> UnqualifiedID()
 	)
 
@@ -3247,7 +3592,7 @@ ASTDatabaseLink DatabaseLink()  :
   )
   [ <USING> StringLiteral() ]
   (";" | "/")
-  
+
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
@@ -3259,7 +3604,7 @@ ASTViewColumn ViewColumn()  :
 }
 
 ASTComment Comment()  :
-{ 
+{
 }
 {
   <COMMENT> <ON> (
@@ -3280,18 +3625,18 @@ ASTTypeMethod TypeMethod()  :
 {
 
         //inheritance CLAUSE
-        { 
-        getToken(1); 
+        {
+        getToken(1);
         //System.err.println("typeMethod: Result of getToken(1) is \"" + startToken.toString() + "\"" );
-        } //SRT added to check Token List walking 
+        } //SRT added to check Token List walking
         ( [ <NOT> ] ( <OVERRIDING> | <INSTANTIABLE> | <FINAL> )  )*
 
-        //[ MAP | ORDER ] 
-        //[ [<NOT>] <FINAL> ] [ [<NOT>] <INSTANTIABLE>  ] 
+        //[ MAP | ORDER ]
+        //[ [<NOT>] <FINAL> ] [ [<NOT>] <INSTANTIABLE>  ]
         [ <MAP> | <ORDER> ]
-        
-        
-	(<CONSTRUCTOR> | <MEMBER> | <STATIC> ) 
+
+
+	(<CONSTRUCTOR> | <MEMBER> | <STATIC> )
 
 
         MethodDeclarator()
@@ -3302,53 +3647,53 @@ ASTTypeMethod TypeMethod()  :
 	[<PIPELINED>]
 	[<RESULT_CACHE>]
 
-	// Java or C function wrapped with PL/SQL wrapper declaration 
+	// Java or C function wrapped with PL/SQL wrapper declaration
 	[
-	        
+
 		(<IS> | <AS>)
 		(
 		  CallSpecTail()
  		  [ ";" ] // This only exists in the type body
-		  | // SRT 20110524 Not really a Declaration any more ...  
+		  | // SRT 20110524 Not really a Declaration any more ...
 		  (
 			DeclarativeSection()
-			 <BEGIN> (Statement())* (ExceptionHandler())?  <END> [ID()] 
+			 <BEGIN> (Statement())* (ExceptionHandler())?  <END> [ID()]
 			 ";" // This only exists in the type body
 		  )
 		)
 	]
-        
+
 
       { return jjtThis ; }
 }
 
 
 ASTTypeSpecification TypeSpecification()  :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
 	<TYPE> simpleNode = ObjectNameDeclaration()
 
 	[
-		<FORCE> 
+		<FORCE>
 	]
-        
-        // incomplete_type_spec (empty) 
+
+        // incomplete_type_spec (empty)
         // object_type_spec
         // varray_type_spec
-        // nested_table_type 
-	
+        // nested_table_type
+
 	[
-		LOOKAHEAD(2) <OID> <STRING_LITERAL> 
+		LOOKAHEAD(2) <OID> <STRING_LITERAL>
 	]
-        
+
         (
 		LOOKAHEAD(2) //<AUTHID> (<CURRENT_USER> | <DEFINER>)
 				(
 				  (<AUTHID> (<CURRENT_USER> | <DEFINER>))
-				  | AccessibleByClause() 
+				  | AccessibleByClause()
 				)
 	)*
 
@@ -3359,49 +3704,49 @@ ASTTypeSpecification TypeSpecification()  :
 	//}
 
         [
-		( 
+		(
 		    <UNDER> ObjectNameDeclaration()  //SUBTYPE
 		  | LOOKAHEAD(2) (<IS> | <AS> )   <OBJECT>  // OBJECT TYPE
 		  | LOOKAHEAD(2) (<IS> | <AS> )   <OPAQUE> <VARYING> "(" "*" ")" // OPAQUE TYPE
 		                                                                <USING> <LIBRARY>  (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() )
 			                                                                             [ "." (<IDENTIFIER> | <QUOTED_LITERAL> | StringLiteral() ) ]
-		  | LOOKAHEAD(2) (<IS> | <AS> ) CollectionTypeName() <OF> Datatype() 
+		  | LOOKAHEAD(2) (<IS> | <AS> ) CollectionTypeName() <OF> Datatype()
 
-		) 
+		)
 	]
-	
+
 	//
-	[ 
-	 LOOKAHEAD(8)   
+	[
+	 LOOKAHEAD(8)
 	//tokenIsAsUnder=
-	//<EXTERNAL> "NAME" <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //JavaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> ) 
-	<EXTERNAL> <IDENTIFIER> <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //JavaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> ) 
-	] 
+	//<EXTERNAL> "NAME" <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //JavaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> )
+	<EXTERNAL> <IDENTIFIER> <IDENTIFIER> <LANGUAGE> <JAVA> <USING> <IDENTIFIER> //JavaInterfaceClass() //(<SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS> )
+	]
 
 	[
 	  WrappedObject()
 	]
 
-        // //incomplete OBJECT TYPE and COLLECTION TYPEs will not have this 
+        // //incomplete OBJECT TYPE and COLLECTION TYPEs will not have this
         [
 		("(" )
                 //Try matching against keywords first to allow FINCTION and procedure as a fallback
-		(LOOKAHEAD(2)  TypeMethod() | AttributeDeclaration() 
+		(LOOKAHEAD(2)  TypeMethod() | AttributeDeclaration()
 		 | PragmaClause()
-		)* //SRT 20111125 This part may be completely empty if is a subtype which is effectively an alias for the supertype 
-		( "," (  TypeMethod() | LOOKAHEAD(2) AttributeDeclaration() 
+		)* //SRT 20111125 This part may be completely empty if is a subtype which is effectively an alias for the supertype
+		( "," (  TypeMethod() | LOOKAHEAD(2) AttributeDeclaration()
 		      | PragmaClause()
-		      ) 
+		      )
 		)*
 
-		")" 
-	]        
-        
-	( [ <NOT> ] 
+		")"
+	]
+
+	( [ <NOT> ]
 	  (
-	    <FINAL>   /*OBJECTS TYPES ONLY */ 
-          | <INSTANTIABLE>   //OBJECT TYPES ONLY 
-	  | <NULL>   //COLLECTION TYPES ONLY 
+	    <FINAL>   /*OBJECTS TYPES ONLY */
+          | <INSTANTIABLE>   //OBJECT TYPES ONLY
+	  | <NULL>   //COLLECTION TYPES ONLY
 	  )
 	)*
 
@@ -3411,34 +3756,34 @@ ASTTypeSpecification TypeSpecification()  :
 
         [
 	(";" | "/" )
-        ( AlterTypeSpec() ( "/" | ";" ) )* //SRT 20110529 There may be more after the first terminator 
+        ( AlterTypeSpec() ( "/" | ";" ) )* //SRT 20110529 There may be more after the first terminator
         ]
-	 
+
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 
 ASTAlterTypeSpec AlterTypeSpec()  :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-	<ALTER> 
-	<TYPE> simpleNode = QualifiedName() 
+	<ALTER>
+	<TYPE> simpleNode = QualifiedName()
 
-        // REPLACE invoker_rights_clause AS OBJECT 
-        //alter_method_spec 
+        // REPLACE invoker_rights_clause AS OBJECT
+        //alter_method_spec
         //(tokenAlterType = <ADD>|tokenAlterType = <MODIFY> |tokenAlterType = <DROP> |tokenAlterType = <REPLACE>)
-            
-         //SRT 20110529 Each ALTER TYPE statement may contaon 0 or more ADD or DROP clause 
-         //When more than one clause exists, each clause is separated by comma ","  
+
+         //SRT 20110529 Each ALTER TYPE statement may contaon 0 or more ADD or DROP clause
+         //When more than one clause exists, each clause is separated by comma ","
        (
-         [","] 
+         [","]
        (
-        (<ADD> | <MODIFY> ) 
+        (<ADD> | <MODIFY> )
         (
-	      // Move typeMethidMatching above attribure matvhing becausse FUNCTION is a valid attribute name 
-             ( 
+	      // Move typeMethidMatching above attribure matvhing becausse FUNCTION is a valid attribute name
+             (
 		 (TypeMethod()  )
 		  //( "," ( typeMethod(,typeVersion, tokenAlterTypeString) ) )*
              )
@@ -3446,7 +3791,7 @@ ASTAlterTypeSpec AlterTypeSpec()  :
             (
                   <ATTRIBUTE>
 		   ( "("  )*
-		    (AttributeDeclaration() ) 
+		    (AttributeDeclaration() )
 		    ( "," ( AttributeDeclaration() ) )*
 		   ( ")"  )*
             )
@@ -3458,83 +3803,83 @@ ASTAlterTypeSpec AlterTypeSpec()  :
        )
        |
        (
-        (<DROP>) 
+        (<DROP>)
         (
             (
                   <ATTRIBUTE>
 		   ( "("  )*
-		    (Attribute() ) 
+		    (Attribute() )
 		    ( "," ( Attribute() ) )*
 		   ( ")"  )*
             )
             |
-             ( 
-		 (TypeMethod() ) 
+             (
+		 (TypeMethod() )
 		  //( "," ( typeMethod(,typeVersion, tokenAlterTypeString) ) )*
              )
         )+
        )
        )*
 /*
-          
+
           )
           {
 		System.err.println("Alter Type is " + tokenAlterType.toString());
           }
-          | 
-          (<DROP> ( 
-		 (TypeMethod() ) 
+          |
+          (<DROP> (
+		 (TypeMethod() )
 		  ( "," ( TypeMethod() ) )*
                  )
                  |
                  (
                   <ATTRIBUTE>
 		   [ "("  ]
-		    (QualifiedName() ) 
+		    (QualifiedName() )
 		    ( "," ( QualifiedName() ) )*
 		   [ ")"  ]
                  )
-          
+
           )
           |
-          //alter_collection_clause 
-	  (        
-          <MODIFY> 
+          //alter_collection_clause
+	  (
+          <MODIFY>
             (<LIMIT> tokenCollectionSize = NumericLiteral() )
             |
             ( <ELEMENT> <TYPE> baseType = Datatype() )
-	  )        
+	  )
         |
 */
         [
-                <REPLACE>
+                KEYWORD("REPLACE")
                 (
 		LOOKAHEAD(2) //<AUTHID> (<CURRENT_USER> | <DEFINER>)
 				(
 				  (<AUTHID> (<CURRENT_USER> | <DEFINER>))
-				  | AccessibleByClause() 
+				  | AccessibleByClause()
 				)
                 )*
-                
-		( 
+
+		(
 		  (<IS> | <AS> )   <OBJECT>  // OBJECT TYPE
-		) 
+		)
 
 		("(" )
 
-		(LOOKAHEAD(2) TypeMethod() | AttributeDeclaration() ) 
+		(LOOKAHEAD(2) TypeMethod() | AttributeDeclaration() )
 		( "," ( LOOKAHEAD(2) TypeMethod() | AttributeDeclaration() ) )*
 
-		")" 
-	]        
-        
+		")"
+	]
+
 /* */
-	
-	( [ <NOT> ] 
+
+	( [ <NOT> ]
 	  (
-	    <FINAL>   /*OBJECTS TYPES ONLY */ 
-          | <INSTANTIABLE>   //OBJECT TYPES ONLY 
-	  | <NULL>   //COLLECTION TYPES ONLY 
+	    <FINAL>   /*OBJECTS TYPES ONLY */
+          | <INSTANTIABLE>   //OBJECT TYPES ONLY
+	  | <NULL>   //COLLECTION TYPES ONLY
 	  )
 	)*
 
@@ -3555,13 +3900,13 @@ ASTAlterTypeSpec AlterTypeSpec()  :
                  <CONVERT><TO><SUBSTITUTABLE>
                )
               )*
-            
+
               [
                 [ <FORCE> ]
                 <EXCEPTIONS> <INTO> QualifiedName()
               ]
             )
-        ] 
+        ]
 
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
@@ -3578,15 +3923,15 @@ ASTTypeBody TypeBody()  :
 
 	(
 	  (
-	    WrappedObject() 
+	    WrappedObject()
 	  )
 	  |
 	  (
 	    (<IS> | <AS>)
 
-		    DeclarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies 
+		    DeclarativeSection() //SRT 20110524 Allow PLDOc in Type Bodies
 
-	    [ <BEGIN> (Statement())* (ExceptionHandler())? ] <END> [ID()] ";" 
+	    [ <BEGIN> (Statement())* (ExceptionHandler())? ] <END> [ID()] ";"
 	  )
 	)
 }
@@ -3594,10 +3939,10 @@ ASTTypeBody TypeBody()  :
 
 
 /**
-  * Method 
+  * Method
 **/
 ASTAttributeDeclaration AttributeDeclaration() :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
@@ -3608,11 +3953,11 @@ ASTAttributeDeclaration AttributeDeclaration() :
 
 
 ASTAttribute Attribute() :
-{ 
+{
  PLSQLNode simpleNode = null;
 }
 {
-      simpleNode = ID()  
+      simpleNode = ID()
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
@@ -3621,7 +3966,7 @@ ASTAttribute Attribute() :
  This was quick cut from PRAGMA
 */
 ASTPragmaClause PragmaClause() :
-{ 
+{
 }
 {
 	<PRAGMA>
@@ -3640,40 +3985,40 @@ ASTPragmaClause PragmaClause() :
       { return jjtThis ; }
 }
 
-/** 
+/**
  * Trigger
  * Triggers are always outside of a package.
  *
- *  2006-05-17 - Matthias Hendler - added 
+ *  2006-05-17 - Matthias Hendler - added
  */
 
 /*
-  11g Trigger Syntax 
+  11g Trigger Syntax
 
- create_trigger : 
- CREATE [OR REPLACE] TRIGGER [schema.]trigger 
+ create_trigger :
+ CREATE [OR REPLACE] TRIGGER [schema.]trigger
 ( simple_dml_trigger | compound_dml_trigger | non_dml_trigger )
 [ FOLLOWS ( [schema.]trigger) ( , [schema.]trigger)*  ]
 [ ENABLE  | DISABLE ]
-( WHEN ( trigger_condition ) 
+( WHEN ( trigger_condition )
 trigger_body
 
 
 simple_dml_trigger :
 (BEFORE |AFTER | INSTEAD OF)
-dml_event_clause 
+dml_event_clause
 [ referencing_clause ]
 [ FOR EACH ROW ]
 
 
 
 compound_dml_trigger :
-FOR dml_event_clause 
+FOR dml_event_clause
 [ referencing_clause ]
 
 
 non_dml_trigger :
-(BEFORE> |<AFTER> ) 
+(BEFORE> |<AFTER> )
 (DDLEvent | database_event) ( OR (DDLEvent | database_event))*
 ON
 (DATABASE | [schema.]SCHEMA
@@ -3690,22 +4035,22 @@ dml_event_clause:
 ON ( (schema.table | NESTED TABLE nested_table_column OF [schema.]view )
 
 referencing_clause:
-REFERENCING 
-(OLD AS old_alias | NEW AS new_alias | PARENT AS parent_alias )*  
+REFERENCING
+(OLD AS old_alias | NEW AS new_alias | PARENT AS parent_alias )*
 
 
 compound_trigger_block :
-COMPOUND TRIGGER 
-declare_section 
-(timing_point_section)+  
+COMPOUND TRIGGER
+declare_section
+(timing_point_section)+
 END [trigger_name] ;
 
 timing_point_section:
 (
-BEFORE STATEMENT IS tps_body END BEFORE STATEMENT 
-|BEFORE EACH ROW IS tps_body END BEFORE EACH ROW 
-|AFTER STATEMENT IS tps_body END AFTER STATEMENT 
-|AFTER EACH ROW IS tps_body END AFTER EACH ROW 
+BEFORE STATEMENT IS tps_body END BEFORE STATEMENT
+|BEFORE EACH ROW IS tps_body END BEFORE EACH ROW
+|AFTER STATEMENT IS tps_body END AFTER STATEMENT
+|AFTER EACH ROW IS tps_body END AFTER EACH ROW
 )
 
 
@@ -3719,51 +4064,51 @@ ASTTriggerUnit TriggerUnit()  :
  PLSQLNode simpleNode = null ;
 }
 {
-	[<CREATE> [<OR> <REPLACE>] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
-	
+	[<CREATE> [<OR> KEYWORD("REPLACE")] [ <EDITIONABLE> | <NONEDITIONABLE> ] ]
+
 	(<TRIGGER>) simpleNode = ObjectNameDeclaration()
 
-	// simple_dml_trigger | compound_dml_trigger | non_dml_trigger 
-	// simple_dml_trigger : 
+	// simple_dml_trigger | compound_dml_trigger | non_dml_trigger
+	// simple_dml_trigger :
 	(<BEFORE> | <AFTER> | <INSTEADOF> | <FOR>  // Incorporate 11G Compound DML Trigger
 	)
 
-	//dml_event_clause 
-	( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )*] ) | NonDMLEvent()   ) 
-	
+	//dml_event_clause
+	( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )*] ) | NonDMLEvent()   )
+
 	( <OR> ( ((<DELETE> | <INSERT> | <UPDATE>) [LOOKAHEAD(6)<OF> ID() ("," ID() )* ] ) | NonDMLEvent() )  )*
-	
-	<ON> 
+
+	<ON>
 	(
 	<DATABASE> //11G non_dml_trigger
 	|LOOKAHEAD(2) <NESTED> <TABLE>  ID() <OF>  [LOOKAHEAD(2) ID()"."] ID()
 	|[LOOKAHEAD(2) ID()"."] ID() //includes 11g schema.<SCHEMA> table ===<SCHEMA>
 	)
 
-	
-	 
-	// referencing_clause - there may be ZERO subclauses  
+
+
+	// referencing_clause - there may be ZERO subclauses
 	[<REFERENCING> ((<OLD> | <NEW> | <PARENT>) <AS> ID())*]
-	
+
 	[<FOREACHROW>]
 	// end of simple_dml_trigger (incorporating  compound_dml_trigger )
-	
-	
+
+
 	[ [<FORWARD>|<REVERSE>] <CROSSEDITION> ] // 11G Syntax to specify Cross Edition Trigger
-	[ (<FOLLOWS>|<PRECEDES>) ( [LOOKAHEAD(2) ID() "."] ID() )  ( ","  ( [ LOOKAHEAD(2) ID() "."] ID() ) )* ] // 11G Syntax to specify trigger firing order 
-	[ <ENABLE> | <DISABLE> ] // 11G Syntax can create the trigger enabled or disabled explcitly 
+	[ (<FOLLOWS>|<PRECEDES>) ( [LOOKAHEAD(2) ID() "."] ID() )  ( ","  ( [ LOOKAHEAD(2) ID() "."] ID() ) )* ] // 11G Syntax to specify trigger firing order
+	[ <ENABLE> | <DISABLE> ] // 11G Syntax can create the trigger enabled or disabled explcitly
 	[ <WHEN> "(" ConditionalOrExpression() ")" ]
 
 	//Trigger Body follows :
-	//plsql_block  | compound_trigger_block | <CALL> routine 
+	//plsql_block  | compound_trigger_block | <CALL> routine
 	(
 	 <CALL> PrimaryExpression() ";"
-	 //compound_trigger_block 
+	 //compound_trigger_block
 	| CompoundTriggerBlock()
 
-	|//plsql_block  
+	|//plsql_block
 	  Block() ";"
-	//| //<CALL> routine 
+	//| //<CALL> routine
 	)
       { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
@@ -3775,15 +4120,15 @@ ASTTriggerTimingPointSection TriggerTimingPointSection()  :
 }
 {
  (
- ( <BEFORE> | <AFTER> | <INSTEADOF> ) { sb.append(token.image) ; }  
- (   <STATEMENT>  | <EACH> <ROW>  ) {sb.append(" "); sb.append(token.image) ; }  
- <IS> 
+ ( <BEFORE> | <AFTER> | <INSTEADOF> ) { sb.append(token.image) ; }
+ (   <STATEMENT>  | <EACH> <ROW>  ) {sb.append(" "); sb.append(token.image) ; }
+ <IS>
  <BEGIN>
- (Statement())+ 
+ (Statement())+
  <END>  ( <BEFORE> | <AFTER> | <INSTEADOF> ) ( <STATEMENT> | <EACH> <ROW>) ";"
  )
  {
-  //Add a TRIGGER ENTRY for each timing point section 
+  //Add a TRIGGER ENTRY for each timing point section
  }
  { jjtThis.setImage(sb.toString()) ;  return jjtThis ; }
 }
@@ -3794,7 +4139,7 @@ ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 {
 }
 {
-  <COMPOUND> <TRIGGER> 
+  <COMPOUND> <TRIGGER>
 
   (
     //Problems making the declaration optional
@@ -3813,7 +4158,7 @@ ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 		CursorSpecification() |
 		CursorBody() |
 		CollectionDeclaration() |
-		ProgramUnit() 
+		ProgramUnit()
 	)*
 
 
@@ -3826,7 +4171,7 @@ ASTCompoundTriggerBlock CompoundTriggerBlock()  :
 
 /*
 non_dml_trigger :
-(BEFORE> |<AFTER> ) 
+(BEFORE> |<AFTER> )
 (DDLEvent | database_event) ( OR (DDLEvent | database_event))*
 ON
 (DATABASE | [schema.]SCHEMA
@@ -3835,10 +4180,10 @@ ASTNonDMLTrigger NonDMLTrigger()  :
 {
 }
 {
- ( <BEFORE> | <AFTER> ) 
+ ( <BEFORE> | <AFTER> )
  ( DDLEvent() | DatabaseEvent() )
  ( <OR> ( DDLEvent() | DatabaseEvent() ) )*
- <ON> 
+ <ON>
  (<DATABASE> | [LOOKAHEAD(2) ID()"."] <SCHEMA>)
       { return jjtThis ; }
 }
@@ -3846,9 +4191,9 @@ ASTNonDMLTrigger NonDMLTrigger()  :
 
 ASTDDLEvent DDLEvent(): {}
 {
-  ( <ALTER> 
-  | <ANALYZE> 
-  | <ASSOCIATE> <STATISTICS> 
+  ( <ALTER>
+  | <ANALYZE>
+  | <ASSOCIATE> <STATISTICS>
   | <AUDIT>
   | <COMMENT>
   | <CREATE>
@@ -3868,18 +4213,18 @@ ASTDDLEvent DDLEvent(): {}
 ASTDatabaseEvent DatabaseEvent(): {}
 {
   ( <STARTUP>
-  | <SHUTDOWN> 
-  | <LOGON> 
-  | <LOGOFF> 
-  | <SERVERERROR> 
-  | <SUSPEND> 
+  | <SHUTDOWN>
+  | <LOGON>
+  | <LOGOFF>
+  | <SERVERERROR>
+  | <SUSPEND>
   )
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
 
 ASTNonDMLEvent NonDMLEvent(): {}
 {
-  (DDLEvent() | DatabaseEvent()) 
+  (DDLEvent() | DatabaseEvent())
   { return jjtThis; }
 }
 
@@ -3894,7 +4239,7 @@ void AlterTrigger()  :
 {}
 {
 	<ALTER> <TRIGGER>
-	Skip2NextTerminator(null,";") 
+	Skip2NextTerminator(null,";")
 	";"
 	{
 		return;
@@ -3907,7 +4252,7 @@ void AlterTrigger()  :
 
 SKIP :
 {
-        //Tracker Issue 1433480 - Skip2 and SkipPast need to be able to check for EOL - so the characters 
+        //Tracker Issue 1433480 - Skip2 and SkipPast need to be able to check for EOL - so the characters
 	//cannot be SKIPped
 	//" " | "\t" | "\n" | "\r" | "\f"
 	" " | "\t" | "\f"
@@ -3924,8 +4269,8 @@ MORE :
 
 SPECIAL_TOKEN :
 {
-        //Remove terminating EOL from Single Comment Token definition: it causes failurs if no other newline exists before next production 
-	<SINGLE_LINE_COMMENT: "--"(~["\n","\r"])* > 
+        //Remove terminating EOL from Single Comment Token definition: it causes failurs if no other newline exists before next production
+	<SINGLE_LINE_COMMENT: "--"(~["\n","\r"])* >
 }
 
 //Tracker Issue 1433480 - Skip2 and SkipPast need to be able to check for EOL - so it cannot be SKIPped
@@ -3965,7 +4310,6 @@ MORE :
 
 TOKEN [IGNORE_CASE]:
 {
-<REPLACE: "REPLACE"> |
 <DEFINER: "DEFINER"> |
 <CURRENT_USER: "CURRENT_USER"> |
 <SERIALLY_REUSABLE: "SERIALLY_REUSABLE"> |
@@ -3973,93 +4317,157 @@ TOKEN [IGNORE_CASE]:
 <EXCEPTION_INIT: "EXCEPTION_INIT"> |
 <AUTONOMOUS_TRANSACTION: "AUTONOMOUS_TRANSACTION"> |
 <LANGUAGE: "LANGUAGE">
-| <INLINE: "INLINE"> // PRAGMA INLINE  
+| <INLINE: "INLINE"> // PRAGMA INLINE
 }
 
-/* PL/SQL RESERVED WORDS */
 /**
- * 2006-05-20 - Matthias Hendler - Removed: <COLUMN: "COLUMN">
- *                                 Added: <MERGE: "MERGE">, <AFTER: "AFTER">, <BEFORE: "BEFORE">,
- *                                 <INSTEADOF: "INSTEAD OF">, <FOREACHROW: "FOR EACH ROW">, <REFERENCING: "REFERENCING">,
- *                                 <OLD: "OLD">, <PARENT: "PARENT">
- * 2016-11-04 - Andreas Dangel - Added <ONLY: "ONLY">, <IN_OUT: "IN_OUT">
+ * PL/SQL RESERVED WORDS
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html
+ *
+ * See also pseudo-production #RESERVED_WORD().
  */
 
 TOKEN [IGNORE_CASE]:
 {
-<ADD: "ADD"> |
-<AGGREGATE: "AGGREGATE"> |
 <ALL: "ALL"> |
 <ALTER: "ALTER"> |
 <AND: "AND"> |
 <ANY: "ANY"> |
-<APPLY: "APPLY"> |
-<ARRAY: "ARRAY"> |
 <AS: "AS"> |
 <ASC: "ASC"> |
 <AT: "AT"> |
-<ATTRIBUTE: "ATTRIBUTE"> |
-<AUTHID: "AUTHID"> |
-<AVG: "AVG"> |
 <BEGIN: "BEGIN"> |
 <BETWEEN: "BETWEEN"> |
+<BY: "BY"> |
+<CASE: "CASE"> |
+<CHECK: "CHECK"> |
+<CLUSTERS: "CLUSTERS"> |
+<CLUSTER: "CLUSTER"> |
+<COLAUTH: "COLAUTH"> |
+<COLUMNS: "COLUMNS"> |
+<COMPRESS: "COMPRESS"> |
+<CONNECT: "CONNECT"> |
+<CRASH: "CRASH"> |
+<CREATE: "CREATE"> |
+<CURSOR: "CURSOR"> |
+<DECLARE: "DECLARE"> |
+<_DEFAULT: "DEFAULT"> |
+<DESC: "DESC"> |
+<DISTINCT: "DISTINCT"> |
+<DROP: "DROP"> |
+<ELSE: "ELSE"> |
+<END: "END"> |
+<EXCEPTION: "EXCEPTION"> |
+<EXCLUSIVE: "EXCLUSIVE"> |
+<FETCH: "FETCH"> |
+<FOR: "FOR"> |
+<FROM: "FROM"> |
+<FUNCTION: "FUNCTION"> |
+<GOTO: "GOTO"> |
+<GRANT: "GRANT"> |
+<GROUP: "GROUP"> |
+<HAVING: "HAVING"> |
+<IDENTIFIED: "IDENTIFIED"> |
+<IF: "IF"> |
+<IN: "IN"> |
+<INDEX: "INDEX"> |
+<INDEXES: "INDEXES"> |
+<INSERT: "INSERT"> |
+<INTERSECT: "INTERSECT"> |
+<INTO: "INTO"> |
+<IS: "IS"> |
+<LIKE: "LIKE"> |
+<LOCK: "LOCK"> |
+<MINUS: "MINUS"> |
+<MODE: "MODE"> |
+<NOCOMPRESS: "NOCOMPRESS"> |
+<NOT: "NOT"> |
+<NOWAIT: "NOWAIT"> |
+<NULL: "NULL"> |
+<OF: "OF"> |
+<ON: "ON"> |
+<OPTION: "OPTION"> |
+<OR: "OR"> |
+<ORDER: "ORDER"> |
+<OVERLAPS: "OVERLAPS"> |
+<PROCEDURE: "PROCEDURE"> |
+<PUBLIC: "PUBLIC"> |
+<RESOURCE: "RESOURCE"> |
+<REVOKE: "REVOKE"> |
+<SELECT: "SELECT"> |
+<SHARE: "SHARE"> |
+<SIZE: "SIZE"> |
+<SQL: "SQL"> |
+<START: "START"> |
+<SUBTYPE: "SUBTYPE"> |
+<TABAUTH: "TABAUTH"> |
+<TABLE: "TABLE"> |
+<THEN: "THEN"> |
+<TO: "TO"> |
+<TYPE: "TYPE"> |
+<UNION: "UNION"> |
+<UNIQUE: "UNIQUE"> |
+<UPDATE: "UPDATE"> |
+<VALUES: "VALUES"> |
+<VIEW: "VIEW"> |
+<VIEWS: "VIEWS"> |
+<WHEN: "WHEN"> |
+<WHERE: "WHERE"> |
+<WITH: "WITH">
+}
+
+/**
+ * Tokens, that are not reserved words, but used as keywords...
+ * These are therefore valid identifiers
+ */
+TOKEN [IGNORE_CASE]:
+{
+<ADD: "ADD"> |
+<AGGREGATE: "AGGREGATE"> |
+<APPLY: "APPLY"> |
+<ARRAY: "ARRAY"> |
+<ATTRIBUTE: "ATTRIBUTE"> |
+<AUTHID: "AUTHID"> |
 <BINARY_INTEGER: "BINARY_INTEGER"> |
 <BODY: "BODY"> |
 <BOOLEAN: "BOOLEAN"> |
 <BULK: "BULK"> |
-<BY: "BY"> |
 <BYTE: "BYTE"> |
 <CASCADE: "CASCADE"> |
-<CASE: "CASE"> |
 <CHAR: "CHAR"> |
 <CHAR_BASE: "CHAR_BASE"> |
-<CHECK: "CHECK"> |
 <CLOSE: "CLOSE"> |
-<CLUSTER: "CLUSTER"> |
 <COALESCE: "COALESCE"> |
 <COLLECT: "COLLECT"> |
 <COLUMN: "COLUMN"> |
 <COMMENT: "COMMENT"> |
 <COMMIT: "COMMIT"> |
-<COMPRESS: "COMPRESS"> |
-<CONNECT: "CONNECT"> |
 <CONSTANT: "CONSTANT"> |
 <CONSTRAINT: "CONSTRAINT"> |
 <CONSTRUCTOR: "CONSTRUCTOR"> |
 <CONTINUE: "CONTINUE"> |
 <CONVERT: "CONVERT"> |
-<CREATE: "CREATE"> |
 <CROSS: "CROSS"> |
 <CUBE: "CUBE"> |
 <CURRENT: "CURRENT"> |
 <CURRVAL: "CURRVAL"> |
-<CURSOR: "CURSOR"> |
 <DATA: "DATA"> |
 <DATE: "DATE"> |
 <DAY: "DAY"> |
-<DECLARE: "DECLARE"> |
 <DECIMAL: "DECIMAL"> |
-<_DEFAULT: "DEFAULT"> |
 <DEFINITION: "DEFINITION"> |
 <DELETE: "DELETE"> |
-<DESC: "DESC"> |
 <DETERMINISTIC: "DETERMINISTIC"> |
-<DISABLE: "DISABLE"> | // Needed for 11G Trigger Syntax 
-<DISTINCT: "DISTINCT"> |
+<DISABLE: "DISABLE"> | // Needed for 11G Trigger Syntax
 <DO: "DO"> |
-<DROP: "DROP"> |
 <DUPLICATED: "DUPLICATED"> |
 <EDITIONABLE: "EDITIONABLE"> |
 <ELEMENT: "ELEMENT"> |
-<ELSE: "ELSE"> |
 <ELSIF: "ELSIF"> |
-<ENABLE: "ENABLE"> | // Needed for 11G Trigger Syntax 
-<END: "END"> |
+<ENABLE: "ENABLE"> | // Needed for 11G Trigger Syntax
 <ESCAPE: "ESCAPE"> |
 <EXCEPT: "EXCEPT"> |
-<EXCEPTION: "EXCEPTION"> |
 <EXCEPTIONS: "EXCEPTIONS"> |
-<EXCLUSIVE: "EXCLUSIVE"> |
 <EXECUTE: "EXECUTE"> |
 <EXISTS: "EXISTS"> |
 <EXIT: "EXIT"> |
@@ -4069,75 +4477,51 @@ TOKEN [IGNORE_CASE]:
 <EXTENDS: "EXTENDS"> |
 <EXTRACT: "EXTRACT"> |
 <FALSE: "FALSE"> |
-<FETCH: "FETCH"> |
 <FINAL: "FINAL"> |
-<FIRST: "FIRST"> |
 <FLOAT: "FLOAT"> |
-<FOR: "FOR"> |
 <FORALL: "FORALL"> |
 <FOREIGN: "FOREIGN"> |
 <FORCE: "FORCE"> |
-<FROM: "FROM"> |
 <FULL: "FULL"> |
-<FUNCTION: "FUNCTION"> |
 <GLOBAL: "GLOBAL"> |
-<GOTO: "GOTO"> |
-<GROUP: "GROUP"> |
 <GROUPING: "GROUPING"> |
-<GRANT: "GRANT"> | //SRT 2011-04-17
 <HASH: "HASH"> |
-<HAVING: "HAVING"> |
 <HEAP: "HEAP"> |
 <HOUR: "HOUR"> |
-<IDENTIFIED: "IDENTIFIED"> | //SRT 2011-04-17
-<IF: "IF"> |
 <IMMEDIATE: "IMMEDIATE"> |
-<IN: "IN"> |
 <INNER: "INNER"> |
 <IN_OUT: "IN_OUT"> |
-<INDEX: "INDEX"> |
 <INDICES: "INDICES"> |
 <INCLUDING: "INCLUDING"> |
 <INDEXTYPE: "INDEXTYPE"> |
 <INDICATOR: "INDICATOR"> |
 <INFINITE: "INFINITE"> |
-<INSERT: "INSERT"> |
 <INSTANTIABLE: "INSTANTIABLE"> |
 <INTEGER: "INTEGER"> |
 <INTERFACE: "INTERFACE"> |
-<INTERSECT: "INTERSECT"> |
 <INTERVAL: "INTERVAL"> |
-<INTO: "INTO"> |
 <INVALIDATE: "INVALIDATE"> |
-<IS: "IS"> |
 <ISOLATION: "ISOLATION"> |
 <JAVA: "JAVA"> |
 <JOIN: "JOIN"> |
 <KEY: "KEY"> |
 //<LANGUAGE: "LANGUAGE"> |
-<LAST: "LAST"> |
 <LEVEL: "LEVEL"> |
-<LIKE: "LIKE"> |
 <LIKEC: "LIKEC"> |
 <LIKE2: "LIKE2"> |
 <LIKE4: "LIKE4"> |
-<LIMIT: "LIMIT"> | 
+<LIMIT: "LIMIT"> |
 <LIMITED: "LIMITED"> |
-<LOCK: "LOCK"> |
 <LONG: "LONG"> |
 <LOOP: "LOOP"> |
 <MAP: "MAP"> |
-<MAX: "MAX"> |
-<MEMBER: "MEMBER"> | 
-<MERGE: "MERGE"> | 
+<MEMBER: "MEMBER"> |
+<MERGE: "MERGE"> |
 <METADATA: "METADATA"> |
-<MIN: "MIN"> |
-<MINUS: "MINUS"> |
 <MINUTE: "MINUTE"> |
 <MLSLABEL: "MLSLABEL"> |
 <MODIFY: "MODIFY"> |
 <MOD: "MOD"> |
-<MODE: "MODE"> |
 <MONTH: "MONTH"> |
 <NAN: "NAN"> |
 <NATURAL: "NATURAL"> |
@@ -4147,13 +4531,9 @@ TOKEN [IGNORE_CASE]:
 <NEXT: "NEXT"> |
 <NEXTVAL: "NEXTVAL"> |
 <NO: "NO"> |
-<NOCOMPRESS: "NOCOMPRESS"> | //SRT 2011-04-17
 <NOCOPY: "NOCOPY"> |
 <NONE: "NONE"> |
 <NONEDITIONABLE: "NONEDITIONABLE"> |
-<NOT: "NOT"> |
-<NOWAIT: "NOWAIT"> |
-<NULL: "NULL"> |
 <NULLIF: "NULLIF"> |
 <NULLS: "NULLS"> |
 <NUMBER: "NUMBER"> |
@@ -4165,17 +4545,12 @@ TOKEN [IGNORE_CASE]:
 <NUMBER_BASE: "NUMBER_BASE"> |
 <OBJECT: "OBJECT"> |
 <OCIROWID: "OCIROWID"> |
-<OF: "OF"> |
 <OFFSET: "OFFSET"> |
 <OID: "OID"> |
-<ON: "ON"> |
 <ONLY: "ONLY"> |
 <OPAQUE: "OPAQUE"> |
 <OPEN: "OPEN"> |
 <OPERATOR: "OPERATOR"> |
-<OPTION: "OPTION"> |
-<OR: "OR"> |
-<ORDER: "ORDER"> |
 <ORGANIZATION: "ORGANIZATION"> |
 <OTHERS: "OTHERS"> |
 <OUT: "OUT"> |
@@ -4197,26 +4572,22 @@ TOKEN [IGNORE_CASE]:
 <PROMPT: "PROMPT"> |
 <PRIMARY: "PRIMARY"> |
 <PRIVATE: "PRIVATE"> |
-<PROCEDURE: "PROCEDURE"> |
-<PUBLIC: "PUBLIC"> |
 //<QQUOTE_START: "Q'">  |  // Mark the start of a Q-quoted string, e.g. Q'[ This string contains a single-quote(') ]'
 <RAISE: "RAISE"> |
 <RANGE: "RANGE"> |
 <RAW: "RAW"> |
 <REAL: "REAL"> |
 <RECORD: "RECORD"> |
-<REF: "REF"> |
 <REFERENCES: "REFERENCES"> |
+<REGEXP_LIKE: "REGEXP_LIKE"> |
 <RELEASE: "RELEASE"> |
-<RELIES_ON: "RELIES_ON"> | 
+<RELIES_ON: "RELIES_ON"> |
 <RENAME: "RENAME"> | //SRT 2011-04-17
-<RESOURCE: "RESOURCE"> | //SRT 2011-04-17
 <RESULT: "RESULT"> |
 <RESULT_CACHE: "RESULT_CACHE"> |
 <RETURN: "RETURN"> |
 <RETURNING: "RETURNING"> |
 <REVERSE: "REVERSE"> |
-<REVOKE: "REVOKE"> | //SRT 2011-04-17
 <ROLLBACK: "ROLLBACK"> |
 <ROLLUP: "ROLLUP"> |
 <ROW: "ROW"> |
@@ -4227,35 +4598,25 @@ TOKEN [IGNORE_CASE]:
 <SAVE: "SAVE"> |
 <SAVEPOINT: "SAVEPOINT"> |
 <SECOND: "SECOND"> |
-<SELECT: "SELECT"> |
 <SELF: "SELF"> |
 <SEPARATE: "SEPARATE"> |
 <SET: "SET"> |
 <SETS: "SETS"> |
 <SIBLINGS: "SIBLINGS"> |
-<SIZE: "SIZE"> | //SRT 2011-04-17
 <SHARDED: "SHARDED"> |
-<SHARE: "SHARE"> |
 <SHARING: "SHARING"> |
 <SMALLINT: "SMALLINT"> |
 <SOME: "SOME"> |
 <SPACE: "SPACE"> |
-<SQL: "SQL"> |
 <SQLCODE: "SQLCODE"> |
 <SQLERRM: "SQLERRM"> |
-<START: "START"> |
 <STATIC: "STATIC"> |
-<STDDEV: "STDDEV"> |
-<SUBTYPE: "SUBTYPE"> |
 <SUBSTITUTABLE: "SUBSTITUTABLE"> |
 <SUCCESSFUL: "SUCCESSFUL"> |
-<SUM: "SUM"> |
 <SYNONYM: "SYNONYM"> |
 <SYSDATE: "SYSDATE"> |
 <SYS_REFCURSOR: "SYS_REFCURSOR"> |
-<TABLE: "TABLE"> |
 <TEMPORARY: "TEMPORARY"> |
-<THEN: "THEN"> |
 <TIES: "TIES"> |
 <TIME: "TIME"> |
 <TIMESTAMP: "TIMESTAMP"> |
@@ -4263,21 +4624,14 @@ TOKEN [IGNORE_CASE]:
 <TIMEZONE_ABBR: "TIMEZONE_ABBR"> |
 <TIMEZONE_MINUTE: "TIMEZONE_MINUTE"> |
 <TIMEZONE_HOUR: "TIMEZONE_HOUR"> |
-<TO: "TO"> |
 <TRANSACTION: "TRANSACTION"> |
 <TRIGGER: "TRIGGER"> |
 <TRUE: "TRUE"> |
-<TYPE: "TYPE"> |
 <UI: "UI"> |
 <UNDER: "UNDER"> |
-<UNIQUE: "UNIQUE"> | //SRT 2011-04-17
 <USING: "USING"> |
-<VALUES: "VALUES"> | //SRT 2011-04-17
-<WHEN: "WHEN"> |
-<WHERE: "WHERE"> | //SRT 2011-04-17
 <WHILE: "WHILE"> |
 <YES: "YES"> | //SRT 2011-04-17
-
 
 <SHOW: "SHOW"> |
 <SPOOL: "SPOOL"> |
@@ -4287,7 +4641,6 @@ TOKEN [IGNORE_CASE]:
 //<WHILE: "WHILE"> |
 //<NAME: "NAME"> |
 <A: "A"> |
-<UPDATE: "UPDATE"> |
 <VARCHAR: "VARCHAR"> |
 <VARCHAR2: "VARCHAR2"> |
 <DOUBLE: "DOUBLE"> |
@@ -4308,26 +4661,24 @@ TOKEN [IGNORE_CASE]:
 <NCLOB: "NCLOB"> |
 <YEAR: "YEAR"> |
 <LOCAL: "LOCAL"> |
-<WITH: "WITH"> |
 <ZONE: "ZONE"> |
-<CHARACTER: "CHARACTER"> | 
-<AFTER: "AFTER"> |   
-<BEFORE: "BEFORE"> |   
-<INSTEADOF: "INSTEAD OF"> |   
-<FOREACHROW: "FOR EACH ROW"> |  
-<REFERENCING: "REFERENCING"> | 
-<OLD: "OLD"> |  
-<PARENT: "PARENT"> |  
-<VIEW: "VIEW"> |
-<UNION: "UNION">
-| <CC_IF: "$IF"> 
-| <CC_THEN: "$THEN"> 
-| <CC_ELSE: "$ELSE"> 
-| <CC_ELSIF: "$ELSIF"> 
-| <CC_END: "$END"> 
-| <CC_ERROR: "$ERROR"> 
-| <CC_PLSQL_LINE: "$PLSQL_LINE"> 
-| <CC_PLSQL_UNIT: "$PLSQL_UNIT"> 
+<CHARACTER: "CHARACTER"> |
+<AFTER: "AFTER"> |
+<BEFORE: "BEFORE"> |
+<INSTEADOF: "INSTEAD OF"> |
+<FOREACHROW: "FOR EACH ROW"> |
+<REFERENCING: "REFERENCING"> |
+<OLD: "OLD"> |
+<PARENT: "PARENT">
+
+| <CC_IF: "$IF">
+| <CC_THEN: "$THEN">
+| <CC_ELSE: "$ELSE">
+| <CC_ELSIF: "$ELSIF">
+| <CC_END: "$END">
+| <CC_ERROR: "$ERROR">
+| <CC_PLSQL_LINE: "$PLSQL_LINE">
+| <CC_PLSQL_UNIT: "$PLSQL_UNIT">
 | <PLSQL_CCFLAGS: "$PLSQL_CCFLAGS">
 | <PLSQL_DEBUG: "$PLSQL_DEBUG">
 | <PLSQL_OPTIMIZE_LEVEL: "$PLSQL_OPTIMIZE_LEVEL">
@@ -4356,17 +4707,17 @@ TOKEN [IGNORE_CASE]:
 | <STATISTICS: "STATISTICS">  //11G Trigger Syntax
 | <SUSPEND: "SUSPEND">  //11G Trigger Syntax
 | <TRUNCATE: "TRUNCATE">  //11G Trigger Syntax
-| <WRAPPED: "WRAPPED"> //XE testing 
-| <LIBRARY: "LIBRARY"> //XE testing 
-| <NAME: "NAME"> //XE testing  non-PLSQL functions 
-| <STRUCT: "STRUCT"> //XE testing non-PLSQL functions 
-| <CONTEXT: "CONTEXT"> //XE testing non-PLSQL functions 
-| <PARAMETERS: "PARAMETERS"> //XE testing non-PLSQL functions 
-| <LENGTH: "LENGTH"> //XE testing non-PLSQL functions 
-| <TDO: "TDO"> //XE testing non-PLSQL functions 
-| <MAXLEN: "MAXLEN"> //XE testing non-PLSQL functions 
-| <CHARSETID: "CHARSETID"> //XE testing non-PLSQL functions 
-| <CHARSETFORM: "CHARSETFORM"> //XE testing non-PLSQL functions 
+| <WRAPPED: "WRAPPED"> //XE testing
+| <LIBRARY: "LIBRARY"> //XE testing
+| <NAME: "NAME"> //XE testing  non-PLSQL functions
+| <STRUCT: "STRUCT"> //XE testing non-PLSQL functions
+| <CONTEXT: "CONTEXT"> //XE testing non-PLSQL functions
+| <PARAMETERS: "PARAMETERS"> //XE testing non-PLSQL functions
+| <LENGTH: "LENGTH"> //XE testing non-PLSQL functions
+| <TDO: "TDO"> //XE testing non-PLSQL functions
+| <MAXLEN: "MAXLEN"> //XE testing non-PLSQL functions
+| <CHARSETID: "CHARSETID"> //XE testing non-PLSQL functions
+| <CHARSETFORM: "CHARSETFORM"> //XE testing non-PLSQL functions
 //SQLPlus Commands
 | <ACCEPT : "ACCEPT">
 | <ACCESSIBLE : "ACCESSIBLE">
@@ -4383,7 +4734,6 @@ TOKEN [IGNORE_CASE]:
 | <ATTACH : "ATTACH">
 | <CAST : "CAST">
 | <TREAT : "TREAT">
-| <TRIM : "TRIM">
 | <LEFT : "LEFT">
 | <RIGHT : "RIGHT">
 | <BOTH : "BOTH">
@@ -4404,6 +4754,10 @@ TOKEN [IGNORE_CASE]:
 | <SHARED : "SHARED">
 | <DIRECTORY : "DIRECTORY">
 | <USER : "USER">
+| <READ : "READ">
+| <LATERAL : "LATERAL">
+| <NOCYCLE : "NOCYCLE">
+| <CONNECT_BY_ROOT : "CONNECT_BY_ROOT">
 }
 
 /**
@@ -4453,132 +4807,158 @@ TOKEN :
 < #_WHATEVER_CHARACTER_WO_ASTERISK: (~["'"]) >
 |
 < CHARACTER_LITERAL: "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS>)? "'" >
-//|< STRING_LITERAL: 
-//  (["q","Q"])* "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" 
-//> //Cope with Q-quoted stringswithout single quotes in them 
-|< STRING_LITERAL: 
-// Hard-code the most likely q-quote strings 
-             "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" 
-|(["n","N"]) "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" //National Character Set String 
+//|< STRING_LITERAL:
+//  (["q","Q"])* "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'"
+//> //Cope with Q-quoted stringswithout single quotes in them
+|< STRING_LITERAL:
+// Hard-code the most likely q-quote strings
+             "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'"
+|(["n","N"]) "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" //National Character Set String
 |(["q","Q"]) "'" (<_WHATEVER_CHARACTER_WO_ASTERISK> | <SPECIAL_CHARACTERS> | "''")* "'" // Bug 160632
-|(["q","Q"]) "'[" (~["[","]"])* "]'" 
-|(["q","Q"]) "'{" (~["{","}"])* "}'" 
-|(["q","Q"]) "'<" (~["<",">"])* ">'" 
-|(["q","Q"]) "'(" (~["(",")"])* ")'" 
-|(["q","Q"]) "'/" (~["/"])* "/'" 
-|(["q","Q"]) "'!" (~["!"])* "!'" 
-|(["q","Q"]) "'#" (~["#"])* "#'" 
-> //Cope with Q-quoted stringswithout single quotes in them 
+|(["q","Q"]) "'[" (~["[","]"])* "]'"
+|(["q","Q"]) "'{" (~["{","}"])* "}'"
+|(["q","Q"]) "'<" (~["<",">"])* ">'"
+|(["q","Q"]) "'(" (~["(",")"])* ")'"
+|(["q","Q"]) "'/" (~["/"])* "/'"
+|(["q","Q"]) "'!" (~["!"])* "!'"
+|(["q","Q"]) "'#" (~["#"])* "#'"
+> //Cope with Q-quoted stringswithout single quotes in them
 |
 < #_WHATEVER_CHARACTER_WO_QUOTE: (~["\""]) >
 |
 < QUOTED_LITERAL: "\"" (<_WHATEVER_CHARACTER_WO_QUOTE> | <SPECIAL_CHARACTERS> | "\\\"")* "\"" >
-| 
+|
 < SQLDATA_CLASS: "SQLData" >
-| 
+|
 < CUSTOMDATUM_CLASS: "CustomDatum" >
-| 
+|
 < ORADATA_CLASS:  "OraData"  >
-| 
+|
 < JAVA_INTERFACE_CLASS: ( "SQLData" | "CustomDatum" | "OraData" ) >
 //|
 //< #BOOLEAN_LITERAL: "TRUE" | "FALSE" >
-| 
+|
 <SQLPLUS_TERMINATOR: ( ";" | "/" ) >
 }
 
-//SRT 2011-04-17 - START 
-ASTKEYWORD_RESERVED KEYWORD_RESERVED (): {}
+/**
+ * PL/SQL Reserved words
+ *
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/plsql-reserved-words-keywords.html
+ *
+ * Note: This production is not used, it is just here for reference of collecting all reserved words.
+ * Reserved words cannot be used a identifiers.
+ */
+void RESERVED_WORD() #void: {}
 {
-// PL/SQL RESERVED WORDS - V$RESERVED.RESERVED='Y' 
-( <ALL>
+  <ALL>
 | <ALTER>
 | <AND>
 | <ANY>
 | <AS>
 | <ASC>
+| <AT>
+| <BEGIN>
 | <BETWEEN>
 | <BY>
-| <CHAR>
+| <CASE>
 | <CHECK>
+| <CLUSTERS>
 | <CLUSTER>
+| <COLAUTH>
+| <COLUMNS>
 | <COMPRESS>
 | <CONNECT>
+| <CRASH>
 | <CREATE>
-| <DATE>
-| <DECIMAL>
+| <CURSOR>
+| <DECLARE>
 | <_DEFAULT>
-| <DELETE>
 | <DESC>
 | <DISTINCT>
 | <DROP>
 | <ELSE>
+| <END>
+| <EXCEPTION>
 | <EXCLUSIVE>
-| <EXISTS>
-| <FLOAT>
+| <FETCH>
 | <FOR>
 | <FROM>
+| <FUNCTION>
+| <GOTO>
 | <GRANT>
 | <GROUP>
 | <HAVING>
 | <IDENTIFIED>
+| <IF>
 | <IN>
 | <INDEX>
+| <INDEXES>
 | <INSERT>
-| <INTEGER>
 | <INTERSECT>
 | <INTO>
 | <IS>
 | <LIKE>
 | <LOCK>
-| <LONG>
 | <MINUS>
 | <MODE>
 | <NOCOMPRESS>
 | <NOT>
 | <NOWAIT>
 | <NULL>
-| <NUMBER>
 | <OF>
 | <ON>
 | <OPTION>
 | <OR>
 | <ORDER>
-| <PCTFREE>
-| <PRIOR>
+| <OVERLAPS>
+| <PROCEDURE>
 | <PUBLIC>
-| <RAW>
-// | <RENAME> // Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
 | <RESOURCE>
 | <REVOKE>
 | <SELECT>
-| <SET>
 | <SHARE>
 | <SIZE>
-| <SMALLINT>
+| <SQL>
 | <START>
-| <SYNONYM>
+| <SUBTYPE>
+| <TABAUTH>
 | <TABLE>
 | <THEN>
 | <TO>
-| <TRIGGER>
+| <TYPE>
 | <UNION>
 | <UNIQUE>
 | <UPDATE>
 | <VALUES>
-| <VARCHAR>
-| <VARCHAR2>
 | <VIEW>
+| <VIEWS>
+| <WHEN>
 | <WHERE>
 | <WITH>
-)
- { jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
+}
+
+void KEYWORD(String id) #void:
+{}
+{
+    <IDENTIFIER>
+    {
+        if (!token.image.equalsIgnoreCase(id)) {
+            String eol = System.getProperty("line.separator", "\n");
+            throw new ParseException("Encountered \"" + token.image + "\" at line "
+                + token.beginLine + ", column " + token.beginColumn + "." + eol
+                + "Was expecting: " + id);
+        }
+    }
 }
 
 ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
-// PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N' 
-(<FALSE>
+// PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
+(
+ "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
+"OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
+<FALSE>
  | <TRUE>
  | <A>
 //| <ABORT>
@@ -4715,18 +5095,18 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <CONNECT_BY_FILTERING>
 //| <CONNECT_BY_ISCYCLE>
 //| <CONNECT_BY_ISLEAF>
-//| <CONNECT_BY_ROOT>
+| <CONNECT_BY_ROOT>
 //| <CONNECT_TIME>
 //| <CONSIDER>
 //| <CONSISTENT>
 | <CONSTRAINT>
 //| <CONSTRAINTS>
-| <CONSTRUCTOR> 
+| <CONSTRUCTOR>
 //| <CONTAINER>
 //| <CONTENT>
 //| <CONTENTS>
 | <CONTEXT>
-| <CONTINUE> 
+| <CONTINUE>
 //| <CONTROLFILE>
 | <CONVERT>
 | <COPY>
@@ -4771,7 +5151,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DECRYPT>
 //| <DEFERRABLE>
 //| <DEFERRED>
-| <DEFINE>// SQL*Plus command 
+| <DEFINE>// SQL*Plus command
 //| <DEFINED>
 | <DEFINER>
 | <DEFINITION>
@@ -4780,7 +5160,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DEMAND>
 //| <DENSE_RANK>
 //| <DEQUEUE>
-//| <DEREF>
 //| <DEREF_NO_REWRITE>
 //| <DETACHED>
 //| <DETERMINES>
@@ -4827,9 +5206,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <ENQUEUE>
 //| <ENTERPRISE>
 //| <ENTRY>
-//| <ERROR>
 //| <ERROR_ON_OVERLAP_TIME>
-//| <ERRORS>
 | <ESCAPE>
 //| <ESTIMATE>
 //| <EVALNAME>
@@ -4868,7 +5245,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <FINAL>
 //| <FINE>
 //| <FINISH>
-| <FIRST>
 //| <FIRST_ROWS>
 //| <FLAGGER>
 //| <FLASHBACK>
@@ -4951,7 +5327,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <INDEXTYPE>
 //| <INDEXTYPES>
 | <INDICATOR>
-| <INDICES> // FORALL i I INDICES OF collection - SPARSE COLLECTIONS 
+| <INDICES> // FORALL i I INDICES OF collection - SPARSE COLLECTIONS
 | <INFINITE>
 //| <INFORMATIONAL>
 //| <INITIAL>
@@ -4989,8 +5365,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <KEYSIZE>
 //| <KILL>
 | <LANGUAGE>
-| <LAST>
-//| <LATERAL>
+| <LATERAL>
 //| <LAYER>
 //| <LDAP_REG_SYNC_INTERVAL>
 //| <LDAP_REGISTRATION>
@@ -5017,7 +5392,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LOCATION>
 //| <LOCATOR>
 //| <LOCKED>
-//| <LOG>
 //| <LOGFILE>
 //| <LOGGING>
 //| <LOGICAL>
@@ -5037,7 +5411,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <MATCHED>
 //| <MATERIALIZE>
 //| <MATERIALIZED>
-| <MAX>
+//| <MAX>
 //| <MAXARCHLOGS>
 //| <MAXDATAFILES>
 //| <MAXEXTENTS>
@@ -5060,7 +5434,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <METADATA>
 //| <METHOD>
 //| <MIGRATE>
-| <MIN>
+//| <MIN>
 //| <MINEXTENTS>
 //| <MINIMIZE>
 //| <MINIMUM>
@@ -5180,7 +5554,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <NOAUDIT>
 //| <NOCACHE>
 //| <NOCPU_COSTING>
-//| <NOCYCLE>
+| <NOCYCLE>
 //| <NODELAY>
 //| <NOFORCE>
 //| <NOGUARANTEE>
@@ -5248,7 +5622,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <OUTLINE>
 //| <OUTLINE_LEAF>
 //| <OVER>
-//| <OVERFLOW>
 //| <OVERFLOW_NOMOVE>
 //| <OVERLAPS>
 | <OVERRIDING>
@@ -5341,7 +5714,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RAPIDLY>
 //| <RBA>
 //| <RBO_OUTLINE>
-//| <READ>
+| <READ>
 //| <READS>
 | <REAL>
 //| <REBALANCE>
@@ -5355,16 +5728,14 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <RECYCLEBIN>
 //| <REDUCED>
 //| <REDUNDANCY>
-| <REF>
 //| <REF_CASCADE_CURSOR>
 //| <REFERENCE>
 //| <REFERENCED>
 | <REFERENCES>
 //| <REFERENCING>
 //| <REFRESH>
-//| <REGEXP_LIKE>
+| <REGEXP_LIKE>
 //| <REGISTER>
-//| <REJECT>
 //| <REKEY>
 //| <RELATIONAL>
 //| <RELY>
@@ -5372,7 +5743,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <REMARK>
 //| <REMOTE_MAPPED>
 //| <REPAIR>
-//| <REPLACE>
 //| <REQUIRED>
 //| <RESET>
 //| <RESETLOGS>
@@ -5446,7 +5816,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SESSIONS_PER_USER>
 | <SESSIONTIMEZONE>
 //| <SESSIONTZNAME>
-| <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a Pragma parameter
+//| <SET> //SET is defined as a reserved word but is used in "SYS"."DBMS_RESULT_CACHE_API" as a function name and as a Pragma parameter
 //| <SET_TO_JOIN>
 | <SETS>
 //| <SETTINGS>
@@ -5503,7 +5873,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SUBPARTITIONS>
 //| <SUBQUERIES>
 | <SUBSTITUTABLE>
-| <SUBTYPE> // XDBPM_ANALYZE_XMLSCHEMA 
+| <SUBTYPE> // XDBPM_ANALYZE_XMLSCHEMA
 | <SUCCESSFUL>
 //| <SUMMARY>
 //| <SUPPLEMENTAL>
@@ -5565,7 +5935,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <TRANSITIONAL>
 | <TREAT>
 //| <TRIGGERS>
-| <TRIM>
 | <TRUNCATE>
 //| <TRUSTED>
 //| <TUNING>
@@ -5585,7 +5954,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <UNDO>
 //| <UNDROP>
 //| <UNIFORM>
-//| <UNLIMITED>
 //| <UNLOCK>
 //| <UNNEST>
 //| <UNPACKED>
@@ -5623,7 +5991,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <USING>
 //| <VALIDATE>
 //| <VALIDATION>
-//| <VALUE>
 | <VARRAY>
 | <VARIABLE>
 | <VARYING>
@@ -5638,7 +6005,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <WHENEVER>
 //| <WHITESPACE>
 //| <WITHIN>
-//| <WITHOUT>
 //| <WORK>
 //| <WRAPPED>
 //| <WRITE>
@@ -5661,15 +6027,15 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <YEAR>
 | <YES>
 | <ZONE>
-| <SHOW>  // APEX_0400000.WWW_CALCUATOR.SHOW  
-| <WRAPPED>  // APEX_0400000.WWW_CALCUATOR.SHOW  
-| <SYS_REFCURSOR> //Not a keyword - just a type defined in standard 
-| <EDITIONABLE> 
-| <NONEDITIONABLE> 
-| <ACCESSIBLE> 
-| <NULLIF> 
+| <SHOW>  // APEX_0400000.WWW_CALCUATOR.SHOW
+| <WRAPPED>  // APEX_0400000.WWW_CALCUATOR.SHOW
+| <SYS_REFCURSOR> //Not a keyword - just a type defined in standard
+| <EDITIONABLE>
+| <NONEDITIONABLE>
+| <ACCESSIBLE>
+| <NULLIF>
 | <RENAME> //Although RENAME is an Oracle reserved word, it may be used as a PL/SQL name.
-| <RELEASE> //Although RELEASE is an Oracle reserved word, it may be used as a PL/SQL name. 
+| <RELEASE> //Although RELEASE is an Oracle reserved word, it may be used as a PL/SQL name.
 | <INLINE> // PRAGMA INLINE is not a PLSQL reserved word
 )
 
@@ -5685,195 +6051,187 @@ ASTID ID(): {}
 	(<IDENTIFIER>
 		| <QUOTED_LITERAL>
 	        | KEYWORD_UNRESERVED()  //SRT 2011-04-17
-		/*KEYWORDS_UNRESERVED 
-		|<EXTRACT> | <FALSE> | <TRUE>  | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <MONTH> | <YEAR> 
-		 | <NO> |<ROW>  | <COMMENT> | <CURSOR> 
+		/*KEYWORDS_UNRESERVED
+		|<EXTRACT> | <FALSE> | <TRUE>  | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <MONTH> | <YEAR>
+		 | <NO> |<ROW>  | <COMMENT> | <CURSOR>
 		*/
-		| <REPLACE> //SYNTAX  
-		//20120501 | <DEFINER> 
-		| <SERIALLY_REUSABLE> | <RESTRICT_REFERENCES> 
+		//20120501 | <DEFINER>
+		| <SERIALLY_REUSABLE> | <RESTRICT_REFERENCES>
 		| <EXCEPTION_INIT> | <AUTONOMOUS_TRANSACTION> // | <LANGUAGE>
-		//| <ALL>  //RESERVED WORD 
-		| <ALTER>  //SYNTAX  //RESERVED WORD 
-		| <AND>  //SYNTAX  //RESERVED WORD 
-		| <ANY>  //RESERVED WORD 
-		| <ARRAY> 
-		| <AS>  //SYNTAX  //RESERVED WORD 
-		| <ASC>  //RESERVED WORD 
-		//20120429 | <AT> | <AUTHID> 
-		| <AVG> 
+		//| <ALL>  //RESERVED WORD
+		| <ALTER>  //SYNTAX  //RESERVED WORD
+		| <AND>  //SYNTAX  //RESERVED WORD
+		| <ANY>  //RESERVED WORD
+		| <ARRAY>
+		| <AS>  //SYNTAX  //RESERVED WORD
+		| <ASC>  //RESERVED WORD
+		//20120429 | <AT> | <AUTHID>
+		//| <AVG>
 		//	<BEGIN> |
-		| <BETWEEN>  //RESERVED WORD
-		| <BINARY_INTEGER> 
-		| <BODY> //SYNTAX 
-		| <BOOLEAN> 
-		//201020430 | <BULK> 
-		//| <BY> //RESERVED WORD 
-		//201020430 | <BYTE> 
-		| <CASE> //SYNTAX 
-		| <CHAR>  //RESERVED WPRDS 
-		| <CHAR_BASE> 
-		| <CHECK>  //RESERVED WPRDS 
-		//20120501 | <CLOSE> //SYNTAX 
+		| <BINARY_INTEGER>
+		| <BODY> //SYNTAX
+		| <BOOLEAN>
+		//201020430 | <BULK>
+		//| <BY> //RESERVED WORD
+		//201020430 | <BYTE>
+		| <CASE> //SYNTAX
+		| <CHAR>  //RESERVED WPRDS
+		| <CHAR_BASE>
+		| <CHECK>  //RESERVED WPRDS
+		//20120501 | <CLOSE> //SYNTAX
 		| <CLUSTER> //-<COALESCE> |
-		//20120501 | <COLLECT> 
-		| <COMPRESS>  //RESERVED WPRDS 
-		| <CONNECT> //SYNTAX //RESERVED WORD 
-		| <CONSTANT> 
-		| <CREATE> //SYNTAX //RESERVED WORD 
-		//20120501 | <CURRENT> 
-		| <CURRVAL> 
-		| <DATE> //RESERVED WORD 
-		| <DECLARE> //SYNTAX 
-		| <DECIMAL> //RESERVED WORD  
-		| <_DEFAULT> //RESERVED WORD 
-		| <DELETE>  //RESERVED WORD 
-		| <DESC>  //RESERVED WORD 
-		//| <DISTINCT>  //RESERVED WORD 
-		| <DO> 
-		| <DROP>  //RESERVED WORD 
-		| <ELSE> //SYNTAX //RESERVED WORD 
-		| <ELSIF> //SYNTAX 
-		
-		//| <END> |<CURRENT_USER> 
-		| <EXCEPTION> //SYNTAX 
-		| <EXCLUSIVE> //SYNTAX //RESERVED WORD 
-		| <EXECUTE> //SYNTAX 
-		| <EXISTS> //SYNTAX //RESERVED WORD 
-		//| <EXIT> //SYNTAX 
-		//20120501 | <EXTENDS> 
-		| <FETCH> //SYNTAX 
-		| <FLOAT> //SYNTAX //RESERVED WORD 
-		| <FOR>  //RESERVED WORD 
-		| <FORALL> //SYNTAX 
-		| <FROM>  //RESERVED WORD 
-		
+		//20120501 | <COLLECT>
+		| <COMPRESS>  //RESERVED WPRDS
+		//| <CONNECT> //SYNTAX //RESERVED WORD
+		| <CONSTANT>
+		| <CREATE> //SYNTAX //RESERVED WORD
+		//20120501 | <CURRENT>
+		| <CURRVAL>
+		| <DATE> //RESERVED WORD
+		| <DECLARE> //SYNTAX
+		| <DECIMAL> //RESERVED WORD
+		| <DELETE>  //RESERVED WORD
+		| <DESC>  //RESERVED WORD
+		//| <DISTINCT>  //RESERVED WORD
+		| <DO>
+		| <DROP>  //RESERVED WORD
+		//| <ELSE> //SYNTAX //RESERVED WORD
+		| <ELSIF> //SYNTAX
+
+		//| <END> |<CURRENT_USER>
+		//| <EXCEPTION> //SYNTAX
+		| <EXCLUSIVE> //SYNTAX //RESERVED WORD
+		| <EXECUTE> //SYNTAX
+		//| <EXISTS> //SYNTAX //RESERVED WORD
+		//| <EXIT> //SYNTAX
+		//20120501 | <EXTENDS>
+		| <FETCH> //SYNTAX
+		| <FLOAT> //SYNTAX //RESERVED WORD
+		| <FOR>  //RESERVED WORD
+		| <FORALL> //SYNTAX
+		//| <FROM>  //RESERVED WORD
+
 		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
-		| <GOTO> //SYNTAX 
-		//| <GROUP>  //RESERVED WORD 
-		| <HAVING>  //RESERVED WORD 
-		//20120501 | <HEAP> 
-		| <IF> //SYNTAX 
-		//20120501 | <IMMEDIATE> 
-		| <IN> //RESERVED WORD 
-		| <INDEX> //RESERVED WORD  
-		//20120501 | <INDICATOR> 
-		| <INSERT> //SYNTAX  //RESERVED WORD  
-		| <INTEGER>  //RESERVED WORD  
-		| <INTERFACE> 
-		| <INTERSECT>  //RESERVED WORD  
-		//20120501 | <INTERVAL> 
-		| <INTO>  //RESERVED WORD  
+		| <GOTO> //SYNTAX
+		| <HAVING>  //RESERVED WORD
+		//20120501 | <HEAP>
+		| <IF> //SYNTAX
+		//20120501 | <IMMEDIATE>
+		| <IN> //RESERVED WORD
+		| <INDEX> //RESERVED WORD
+		//20120501 | <INDICATOR>
+		| <INSERT> //SYNTAX  //RESERVED WORD
+		| <INTEGER>  //RESERVED WORD
+		| <INTERFACE>
+		| <INTERSECT>  //RESERVED WORD
+		//20120501 | <INTERVAL>
+		//| <INTO>  //RESERVED WORD
 		| <IS> //SYNTAX
-		//20120501 | <ISOLATION> | <JAVA> | <LEVEL> 
-		| <LIKE>  //RESERVED WORD  
-		| <LIMITED> 
-		| <LOCK> //SYNTAX  //RESERVED WORD  
-		| <LONG>  //RESERVED WORD  
-		| <LOOP> //SYNTAX 
-		//20120501 | <MAX> | <MIN> 
-		| <MINUS>  //RESERVED WORD  
-		//20120501 | <MLSLABEL> 
-		| <MOD> 
-		| <MODE> //RESERVED WORD   
-		//20120501 | <NATURAL> 
-		| <NATURALN> | <NEXTVAL> | <NOCOPY> 
-		| <NOT> //SYNTAX  //RESERVED WORD  
-		| <NOWAIT>  //RESERVED WORD  
-		| <NULL>  //RESERVED WORD  
-		//| <NULLIF> 
-		| <NUMBER>  //RESERVED WORD  
-		| <NUMBER_BASE> 
-		| <OCIROWID> 
-		| <OF>  //RESERVED WORD  
-		//| <ON>  //RESERVED WORD  
-		//20120501 | <OPAQUE> 
-		| <BFILE_BASE> 
+		//20120501 | <ISOLATION> | <JAVA> | <LEVEL>
+		| <LIKE>  //RESERVED WORD
+		| <LIMITED>
+		| <LOCK> //SYNTAX  //RESERVED WORD
+		| <LONG>  //RESERVED WORD
+		| <LOOP> //SYNTAX
+		//20120501 | <MAX> | <MIN>
+		| <MINUS>  //RESERVED WORD
+		//20120501 | <MLSLABEL>
+		| <MOD>
+		| <MODE> //RESERVED WORD
+		//20120501 | <NATURAL>
+		| <NATURALN> | <NEXTVAL> | <NOCOPY>
+		| <NOT> //SYNTAX  //RESERVED WORD
+		| <NOWAIT>  //RESERVED WORD
+		| <NULL>  //RESERVED WORD
+		//| <NULLIF>
+		| <NUMBER>  //RESERVED WORD
+		| <NUMBER_BASE>
+		| <OCIROWID>
+		//20120501 | <OPAQUE>
+		| <BFILE_BASE>
 		| <BLOB_BASE> |
 		//<CHAR_BASE> |
 		<CLOB_BASE> |
-		<DATE_BASE> 
-		//20120501 | <OPEN> 
-		| <OPERATOR> | <OPTION> 
-		| <OR> //SYNTAX  //RESERVED WORD  
-		//| <ORDER>  //RESERVED WORD  
-		//20120501 | <ORGANIZATION> //| <OTHERS> 
-		| <OUT> 
-		//20120501 | <PACKAGE> //SYNTAX 
-		| <PCTFREE>  //RESERVED WORD  
-		| <PLS_INTEGER> | <POSITIVE> | <POSITIVEN> 
-		// <PRAGMA> |<PARTITION> | <RANGE> | <NEW> | <OLD> | 
-		| <PRIOR>  //RESERVED WORD  
-		| <PRIVATE> 
-		| <PROMPT> //SYNTAX 
-		
+		<DATE_BASE>
+		//20120501 | <OPEN>
+		| <OPERATOR> | <OPTION>
+		| <OR> //SYNTAX  //RESERVED WORD
+		//| <ORDER>  //RESERVED WORD
+		//20120501 | <ORGANIZATION> //| <OTHERS>
+		| <OUT>
+		//20120501 | <PACKAGE> //SYNTAX
+		| <PCTFREE>  //RESERVED WORD
+		| <PLS_INTEGER> | <POSITIVE> | <POSITIVEN>
+		// <PRAGMA> |<PARTITION> | <RANGE> | <NEW> | <OLD> |
+		| <PRIOR>  //RESERVED WORD
+		| <PRIVATE>
+		| <PROMPT> //SYNTAX
+
 		//	<PROCEDURE> | // this causes bug 643043 Procedure w/o params appears as variable
-		| <PUBLIC>  //RESERVED WORD  
-		| <RAISE> //SYNTAX 
-		| <RAW>  //RESERVED WORD  
-		//20120501 | <REAL> 
-		//<RECORD> | <RETURN> |  <SET> |<REF> | 
-		//| <RELEASE> 
-		//20120501 | <REVERSE> 
-		//20120501 | <ROLLBACK> //SYNTAX 
-		//20120501 | <ROWID> 
-		//20120501 | <ROWNUM> 
-		| <ROWTYPE> 
-		//20120501 | <SAVEPOINT> //SYNTAX 
-		| <SELECT>  //SYNTAX  //RESERVED WORD  
-		| <SEPARATE> 
-		| <SHARE>  //RESERVED WORD  
-		| <SMALLINT>  //RESERVED WORD  
-		| <SQL>  
-		| <SQLCODE> | <SQLERRM> 
-		| <START>  //RESERVED WORD  
-		| <STDDEV> // <SUBTYPE> |
-		//20120501 | <SUCCESSFUL> 
-		| <SUM> 
-		| <SYNONYM>  //RESERVED WORD  
-		| <SYSDATE> 
-		| <TABLE>  //RESERVED WORD  
-		| <THEN> //SYNTAX  //RESERVED WORD  
-		//<SPACE> | <TIME> | <TIMESTAMP> | <TIMEZONE_REGION> | <TIMEZONE_ABBR> | <TIMEZONE_MINUTE> | <TIMEZONE_HOUR> | 
-		| <TO>  //RESERVED WORD  
-		| <TRIGGER>  //RESERVED WORD  
-		| <TYPE> 
-		| <UI> 
-		| <UPDATE> //SYNTAX 
-		| <VARCHAR>  //RESERVED WORD  
-		| <VARCHAR2>  //RESERVED WORD  
-		//20120501 | <DOUBLE> 
-		//20120501 | <DEC> 
-		//20120501 | <PRECISION> 
-		| <INT> 
-		//20120501 | <NUMERIC> 
-		| <SIGNTYPE> 
-		//20120429 | <NCHAR> | <NVARCHAR2> 
-		| <STRING> 
-		//| <UROWID> | <VARRAY> | <VARYING> 
-		//20120429 | <BFILE> | <BLOB> | <CLOB> | <NCLOB> 
-		| <WITH>  //RESERVED WORD  
-		| <WHILE> //SYNTAX 
+		| <PUBLIC>  //RESERVED WORD
+		| <RAISE> //SYNTAX
+		| <RAW>  //RESERVED WORD
+		//20120501 | <REAL>
+		//<RECORD> | <RETURN> |  <SET> |
+		//| <RELEASE>
+		//20120501 | <REVERSE>
+		//20120501 | <ROLLBACK> //SYNTAX
+		//20120501 | <ROWID>
+		//20120501 | <ROWNUM>
+		| <ROWTYPE>
+		//20120501 | <SAVEPOINT> //SYNTAX
+		| <SEPARATE>
+		| <SHARE>  //RESERVED WORD
+		| <SMALLINT>  //RESERVED WORD
+		| <SQL>
+		| <SQLCODE> | <SQLERRM>
+		//| <START>  //RESERVED WORD
+		//| <STDDEV> // <SUBTYPE> |
+		//20120501 | <SUCCESSFUL>
+		//| <SUM>
+		| <SYNONYM>  //RESERVED WORD
+		| <SYSDATE>
+		//| <TABLE>  //RESERVED WORD
+		| <THEN> //SYNTAX  //RESERVED WORD
+		//<SPACE> | <TIME> | <TIMESTAMP> | <TIMEZONE_REGION> | <TIMEZONE_ABBR> | <TIMEZONE_MINUTE> | <TIMEZONE_HOUR> |
+		| <TO>  //RESERVED WORD
+		| <TRIGGER>  //RESERVED WORD
+		| <TYPE>
+		| <UI>
+		| <UPDATE> //SYNTAX
+		| <VARCHAR>  //RESERVED WORD
+		| <VARCHAR2>  //RESERVED WORD
+		//20120501 | <DOUBLE>
+		//20120501 | <DEC>
+		//20120501 | <PRECISION>
+		| <INT>
+		//20120501 | <NUMERIC>
+		| <SIGNTYPE>
+		//20120429 | <NCHAR> | <NVARCHAR2>
+		| <STRING>
+		//| <UROWID> | <VARRAY> | <VARYING>
+		//20120429 | <BFILE> | <BLOB> | <CLOB> | <NCLOB>
+		| <WHILE> //SYNTAX
 		// | <LOCAL> | <ZONE> | <CHARACTER>
-		//| <PARENT>  | <MEMBER> 
-		//20120429 | <CONSTRUCTOR> | <OBJECT> 
-		//PLDoc Bug 3512150  | <STATIC> 
-		//20120427 | <UNDER> | <RESULT> 
-		//20120428 | <FINAL> | <INSTANTIABLE> 
+		//| <PARENT>  | <MEMBER>
+		//20120429 | <CONSTRUCTOR> | <OBJECT>
+		//PLDoc Bug 3512150  | <STATIC>
+		//20120427 | <UNDER> | <RESULT>
+		//20120428 | <FINAL> | <INSTANTIABLE>
 	        // PlDoc Bug 3512150 | <MAP>
 	        //20120427 | <OVERRIDING>
-	        //20120427 | <OID> 
+	        //20120427 | <OID>
 		//20120428 | <AGGREGATE>
 		//| <SYS_REFCURSOR>
 		| <JAVA_INTERFACE_CLASS> | <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
 		//20120427 | <EXTERNAL>
-                //SRT 20090608 ALTER TYPE key words 
+                //SRT 20090608 ALTER TYPE key words
 		//| <ADD>
 		//PLDoc Bug 3512149  | <ATTRIBUTE>
 		//| <ELEMENT>
 		//| <LIMIT>
 		//20120427 | <MODIFY>
-		//SRT 20110524 | <SELF> 
+		//SRT 20110524 | <SELF>
 	)
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
 }
@@ -5893,16 +6251,15 @@ ASTUnqualifiedID UnqualifiedID(): {}
 		| <OPERATOR>
 		| <PRIVATE>
 		| <RAW>
-		| <REPLACE>
 		| <STRING>
 		| <SQL>
 		| <SQLCODE>
 		| <SQLERRM>
 		| <SYSDATE>
 		| <TYPE>
-		//| <OLD>  		
-		//| <NEW>			
-		| <LOOP> 
+		//| <OLD>
+		//| <NEW>
+		| <LOOP>
 		| <INT>
 		| <ARRAY>
 		//| <RESULT>
@@ -5921,18 +6278,17 @@ ASTQualifiedID QualifiedID(): {}
 		| <QUOTED_LITERAL>
 	        | KEYWORD_UNRESERVED()  //SRT 2011-04-17
 		/*
-		| <EXTRACT> --Unreserved Key Word 
-		| <FALSE> --Unreserved Key Word 
-		| <TRUE> --Unreserved Key Word 
+		| <EXTRACT> --Unreserved Key Word
+		| <FALSE> --Unreserved Key Word
+		| <TRUE> --Unreserved Key Word
 		| <SECOND>
 		| <MINUTE>
 		| <HOUR>
 		| <DAY>
 		| <MONTH>
-		| <YEAR> --Unreserved Key Word 
-		| <NO> //SRT 
+		| <YEAR> --Unreserved Key Word
+		| <NO> //SRT
 		*/
-		| <REPLACE>
 		//20120501 | <DEFINER>
 		//| <CURRENT_USER>
 		| <SERIALLY_REUSABLE>
@@ -5949,9 +6305,8 @@ ASTQualifiedID QualifiedID(): {}
 		//<ASC>
 		//<AT>
 		//20120429 | <AUTHID>
-		| <AVG>
+		//| <AVG>
 		//<BEGIN>
-		//<BETWEEN>
 		| <BINARY_INTEGER>
 		| <BODY>
 		| <BOOLEAN>
@@ -6000,7 +6355,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<FROM>
 		//| <FUNCTION>
 		//<GOTO>
-		//<GROUP>
 		//<HAVING>
 		//20120501 | <HEAP>
 		//<IF>
@@ -6039,15 +6393,14 @@ ASTQualifiedID QualifiedID(): {}
 		//<NULL>
 		//| <NULLIF>
 		| <NUMBER>
-		| <BFILE_BASE> 
-		| <BLOB_BASE> 
+		| <BFILE_BASE>
+		| <BLOB_BASE>
 		//| <CHAR_BASE>
-		| <CLOB_BASE> 
-		| <DATE_BASE> 
+		| <CLOB_BASE>
+		| <DATE_BASE>
 		| <NUMBER_BASE>
 		| <OCIROWID>
 		//<OF>
-		//<ON>
 		//20120501 | <OPAQUE>
 		//20120501 | <OPEN>
 		| <OPERATOR>
@@ -6074,7 +6427,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <RAW>
 		//20120501 | <REAL>
 		//| <RECORD>
-		//| <REF>
 		//| <RELEASE>
 		//| <RETURN>
 		//20120501 | <REVERSE>
@@ -6084,7 +6436,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <ROWNUM>
 		| <ROWTYPE>
 		//20120501 | <SAVEPOINT>
-		//<SELECT>
 		| <SEPARATE>
 		//<SET>
 		//<SHARE>
@@ -6094,10 +6445,10 @@ ASTQualifiedID QualifiedID(): {}
 		| <SQLCODE>
 		| <SQLERRM>
 		//<START>
-		| <STDDEV>
+		//| <STDDEV>
 		//| <SUBTYPE>
 		//20120501 | <SUCCESSFUL>
-		| <SUM>
+		//| <SUM>
 		| <SYNONYM>
 		| <SYSDATE>
 		//<TABLE>
@@ -6132,11 +6483,10 @@ ASTQualifiedID QualifiedID(): {}
 		//20120429 | <CLOB>
 		//20120429 | <NCLOB>
 		//| <LOCAL>
-		//<WITH>
 		| <WHILE>
 		// | <ZONE>
 		//| <CHARACTER>
-		//| <LIMIT>		 
+		//| <LIMIT>
 	        //| KEYWORD_UNRESERVED()  //SRT 2011-04-17
 	)
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
@@ -6150,21 +6500,21 @@ ASTTypeKeyword TypeKeyword(): {}
 	//<CHAR_BASE> |
 	<CLOB_BASE> |
 	<DATE_BASE> |
-	<NUMBER_BASE> | 
+	<NUMBER_BASE> |
 	<BOOLEAN> | <DATE> | <NUMBER> | <FLOAT> | <REAL> | <INTEGER> | <INT> | <SMALLINT>
 	| <DECIMAL> | <NUMERIC> | <DEC> | <BINARY_INTEGER> | <NATURAL> | <NATURALN>
 	| <POSITIVE> | <POSITIVEN> | <SIGNTYPE> | <VARCHAR2> | <VARCHAR> | <STRING> |
 	<LONG> | <RAW> | <ROWID> | <CHAR> | <CHARACTER> | <MLSLABEL> | <BLOB> | <CLOB> | <BFILE> |
 	<NCHAR> | <NVARCHAR2> | <NCLOB> | <PLS_INTEGER> | <TIME> | <TIMESTAMP> | <UROWID> |
 //
-	<ARRAY> | <AUTHID> | <ACCESSIBLE> 
+	<ARRAY> | <AUTHID> | <ACCESSIBLE>
 	<CHAR_BASE> |
 	<CURRVAL> |
 	<HOUR> |
 	<INTERVAL> |
 	<MONTH> |
 	<OCIROWID> |
-	<RECORD> | <REF> |
+	<RECORD> | "REF" |
 	<ROW> |
 	<ROWNUM> |
 	<ROWTYPE> | <SECOND> | <SET> |
@@ -6183,35 +6533,5 @@ ASTJavaInterfaceClass JavaInterfaceClass(): {}
           <SQLDATA_CLASS> | <CUSTOMDATUM_CLASS> | <ORADATA_CLASS>
         )
 	{ jjtThis.setImage(token.toString()) ; jjtThis.value = token ; return jjtThis ; }
-}
-
-
-
-
-/**
- * Tests, if the new Token if type ID is identical to the old Token of type ID.
- * 
- * 2006-05-18 - Matthias Hendler - added: Just for understanding javacc and not used,
- *                                        cause to many closing ENDs (IDENTIFIER) were mistyped.
- */
-PLSQLNode EqualsOldIDNewID(PLSQLNode pOldID) :
-{
-	PLSQLNode newID;
-	Token oldIDToken;
-	Token newIDToken;
-}
-{
-	newID = ID()
-	{
-	        oldIDToken = (Token) ((AbstractPLSQLNode)pOldID).value ;
-	        newIDToken = (Token) ((AbstractPLSQLNode)newID).value ;
-		if (oldIDToken.image.equals(newIDToken.image)) {
-			return newID;
-		} else {
-			throw new ParseException("PLSQL syntax error on line "+newIDToken.beginLine+" at column "+newIDToken.beginColumn+"!\n"
-				+ "Found \""+newIDToken.image+"\" but expected \""+oldIDToken.image+"\".");
-		}
-	}
-
 }
 

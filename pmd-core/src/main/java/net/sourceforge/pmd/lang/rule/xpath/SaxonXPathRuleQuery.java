@@ -236,7 +236,9 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
         */
         if (value == null) {
             return UntypedAtomicValue.ZERO_LENGTH_UNTYPED;
-
+        } else if (value instanceof Enum) {
+            // enums use their toString
+            return new StringValue(value.toString());
         } else if (value instanceof String) {
             return new StringValue((String) value);
         } else if (value instanceof Boolean) {

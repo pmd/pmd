@@ -282,8 +282,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>1.3.0</pmd.build-tools.version>
+        <pmd.build-tools.version>1.4.0</pmd.build-tools.version>
 
+        <pmd-designer.version>6.12.0</pmd-designer.version>
     </properties>
 
     <build>
@@ -906,7 +907,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-rules</artifactId>
-                <version>1.8.0</version>
+                <version>1.19.0</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
@@ -1141,7 +1142,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-scala</module>
         <module>pmd-swift</module>
         <module>pmd-test</module>
-        <module>pmd-ui</module>
         <module>pmd-visualforce</module>
         <module>pmd-vm</module>
         <module>pmd-xml</module>

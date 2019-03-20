@@ -19,60 +19,58 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Quickstart Ruleset for Apex
+
+PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
+get your custom ruleset started. You can reference it with `rulesets/apex/quickstart.xml`.
+You are strongly encouraged to [create your own ruleset](https://pmd.github.io/pmd-6.12.0/pmd_userdocs_making_rulesets.html)
+though.
+
+The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
+references only rules, that are most likely to apply everywhere.
+
+Any feedback would be greatly appreciated.
+
+#### PMD Designer
+
+The rule designer's codebase has been moved out of the main repository and
+will be developed at [pmd/pmd-designer](https://github.com/pmd/pmd-designer)
+from now on. The maven coordinates will stay the same for the time being.
+The designer will still be shipped with PMD's binaries.
+
 #### New Rules
 
-*   The new Java rule {% rule "java/bestpractices/ForLoopVariableCount" %} (`java-bestpractices`) checks for
-    the number of control variables in a for-loop. Having a lot of control variables makes it harder to understand
-    what the loop does. The maximum allowed number of variables is by default 1 and can be configured by a
-    property.
+*   The new Java rule {% rule "java/design/AvoidUncheckedExceptionsInSignatures" %} (`java-design`) finds methods or constructors
+    that declare unchecked exceptions in their `throws` clause. This forces the caller to handle the exception,
+    even though it is a runtime exception.
 
-*   The new Java rule {% rule "java/bestpractices/AvoidReassigningLoopVariables" %} (`java-bestpractices`) searches
-    for loop variables that are reassigned. Changing the loop variables additionally to the loop itself can lead to
-    hard-to-find bugs.
+*   The new Java rule {% rule "java/errorprone/DetachedTestCase" %} (`java-errorprone`) searches for public
+    methods in test classes, which are not annotated with `@Test`. These methods might be test cases where
+    the annotation has been forgotten. Because of that those test cases are never executed.
 
-*   The new Java rule {% rule "java/codestyle/UseDiamondOperator" %} (`java-codestyle`) looks for constructor
-    calls with explicit type parameters. Since Java 1.7, these type parameters are not necessary anymore, as they
-    can be inferred now.
-
-#### Modified Rules
-
-*   The Java rule {% rule "java/codestyle/LocalVariableCouldBeFinal" %} (`java-codestyle`) has a new
-    property `ignoreForEachDecl`, which is by default disabled. The new property allows for ignoring
-    non-final loop variables in a for-each statement.
+*   The new Java rule {% rule "java/bestpractices/WhileLoopWithLiteralBoolean" %} (`java-bestpractices`) finds
+    Do-While-Loops and While-Loops that can be simplified since they use simply `true` or `false` as their
+    loop condition.
 
 ### Fixed Issues
 
-*   apex
-    *   [#1542](https://github.com/pmd/pmd/pull/1542): \[apex] Include the documentation category
-*   java
-    * [#1556](https://github.com/pmd/pmd/issues/1556): \[java] Default methods should not be considered abstract
-*   java-bestpractices
-    *   [#658](https://github.com/pmd/pmd/issues/658): \[java] OneDeclarationPerLine: False positive for loops
-    *   [#1518](https://github.com/pmd/pmd/issues/1518): \[java] New rule: AvoidReassigningLoopVariable
-    *   [#1519](https://github.com/pmd/pmd/issues/1519): \[java] New rule: ForLoopVariableCount
-*   java-codestyle
-    *   [#1513](https://github.com/pmd/pmd/issues/1513): \[java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop
-    *   [#1517](https://github.com/pmd/pmd/issues/1517): \[java] New Rule: UseDiamondOperator
-*   java-errorprone
-    *   [#1035](https://github.com/pmd/pmd/issues/1035): \[java] ReturnFromFinallyBlock: False positive on lambda expression in finally block
-*   plsql
-    *   [#1507](https://github.com/pmd/pmd/issues/1507): \[plsql] Parse Exception when using '||' operator in where clause
-    *   [#1508](https://github.com/pmd/pmd/issues/1508): \[plsql] Parse Exception when using SELECT COUNT(*)
-    *   [#1509](https://github.com/pmd/pmd/issues/1509): \[plsql] Parse Exception with OUTER/INNER Joins
-    *   [#1511](https://github.com/pmd/pmd/issues/1511): \[plsql] Parse Exception with IS NOT NULL
-
 ### API Changes
+
+#### Deprecated API
+
+*   {% jdoc core::renderers.CodeClimateRule %} is deprecated in 7.0.0 because it was unused for 2 years and
+    created an unwanted dependency.
+    Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed.
+    See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
+
+*   The Apex ruleset `rulesets/apex/ruleset.xml` has been deprecated and will be removed in 7.0.0. Please use the new
+    quickstart ruleset `rulesets/apex/quickstart.xml` instead.
 
 ### External Contributions
 
-*   [#1503](https://github.com/pmd/pmd/pull/1503): \[java] Fix for ReturnFromFinallyBlock false-positives - [RishabhDeep Singh](https://github.com/rishabhdeepsingh)
-*   [#1514](https://github.com/pmd/pmd/pull/1514): \[java] LocalVariableCouldBeFinal: allow excluding the variable in a for-each loop - [Kris Scheibe](https://github.com/kris-scheibe)
-*   [#1516](https://github.com/pmd/pmd/pull/1516): \[java] OneDeclarationPerLine: Don't report multiple variables in a for statement. - [Kris Scheibe](https://github.com/kris-scheibe)
-*   [#1520](https://github.com/pmd/pmd/pull/1520): \[java] New rule: ForLoopVariableCount: check the number of control variables in a for loop - [Kris Scheibe](https://github.com/kris-scheibe)
-*   [#1521](https://github.com/pmd/pmd/pull/1521): \[java] Upgrade to ASM7 for JDK 11 support - [Mark Pritchard](https://github.com/markpritchard)
-*   [#1530](https://github.com/pmd/pmd/pull/1530): \[java] New rule: AvoidReassigningLoopVariables - [Kris Scheibe](https://github.com/kris-scheibe)
-*   [#1534](https://github.com/pmd/pmd/pull/1534): \[java] This is the change regarding the usediamondoperator #1517 - [hemanshu070](https://github.com/hemanshu070)
-*   [#1545](https://github.com/pmd/pmd/pull/1545): \[doc] fixing dead links + tool to check for dead links automatically - [Kris Scheibe](https://github.com/kris-scheibe)
+*   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
+*   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
+*   [#1709](https://github.com/pmd/pmd/pull/1709): \[java] Detect while loops with literal booleans conditions - [David Burström](https://github.com/davidburstromspotify)
 
 {% endtocmaker %}
 
