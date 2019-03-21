@@ -3007,9 +3007,10 @@ void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
 
 /* Annotation syntax follows. */
 
-void Annotation():
+void Annotation() #void:
 {}
 {
+ (
    LOOKAHEAD( "@" Name() "(" ( <IDENTIFIER> "=" | ")" ))
    NormalAnnotation()
  |
@@ -3017,24 +3018,32 @@ void Annotation():
    SingleMemberAnnotation()
  |
    MarkerAnnotation()
+ )
+ {checkForBadAnnotationUsage();}
+}
+
+void AnnotationBase(Node n) #void:
+{String name = null;}
+{
+   "@" name=VoidName() {n.setImage(name);}
 }
 
 void NormalAnnotation():
 {}
 {
-   "@" Name() "(" [ MemberValuePairs() ] ")" {checkForBadAnnotationUsage();}
+   AnnotationBase(jjtThis) "(" [ MemberValuePairs() ] ")"
 }
 
 void MarkerAnnotation():
 {}
 {
-  "@" Name() {checkForBadAnnotationUsage();}
+  AnnotationBase(jjtThis)
 }
 
 void SingleMemberAnnotation():
 {}
 {
-  "@" Name() "(" MemberValue() ")" {checkForBadAnnotationUsage();}
+  AnnotationBase(jjtThis) "(" MemberValue() ")"
 }
 
 void MemberValuePairs():
@@ -3049,13 +3058,14 @@ void MemberValuePair():
     t=<IDENTIFIER> { jjtThis.setImage(t.image); } "=" MemberValue()
 }
 
-void MemberValue():
+void MemberValue() #void:
 {}
 {
    Annotation()
  |
    MemberValueArrayInitializer()
  |
+   // Constant expression
    ConditionalExpression()
 }
 

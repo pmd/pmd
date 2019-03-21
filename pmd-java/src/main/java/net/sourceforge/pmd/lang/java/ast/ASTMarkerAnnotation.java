@@ -10,14 +10,14 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * MarkerAnnotation ::= "@" {@linkplain ASTAnnotation Name}
+ * MarkerAnnotation ::= "@" Name
  *
  * </pre>
  *
  * @see ASTSingleMemberAnnotation
  * @see ASTNormalAnnotation
  */
-public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
+public class ASTMarkerAnnotation extends AbstractJavaTypeNode implements ASTAnnotation {
 
     public ASTMarkerAnnotation(int id) {
         super(id);
@@ -38,21 +38,6 @@ public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns the name of the annotation as it is used,
-     * eg {@code java.lang.Override} or {@code Override}.
-     */
-    public String getAnnotationName() {
-        return jjtGetChild(0).getImage();
-    }
-
-
-    @Override
-    public ASTAnnotation jjtGetParent() {
-        return (ASTAnnotation) super.jjtGetParent();
     }
 
 

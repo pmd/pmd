@@ -12,31 +12,12 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * MemberValue ::= {@linkplain ASTAnnotation Annotation}
- *               | {@linkplain ASTMemberValueArrayInitializer MemberValueArrayInitializer}
- *               | &lt; any expression, excluding assignment expressions and lambda expressions &gt;
+ * MemberValue ::= {@link ASTAnnotation Annotation}
+ *               | {@link ASTMemberValueArrayInitializer MemberValueArrayInitializer}
+ *               | {@link ASTExpression &lt; any expression, excluding assignment expressions and lambda expressions &gt;}
  *
  * </pre>
  */
-public class ASTMemberValue extends AbstractJavaNode {
-    public ASTMemberValue(int id) {
-        super(id);
-    }
+public interface ASTMemberValue extends JavaNode {
 
-
-    public ASTMemberValue(JavaParser p, int id) {
-        super(p, id);
-    }
-
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
 }

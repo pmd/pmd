@@ -35,7 +35,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public interface ASTExpression extends JavaNode, TypeNode {
+public interface ASTExpression extends JavaNode, TypeNode, ASTMemberValue {
 
     /**
      * Always returns true. This is to allow XPath queries

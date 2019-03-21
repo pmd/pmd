@@ -18,9 +18,8 @@ import java.util.Iterator;
  *
  * </pre>
  *
- *
  */
-public class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue> {
+public class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue>, ASTMemberValue {
     public ASTMemberValueArrayInitializer(int id) {
         super(id);
     }

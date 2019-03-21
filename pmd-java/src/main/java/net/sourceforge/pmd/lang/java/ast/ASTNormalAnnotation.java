@@ -11,14 +11,14 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * NormalAnnotation ::=  "@" {@linkplain ASTName Name} "(" {@linkplain ASTMemberValuePairs MemberValuePairs}? ")"
+ * NormalAnnotation ::=  "@" Name "(" {@linkplain ASTMemberValuePairs MemberValuePairs}? ")"
  *
  * </pre>
  *
  * @see ASTSingleMemberAnnotation
  * @see ASTMarkerAnnotation
  */
-public class ASTNormalAnnotation extends AbstractJavaTypeNode {
+public class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation {
     public ASTNormalAnnotation(int id) {
         super(id);
     }
@@ -40,18 +40,4 @@ public class ASTNormalAnnotation extends AbstractJavaTypeNode {
         visitor.visit(this, data);
     }
 
-
-    /**
-     * Returns the name of the annotation as it is used,
-     * eg {@code java.lang.Override} or {@code Override}.
-     */
-    public String getAnnotationName() {
-        return jjtGetChild(0).getImage();
-    }
-
-
-    @Override
-    public ASTAnnotation jjtGetParent() {
-        return (ASTAnnotation) super.jjtGetParent();
-    }
 }
