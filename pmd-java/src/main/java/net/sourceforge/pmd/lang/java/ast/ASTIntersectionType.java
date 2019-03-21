@@ -14,7 +14,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -29,8 +28,8 @@ import java.util.List;
  * are necessarily interface types.
  *
  * <pre>
- *
- * IntersectionType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType} ("&" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
+ * FIXME that's why we need AnnotatedType to go away
+ * IntersectionType ::= {@link ASTType (AnnotatedType | ClassOrInterfaceType)} ("&" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
  *
  * </pre>
  */
@@ -48,22 +47,10 @@ public class ASTIntersectionType extends AbstractJavaTypeNode implements ASTRefe
 
     @Override
     public String getTypeImage() {
-        return getBaseType().getImage();
+        return iterator().next().getTypeImage(); //TODO
+
     }
 
-    /**
-     * Returns the annotated type.
-     */
-    public ASTType getBaseType() {
-        return (ASTType) jjtGetChild(jjtGetNumChildren() - 1);
-    }
-
-    /**
-     * Returns the annotations contained within this node.
-     */
-    public List<ASTAnnotation> getAnnotations() {
-        return findChildrenOfType(ASTAnnotation.class);
-    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

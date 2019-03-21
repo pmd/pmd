@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nullable;
+
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -16,6 +18,7 @@ public interface TypeNode extends JavaNode {
      *
      * @return The Java Class, may return <code>null</code>.
      */
+    @Nullable
     Class<?> getType();
 
     /**
@@ -25,6 +28,7 @@ public interface TypeNode extends JavaNode {
      *
      * @return The TypeDefinition, may return <code>null</code>
      */
+    @Nullable
     JavaTypeDefinition getTypeDefinition();
 
     /**

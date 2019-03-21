@@ -32,7 +32,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     }
 
     @Override
-    public void setType(Class<?> type) {
+    public void setType(@Nullable Class<?> type) {
         typeDefinition = JavaTypeDefinition.forClass(type);
     }
 
@@ -43,7 +43,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     }
 
     @Override
-    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+    public void setTypeDefinition(@Nullable JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;
     }
 }

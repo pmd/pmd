@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArugments;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
+import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.EXACT;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_WILDCARD;
@@ -21,11 +22,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotatedType;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -55,9 +60,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -97,6 +104,7 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -1075,32 +1083,40 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
+    public Object visit(@Nonnull ASTIntersectionType node, Object data) {
+        List<ASTType> typeNodes = IteratorUtil.toList(node.iterator());
+
+        // TypeBound will have at least one child, but maybe more
+        JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
+        int i = 0;
+        for (ASTType bound : typeNodes) {
+            bounds[i++] = bound.getTypeDefinition();
+        }
+
+        node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
+
+        return super.visit(node, data);
+    }
+
+    @Override
     public Object visit(ASTTypeParameter node, Object data) {
         if (!node.hasTypeBound()) { // type parameter doesn't have declared upper bounds
             node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
         } else {
             super.visit(node, data);
             rollupTypeUnary(node);
+            if (node.getTypeDefinition() != null && !node.getTypeDefinition().isUpperBound()) {
+                node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, node.getTypeDefinition()));
+            }
         }
 
         return data;
     }
 
     @Override
-    public Object visit(ASTTypeBound node, Object data) {
+    public Object visit(@Nonnull ASTAnnotatedType node, Object data) {
         super.visit(node, data);
-
-        List<ASTClassOrInterfaceType> typeNodes = node.getBoundTypeNodes();
-
-        // TypeBound will have at least one child, but maybe more
-        JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
-        int i = 0;
-        for (ASTClassOrInterfaceType bound : typeNodes) {
-            bounds[i++] = bound.getTypeDefinition();
-        }
-
-        node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
-
+        rollupTypeUnary(node);
         return data;
     }
 
