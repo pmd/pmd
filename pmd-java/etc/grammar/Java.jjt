@@ -381,6 +381,11 @@ public class JavaParser {
     }
   }
   private void checkForBadConciseTryWithResourcesUsage() {
+    Node top = jjtree.peekNode();
+    if (!(top instanceof ASTFieldAccess || top instanceof ASTVariableReference)) {
+      throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
+    }
+
     if (jdkVersion < 9) {
       throwParseException("Cannot use concise try-with-resources when running in JDK inferior to 9 mode!");
     }
@@ -477,6 +482,17 @@ public class JavaParser {
 
   private void setLastTokenImage(JavaNode node) {
     node.setImage(getToken(0).getImage());
+  }
+
+  private void forceExprContext() {
+       Node top = jjtree.peekNode();
+
+       if (top instanceof ASTAmbiguousName) {
+           // see doc on the method
+           Node replacement = ((ASTAmbiguousName) top).forceExprContext();
+           jjtree.popNode();
+           jjtree.pushNode(replacement);
+       }
   }
 
 }
@@ -2417,16 +2433,7 @@ void SwitchExpression() :
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* {
-      Node top = jjtree.peekNode();
-
-      if (top instanceof ASTAmbiguousName) {
-          // see doc on the method
-          Node replacement = ((ASTAmbiguousName) top).forceExprContext();
-          jjtree.popNode();
-          jjtree.pushNode(replacement);
-      }
-  }
+  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* {forceExprContext();}
 }
 
 /**
@@ -2954,9 +2961,10 @@ void Resources() :
 void Resource() :
 {}
 {
-   LOOKAHEAD(2) ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
+   LOOKAHEAD(("final" | Annotation())* LocalVariableType() VariableDeclaratorId() "=" )
+     ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
    |
-   Name() {checkForBadConciseTryWithResourcesUsage();}
+   PrimaryExpression() {checkForBadConciseTryWithResourcesUsage(); } {}
 }
 
 void CatchStatement() :
