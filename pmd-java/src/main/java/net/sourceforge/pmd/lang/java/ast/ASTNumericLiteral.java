@@ -56,6 +56,7 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
     }
 
 
+    @Override
     public boolean isIntLiteral() {
         String image = getImage();
         if (isInt && image != null && image.length() > 0) {
