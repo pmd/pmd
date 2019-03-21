@@ -181,6 +181,11 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             ignoreChildren: Boolean = false,
             noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx, ignoreChildren, nodeSpec)
 
+    fun notParseIn(nodeParsingCtx:NodeParsingCtx<*>): Assertions<String> = {
+        shouldThrow<ParseException> {
+            nodeParsingCtx.parseNode(it, this)
+        }
+    }
 
     /**
      * Expect a parse exception to be thrown by [block].
@@ -196,7 +201,6 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
 
     fun parseAstExpression(expr: String): ASTExpression = ExpressionParsingCtx.parseNode(expr, this)
-
 
     fun parseAstStatement(statement: String): ASTBlockStatement = StatementParsingCtx.parseNode(statement, this)
 
