@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nullable;
+
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -24,6 +26,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     }
 
     @Override
+    @Nullable
     public Class<?> getType() {
         return typeDefinition == null ? null : typeDefinition.getType();
     }
@@ -34,6 +37,7 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
     }
 
     @Override
+    @Nullable
     public JavaTypeDefinition getTypeDefinition() {
         return typeDefinition;
     }

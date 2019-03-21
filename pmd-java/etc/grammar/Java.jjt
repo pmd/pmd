@@ -1731,15 +1731,15 @@ void ExtendsList():
    boolean extendsMoreThanOne = false;
 }
 {
-   "extends" (TypeAnnotation())* ClassOrInterfaceType()
-   ( "," (TypeAnnotation())* ClassOrInterfaceType() { extendsMoreThanOne = true; } )*
+   "extends" AnnotatedClassOrInterfaceType()
+   ( "," AnnotatedClassOrInterfaceType() { extendsMoreThanOne = true; } )*
 }
 
 void ImplementsList():
 {}
 {
-   "implements" (TypeAnnotation())* ClassOrInterfaceType()
-   ( "," (TypeAnnotation())* ClassOrInterfaceType() )*
+   "implements" AnnotatedClassOrInterfaceType()
+   ( "," AnnotatedClassOrInterfaceType() )*
 }
 
 void EnumDeclaration(int modifiers):
@@ -1793,14 +1793,14 @@ void TypeParameters():
 void TypeParameter():
 {Token t;}
 {
-   (TypeAnnotation())*
+   TypeAnnotationList()
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
 void TypeBound():
 {}
 {
-   "extends" (TypeAnnotation())* ClassOrInterfaceType() ( "&" (TypeAnnotation())* ClassOrInterfaceType() )*
+   "extends" IntersectionType(false)
 }
 
 void ClassOrInterfaceBody():
@@ -1878,7 +1878,7 @@ void MethodDeclaration(int modifiers) :
 }
 {
   [ TypeParameters() ]
-  (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ]
+  ResultType() MethodDeclarator() [ "throws" NameList() ]
   ( Block() | ";" )
 }
 
@@ -1967,6 +1967,42 @@ Dims:
 
 */
 
+
+void IntersectionType(boolean inCast) #IntersectionType(>1):
+{}
+{
+  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();} ClassOrInterfaceType() )*
+}
+
+void AnnotationList() #void:
+{}
+{
+  (Annotation())*
+}
+void TypeAnnotationList() #void:
+{}
+{
+  (Annotation())* {checkForBadTypeAnnotations();} // don't repeat the check
+}
+
+void AnnotatedType() #AnnotatedType(>1):
+{}
+{
+  TypeAnnotationList() Type()
+}
+
+
+void AnnotatedRefType() #AnnotatedType(>1):
+{}
+{
+  TypeAnnotationList() ReferenceType()
+}
+
+void AnnotatedClassOrInterfaceType() #AnnotatedType(>1):
+{}
+{
+  TypeAnnotationList() ClassOrInterfaceType()
+}
 
 /*
  * Type, name and expression syntax follows.
@@ -2090,25 +2126,35 @@ void TypeArguments():
 {}
 {
    LOOKAHEAD(2)
-   "<" {checkForBadGenericsUsage();} TypeArgument() ( "," TypeArgument() )* ">"
+   "<" {checkForBadGenericsUsage();} TypeArgumentImpl() ( "," TypeArgumentImpl() )* ">"
  |
    "<" {checkForBadDiamondUsage();} ">"
 }
 
-/**
-* TODO We could make this #void and instead have a node WildcardType extending ReferenceType.
-*      This would remove this level of nesting, which is unnecessary.
-*/
+void TypeArgumentImpl() #AnnotatedType(>1):
+{}
+{
+   TypeAnnotationList() (ReferenceType() | WildcardType())
+}
+
+// TODO remove me, kept for transition
 void TypeArgument():
 {}
 {
-   (TypeAnnotation())* (ReferenceType() | "?" [ WildcardBounds() ])
+   (TypeAnnotation())* (ReferenceType() | WildcardType())
 }
 
+void WildcardType():
+{}
+{
+    "?" [  ("extends" {jjtThis.setUpperBound(true);}| "super") AnnotatedRefType() ]
+}
+
+// TODO remove me
 void WildcardBounds():
 {}
 {
-   ("extends" | "super") (TypeAnnotation())* ReferenceType()
+    ("extends" | "super") AnnotatedRefType()
 }
 
 /* JLS https://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-PrimitiveType
@@ -2146,7 +2192,7 @@ void PrimitiveType() :
 void ResultType() :
 {}
 {
-  TypeOrVoid()
+   "void" | AnnotatedType()
 }
 
 void TypeOrVoid() #void:
@@ -2155,7 +2201,7 @@ void TypeOrVoid() #void:
   "void" | Type()
 }
 
-
+// TODO rename to ThrowsClause
 void NameList() :
 {}
 {
@@ -2330,7 +2376,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
  * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwise)
  */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
-| LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
+| LOOKAHEAD("(" IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
 | SwitchExpression()
 }
@@ -2345,9 +2391,9 @@ void CastExpression() :
 {}
 {
   LOOKAHEAD(
-    "(" (Annotation())* PrimitiveType() ")"
-  ) "(" (TypeAnnotation())* Type() ")" UnaryExpression()
-| "(" (TypeAnnotation())* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
+    "(" AnnotationList() PrimitiveType() ")"
+  ) "(" AnnotatedType() ")" UnaryExpression()
+| "(" IntersectionType(true) ")" UnaryExpressionNotPlusMinus()
 }
 
 
@@ -2571,8 +2617,7 @@ void QualifiedAllocationExpr() #ConstructorCall:
    "."
    "new"
    [ TypeArguments() ]
-   (TypeAnnotation())*
-   ClassOrInterfaceType()
+   AnnotatedClassOrInterfaceType()
    ArgumentsList()
    [
        { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }

@@ -7,6 +7,10 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+
 /**
  * The interface use to mark nodes that can be annotated.
  */
@@ -19,30 +23,31 @@ public interface Annotatable extends JavaNode {
      */
     List<ASTAnnotation> getDeclaredAnnotations();
 
-    /**
-     * Get specific annotaion on this node.
-     *
-     * @param annotQualifiedName
-     *            qulified name of the annotation.
-     * @return <code>ASTAnnotaion</code> node if the annotation is present on this node, else <code>null</code>
-     */
-    ASTAnnotation getAnnotation(String annotQualifiedName);
 
-    /**
-     * Checks whether any annotation is present on this node.
-     *
-     * @param annotQualifiedNames
-     *            collection that cotains qulified name of annotations.
-     * @return <code>true</code> if any annotation is present on this node, else <code>false</code>
-     */
-    boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames);
+    @Nullable
+    default ASTAnnotation getAnnotation(String annotQualifiedName) {
+        List<ASTAnnotation> annotations = getDeclaredAnnotations();
+        for (ASTAnnotation annotation : annotations) {
+            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+            if (name != null && TypeHelper.isA(name, annotQualifiedName)) {
+                return annotation;
+            }
+        }
+        return null;
+    }
 
-    /**
-     * Checks whether the annotation is present on this node.
-     *
-     * @param annotQualifiedName
-     *            qulified name of the annotation.
-     * @return <code>true</code> if the annotation is present on this node, else <code>false</code>
-     */
-    boolean isAnnotationPresent(String annotQualifiedName);
+
+    default boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames) {
+        for (String annotQualifiedName : annotQualifiedNames) {
+            if (isAnnotationPresent(annotQualifiedName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    default boolean isAnnotationPresent(String annotQualifiedName) {
+        return getAnnotation(annotQualifiedName) != null;
+    }
 }

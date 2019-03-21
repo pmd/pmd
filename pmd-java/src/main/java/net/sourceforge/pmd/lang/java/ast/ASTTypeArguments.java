@@ -13,11 +13,11 @@ import java.util.Iterator;
  *
  * <pre>
  *
- *  TypeArguments ::= "<" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
+ *  TypeArguments ::= "<" {@linkplain ASTReferenceType TypeArgument} ( "," {@linkplain ASTReferenceType TypeArgument} )* ">"
  *                  | "<" ">"
  * </pre>
  */
-public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTypeArgument> {
+public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType> {
     public ASTTypeArguments(int id) {
         super(id);
     }
@@ -48,7 +48,7 @@ public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTy
 
 
     @Override
-    public Iterator<ASTTypeArgument> iterator() {
-        return new NodeChildrenIterator<>(this, ASTTypeArgument.class);
+    public Iterator<ASTType> iterator() {
+        return new NodeChildrenIterator<>(this, ASTType.class);
     }
 }

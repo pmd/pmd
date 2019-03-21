@@ -4,10 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collection;
 import java.util.List;
-
-import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements Annotatable {
 
@@ -24,30 +21,4 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
         return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
     }
 
-    @Override
-    public ASTAnnotation getAnnotation(String annotQualifiedName) {
-        List<ASTAnnotation> annotations = getDeclaredAnnotations();
-        for (ASTAnnotation annotation : annotations) {
-            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-            if (name != null && TypeHelper.isA(name, annotQualifiedName)) {
-                return annotation;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public boolean isAnnotationPresent(String annotQualifiedName) {
-        return getAnnotation(annotQualifiedName) != null;
-    }
-
-    @Override
-    public boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames) {
-        for (String annotQualifiedName : annotQualifiedNames) {
-            if (isAnnotationPresent(annotQualifiedName)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

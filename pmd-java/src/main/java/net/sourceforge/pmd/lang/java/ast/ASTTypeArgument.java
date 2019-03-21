@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-// TODO should implement Annotatable when we use can use Java 8 mixins instead of an abstract class
+@Deprecated
 public class ASTTypeArgument extends AbstractJavaTypeNode {
     public ASTTypeArgument(int id) {
         super(id);

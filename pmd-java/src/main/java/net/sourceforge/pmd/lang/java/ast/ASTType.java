@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nullable;
+
 import net.sourceforge.pmd.annotation.Experimental;
 
 
@@ -17,15 +21,16 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * Type ::= {@link ASTReferenceType ReferenceType}
  *        | {@link ASTPrimitiveType PrimitiveType}
+ *        | {@link ASTAnnotatedType AnnotatedType}
  *
  * </pre>
  *
- * Note: it is not exactly the same the "UnnanType" defined in JLS.
+ * Note: it is not exactly the same the "UnannType" defined in JLS.
  *
  * TODO implement {@link Annotatable}. Ideally, any type annotations
  * would be children of this node, not of the parent node.
  */
-public interface ASTType extends JavaNode, TypeNode {
+public interface ASTType extends JavaNode, TypeNode, Annotatable {
 
     /**
      * For now this returns the name of the type with all the segments,
@@ -45,8 +50,27 @@ public interface ASTType extends JavaNode, TypeNode {
     }
 
 
-    default boolean isArrayType() {
-        return this instanceof ASTArrayType;
+    @Override
+    default List<ASTAnnotation> getDeclaredAnnotations() {
+        // overridden by AnnotatedType
+        return Collections.emptyList();
+    }
+
+
+    default boolean isAnnotatedType() {
+        return this instanceof ASTAnnotatedType;
+    }
+
+
+    @Nullable
+    default ASTPrimitiveType asPrimitiveType() {
+        return isPrimitiveType() ? (ASTPrimitiveType) this : null;
+    }
+
+
+    @Nullable
+    default ASTReferenceType asReferenceType() {
+        return isReferenceType() ? (ASTReferenceType) this : null;
     }
 
 
@@ -56,7 +80,12 @@ public interface ASTType extends JavaNode, TypeNode {
 
 
     default boolean isReferenceType() {
-        return this instanceof ASTReferenceType;
+        return !isPrimitiveType();
+    }
+
+
+    default boolean isArrayType() {
+        return this instanceof ASTArrayType;
     }
 
 

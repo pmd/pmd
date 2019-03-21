@@ -13,6 +13,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  *  ReferenceType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType}
  *                  | {@link ASTArrayType ArrayType}
+ *                  | {@link ASTIntersectionType IntersectionType}
+ *                  | {@link ASTWildcardType WildcardType}
  *
  * </pre>
  */

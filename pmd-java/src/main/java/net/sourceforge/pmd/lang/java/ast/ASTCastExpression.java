@@ -10,12 +10,11 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre>
  *
- * CastExpression ::= "(" ({@link ASTAnnotation TypeAnnotation}))* {@link ASTType Type} ("&" {@linkplain ASTReferenceType ReferenceType})* ")" {@linkplain ASTUnaryExpression UnaryExpression}
+ * CastExpression ::= "(" {@link ASTType Type} ")" {@linkplain ASTUnaryExpression UnaryExpression}
  *
  * </pre>
  */
 public final class ASTCastExpression extends AbstractJavaTypeNode implements ASTExpression {
-    private boolean intersectionTypes = false;
 
     public ASTCastExpression(int id) {
         super(id);
@@ -25,12 +24,12 @@ public final class ASTCastExpression extends AbstractJavaTypeNode implements AST
         super(p, id);
     }
 
-    public void setIntersectionTypes(boolean intersectionTypes) {
-        this.intersectionTypes = intersectionTypes;
+    public ASTType getCastType() {
+        return (ASTType) jjtGetChild(0);
     }
 
-    public boolean hasIntersectionTypes() {
-        return intersectionTypes;
+    public ASTExpression getCastExpression() {
+        return (ASTExpression) jjtGetChild(1);
     }
 
     /**
