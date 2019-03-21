@@ -30,6 +30,16 @@ class ASTWildcardTypeTest : ParserTestSpec({
             }
         }
 
+        "List<? extends B & C>" should matchType<ASTWildcardType> {
+
+            it::isUpperBound shouldBe true
+            it::isLowerBound shouldBe false
+
+            it::getTypeBoundNode shouldBe child<ASTClassOrInterfaceType> {
+                it::getTypeImage shouldBe "B"
+            }
+        }
+
     }
 
 })
