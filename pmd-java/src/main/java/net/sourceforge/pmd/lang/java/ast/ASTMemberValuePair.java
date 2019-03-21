@@ -6,7 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a single member-value pair in an annotation.
+ * Represents a single member-value pair in a {@linkplain ASTNormalAnnotation NormalAnnotation}.
  *
  * <pre>
  *
@@ -42,8 +42,8 @@ public class ASTMemberValuePair extends AbstractJavaNode {
 
 
     @Override
-    public ASTMemberValuePairs jjtGetParent() {
-        return (ASTMemberValuePairs) super.jjtGetParent();
+    public ASTNormalAnnotation jjtGetParent() {
+        return (ASTNormalAnnotation) super.jjtGetParent();
     }
 
 

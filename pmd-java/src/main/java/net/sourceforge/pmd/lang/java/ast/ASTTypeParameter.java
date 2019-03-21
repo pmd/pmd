@@ -6,25 +6,27 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import javax.annotation.Nullable;
+
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
  *
  * <pre>
  *
- * TypeParameter ::= {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@linkplain ASTTypeBound TypeBound}?
+ * TypeParameter ::= {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; ("extends" {@linkplain ASTType Type})?
  *
  * </pre>
  *
  *  @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.4">JLS</a>
  */
 // TODO should implement Annotatable when we use can use Java 8 mixins instead of an abstract class
-public class ASTTypeParameter extends AbstractJavaTypeNode {
-    public ASTTypeParameter(int id) {
+public final class ASTTypeParameter extends AbstractJavaTypeNode {
+    ASTTypeParameter(int id) {
         super(id);
     }
 
 
-    public ASTTypeParameter(JavaParser p, int id) {
+    ASTTypeParameter(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -42,7 +44,7 @@ public class ASTTypeParameter extends AbstractJavaTypeNode {
      * in which case {@link #getTypeBoundNode()} doesn't
      * return {@code null}.
      */
-    public final boolean hasTypeBound() {
+    public boolean hasTypeBound() {
         return getTypeBoundNode() != null;
     }
 
@@ -51,8 +53,9 @@ public class ASTTypeParameter extends AbstractJavaTypeNode {
      * Returns the type bound node of this parameter,
      * or null if it is not bounded.
      */
-    public final ASTTypeBound getTypeBoundNode() {
-        return getFirstChildOfType(ASTTypeBound.class);
+    @Nullable
+    public ASTType getTypeBoundNode() {
+        return getFirstChildOfType(ASTType.class);
     }
 
 

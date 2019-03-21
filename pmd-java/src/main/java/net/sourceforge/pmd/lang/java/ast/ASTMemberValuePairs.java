@@ -17,6 +17,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
+@Deprecated
 public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
     public ASTMemberValuePairs(int id) {
         super(id);

@@ -17,6 +17,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nullable;
+
 /**
  * Represents a wildcard type. Those can only occur when nested in an
  * {@link ASTTypeArguments} node.
@@ -76,8 +78,9 @@ public class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenc
 
     /**
      * Returns the type node representing the bound, e.g.
-     * the {@code Node} in {@code <? super Node>}.
+     * the {@code Node} in {@code <? super Node>}, or null.
      */
+    @Nullable
     public ASTReferenceType getTypeBoundNode() {
         return getFirstChildOfType(ASTReferenceType.class);
     }

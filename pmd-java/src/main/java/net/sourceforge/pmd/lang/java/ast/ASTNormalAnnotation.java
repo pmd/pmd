@@ -5,20 +5,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
 /**
  * Represents an annotation that with a parenthesized list
  * of key-value pairs (possibly empty).
  *
  * <pre>
  *
- * NormalAnnotation ::=  "@" Name "(" {@linkplain ASTMemberValuePairs MemberValuePairs}? ")"
+ * NormalAnnotation ::=  "@" Name "(" ( {@linkplain ASTMemberValuePair MemberValuePair} ( "," {@linkplain ASTMemberValuePair MemberValuePair} )* )? ")"
  *
  * </pre>
  *
  * @see ASTSingleMemberAnnotation
  * @see ASTMarkerAnnotation
  */
-public class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation {
+public class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation, Iterable<ASTMemberValuePair> {
     public ASTNormalAnnotation(int id) {
         super(id);
     }
@@ -28,6 +30,10 @@ public class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnno
         super(p, id);
     }
 
+    @Override
+    public Iterator<ASTMemberValuePair> iterator() {
+        return new NodeChildrenIterator<>(this, ASTMemberValuePair.class);
+    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

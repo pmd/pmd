@@ -1797,7 +1797,7 @@ void TypeParameter():
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
-void TypeBound():
+void TypeBound() #void:
 {}
 {
    "extends" IntersectionType(false)
@@ -3046,7 +3046,7 @@ void SingleMemberAnnotation():
   AnnotationBase(jjtThis) "(" MemberValue() ")"
 }
 
-void MemberValuePairs():
+void MemberValuePairs() #void:
 {}
 {
    MemberValuePair() ( "," MemberValuePair() )*

@@ -6,17 +6,21 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaProcessingStage;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -99,11 +103,13 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
     }
 
+    public Object visit(ASTAnnotation node, Object data) {
+        return JavaParserVisitor.super.visit(node, data);
+    }
 
     public Object visit(ASTExpression node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
     }
-
 
     public Object visit(ASTPrimaryExpression node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
