@@ -53,6 +53,9 @@ The designer will still be shipped with PMD's binaries.
     *   [#1721](https://github.com/pmd/pmd/issues/1721): \[doc] Documentation provides an invalid property configuration example
 *   java-bestpractices
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
+*   plsql
+    *   [#1734](https://github.com/pmd/pmd/issues/1734): \[plsql] TooManyMethods false-negative
+    *   [#1735](https://github.com/pmd/pmd/issues/1735): \[plsql] False-negatives for TO_DATE_TO_CHAR, TO_DATEWithoutDateFormat, TO_TIMESTAMPWithoutDateFormat
 
 ### API Changes
 
