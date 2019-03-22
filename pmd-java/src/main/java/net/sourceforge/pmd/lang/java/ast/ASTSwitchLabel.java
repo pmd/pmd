@@ -12,7 +12,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * Represents either a {@code case} or {@code default} label inside
  * a {@linkplain ASTSwitchStatement switch statement}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ":"
  *                | "default" ":"

@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to InclusiveOrExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ConditionalAndExpression ::=  {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} ( "&&" {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} )+
  *

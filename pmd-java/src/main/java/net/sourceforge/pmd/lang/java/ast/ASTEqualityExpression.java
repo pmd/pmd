@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to InstanceOfExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * EqualityExpression ::=  {@linkplain ASTInstanceOfExpression InstanceOfExpression}  ( ( "==" | "!=" ) {@linkplain ASTInstanceOfExpression InstanceOfExpression}  )+
  *

@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * Represents a list of member values in an {@linkplain ASTNormalAnnotation annotation}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  *  MemberValuePairs ::= {@linkplain ASTMemberValuePair MemberValuePair} ( "," {@linkplain ASTMemberValuePair MemberValuePair} )*
  *

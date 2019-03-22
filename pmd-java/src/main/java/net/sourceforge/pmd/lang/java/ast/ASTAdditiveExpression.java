@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * <p>Note that the children of this node are not necessarily {@link ASTMultiplicativeExpression},
  * rather, they are expressions with an operator precedence greater or equal to MultiplicativeExpression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AdditiveExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
  *

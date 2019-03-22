@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * May be found as a child of {@linkplain ASTFieldDeclaration field declarations} and
  * {@linkplain ASTLocalVariableDeclaration local variable declarations}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ( "=" {@linkplain ASTExpression Expression} )?
  *

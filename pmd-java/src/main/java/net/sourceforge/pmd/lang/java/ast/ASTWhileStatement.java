@@ -11,7 +11,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * Represents a {@code while} statement.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * WhileStatement ::= "while" "(" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *

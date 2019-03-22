@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <p>TODO it would be sensible to make {@link ASTPreDecrementExpression} and {@link ASTPreIncrementExpression} extend this node
  *
- * <pre>
+ * <pre class="grammar">
  *
  * UnaryExpression ::= ( "+" | "-" | "~" | "!" ) UnaryExpression
  *

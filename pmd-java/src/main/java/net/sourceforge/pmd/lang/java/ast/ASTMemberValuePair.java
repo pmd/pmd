@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a single member-value pair in a {@linkplain ASTNormalAnnotation NormalAnnotation}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MemberValuePair ::=  &lt;IDENTIFIER&gt; "=" {@linkplain ASTMemberValue MemberValue}
  *

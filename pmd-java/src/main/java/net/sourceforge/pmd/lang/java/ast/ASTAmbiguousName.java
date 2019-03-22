@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.xpath.SemanticAmbiguityChecker;
  * <p>This node corresponds simultaneously to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-AmbiguousName">AmbiguousName</a>
  * and PackageOrTypeName productions of the JLS.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AmbiguousNameExpr ::= &lt;IDENTIFIER&gt; ( "." &lt;IDENTIFIER&gt;)*
  *

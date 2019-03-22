@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * Represents a wildcard type. Those can only occur when nested in an
  * {@link ASTTypeArguments} node.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * WildcardType ::= "?" ( ("extends" | "super") {@link ASTType Type})?
  *

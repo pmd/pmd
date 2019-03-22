@@ -12,7 +12,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * Represents a {@code do ... while} statement.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * DoStatement ::= "do" {@linkplain ASTStatement Statement} "while" "(" {@linkplain ASTExpression Expression} ")" ";"
  *

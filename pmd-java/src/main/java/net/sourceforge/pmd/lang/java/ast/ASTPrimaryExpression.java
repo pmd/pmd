@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * Tags those {@link ASTExpression expressions} that are categorised as primary
  * by the JLS.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * PrimaryExpression ::= {@linkplain ASTLiteral Literal}
  *                     | {@linkplain ASTMethodCall MethodCall}

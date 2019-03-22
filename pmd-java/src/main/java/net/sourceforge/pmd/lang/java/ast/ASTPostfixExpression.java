@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * This is one of the {@linkplain ASTUnaryExpression PrefixExpression}
  * and has the same precedence.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * PostfixExpression ::= {@linkplain ASTPrimaryExpression PrimaryExpression} ( "++" | "--" )
  *

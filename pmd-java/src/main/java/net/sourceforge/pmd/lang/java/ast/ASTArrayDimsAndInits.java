@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *     is too broad.
  *
  * Current grammar:
- * <pre>
+ * <pre class="grammar">
  *
  * ArrayDimsAndInit ::= TypeAnnotation* "[" Expression "]" ( "[" "]" )*
  *                    | ( "[" "]" )+ ArrayInitializer()
@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  * Actual JLS (https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-DimExprs):
- * <pre>
+ * <pre class="grammar">
  *
  * (: This production doesn't exist in the JLS, they have a special production for Array creation expressions :)
  * (: Ideally we'd do the same. :)

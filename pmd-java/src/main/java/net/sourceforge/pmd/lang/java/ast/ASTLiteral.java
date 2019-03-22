@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * A literal. This interface is implemented by several nodes.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * Literal ::= {@link ASTNumericLiteral NumericLiteral}
  *           | {@link ASTStringLiteral StringLiteral}

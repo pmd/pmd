@@ -13,9 +13,9 @@ import java.util.Iterator;
  * If the parent is an interface declaration, then these types are all interface
  * types. Otherwise, then this list contains exactly one element.
  *
- * <pre>
- *  ExtendsList ::= "extends" (TypeAnnotation)* ClassOrInterfaceType
- *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
+ * <pre class="grammar">
+ *
+ * ExtendsList ::= "extends" {@link ASTType Type} ( "," {@link ASTType Type} )*
  * </pre>
  */
 public class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {

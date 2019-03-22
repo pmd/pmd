@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Represents an annotated type.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AnnotatedType ::= ({@link ASTAnnotation TypeAnnotation})+ {@link ASTType Type}
  *

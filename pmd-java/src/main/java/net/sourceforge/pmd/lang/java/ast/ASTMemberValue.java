@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * This can appear in a {@linkplain ASTMemberValuePair member-value pair},
  * or in a {@linkplain ASTSingleMemberAnnotation single-member annotation}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MemberValue ::= {@link ASTAnnotation Annotation}
  *               | {@link ASTMemberValueArrayInitializer MemberValueArrayInitializer}

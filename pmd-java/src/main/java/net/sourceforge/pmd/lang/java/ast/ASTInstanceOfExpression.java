@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to RelationalExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * InstanceOfExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} "instanceof" {@linkplain ASTType Type}
  *

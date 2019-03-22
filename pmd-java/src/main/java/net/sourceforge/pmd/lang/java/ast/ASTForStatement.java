@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a {@code for}-loop, or a foreach loop.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ForStatement ::= "for" "(" {@linkplain ASTLocalVariableDeclaration LocalVariableDeclaration} ":" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *                | "for" "(" {@linkplain ASTForInit ForInit}? ";" {@linkplain ASTExpression Expression}? ";" {@linkplain ASTForUpdate ForUpdate}? ")" {@linkplain ASTStatement Statement}

@@ -15,7 +15,7 @@ import java.util.List;
  * The first bound type is a class or interface type, while the additional
  * bounds are necessarily interface types.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} ( "&" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} )*
  *

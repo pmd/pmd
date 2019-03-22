@@ -5,14 +5,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 
 /**
  * A class literal.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ClassLiteral ::= ({@link ASTType Type} | "void") "." "class"
  *

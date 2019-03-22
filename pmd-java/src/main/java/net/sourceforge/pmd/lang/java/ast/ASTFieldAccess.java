@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 /**
  * A field access expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
  *               |  {@link ASTClassOrInterfaceType TypeName} "." &lt;IDENTIFIER&gt;

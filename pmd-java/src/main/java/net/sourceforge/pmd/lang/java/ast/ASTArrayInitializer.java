@@ -15,7 +15,7 @@ import java.util.Iterator;
  * <li>Inside an {@linkplain ASTArrayAllocation array allocation expression}
  * </ul>
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ArrayInitializer ::= "{" ( "," )? "}"
  *                    | "{" {@link ASTExpression Expression} ( "," {@link ASTExpression Expression} )* ( "," )? "}"

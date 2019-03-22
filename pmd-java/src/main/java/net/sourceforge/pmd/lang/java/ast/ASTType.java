@@ -17,7 +17,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <p>Corresponds to the JLS's <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-Type">Type</a>.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * Type ::= {@link ASTReferenceType ReferenceType}
  *        | {@link ASTPrimitiveType PrimitiveType}

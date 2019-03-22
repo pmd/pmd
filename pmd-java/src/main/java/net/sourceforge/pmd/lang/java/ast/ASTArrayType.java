@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an array type.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayTypeDims ArrayTypeDims}
  *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayTypeDims ArrayTypeDims}

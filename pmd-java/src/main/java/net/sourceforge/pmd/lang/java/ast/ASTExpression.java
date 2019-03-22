@@ -14,9 +14,9 @@ package net.sourceforge.pmd.lang.java.ast;
  * <p>From 7.0.0 on, this is an interface which all expression nodes
  * implement.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * (: In order of precedence :)
+ * (: In increasing precedence order :)
  * Expression ::= {@link ASTAssignmentExpression AssignmentExpression}
  *              | {@link ASTConditionalExpression ConditionalExpression}
  *              | {@link ASTConditionalOrExpression ConditionalOrExpression}

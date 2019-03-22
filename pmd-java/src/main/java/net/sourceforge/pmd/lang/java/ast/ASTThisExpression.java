@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * The "this" expression. Related to the {@link ASTSuperExpression "super"} pseudo-expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ThisExpression ::= "this"
  *                  | {@link ASTClassOrInterfaceType TypeName} "." "this"

@@ -11,7 +11,7 @@ import java.util.Iterator;
  * Represents an annotation that with a parenthesized list
  * of key-value pairs (possibly empty).
  *
- * <pre>
+ * <pre class="grammar">
  *
  * NormalAnnotation ::=  "@" Name "(" ( {@linkplain ASTMemberValuePair MemberValuePair} ( "," {@linkplain ASTMemberValuePair MemberValuePair} )* )? ")"
  *

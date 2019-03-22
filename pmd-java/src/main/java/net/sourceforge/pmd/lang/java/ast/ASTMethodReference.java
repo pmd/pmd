@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 /**
  * Method or constructor reference expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
  *                   | {@link ASTReferenceType ReferenceType} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;

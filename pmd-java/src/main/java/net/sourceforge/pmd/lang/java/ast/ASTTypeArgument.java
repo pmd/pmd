@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a single type argument in a {@linkplain ASTTypeArguments type arguments list}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TypeArgument ::= ( {@linkplain ASTAnnotation Annotation} )* ( {@linkplain ASTReferenceType ReferenceType} | "?" {@linkplain ASTWildcardBounds WildcardBounds}? )
  *

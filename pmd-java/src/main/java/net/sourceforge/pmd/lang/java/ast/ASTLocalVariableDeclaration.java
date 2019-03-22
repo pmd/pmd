@@ -18,7 +18,7 @@ import net.sourceforge.pmd.Rule;
  * <p>This statement may define several variables, possibly of different types (see {@link ASTVariableDeclaratorId#getType()}).
  * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * LocalVariableDeclaration ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
  *

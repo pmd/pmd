@@ -19,7 +19,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * and also to the related productions TypeIdentifier and TypeName. Merging those allow
  * to treat them uniformly.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName})

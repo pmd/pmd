@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * <p>Note that the children of this node are not necessarily {@link ASTUnaryExpression}s,
  * rather, they are expressions with an operator precedence greater or equal to UnaryExpression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MultiplicativeExpression ::= {@linkplain ASTUnaryExpression UnaryExpression} ( ( "*" | "/" | "%" ) {@linkplain ASTUnaryExpression UnaryExpression} )+
  *

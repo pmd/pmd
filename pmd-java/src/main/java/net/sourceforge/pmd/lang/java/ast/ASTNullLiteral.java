@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * The null literal.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * NullLiteral ::= "null"
  *

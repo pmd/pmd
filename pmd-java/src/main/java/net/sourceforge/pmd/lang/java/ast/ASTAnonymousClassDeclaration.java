@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  * or in an {@linkplain ASTEnumConstant enum constant declaration}.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AnonymousClassDeclaration ::= {@link ASTClassOrInterfaceBody}
  *

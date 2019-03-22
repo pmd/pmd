@@ -8,9 +8,9 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an assignment operator in an {@linkplain ASTExpression assignment expression}.
  *
- * <pre>
+ * <pre class="grammar">
  *
- *  AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
+ * AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
  *
  * </pre>
  * @deprecated Superseded by {@link ASTAssignmentExpression}

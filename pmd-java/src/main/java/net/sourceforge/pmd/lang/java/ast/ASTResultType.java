@@ -5,14 +5,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 
 /**
  * Return type of a method. TODO maybe make it implement {@link ASTType}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ResultType ::= "void" | {@link ASTType Type}
  *

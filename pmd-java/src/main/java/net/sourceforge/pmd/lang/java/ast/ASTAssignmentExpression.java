@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an assignment expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * Expression ::= {@linkplain ASTPrimaryExpression ConditionalExpression} ( AssignmentOperator AssignmentExpression )?
  *

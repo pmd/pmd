@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Marker interface for nodes that can occur as the initializer of a variable or field declaration.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * VariableInitializer ::= {@link ASTExpression Expression} | {@link ASTArrayInitializer ArrayInitializer}
  *

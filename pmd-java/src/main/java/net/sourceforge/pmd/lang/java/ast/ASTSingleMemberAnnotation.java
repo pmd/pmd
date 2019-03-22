@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an annotation using the shorthand syntax for the default member.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * SingleMemberAnnotation ::=  "@" Name "(" {@linkplain ASTMemberValue MemberValue} ")"
  *

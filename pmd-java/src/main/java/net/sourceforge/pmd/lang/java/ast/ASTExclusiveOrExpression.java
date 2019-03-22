@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to AndExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ExclusiveOrExpression ::=  {@linkplain ASTAndExpression AndExpression} ( "^" {@linkplain ASTAndExpression AndExpression} )+
  *

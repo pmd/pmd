@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  *
  * <p>TODO since there's no VariableDeclaratorId, this might not play well with the symbol table!
  *
- * <pre>
+ * <pre class="grammar">
  *
  * EnumConstant ::= &lt;IDENTIFIER&gt; {@linkplain ASTArguments Arguments}? {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}?
  *

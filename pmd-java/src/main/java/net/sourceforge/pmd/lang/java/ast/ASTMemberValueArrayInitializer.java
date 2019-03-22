@@ -12,7 +12,7 @@ import java.util.Iterator;
 /**
  * Represents an array of member values in an annotation {@linkplain ASTMemberValue member value}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MemberValueArrayInitializer ::= "{" ( {@linkplain ASTMemberValue MemberValue} ( "," {@linkplain ASTMemberValue MemberValue} )*  ","? )? "}"
  *

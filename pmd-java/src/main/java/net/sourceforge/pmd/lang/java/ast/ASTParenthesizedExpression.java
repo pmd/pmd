@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * An expression enclosed in parentheses.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ParenthesizedExpression ::= "(" {@link ASTExpression Expression} ")"
  *

@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * The "super" reference. Technically not an expression but it's easier to analyse that way.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * SuperExpression ::= "super"
  *  *                | {@link ASTClassOrInterfaceType TypeName} "." "super"

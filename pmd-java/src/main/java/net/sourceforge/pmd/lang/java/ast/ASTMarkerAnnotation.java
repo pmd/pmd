@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an annotation with no declared member, e.g. {@code @Override}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MarkerAnnotation ::= "@" Name
  *

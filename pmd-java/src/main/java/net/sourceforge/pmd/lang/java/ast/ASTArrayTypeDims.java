@@ -16,7 +16,7 @@ import java.util.Iterator;
  * <li>TODO inside an array creation expression (currently {@link ASTAllocationExpression})</li>
  * </ul>
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}*
  *

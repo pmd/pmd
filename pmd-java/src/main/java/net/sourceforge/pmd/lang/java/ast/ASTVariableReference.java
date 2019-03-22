@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * to this status in the syntactic contexts, where we know they're definitely variable references.
  * This node represents both references to fields and to variables (for now?).
  *
- * <pre>
+ * <pre class="grammar">
  *
  * VariableReference ::= &lt;IDENTIFIER&gt;
  *

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  * Represents an annotation. This node has three specific syntactic variants,
  * represented by nodes that implement this interface.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * Annotation ::= {@linkplain ASTNormalAnnotation NormalAnnotation}
  *              | {@linkplain ASTSingleMemberAnnotation SingleMemberAnnotation}

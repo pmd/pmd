@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a type cast expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * CastExpression ::= "(" {@link ASTType Type} ")" {@linkplain ASTUnaryExpression UnaryExpression}
  *

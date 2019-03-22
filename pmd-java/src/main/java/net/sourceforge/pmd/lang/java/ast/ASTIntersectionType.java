@@ -27,7 +27,7 @@ import java.util.Iterator;
  * The type can be a class or interface type, while the additional bounds
  * are necessarily interface types.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * IntersectionType ::= {@link ASTType (AnnotatedType | ClassOrInterfaceType)} ("&" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
  *

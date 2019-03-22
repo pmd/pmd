@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * An array access expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ArrayAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "["  {@link ASTExpression Expression} "]"
  *

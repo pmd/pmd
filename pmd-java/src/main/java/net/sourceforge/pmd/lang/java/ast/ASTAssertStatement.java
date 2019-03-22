@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an {@code assert} statement.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AssertStatement ::= "assert" {@linkplain ASTExpression Expression} ( ":" {@linkplain ASTExpression Expression} )? ";"
  *

@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an import declaration in a Java file.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ImportDeclaration ::= "import" "static"? {@linkplain ASTName Name} ( "." "*" )? ";"
  *

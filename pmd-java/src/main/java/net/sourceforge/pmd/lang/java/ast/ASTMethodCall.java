@@ -5,7 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 
@@ -13,7 +12,7 @@ import javax.annotation.Nullable;
  * A method invocation expression. This node represents both qualified (with a left-hand side)
  * and unqualified invocation expressions.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TODO the third branch is ambiguous with the second and won't be matched without a rewrite phase
  *

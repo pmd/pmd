@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to EqualityExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AndExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression} ( "&" {@linkplain ASTEqualityExpression EqualityExpression} )+
  *

@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
  *
- * <pre>
+ * <pre class="grammar">
  *
  *  TypeArguments ::= "<" {@linkplain ASTReferenceType TypeArgument} ( "," {@linkplain ASTReferenceType TypeArgument} )* ">"
  *                  | "<" ">"

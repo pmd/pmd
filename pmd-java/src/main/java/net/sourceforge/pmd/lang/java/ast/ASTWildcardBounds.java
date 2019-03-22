@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a type bound on a wildcard {@linkplain ASTTypeArgument type argument}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * WildcardBounds ::=  ( "extends" | "super" ) ( {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTReferenceType ReferenceType}
  *

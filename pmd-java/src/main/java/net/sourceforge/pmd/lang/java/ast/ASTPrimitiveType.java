@@ -19,7 +19,7 @@ import net.sourceforge.pmd.annotation.Experimental;
 /**
  * Represents a primitive type.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * PrimitiveType ::= "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
  *

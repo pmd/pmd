@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * and unqualified instance creation. May declare an anonymous class body.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ClassInstanceCreationExpression   ::= UnqualifiedAlloc
  *                                     | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc

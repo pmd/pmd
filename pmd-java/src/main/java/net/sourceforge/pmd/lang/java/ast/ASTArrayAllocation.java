@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * An array creation expression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ArrayCreationExpression ::= "new" {@link ASTAnnotation TypeAnnotation}*
  *                             ({@link ASTPrimitiveType PrimitiveType} | {@link ASTClassOrInterfaceType ClassOrInterfaceType})

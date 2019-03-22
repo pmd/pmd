@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TypeParameter ::= {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; ("extends" {@linkplain ASTType Type})?
  *

@@ -11,7 +11,9 @@ import java.util.List;
 
 /**
  * Catch statement node.
- * <pre>
+ *
+ * <pre class="grammar">
+ *
  *      "catch" "(" FormalParameter ")" Block
  * </pre>
  */
