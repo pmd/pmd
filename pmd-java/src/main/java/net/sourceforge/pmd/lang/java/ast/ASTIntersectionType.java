@@ -28,7 +28,7 @@ import java.util.Iterator;
  * are necessarily interface types.
  *
  * <pre>
- * FIXME that's why we need AnnotatedType to go away
+ *
  * IntersectionType ::= {@link ASTType (AnnotatedType | ClassOrInterfaceType)} ("&" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
  *
  * </pre>
