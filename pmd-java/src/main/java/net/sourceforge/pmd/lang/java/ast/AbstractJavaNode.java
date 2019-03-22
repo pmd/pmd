@@ -112,54 +112,70 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     }
 
 
-    // insert a child at a given index, shifting other children if need be
-
-
     /**
-     * Inserts a child at the given index, shifting other children without overwriting
+     * Inserts some children at the given index, shifting other children without overwriting
      * them. The implementation of jjtAddChild in AbstractNode overwrites nodes, and
      * doesn't shrink or grow the initial array. That's probably unexpected and this should
      * be the standard implementation.
      *
-     * The text bounds of this node are enlarged to contain the new child if need be.
+     * The text bounds of this node are enlarged to contain the new children if need be.
      * Text bounds of the child should hence have been set before calling this method.
      * The designer relies on this invariant to perform the overlay (in UniformStyleCollection).
      *
-     * @param child Child to add
-     * @param index Index the child should have in the parent
+     * @param newChildren Children to add
+     * @param index       Index the child should have in the parent
      */
     // visible to parser only
-    void insertChild(AbstractJavaNode child, int index) {
+    private void insertChildren(int index, AbstractJavaNode... newChildren) {
         // Allow to insert a child at random index without overwriting
-        // If the child is null, it is replaced. If it is not null, children are shifted
-        if (children != null && index < children.length && children[index] != null) {
-            children = ArrayUtils.insert(index, children, child);
+        // If the child is null, it is replaced.
+        if (newChildren.length == 0) {
+            return;
+        } else if (ArrayUtils.contains(newChildren, null)) {
+            throw new IllegalArgumentException("Null child?");
+        } else if (children == null && index == 0) {
+            children = newChildren;
+        } else if (children != null && index < children.length) {
+            children = ArrayUtils.insert(index, children, newChildren);
+        } else {
+            throw new ArrayIndexOutOfBoundsException(index);
         }
-        super.jjtAddChild(child, index);
 
         updateChildrenIndices(index);
 
         // The text coordinates of this node will be enlarged with those of the child
 
-        if (this.beginLine > child.beginLine) {
-            this.firstToken = child.firstToken;
-            this.beginLine = child.beginLine;
-            this.beginColumn = child.beginColumn;
-        } else if (this.beginLine == child.beginLine
-            && this.beginColumn > child.beginColumn) {
-            this.firstToken = child.firstToken;
-            this.beginColumn = child.beginColumn;
+        if (index == 0) {
+            AbstractJavaNode child = (AbstractJavaNode) children[0];
+            if (this.beginLine > child.beginLine) {
+                this.firstToken = child.firstToken;
+                this.beginLine = child.beginLine;
+                this.beginColumn = child.beginColumn;
+            } else if (this.beginLine == child.beginLine
+                && this.beginColumn > child.beginColumn) {
+                this.firstToken = child.firstToken;
+                this.beginColumn = child.beginColumn;
+            }
         }
 
-        if (this.endLine < child.endLine) {
-            this.lastToken = child.lastToken;
-            this.endLine = child.endLine;
-            this.endColumn = child.endColumn;
-        } else if (this.endLine == child.endLine
-            && this.endColumn < child.endColumn) {
-            this.lastToken = child.lastToken;
-            this.endColumn = child.endColumn;
+        if (index + newChildren.length == children.length) {
+            AbstractJavaNode child = (AbstractJavaNode) children[children.length - 1];
+            if (this.endLine < child.endLine) {
+                this.lastToken = child.lastToken;
+                this.endLine = child.endLine;
+                this.endColumn = child.endColumn;
+            } else if (this.endLine == child.endLine
+                && this.endColumn < child.endColumn) {
+                this.lastToken = child.lastToken;
+                this.endColumn = child.endColumn;
+            }
         }
+    }
+
+    /** @see #insertChild(AbstractJavaNode, int) */
+    // visible to parser only
+    void insertChild(AbstractJavaNode child, int index) {
+        insertChildren(index, child);
     }
 
     /**

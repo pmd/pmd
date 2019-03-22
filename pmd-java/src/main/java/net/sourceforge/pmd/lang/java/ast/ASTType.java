@@ -5,8 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -21,16 +19,13 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * Type ::= {@link ASTReferenceType ReferenceType}
  *        | {@link ASTPrimitiveType PrimitiveType}
- *        | {@link ASTAnnotatedType AnnotatedType}
  *
  * </pre>
  *
- * Note: it is not exactly the same the "UnannType" defined in JLS.
- *
- * TODO implement {@link Annotatable}. Ideally, any type annotations
+ * <p>TODO implement {@link Annotatable}. Ideally, any type annotations
  * would be children of this node, not of the parent node.
  */
-public interface ASTType extends JavaNode, TypeNode, Annotatable {
+public interface ASTType extends JavaNode, TypeNode {
 
     /**
      * For now this returns the name of the type with all the segments,
@@ -47,18 +42,6 @@ public interface ASTType extends JavaNode, TypeNode, Annotatable {
      */
     default int getArrayDepth() {
         return 0;
-    }
-
-
-    @Override
-    default List<ASTAnnotation> getDeclaredAnnotations() {
-        // overridden by AnnotatedType
-        return Collections.emptyList();
-    }
-
-
-    default boolean isAnnotatedType() {
-        return this instanceof ASTAnnotatedType;
     }
 
 

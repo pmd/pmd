@@ -480,6 +480,22 @@ public class JavaParser {
     jjtree.pushNode(lastSegment);
   }
 
+  /**
+   * Takes the two nodes at the top of the stack and inject the [num] previous
+   * nodes as the first children of the last.
+   */
+  private void injectLeft(int num) {
+    AbstractJavaNode lastSegment = (AbstractJavaNode) jjtree.popNode();
+    AbstractJavaNode[] children = new AbstractJavaNode[num];
+    while (num > 0) {
+        num--;
+        children[num] = jjtree.popNode();
+    }
+
+    lastSegment.insertChildren(0, children);
+    jjtree.pushNode(lastSegment);
+  }
+
   private void setLastTokenImage(JavaNode node) {
     node.setImage(getToken(0).getImage());
   }
@@ -1991,34 +2007,35 @@ void IntersectionType(boolean inCast) #IntersectionType(>1):
 }
 
 void AnnotationList() #void:
-{}
+{int size=0;}
 {
-  (Annotation())*
+  (Annotation() {size++;})*
+  {return size;}
 }
-void TypeAnnotationList() #void:
-{}
+int TypeAnnotationList() #void:
+{int size=0;}
 {
-   // don't repeat the check
-  (TypeAnnotation())*
-}
-
-void AnnotatedType() #AnnotatedType(>1):
-{}
-{
-  TypeAnnotationList() Type()
+  (TypeAnnotation() {size++;})*
+  {return size;}
 }
 
-
-void AnnotatedRefType() #AnnotatedType(>1):
-{}
+void AnnotatedType() #void:
+{int annots=0;}
 {
-  TypeAnnotationList() ReferenceType()
+  annots=TypeAnnotationList() Type() {injectLeft(annots);}
 }
 
-void AnnotatedClassOrInterfaceType() #AnnotatedType(>1):
-{}
+
+void AnnotatedRefType() #void:
+{int annots=0;}
 {
-  TypeAnnotationList() ClassOrInterfaceType()
+  annots=TypeAnnotationList() ReferenceType() {injectLeft(annots);}
+}
+
+void AnnotatedClassOrInterfaceType() #void:
+{int annots=0;}
+{
+  annots=TypeAnnotationList() ClassOrInterfaceType() {injectLeft(annots);}
 }
 
 /*
@@ -2056,13 +2073,6 @@ void ArrayTypeDim():
 void ReferenceType() #void:
 {}
 {
-
-  // TODO TypeVariable is ambiguous with ClassOrInterfaceType
-  // but I think it would be good to have a node for it nevertheless
-  // to help typeres, since TypeVariables have special types (intersection types)
-  // This could be handled in a rewrite phase, which is necessary for
-  // disambiguation. Since type parameters shadow anything, their disambiguation
-  // is stable regardless of classpath config.
     ( PrimitiveType() Dims() )                           #ArrayType
   | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
 }
@@ -2075,19 +2085,6 @@ void ReferenceType() #void:
 void ClassOrInterfaceType() #void:
 {}
 {
-
-
-
-    /*
-         FIXME We gobble up all identifiers until we find
-           either type arguments or annotations, because
-           it may be a FQCN, e.g. java.util.List is a single node.
-
-           But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
-           I would have said this doesn't matter but the other fixme comment just
-           below shows we need a rewrite phase anyway
-       */
-
 
   /*
    First, gobble up all identifiers until the first type arguments
@@ -2149,9 +2146,9 @@ void TypeArguments():
 }
 
 void TypeArgumentImpl() #AnnotatedType(>1):
-{}
+{int annots = 0;}
 {
-   TypeAnnotationList() (ReferenceType() | WildcardType())
+   annots=TypeAnnotationList() (ReferenceType() | WildcardType()) {injectLeft(annots);}
 }
 
 // TODO remove me, kept for transition
