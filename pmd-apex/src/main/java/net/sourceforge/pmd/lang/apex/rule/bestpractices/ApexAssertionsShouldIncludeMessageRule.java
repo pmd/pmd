@@ -27,7 +27,7 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
     static {
         ASSERT_METHODS.add(ASSERT.toLowerCase(Locale.ROOT));
         ASSERT_METHODS.add(ASSERT_EQUALS.toLowerCase(Locale.ROOT));
-        ASSERT_METHODS.add(ASSERT_NOT_EQUALS.toLowerCase(Locale.ROOT) );
+        ASSERT_METHODS.add(ASSERT_NOT_EQUALS.toLowerCase(Locale.ROOT));
     }
 
     public ApexAssertionsShouldIncludeMessageRule() {
