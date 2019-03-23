@@ -25,6 +25,10 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
         return node.getLiteralType();
     }
 
+    public boolean isString() {
+        return getLiteralType() == LiteralType.STRING;
+    }
+
     @Override
     public String getImage() {
         return String.valueOf(node.getLiteral());

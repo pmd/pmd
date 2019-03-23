@@ -86,7 +86,7 @@ public class ASTModifierNode extends AbstractApexNode<ModifierNode> implements A
         return node.getModifiers().has(ModifierTypeInfos.GLOBAL);
     }
 
-    public boolean hasOverride() {
+    public boolean isOverride() {
         return node.getModifiers().has(ModifierTypeInfos.OVERRIDE);
     }
 }

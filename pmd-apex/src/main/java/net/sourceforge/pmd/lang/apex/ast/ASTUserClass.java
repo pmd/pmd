@@ -72,4 +72,8 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
         }
         return false;
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

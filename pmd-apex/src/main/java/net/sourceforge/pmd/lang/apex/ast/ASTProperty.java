@@ -23,4 +23,8 @@ public class ASTProperty extends AbstractApexNode<Property> {
         }
         return null;
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

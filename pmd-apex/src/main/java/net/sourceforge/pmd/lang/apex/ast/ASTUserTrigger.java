@@ -31,4 +31,8 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
             throw new RuntimeException(e);
         }
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }
