@@ -17,20 +17,20 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
  *
  * @author sudhansu
  */
-public class ApexUnitTestAssertStatementRule extends AbstractApexUnitTestRule {
+public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTestRule {
 
     private static final Set<String> ASSERT_METHODS = new HashSet<>();
-    private static final String ASSERT = "system.assert";
-    private static final String ASSERT_EQUALS = "system.assertequals";
-    private static final String ASSERT_NOT_EQUALS = "system.assertnotequals";
+    private static final String ASSERT = "System.assert";
+    private static final String ASSERT_EQUALS = "System.assertEquals";
+    private static final String ASSERT_NOT_EQUALS = "System.assertNotEquals";
 
     static {
-        ASSERT_METHODS.add(ASSERT);
-        ASSERT_METHODS.add(ASSERT_EQUALS);
-        ASSERT_METHODS.add(ASSERT_NOT_EQUALS);
+        ASSERT_METHODS.add(ASSERT.toLowerCase(Locale.ROOT));
+        ASSERT_METHODS.add(ASSERT_EQUALS.toLowerCase(Locale.ROOT));
+        ASSERT_METHODS.add(ASSERT_NOT_EQUALS.toLowerCase(Locale.ROOT) );
     }
 
-    public ApexUnitTestAssertStatementRule() {
+    public ApexAssertionsShouldIncludeMessageRule() {
         addRuleChainVisit(ASTMethodCallExpression.class);
     }
 

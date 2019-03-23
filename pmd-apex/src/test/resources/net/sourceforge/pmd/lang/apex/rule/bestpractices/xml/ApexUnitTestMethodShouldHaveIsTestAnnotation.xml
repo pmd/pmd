@@ -6,7 +6,8 @@
 
     <test-code>
         <description>Problematic apex unit test methods - test methods should have @isTest annotation.</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,18</expected-linenumbers>
         <code><![CDATA[
 @isTest
 private class ATest {
@@ -14,8 +15,19 @@ private class ATest {
     static void methodATest() {
     }
     static void methodBTest() {
+        System.assert(1==2);
     }
     @isTest static void methodCTest() {
+    }
+    @isTest
+    static void methodDTest() {
+        System.assert(3==3);
+    }
+    static void methodETest() {
+        System.debug('I am a debug statement.');
+    }
+    static void methodFTest() {
+        System.assertEquals(1,2);
     }
     private void fetchData() {
     }
@@ -33,11 +45,14 @@ private class ATest {
     }
     @isTest
     static void methodATestOne() {
+        System.assertEquals(1,2);
     }
     @isTest
     static void methodBTest() {
+        System.assertEquals(1,2);
     }
-    @isTest static void methodCTest() {
+    @isTest static void methodC() {
+        System.assertEquals(1,2);
     }
     private void fetchData() {
     }

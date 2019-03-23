@@ -4,77 +4,53 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
-import apex.jorje.semantic.ast.modifier.Annotation;
-import apex.jorje.semantic.ast.modifier.ModifierOrAnnotation;
-import apex.jorje.semantic.symbol.type.AnnotationTypeInfos;
-import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
-import apex.jorje.semantic.symbol.type.TypeInfoEquivalence;
-import apex.jorje.services.Version;
-
 public class ApexUnitTestMethodShouldHaveIsTestAnnotationRule extends AbstractApexUnitTestRule {
-    private static final String TEST = "test";
+    private static final Set<String> ASSERT_METHODS = new HashSet<>();
+    private static final String ASSERT = "system.assert";
+    private static final String ASSERT_EQUALS = "system.assertequals";
+    private static final String ASSERT_NOT_EQUALS = "system.assertnotequals";
+
+    static {
+        ASSERT_METHODS.add(ASSERT);
+        ASSERT_METHODS.add(ASSERT_EQUALS);
+        ASSERT_METHODS.add(ASSERT_NOT_EQUALS);
+    }
 
     public ApexUnitTestMethodShouldHaveIsTestAnnotationRule() {
-        addRuleChainVisit(ASTUserClass.class);
+        addRuleChainVisit(ASTMethod.class);
     }
 
     @Override
-    public Object visit(final ASTUserClass node, final Object data) {
+    public Object visit(final ASTMethod node, final Object data) {
         // test methods should have @isTest annotation.
-        final Version classApiVersion = node.getNode().getDefiningType().getCodeUnitDetails().getVersion();
-
-        if (!isTestMethodOrClass(node) && classApiVersion.isGreaterThan(Version.V174)) {
+        if (isTestMethodOrClass(node)) {
             return data;
         }
-
-        checkForIsTestAnnotation(node, data);
-        return data;
+        return checkForIsTestAnnotation(node, data);
     }
 
     private Object checkForIsTestAnnotation(final ApexNode<?> node, final Object data) {
-        final List<ASTMethod> methods = node.findDescendantsOfType(ASTMethod.class);
-        final List<ASTMethod> testMethods = new ArrayList<>();
-        for (ASTMethod method : methods) {
-            final Version classApiVersion = method.getNode().getDefiningType().getCodeUnitDetails().getVersion();
-            if (!isTestMethodOrClass(method) && classApiVersion.isGreaterThan(Version.V174)
-                    && !method.getImage().toLowerCase(Locale.ROOT).contains(TEST)) {
-                continue;
-            }
-            testMethods.add(method);
+        ASTMethod testMethod = (ASTMethod) node;
+        if (testMethod == null) {
+            return data;
         }
-        Map<Integer, ASTMethod> methodLocMap = new HashMap<>();
-        for (ASTMethod testMethod : testMethods) {
-            methodLocMap.put(testMethod.getNode().getLoc().getLine(), testMethod);
-        }
-        List<ASTModifierNode> modifierList = node.findDescendantsOfType(ASTModifierNode.class);
-        final Map<Integer, ModifierOrAnnotation> modifierLocMap = new HashMap<>();
-        for (ASTModifierNode modifier : modifierList) {
-            for (final ModifierOrAnnotationTypeInfo modifierOrAnnotationTypeInfo : modifier.getNode().getModifiers().all()) {
-                ModifierOrAnnotation modifierOrAnnotation = modifier.getNode().getModifiers().get(modifierOrAnnotationTypeInfo);
-                if (modifierOrAnnotation instanceof Annotation && TypeInfoEquivalence
-                        .isEquivalent(modifierOrAnnotationTypeInfo, AnnotationTypeInfos.IS_TEST)) {
-                    modifierLocMap.put(modifierOrAnnotation.getLoc().getLine(), modifierOrAnnotation);
-                }
-            }
-        }
-        for (Map.Entry<Integer, ASTMethod> entry : methodLocMap.entrySet()) {
-            if (entry != null && modifierLocMap.get(entry.getKey()) == null
-                    && modifierLocMap.get(entry.getKey() - 1) == null) {
+        List<ASTMethodCallExpression> methodCallList = testMethod.findDescendantsOfType(ASTMethodCallExpression.class);
+        for (ASTMethodCallExpression assertMethodCall : methodCallList) {
+            if (ASSERT_METHODS.contains(assertMethodCall.getFullMethodName().toLowerCase(Locale.ROOT))) {
                 addViolationWithMessage(data, node,
-                        "''{0}'' method should have @isTest annotation.",
-                        new Object[] { entry.getValue().getImage() });
+                        "''{0}'' method should have @IsTest annotation.",
+                        new Object[] { testMethod.getImage() });
+                return data;
             }
         }
         return data;

@@ -18,7 +18,7 @@ language: Apex
 The second parameter of System.assert/third parameter of System.assertEquals/System.assertNotEquals is a message.
 Having a second/third parameter provides more information and makes it easier to debug the test failure and improves the readability of test output.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestAssertStatementRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestAssertStatementRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/ApexUnitTestAssertStatementRule.java)
 
 **Example(s):**
 

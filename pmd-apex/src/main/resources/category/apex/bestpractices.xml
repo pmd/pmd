@@ -109,11 +109,11 @@ trigger Accounts on Account (before insert, before update, before delete, after 
 ]]>
         </example>
     </rule>
-    <rule name="ApexUnitTestAssertStatement"
+    <rule name="ApexAssertionsShouldIncludeMessage"
           since="6.13.0"
           message="Apex test assert statement should make use of the message parameter."
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexUnitTestAssertStatementRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexunittestassertstatement">
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.ApexAssertionsShouldIncludeMessageRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage">
         <description>
             The second parameter of System.assert/third parameter of System.assertEquals/System.assertNotEquals is a message.
             Having a second/third parameter provides more information and makes it easier to debug the test failure and improves the readability of test output.
@@ -154,6 +154,10 @@ private class ATest {
     static void methodBTest() {
     }
     @isTest static void methodCTest() {
+        System.assert(1==2);
+    }
+    @isTest static void methodCTest() {
+        System.debug('I am a debug statement');
     }
     private void fetchData() {
     }
