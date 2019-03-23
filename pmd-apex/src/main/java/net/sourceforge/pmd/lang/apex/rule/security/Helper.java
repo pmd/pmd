@@ -53,7 +53,7 @@ public final class Helper {
     static boolean isTestMethodOrClass(final ApexNode<?> node) {
         final List<ASTModifierNode> modifierNode = node.findChildrenOfType(ASTModifierNode.class);
         for (final ASTModifierNode m : modifierNode) {
-            if (m.getNode().getModifiers().isTest()) {
+            if (m.isTest()) {
                 return true;
             }
         }

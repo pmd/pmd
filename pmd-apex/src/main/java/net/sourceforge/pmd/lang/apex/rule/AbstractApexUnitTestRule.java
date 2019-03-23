@@ -25,12 +25,11 @@ public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
 
     /**
      * Don't bother visiting this class if it's not a class with @isTest and
-     * newer than API v24
+     * newer than API v24 (V176 internal).
      */
     @Override
     public Object visit(final ASTUserClass node, final Object data) {
-        final Version classApiVersion = node.getNode().getDefiningType().getCodeUnitDetails().getVersion();
-        if (!isTestMethodOrClass(node) && classApiVersion.isGreaterThan(Version.V174)) {
+        if (!isTestMethodOrClass(node) && node.getApexVersion() >= Version.V176.getExternal()) {
             return data;
         }
         return super.visit(node, data);
@@ -38,6 +37,6 @@ public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
 
     protected boolean isTestMethodOrClass(final ApexNode<?> node) {
         final ASTModifierNode modifierNode = node.getFirstChildOfType(ASTModifierNode.class);
-        return modifierNode != null && modifierNode.getNode().getModifiers().isTest();
+        return modifierNode != null && modifierNode.isTest();
     }
 }

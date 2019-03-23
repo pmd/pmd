@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.security;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +21,6 @@ import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.data.Identifier;
-import apex.jorje.data.ast.TypeRefs.ClassTypeRef;
 import apex.jorje.semantic.symbol.member.variable.StandardFieldInfo;
 
 /**
@@ -102,26 +99,12 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             }
         } else {
             if (node instanceof ASTField) {
-                /*
-                 * sergey.gorbaty: Apex Jorje parser is returning a null from
-                 * Field.getFieldInfo(), but the info is available from an inner
-                 * field. DO NOT attempt to optimize this block without checking
-                 * that Jorje parser actually fixed its bug.
-                 * 
-                 */
-                try {
-                    final Field f = node.getNode().getClass().getDeclaredField("fieldInfo");
-                    f.setAccessible(true);
-                    final StandardFieldInfo fieldInfo = (StandardFieldInfo) f.get(node.getNode());
-                    if (fieldInfo.getType().getApexName().equalsIgnoreCase("String")) {
-                        if (fieldInfo.getValue() != null) {
-                            addVariable(fieldInfo);
-                        }
+                ASTField field = (ASTField) node;
+                if ("String".equalsIgnoreCase(field.getTypeRef())) {
+                    StandardFieldInfo fieldInfo = (StandardFieldInfo) field.getNode().getFieldInfo();
+                    if (fieldInfo.getValue() != null) {
+                        addVariable(fieldInfo);
                     }
-
-                } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
-                        | IllegalAccessException e) {
-                    throw new RuntimeException(e);
                 }
             }
         }
@@ -159,10 +142,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             return;
         }
 
-        ClassTypeRef classRef = (ClassTypeRef) node.getNode().getTypeRef();
-        Identifier identifier = classRef.getNames().get(0);
-
-        if (identifier.getValue().equalsIgnoreCase(PAGEREFERENCE)) {
+        if (node.getTypeRef().equalsIgnoreCase(PAGEREFERENCE)) {
             getObjectValue(node, data);
         }
     }
