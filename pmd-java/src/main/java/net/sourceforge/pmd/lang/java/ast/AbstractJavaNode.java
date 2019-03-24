@@ -153,7 +153,11 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         }
     }
 
-    private void enlargeLeft(AbstractJavaNode child) {
+    void enlargeLeft() {
+        enlargeLeft((AbstractJavaNode) jjtGetChild(0));
+    }
+
+    void enlargeLeft(AbstractJavaNode child) {
         if (this.beginLine > child.beginLine) {
             this.firstToken = child.firstToken;
             this.beginLine = child.beginLine;
@@ -225,8 +229,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         newChild.jjtSetChildIndex(idx);
 
         children[idx] = newChild;
-
-        enlargeOnInsert(idx, newChild);
     }
 
 

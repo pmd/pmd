@@ -30,6 +30,9 @@ public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPri
     @Override
     public void jjtClose() {
         super.jjtClose();
+
+        enlargeLeft();
+
         /* JLS:
          *  A name is syntactically classified as an ExpressionName in these contexts:
          *       ...

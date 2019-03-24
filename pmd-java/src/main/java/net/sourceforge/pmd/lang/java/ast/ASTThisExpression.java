@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import javax.annotation.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 
 /**
  * The "this" expression. Related to the {@link ASTSuperExpression "super"} pseudo-expression.
@@ -18,7 +20,7 @@ import javax.annotation.Nullable;
  *
  * </pre>
  */
-public final class ASTThisExpression extends AbstractLateInitNode implements ASTPrimaryExpression {
+public final class ASTThisExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression {
     ASTThisExpression(int id) {
         super(id);
     }
@@ -28,6 +30,19 @@ public final class ASTThisExpression extends AbstractLateInitNode implements AST
         super(p, id);
     }
 
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+
+        if (jjtGetNumChildren() > 0) {
+            enlargeLeft();
+            // There's a qualifier
+            Node child = jjtGetChild(0);
+            if (child instanceof ASTAmbiguousName) {
+                this.replaceChildAt(0, ((ASTAmbiguousName) child).forceTypeContext());
+            }
+        }
+    }
 
     @Nullable
     public ASTClassOrInterfaceType getQualifier() {
@@ -50,10 +65,4 @@ public final class ASTThisExpression extends AbstractLateInitNode implements AST
     }
 
 
-    @Override
-    void onInjectFinished() {
-        // If this method is called, then a qualifier was injected
-        ASTAmbiguousName name = (ASTAmbiguousName) jjtGetChild(0);
-        this.replaceChildAt(0, name.forceTypeContext());
-    }
 }

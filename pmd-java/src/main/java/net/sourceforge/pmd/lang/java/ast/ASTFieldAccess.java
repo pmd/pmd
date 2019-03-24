@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import javax.annotation.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * A field access expression.
  *
@@ -37,6 +39,11 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
         this.setImage(fieldName);
     }
 
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+        enlargeLeft();
+    }
 
     /**
      * Returns the type to the left of the "." if it exists.

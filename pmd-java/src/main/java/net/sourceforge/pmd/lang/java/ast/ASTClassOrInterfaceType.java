@@ -60,6 +60,15 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
     }
 
 
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+
+        if (jjtGetNumChildren() > 0) {
+            enlargeLeft();
+        }
+    }
+
     /**
      * Gets the owner type of this type if it's not ambiguous. This is a
      * type we know for sure that this type is a member of.

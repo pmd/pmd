@@ -36,6 +36,12 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
         return visitor.visit(this, data);
     }
 
+    @Override
+    public void jjtOpen() {
+        super.jjtOpen();
+        AbstractJavaNode node = (AbstractJavaNode) parser.jjtree.peekNode();
+        enlargeLeft(node);
+    }
 
     /**
      * Returns true if this is a constructor reference,

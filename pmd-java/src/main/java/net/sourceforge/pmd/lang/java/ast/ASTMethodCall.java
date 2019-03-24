@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * Lhs        ::= {@link ASTPrimaryExpression PrimaryExpression} | {@link ASTClassOrInterfaceType ClassName} | {@link ASTAmbiguousName AmbiguousName}
  * </pre>
  */
-public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrimaryExpression, ASTQualifiableExpression {
+public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
 
 
 
@@ -35,6 +35,24 @@ public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrim
         super(p, id);
     }
 
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+
+        enlargeLeft();
+
+        if (getImage() != null) {
+            return;
+        }
+
+        // the cast serves as an assert
+        ASTAmbiguousName fstChild = (ASTAmbiguousName) jjtGetChild(0);
+
+        fstChild.shrinkOrDeleteInParentSetImage();
+
+        assert getImage() != null;
+
+    }
 
     /**
      * Returns the name of the called method.
@@ -76,21 +94,6 @@ public final class ASTMethodCall extends AbstractLateInitNode implements ASTPrim
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    @Override
-    void onInjectFinished() {
-        if (getImage() != null) {
-            return;
-        }
-
-        // the cast serves as an assert
-        ASTAmbiguousName fstChild = (ASTAmbiguousName) jjtGetChild(0);
-
-        fstChild.shrinkOrDeleteInParentSetImage();
-
-        assert getImage() != null;
     }
 
 }
