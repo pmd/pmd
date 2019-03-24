@@ -464,22 +464,6 @@ public class JavaParser {
     token_source.setSuppressMarker(marker);
   }
 
-  /**
-   * Takes the two nodes at the top of the stack and inject the next-to-last as the first
-   * child of the last. Basically it transforms eg [A][B] into [[A]B]. Can be used to e.g.
-   * build a left-recursive expression or type subtree from an iterative parsing.
-   */
-  private void wrapLeft() {
-    AbstractJavaNode lastSegment = (AbstractJavaNode) jjtree.popNode();
-    Node previousSegment = jjtree.popNode();
-
-    lastSegment.insertChild((AbstractJavaNode) previousSegment, 0);
-    if (lastSegment instanceof AbstractLateInitNode) {
-        ((AbstractLateInitNode) lastSegment).onInjectFinished();
-    }
-    jjtree.pushNode(lastSegment);
-  }
-
   private void setLastTokenImage(JavaNode node) {
     node.setImage(getToken(0).getImage());
   }
@@ -1998,7 +1982,6 @@ void AnnotationList() #void:
 void TypeAnnotationList() #void:
 {}
 {
-   // don't repeat the check
   (TypeAnnotation())*
 }
 
@@ -2110,8 +2093,8 @@ void ClassOrInterfaceType() #void:
   }
 
   /*
-    Now if there are other segments, either the previous type specified type arguments,
-    or the next has an annotation.
+    Now if there are other segments, either the previous segment specified type
+    arguments, or the next has an annotation.
 
     Each of the following segments is its own ClassOrInterfaceType which encloses the
     previous one. The resulting structure appears left-recursive, but the parser just
@@ -2123,11 +2106,9 @@ void ClassOrInterfaceType() #void:
         "."
         (TypeAnnotation())*
         <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
-        {jjtree.extendLeft(1);}
+        {jjtree.extendLeft(1);} // We'll enclose the previous segment
         [ LOOKAHEAD( "<" ) TypeArguments() ]
       ) #ClassOrInterfaceType
-      // inject the previous segment into the last one
-//      { wrapLeft(); }
   )*
   {
     Node top = jjtree.peekNode();
@@ -2437,24 +2418,6 @@ void PrimaryExpression() #void :
   PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* {forceExprContext();}
 }
 
-/**
- * A selector like a
- */
-void MemberSelector() #void :
-{}
-{
-  // if there are type arguments, this is a method call
-  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentsList()) #MethodCall //  { wrapLeft (); }
-| LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                 #MethodCall  //  { wrapLeft (); }
-|              ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);})                                 #FieldAccess //  { wrapLeft (); }
-}
-
-void MethodReference(): // LHS is injected
-{checkForBadMethodReferenceUsage();}
-{
-  "::" {jjtree.extendLeft();}
-  [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
-}
 /*
   Expressions that may be present at the start of a primary expression.
 
@@ -2471,7 +2434,7 @@ void PrimaryPrefix() #void :
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
-| ("(" Expression() ")")     #ParenthesizedExpression
+| ("(" Expression() ")")                  #ParenthesizedExpression
 | UnqualifiedAllocationExpr()
 | LOOKAHEAD( TypeOrVoid() "." "class" )
     (TypeOrVoid() "." "class") #ClassLiteral
@@ -2499,15 +2462,32 @@ void PrimaryPrefix() #void :
 void PrimarySuffix() #void :
 {}
 {
-  MethodReference()                           // { wrapLeft(); }
-| ArgumentsList()            #MethodCall(2)   // { wrapLeft(); }
-| ("[" Expression() "]")     #ArrayAccess(2)  // { wrapLeft(); }
+  MethodReference()
+| ArgumentsList()                   #MethodCall(2)
+| ("[" Expression() "]")            #ArrayAccess(2)
 // all the following start with a "."
-| LOOKAHEAD(2) ("." "this")  #ThisExpression(1)
-| LOOKAHEAD(2) ("." "super") #SuperExpression(1) // { wrapLeft(); }
+| LOOKAHEAD(2) ("." "this")         #ThisExpression(1)
+| LOOKAHEAD(2) ("." "super")        #SuperExpression(1)
 // lookahead("." "new")
-| LOOKAHEAD(2) QualifiedAllocationExpr()      //{ wrapLeft(); }
-| LOOKAHEAD(1) MemberSelector() // starts with "."
+| LOOKAHEAD(2) QualifiedAllocationExpr()
+| MemberSelector() // more complex method call patterns
+}
+
+
+void MemberSelector() #void :
+{}
+{
+  // if there are type arguments, this is a method call
+  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentsList()) #MethodCall
+| LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                   #MethodCall
+|              ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);})                                   #FieldAccess
+}
+
+void MethodReference(): // LHS is injected
+{checkForBadMethodReferenceUsage();}
+{
+  "::" {jjtree.extendLeft();}
+  [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
 }
 
 void LambdaExpression() :
@@ -2545,7 +2525,6 @@ void LambdaParameterType() #void :
     LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } ) <IDENTIFIER>
     | Type()
 }
-// TODO compound expression abstraction
 
 void Literal() #void :
 { Token t;}
@@ -2563,9 +2542,9 @@ void NumericLiteral():
   Token t;
 }
 {
-  (  t=<INTEGER_LITERAL> {  jjtThis.setIntLiteral();}
-  | t=<FLOATING_POINT_LITERAL> {  jjtThis.setFloatLiteral();}
-  | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); jjtThis.setFloatLiteral();}
+  ( t=<INTEGER_LITERAL>             {  jjtThis.setIntLiteral();}
+  | t=<FLOATING_POINT_LITERAL>      {  jjtThis.setFloatLiteral();}
+  | t=<HEX_FLOATING_POINT_LITERAL>  { checkForBadHexFloatingPointLiteral(); jjtThis.setFloatLiteral();}
   )
   {
     checkForBadNumericalLiteralslUsage(t);
@@ -2687,9 +2666,8 @@ void ArrayDimsAndInits() :
   LOOKAHEAD(2)
   ( LOOKAHEAD(2) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
 |
-  ( "[" "]" {jjtThis.bumpArrayDepth();})+ ArrayInitializer()
+  Dims() ArrayInitializer()
 }
-
 
 /*
  * Statement syntax follows.
