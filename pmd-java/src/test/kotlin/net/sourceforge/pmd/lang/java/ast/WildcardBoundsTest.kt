@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
+
 
 class WildcardBoundsTest : ParserTestSpec({
 
@@ -8,14 +9,11 @@ class WildcardBoundsTest : ParserTestSpec({
 
         "SomeClass<? extends Another>" should matchType<ASTClassOrInterfaceType> {
 
-            it.typeArguments shouldBe child {
-                child<ASTTypeArgument> {
-                    child<ASTWildcardBounds> {
-                        val ref = child<ASTClassOrInterfaceType> {
-                            it.image shouldBe "Another"
-                        }
+            it::getTypeArguments shouldBe child {
+                child<ASTWildcardType> {
 
-                        it.typeBoundNode shouldBe ref
+                    it::getTypeBoundNode shouldBe child<ASTClassOrInterfaceType> {
+                        it::getTypeImage shouldBe "Another"
                     }
                 }
             }

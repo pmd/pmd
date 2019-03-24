@@ -39,7 +39,9 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getExplicitTypeArguments shouldBe null
 
-            child<ASTAnnotation>(ignoreChildren = true) {}
+            child<ASTMarkerAnnotation> {
+                it::getAnnotationName shouldBe "Lol"
+            }
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
@@ -137,7 +139,9 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getExplicitTypeArguments shouldBe null
 
-            child<ASTAnnotation>(ignoreChildren = true) {}
+            child<ASTMarkerAnnotation> {
+                it::getAnnotationName shouldBe "Lol"
+            }
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"

@@ -22,9 +22,7 @@ class ASTAnnotatedTypeTest : ParserTestSpec({
 
         "@I int" should matchType<ASTAnnotatedType> {
 
-            child<ASTAnnotation>(ignoreChildren = true) {
-
-            }
+            child<ASTMarkerAnnotation> { }
 
             it::getBaseType shouldBe child<ASTPrimitiveType> { }
 

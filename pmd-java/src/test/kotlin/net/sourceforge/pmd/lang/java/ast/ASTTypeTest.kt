@@ -31,10 +31,8 @@ class ASTTypeTest : ParserTestSpec({
             }
 
             it::getTypeArguments shouldBe child {
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "F"
-                    }
+                child<ASTClassOrInterfaceType> {
+                    it::getTypeImage shouldBe "F"
                 }
             }
         }
@@ -66,30 +64,22 @@ class ASTTypeTest : ParserTestSpec({
                 it::getName shouldBe "java.util.Map"
             }
 
-            child<ASTAnnotation> {
+            child<ASTMarkerAnnotation> {
                 it::getAnnotationName shouldBe "Foo"
-
-                child<ASTMarkerAnnotation> {
-                    child<ASTName> { }
-                }
             }
 
             it::getTypeArguments shouldBe child {
 
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "K"
-                        it::getTypeArguments shouldBe null
-                        it::getLhsType shouldBe null
-                    }
+                child<ASTClassOrInterfaceType> {
+                    it::getTypeImage shouldBe "K"
+                    it::getTypeArguments shouldBe null
+                    it::getLhsType shouldBe null
                 }
 
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "V"
-                        it::getTypeArguments shouldBe null
-                        it::getLhsType shouldBe null
-                    }
+                child<ASTClassOrInterfaceType> {
+                    it::getTypeImage shouldBe "V"
+                    it::getTypeArguments shouldBe null
+                    it::getLhsType shouldBe null
                 }
             }
         }
@@ -107,28 +97,20 @@ class ASTTypeTest : ParserTestSpec({
                     it::getTypeImage shouldBe "Foo"
 
                     it::getTypeArguments shouldBe child {
-                        child<ASTTypeArgument> {
-                            child<ASTClassOrInterfaceType> {
-                                it::getTypeImage shouldBe "K"
-                            }
+                        child<ASTClassOrInterfaceType> {
+                            it::getTypeImage shouldBe "K"
                         }
                     }
                 }
 
-                child<ASTAnnotation> {
+                child<ASTMarkerAnnotation> {
                     it::getAnnotationName shouldBe "A"
-
-                    child<ASTMarkerAnnotation> {
-                        child<ASTName> { }
-                    }
                 }
             }
 
             it::getTypeArguments shouldBe child {
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "V"
-                    }
+                child<ASTClassOrInterfaceType> {
+                    it::getTypeImage shouldBe "V"
                 }
             }
         }

@@ -77,10 +77,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 }
 
                 it::getTypeArguments shouldBe child {
-                    child<ASTTypeArgument> {
-                        child<ASTClassOrInterfaceType> {
-                            it::getTypeImage shouldBe "B"
-                        }
+                    child<ASTClassOrInterfaceType> {
+                        it::getTypeImage shouldBe "B"
                     }
                 }
             }
@@ -128,10 +126,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
 
                 it::getTypeArguments shouldBe child {
-                    child<ASTTypeArgument> {
-                        child<ASTClassOrInterfaceType> {
-                            it::getTypeImage shouldBe "B"
-                        }
+                    child<ASTClassOrInterfaceType> {
+                        it::getTypeImage shouldBe "B"
                     }
                 }
             }
@@ -170,10 +166,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 it::getTypeImage shouldBe "ArrayList"
 
                 it::getTypeArguments shouldBe child {
-                    child<ASTTypeArgument> {
-                        child<ASTClassOrInterfaceType> {
-                            it::getTypeImage shouldBe "String"
-                        }
+                    child<ASTClassOrInterfaceType> {
+                        it::getTypeImage shouldBe "String"
                     }
                 }
             }
@@ -192,10 +186,8 @@ class ASTMethodReferenceTest : ParserTestSpec({
             }
 
             it::getTypeArguments shouldBe child {
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "String"
-                    }
+                child<ASTClassOrInterfaceType> {
+                    it::getTypeImage shouldBe "String"
                 }
             }
         }

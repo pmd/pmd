@@ -357,11 +357,12 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 """
                 ${ctx.imports.joinToString(separator = "\n")}
                 ${ctx.genClassHeader} {
-                    $construct foo;
+                    Object f = ($construct) null;
                 }
                 """.trimIndent()
 
-            override fun retrieveNode(acu: ASTCompilationUnit): ASTType = acu.getFirstDescendantOfType(ASTType::class.java)
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTType =
+                    acu.getFirstDescendantOfType(ASTCastExpression::class.java).castType
         }
 
     }

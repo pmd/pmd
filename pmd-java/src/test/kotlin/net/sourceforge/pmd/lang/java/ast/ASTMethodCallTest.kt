@@ -57,10 +57,8 @@ class ASTMethodCallTest : ParserTestSpec({
             }
 
             it::getExplicitTypeArguments shouldBe child {
-                child<ASTTypeArgument> {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "B"
-                    }
+                child<ASTClassOrInterfaceType> {
+                    it::getTypeImage shouldBe "B"
                 }
             }
 

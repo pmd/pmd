@@ -2625,7 +2625,8 @@ void QualifiedAllocationExpr() #ConstructorCall:
    "."
    "new"
    [ TypeArguments() ]
-   AnnotatedClassOrInterfaceType()
+   TypeAnnotationList()
+   ClassOrInterfaceType()
    ArgumentsList()
    [
        { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }

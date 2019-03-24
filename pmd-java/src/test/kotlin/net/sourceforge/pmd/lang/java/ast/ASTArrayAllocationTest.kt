@@ -27,16 +27,9 @@ class ASTArrayAllocationTest : ParserTestSpec({
         }
 
         "new @Foo int[3][2]" should matchExpr<ASTArrayAllocation> {
-            child<ASTAnnotation> {
+
+            child<ASTMarkerAnnotation> {
                 it::getAnnotationName shouldBe "Foo"
-
-                child<ASTMarkerAnnotation> {
-                    it::getAnnotationName shouldBe "Foo"
-
-                    child<ASTName> {
-                        it::getNameDeclaration shouldBe null
-                    }
-                }
             }
 
             it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
