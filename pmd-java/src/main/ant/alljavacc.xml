@@ -191,5 +191,6 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
                 <include name="AST*.java" />
             </fileset>
         </delete>
+        <delete file="${target-package-dir}/JJTJavaParserState.java"/>
     </target>
 </project>

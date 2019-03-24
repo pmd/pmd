@@ -141,6 +141,19 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
         // The text coordinates of this node will be enlarged with those of the child
 
+        enlargeOnInsert(index, child);
+    }
+
+    private void enlargeOnInsert(int index, AbstractJavaNode child) {
+        if (index == 0) {
+            enlargeLeft(child);
+        }
+        if (index == children.length - 1) {
+            enlargeRight(child);
+        }
+    }
+
+    private void enlargeLeft(AbstractJavaNode child) {
         if (this.beginLine > child.beginLine) {
             this.firstToken = child.firstToken;
             this.beginLine = child.beginLine;
@@ -150,7 +163,9 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
             this.firstToken = child.firstToken;
             this.beginColumn = child.beginColumn;
         }
+    }
 
+    private void enlargeRight(AbstractJavaNode child) {
         if (this.endLine < child.endLine) {
             this.lastToken = child.lastToken;
             this.endLine = child.endLine;
@@ -202,17 +217,16 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     // with an unambiguous representation
     void replaceChildAt(int idx, AbstractJavaNode newChild) {
 
-        AbstractJavaNode oldChild = (AbstractJavaNode) children[idx];
-
         // parent of the old child must not be reset to null
         // as chances are we're reusing it as a child of the
         // new child
 
-        newChild.copyTextCoordinates(oldChild);
         newChild.jjtSetParent(this);
         newChild.jjtSetChildIndex(idx);
 
         children[idx] = newChild;
+
+        enlargeOnInsert(idx, newChild);
     }
 
 

@@ -2123,10 +2123,11 @@ void ClassOrInterfaceType() #void:
         "."
         (TypeAnnotation())*
         <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
+        {jjtree.extendLeft(1);}
         [ LOOKAHEAD( "<" ) TypeArguments() ]
       ) #ClassOrInterfaceType
       // inject the previous segment into the last one
-      { wrapLeft(); }
+//      { wrapLeft(); }
   )*
   {
     Node top = jjtree.peekNode();
@@ -2443,15 +2444,16 @@ void MemberSelector() #void :
 {}
 {
   // if there are type arguments, this is a method call
-  LOOKAHEAD(2) ("." TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList()) #MethodCall  { wrapLeft(); }
-| LOOKAHEAD(3) ("." <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                 #MethodCall  { wrapLeft(); }
-|              ("." <IDENTIFIER> {setLastTokenImage(jjtThis);})                                 #FieldAccess { wrapLeft(); }
+  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentsList()) #MethodCall //  { wrapLeft (); }
+| LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                 #MethodCall  //  { wrapLeft (); }
+|              ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);})                                 #FieldAccess //  { wrapLeft (); }
 }
 
 void MethodReference(): // LHS is injected
 {checkForBadMethodReferenceUsage();}
 {
-  "::" [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
+  "::" {jjtree.extendLeft();}
+  [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
 }
 /*
   Expressions that may be present at the start of a primary expression.
@@ -2497,14 +2499,14 @@ void PrimaryPrefix() #void :
 void PrimarySuffix() #void :
 {}
 {
-  MethodReference()                           { wrapLeft(); }
-| ArgumentsList()            #MethodCall      { wrapLeft(); }
-| ("[" Expression() "]")     #ArrayAccess     { wrapLeft(); }
+  MethodReference()                           // { wrapLeft(); }
+| ArgumentsList()            #MethodCall(2)   // { wrapLeft(); }
+| ("[" Expression() "]")     #ArrayAccess(2)  // { wrapLeft(); }
 // all the following start with a "."
-| LOOKAHEAD(2) ("." "this")  #ThisExpression  { wrapLeft(); }
-| LOOKAHEAD(2) ("." "super") #SuperExpression { wrapLeft(); }
+| LOOKAHEAD(2) ("." "this")  #ThisExpression(1)
+| LOOKAHEAD(2) ("." "super") #SuperExpression(1) // { wrapLeft(); }
 // lookahead("." "new")
-| LOOKAHEAD(2) QualifiedAllocationExpr()      { wrapLeft(); }
+| LOOKAHEAD(2) QualifiedAllocationExpr()      //{ wrapLeft(); }
 | LOOKAHEAD(1) MemberSelector() // starts with "."
 }
 
@@ -2624,6 +2626,7 @@ void QualifiedAllocationExpr() #ConstructorCall:
 {
    "."
    "new"
+   {jjtree.extendLeft();}
    [ TypeArguments() ]
    TypeAnnotationList()
    ClassOrInterfaceType()
