@@ -47,6 +47,12 @@ The designer will still be shipped with PMD's binaries.
     Do-While-Loops and While-Loops that can be simplified since they use simply `true` or `false` as their
     loop condition.
 
+*   The new Apex rule {% rule "apex/bestpractices/ApexAssertionsShouldIncludeMessage" %} (`apex-bestpractices`)
+    searches for assertions in unit tests and checks, whether they use a message argument.
+
+*   The new Apex rule {% rule "apex/bestpractices/ApexUnitTestMethodShouldHaveIsTestAnnotation" %} (`apex-bestpractices`)
+    searches for methods in test classes, which are missing the `@IsTest` annotation.
+
 ### Fixed Issues
 
 *   doc
@@ -68,6 +74,7 @@ The designer will still be shipped with PMD's binaries.
 
 ### External Contributions
 
+*   [#1694](https://github.com/pmd/pmd/pull/1694): \[apex] New rules for test method and assert statements - [triandicAnt](https://github.com/triandicAnt)
 *   [#1697](https://github.com/pmd/pmd/pull/1697): \[doc] Update CPD documentation - [Matías Fraga](https://github.com/matifraga)
 *   [#1704](https://github.com/pmd/pmd/pull/1704): \[java] Added AvoidUncheckedExceptionsInSignatures Rule - [Bhanu Prakash Pamidi](https://github.com/pamidi99)
 *   [#1706](https://github.com/pmd/pmd/pull/1706): \[java] Add DetachedTestCase rule - [David Burström](https://github.com/davidburstromspotify)
