@@ -4,65 +4,36 @@
 
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexUnitTestRule;
 
-/**
- * Apex unit tests should have System.assert methods in them
- *
- * @author sudhansu
- */
 public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTestRule {
 
-    private static final Set<String> ASSERT_METHODS = new HashSet<>();
     private static final String ASSERT = "System.assert";
     private static final String ASSERT_EQUALS = "System.assertEquals";
     private static final String ASSERT_NOT_EQUALS = "System.assertNotEquals";
 
-    static {
-        ASSERT_METHODS.add(ASSERT.toLowerCase(Locale.ROOT));
-        ASSERT_METHODS.add(ASSERT_EQUALS.toLowerCase(Locale.ROOT));
-        ASSERT_METHODS.add(ASSERT_NOT_EQUALS.toLowerCase(Locale.ROOT));
-    }
-
-    public ApexAssertionsShouldIncludeMessageRule() {
-        addRuleChainVisit(ASTMethodCallExpression.class);
-    }
-
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
-        if (!ASSERT_METHODS.contains(node.getFullMethodName().toLowerCase(Locale.ROOT))) {
+        String methodName = node.getFullMethodName().toLowerCase(Locale.ROOT);
+        if (!ASSERT.equalsIgnoreCase(methodName)
+                && !ASSERT_EQUALS.equalsIgnoreCase(methodName)
+                && !ASSERT_NOT_EQUALS.equalsIgnoreCase(methodName)) {
             return data;
         }
-
-        return checkForAssertStatement(node, data);
-    }
-
-    protected Object checkForAssertStatement(ApexNode<?> node, Object data) {
-        // if System.assert has 1 argument, throw error
-        // if System.assertEquals/System.assertNotEquals has only 2 arguments, throw error
-        ASTMethodCallExpression assertMethodCall = (ASTMethodCallExpression) node;
-        if (assertMethodCall == null) {
-            return data;
-        }
-        if (ASSERT.equalsIgnoreCase(assertMethodCall.getFullMethodName())
-                && assertMethodCall.jjtGetNumChildren() == 2) {
+        if (ASSERT.equalsIgnoreCase(methodName)
+                && node.jjtGetNumChildren() == 2) {
             addViolationWithMessage(data, node,
                     "''{0}'' should have 2 parameters.",
                     new Object[] { ASSERT });
-        } else if ((ASSERT_EQUALS.equalsIgnoreCase(assertMethodCall.getFullMethodName())
-                || ASSERT_NOT_EQUALS.equalsIgnoreCase(assertMethodCall.getFullMethodName()))
-                && assertMethodCall.jjtGetNumChildren() == 3) {
-            Object obj = ASSERT_EQUALS.equalsIgnoreCase(assertMethodCall.getFullMethodName())
-                    ? ASSERT_EQUALS : ASSERT_NOT_EQUALS;
+        } else if ((ASSERT_EQUALS.equalsIgnoreCase(methodName)
+                || ASSERT_NOT_EQUALS.equalsIgnoreCase(methodName))
+                && node.jjtGetNumChildren() == 3) {
             addViolationWithMessage(data, node,
                     "''{0}'' should have 3 parameters.",
-                    new Object[] { obj });
+                    new Object[] { methodName });
         }
         return data;
     }

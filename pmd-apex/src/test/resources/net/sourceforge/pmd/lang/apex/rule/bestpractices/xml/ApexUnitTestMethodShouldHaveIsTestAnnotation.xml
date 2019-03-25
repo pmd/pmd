@@ -59,4 +59,15 @@ private class ATest {
 }
 		]]></code>
     </test-code>
+    <test-code>
+        <description>Avoid false positive in non test class methods.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class A {
+    private void fetchData() {
+        System.assertEquals(1,1);
+    }
+}
+		]]></code>
+    </test-code>
 </test-data>

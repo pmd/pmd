@@ -21,17 +21,28 @@ public class Foo {
 }
 		]]></code>
     </test-code>
-
     <test-code>
         <description>[apex] assert should have 2 param and assertEquals should have 3 param.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-@isTest(seeAllData = true)
+@isTest
 public class Foo {
      @isTest
     static void methodATest() {
         System.assertEquals('Test opportunity', o.Name, 'Opportunity Name' + o.Name + 'is wrong.'); // good
         System.assert(o.isClosed, 'Opportunity is not closed.'); // good
+    }
+}
+		]]></code>
+    </test-code>
+    <test-code>
+        <description>[apex] Avoid false positive in non test classes.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static void methodA() {
+        System.assertEquals('Test opportunity', o.Name);
+        System.assert(o.isClosed);
     }
 }
 		]]></code>
