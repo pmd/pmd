@@ -475,7 +475,7 @@ public class Éléphant {}
 
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
-By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
 This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
 property &quot;ignoredAnnotations&quot; to customize the recognized annotations.
 
