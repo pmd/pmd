@@ -1323,6 +1323,14 @@ the annotation has been forgotten. Because of that those test cases are never ex
 Do-While-Loops and While-Loops that can be simplified since they use simply <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code> as their
 loop condition.</p>
   </li>
+  <li>
+    <p>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage"><code class="highlighter-rouge">ApexAssertionsShouldIncludeMessage</code></a> (<code class="highlighter-rouge">apex-bestpractices</code>)
+searches for assertions in unit tests and checks, whether they use a message argument.</p>
+  </li>
+  <li>
+    <p>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation"><code class="highlighter-rouge">ApexUnitTestMethodShouldHaveIsTestAnnotation</code></a> (<code class="highlighter-rouge">apex-bestpractices</code>)
+searches for methods in test classes, which are missing the <code class="highlighter-rouge">@IsTest</code> annotation.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1360,6 +1368,7 @@ quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml<
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1694">#1694</a>: [apex] New rules for test method and assert statements - <a href="https://github.com/triandicAnt">triandicAnt</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1697">#1697</a>: [doc] Update CPD documentation - <a href="https://github.com/matifraga">Matías Fraga</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1704">#1704</a>: [java] Added AvoidUncheckedExceptionsInSignatures Rule - <a href="https://github.com/pamidi99">Bhanu Prakash Pamidi</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1706">#1706</a>: [java] Add DetachedTestCase rule - <a href="https://github.com/davidburstromspotify">David Burström</a></li>
@@ -1384,7 +1393,7 @@ quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml<
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 22, 2019 <br />
+ Site last generated: Mar 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

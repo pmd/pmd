@@ -247,6 +247,24 @@
 "url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
 "summary": "Rules which enforce generally accepted best practices."
 }
+,
+
+{
+"title": "ApexUnitTestAssertStatement (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestAssertStatement",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestassertstatement",
+"summary": "Rules which enforce generally accepted best practices."
+}
+,
+
+{
+"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
+"tags": "",
+"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
+"summary": "Rules which enforce generally accepted best practices."
+}
 
 
 
