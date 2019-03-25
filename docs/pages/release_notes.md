@@ -52,6 +52,12 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
     for try-blocks, that could be changed to a try-with-resources statement. This statement ensures that
     each resource is closed at the end of the statement and is available since Java 7.
 
+*   The new Apex rule {% rule "apex/bestpractices/ApexAssertionsShouldIncludeMessage" %} (`apex-bestpractices`)
+    searches for assertions in unit tests and checks, whether they use a message argument.
+
+*   The new Apex rule {% rule "apex/bestpractices/ApexUnitTestMethodShouldHaveIsTestAnnotation" %} (`apex-bestpractices`)
+    searches for methods in test classes, which are missing the `@IsTest` annotation.
+
 #### Modified Rules
 
 *   The Apex rule {% rule "apex/codestyle/MethodNamingConventions" %} (apex-codestyle) has a new
@@ -106,6 +112,7 @@ More information is available in [the user documentation](pmd_userdocs_cpd.html#
 *   [#1654](https://github.com/pmd/pmd/pull/1654): \[core] Antlr token filter - [Tomi De Lucca](https://github.com/tomidelucca)
 *   [#1655](https://github.com/pmd/pmd/pull/1655): \[kotlin] Kotlin tokenizer refactor - [Lucas Soncini](https://github.com/lsoncini)
 *   [#1686](https://github.com/pmd/pmd/pull/1686): \[doc] Replaced wrong escaping with ">" - [Himanshu Pandey](https://github.com/hpandeycodeit)
+*   [#1694](https://github.com/pmd/pmd/pull/1694): \[apex] New rules for test method and assert statements - [triandicAnt](https://github.com/triandicAnt)
 
 {% endtocmaker %}
 
