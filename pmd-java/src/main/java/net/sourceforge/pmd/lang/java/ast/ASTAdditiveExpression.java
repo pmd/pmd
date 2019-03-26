@@ -46,4 +46,8 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
     public String getOperator() {
         return getImage();
     }
+
+    public BinaryOp getOp() {
+        return BinaryOp.fromImage(getImage());
+    }
 }

@@ -47,4 +47,7 @@ public class ASTShiftExpression extends AbstractJavaTypeNode implements ASTExpre
         return getImage();
     }
 
+    public BinaryOp getOp() {
+        return BinaryOp.fromImage(getImage());
+    }
 }
