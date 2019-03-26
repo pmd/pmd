@@ -13,7 +13,7 @@ import java.util.Iterator;
  *
  * <pre class="grammar">
  *
- *  TypeArguments ::= "<" {@linkplain ASTReferenceType TypeArgument} ( "," {@linkplain ASTReferenceType TypeArgument} )* ">"
+ *  TypeArguments ::= "<" ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} ( "," ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} )* ">"
  *                  | "<" ">"
  * </pre>
  */

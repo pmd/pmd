@@ -21,7 +21,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * Type ::= {@link ASTReferenceType ReferenceType}
  *        | {@link ASTPrimitiveType PrimitiveType}
- *        | {@link ASTAnnotatedType AnnotatedType}
  *
  * </pre>
  *
@@ -54,11 +53,6 @@ public interface ASTType extends JavaNode, TypeNode, Annotatable {
     default List<ASTAnnotation> getDeclaredAnnotations() {
         // overridden by AnnotatedType
         return Collections.emptyList();
-    }
-
-
-    default boolean isAnnotatedType() {
-        return this instanceof ASTAnnotatedType;
     }
 
 

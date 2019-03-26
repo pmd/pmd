@@ -2130,7 +2130,7 @@ void TypeArguments():
    "<" {checkForBadDiamondUsage();} ">"
 }
 
-void TypeArgumentImpl() #AnnotatedType(>1):
+void TypeArgumentImpl() #void:
 {}
 {
    TypeAnnotationList() (ReferenceType() | WildcardType())
@@ -2625,17 +2625,19 @@ void QualifiedAllocationExpr() #ConstructorCall:
 
 // only used in PrimaryPrefix
 void UnqualifiedAllocationExpr() #void :
-{}
+{
+    boolean isArrayInit=false;
+}
 {
    (
      (
        "new" [ TypeArguments() ] (TypeAnnotation())*
        (
-         PrimitiveType() ArrayDimsAndInits()
+         PrimitiveType() ArrayDimsAndInits(){isArrayInit=true;}
        |
          ClassOrInterfaceType()
            (
-             ArrayDimsAndInits()
+              ArrayDimsAndInits() {isArrayInit=true;}
            |
              ArgumentsList()
                [
@@ -2645,10 +2647,11 @@ void UnqualifiedAllocationExpr() #void :
                ]
            )
        )
+       {/*Empty unit, important*/}
      )
-     #ArrayAllocation(jjtree.peekNode() instanceof ASTArrayDimsAndInits)
+     #ArrayAllocation(isArrayInit)
    )
-   #ConstructorCall(>1) // corresponds to "no ArrayCreationExpression has been pushed"
+   #ConstructorCall(!isArrayInit)
    { checkForBadAnonymousDiamondUsage(); }
 
 }
@@ -2659,15 +2662,20 @@ void UnqualifiedAllocationExpr() #void :
  * if there is an expression between the "[...]".
  * TODO use ArrayTypeDims
  */
-void ArrayDimsAndInits() :
+void ArrayDimsAndInits() #void:
 {}
 {
-
-  LOOKAHEAD(2)
-  ( LOOKAHEAD(2) (TypeAnnotation())* "[" Expression() "]" {jjtThis.bumpArrayDepth();})+ ( LOOKAHEAD(2) "[" "]" {jjtThis.bumpArrayDepth();} )*
-|
-  Dims() ArrayInitializer()
+   LOOKAHEAD(TypeAnnotationList() "[" "]" ) ((ArrayTypeDim())+) #ArrayAllocationDims [ ArrayInitializer() ]
+     | (ArrayDimExpr())+ #ArrayAllocationDims
 }
+
+
+void ArrayDimExpr() #void:
+{boolean hasExpr=false;}
+{
+  ((TypeAnnotationList() "[" [ Expression() {hasExpr=true;} ] "]") #ArrayDimExpr(hasExpr) ) #ArrayTypeDim(!hasExpr)
+}
+
 
 /*
  * Statement syntax follows.

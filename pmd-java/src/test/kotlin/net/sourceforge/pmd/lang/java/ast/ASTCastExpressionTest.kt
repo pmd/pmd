@@ -32,6 +32,10 @@ class ASTCastExpressionTest : ParserTestSpec({
 
             unspecifiedChild()
         }
+    }
+
+
+    parserTest("Test intersection in cast", javaVersions = JavaVersion.J1_8..JavaVersion.Latest) {
 
         "(@F Foo & Bar) obj" should matchExpr<ASTCastExpression> {
 

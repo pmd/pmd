@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nullable;
+
 /**
  * An array creation expression.
  *
@@ -12,7 +14,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * ArrayCreationExpression ::= "new" {@link ASTAnnotation TypeAnnotation}*
  *                             ({@link ASTPrimitiveType PrimitiveType} | {@link ASTClassOrInterfaceType ClassOrInterfaceType})
- *                             {@link ASTArrayDimsAndInits ArrayDimsAndInits}
+ *                             {@link ASTArrayAllocationDims ArrayAllocationDims}
+ *                             ({@link ASTArrayInitializer ArrayInitializer})
  *
  * </pre>
  */
@@ -52,11 +55,19 @@ public final class ASTArrayAllocation extends AbstractJavaTypeNode implements AS
 
 
     /**
-     * Returns the dimensions of the array if this is an array creation expression.
+     * Returns the dimensions of the array.
      */
-    public ASTArrayDimsAndInits getArrayDims() {
-        return getFirstChildOfType(ASTArrayDimsAndInits.class);
+    public ASTArrayAllocationDims getArrayDims() {
+        return getFirstChildOfType(ASTArrayAllocationDims.class);
     }
 
+    @Nullable
+    public ASTArrayInitializer getArrayInitializer() {
+        return getChildAs(jjtGetNumChildren() - 1, ASTArrayInitializer.class);
+    }
+
+    public int getArrayDepth() {
+        return getArrayDims().getArrayDepth();
+    }
 
 }

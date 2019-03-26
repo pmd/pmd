@@ -22,7 +22,12 @@ class ASTArrayAllocationTest : ParserTestSpec({
             it::getArrayDims shouldBe child {
                 it::getArrayDepth shouldBe 2
 
-                child<ASTNumericLiteral> {}
+                child<ASTArrayDimExpr> {
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 2
+                    }
+                }
+                child<ASTArrayTypeDim> {}
             }
         }
 
@@ -39,14 +44,18 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
 
             it::getArrayDims shouldBe child {
-                it::isArray shouldBe true
                 it::getArrayDepth shouldBe 2
 
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 3
+                child<ASTArrayDimExpr> {
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 3
+                    }
                 }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 2
+
+                child<ASTArrayDimExpr> {
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 2
+                    }
                 }
             }
         }
@@ -61,14 +70,17 @@ class ASTArrayAllocationTest : ParserTestSpec({
                     }
 
                     it::getArrayDims shouldBe child {
-                        it::isArray shouldBe true
                         it::getArrayDepth shouldBe 1
 
-                        child<ASTNumericLiteral> {}
+                        child<ASTArrayDimExpr> {
+                            child<ASTNumericLiteral> {
+                                it::getValueAsInt shouldBe 3
+                            }
+                        }
                     }
                 }
             }
-            child<ASTNumericLiteral> {}
+            it::getIndexExpression shouldBe child<ASTNumericLiteral> {}
         }
 
         "new Foo[0]" should matchExpr<ASTArrayAllocation> {
@@ -79,11 +91,12 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
 
             it::getArrayDims shouldBe child {
-                it::isArray shouldBe true
                 it::getArrayDepth shouldBe 1
 
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 0
+                child<ASTArrayDimExpr> {
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 0
+                    }
                 }
             }
         }
@@ -94,6 +107,8 @@ class ASTArrayAllocationTest : ParserTestSpec({
 
         "new Foo[] { f, g }" should matchExpr<ASTArrayAllocation> {
 
+            it::getArrayDepth shouldBe 1
+
             it::getElementTypeNode shouldBe child<ASTClassOrInterfaceType> {
                 it::isAnonymousClass shouldBe false
                 it::isReferenceToClassSameCompilationUnit shouldBe true
@@ -101,13 +116,13 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
 
             it::getArrayDims shouldBe child {
-                it::isArray shouldBe true
                 it::getArrayDepth shouldBe 1
+                child<ASTArrayTypeDim> {}
+            }
 
-                child<ASTArrayInitializer> {
-                    child<ASTVariableReference> {}
-                    child<ASTVariableReference> {}
-                }
+            it::getArrayInitializer shouldBe child {
+                child<ASTVariableReference> {}
+                child<ASTVariableReference> {}
             }
         }
 
@@ -120,19 +135,22 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
 
             it::getArrayDims shouldBe child {
-                it::isArray shouldBe true
                 it::getArrayDepth shouldBe 2
 
+                child<ASTArrayTypeDim> {}
+                child<ASTArrayTypeDim> {}
+            }
+
+            it::getArrayInitializer shouldBe child {
                 child<ASTArrayInitializer> {
-                    child<ASTArrayInitializer> {
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 1
-                        }
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 1
                     }
-                    child<ASTArrayInitializer> {
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 2
-                        }
+                }
+
+                child<ASTArrayInitializer> {
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 2
                     }
                 }
             }
@@ -145,20 +163,22 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
 
             it::getArrayDims shouldBe child {
-                it::isArray shouldBe true
                 it::getArrayDepth shouldBe 2
 
+                child<ASTArrayTypeDim> {}
+                child<ASTArrayTypeDim> {}
+            }
+
+            it::getArrayInitializer shouldBe child {
                 child<ASTArrayInitializer> {
-                    child<ASTArrayInitializer> {
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 1
-                        }
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 2
-                        }
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 1
                     }
-                    child<ASTNullLiteral> {}
+                    child<ASTNumericLiteral> {
+                        it::getValueAsInt shouldBe 2
+                    }
                 }
+                child<ASTNullLiteral> {}
             }
         }
     }
