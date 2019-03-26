@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -10,33 +11,77 @@ import net.sourceforge.pmd.lang.ast.test.shouldBe
  */
 class ASTUnaryExpressionTest : ParserTestSpec({
 
-    parserTest("Simple unary expression") {
+    parserTest("Simple unary expressions") {
 
-        "a.b[0]" should matchExpr<ASTArrayAccess> {
+        "-2" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+        }
 
-            it::getLhsExpression shouldBe child<ASTFieldAccess> {
-                it::getFieldName shouldBe "b"
+        "+2" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.UNARY_PLUS
+            it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+        }
 
-                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
-                    it::getName shouldBe "a"
-                }
-            }
+        "~2" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.BITWISE_INVERSE
+            it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+        }
 
-            it::getIndexExpression shouldBe child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 0
+        "!true" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.BOOLEAN_NOT
+            it::getBaseExpression shouldBe child<ASTBooleanLiteral> {}
+        }
+    }
+
+    parserTest("Unary expression precedence") {
+
+        "2 + -2" should matchExpr<ASTAdditiveExpression> {
+
+            child<ASTNumericLiteral> {}
+            child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.UNARY_MINUS
+                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
             }
         }
 
+        "2 +-2" should matchExpr<ASTAdditiveExpression> {
 
-        "b[0]" should matchExpr<ASTArrayAccess> {
-
-            it::getLhsExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "b"
+            child<ASTNumericLiteral> {}
+            child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.UNARY_MINUS
+                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
             }
+        }
+
+        "2 + +2" should matchExpr<ASTAdditiveExpression> {
+
+            child<ASTNumericLiteral> {}
+            child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.UNARY_PLUS
+                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            }
+        }
+
+        "2 ++ 2" should notParseIn(ExpressionParsingCtx)
+    }
 
 
-            it::getIndexExpression shouldBe child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 0
+    parserTest("Unary expression is right-associative") {
+
+        "!!true" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.BOOLEAN_NOT
+            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.BOOLEAN_NOT
+                it::getBaseExpression shouldBe child<ASTBooleanLiteral> {}
+            }
+        }
+
+        "~~1" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.BITWISE_INVERSE
+            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.BITWISE_INVERSE
+                it::getBaseExpression shouldBe child<ASTBooleanLiteral> {}
             }
         }
     }

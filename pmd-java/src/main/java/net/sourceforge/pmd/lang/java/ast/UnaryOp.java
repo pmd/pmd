@@ -1,23 +1,43 @@
 package net.sourceforge.pmd.lang.java.ast;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**
  * A unary operator for {@link ASTUnaryExpression}.
+ *
+ * <pre class="grammar">
+ *
+ * UnaryOp ::= "+" | "-" | "~" | "!"
+ *
+ * </pre>
+ *
+ * @see BinaryOp
+ * @see AssignmentOp
  */
 public enum UnaryOp {
+    /** "+" */
     UNARY_PLUS("+"),
+    /** "-" */
     UNARY_MINUS("-"),
+    /** "~" */
     BITWISE_INVERSE("~"),
+    /** "!" */
     BOOLEAN_NOT("!");
 
-    private static final Map<String, UnaryOp> LOOKUP = Collections.unmodifiableMap(
-        Arrays.stream(values()).collect(Collectors.toMap(Object::toString, op -> op))
-    );
+    private static final Map<String, UnaryOp> LOOKUP =
+        Arrays.stream(values())
+              .collect(
+                  collectingAndThen(
+                      toMap(Object::toString, op -> op),
+                      Collections::unmodifiableMap
+                  )
+              );
 
     private final String code;
 

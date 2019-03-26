@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.Objects;
+
 /**
  * Represents a unary prefix operation on a value.
  * This has a precedence greater than {@link ASTMultiplicativeExpression}.
@@ -17,11 +19,11 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, it can be an expression with an operator precedence greater or equal
  * to a UnaryExpression.
  *
- * <p>TODO it would be sensible to make {@link ASTPreDecrementExpression} and {@link ASTPreIncrementExpression} extend this node
+ * <p>TODO it would be sensible to merge {@link ASTPreDecrementExpression} and {@link ASTPreIncrementExpression}.
  *
  * <pre class="grammar">
  *
- * UnaryExpression ::= ( "+" | "-" | "~" | "!" ) UnaryExpression
+ * UnaryExpression ::= {@link UnaryOp} UnaryExpression
  *
  * </pre>
  */
@@ -49,10 +51,14 @@ public class ASTUnaryExpression extends AbstractJavaTypeNode implements ASTExpre
     }
 
 
+    public ASTExpression getBaseExpression() {
+        return (ASTExpression) jjtGetChild(0);
+    }
+
     @Override
     public void setImage(String image) {
         super.setImage(image);
-        this.operator = UnaryOp.fromImage(image);
+        this.operator = Objects.requireNonNull(UnaryOp.fromImage(image));
     }
 
 

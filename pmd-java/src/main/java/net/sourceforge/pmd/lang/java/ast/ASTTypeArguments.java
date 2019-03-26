@@ -13,8 +13,8 @@ import java.util.Iterator;
  *
  * <pre class="grammar">
  *
- *  TypeArguments ::= "<" ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} ( "," ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} )* ">"
- *                  | "<" ">"
+ *  TypeArguments ::= "&lt;" ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} ( "," ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} )* "&gt;"
+ *                  | "&lt;" "&gt;"
  * </pre>
  */
 public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType> {

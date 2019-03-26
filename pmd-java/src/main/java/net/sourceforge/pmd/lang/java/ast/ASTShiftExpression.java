@@ -15,11 +15,10 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * ShiftExpression ::=  {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "<<"  | {@linkplain ASTRSIGNEDSHIFT RSIGNEDSHIFT} | {@linkplain ASTRUNSIGNEDSHIFT RUNSIGNEDSHIFT} ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
+ * ShiftExpression ::=  {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "&lt;&lt;"  | "&gt;&gt;" | "&gt;&gt;&gt;" ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
  *
  * </pre>
  */
-// TODO we could merge the productions for ASTRSIGNEDSHIFT and ASTRUNSIGNEDSHIFT into this node using a #void production that sets the image of the parent
 public class ASTShiftExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTShiftExpression(int id) {
         super(id);

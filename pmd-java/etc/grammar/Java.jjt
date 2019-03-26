@@ -2985,7 +2985,7 @@ void AssertStatement() :
  * type declaration syntax with generics clean
  */
 
-void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
+void RUNSIGNEDSHIFT() #void:
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&
@@ -2994,7 +2994,7 @@ void RUNSIGNEDSHIFT(): // TODO 7.0.0 make #void
   )
 }
 
-void RSIGNEDSHIFT(): // TODO 7.0.0 make #void
+void RSIGNEDSHIFT() #void:
 {}
 {
   ( LOOKAHEAD({ getToken(1).kind == GT &&

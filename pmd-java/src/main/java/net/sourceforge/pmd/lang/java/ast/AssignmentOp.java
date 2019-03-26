@@ -15,10 +15,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 
 /**
  * An assignment operator for {@link ASTAssignmentExpression}.
+ *
+ * <pre class="grammar">
+ *
+ * AssignmentOp ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "&lt;&lt;=" | "&gt;&gt;=" | "&gt;&gt;&gt;=" | "&amp;=" | "^=" | "|="
+ *
+ * </pre>
+ *
+ * @see BinaryOp
+ * @see UnaryOp
  */
 public enum AssignmentOp {
     EQ("=", null),
@@ -41,7 +51,8 @@ public enum AssignmentOp {
     private final BinaryOp binaryOp;
 
 
-    AssignmentOp(String code, BinaryOp binaryOp) {
+    AssignmentOp(String code,
+                 @Nullable BinaryOp binaryOp) {
         this.code = code;
         this.binaryOp = binaryOp;
     }
@@ -66,6 +77,7 @@ public enum AssignmentOp {
      * if this is a compound operator, otherwise returns
      * null.
      */
+    @Nullable
     public BinaryOp getBinaryOp() {
         return binaryOp;
     }

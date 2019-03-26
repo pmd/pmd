@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "<" | ">" | "<=" | ">=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
+ * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
  *
  * </pre>
  */
@@ -38,4 +38,7 @@ public class ASTRelationalExpression extends AbstractJavaTypeNode implements AST
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
+
+
+
 }

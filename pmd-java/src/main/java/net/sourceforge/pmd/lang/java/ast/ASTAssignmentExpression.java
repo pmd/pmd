@@ -10,9 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * Expression ::= {@linkplain ASTPrimaryExpression ConditionalExpression} ( AssignmentOperator AssignmentExpression )?
- *
- * AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
+ * Expression ::= {@linkplain ASTPrimaryExpression ConditionalExpression} ( {@link AssignmentOp} AssignmentExpression )?
  *
  * </pre>
  */
