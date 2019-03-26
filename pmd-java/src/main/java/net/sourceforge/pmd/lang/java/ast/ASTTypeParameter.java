@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.Optional;
 import javax.annotation.Nullable;
 
 /**
@@ -13,7 +14,7 @@ import javax.annotation.Nullable;
  *
  * <pre class="grammar">
  *
- * TypeParameter ::= {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; ("extends" {@linkplain ASTType Type})?
+ * TypeParameter ::= {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeBound TypeBound}?
  *
  * </pre>
  *
@@ -55,7 +56,9 @@ public final class ASTTypeParameter extends AbstractJavaTypeNode {
      */
     @Nullable
     public ASTType getTypeBoundNode() {
-        return getFirstChildOfType(ASTType.class);
+        return Optional.ofNullable(getFirstChildOfType(ASTTypeBound.class))
+                       .map(it -> it.getFirstChildOfType(ASTType.class))
+                       .orElse(null);
     }
 
 

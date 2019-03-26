@@ -164,6 +164,14 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             makeMatcher(TypeParsingCtx, ignoreChildren, nodeSpec)
 
     /**
+     * Returns a String matcher that parses the node using [parseTypeParameters]
+     * then matches it against the [nodeSpec] using [matchNode].
+     */
+    inline fun matchTypeParameters(ignoreChildren: Boolean = false,
+                                   noinline nodeSpec: NodeSpec<ASTTypeParameters>) =
+            makeMatcher(TypeParametersParsingCtx, ignoreChildren, nodeSpec)
+
+    /**
      * Returns a String matcher that parses the node using [parseToplevelDeclaration] with
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
@@ -221,6 +229,9 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     inline fun <reified N : Node> parseType(type: String): N =
             TypeParsingCtx.parseAndFind(type, this)
+
+    inline fun <reified N : Node> parseTypeParameters(typeParams: String): N =
+            TypeParametersParsingCtx.parseAndFind(typeParams, this)
 
     inline fun <reified N : Node> parseToplevelDeclaration(decl: String): N =
             TopLevelTypeDeclarationParsingCtx.parseAndFind(decl, this)
@@ -363,6 +374,21 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
             override fun retrieveNode(acu: ASTCompilationUnit): ASTType =
                     acu.getFirstDescendantOfType(ASTCastExpression::class.java).castType
+        }
+
+        object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parameters") {
+            override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
+                    """
+                ${ctx.imports.joinToString(separator = "\n")}
+                ${ctx.genClassHeader} {
+
+
+                    public $construct void f() {}
+                }
+                """.trimIndent()
+
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeParameters =
+                    acu.getFirstDescendantOfType(ASTMethodDeclaration::class.java).typeParameters
         }
 
     }

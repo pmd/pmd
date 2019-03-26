@@ -1793,11 +1793,11 @@ void TypeParameters():
 void TypeParameter():
 {Token t;}
 {
-   TypeAnnotationList()
+   AnnotationList()
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
-void TypeBound() #void:
+void TypeBound():
 {}
 {
    "extends" IntersectionType(false)
@@ -1968,10 +1968,10 @@ Dims:
 */
 
 
-void IntersectionType(boolean inCast) #IntersectionType(>1):
-{}
+void IntersectionType(boolean inCast) #IntersectionType(isIntersection):
+{boolean isIntersection=false;}
 {
-  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();} ClassOrInterfaceType() )*
+  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} ClassOrInterfaceType() )*
 }
 
 void AnnotationList() #void:
@@ -1985,20 +1985,20 @@ void TypeAnnotationList() #void:
   (TypeAnnotation())*
 }
 
-void AnnotatedType() #AnnotatedType(>1):
+void AnnotatedType() #void:
 {}
 {
   TypeAnnotationList() Type()
 }
 
 
-void AnnotatedRefType() #AnnotatedType(>1):
+void AnnotatedRefType() #void:
 {}
 {
   TypeAnnotationList() ReferenceType()
 }
 
-void AnnotatedClassOrInterfaceType() #AnnotatedType(>1):
+void AnnotatedClassOrInterfaceType() #void:
 {}
 {
   TypeAnnotationList() ClassOrInterfaceType()
@@ -2392,7 +2392,7 @@ void CastExpression() :
   LOOKAHEAD(
     "(" AnnotationList() PrimitiveType() ")"
   ) "(" AnnotatedType() ")" UnaryExpression()
-| "(" IntersectionType(true) ")" UnaryExpressionNotPlusMinus()
+| "(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()
 }
 
 

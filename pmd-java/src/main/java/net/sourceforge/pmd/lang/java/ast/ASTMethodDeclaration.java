@@ -153,6 +153,10 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
         return MethodLikeKind.METHOD;
     }
 
+    public ASTTypeParameters getTypeParameters() {
+        return getFirstChildOfType(ASTTypeParameters.class);
+    }
+
     //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
     public ASTFormalParameters getFormalParameters() {
         return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);

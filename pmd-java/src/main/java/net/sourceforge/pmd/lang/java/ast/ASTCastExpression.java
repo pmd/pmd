@@ -10,7 +10,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * CastExpression ::= "(" {@link ASTType Type} ")" {@linkplain ASTUnaryExpression UnaryExpression}
+ * CastExpression ::= "(" {@link ASTAnnotation TypeAnnotation} {@link ASTType Type} ")" {@linkplain ASTUnaryExpression UnaryExpression}
  *
  * </pre>
  */
@@ -25,11 +25,11 @@ public final class ASTCastExpression extends AbstractJavaTypeNode implements AST
     }
 
     public ASTType getCastType() {
-        return (ASTType) jjtGetChild(0);
+        return getFirstChildOfType(ASTType.class);
     }
 
     public ASTExpression getCastExpression() {
-        return (ASTExpression) jjtGetChild(1);
+        return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
     }
 
     /**
