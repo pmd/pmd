@@ -58,6 +58,27 @@
         <delete file="${target-package-dir}/CharStream.java" />
         <delete file="${target-package-dir}/TokenMgrError.java" />
 
+
+        <replace file="${target-package-dir}/JJTJavaParserState.java">
+            <replacetoken><![CDATA[  /* Pushes a node on to the stack. */]]></replacetoken>
+            <replacevalue>
+                <![CDATA[
+ /**
+  * Extend the number of children of the current node of one to the left.
+  * If the node is closed, one additional node from the stack will be popped
+  * and added to its children. This allows mimicking "left-recursive" nodes,
+  * while keeping the parsing iterative.
+  */
+  public void extendLeft() {
+    mk--;
+  }
+
+  /* Pushes a node on to the stack. */]]>
+            </replacevalue>
+            <replacefilter token="/*" value="/**" />
+        </replace>
+
+
         <replace file="${target-package-dir}/JavaParserTokenManager.java"
                  token="class JavaParserTokenManager"
                  value="class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
@@ -191,6 +212,5 @@ public class Token implements GenericToken, java.io.Serializable]]></replacevalu
                 <include name="AST*.java" />
             </fileset>
         </delete>
-        <delete file="${target-package-dir}/JJTJavaParserState.java"/>
     </target>
 </project>

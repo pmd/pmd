@@ -2106,7 +2106,7 @@ void ClassOrInterfaceType() #void:
         "."
         (TypeAnnotation())*
         <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
-        {jjtree.extendLeft(1);} // We'll enclose the previous segment
+        {jjtree.extendLeft();} // We'll enclose the previous segment
         [ LOOKAHEAD( "<" ) TypeArguments() ]
       ) #ClassOrInterfaceType
   )*

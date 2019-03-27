@@ -81,7 +81,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             it::getOp shouldBe UnaryOp.BITWISE_INVERSE
             it::getBaseExpression shouldBe child<ASTUnaryExpression> {
                 it::getOp shouldBe UnaryOp.BITWISE_INVERSE
-                it::getBaseExpression shouldBe child<ASTBooleanLiteral> {}
+                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
             }
         }
     }
