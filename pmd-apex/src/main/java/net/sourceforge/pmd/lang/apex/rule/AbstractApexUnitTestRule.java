@@ -17,12 +17,6 @@ import apex.jorje.services.Version;
  */
 public abstract class AbstractApexUnitTestRule extends AbstractApexRule {
 
-    public AbstractApexUnitTestRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Bug Risk");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     /**
      * Don't bother visiting this class if it's not a class with @isTest and
      * newer than API v24

@@ -106,16 +106,12 @@ import net.sourceforge.pmd.lang.apex.ast.ApexParserVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
-import net.sourceforge.pmd.renderers.CodeClimateRule;
 
 public abstract class AbstractApexRule extends AbstractRule
-        implements ApexParserVisitor, ImmutableLanguage, CodeClimateRule {
+        implements ApexParserVisitor, ImmutableLanguage {
 
     public AbstractApexRule() {
         super.setLanguage(LanguageRegistry.getLanguage(ApexLanguageModule.NAME));
-        definePropertyDescriptor(CODECLIMATE_CATEGORIES);
-        definePropertyDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER);
-        definePropertyDescriptor(CODECLIMATE_BLOCK_HIGHLIGHTING);
     }
 
     @Override

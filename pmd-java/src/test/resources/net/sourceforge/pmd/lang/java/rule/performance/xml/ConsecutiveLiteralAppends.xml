@@ -1418,4 +1418,75 @@ public class ConsecutiveLiteralAppendsFP {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1632 [java] ConsecutiveLiteralAppends false positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Test {
+    public String foo() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("literal1");
+        try {
+            final String res = bar();
+            sb.append(res);
+            sb.append("literal2");
+        } catch (ArithmeticException e) {
+            sb.append("literal3");
+        } catch (ArrayIndexOutOfBoundException e) {
+            sb.append("literal4");
+        } catch (Exception e) {
+            sb.append("literal5");
+        } finally {
+            sb.append("literal6");
+        }
+        return sb.toString();
+    }
+
+    public String bar() throws Exception {
+        throw new Exception();
+    }
+}       
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Consecutive literal append over try</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public final class Test {
+    public String foo() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("foo"); // violation here
+        try {
+            sb.append("bar");
+            final String res = methodThatMightThrow();
+            sb.append(res);
+        } catch (IOException ioe) {
+            // noop
+        }
+    }
+}       
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>literal appends over lambdas</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Test {
+    public String foo() {
+        final StringBuilder sb = new StringBuilder();
+        Runnable r = () -> sb.append("foo");
+        Runnable r2 = () -> sb.append("bar");
+        
+        r.run();
+        System.out.println(sb.toString());
+        r2.run();
+        return sb.toString();
+    }
+}       
+        ]]></code>
+    </test-code>
 </test-data>

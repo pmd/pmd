@@ -73,6 +73,10 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.12.0
+
+No changes.
+
 #### 6.11.0
 
 * {% jdoc core::lang.rule.stat.StatisticalRule %} and the related helper classes and base rule classes

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class CPPTokenizerContinuationTest {
                 .getResourceAsStream("cpp/" + name), StandardCharsets.UTF_8);
     }
 
-    private Tokens parse(String code) {
+    private Tokens parse(String code) throws IOException {
         CPPTokenizer tokenizer = new CPPTokenizer();
         tokenizer.setProperties(new Properties());
         Tokens tokens = new Tokens();

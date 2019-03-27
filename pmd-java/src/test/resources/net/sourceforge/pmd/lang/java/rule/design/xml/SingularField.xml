@@ -573,6 +573,47 @@ public class MyClass {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] SingularField: Lombok false positive with inner class and annotated outer class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+@Data
+public class Outer {
+    public class Inner {
+        private String innerField;
+    }
+
+    private String outerField;
+
+    public Outer(String outerField) {
+        this.outerField = outerField;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] SingularField: Lombok false positive with annotated inner class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+
+public class Outer {
+    @Data
+    public class Inner {
+        private String innerField;
+    }
+
+    private String outerField;
+
+    public Outer(String outerField) {
+        this.outerField = outerField;
+    }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>#177 [java] SingularField with lambdas as final fields</description>
