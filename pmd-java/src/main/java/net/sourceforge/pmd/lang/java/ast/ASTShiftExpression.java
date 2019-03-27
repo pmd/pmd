@@ -41,7 +41,7 @@ public class ASTShiftExpression extends AbstractJavaTypeNode implements ASTExpre
 
 
     /**
-     * Returns the image of the operator, i.e. "<<", ">>", or ">>>".
+     * Returns the image of the operator, i.e.  "&lt;&lt;", "&gt;&gt;", or "&gt;&gt;&gt;".
      */
     public String getOperator() {
         return getImage();
