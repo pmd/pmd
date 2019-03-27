@@ -15,7 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.NoAttribute.NoAttrScope;
 
 
 /**
@@ -57,7 +59,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             Method[] preFilter = contextNode.getClass().getMethods();
             List<MethodWrapper> postFilter = new ArrayList<>();
             for (Method element : preFilter) {
-                if (isAttributeAccessor(element)) {
+                if (isAttributeAccessor(node.getClass(), element)) {
                     postFilter.add(new MethodWrapper(element));
                 }
             }
@@ -76,13 +78,29 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      *
      * @param method The method to test
      */
-    protected boolean isAttributeAccessor(Method method) {
+    protected boolean isAttributeAccessor(Class<?> nodeClass, Method method) {
         String methodName = method.getName();
 
         return isConsideredReturnType(method.getReturnType())
                 && method.getParameterTypes().length == 0
                 && !methodName.startsWith("jjt")
+                && !isIgnored(nodeClass, method)
                 && !FILTERED_OUT_NAMES.contains(methodName);
+    }
+
+    private boolean isIgnored(Class<?> nodeClass, Method method) {
+        if (method.isAnnotationPresent(NoAttribute.class)) {
+            return true;
+        } else if (nodeClass.isAnnotationPresent(NoAttribute.class)) {
+            NoAttrScope annotation = nodeClass.getAnnotation(NoAttribute.class).scope();
+            Class declaration = method.getDeclaringClass();
+            return annotation == NoAttrScope.ALL
+                || annotation == NoAttrScope.INHERITED
+                && declaration != nodeClass
+                && declaration != Node.class
+                && declaration != AbstractNode.class;
+        }
+        return false;
     }
 
     private boolean isConsideredReturnType(Class<?> klass) {
