@@ -35,6 +35,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
+@Deprecated
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
     private int arrayDepth;
 

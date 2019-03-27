@@ -66,6 +66,9 @@ public final class ASTArrayAllocation extends AbstractJavaTypeNode implements AS
         return getChildAs(jjtGetNumChildren() - 1, ASTArrayInitializer.class);
     }
 
+    /**
+     * Returns the number of dimensions of the created array.
+     */
     public int getArrayDepth() {
         return getArrayDims().getArrayDepth();
     }

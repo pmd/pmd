@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
  *
  * <pre class="grammar">
  *
- * TODO the third branch is ambiguous with the second and won't be matched without a rewrite phase
  *
  * MethodCall ::=  &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
  *              |  Lhs "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}

@@ -22,11 +22,11 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public class ASTArrayDimExpr extends AbstractJavaTypeNode {
 
-    public ASTArrayDimExpr(int id) {
+    ASTArrayDimExpr(int id) {
         super(id);
     }
 
-    public ASTArrayDimExpr(JavaParser p, int id) {
+    ASTArrayDimExpr(JavaParser p, int id) {
         super(p, id);
     }
 

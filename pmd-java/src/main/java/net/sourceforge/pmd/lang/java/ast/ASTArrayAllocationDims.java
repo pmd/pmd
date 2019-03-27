@@ -23,11 +23,11 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public class ASTArrayAllocationDims extends AbstractJavaNode {
 
-    public ASTArrayAllocationDims(int id) {
+    ASTArrayAllocationDims(int id) {
         super(id);
     }
 
-    public ASTArrayAllocationDims(JavaParser p, int id) {
+    ASTArrayAllocationDims(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -43,6 +43,9 @@ public class ASTArrayAllocationDims extends AbstractJavaNode {
     }
 
 
+    /**
+     * Returns the number of dimensions of the created array.
+     */
     public int getArrayDepth() {
         return jjtGetNumChildren();
     }
