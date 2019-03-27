@@ -1,4 +1,4 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @author Clément Fournier
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( {ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface NoAttribute {
 
     /**

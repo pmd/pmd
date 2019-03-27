@@ -96,7 +96,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             Class declaration = method.getDeclaringClass();
             return annotation == NoAttrScope.ALL
                 || annotation == NoAttrScope.INHERITED
-                && declaration != nodeClass
+                && !declaration.equals(nodeClass)
                 && declaration != Node.class
                 && declaration != AbstractNode.class;
         }
