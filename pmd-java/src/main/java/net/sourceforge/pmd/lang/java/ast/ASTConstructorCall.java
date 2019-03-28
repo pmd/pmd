@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import javax.annotation.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 
 /**
  * A class instance creation expression. Represents both {@linkplain #isQualifiedInstanceCreation() qualified}

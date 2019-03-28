@@ -18,7 +18,7 @@ import java.util.Iterator;
  * <p>In the case of {@linkplain ASTArrayAllocation array creation expressions}, the
  * node {@link ASTArrayAllocationDims} is used instead, since the dimensions
  * may be initialized with an expression.
- * 
+ *
  * <pre class="grammar">
  *
  * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}*

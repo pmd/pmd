@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
-
 /**
  * Represents a type bound on a {@linkplain ASTTypeParameter type parameter}.
  * Type bounds specify the type of the type variable to which they apply as
