@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
  * Lhs        ::= {@link ASTPrimaryExpression PrimaryExpression} | {@link ASTClassOrInterfaceType ClassName} | {@link ASTAmbiguousName AmbiguousName}
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
+public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
 
 
@@ -37,8 +37,6 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
     @Override
     public void jjtClose() {
         super.jjtClose();
-
-        enlargeLeft();
 
         if (getImage() != null) {
             return;

@@ -39,12 +39,6 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
         this.setImage(fieldName);
     }
 
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-        enlargeLeft();
-    }
-
     /**
      * Returns the type to the left of the "." if it exists.
      * That may be an {@linkplain ASTAmbiguousName ambiguous name}.

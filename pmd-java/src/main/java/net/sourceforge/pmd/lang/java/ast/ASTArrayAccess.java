@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression, LeftRecursiveNode {
     ASTArrayAccess(int id) {
         super(id);
     }
@@ -30,8 +30,6 @@ public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPri
     @Override
     public void jjtClose() {
         super.jjtClose();
-
-        enlargeLeft();
 
         /* JLS:
          *  A name is syntactically classified as an ExpressionName in these contexts:

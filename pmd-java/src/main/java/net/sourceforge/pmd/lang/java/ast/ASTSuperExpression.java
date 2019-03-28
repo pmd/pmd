@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTSuperExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTSuperExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LeftRecursiveNode {
     ASTSuperExpression(int id) {
         super(id);
     }
@@ -35,7 +35,6 @@ public final class ASTSuperExpression extends AbstractJavaTypeNode implements AS
         super.jjtClose();
 
         if (jjtGetNumChildren() > 0) {
-            enlargeLeft();
             // There's a qualifier
             Node child = jjtGetChild(0);
             if (child instanceof ASTAmbiguousName) {

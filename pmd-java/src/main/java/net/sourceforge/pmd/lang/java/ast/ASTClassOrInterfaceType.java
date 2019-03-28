@@ -28,7 +28,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 // @formatter:on
-public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType {
+public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
@@ -59,15 +59,6 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
         super(p, id);
     }
 
-
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        if (jjtGetNumChildren() > 0) {
-            enlargeLeft();
-        }
-    }
 
     /**
      * Gets the owner type of this type if it's not ambiguous. This is a

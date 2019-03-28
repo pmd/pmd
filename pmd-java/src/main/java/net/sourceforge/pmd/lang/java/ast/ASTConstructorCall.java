@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
+public final class ASTConstructorCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -54,14 +54,13 @@ public final class ASTConstructorCall extends AbstractJavaTypeNode implements AS
     @Override
     public void jjtClose() {
         super.jjtClose();
+
         /* JLS:
          *  A name is syntactically classified as an ExpressionName in these contexts:
          *       ...
          *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
          */
         AbstractJavaNode firstChild = (AbstractJavaNode) jjtGetChild(0);
-
-        enlargeLeft();
 
         if (firstChild instanceof ASTAmbiguousName) {
             replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).forceExprContext());

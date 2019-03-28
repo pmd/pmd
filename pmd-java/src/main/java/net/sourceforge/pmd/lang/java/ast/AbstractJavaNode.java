@@ -45,6 +45,9 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         if (beginLine == -1) {
             beginLine = parser.token.beginLine;
         }
+        if (this instanceof LeftRecursiveNode) {
+            enlargeLeft();
+        }
         endLine = parser.token.endLine;
         endColumn = parser.token.endColumn;
     }
@@ -111,7 +114,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return comment;
     }
 
-
     // insert a child at a given index, shifting other children if need be
 
 
@@ -154,7 +156,9 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     }
 
     void enlargeLeft() {
-        enlargeLeft((AbstractJavaNode) jjtGetChild(0));
+        if (jjtGetNumChildren() > 0) {
+            enlargeLeft((AbstractJavaNode) jjtGetChild(0));
+        }
     }
 
     void enlargeLeft(AbstractJavaNode child) {

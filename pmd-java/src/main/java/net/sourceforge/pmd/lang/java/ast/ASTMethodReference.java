@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
  *
  * </pre>
  */
-public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
+public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
     public ASTMethodReference(int id) {
         super(id);
@@ -34,13 +34,6 @@ public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrima
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-        enlargeLeft();
     }
 
 

@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTExpression {
+public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTExpression, LeftRecursiveNode {
     public ASTAdditiveExpression(int id) {
         super(id);
     }
