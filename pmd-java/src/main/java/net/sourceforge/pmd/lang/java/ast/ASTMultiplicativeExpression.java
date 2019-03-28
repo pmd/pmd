@@ -10,18 +10,28 @@ package net.sourceforge.pmd.lang.java.ast;
  * two or more values. This has a precedence greater than {@link ASTAdditiveExpression},
  * and lower than {@linkplain ASTUnaryExpression UnaryExpression}.
  *
+ * <pre class="grammar">
+ *
+ * MultiplicativeExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "*" | "/" | "%" ) {@linkplain ASTUnaryExpression UnaryExpression} )+
+ *
+ * </pre>
+ *
  * <p>Note that the children of this node are not necessarily {@link ASTUnaryExpression}s,
  * rather, they are expressions with an operator precedence greater or equal to UnaryExpression.
  *
- * <pre class="grammar">
+ * <p>The first child may be another MultiplicativeExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 * 2 * 3}</td><td>{@code (1 * 2 * 3)}</td></tr>
+ *     <tr><td>{@code 1 * 2 / 3}</td><td>{@code ((1 * 2) / 3)}</td></tr>
+ *     <tr><td>{@code 1 * 2 / 3 / 4}</td><td>{@code ((1 * 2) / 3 / 4)}</td></tr>
+ * </table>
  *
- * MultiplicativeExpression ::= {@linkplain ASTUnaryExpression UnaryExpression} ( ( "*" | "/" | "%" ) {@linkplain ASTUnaryExpression UnaryExpression} )+
- *
- * </pre>
  */
-public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements ASTExpression, LeftRecursiveNode {
+public class ASTMultiplicativeExpression extends AbstractLrBinaryExpr {
 
-    private BinaryOp operator;
 
     ASTMultiplicativeExpression(int id) {
         super(id);
@@ -29,20 +39,6 @@ public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements
 
     ASTMultiplicativeExpression(JavaParser p, int id) {
         super(p, id);
-    }
-
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        // At this point the expression is fully left-recursive
-        // If any of its left children are also AdditiveExpressions with the same operator,
-        // we adopt their children to flatten the node
-
-        AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
-        if (first instanceof ASTMultiplicativeExpression && ((ASTMultiplicativeExpression) first).getOp() == getOp()) {
-            flatten(0);
-        }
     }
 
 
@@ -57,22 +53,5 @@ public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements
         visitor.visit(this, data);
     }
 
-
-    @Override
-    public void setImage(String image) {
-        super.setImage(image);
-        this.operator = BinaryOp.fromImage(image);
-    }
-
-    /**
-     * Returns the image of the operator, i.e. "*", "/" or "%".
-     */
-    public String getOperator() {
-        return getImage();
-    }
-
-    public BinaryOp getOp() {
-        return operator;
-    }
 
 }

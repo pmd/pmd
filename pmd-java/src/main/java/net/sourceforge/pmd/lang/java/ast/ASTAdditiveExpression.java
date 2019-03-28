@@ -10,18 +10,31 @@ package net.sourceforge.pmd.lang.java.ast;
  * This has a precedence greater than {@link ASTShiftExpression}, and lower
  * than {@link ASTMultiplicativeExpression}.
  *
- * <p>Note that the children of this node are not necessarily {@link ASTMultiplicativeExpression},
- * rather, they are expressions with an operator precedence greater or equal to MultiplicativeExpression.
  *
  * <pre class="grammar">
  *
  * AdditiveExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
  *
  * </pre>
+ *
+ * <p>Note that the children of this node are not necessarily {@link ASTMultiplicativeExpression},
+ * rather, they are expressions with an operator precedence greater or equal to MultiplicativeExpression.
+ *
+ * <p>The first child may be another AdditiveExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 + 2 + 3}</td><td>{@code (1 + 2 + 3)}</td></tr>
+ *     <tr><td>{@code 1 + 2 / 3}</td><td>{@code (1 + (2 / 3))}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 / 4}</td><td>{@code ((1 + 2) - 3)}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 - 4}</td><td>{@code ((1 + 2) - 3 - 4)}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 - 4 + 5}</td><td>{@code (((1 + 2) - 3 - 4) + 5)}</td></tr>
+ * </table>
+ *
  */
-public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTExpression, LeftRecursiveNode {
+public class ASTAdditiveExpression extends AbstractLrBinaryExpr {
 
-    private BinaryOp operator;
 
     ASTAdditiveExpression(int id) {
         super(id);
@@ -30,21 +43,6 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
     ASTAdditiveExpression(JavaParser p, int id) {
         super(p, id);
     }
-
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        // At this point the expression is fully left-recursive
-        // If any of its left children are also AdditiveExpressions with the same operator,
-        // we adopt their children to flatten the node
-
-        AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
-        if (first instanceof ASTAdditiveExpression && ((ASTAdditiveExpression) first).getOp() == getOp()) {
-            flatten(0);
-        }
-    }
-
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -57,20 +55,4 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
         visitor.visit(this, data);
     }
 
-    @Override
-    public void setImage(String image) {
-        super.setImage(image);
-        this.operator = BinaryOp.fromImage(image);
-    }
-
-    /**
-     * Returns the image of the operator, i.e. "+" or "-".
-     */
-    public String getOperator() {
-        return getImage();
-    }
-
-    public BinaryOp getOp() {
-        return operator;
-    }
 }
