@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 
@@ -114,8 +115,19 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return comment;
     }
 
-    // insert a child at a given index, shifting other children if need be
 
+    void flatten(int idx) {
+
+        AbstractJavaNode child = (AbstractJavaNode) jjtGetChild(idx);
+        children = ArrayUtils.remove(children, idx);
+        child.jjtSetParent(null);
+        child.jjtSetChildIndex(-1);
+
+        if (child.jjtGetNumChildren() > 0) {
+            children = ArrayUtils.insert(idx, children, child.children);
+        }
+        updateChildrenIndices(idx);
+    }
 
     /**
      * Inserts a child at the given index, shifting other children without overwriting
@@ -131,13 +143,21 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
      * @param index Index the child should have in the parent
      */
     // visible to parser only
-    void insertChild(AbstractJavaNode child, int index) {
-        // Allow to insert a child at random index without overwriting
+    void insertChild(AbstractJavaNode child, int index, boolean overwrite) {
+        // Allow to insert a child without overwriting
         // If the child is null, it is replaced. If it is not null, children are shifted
-        if (children != null && index < children.length && children[index] != null) {
-            children = ArrayUtils.insert(index, children, child);
+        if (children == null) {
+            assert index == 0;
+            children = new Node[] {child};
+        } else if (index <= children.length) {
+            if (overwrite || children[index] == null) {
+                children[index] = child;
+            } else {
+                children = ArrayUtils.insert(index, children, child);
+            }
         }
-        super.jjtAddChild(child, index);
+        child.jjtSetChildIndex(index);
+        child.jjtSetParent(this);
 
         updateChildrenIndices(index);
 
@@ -155,13 +175,13 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         }
     }
 
-    void enlargeLeft() {
+    private void enlargeLeft() {
         if (jjtGetNumChildren() > 0) {
             enlargeLeft((AbstractJavaNode) jjtGetChild(0));
         }
     }
 
-    void enlargeLeft(AbstractJavaNode child) {
+    private void enlargeLeft(AbstractJavaNode child) {
         if (this.beginLine > child.beginLine) {
             this.firstToken = child.firstToken;
             this.beginLine = child.beginLine;
@@ -195,6 +215,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         }
         for (int j = startIndex; j < jjtGetNumChildren(); j++) {
             children[j].jjtSetChildIndex(j); // shift the children to the right
+            children[j].jjtSetParent(this);
         }
     }
 

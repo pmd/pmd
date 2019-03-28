@@ -32,8 +32,16 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
     public void jjtClose() {
         super.jjtClose();
 
-        enlargeLeft();
+        // At this point the expression is fully left-recursive
+        // If any of its left children are also AdditiveExpressions with the same operator,
+        // we adopt their children to flatten the node
+
+        AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
+        if (first instanceof ASTAdditiveExpression && ((ASTAdditiveExpression) first).getOp() == getOp()) {
+            flatten(0);
+        }
     }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
