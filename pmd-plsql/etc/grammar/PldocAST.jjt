@@ -2085,7 +2085,7 @@ ASTElseClause ElseClause()  :
 ASTElsifClause ElsifClause()  :
 {}
 {
-      <ELSIF>  Expression() <THEN> (Statement())+
+      <ELSIF>  Expression() <THEN> (LOOKAHEAD(1, {!(getToken(1).kind == ELSIF)}) Statement())+
       { return jjtThis ; }
 }
 
@@ -2280,7 +2280,7 @@ ASTWhileStatement WhileStatement()  :
 ASTIfStatement IfStatement()  :
 {}
 {
-	<IF> Expression() <THEN> (Statement())+
+	<IF> Expression() <THEN> (LOOKAHEAD(1, {!(getToken(1).kind == ELSIF)}) Statement())+
 	( ElsifClause() {jjtThis.setHasElse();} )*
 	[ ElseClause() {jjtThis.setHasElse();} ]
 	<END> <IF>
@@ -6095,7 +6095,6 @@ ASTID ID(): {}
 		//| <DISTINCT>  //RESERVED WORD
 		| <DO>
 		| <DROP>  //RESERVED WORD
-		//| <ELSE> //SYNTAX //RESERVED WORD
 		| <ELSIF> //SYNTAX
 
 		//| <END> |<CURRENT_USER>
@@ -6339,7 +6338,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<DISTINCT>
 		| <DO>
 		//<DROP>
-		//<ELSE>
 		| <ELSIF>
 		//<END>
 		//<EXCEPTION>

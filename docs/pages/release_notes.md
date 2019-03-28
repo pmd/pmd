@@ -61,6 +61,8 @@ The designer will still be shipped with PMD's binaries.
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
 *   java-codestyle
     *   [#1674](https://github.com/pmd/pmd/issues/1674): \[java] documentation of CommentDefaultAccessModifier is wrong
+*   plsql
+    *   [#1731](https://github.com/pmd/pmd/issues/1731): \[pslql] ParseException when parsing ELSIF
 
 ### API Changes
 
