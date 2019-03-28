@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
- * The "super" reference. Technically not an expression but it's easier to analyse that way.
+ * The "super" keyword. Technically not an expression but it's easier to analyse that way.
  *
  * <pre class="grammar">
  *

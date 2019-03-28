@@ -12,10 +12,13 @@ import java.util.Iterator;
  * <ul>
  * <li>In an {@linkplain ASTArrayType array type}</li>
  * <li>TODO At the end {@linkplain ASTMethodDeclarator method declarator}</li>
- * <li>TODO After an {@link ASTVariableDeclaratorId variable declarator id}</li>
- * <li>TODO inside an array creation expression (currently {@link ASTAllocationExpression})</li>
+ * <li>TODO After a {@link ASTVariableDeclaratorId variable declarator id}</li>
  * </ul>
  *
+ * <p>In the case of {@linkplain ASTArrayAllocation array creation expressions}, the
+ * node {@link ASTArrayAllocationDims} is used instead, since the dimensions
+ * may be initialized with an expression.
+ * 
  * <pre class="grammar">
  *
  * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}*

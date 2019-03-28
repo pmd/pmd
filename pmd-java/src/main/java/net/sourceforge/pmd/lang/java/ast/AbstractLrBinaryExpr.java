@@ -32,7 +32,7 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode implements ASTE
         // we adopt their children to flatten the node
 
         AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
-        if (first instanceof ASTAdditiveExpression && ((ASTAdditiveExpression) first).getOp() == getOp()) {
+        if (first instanceof AbstractLrBinaryExpr && ((AbstractLrBinaryExpr) first).getOp() == getOp()) {
             flatten(0);
         }
     }
