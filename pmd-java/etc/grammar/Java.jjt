@@ -2332,6 +2332,12 @@ void ShiftExpression() #ShiftExpression(>1):
     ) AdditiveExpression() )*
 }
 
+/**
+ * The structure parsed by this production is entirely left-recursive,
+ * but the jjtClose of ASTAdditiveExpression flattens the first child
+ * if the operator is the same. This is the best compromise I've found,
+ * it keeps the grammar readable and simple to parse in lookaheads.
+ */
 void AdditiveExpression() #void:
 {}
 {
