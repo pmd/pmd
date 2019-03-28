@@ -29,6 +29,13 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
     }
 
     @Override
+    public void jjtClose() {
+        super.jjtClose();
+
+        enlargeLeft();
+    }
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

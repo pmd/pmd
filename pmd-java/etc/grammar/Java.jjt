@@ -2332,10 +2332,22 @@ void ShiftExpression() #ShiftExpression(>1):
     ) AdditiveExpression() )*
 }
 
-void AdditiveExpression() #AdditiveExpression(>1):
+void AdditiveExpression() #void:
 {}
 {
-  MultiplicativeExpression() ( LOOKAHEAD(2) ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) MultiplicativeExpression() )*
+  MultiplicativeExpression()
+  (AdditiveExprTail())*
+}
+
+void AdditiveExprTail() #AdditiveExpression:
+{}
+{
+    ( "+" | "-" )
+    {
+      jjtThis.setImage(getToken(0).getImage());
+      jjtree.extendLeft();
+    }
+    MultiplicativeExpression()
 }
 
 void MultiplicativeExpression() #MultiplicativeExpression(>1):
