@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *               |  {@link ASTAmbiguousName AmbiguousName} "." &lt;IDENTIFIER&gt;
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression {
+public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
     ASTFieldAccess(int id) {
         super(id);
     }

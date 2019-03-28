@@ -160,15 +160,15 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
      * type param [N], then matches it against the [nodeSpec] using [matchNode].
      */
     inline fun <reified N : ASTType> matchType(ignoreChildren: Boolean = false,
-                                            noinline nodeSpec: NodeSpec<N>) =
+                                               noinline nodeSpec: NodeSpec<N>) =
             makeMatcher(TypeParsingCtx, ignoreChildren, nodeSpec)
 
     /**
      * Returns a String matcher that parses the node using [parseTypeParameters]
      * then matches it against the [nodeSpec] using [matchNode].
      */
-    inline fun matchTypeParameters(ignoreChildren: Boolean = false,
-                                   noinline nodeSpec: NodeSpec<ASTTypeParameters>) =
+    fun matchTypeParameters(ignoreChildren: Boolean = false,
+                            nodeSpec: NodeSpec<ASTTypeParameters>) =
             makeMatcher(TypeParametersParsingCtx, ignoreChildren, nodeSpec)
 
     /**
