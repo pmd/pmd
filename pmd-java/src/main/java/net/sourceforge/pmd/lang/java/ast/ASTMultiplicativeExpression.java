@@ -19,14 +19,32 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements ASTExpression {
-    public ASTMultiplicativeExpression(int id) {
+public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements ASTExpression, LeftRecursiveNode {
+
+    private BinaryOp operator;
+
+    ASTMultiplicativeExpression(int id) {
         super(id);
     }
 
-    public ASTMultiplicativeExpression(JavaParser p, int id) {
+    ASTMultiplicativeExpression(JavaParser p, int id) {
         super(p, id);
     }
+
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+
+        // At this point the expression is fully left-recursive
+        // If any of its left children are also AdditiveExpressions with the same operator,
+        // we adopt their children to flatten the node
+
+        AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
+        if (first instanceof ASTMultiplicativeExpression && ((ASTMultiplicativeExpression) first).getOp() == getOp()) {
+            flatten(0);
+        }
+    }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -40,10 +58,21 @@ public class ASTMultiplicativeExpression extends AbstractJavaTypeNode implements
     }
 
 
+    @Override
+    public void setImage(String image) {
+        super.setImage(image);
+        this.operator = BinaryOp.fromImage(image);
+    }
+
     /**
      * Returns the image of the operator, i.e. "*", "/" or "%".
      */
     public String getOperator() {
         return getImage();
     }
+
+    public BinaryOp getOp() {
+        return operator;
+    }
+
 }

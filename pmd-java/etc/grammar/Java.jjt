@@ -2341,8 +2341,7 @@ void ShiftExpression() #ShiftExpression(>1):
 void AdditiveExpression() #void:
 {}
 {
-  MultiplicativeExpression()
-  (AdditiveExprTail())*
+  MultiplicativeExpression() (AdditiveExprTail())*
 }
 
 void AdditiveExprTail() #AdditiveExpression:
@@ -2356,12 +2355,23 @@ void AdditiveExprTail() #AdditiveExpression:
     MultiplicativeExpression()
 }
 
-void MultiplicativeExpression() #MultiplicativeExpression(>1):
+// this is exactly symmetric to AdditiveExpression
+void MultiplicativeExpression() #void:
 {}
 {
-  UnaryExpression() ( LOOKAHEAD(2) ( "*" {jjtThis.setImage("*");} | "/" {jjtThis.setImage("/");} | "%" {jjtThis.setImage("%");}) UnaryExpression() )*
+  UnaryExpression() (MultiplicativeExprTail())*
 }
 
+void MultiplicativeExprTail() #MultiplicativeExpression:
+{}
+{
+  ( "*" | "/" | "%" )
+  {
+    jjtThis.setImage(getToken(0).getImage());
+    jjtree.extendLeft();
+  }
+  UnaryExpression()
+}
 void UnaryExpression() #UnaryExpression((jjtn000.getImage() != null)):
 {}
 {

@@ -20,11 +20,14 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTExpression, LeftRecursiveNode {
-    public ASTAdditiveExpression(int id) {
+
+    private BinaryOp operator;
+
+    ASTAdditiveExpression(int id) {
         super(id);
     }
 
-    public ASTAdditiveExpression(JavaParser p, int id) {
+    ASTAdditiveExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -54,6 +57,11 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
         visitor.visit(this, data);
     }
 
+    @Override
+    public void setImage(String image) {
+        super.setImage(image);
+        this.operator = BinaryOp.fromImage(image);
+    }
 
     /**
      * Returns the image of the operator, i.e. "+" or "-".
@@ -63,6 +71,6 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode implements ASTEx
     }
 
     public BinaryOp getOp() {
-        return BinaryOp.fromImage(getImage());
+        return operator;
     }
 }
