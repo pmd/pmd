@@ -31,11 +31,9 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import apex.jorje.data.Identifier;
 import apex.jorje.data.ast.TypeRef;
 import apex.jorje.semantic.ast.expression.MethodCallExpression;
-import apex.jorje.semantic.ast.expression.NewKeyValueObjectExpression;
 import apex.jorje.semantic.ast.expression.VariableExpression;
 import apex.jorje.semantic.ast.member.Field;
 import apex.jorje.semantic.ast.member.Parameter;
-import apex.jorje.semantic.ast.statement.FieldDeclaration;
 import apex.jorje.semantic.ast.statement.VariableDeclaration;
 
 /**
@@ -154,7 +152,8 @@ public final class Helper {
 
     static String getFQVariableName(final ASTField variable) {
         Field n = variable.getNode();
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
+        StringBuilder sb = new StringBuilder()
+                .append(n.getDefiningType().getApexName()).append(":")
                 .append(n.getFieldInfo().getName());
         return sb.toString();
     }
@@ -167,29 +166,16 @@ public final class Helper {
     }
     
     static String getFQVariableName(final ASTFieldDeclaration variable) {
-        FieldDeclaration n = variable.getNode();
-        String name = "";
-
-        try {
-            java.lang.reflect.Field f = n.getClass().getDeclaredField("name");
-            f.setAccessible(true);
-            Identifier nameField = (Identifier) f.get(n);
-            name = nameField.getValue();
-
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(name);
+        StringBuilder sb = new StringBuilder()
+                .append(variable.getNode().getDefiningType().getApexName()).append(":")
+                .append(variable.getImage());
         return sb.toString();
     }
 
     static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
-        NewKeyValueObjectExpression n = variable.getNode();
-        TypeRef typeRef = n.getTypeRef();
-        String objType = typeRef.getNames().get(0).getValue();
-
-        StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":").append(objType);
+        StringBuilder sb = new StringBuilder()
+                .append(variable.getNode().getDefiningType().getApexName()).append(":")
+                .append(variable.getType());
         return sb.toString();
     }
 
