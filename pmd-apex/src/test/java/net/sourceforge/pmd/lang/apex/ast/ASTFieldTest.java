@@ -15,10 +15,27 @@ public class ASTFieldTest {
 
     @Test
     public void testGetType() {
-        ApexNode<Compilation> node = parse("public class Foo { private String myField = \"a\"; }");
+        ApexNode<Compilation> node = parse("public class Foo { private String myField = 'a'; }");
         ASTField field = node.getFirstDescendantOfType(ASTField.class);
 
         Assert.assertEquals("myField", field.getImage());
-        Assert.assertEquals("String", field.getTypeRef());
+        Assert.assertEquals("String", field.getType());
+        Assert.assertEquals("a", field.getValue());
+    }
+
+    @Test
+    public void testGetValue() {
+        ApexNode<Compilation> node = parse("public class Foo { private String myField = 'a'; }");
+        ASTField field = node.getFirstDescendantOfType(ASTField.class);
+
+        Assert.assertEquals("a", field.getValue());
+    }
+
+    @Test
+    public void testGetNoValue() {
+        ApexNode<Compilation> node = parse("public class Foo { private String myField; }");
+        ASTField field = node.getFirstDescendantOfType(ASTField.class);
+
+        Assert.assertNull(field.getValue());
     }
 }

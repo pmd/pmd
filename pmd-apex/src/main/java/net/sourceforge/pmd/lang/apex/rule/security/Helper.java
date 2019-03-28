@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTNewKeyValueObjectExpression;
+import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTReferenceExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
@@ -229,6 +230,12 @@ public final class Helper {
     public static String getFQVariableName(Parameter p) {
         StringBuffer sb = new StringBuffer();
         sb.append(p.getDefiningType()).append(":").append(p.getName().getValue());
+        return sb.toString();
+    }
+
+    static String getFQVariableName(ASTParameter p) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(p.getNode().getDefiningType()).append(":").append(p.getImage());
         return sb.toString();
     }
 

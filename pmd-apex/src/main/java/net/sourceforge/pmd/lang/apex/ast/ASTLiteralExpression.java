@@ -20,17 +20,43 @@ public class ASTLiteralExpression extends AbstractApexNode<LiteralExpression> {
         return visitor.visit(this, data);
     }
 
-
     public LiteralType getLiteralType() {
         return node.getLiteralType();
     }
 
     public boolean isString() {
-        return getLiteralType() == LiteralType.STRING;
+        return node.getLiteralType() == LiteralType.STRING;
+    }
+
+    public boolean isBoolean() {
+        return node.getLiteralType() == LiteralType.TRUE || node.getLiteralType() == LiteralType.FALSE;
+    }
+
+    public boolean isInteger() {
+        return node.getLiteralType() == LiteralType.INTEGER;
+    }
+
+    public boolean isDouble() {
+        return node.getLiteralType() == LiteralType.DOUBLE;
+    }
+
+    public boolean isLong() {
+        return node.getLiteralType() == LiteralType.LONG;
+    }
+
+    public boolean isDecimal() {
+        return node.getLiteralType() == LiteralType.DECIMAL;
+    }
+
+    public boolean isNull() {
+        return node.getLiteralType() == LiteralType.NULL;
     }
 
     @Override
     public String getImage() {
-        return String.valueOf(node.getLiteral());
+        if (node.getLiteral() != null) {
+            return String.valueOf(node.getLiteral());
+        }
+        return null;
     }
 }

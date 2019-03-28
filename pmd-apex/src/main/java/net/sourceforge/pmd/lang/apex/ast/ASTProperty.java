@@ -17,11 +17,8 @@ public class ASTProperty extends AbstractApexNode<Property> {
         return visitor.visit(this, data);
     }
 
-    public String getTypeName() {
-        if (node.getFieldInfo() != null) {
-            return node.getFieldInfo().getType().getApexName();
-        }
-        return null;
+    public String getType() {
+        return node.getFieldInfo().getType().getApexName();
     }
 
     public ASTModifierNode getModifiers() {

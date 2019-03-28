@@ -21,7 +21,10 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
 
     @Override
     public String getImage() {
-        return node.getLocalInfo().getName();
+        if (node.getLocalInfo() != null) {
+            return node.getLocalInfo().getName();
+        }
+        return null;
     }
 
     @Override
@@ -38,7 +41,10 @@ public class ASTVariableDeclaration extends AbstractApexNode<VariableDeclaration
         return false;
     }
 
-    public String getTypeName() {
-        return String.valueOf(node.getTypeNameUsed());
+    public String getType() {
+        if (node.getLocalInfo() != null) {
+            return node.getLocalInfo().getType().getApexName();
+        }
+        return null;
     }
 }

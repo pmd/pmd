@@ -21,8 +21,6 @@ import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.semantic.symbol.member.variable.StandardFieldInfo;
-
 /**
  * Looking for potential Open redirect via PageReference variable input
  * 
@@ -100,21 +98,13 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
         } else {
             if (node instanceof ASTField) {
                 ASTField field = (ASTField) node;
-                if ("String".equalsIgnoreCase(field.getTypeRef())) {
-                    StandardFieldInfo fieldInfo = (StandardFieldInfo) field.getNode().getFieldInfo();
-                    if (fieldInfo.getValue() != null) {
-                        addVariable(fieldInfo);
+                if ("String".equalsIgnoreCase(field.getType())) {
+                    if (field.getValue() != null) {
+                        listOfStringLiteralVariables.add(Helper.getFQVariableName(field));
                     }
                 }
             }
         }
-
-    }
-
-    private void addVariable(StandardFieldInfo fieldInfo) {
-        StringBuilder sb = new StringBuilder().append(fieldInfo.getDefiningType().getApexName()).append(":")
-                .append(fieldInfo.getName());
-        listOfStringLiteralVariables.add(sb.toString());
 
     }
 
