@@ -92,6 +92,7 @@ public class CompilerService {
         ApexCompiler compiler = ApexCompiler.builder().setInput(compilationInput).build();
         compiler.compile(compilerStage);
         callAdditionalPassVisitor(compiler);
+        compiler.throwErrorsIfAny();
         return compiler;
     }
 

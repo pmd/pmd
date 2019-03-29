@@ -55,7 +55,7 @@ public class ApexParser {
             }
 
             return treeBuilder.build(astRoot);
-        } catch (IOException e) {
+        } catch (IOException | apex.jorje.services.exception.ParseException e) {
             throw new ParseException(e);
         }
     }
