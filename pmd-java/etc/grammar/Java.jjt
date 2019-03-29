@@ -2318,26 +2318,36 @@ void RelationalExpression() #RelationalExpression(>1):
      | ">" {jjtThis.setImage(">");}
      | "<=" {jjtThis.setImage("<=");}
      | ">=" {jjtThis.setImage(">=");}
-    ) ShiftExpression() )*
-}
-
-void ShiftExpression() #ShiftExpression(>1):
-{}
-{
-  AdditiveExpression() 
-   ( LOOKAHEAD(2)
-    ( "<<" { jjtThis.setImage("<<");}
-     | RSIGNEDSHIFT() { jjtThis.setImage(">>"); }
-     | RUNSIGNEDSHIFT() { jjtThis.setImage(">>>"); }
-    ) AdditiveExpression() )*
+    ) ShiftExpression() )* // relational expressions
 }
 
 /**
  * The structure parsed by this production is entirely left-recursive,
- * but the jjtClose of ASTAdditiveExpression flattens the first child
+ * but the jjtClose of AbstractLrBinaryExpr flattens the first child
  * if the operator is the same. This is the best compromise I've found,
  * it keeps the grammar readable and simple to parse in lookaheads.
  */
+void ShiftExpression() #void:
+{}
+{
+  AdditiveExpression() (ShiftExprTail())*
+}
+
+
+void ShiftExprTail() #ShiftExpression:
+{}
+{
+    ( "<<"                     { jjtThis.setImage("<<");}
+    | RSIGNEDSHIFT()           { jjtThis.setImage(">>"); }
+    | RUNSIGNEDSHIFT()         { jjtThis.setImage(">>>"); }
+    )
+    {
+      jjtree.extendLeft();
+    }
+    AdditiveExpression()
+}
+
+// this is exactly similar to ShiftExpression
 void AdditiveExpression() #void:
 {}
 {
@@ -2355,7 +2365,7 @@ void AdditiveExprTail() #AdditiveExpression:
     MultiplicativeExpression()
 }
 
-// this is exactly symmetric to AdditiveExpression
+// this is exactly similar to ShiftExpression
 void MultiplicativeExpression() #void:
 {}
 {

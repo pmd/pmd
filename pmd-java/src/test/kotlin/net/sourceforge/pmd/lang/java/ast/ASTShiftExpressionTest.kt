@@ -22,18 +22,49 @@ class ASTShiftExpressionTest : ParserTestSpec({
             child<ASTNumericLiteral> {}
         }
 
-        "1 << 2" should matchExpr<ASTShiftExpression> {
+        "1 << 2 << 2" should matchExpr<ASTShiftExpression> {
             it::getOp shouldBe BinaryOp.LEFT_SHIFT
             child<ASTNumericLiteral> {}
             child<ASTNumericLiteral> {}
+            child<ASTNumericLiteral> {}
         }
 
-        "1 >>> 2" should matchExpr<ASTShiftExpression> {
+        "1 >>> 2 >>> 3" should matchExpr<ASTShiftExpression> {
             it::getOp shouldBe BinaryOp.UNSIGNED_RIGHT_SHIFT
             child<ASTNumericLiteral> {}
             child<ASTNumericLiteral> {}
+            child<ASTNumericLiteral> {}
         }
 
+    }
+
+    parserTest("Changing operators should push a new node") {
+
+        "1 >> 2 << 3" should matchExpr<ASTShiftExpression> {
+            it::getOp shouldBe BinaryOp.LEFT_SHIFT
+
+            child<ASTShiftExpression> {
+                it::getOp shouldBe BinaryOp.RIGHT_SHIFT
+                child<ASTNumericLiteral> {}
+                child<ASTNumericLiteral> {}
+            }
+
+            child<ASTNumericLiteral> {}
+        }
+
+        "1 << 2 << 3 >> 4 >> 5" should matchExpr<ASTShiftExpression> {
+            it::getOp shouldBe BinaryOp.RIGHT_SHIFT
+
+            child<ASTShiftExpression> {
+                it::getOp shouldBe BinaryOp.LEFT_SHIFT
+                child<ASTNumericLiteral> {}
+                child<ASTNumericLiteral> {}
+                child<ASTNumericLiteral> {}
+            }
+
+            child<ASTNumericLiteral> {}
+            child<ASTNumericLiteral> {}
+        }
     }
 
     parserTest("Unary expression precedence") {

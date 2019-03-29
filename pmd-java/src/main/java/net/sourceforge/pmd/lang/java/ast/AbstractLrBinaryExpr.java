@@ -4,13 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
 /**
- * Base class for {@link ASTAdditiveExpression} and {@link ASTMultiplicativeExpression},
- * which use the same parsing scheme.
+ * Base class for {@link ASTAdditiveExpression}, {@link ASTMultiplicativeExpression},
+ * and {@link ASTShiftExpression}, which use the same parsing scheme.
  *
  * @author Clément Fournier
  */
-abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode implements ASTExpression, LeftRecursiveNode {
+abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode
+    implements ASTExpression, LeftRecursiveNode, Iterable<ASTExpression> {
 
     private BinaryOp operator;
 
@@ -32,11 +35,17 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode implements ASTE
         // we adopt their children to flatten the node
 
         AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
+        // they could be of different types, but the getOp check ensures
+        // they are of the same type
         if (first instanceof AbstractLrBinaryExpr && ((AbstractLrBinaryExpr) first).getOp() == getOp()) {
             flatten(0);
         }
     }
 
+    @Override
+    public Iterator<ASTExpression> iterator() {
+        return new NodeChildrenIterator<>(this, ASTExpression.class);
+    }
 
     @Override
     public void setImage(String image) {
@@ -45,13 +54,23 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode implements ASTE
     }
 
     /**
-     * Returns the image of the operator, i.e. "+" or "-".
+     * Returns the image of the operator.
+     *
+     * @deprecated Use {@link #getOp()}
      */
+    @Deprecated
     public String getOperator() {
         return getImage();
     }
 
+    /**
+     * Returns the operator.
+     */
     public BinaryOp getOp() {
         return operator;
+    }
+
+    public String getOperatorName() {
+        return operator.name();
     }
 }
