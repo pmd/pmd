@@ -2297,10 +2297,23 @@ void AndExpression() #AndExpression(>1):
   EqualityExpression() ( LOOKAHEAD(2) "&" EqualityExpression() )*
 }
 
-void EqualityExpression() #EqualityExpression(>1):
+// same as ShiftExpression
+void EqualityExpression() #void:
 {}
 {
-  InstanceOfExpression()  ( LOOKAHEAD(2) ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
+  InstanceOfExpression()  (EqualityExprTail())*
+}
+
+
+void EqualityExprTail() #EqualityExpression:
+{}
+{
+    ( "==" | "!=" )
+    {
+      jjtThis.setImage(getToken(0).getImage());
+      jjtree.extendLeft();
+    }
+    InstanceOfExpression()
 }
 
 void InstanceOfExpression() #InstanceOfExpression(>1):
@@ -2318,6 +2331,11 @@ void RelationalExpression() #RelationalExpression(>1):
     { jjtThis.setImage(getToken(0).getImage()); }
     ShiftExpression()
   )?
+  // There cannot be more than one, because it wouldn't compile
+  // From the JLS:
+  // For example, a<b<c parses as (a<b)<c, which is always a compile-time
+  // error, because the type of a<b is always boolean and < is not an operator
+  // on boolean values.
 }
 
 /**
@@ -2489,7 +2507,7 @@ void PrimaryPrefix() #void :
 | AmbiguousName()
 }
 
-/*
+/**
  * Productions that may be present after a PrimaryPrefix. The way this is written makes for a nice tree,
  * but also allows many invalid things to be written (which is fine because we parse compilable code).
  * E.g. this allows `foo().this.super::bar[0].this`

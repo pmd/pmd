@@ -10,17 +10,28 @@ package net.sourceforge.pmd.lang.java.ast;
  * This has a precedence greater than {@link ASTAndExpression},
  * and lower than {@link ASTInstanceOfExpression} and {@link ASTRelationalExpression}.
  *
+ * <pre class="grammar">
+ *
+ * EqualityExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression}  ( ( "==" | "!=" ) {@linkplain ASTInstanceOfExpression InstanceOfExpression}  )+
+ *
+ * </pre>
+ *
  * <p>Note that the children of this node are not necessarily {@link ASTInstanceOfExpression},
  * rather, they are expressions with an operator precedence greater or equal to InstanceOfExpression.
  *
- *
- * <pre class="grammar">
- *
- * EqualityExpression ::=  {@linkplain ASTInstanceOfExpression InstanceOfExpression}  ( ( "==" | "!=" ) {@linkplain ASTInstanceOfExpression InstanceOfExpression}  )+
- *
- * </pre>
+ * <p>The first child may be another EqualityExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 == 2 == 3}</td><td>{@code (1 == 2 == 3)}</td></tr>
+ *     <tr><td>{@code 1 == 2 != 3}</td><td>{@code ((1 == 2) != 3)}</td></tr>
+ *     <tr><td>{@code 1 == 2 != 3 + 4}</td><td>{@code ((1 == 2) != (3 + 4))}</td></tr>
+ *     <tr><td>{@code 1 == 2 != 3 != 4}</td><td>{@code ((1 == 2) != 3 != 4)}</td></tr>
+ *     <tr><td>{@code 1 == 2 != 3 != 4 == 5}</td><td>{@code (((1 == 2) != 3 != 4) == 5)}</td></tr>
+ * </table>
  */
-public class ASTEqualityExpression extends AbstractJavaTypeNode implements ASTExpression {
+public class ASTEqualityExpression extends AbstractLrBinaryExpr implements ASTExpression {
     public ASTEqualityExpression(int id) {
         super(id);
     }
@@ -38,14 +49,6 @@ public class ASTEqualityExpression extends AbstractJavaTypeNode implements ASTEx
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns the image of the operator, i.e. "==" or "!=".
-     */
-    public String getOperator() {
-        return getImage();
     }
 
 }

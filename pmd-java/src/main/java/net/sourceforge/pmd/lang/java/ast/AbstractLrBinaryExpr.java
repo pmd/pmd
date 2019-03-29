@@ -7,8 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 
 /**
- * Base class for {@link ASTAdditiveExpression}, {@link ASTMultiplicativeExpression},
- * and {@link ASTShiftExpression}, which use the same parsing scheme.
+ * Base class for some expressions that are parsed left-recursively.
  *
  * @author Clément Fournier
  */
