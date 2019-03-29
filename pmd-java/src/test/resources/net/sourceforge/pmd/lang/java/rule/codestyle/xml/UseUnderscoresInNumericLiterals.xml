@@ -322,8 +322,23 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    int value = 0.3936;
+    double value1 = 0.393_6;
+    double value2 = 0.39;
+    double value3 = -0.1;
+    double value4 = -0.123_456;
+    double value5 = +0.123_456;
 }
      ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1527 [java] UseUnderscoresInNumericLiterals false positive on floating point numbers</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double value1 = 36.363_636_363_636_37;
+    double value2 = 0.000_000_1;
+}
+        ]]></code>
     </test-code>
 </test-data>
