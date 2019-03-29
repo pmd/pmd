@@ -341,4 +341,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Decimal number test - bad cases</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    double value1 = 0.39361234;
+    double value2 = 0.39_361_234;
+    double value3 = -0.123456;
+    double value4 = +0.123456;
+}
+     ]]></code>
+    </test-code>
 </test-data>
