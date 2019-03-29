@@ -84,5 +84,27 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                 it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
             }
         }
+
+        "-~1" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.BITWISE_INVERSE
+                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            }
+        }
+
+        "-+-+1" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
+                it::getOp shouldBe UnaryOp.UNARY_PLUS
+                it::getBaseExpression shouldBe child<ASTUnaryExpression> {
+                    it::getOp shouldBe UnaryOp.UNARY_MINUS
+                    it::getBaseExpression shouldBe child<ASTUnaryExpression> {
+                        it::getOp shouldBe UnaryOp.UNARY_PLUS
+                        it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+                    }
+                }
+            }
+        }
     }
 })
