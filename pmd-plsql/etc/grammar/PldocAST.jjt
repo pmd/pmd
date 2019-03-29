@@ -27,6 +27,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Added support for XMLTABLE, XMLEXISTS, XMLCAST, XMLQUERY, CAST, XMLFOREST
+ * and XMLELEMENT
+ *
+ * Andreas Dangel 03/2019
+ *====================================================================
+ * More complete support for UPDATE statements and subqueries and hierarchical
+ * queries in SELECT statements.
+ * Added support for analytic functions such as LISTAGG.
+ * Conditions in WHERE clauses support now REGEX_LIKE and multiset conditions.
+ *
+ * Andreas Dangel 02/2019
+ *====================================================================
+ * Added support for TableCollectionExpressions
+ *
+ * Andreas Dangel 01/2019
+ *====================================================================
  * Added support for DELETE Statements
  * Added support for UPDATE Statements
  * Fully parse the select statement in CursorForLoops.
