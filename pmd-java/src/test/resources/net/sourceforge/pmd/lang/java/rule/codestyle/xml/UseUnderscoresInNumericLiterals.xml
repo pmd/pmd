@@ -327,6 +327,9 @@ public class Foo {
     double value3 = -0.1;
     double value4 = -0.123_456;
     double value5 = +0.123_456;
+
+    double valid1 = 0.3936;
+    double valid2 = 1000.0;
 }
      ]]></code>
     </test-code>
