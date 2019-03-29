@@ -70,7 +70,7 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode
         return operator;
     }
 
-    public String getOperatorName() {
+    public String getOpName() {
         return operator.name();
     }
 }

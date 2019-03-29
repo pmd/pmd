@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * InstanceOfExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} "instanceof" {@linkplain ASTType Type}
+ * InstanceOfExpression ::=  {@linkplain ASTRelationalExpression RelationalExpression} "instanceof" {@linkplain ASTType Type}
  *
  * </pre>
  */

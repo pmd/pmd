@@ -20,6 +20,9 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTRelationalExpression extends AbstractJavaTypeNode implements ASTExpression {
+
+    private BinaryOp op;
+
     public ASTRelationalExpression(int id) {
         super(id);
     }
@@ -39,6 +42,18 @@ public class ASTRelationalExpression extends AbstractJavaTypeNode implements AST
         visitor.visit(this, data);
     }
 
+    @Override
+    public void setImage(String image) {
+        super.setImage(image);
+        op = BinaryOp.fromImage(image);
+    }
 
+    public BinaryOp getOp() {
+        return op;
+    }
+
+    public String getOpName() {
+        return op.name();
+    }
 
 }

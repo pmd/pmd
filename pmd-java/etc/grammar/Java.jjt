@@ -2313,12 +2313,11 @@ void RelationalExpression() #RelationalExpression(>1):
 {}
 {
   ShiftExpression()
-   ( LOOKAHEAD(2)
-    ( "<" {jjtThis.setImage("<");}
-     | ">" {jjtThis.setImage(">");}
-     | "<=" {jjtThis.setImage("<=");}
-     | ">=" {jjtThis.setImage(">=");}
-    ) ShiftExpression() )* // relational expressions
+  (
+    ( "<" | ">" | "<=" | ">=" )
+    { jjtThis.setImage(getToken(0).getImage()); }
+    ShiftExpression()
+  )?
 }
 
 /**
