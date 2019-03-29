@@ -1552,7 +1552,7 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.image)}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
-      | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.image)}) "(" XMLElement() ")"
+      | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.image)}) XMLElement()
       | Arguments()
     )
 
@@ -1658,6 +1658,7 @@ ASTXMLExists XMLExists() :
 ASTXMLElement XMLElement() :
 {}
 {
+    "("
     [ LOOKAHEAD({isKeyword("ENTITYESCAPING") || isKeyword("NOENTITYESCAPING")}) <IDENTIFIER> ]
     (
         LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression()
@@ -1673,6 +1674,7 @@ ASTXMLElement XMLElement() :
         )
     ]
     ( "," Expression() [ [ <AS> ] ColumnAlias() ] )*
+    ")"
     { return jjtThis; }
 }
 
@@ -1683,8 +1685,8 @@ ASTXMLAttributesClause XMLAttributesClause() :
         [ LOOKAHEAD({isKeyword("ENTITYESCAPING") || isKeyword("NOENTITYESCAPING")}) <IDENTIFIER> ]
         [ LOOKAHEAD({isKeyword("SCHEMACHECK") || isKeyword("NOSCHEMACHECK")}) <IDENTIFIER> ]
 
-             Expression() [ [ <AS> ] ( LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression() | ColumnAlias() | Expression() ) ]
-        ("," Expression() [ [ <AS> ] ( LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression() | ColumnAlias() | Expression() ) ] )*
+             Expression() [ [ <AS> ] ( LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression() | LOOKAHEAD(2) ColumnAlias() | Expression() ) ]
+        ("," Expression() [ [ <AS> ] ( LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression() | LOOKAHEAD(2) ColumnAlias() | Expression() ) ] )*
     ")"
     { return jjtThis; }
 }
@@ -6188,7 +6190,6 @@ ASTID ID(): {}
 		| <AND>  //SYNTAX  //RESERVED WORD
 		| <ANY>  //RESERVED WORD
 		| <ARRAY>
-		| <AS>  //SYNTAX  //RESERVED WORD
 		| <ASC>  //RESERVED WORD
 		//20120429 | <AT> | <AUTHID>
 		//| <AVG>
