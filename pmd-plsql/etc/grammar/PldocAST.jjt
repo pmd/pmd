@@ -1552,6 +1552,7 @@ ASTFunctionCall FunctionCall() :
       | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.image)}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
+      | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.image)}) "(" XMLElement() ")"
       | Arguments()
     )
 
@@ -1650,6 +1651,40 @@ ASTXMLExists XMLExists() :
     "("
         StringLiteral()
         [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ]
+    ")"
+    { return jjtThis; }
+}
+
+ASTXMLElement XMLElement() :
+{}
+{
+    [ LOOKAHEAD({isKeyword("ENTITYESCAPING") || isKeyword("NOENTITYESCAPING")}) <IDENTIFIER> ]
+    (
+        LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression()
+        |
+        [ LOOKAHEAD({isKeyword("NAME")}) KEYWORD("NAME") ] ID()
+    )
+    [  LOOKAHEAD(1)
+        ","
+        (
+            LOOKAHEAD({isKeyword("XMLATTRIBUTES")}) XMLAttributesClause()
+        |
+            Expression() [ [ <AS> ] ColumnAlias() ]
+        )
+    ]
+    ( "," Expression() [ [ <AS> ] ColumnAlias() ] )*
+    { return jjtThis; }
+}
+
+ASTXMLAttributesClause XMLAttributesClause() :
+{}
+{
+    KEYWORD("XMLATTRIBUTES") "("
+        [ LOOKAHEAD({isKeyword("ENTITYESCAPING") || isKeyword("NOENTITYESCAPING")}) <IDENTIFIER> ]
+        [ LOOKAHEAD({isKeyword("SCHEMACHECK") || isKeyword("NOSCHEMACHECK")}) <IDENTIFIER> ]
+
+             Expression() [ [ <AS> ] ( LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression() | ColumnAlias() | Expression() ) ]
+        ("," Expression() [ [ <AS> ] ( LOOKAHEAD({isKeyword("EVALNAME")}) KEYWORD("EVALNAME") Expression() | ColumnAlias() | Expression() ) ] )*
     ")"
     { return jjtThis; }
 }

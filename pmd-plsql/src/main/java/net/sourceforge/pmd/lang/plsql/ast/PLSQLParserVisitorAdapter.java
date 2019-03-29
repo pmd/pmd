@@ -1086,4 +1086,14 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTXMLExists node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTXMLAttributesClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLElement node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }
