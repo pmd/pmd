@@ -17,7 +17,7 @@ public class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpression
         return visitor.visit(this, data);
     }
 
-    public String getTypeRef() {
+    public String getType() {
         return String.valueOf(node.getTypeRef());
     }
 }

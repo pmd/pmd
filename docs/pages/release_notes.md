@@ -33,6 +33,30 @@ will be developed at [pmd/pmd-designer](https://github.com/pmd/pmd-designer)
 from now on. The maven coordinates will stay the same for the time being.
 The designer will still be shipped with PMD's binaries.
 
+#### Improved Apex Support
+
+*   Many AST nodes now expose more information which makes it easier to write XPath-based rules for Apex. Here are
+    some examples:
+    *   `Annotation[@Resolved = false()]` finds unsupported annotations.
+    *   `AnnotationParameter[@Name='RestResource'][@Value='/myurl']` gives access to
+        annotation parameters.
+    *   `CatchBlockStatement[@ExceptionType='Exception'][@VariableName='e']` finds catch
+        block for specific exception types.
+    *   `Field[@Type='String']` find all String fields, `Field[string-length(@Name) < 5]`
+        finds all fields with short names and `Field[@Value='a']` find alls fields, that are
+        initialized with a specific value.
+    *   `LiteralExpression[@String = true()]` finds all String literals. There are attributes
+        for each type: `@Boolean`, `@Integer`, `@Double`, `@Long`, `@Decimal`, `@Null`.
+    *   `Method[@Constructor = true()]` selects all constructors. `Method[@ReturnType = 'String']`
+        selects all methods that return a String.
+    *   The `ModifierNode` node has a couple of attributes to check for the existence of specific
+        modifiers: `@Test`, `@TestOrTestSetup`, `@WithSharing`, `@WithoutSharing`, `@InheritedSharing`,
+        `@WebService`, `@Global`, `@Override`.
+    *   Many nodes now expose their type. E.g. with `Parameter[@Type='Integer']` you can find all
+        method parameters of type Integer. The same attribute `Type` exists as well for:
+        `NewObjectExpression`, `Property`, `VariableDeclaration`.
+    *   `VariableExpression[@Image='i']` finds all variable usages of the variable "i".
+
 #### New Rules
 
 *   The new Java rule {% rule "java/design/AvoidUncheckedExceptionsInSignatures" %} (`java-design`) finds methods or constructors

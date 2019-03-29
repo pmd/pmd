@@ -132,7 +132,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             return;
         }
 
-        if (node.getTypeRef().equalsIgnoreCase(PAGEREFERENCE)) {
+        if (node.getType().equalsIgnoreCase(PAGEREFERENCE)) {
             getObjectValue(node, data);
         }
     }

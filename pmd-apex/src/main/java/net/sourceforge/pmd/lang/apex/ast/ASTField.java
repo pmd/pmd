@@ -21,7 +21,7 @@ public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarn
 
     @Override
     public String getImage() {
-        return node.getFieldInfo().getName();
+        return getName();
     }
 
     @Override
@@ -42,6 +42,10 @@ public class ASTField extends AbstractApexNode<Field> implements CanSuppressWarn
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getName() {
+        return node.getFieldInfo().getName();
     }
 
     public String getValue() {

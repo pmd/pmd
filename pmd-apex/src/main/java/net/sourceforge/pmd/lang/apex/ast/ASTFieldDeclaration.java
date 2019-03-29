@@ -19,6 +19,10 @@ public class ASTFieldDeclaration extends AbstractApexNode<FieldDeclaration> {
 
     @Override
     public String getImage() {
+        return getName();
+    }
+
+    public String getName() {
         if (node.getFieldInfo() != null) {
             return node.getFieldInfo().getName();
         }
