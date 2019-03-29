@@ -61,6 +61,8 @@ The designer will still be shipped with PMD's binaries.
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
 *   java-codestyle
     *   [#1674](https://github.com/pmd/pmd/issues/1674): \[java] documentation of CommentDefaultAccessModifier is wrong
+*   java-errorprone
+    *   [#1570](https://github.com/pmd/pmd/issues/1570): \[java] AvoidDuplicateLiterals warning about deprecated separator property when not used
 
 ### API Changes
 
