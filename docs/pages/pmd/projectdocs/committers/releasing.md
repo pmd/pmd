@@ -42,6 +42,10 @@ The release notes usual mention any new rules that have been added since the las
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
 that all new rules are listed.
 
+Add the new rules as comments to the quickstart rulesets:
+* `pmd-apex/src/main/resources/rulesets/apex/quickstart.xml`
+* `pmd-java/src/main/resources/rulesets/java/quickstart.xml`
+
 We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
 changes from the current release notes to this document: `docs/pages/next_major_development.md`.
 
