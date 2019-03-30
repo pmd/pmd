@@ -1150,6 +1150,46 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
         return visit((PLSQLNode) node, data);
     }
 
+    @Override
+    public Object visit(ASTXMLTable node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLNamespacesClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLTableOptions node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLPassingClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLTableColum node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLExists node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLAttributesClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTXMLElement node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
     /*
      * Treat all Executable Code
      */

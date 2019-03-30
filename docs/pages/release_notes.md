@@ -98,6 +98,7 @@ The designer will still be shipped with PMD's binaries.
 *   java-codestyle
     *   [#1674](https://github.com/pmd/pmd/issues/1674): \[java] documentation of CommentDefaultAccessModifier is wrong
 *   plsql
+    *   [#1510](https://github.com/pmd/pmd/issues/1510): \[plsql] Support XMLTABLE functions
     *   [#1716](https://github.com/pmd/pmd/issues/1716): \[plsql] Support access to whole plsql code
 
 ### API Changes
