@@ -13,9 +13,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.semantic.ast.modifier.OldModifiers.ModifierType;
-import apex.jorje.semantic.symbol.type.ModifierOrAnnotationTypeInfo;
-
 /**
  * Finds Apex class that do not define sharing
  * 
@@ -98,21 +95,8 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
      * @param node
      * @return
      */
-    private boolean isSharingPresent(ApexNode<?> node) {
-        boolean sharingFound = false;
-
-        for (ModifierOrAnnotationTypeInfo type : node.getNode().getDefiningType().getModifiers().all()) {
-            if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithoutSharing.toString())) {
-                sharingFound = true;
-                break;
-            }
-            if (type.getBytecodeName().equalsIgnoreCase(ModifierType.WithSharing.toString())) {
-                sharingFound = true;
-                break;
-            }
-
-        }
-        return sharingFound;
+    private boolean isSharingPresent(ASTUserClass node) {
+        return node.getModifiers().isWithoutSharing() || node.getModifiers().isWithSharing();
     }
 
 }

@@ -66,12 +66,8 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private void findFieldLiterals(final ASTField fDecl) {
-        Object f = fDecl.getNode().getFieldInfo().getValue();
-        if (f instanceof String) {
-            final String fieldValue = (String) f;
-            if (AUTHORIZATION.equalsIgnoreCase(fieldValue)) {
-                listOfAuthorizationVariables.add(Helper.getFQVariableName(fDecl));
-            }
+        if ("String".equals(fDecl.getType()) && AUTHORIZATION.equalsIgnoreCase(fDecl.getValue())) {
+            listOfAuthorizationVariables.add(Helper.getFQVariableName(fDecl));
         }
     }
 
@@ -118,9 +114,8 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     private boolean isAuthorizationLiteral(final ASTLiteralExpression literal) {
-        Object o = literal.getNode().getLiteral();
-        if (o instanceof String) {
-            String lit = (String) o;
+        if (literal.isString()) {
+            String lit = literal.getImage();
             if (lit.equalsIgnoreCase(AUTHORIZATION)) {
                 return true;
             }

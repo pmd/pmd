@@ -44,7 +44,7 @@ public class CycloMetric extends AbstractApexOperationMetric {
         int complexity = 0;
 
         for (ASTBooleanExpression sub : subs) {
-            BooleanOp op = sub.getNode().getOp();
+            BooleanOp op = sub.getOperator();
             if (op != null && (op == BooleanOp.AND || op == BooleanOp.OR)) {
                 complexity++;
             }

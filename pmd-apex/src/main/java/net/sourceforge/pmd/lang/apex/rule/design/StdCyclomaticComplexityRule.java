@@ -155,7 +155,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
             }
 
             if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-                String methodType = node.getNode().getMethodInfo().isConstructor() ? "constructor" : "method";
+                String methodType = node.isConstructor() ? "constructor" : "method";
                 addViolation(data, node,
                         new String[] { methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints) });
             }
