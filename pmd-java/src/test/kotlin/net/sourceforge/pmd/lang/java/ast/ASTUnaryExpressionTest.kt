@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
@@ -64,6 +65,85 @@ class ASTUnaryExpressionTest : ParserTestSpec({
         }
 
         "2 ++ 2" should notParseIn(ExpressionParsingCtx)
+    }
+
+    parserTest("Unary expression ambiguity corner cases") {
+
+        "(p)+q" should matchExpr<ASTAdditiveExpression> {
+            it::getOp shouldBe BinaryOp.ADD
+
+            child<ASTParenthesizedExpression>(ignoreChildren = true) {}
+            child<ASTVariableReference> {}
+        }
+
+
+        "(p)~q" should matchExpr<ASTCastExpression> {
+            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
+                it::getTypeImage shouldBe "p"
+            }
+
+            it::getCastExpression shouldBe child<ASTUnaryExpression> {
+                child<ASTVariableReference> {}
+            }
+        }
+
+        "(p)!q" should matchExpr<ASTCastExpression> {
+            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
+                it::getTypeImage shouldBe "p"
+            }
+
+            it::getCastExpression shouldBe child<ASTUnaryExpression> {
+                child<ASTVariableReference> {}
+            }
+        }
+
+        "(p)++" should matchExpr<ASTPostfixExpression> {
+
+            child<ASTParenthesizedExpression> {
+                child<ASTVariableReference> {
+
+                }
+            }
+        }
+
+        PrimitiveType
+                .values()
+                .filter { it.isNumeric }
+                .map { it.token }
+                .forEach { type ->
+
+                    "($type)+q" should matchExpr<ASTCastExpression> {
+                        it::getCastType shouldBe child<ASTPrimitiveType> {
+                            it::getTypeImage shouldBe type
+                        }
+
+                        it::getCastExpression shouldBe child<ASTUnaryExpression> {
+                            child<ASTVariableReference> {}
+                        }
+                    }
+
+                    "($type)-q" should matchExpr<ASTCastExpression> {
+                        it::getCastType shouldBe child<ASTPrimitiveType> {
+                            it::getTypeImage shouldBe type
+                        }
+
+                        it::getCastExpression shouldBe child<ASTUnaryExpression> {
+                            child<ASTVariableReference> {}
+                        }
+                    }
+
+                    "($type)++q" should matchExpr<ASTCastExpression> {
+
+                        it::getCastType shouldBe child<ASTPrimitiveType> {
+                            it::getTypeImage shouldBe type
+                        }
+
+                        it::getCastExpression shouldBe child<ASTPreIncrementExpression> {
+                            child<ASTVariableReference> {}
+                        }
+                    }
+                }
+
     }
 
 

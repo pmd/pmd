@@ -100,6 +100,14 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
 
         /**
+         * Returns true if this denotes a numeric type.
+         */
+        public boolean isNumeric() {
+            return this != BOOLEAN;
+        }
+
+
+        /**
          * Returns the token used to represent the type in source,
          * e.g. "int" or "double".
          */
