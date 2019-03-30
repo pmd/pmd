@@ -100,6 +100,8 @@ The designer will still be shipped with PMD's binaries.
 *   plsql
     *   [#1510](https://github.com/pmd/pmd/issues/1510): \[plsql] Support XMLTABLE functions
     *   [#1716](https://github.com/pmd/pmd/issues/1716): \[plsql] Support access to whole plsql code
+    *   [#1731](https://github.com/pmd/pmd/issues/1731): \[pslql] ParseException when parsing ELSIF
+    *   [#1733](https://github.com/pmd/pmd/issues/1733): \[plsql] % not supported in "TestSearch%notfound"
 
 ### API Changes
 

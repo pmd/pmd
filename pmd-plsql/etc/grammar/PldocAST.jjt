@@ -1535,6 +1535,14 @@ ASTSimpleExpression SimpleExpression() :
         TableName() { sb.append(token.image); } "." { sb.append(token.image); }
         ( "*" | Column() ) { sb.append(token.image); }
  |
+    // Named Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/named-cursor-attribute.html#GUID-CD8D8415-FF19-4D81-99BA-7825FD40CC96
+    LOOKAHEAD(3)
+        Column() { sb.append(token.image); } "%" ( LOOKAHEAD({getToken(1).image.equalsIgnoreCase("isopen")}) KEYWORD("ISOPEN")
+                     | LOOKAHEAD({getToken(1).image.equalsIgnoreCase("found")}) KEYWORD("FOUND")
+                     | LOOKAHEAD({getToken(1).image.equalsIgnoreCase("notfound")}) KEYWORD("NOTFOUND")
+                     | LOOKAHEAD({getToken(1).image.equalsIgnoreCase("rowcount")}) KEYWORD("ROWCOUNT")
+                     ) { sb.append('%').append(token.image); }
+ |
     LOOKAHEAD(2)
         ( "*" | Column() ) { sb.append(token.image); }
  )
@@ -2229,7 +2237,7 @@ ASTElseClause ElseClause()  :
 ASTElsifClause ElsifClause()  :
 {}
 {
-      <ELSIF>  Expression() <THEN> (Statement())+
+      <ELSIF>  Expression() <THEN> (LOOKAHEAD(1, {!(getToken(1).kind == ELSIF)}) Statement())+
       { return jjtThis ; }
 }
 
@@ -2424,7 +2432,7 @@ ASTWhileStatement WhileStatement()  :
 ASTIfStatement IfStatement()  :
 {}
 {
-	<IF> Expression() <THEN> (Statement())+
+	<IF> Expression() <THEN> (LOOKAHEAD(1, {!(getToken(1).kind == ELSIF)}) Statement())+
 	( ElsifClause() {jjtThis.setHasElse();} )*
 	[ ElseClause() {jjtThis.setHasElse();} ]
 	<END> <IF>
@@ -6237,7 +6245,6 @@ ASTID ID(): {}
 		//| <DISTINCT>  //RESERVED WORD
 		| <DO>
 		| <DROP>  //RESERVED WORD
-		//| <ELSE> //SYNTAX //RESERVED WORD
 		| <ELSIF> //SYNTAX
 
 		//| <END> |<CURRENT_USER>
@@ -6481,7 +6488,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<DISTINCT>
 		| <DO>
 		//<DROP>
-		//<ELSE>
 		| <ELSIF>
 		//<END>
 		//<EXCEPTION>
