@@ -40,8 +40,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe false
@@ -78,8 +77,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
 
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe false
@@ -102,8 +100,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTExpression>(ignoreChildren = true) {}
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledBlock> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe true
@@ -152,8 +149,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe false
@@ -174,8 +170,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
 
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe false
@@ -189,8 +184,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                     child<ASTSwitchExpression> {
                         child<ASTExpression>(ignoreChildren = true) {}
 
-                        child<ASTSwitchBlockGroup> {
-                            it.isRule shouldBe true
+                        child<ASTSwitchLabeledExpression> {
 
                             child<ASTSwitchLabel> {
                                 it.isDefault shouldBe false
@@ -200,8 +194,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                             child<ASTExpression>(ignoreChildren = true) {}
 
                         }
-                        child<ASTSwitchBlockGroup> {
-                            it.isRule shouldBe true
+                        child<ASTSwitchLabeledExpression> {
 
                             child<ASTSwitchLabel> {
                                 it.isDefault shouldBe true
@@ -213,8 +206,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe true
@@ -270,10 +262,8 @@ class ASTSwitchExpressionTests : ParserTestSpec({
 
                         it.testedExpression shouldBe child(ignoreChildren = true) {}
 
-                        child<ASTSwitchBlockGroup>(ignoreChildren = true) {
-                            it.isRule shouldBe true
-                        }
-                        child<ASTSwitchBlockGroup>(ignoreChildren = true) {}
+                        child<ASTSwitchLabeledExpression>(ignoreChildren = true) {}
+                        child<ASTSwitchLabeledExpression>(ignoreChildren = true) {}
 
                     }
                 }
@@ -310,8 +300,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe false
@@ -323,8 +312,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTExpression>(ignoreChildren = true) {}
             }
 
-            child<ASTSwitchBlockGroup> {
-                it.isRule shouldBe true
+            child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it.isDefault shouldBe false

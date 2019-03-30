@@ -1,4 +1,7 @@
 /**
+ * Add support for Java 12 switch expressions and switch rules.
+ * Andreas Dangel, Clément Fournier 03/2019
+ *====================================================================
  * Add support for Java 10 Local Variable Type Inference
  * See #743. In Java 10 mode, "var" as local variable type is handled special.
  * Andreas Dangel 04/2018
@@ -402,8 +405,6 @@ public class JavaParser {
       throwParseException("Switch expressions are only supported with Java 12");
     }
   }
-
-  private boolean inSwitchLabeledRuleGroup = true;
 
   private void checkForBreakExpression() {
     if (jdkVersion < 12) {
@@ -2468,9 +2469,32 @@ void SwitchBlock() #void :
 {}
 {
     "{"
-
-        (SwitchBlockGroup())*
+        (
+            LOOKAHEAD(SwitchLabel() ":") (LOOKAHEAD(2) SwitchLabeledStatementGroup())*
+        |
+            (LOOKAHEAD(2) SwitchLabeledRule())*
+        )
     "}"
+}
+
+void SwitchLabeledRule() #void :
+{checkForSwitchRules();}
+{
+    SwitchLabel() "->"
+    (
+        ( Expression() ";" ) #SwitchLabeledExpression(2)
+      |
+        ( Block() ) #SwitchLabeledBlock(2)
+      |
+        ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
+    )
+}
+
+// For PMD 7, make this a real node to group the labels + statements
+void SwitchLabeledStatementGroup() #void:
+{}
+{
+    (LOOKAHEAD(2) SwitchLabel() ":")+ ( BlockStatement() )*
 }
 
 void SwitchLabel() :
@@ -2483,25 +2507,6 @@ void SwitchLabel() :
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
-}
-
-// only pushed if it's a new java12 switch label rule group, for compatibility
-void SwitchBlockGroup() #SwitchBlockGroup(inSwitchLabeledRuleGroup):
-{
- boolean prevInSwitchLabeledRuleGroup = inSwitchLabeledRuleGroup;
- inSwitchLabeledRuleGroup = true;
-}
-{
-    SwitchLabel()
-    ( "->" {checkForSwitchRules();} | ":" {inSwitchLabeledRuleGroup = false;})
-    (LOOKAHEAD({!inSwitchLabeledRuleGroup})
-      ( BlockStatement() )*
-    | ( Expression() ";" | Block () | ThrowStatement() )
-    )
-    {
-        jjtThis.setRule(inSwitchLabeledRuleGroup);
-        inSwitchLabeledRuleGroup = prevInSwitchLabeledRuleGroup; // restore
-    }
 }
 
 void IfStatement() :

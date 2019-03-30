@@ -732,12 +732,22 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     }
 
     @Override
-    public Object visit(ASTSwitchBlockGroup node, Object data) {
+    public Object visit(ASTSwitchExpression node, Object data) {
         return visitor.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTSwitchExpression node, Object data) {
+    public Object visit(ASTSwitchLabeledBlock node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledExpression node, Object data) {
+        return visitor.visit(node, data);
+    }
+
+    @Override
+    public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
         return visitor.visit(node, data);
     }
 }

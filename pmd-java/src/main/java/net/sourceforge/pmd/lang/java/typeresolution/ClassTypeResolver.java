@@ -75,8 +75,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSingleMemberAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTSwitchBlockGroup;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -1185,8 +1185,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         JavaTypeDefinition type = null;
         // first try to determine the type based on the first expression/break of a switch rule
-        List<ASTSwitchBlockGroup> rules = node.findChildrenOfType(ASTSwitchBlockGroup.class);
-        for (ASTSwitchBlockGroup rule : rules) {
+        List<ASTSwitchLabeledRule> rules = node.findChildrenOfType(ASTSwitchLabeledRule.class);
+        for (ASTSwitchLabeledRule rule : rules) {
             Node body = rule.jjtGetChild(1); // second child is either Expression, Block, ThrowStatement
             if (body instanceof ASTExpression) {
                 type = ((ASTExpression) body).getTypeDefinition();

@@ -53,22 +53,21 @@ public class Java12Test {
         Assert.assertNotNull(compilationUnit);
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
         Assert.assertTrue(switchStatement.jjtGetChild(0) instanceof ASTExpression);
-        Assert.assertTrue(switchStatement.jjtGetChild(1) instanceof ASTSwitchBlockGroup);
-        ASTSwitchBlockGroup switchBlockGroup = (ASTSwitchBlockGroup) switchStatement.jjtGetChild(1);
-        Assert.assertTrue(switchBlockGroup.isRule());
-        Assert.assertEquals(2, switchBlockGroup.jjtGetNumChildren());
-        Assert.assertTrue(switchBlockGroup.jjtGetChild(0) instanceof ASTSwitchLabel);
-        Assert.assertTrue(switchBlockGroup.jjtGetChild(1) instanceof ASTExpression);
+        Assert.assertTrue(switchStatement.jjtGetChild(1) instanceof ASTSwitchLabeledExpression);
+        ASTSwitchLabeledExpression switchLabeledExpression = (ASTSwitchLabeledExpression) switchStatement.jjtGetChild(1);
+        Assert.assertEquals(2, switchLabeledExpression.jjtGetNumChildren());
+        Assert.assertTrue(switchLabeledExpression.jjtGetChild(0) instanceof ASTSwitchLabel);
+        Assert.assertTrue(switchLabeledExpression.jjtGetChild(1) instanceof ASTExpression);
 
-        switchBlockGroup = (ASTSwitchBlockGroup) switchStatement.jjtGetChild(4);
-        Assert.assertEquals(2, switchBlockGroup.jjtGetNumChildren());
-        Assert.assertTrue(switchBlockGroup.jjtGetChild(0) instanceof ASTSwitchLabel);
-        Assert.assertTrue(switchBlockGroup.jjtGetChild(1) instanceof ASTBlock);
+        ASTSwitchLabeledBlock switchLabeledBlock = (ASTSwitchLabeledBlock) switchStatement.jjtGetChild(4);
+        Assert.assertEquals(2, switchLabeledBlock.jjtGetNumChildren());
+        Assert.assertTrue(switchLabeledBlock.jjtGetChild(0) instanceof ASTSwitchLabel);
+        Assert.assertTrue(switchLabeledBlock.jjtGetChild(1) instanceof ASTBlock);
 
-        switchBlockGroup = (ASTSwitchBlockGroup) switchStatement.jjtGetChild(5);
-        Assert.assertEquals(2, switchBlockGroup.jjtGetNumChildren());
-        Assert.assertTrue(switchBlockGroup.jjtGetChild(0) instanceof ASTSwitchLabel);
-        Assert.assertTrue(switchBlockGroup.jjtGetChild(1) instanceof ASTThrowStatement);
+        ASTSwitchLabeledThrowStatement switchLabeledThrowStatement = (ASTSwitchLabeledThrowStatement) switchStatement.jjtGetChild(5);
+        Assert.assertEquals(2, switchLabeledThrowStatement.jjtGetNumChildren());
+        Assert.assertTrue(switchLabeledThrowStatement.jjtGetChild(0) instanceof ASTSwitchLabel);
+        Assert.assertTrue(switchLabeledThrowStatement.jjtGetChild(1) instanceof ASTThrowStatement);
     }
 
     @Test(expected = ParseException.class)
@@ -85,7 +84,7 @@ public class Java12Test {
         ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
         Assert.assertEquals(6, switchExpression.jjtGetNumChildren());
         Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
-        Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchBlockGroup.class).size());
+        Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabeledRule.class).size());
 
         ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(1);
         ASTVariableDeclarator localVarDecl = localVar.getFirstChildOfType(ASTVariableDeclarator.class);
