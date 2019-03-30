@@ -115,9 +115,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |problemDepth|3|The if statement depth reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
+    <properties>
+        <property name="problemDepth" value="3" />
+    </properties>
+</rule>
 ```
 
 ## AvoidRethrowingException
@@ -425,9 +434,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |threshold|20|Unique type reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/CouplingBetweenObjects" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/CouplingBetweenObjects">
+    <properties>
+        <property name="threshold" value="20" />
+    </properties>
+</rule>
 ```
 
 ## CyclomaticComplexity
@@ -492,9 +510,20 @@ class Foo {
 |cycloOptions||Choose options for the computation of Cyclo|yes. Delimiter is '\|'.|
 |reportLevel|10|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Cyclomatic Complexity reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/CyclomaticComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/CyclomaticComplexity">
+    <properties>
+        <property name="classReportLevel" value="80" />
+        <property name="methodReportLevel" value="10" />
+        <property name="cycloOptions" value="" />
+    </properties>
+</rule>
 ```
 
 ## DataClass
@@ -631,13 +660,22 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ExcessiveClassLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ExcessiveClassLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveImports
@@ -667,13 +705,22 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|30.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ExcessiveImports" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ExcessiveImports">
+    <properties>
+        <property name="minimum" value="30.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveMethodLength
@@ -703,13 +750,22 @@ public void doSomething() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|100.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ExcessiveMethodLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ExcessiveMethodLength">
+    <properties>
+        <property name="minimum" value="100.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveParameterList
@@ -743,13 +799,22 @@ public void addPerson(      // preferred approach
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|10.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ExcessiveParameterList" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ExcessiveParameterList">
+    <properties>
+        <property name="minimum" value="10.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessivePublicCount
@@ -785,13 +850,22 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|45.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ExcessivePublicCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ExcessivePublicCount">
+    <properties>
+        <property name="minimum" value="45.0" />
+    </properties>
+</rule>
 ```
 
 ## FinalFieldCouldBeStatic
@@ -879,9 +953,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ImmutableField" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ImmutableField">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor" />
+    </properties>
+</rule>
 ```
 
 ## LawOfDemeter
@@ -998,9 +1081,19 @@ public class Bar {
 |packages||Restricted packages|yes. Delimiter is ','.|
 |classes||Allowed classes|yes. Delimiter is ','.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/LoosePackageCoupling" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/LoosePackageCoupling">
+    <properties>
+        <property name="packages" value="" />
+        <property name="classes" value="" />
+    </properties>
+</rule>
 ```
 
 ## ModifiedCyclomaticComplexity
@@ -1071,9 +1164,20 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
 |showClassesComplexity|true|Add class average violations to the report|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/ModifiedCyclomaticComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/ModifiedCyclomaticComplexity">
+    <properties>
+        <property name="showMethodsComplexity" value="true" />
+        <property name="showClassesComplexity" value="true" />
+        <property name="reportLevel" value="10" />
+    </properties>
+</rule>
 ```
 
 ## NcssConstructorCount
@@ -1114,13 +1218,22 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|100.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/NcssConstructorCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/NcssConstructorCount">
+    <properties>
+        <property name="minimum" value="100.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssCount
@@ -1174,9 +1287,20 @@ class Foo {                         // +1, total Ncss = 12
 |classReportLevel|1500|NCSS reporting threshold for classes|no|
 |ncssOptions||Choose options for the computation of Ncss|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/NcssCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/NcssCount">
+    <properties>
+        <property name="methodReportLevel" value="60" />
+        <property name="classReportLevel" value="1500" />
+        <property name="ncssOptions" value="" />
+    </properties>
+</rule>
 ```
 
 ## NcssMethodCount
@@ -1218,13 +1342,22 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|100.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/NcssMethodCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/NcssMethodCount">
+    <properties>
+        <property name="minimum" value="100.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssTypeCount
@@ -1265,13 +1398,22 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1500.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/NcssTypeCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/NcssTypeCount">
+    <properties>
+        <property name="minimum" value="1500.0" />
+    </properties>
+</rule>
 ```
 
 ## NPathComplexity
@@ -1337,9 +1479,18 @@ public class Foo {
 |reportLevel|200|N-Path Complexity reporting threshold|no|
 |minimum|200.0|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Minimum reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/NPathComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/NPathComplexity">
+    <properties>
+        <property name="reportLevel" value="200" />
+    </properties>
+</rule>
 ```
 
 ## SignatureDeclareThrowsException
@@ -1368,9 +1519,18 @@ public void foo() throws Exception {
 |----|-------------|-----------|-----------|
 |IgnoreJUnitCompletely|false|Allow all methods in a JUnit testcase to throw Exceptions|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/SignatureDeclareThrowsException" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/SignatureDeclareThrowsException">
+    <properties>
+        <property name="IgnoreJUnitCompletely" value="false" />
+    </properties>
+</rule>
 ```
 
 ## SimplifiedTernary
@@ -1623,9 +1783,20 @@ public class Foo {
 |checkInnerClasses|false|Check inner classes|no|
 |disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/SingularField" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/SingularField">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor" />
+        <property name="checkInnerClasses" value="false" />
+        <property name="disallowNotAssignment" value="false" />
+    </properties>
+</rule>
 ```
 
 ## StdCyclomaticComplexity
@@ -1695,9 +1866,20 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
 |showClassesComplexity|true|Add class average violations to the report|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/StdCyclomaticComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/StdCyclomaticComplexity">
+    <properties>
+        <property name="showMethodsComplexity" value="true" />
+        <property name="showClassesComplexity" value="true" />
+        <property name="reportLevel" value="10" />
+    </properties>
+</rule>
 ```
 
 ## SwitchDensity
@@ -1734,13 +1916,22 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|10.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/SwitchDensity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/SwitchDensity">
+    <properties>
+        <property name="minimum" value="10.0" />
+    </properties>
+</rule>
 ```
 
 ## TooManyFields
@@ -1778,9 +1969,18 @@ public class Person {   // this is more manageable
 |----|-------------|-----------|-----------|
 |maxfields|15|Max allowable fields|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/TooManyFields" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/TooManyFields">
+    <properties>
+        <property name="maxfields" value="15" />
+    </properties>
+</rule>
 ```
 
 ## TooManyMethods
@@ -1814,9 +2014,18 @@ complexity and find a way to have more fine grained objects.
 |----|-------------|-----------|-----------|
 |maxmethods|10|The method count reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/TooManyMethods" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/TooManyMethods">
+    <properties>
+        <property name="maxmethods" value="10" />
+    </properties>
+</rule>
 ```
 
 ## UselessOverridingMethod
@@ -1852,9 +2061,18 @@ public Long getId() {
 |----|-------------|-----------|-----------|
 |ignoreAnnotations|false|Ignore annotations|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/UselessOverridingMethod" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/UselessOverridingMethod">
+    <properties>
+        <property name="ignoreAnnotations" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UseObjectForClearerAPI

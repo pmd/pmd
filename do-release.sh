@@ -75,6 +75,9 @@ echo
 echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
+echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
+echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules.
+echo
 echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
 echo "    the new release based on the release notes"
 echo

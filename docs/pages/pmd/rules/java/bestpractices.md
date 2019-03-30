@@ -230,9 +230,19 @@ public class Foo {
 |foreachReassign|deny|how/if foreach control variables may be reassigned|no|
 |forReassign|deny|how/if for control variables may be reassigned|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables">
+    <properties>
+        <property name="foreachReassign" value="deny" />
+        <property name="forReassign" value="deny" />
+    </properties>
+</rule>
 ```
 
 ## AvoidReassigningParameters
@@ -312,9 +322,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |checkAddressTypes|IPv4 mapped IPv6 \| IPv6 \| IPv4|Check for IP address types.|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/AvoidUsingHardCodedIP">
+    <properties>
+        <property name="checkAddressTypes" value="IPv4 mapped IPv6|IPv6|IPv4" />
+    </properties>
+</rule>
 ```
 
 ## CheckResultSet
@@ -395,9 +414,18 @@ public interface YetAnotherConstantInterface {
 |----|-------------|-----------|-----------|
 |ignoreIfHasMethods|true|Whether to ignore constants in interfaces if the interface defines any methods|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/ConstantsInInterface" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/ConstantsInInterface">
+    <properties>
+        <property name="ignoreIfHasMethods" value="true" />
+    </properties>
+</rule>
 ```
 
 ## DefaultLabelNotLastInSwitchStmt
@@ -501,9 +529,18 @@ for (int i = 0, j = 0; i < 10; i++, j += 2) {
 |----|-------------|-----------|-----------|
 |maximumVariables|1|A regular for statement will have 1 control variable|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/ForLoopVariableCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/ForLoopVariableCount">
+    <properties>
+        <property name="maximumVariables" value="1" />
+    </properties>
+</rule>
 ```
 
 ## GuardLogStatement
@@ -532,9 +569,19 @@ otherwise skip the associate String creation and manipulation.
 |logLevels|trace , debug , info , warn , error , log , finest , finer , fine , info , warning , severe|LogLevels to guard|yes. Delimiter is ','.|
 |guardsMethods|isTraceEnabled , isDebugEnabled , isInfoEnabled , isWarnEnabled , isErrorEnabled , isLoggable|Method use to guard the log statement|yes. Delimiter is ','.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/GuardLogStatement" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/GuardLogStatement">
+    <properties>
+        <property name="logLevels" value="trace,debug,info,warn,error,log,finest,finer,fine,info,warning,severe" />
+        <property name="guardsMethods" value="isTraceEnabled,isDebugEnabled,isInfoEnabled,isWarnEnabled,isErrorEnabled,isLoggable" />
+    </properties>
+</rule>
 ```
 
 ## JUnit4SuitesShouldUseSuiteAnnotation
@@ -702,9 +749,18 @@ public class MyTest {
 |----|-------------|-----------|-----------|
 |testClassPattern|Test|The regex pattern used to identify test classes|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/JUnit4TestShouldUseTestAnnotation">
+    <properties>
+        <property name="testClassPattern" value="Test" />
+    </properties>
+</rule>
 ```
 
 ## JUnitAssertionsShouldIncludeMessage
@@ -787,9 +843,18 @@ public class MyTestCase extends TestCase {
 |----|-------------|-----------|-----------|
 |maximumAsserts|1|Maximum number of Asserts in a test method|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts">
+    <properties>
+        <property name="maximumAsserts" value="1" />
+    </properties>
+</rule>
 ```
 
 ## JUnitTestsShouldIncludeAssert
@@ -993,9 +1058,18 @@ String name,
 |----|-------------|-----------|-----------|
 |strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/OneDeclarationPerLine">
+    <properties>
+        <property name="strictMode" value="false" />
+    </properties>
+</rule>
 ```
 
 ## PositionLiteralsFirstInCaseInsensitiveComparisons
@@ -1303,9 +1377,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |checkAll|false|Check all methods, including non-private ones|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedFormalParameter" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedFormalParameter">
+    <properties>
+        <property name="checkAll" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UnusedImports
@@ -1387,9 +1470,18 @@ public class Something {
 |----|-------------|-----------|-----------|
 |ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| java.lang.Deprecated \| javafx.fxml.FXML|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedPrivateField" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedPrivateField">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|java.lang.Deprecated|javafx.fxml.FXML" />
+    </properties>
+</rule>
 ```
 
 ## UnusedPrivateMethod
@@ -1416,9 +1508,18 @@ public class Something {
 |----|-------------|-----------|-----------|
 |ignoredAnnotations|java.lang.Deprecated|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UnusedPrivateMethod">
+    <properties>
+        <property name="ignoredAnnotations" value="java.lang.Deprecated" />
+    </properties>
+</rule>
 ```
 
 ## UseAssertEqualsInsteadOfAssertTrue
@@ -1694,9 +1795,18 @@ public class TryWithResources {
 |----|-------------|-----------|-----------|
 |closeMethods|close , closeQuietly|Method names in finally block, which trigger this rule|yes. Delimiter is ','.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/bestpractices.xml/UseTryWithResources" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/bestpractices.xml/UseTryWithResources">
+    <properties>
+        <property name="closeMethods" value="close,closeQuietly" />
+    </properties>
+</rule>
 ```
 
 ## UseVarargs

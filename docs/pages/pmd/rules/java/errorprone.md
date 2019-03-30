@@ -39,9 +39,21 @@ public void bar() {
 |allowWhile|false|Allow assignment within the conditional expression of a while statement|no|
 |allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/AssignmentInOperand" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/AssignmentInOperand">
+    <properties>
+        <property name="allowIf" value="false" />
+        <property name="allowFor" value="false" />
+        <property name="allowWhile" value="false" />
+        <property name="allowIncrementDecrement" value="false" />
+    </properties>
+</rule>
 ```
 
 ## AssignmentToNonFinalStatic
@@ -209,9 +221,20 @@ for (int i = 0; i < 10; i++) {
 |checkContinueLoopTypes|for \| do \| while|List of loop types in which continue statements will be checked|yes. Delimiter is '\|'.|
 |checkReturnLoopTypes|for \| do \| while|List of loop types in which return statements will be checked|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop">
+    <properties>
+        <property name="checkBreakLoopTypes" value="for|do|while" />
+        <property name="checkContinueLoopTypes" value="for|do|while" />
+        <property name="checkReturnLoopTypes" value="for|do|while" />
+    </properties>
+</rule>
 ```
 
 ## AvoidCallingFinalize
@@ -389,9 +412,22 @@ private void buz(String x) {}
 |skipAnnotations|false|Skip literals within annotations|no|
 |exceptionList||List of literals to ignore. A literal is ignored if its image can be found in this list. Components of this list should not be surrounded by double quotes.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+    <properties>
+        <property name="separator" value="," />
+        <property name="maxDuplicateLiterals" value="4" />
+        <property name="minimumLength" value="3" />
+        <property name="skipAnnotations" value="false" />
+        <property name="exceptionList" value="" />
+    </properties>
+</rule>
 ```
 
 ## AvoidEnumAsIdentifier
@@ -562,9 +598,18 @@ public void checkRequests() {
 |----|-------------|-----------|-----------|
 |ignoreMagicNumbers|-1,0|Comma-separated list of magic numbers, that should be ignored|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
+    <properties>
+        <property name="ignoreMagicNumbers" value="-1,0" />
+    </properties>
+</rule>
 ```
 
 ## AvoidLosingExceptionInformation
@@ -672,9 +717,18 @@ k = i * j;      // set k with 80 not 120
 |----|-------------|-----------|-----------|
 |strict|false|Detect violations between 00 and 07|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/AvoidUsingOctalValues">
+    <properties>
+        <property name="strict" value="false" />
+    </properties>
+</rule>
 ```
 
 ## BadComparison
@@ -741,9 +795,19 @@ private int getMoreFoo(){
 |ignoredAnnotations|lombok.Data \| lombok.Getter \| lombok.Value|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |prefix||A variable prefix to skip, i.e., m\_|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.Data|lombok.Getter|lombok.Value" />
+        <property name="prefix" value="" />
+    </properties>
+</rule>
 ```
 
 ## BrokenNullCheck
@@ -1129,9 +1193,20 @@ public class Bar {
 |types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
 |closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/CloseResource" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/CloseResource">
+    <properties>
+        <property name="closeTargets" value="" />
+        <property name="types" value="java.sql.Connection,java.sql.Statement,java.sql.ResultSet" />
+        <property name="closeAsDefaultTarget" value="true" />
+    </properties>
+</rule>
 ```
 
 ## CompareObjectsWithEquals
@@ -1236,9 +1311,19 @@ public void foo() {
 |maxPaths|1000|Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.|no|
 |maxViolations|100|Maximum number of anomalies per class|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
+    <properties>
+        <property name="maxPaths" value="1000" />
+        <property name="maxViolations" value="100" />
+    </properties>
+</rule>
 ```
 
 ## DetachedTestCase
@@ -1571,9 +1656,19 @@ public void doSomething() {
 |allowCommentedBlocks|false|Empty blocks containing comments will be skipped|no|
 |allowExceptionNameRegex|^(ignored\|expected)$|Empty blocks catching exceptions with names matching this regular expression will be skipped|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/EmptyCatchBlock" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/EmptyCatchBlock">
+    <properties>
+        <property name="allowCommentedBlocks" value="false" />
+        <property name="allowExceptionNameRegex" value="^(ignored|expected)$" />
+    </properties>
+</rule>
 ```
 
 ## EmptyFinalizer
@@ -2784,9 +2879,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |staticLoggerName|LOG|Name of the static Logger variable|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/ProperLogger" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/ProperLogger">
+    <properties>
+        <property name="staticLoggerName" value="LOG" />
+    </properties>
+</rule>
 ```
 
 ## ReturnEmptyArrayRatherThanNull

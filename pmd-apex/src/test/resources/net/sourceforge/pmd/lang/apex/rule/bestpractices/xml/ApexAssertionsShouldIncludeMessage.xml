@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex unit test assert statements - assert should have 2/3 params</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,7</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+public class Foo {
+     @isTest
+    static void methodATest() {
+        System.assertNotEquals('123', o.StageName); // not good
+        System.assertEquals('123', o.StageName, 'Opportunity stageName is wrong.'); // good
+        System.assert(o.isClosed); // not good
+        System.assert(o.isClosed, 'Opportunity is not closed.'); // good
+    }
+}
+		]]></code>
+    </test-code>
+    <test-code>
+        <description>[apex] assert should have 2 param and assertEquals should have 3 param.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+public class Foo {
+     @isTest
+    static void methodATest() {
+        System.assertEquals('Test opportunity', o.Name, 'Opportunity Name' + o.Name + 'is wrong.'); // good
+        System.assert(o.isClosed, 'Opportunity is not closed.'); // good
+    }
+}
+		]]></code>
+    </test-code>
+    <test-code>
+        <description>[apex] Avoid false positive in non test classes.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    static void methodA() {
+        System.assertEquals('Test opportunity', o.Name);
+        System.assert(o.isClosed);
+    }
+}
+		]]></code>
+    </test-code>
+</test-data>

@@ -28,7 +28,7 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (node.getNode().getMethodInfo().isConstructor()) {
+        if (node.isConstructor()) {
             return super.visit(node, data);
         }
 

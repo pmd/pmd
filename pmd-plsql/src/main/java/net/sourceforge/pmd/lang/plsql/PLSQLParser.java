@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -45,8 +49,13 @@ public class PLSQLParser extends AbstractParser {
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        AbstractTokenManager.setFileName(fileName);
-        return createPLSQLParser(source).Input();
+        try {
+            String sourcecode = IOUtils.toString(source);
+            AbstractTokenManager.setFileName(fileName);
+            return createPLSQLParser(new StringReader(sourcecode)).Input(sourcecode);
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
     }
 
     @Override

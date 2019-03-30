@@ -15,6 +15,8 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <!-- overrides the default scope from inherited dependency management. -->
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>

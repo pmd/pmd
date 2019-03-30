@@ -6,13 +6,13 @@ if [ "${TRAVIS_REPO_SLUG}" != "pmd/pmd" ] || [ "${TRAVIS_PULL_REQUEST}" != "fals
     echo "  TRAVIS_REPO_SLUG=${TRAVIS_REPO_SLUG}"
     echo "  TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}"
     echo "  TRAVIS_SECURE_ENV_VARS=${TRAVIS_SECURE_ENV_VARS}"
-    [ "${encrypted_5630fbebf057_iv}" = "" ] && echo "  Variable encrypted_5630fbebf057_iv is not set"
+    [ "${encrypted_c422865a395e_iv}" = "" ] && echo "  Variable encrypted_c422865a395e_iv is not set"
     exit 0
 fi
 
 echo "Setting up secrets..."
 
-openssl aes-256-cbc -K ${encrypted_5630fbebf057_key} -iv ${encrypted_5630fbebf057_iv} -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
+openssl aes-256-cbc -K ${encrypted_c422865a395e_key} -iv ${encrypted_c422865a395e_iv} -in .travis/secrets.tar.enc -out .travis/secrets.tar -d
 pushd .travis && tar xfv secrets.tar && popd
 mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
