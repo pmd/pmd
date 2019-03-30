@@ -920,6 +920,15 @@
 ,
 
 {
+"title": "AvoidTabCharacter (PLSQL, Code Style)",
+"tags": "",
+"keywords": "AvoidTabCharacter",
+"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "CodeFormat (PLSQL, Code Style)",
 "tags": "",
 "keywords": "CodeFormat",
@@ -942,6 +951,15 @@
 "tags": "",
 "keywords": "ForLoopNaming",
 "url": "pmd_rules_plsql_codestyle.html#forloopnaming",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "LineLength (PLSQL, Code Style)",
+"tags": "",
+"keywords": "LineLength",
+"url": "pmd_rules_plsql_codestyle.html#linelength",
 "summary": "Rules which enforce a specific coding style."
 }
 
