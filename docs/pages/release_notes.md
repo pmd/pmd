@@ -59,6 +59,12 @@ The designer will still be shipped with PMD's binaries.
 *   The new Apex rule {% rule "apex/bestpractices/ApexUnitTestMethodShouldHaveIsTestAnnotation" %} (`apex-bestpractices`)
     searches for methods in test classes, which are missing the `@IsTest` annotation.
 
+*   The new PLSQL rule {% rule "plsql/codestyle/AvoidTabCharacter" %} (`plsql-codestyle`) checks, that there are
+    no tab characters ("\t") in the source file.
+
+*   The new PLSQL rule {% rule "plsql/codestyle/LineLength" %} (`plsql-codestyle`) helps to enforce a maximum
+    line length.
+
 ### Fixed Issues
 
 *   doc
@@ -67,6 +73,8 @@ The designer will still be shipped with PMD's binaries.
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
 *   java-codestyle
     *   [#1674](https://github.com/pmd/pmd/issues/1674): \[java] documentation of CommentDefaultAccessModifier is wrong
+*   plsql
+    *   [#1716](https://github.com/pmd/pmd/issues/1716): \[plsql] Support access to whole plsql code
 
 ### API Changes
 
