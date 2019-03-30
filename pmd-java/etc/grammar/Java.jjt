@@ -1971,7 +1971,8 @@ Dims:
 void IntersectionType(boolean inCast) #IntersectionType(isIntersection):
 {boolean isIntersection=false;}
 {
-  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} ClassOrInterfaceType() )*
+  // The first type may be annotated, but the annotations are handled outside
+  Type() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} ClassOrInterfaceType() )*
 }
 
 void AnnotationList() #void:
@@ -2424,13 +2425,13 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
 {}
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
-/*
- * TODO This is really ugly... we are repeating the CastExpression lookahead and full expression...
- * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
- * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwise)
- */
-| LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
-| LOOKAHEAD("(" IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) CastExpression()
+ // There's no separate production for CastExpression, because that would force
+ // us to repeat the lookahead
+ // Those lookaheads are expensive, but comparatively insignificant in a real run
+| LOOKAHEAD("(" TypeAnnotationList() PrimitiveType() ")")
+    ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
+| LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus() )
+    ("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
 | PostfixExpression()
 | SwitchExpression()
 }
@@ -2439,15 +2440,6 @@ void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
 {}
 {
   PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
-}
-
-void CastExpression() :
-{}
-{
-  LOOKAHEAD(
-    "(" AnnotationList() PrimitiveType() ")"
-  ) "(" AnnotatedType() ")" UnaryExpression()
-| "(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()
 }
 
 

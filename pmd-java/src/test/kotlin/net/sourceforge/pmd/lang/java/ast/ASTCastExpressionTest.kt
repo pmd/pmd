@@ -45,7 +45,6 @@ class ASTCastExpressionTest : ParserTestSpec({
 
             it::getCastType shouldBe child<ASTIntersectionType> {
 
-
                 child<ASTClassOrInterfaceType> {
                     it::getTypeImage shouldBe "Foo"
                 }
