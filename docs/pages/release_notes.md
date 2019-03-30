@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Call For Logo
+
+We are still searching for a new logo for PMD for the next major release.
+
+Learn more about how to participate on [github issue 1663](https://github.com/pmd/pmd/issues/1663).
+
 #### Quickstart Ruleset for Apex
 
 PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
