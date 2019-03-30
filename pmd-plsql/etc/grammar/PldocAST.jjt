@@ -1537,10 +1537,10 @@ ASTSimpleExpression SimpleExpression() :
  |
     // Named Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/named-cursor-attribute.html#GUID-CD8D8415-FF19-4D81-99BA-7825FD40CC96
     LOOKAHEAD(3)
-        Column() { sb.append(token.image); } "%" ( LOOKAHEAD({getToken(1).image.equalsIgnoreCase("isopen")}) KEYWORD("ISOPEN")
-                     | LOOKAHEAD({getToken(1).image.equalsIgnoreCase("found")}) KEYWORD("FOUND")
-                     | LOOKAHEAD({getToken(1).image.equalsIgnoreCase("notfound")}) KEYWORD("NOTFOUND")
-                     | LOOKAHEAD({getToken(1).image.equalsIgnoreCase("rowcount")}) KEYWORD("ROWCOUNT")
+        Column() { sb.append(token.image); } "%" ( LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
+                     | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
+                     | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
+                     | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
                      ) { sb.append('%').append(token.image); }
  |
     LOOKAHEAD(2)
