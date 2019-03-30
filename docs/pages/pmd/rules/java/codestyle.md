@@ -2527,11 +2527,15 @@ that are misplaced (not making groups of 3 digits) are reported.
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
    satisfies not(
-                  string-length($num) <= $acceptableDecimalLength
-                    and not(contains($num,"_"))
-                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                  ( contains($num, ".")
+                    and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
+                    and string-length(substring-after($num, ".")) <= $acceptableDecimalLength
+                    or string-length($num) <= $acceptableDecimalLength
+                  )
+                  and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*(\.([0-9]{3}_)*[0-9]{1,3})?$")
                 )
  ]
 ```
