@@ -96,6 +96,7 @@ The designer will still be shipped with PMD's binaries.
 *   java-bestpractices
     *   [#1701](https://github.com/pmd/pmd/issues/1701): \[java] UseTryWithResources does not handle multiple argument close methods
 *   java-codestyle
+    *   [#1527](https://github.com/pmd/pmd/issues/1527): \[java] UseUnderscoresInNumericLiterals false positive on floating point numbers
     *   [#1674](https://github.com/pmd/pmd/issues/1674): \[java] documentation of CommentDefaultAccessModifier is wrong
 *   plsql
     *   [#1510](https://github.com/pmd/pmd/issues/1510): \[plsql] Support XMLTABLE functions
