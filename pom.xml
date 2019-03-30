@@ -326,7 +326,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <configuration>
-                        <releaseProfiles>pmd-release</releaseProfiles>
+                        <releaseProfiles>pmd-release,sign</releaseProfiles>
                         <pushChanges>true</pushChanges>
                         <localCheckout>true</localCheckout>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -1017,6 +1017,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <properties>
                 <pmd.website.baseurl>https://pmd.github.io/pmd-${project.version}</pmd.website.baseurl>
             </properties>
+        </profile>
+        <profile>
+            <id>sign</id>
             <build>
                 <plugins>
                     <plugin>
