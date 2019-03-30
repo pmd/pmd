@@ -468,10 +468,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
             if (rule.getPropertyDescriptor(prop.name()) == null) {
                 rule.definePropertyDescriptor(prop); // Property descriptors are immutable, and can be freely shared
             }
-            
-            rule.setProperty((PropertyDescriptor<Object>) prop, getProperty((PropertyDescriptor<Object>) prop));
+
+            if (isPropertyOverridden(prop)) {
+                rule.setProperty((PropertyDescriptor<Object>) prop, getProperty((PropertyDescriptor<Object>) prop));
+            }
         }
-        
         return rule;
     }
 }
