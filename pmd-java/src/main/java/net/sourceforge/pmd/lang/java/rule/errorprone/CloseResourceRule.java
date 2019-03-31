@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -130,16 +131,19 @@ public class CloseResourceRule extends AbstractJavaRule {
         for (ASTLocalVariableDeclaration var : vars) {
             ASTType type = var.getTypeNode();
 
-            if (type instanceof ASTClassOrInterfaceType) {
-                ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) type;
+            if (type != null && type.jjtGetChild(0) instanceof ASTReferenceType) {
+                ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
+                if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
 
-                if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                    || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
-                    && !clazz.isReferenceToClassSameCompilationUnit()
-                    || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
+                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
+                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
+                                    && !clazz.isReferenceToClassSameCompilationUnit()
+                            || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
 
-                    ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                    ids.add(id);
+                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
+                        ids.add(id);
+                    }
                 }
             }
         }
@@ -319,7 +323,9 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         // if all is not well, complain
         if (!closed) {
-            ASTType clazz = var.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            ASTType type = var.getFirstChildOfType(ASTType.class);
+            ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
+            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
             addViolation(data, id, clazz.getImage());
         }
     }

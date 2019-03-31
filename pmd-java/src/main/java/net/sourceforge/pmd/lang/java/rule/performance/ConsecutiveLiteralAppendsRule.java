@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -352,9 +353,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     /**
      * Determine which SwitchLabel we belong to inside a switch
      *
-     * @param parentNode The parent node we're looking at
-     * @param lastNode   The last node processed
-     *
+     * @param parentNode
+     *            The parent node we're looking at
+     * @param lastNode
+     *            The last node processed
      * @return The parent node for the switch statement
      */
     private Node getSwitchParent(Node parentNode, Node lastNode) {
@@ -379,7 +381,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
      */
     private void checkForViolation(Node node, Object data, int concurrentCount) {
         if (concurrentCount > threshold) {
-            String[] param = {String.valueOf(concurrentCount)};
+            String[] param = { String.valueOf(concurrentCount) };
             addViolation(data, node, param);
         }
     }
@@ -395,10 +397,11 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     private static boolean isStringBuilderOrBuffer(ASTVariableDeclaratorId node) {
         if (node.getType() != null) {
             return TypeHelper.isEither(node, StringBuffer.class, StringBuilder.class);
-        } else if (!node.isTypeInferred()) {
-            return TypeHelper.isEither(node.getTypeNode(), StringBuffer.class, StringBuilder.class);
-        } else {
+        }
+        Node nn = node.getTypeNameNode();
+        if (nn == null || nn.jjtGetNumChildren() == 0) {
             return false;
         }
+        return TypeHelper.isEither((TypeNode) nn.jjtGetChild(0), StringBuffer.class, StringBuilder.class);
     }
 }

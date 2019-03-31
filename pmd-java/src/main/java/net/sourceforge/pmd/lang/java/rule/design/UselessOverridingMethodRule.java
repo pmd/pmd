@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -76,9 +76,13 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?
     private boolean isMethodType(ASTMethodDeclaration node, String methodType) {
-        return Optional.ofNullable(node.getResultType().getTypeNode())
-                       .map(it -> it.isClassOrInterfaceType() && it.getTypeImage().equals(methodType))
-                       .orElse(false);
+        boolean result = false;
+        ASTResultType type = node.getResultType();
+        if (type != null) {
+            result = type.hasDescendantMatchingXPath(
+                    "./Type/ReferenceType/ClassOrInterfaceType[@Image = '" + methodType + "']");
+        }
+        return result;
     }
 
     // TODO: this method should be externalize into an utility class, shouldn't it ?

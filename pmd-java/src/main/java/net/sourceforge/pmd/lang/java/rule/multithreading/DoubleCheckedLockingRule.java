@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
@@ -91,10 +91,12 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
+        if (node.getResultType().isVoid()) {
+            return super.visit(node, data);
+        }
 
-        boolean isVoidOrPrimitive =
-            Optional.ofNullable(node.getResultType().getTypeNode()).map(ASTType::isPrimitiveType).orElse(true);
-        if (isVoidOrPrimitive) {
+        ASTType typeNode = (ASTType) node.getResultType().jjtGetChild(0);
+        if (typeNode.jjtGetNumChildren() == 0 || !(typeNode.jjtGetChild(0) instanceof ASTReferenceType)) {
             return super.visit(node, data);
         }
 

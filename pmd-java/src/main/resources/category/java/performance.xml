@@ -215,17 +215,17 @@ adverse impacts on performance.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/PrimitiveType[@Image = 'short']
+//FieldDeclaration/Type/PrimitiveType[@Image = 'short']
 |
 //ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
-    /MethodDeclaration/ResultType/PrimitiveType[@Image = 'short']
+    /MethodDeclaration/ResultType/Type/PrimitiveType[@Image = 'short']
 |
 //ClassOrInterfaceBodyDeclaration[not(Annotation/MarkerAnnotation/Name[pmd-java:typeIs('java.lang.Override')])]
-    /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/PrimitiveType[@Image = 'short']
+    /MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/Type/PrimitiveType[@Image = 'short']
 |
-//LocalVariableDeclaration/PrimitiveType[@Image = 'short']
+//LocalVariableDeclaration/Type/PrimitiveType[@Image = 'short']
 |
-//AnnotationMethodDeclaration/PrimitiveType[@Image = 'short']
+//AnnotationMethodDeclaration/Type/PrimitiveType[@Image = 'short']
 ]]>
                 </value>
             </property>
@@ -855,7 +855,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
    //StatementExpression[
     PrimaryExpression/PrimaryPrefix/Name[
      substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
-      ./ClassOrInterfaceType[
+      ./Type//ClassOrInterfaceType[
        @Image = 'Collection' or 
        @Image = 'List' or @Image='ArrayList'
       ]

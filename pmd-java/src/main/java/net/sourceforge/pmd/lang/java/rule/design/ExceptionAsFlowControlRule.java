@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -32,10 +33,11 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRule {
             List<ASTCatchStatement> list = parent.findDescendantsOfType(ASTCatchStatement.class);
             for (ASTCatchStatement catchStmt : list) {
                 ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
-                ASTType type = fp.getTypeNode();
+                ASTType type = fp.getFirstDescendantOfType(ASTType.class);
+                ASTClassOrInterfaceType name = type.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                 if (node.getFirstClassOrInterfaceTypeImage() != null
-                        && node.getFirstClassOrInterfaceTypeImage().equals(type.getTypeImage())) {
-                    addViolation(data, type);
+                        && node.getFirstClassOrInterfaceTypeImage().equals(name.getImage())) {
+                    addViolation(data, name);
                 }
             }
         }

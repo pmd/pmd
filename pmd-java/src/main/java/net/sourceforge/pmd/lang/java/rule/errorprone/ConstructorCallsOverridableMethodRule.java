@@ -1029,9 +1029,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (parameters != null) {
             for (ASTFormalParameter p : parameters) {
                 ASTType type = p.getFirstChildOfType(ASTType.class);
-                if (type instanceof ASTPrimitiveType) {
-                    parameterTypes.add(type.getImage());
-                } else if (type instanceof ASTReferenceType) {
+                if (type.jjtGetChild(0) instanceof ASTPrimitiveType) {
+                    parameterTypes.add(type.jjtGetChild(0).getImage());
+                } else if (type.jjtGetChild(0) instanceof ASTReferenceType) {
                     parameterTypes.add("ref");
                 } else {
                     parameterTypes.add("<unkown>");

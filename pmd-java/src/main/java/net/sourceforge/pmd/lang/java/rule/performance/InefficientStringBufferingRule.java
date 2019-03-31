@@ -13,7 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -105,8 +107,14 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
 
     private boolean isStringType(ASTName name) {
         ASTType type = getTypeNode(name);
-        if (type instanceof ASTClassOrInterfaceType) {
-            return TypeHelper.isA(type, "java.lang.String");
+        if (type != null) {
+            List<ASTClassOrInterfaceType> types = type.findDescendantsOfType(ASTClassOrInterfaceType.class);
+            if (!types.isEmpty()) {
+                ASTClassOrInterfaceType typeDeclaration = types.get(0);
+                if (String.class == typeDeclaration.getType() || "String".equals(typeDeclaration.getImage())) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -118,7 +126,14 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
 
     private ASTType getTypeNode(ASTName name) {
         if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-            return ((VariableNameDeclaration) name.getNameDeclaration()).getDeclaratorId().getTypeNode();
+            VariableNameDeclaration vnd = (VariableNameDeclaration) name.getNameDeclaration();
+            if (vnd.getAccessNodeParent() instanceof ASTLocalVariableDeclaration) {
+                ASTLocalVariableDeclaration l = (ASTLocalVariableDeclaration) vnd.getAccessNodeParent();
+                return l.getTypeNode();
+            } else if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
+                ASTFormalParameter p = (ASTFormalParameter) vnd.getAccessNodeParent();
+                return p.getTypeNode();
+            }
         }
         return null;
     }

@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
-import java.util.Optional;
-
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
@@ -20,15 +22,16 @@ public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
          * [not(FormalParameters/*)]]]
          */
 
-        boolean isIntReturn =
-            Optional.ofNullable(node.getResultType().getTypeNode())
-                    .map(t -> t.isPrimitiveType() && t.getTypeImage().equals("int"))
-                    .orElse(false);
-
-        String name = node.getMethodName();
-        if ("hashcode".equalsIgnoreCase(name) && (!"hashCode".equals(name) || !isIntReturn)) {
-            addViolation(data, node);
-            return data;
+        ASTResultType type = node.getResultType();
+        ASTMethodDeclarator decl = node.getFirstChildOfType(ASTMethodDeclarator.class);
+        String name = decl.getImage();
+        if ("hashcode".equalsIgnoreCase(name) && !"hashCode".equals(name)
+                && decl.jjtGetChild(0).jjtGetNumChildren() == 0 && type.jjtGetNumChildren() != 0) {
+            Node t = type.jjtGetChild(0).jjtGetChild(0);
+            if (t instanceof ASTPrimitiveType && "int".equals(t.getImage())) {
+                addViolation(data, node);
+                return data;
+            }
         }
         return super.visit(node, data);
     }

@@ -12,7 +12,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
@@ -78,22 +80,23 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                                 // Note: Not catching NumberFormatException, as
                                 // it shouldn't be happening on valid source
                                 // code.
-//                                Number value = -1;
-//                                if (literal.isIntLiteral()) {
-//                                    value = literal.getValueAsInt();
-//                                } else if (literal.isLongLiteral()) {
-//                                    value = literal.getValueAsLong();
-//                                } else if (literal.isFloatLiteral()) {
-//                                    value = literal.getValueAsFloat();
-//                                } else if (literal.isDoubleLiteral()) {
-//                                    value = literal.getValueAsDouble();
-//                                } else if (literal.isCharLiteral()) {
-//                                    value = (int) literal.getImage().charAt(1);
-//                                }
+                                Number value = -1;
+                                // REVERT ME
+                                // if (literal.isIntLiteral()) {
+                                //     value = literal.getValueAsInt();
+                                // } else if (literal.isLongLiteral()) {
+                                //     value = literal.getValueAsLong();
+                                // } else if (literal.isFloatLiteral()) {
+                                //     value = literal.getValueAsFloat();
+                                // } else if (literal.isDoubleLiteral()) {
+                                //     value = literal.getValueAsDouble();
+                                // } else if (literal.isCharLiteral()) {
+                                //     value = (int) literal.getImage().charAt(1);
+                                // }
 
-//                                if (value.doubleValue() == 0) {
-//                                    addViolation(data, variableDeclarator);
-//                                }
+                                if (value.doubleValue() == 0) {
+                                    addViolation(data, variableDeclarator);
+                                }
                             }
                         }
                     }
@@ -128,9 +131,14 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
      *         otherwise.
      */
     private boolean isRef(ASTFieldDeclaration fieldDeclaration, ASTVariableDeclarator variableDeclarator) {
-        return fieldDeclaration.getTypeNode().isReferenceType()
-            // Maybe primitive array
-            || variableDeclarator.getVariableId().getArrayDepth() > 0;
+        Node type = fieldDeclaration.jjtGetChild(0).jjtGetChild(0);
+        if (type instanceof ASTReferenceType) {
+            // Reference type, array or otherwise
+            return true;
+        } else {
+            // Primitive array?
+            return ((ASTVariableDeclaratorId) variableDeclarator.jjtGetChild(0)).isArray();
+        }
     }
 
     private void addViolation(Object data, ASTVariableDeclarator variableDeclarator) {

@@ -64,23 +64,23 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
         rules.put("<=", Arrays.asList("0"));
         return rules;
     }
-//
-//    @Override
-//    public Object visit(ASTPrimarySuffix node, Object data) {
-//        if (node.getImage() != null && node.getImage().endsWith("size")) {
-//
-//            ASTClassOrInterfaceType type = getTypeOfPrimaryPrefix(node);
-//            if (type == null) {
-//                type = getTypeOfMethodCall(node);
-//            }
-//
-//            if (type != null && CollectionUtil.isCollectionType(type.getType(), true)) {
-//                Node expr = node.jjtGetParent().jjtGetParent();
-//                checkNodeAndReport(data, node, expr);
-//            }
-//        }
-//        return data;
-//    }
+
+    @Override
+    public Object visit(ASTPrimarySuffix node, Object data) {
+        if (node.getImage() != null && node.getImage().endsWith("size")) {
+
+            ASTClassOrInterfaceType type = getTypeOfPrimaryPrefix(node);
+            if (type == null) {
+                type = getTypeOfMethodCall(node);
+            }
+
+            if (type != null && CollectionUtil.isCollectionType(type.getType(), true)) {
+                Node expr = node.jjtGetParent().jjtGetParent();
+                checkNodeAndReport(data, node, expr);
+            }
+        }
+        return data;
+    }
 
     private ASTClassOrInterfaceType getTypeOfMethodCall(ASTPrimarySuffix node) {
         ASTClassOrInterfaceType type = null;

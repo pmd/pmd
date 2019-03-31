@@ -37,23 +37,23 @@ public class AvoidCallingFinalizeRule extends AbstractJavaRule {
         addViolation(ctx, name);
         return ctx;
     }
-//
-//    @Override
-//    public Object visit(ASTPrimaryPrefix pp, Object ctx) {
-//        List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
-//        ASTPrimarySuffix firstSuffix = null;
-//        if (!primarySuffixes.isEmpty()) {
-//            firstSuffix = primarySuffixes.get(0);
-//        }
-//        if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
-//            return super.visit(pp, ctx);
-//        }
-//        if (!checkForViolation(pp)) {
-//            return super.visit(pp, ctx);
-//        }
-//        addViolation(ctx, pp);
-//        return super.visit(pp, ctx);
-//    }
+
+    @Override
+    public Object visit(ASTPrimaryPrefix pp, Object ctx) {
+        List<ASTPrimarySuffix> primarySuffixes = pp.jjtGetParent().findChildrenOfType(ASTPrimarySuffix.class);
+        ASTPrimarySuffix firstSuffix = null;
+        if (!primarySuffixes.isEmpty()) {
+            firstSuffix = primarySuffixes.get(0);
+        }
+        if (firstSuffix == null || firstSuffix.getImage() == null || !firstSuffix.getImage().endsWith("finalize")) {
+            return super.visit(pp, ctx);
+        }
+        if (!checkForViolation(pp)) {
+            return super.visit(pp, ctx);
+        }
+        addViolation(ctx, pp);
+        return super.visit(pp, ctx);
+    }
 
     private boolean checkForViolation(ScopedNode node) {
         MethodScope meth = node.getScope().getEnclosingScope(MethodScope.class);

@@ -49,17 +49,17 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
         usingPrimitiveWrapperAllocation = true;
         return super.visit(node, data);
     }
-//
-//    @Override
-//    public Object visit(ASTPrimarySuffix node, Object data) {
-//        if (inPrimaryExpressionContext && usingPrimitiveWrapperAllocation) {
-//            if (node.hasImageEqualTo("toString")) {
-//                if (node.jjtGetParent() == primary) {
-//                    addViolation(data, node);
-//                }
-//            }
-//        }
-//        return super.visit(node, data);
-//    }
+
+    @Override
+    public Object visit(ASTPrimarySuffix node, Object data) {
+        if (inPrimaryExpressionContext && usingPrimitiveWrapperAllocation) {
+            if (node.hasImageEqualTo("toString")) {
+                if (node.jjtGetParent() == primary) {
+                    addViolation(data, node);
+                }
+            }
+        }
+        return super.visit(node, data);
+    }
 
 }

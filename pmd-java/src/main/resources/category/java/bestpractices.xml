@@ -250,7 +250,7 @@ if held within objects with long lifetimes.
             <property name="xpath">
                 <value>
 <![CDATA[
-//FieldDeclaration/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
+//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer' or @Image = 'StringBuilder']
 ]]>
                 </value>
             </property>
@@ -494,7 +494,7 @@ through the @RunWith(Suite.class) annotation.
                 <value>
 <![CDATA[
 //ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
-[MethodDeclaration/ResultType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
 [not(MethodDeclaration/Block//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ]]>
                 </value>
@@ -1075,7 +1075,6 @@ public class Foo implements Enumeration {
     <rule name="ReplaceHashtableWithMap"
           language="java"
           since="3.4"
-          typeResolution="true"
           message="Consider replacing this Hashtable with the newer java.util.Map"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacehashtablewithmap">
@@ -1084,9 +1083,8 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
-                <value>//VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Hashtable')]</value>
+                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']</value>
             </property>
         </properties>
         <example>
@@ -1103,7 +1101,6 @@ public class Foo {
     <rule name="ReplaceVectorWithList"
           language="java"
           since="3.4"
-          typeResolution="true"
           message="Consider replacing this Vector with the newer java.util.List"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#replacevectorwithlist">
@@ -1112,9 +1109,8 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
         </description>
         <priority>3</priority>
         <properties>
-            <property name="version" value="2.0" />
             <property name="xpath">
-                <value>//VariableDeclaratorId[pmd-java:typeIsExactly('java.util.Vector')]</value>
+                <value>//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']</value>
             </property>
         </properties>
         <example>
@@ -1551,7 +1547,7 @@ preserved.
 ][
     pmd-java:typeIs('java.lang.AutoCloseable')
     or
-    ../../PrimarySuffix/Arguments//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ]]>
                 </value>
@@ -1589,7 +1585,6 @@ public class TryWithResources {
           language="java"
           minimumLanguageVersion="1.5"
           since="5.0"
-          typeResolution="true"
           message="Consider using varargs for methods or constructors which take an array the last parameter."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usevarargs">
@@ -1606,20 +1601,19 @@ having to deal with the creation of an array.
 <![CDATA[
 //FormalParameters/FormalParameter
     [position()=last()]
-    [@Varargs=false()]
     [VariableDeclaratorId/@ArrayType=true()]
-    (: the node is nested within an ArrayType unless the [] are on the id :)
-    [not (.//PrimitiveType[@Image='byte'])]
-    [not (.//ClassOrInterfaceType[@Image='Byte'])]
-    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation[@AnnotationName = 'Override'])]
-    (: not a main method :)
+    [@Varargs=false()]
+    [not (./Type[@ArrayType=true()]/ReferenceType[PrimitiveType[@Image='byte']])]
+    [not (./Type/ReferenceType[ClassOrInterfaceType[@Image='Byte']])]
+    [not (./Type/PrimitiveType[@Image='byte'])]
+    [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
     [not(
-        ancestor::MethodDeclaration[1]
+        ancestor::MethodDeclaration
             [@Public=true() and @Static=true()]
-            [ResultType[@Void=true()]]
-            [@MethodName='main']
-	    and ..[@ParameterCount=1]
-        and VariableDeclaratorId[pmd-java:typeIs('java.lang.String[]')]
+            [child::ResultType[@Void=true()]] and
+        ancestor::MethodDeclarator[@Image='main'] and
+        ..[@ParameterCount=1] and
+        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
     )]
 ]]>
                 </value>

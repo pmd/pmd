@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
@@ -49,7 +50,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         ASTClassOrInterfaceType type = null;
         if (!node.isTypeInferred()) {
-            type = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            type = node.getFirstChildOfType(ASTType.class).getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         }
         if (type != null && (type.getType() != null && "java.sql.ResultSet".equals(type.getType().getName())
                 || "ResultSet".equals(type.getImage()))) {
