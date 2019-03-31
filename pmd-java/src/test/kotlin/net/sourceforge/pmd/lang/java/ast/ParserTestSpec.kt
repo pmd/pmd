@@ -123,6 +123,15 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
                     this@should kotlintestShould matcher
                 }
             }
+
+            infix fun String.should(matcher: Matcher<String>) {
+                containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
+                    this@should kotlintestShould matcher
+                }
+            }
+
+            infix fun String.shouldNot(matcher: Matcher<String>) =
+                    should(matcher.invert())
         }
     }
 }

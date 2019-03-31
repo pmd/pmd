@@ -2,6 +2,8 @@ package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
+import io.kotlintest.Matcher
+import io.kotlintest.Result
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
@@ -189,9 +191,27 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
             ignoreChildren: Boolean = false,
             noinline nodeSpec: NodeSpec<N>) = makeMatcher(EnclosedDeclarationParsingCtx, ignoreChildren, nodeSpec)
 
-    fun notParseIn(nodeParsingCtx:NodeParsingCtx<*>): Assertions<String> = {
+    fun notParseIn(nodeParsingCtx: NodeParsingCtx<*>): Assertions<String> = {
         shouldThrow<ParseException> {
             nodeParsingCtx.parseNode(it, this)
+        }
+    }
+
+    fun parseIn(nodeParsingCtx: NodeParsingCtx<*>) = object : Matcher<String> {
+
+        override fun test(value: String): Result {
+            val (pass, e) = try {
+                nodeParsingCtx.parseNode(value, this@ParserTestCtx)
+                Pair(true, null)
+            } catch (e: ParseException) {
+                Pair(false, e)
+            }
+
+            return Result(pass,
+                    "Expected '$value' to parse in $nodeParsingCtx, got $e",
+                    "Expected '$value' not to parse in ${nodeParsingCtx.toString().addArticle()}"
+            )
+
         }
     }
 
@@ -305,6 +325,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                     parseNode(construct, ctx).findFirstNodeOnStraightLine(N::class.java)
                     ?: throw NoSuchElementException("No node of type ${N::class.java.simpleName} in the given $constructName:\n\t$construct")
 
+            override fun toString(): String = "$constructName context"
         }
 
 

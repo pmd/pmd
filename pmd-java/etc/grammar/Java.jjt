@@ -1800,7 +1800,7 @@ void TypeParameter():
 void TypeBound():
 {}
 {
-   "extends" IntersectionType(false)
+   "extends" TypeAnnotationList() IntersectionType(false)
 }
 
 void ClassOrInterfaceBody():

@@ -9,6 +9,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 
 class ASTLambdaExpressionTest : ParserTestSpec({
@@ -21,9 +23,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             it::getParameters shouldBe child {
                 child<ASTLambdaParameter> {
-                    child<ASTVariableDeclaratorId> {
-
-                    }
+                    variableId("a")
                 }
             }
 
@@ -37,14 +37,11 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             it::getParameters shouldBe child {
                 child<ASTLambdaParameter> {
-                    child<ASTVariableDeclaratorId> {
+                    variableId("a")
 
-                    }
                 }
                 child<ASTLambdaParameter> {
-                    child<ASTVariableDeclaratorId> {
-
-                    }
+                    variableId("b")
                 }
             }
 
@@ -58,14 +55,11 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             it::getParameters shouldBe child {
                 child<ASTLambdaParameter> {
-                    child<ASTVariableDeclaratorId> {
+                    variableId("a")
 
-                    }
                 }
                 child<ASTLambdaParameter> {
-                    child<ASTVariableDeclaratorId> {
-
-                    }
+                    variableId("b")
                 }
             }
 
@@ -83,13 +77,12 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
                     it::getTypeNode shouldBe child<ASTPrimitiveType> {}
 
-                    child<ASTVariableDeclaratorId> {}
+                    variableId("a")
                 }
                 child<ASTLambdaParameter> {
-                    child<ASTAnnotation> {}
+                    annotation()
                     it::getTypeNode shouldBe child<ASTClassOrInterfaceType>(ignoreChildren = true) {}
-
-                    child<ASTVariableDeclaratorId> {}
+                    variableId("b")
                 }
             }
 
@@ -99,7 +92,16 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
     }
 
-    parserTest("Changing operators should push a new node") {
+    parserTest("Negative lambda contexts") {
+
+        "a -> {}" shouldNot parseIn(StatementParsingCtx)
+//        "a -> {} + 4" shouldNot parseIn(ExpressionParsingCtx)
+
+    }
+
+    parserTest("Positive lambda contexts") {
+
+        "(a -> {})" should parseIn(ExpressionParsingCtx)
 
     }
 
