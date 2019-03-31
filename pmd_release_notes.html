@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.13.0</li>
+    <li class="sidebarTitle">PMD 6.14.0</li>
     
     
     
@@ -1278,195 +1278,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-march-2019---6130">??-March-2019 - 6.13.0</h2>
+  <h2 id="-april-2019---6140">??-April-2019 - 6.14.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.13.0.</p>
+<p>The PMD team is pleased to announce PMD 6.14.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="call-for-logo">Call For Logo</h4>
-
-<p>We are still searching for a new logo for PMD for the next major release.</p>
-
-<p>Learn more about how to participate on <a href="https://github.com/pmd/pmd/issues/1663">github issue 1663</a>.</p>
-
-<h4 id="java-12-support">Java 12 Support</h4>
-
-<p>This release of PMD brings support for Java 12. PMD can parse the new <a href="http://openjdk.java.net/jeps/325">Switch Expressions</a>
-and resolve the type of such an expression.</p>
-
-<p>Note: The Switch Expressions are a preview language feature of OpenJDK 12 and are not enabled by default. In order to
-analyze a project with PMD that uses these language features, you’ll need to enable it via the new environment
-variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code>:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-./run.sh pmd ...
-</code></pre></div></div>
-
-<h4 id="quickstart-ruleset-for-apex">Quickstart Ruleset for Apex</h4>
-
-<p>PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
-get your custom ruleset started. You can reference it with <code class="highlighter-rouge">rulesets/apex/quickstart.xml</code>.
-You are strongly encouraged to <a href="https://pmd.github.io/pmd-6.12.0/pmd_userdocs_making_rulesets.html">create your own ruleset</a>
-though.</p>
-
-<p>The quickstart ruleset has the intention, to be useful out-of-the-box for many projects. Therefore it
-references only rules, that are most likely to apply everywhere.</p>
-
-<p>Any feedback would be greatly appreciated.</p>
-
-<h4 id="pmd-designer">PMD Designer</h4>
-
-<p>The rule designer’s codebase has been moved out of the main repository and
-will be developed at <a href="https://github.com/pmd/pmd-designer">pmd/pmd-designer</a>
-from now on. The maven coordinates will stay the same for the time being.
-The designer will still be shipped with PMD’s binaries.</p>
-
-<h4 id="improved-apex-support">Improved Apex Support</h4>
-
-<ul>
-  <li>Many AST nodes now expose more information which makes it easier to write XPath-based rules for Apex. Here are
-some examples:
-    <ul>
-      <li><code class="highlighter-rouge">Annotation[@Resolved = false()]</code> finds unsupported annotations.</li>
-      <li><code class="highlighter-rouge">AnnotationParameter[@Name='RestResource'][@Value='/myurl']</code> gives access to
-annotation parameters.</li>
-      <li><code class="highlighter-rouge">CatchBlockStatement[@ExceptionType='Exception'][@VariableName='e']</code> finds catch
-block for specific exception types.</li>
-      <li><code class="highlighter-rouge">Field[@Type='String']</code> find all String fields, <code class="highlighter-rouge">Field[string-length(@Name) &lt; 5]</code>
-finds all fields with short names and <code class="highlighter-rouge">Field[@Value='a']</code> find alls fields, that are
-initialized with a specific value.</li>
-      <li><code class="highlighter-rouge">LiteralExpression[@String = true()]</code> finds all String literals. There are attributes
-for each type: <code class="highlighter-rouge">@Boolean</code>, <code class="highlighter-rouge">@Integer</code>, <code class="highlighter-rouge">@Double</code>, <code class="highlighter-rouge">@Long</code>, <code class="highlighter-rouge">@Decimal</code>, <code class="highlighter-rouge">@Null</code>.</li>
-      <li><code class="highlighter-rouge">Method[@Constructor = true()]</code> selects all constructors. <code class="highlighter-rouge">Method[@ReturnType = 'String']</code>
-selects all methods that return a String.</li>
-      <li>The <code class="highlighter-rouge">ModifierNode</code> node has a couple of attributes to check for the existence of specific
-modifiers: <code class="highlighter-rouge">@Test</code>, <code class="highlighter-rouge">@TestOrTestSetup</code>, <code class="highlighter-rouge">@WithSharing</code>, <code class="highlighter-rouge">@WithoutSharing</code>, <code class="highlighter-rouge">@InheritedSharing</code>,
-<code class="highlighter-rouge">@WebService</code>, <code class="highlighter-rouge">@Global</code>, <code class="highlighter-rouge">@Override</code>.</li>
-      <li>Many nodes now expose their type. E.g. with <code class="highlighter-rouge">Parameter[@Type='Integer']</code> you can find all
-method parameters of type Integer. The same attribute <code class="highlighter-rouge">Type</code> exists as well for:
-<code class="highlighter-rouge">NewObjectExpression</code>, <code class="highlighter-rouge">Property</code>, <code class="highlighter-rouge">VariableDeclaration</code>.</li>
-      <li><code class="highlighter-rouge">VariableExpression[@Image='i']</code> finds all variable usages of the variable “i”.</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures"><code class="highlighter-rouge">AvoidUncheckedExceptionsInSignatures</code></a> (<code class="highlighter-rouge">java-design</code>) finds methods or constructors
-that declare unchecked exceptions in their <code class="highlighter-rouge">throws</code> clause. This forces the caller to handle the exception,
-even though it is a runtime exception.</p>
-  </li>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_errorprone.html#detachedtestcase"><code class="highlighter-rouge">DetachedTestCase</code></a> (<code class="highlighter-rouge">java-errorprone</code>) searches for public
-methods in test classes, which are not annotated with <code class="highlighter-rouge">@Test</code>. These methods might be test cases where
-the annotation has been forgotten. Because of that those test cases are never executed.</p>
-  </li>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_bestpractices.html#whileloopwithliteralboolean"><code class="highlighter-rouge">WhileLoopWithLiteralBoolean</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) finds
-Do-While-Loops and While-Loops that can be simplified since they use simply <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code> as their
-loop condition.</p>
-  </li>
-  <li>
-    <p>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage"><code class="highlighter-rouge">ApexAssertionsShouldIncludeMessage</code></a> (<code class="highlighter-rouge">apex-bestpractices</code>)
-searches for assertions in unit tests and checks, whether they use a message argument.</p>
-  </li>
-  <li>
-    <p>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation"><code class="highlighter-rouge">ApexUnitTestMethodShouldHaveIsTestAnnotation</code></a> (<code class="highlighter-rouge">apex-bestpractices</code>)
-searches for methods in test classes, which are missing the <code class="highlighter-rouge">@IsTest</code> annotation.</p>
-  </li>
-  <li>
-    <p>The new PLSQL rule <a href="pmd_rules_plsql_codestyle.html#avoidtabcharacter"><code class="highlighter-rouge">AvoidTabCharacter</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>) checks, that there are
-no tab characters (“\t”) in the source file.</p>
-  </li>
-  <li>
-    <p>The new PLSQL rule <a href="pmd_rules_plsql_codestyle.html#linelength"><code class="highlighter-rouge">LineLength</code></a> (<code class="highlighter-rouge">plsql-codestyle</code>) helps to enforce a maximum
-line length.</p>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1721">#1721</a>: [doc] Documentation provides an invalid property configuration example</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1537">#1537</a>: [java] Java 12 support</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1701">#1701</a>: [java] UseTryWithResources does not handle multiple argument close methods</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1527">#1527</a>: [java] UseUnderscoresInNumericLiterals false positive on floating point numbers</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1674">#1674</a>: [java] documentation of CommentDefaultAccessModifier is wrong</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1570">#1570</a>: [java] AvoidDuplicateLiterals warning about deprecated separator property when not used</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1510">#1510</a>: [plsql] Support XMLTABLE functions</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1716">#1716</a>: [plsql] Support access to whole plsql code</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1731">#1731</a>: [pslql] ParseException when parsing ELSIF</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1733">#1733</a>: [plsql] % not supported in “TestSearch%notfound”</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1734">#1734</a>: [plsql] TooManyMethods false-negative</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1735">#1735</a>: [plsql] False-negatives for TO_DATE_TO_CHAR, TO_DATEWithoutDateFormat, TO_TIMESTAMPWithoutDateFormat</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="command-line-interface">Command Line Interface</h4>
-
-<p>The start scripts <code class="highlighter-rouge">run.sh</code>, <code class="highlighter-rouge">pmd.bat</code> and <code class="highlighter-rouge">cpd.bat</code> support the new environment variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code>.
-This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. <code class="highlighter-rouge">PMD_JAVA_OPTS=-Xmx512m</code>)
-or enable preview language features (e.g. <code class="highlighter-rouge">PMD_JAVA_OPTS=--enable-preview</code>).</p>
-
-<p>The previously available variables such as <code class="highlighter-rouge">OPTS</code> or <code class="highlighter-rouge">HEAPSIZE</code> are deprecated and will be removed with PMD 7.0.0.</p>
-
-<h4 id="deprecated-api">Deprecated API</h4>
-
-<ul>
-  <li>
-    <p><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.13.0/net/sourceforge/pmd/renderers/CodeClimateRule.html#"><code class="highlighter-rouge">CodeClimateRule</code></a> is deprecated in 7.0.0 because it was unused for 2 years and
-created an unwanted dependency.
-Properties “cc_categories”, “cc_remediation_points_multiplier”, “cc_block_highlighting” will also be removed.
-See <a href="https://github.com/pmd/pmd/pull/1702">#1702</a> for more.</p>
-  </li>
-  <li>
-    <p>The Apex ruleset <code class="highlighter-rouge">rulesets/apex/ruleset.xml</code> has been deprecated and will be removed in 7.0.0. Please use the new
-quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml</code> instead.</p>
-  </li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1694">#1694</a>: [apex] New rules for test method and assert statements - <a href="https://github.com/triandicAnt">triandicAnt</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1697">#1697</a>: [doc] Update CPD documentation - <a href="https://github.com/matifraga">Matías Fraga</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1704">#1704</a>: [java] Added AvoidUncheckedExceptionsInSignatures Rule - <a href="https://github.com/pamidi99">Bhanu Prakash Pamidi</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1706">#1706</a>: [java] Add DetachedTestCase rule - <a href="https://github.com/davidburstromspotify">David Burström</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1709">#1709</a>: [java] Detect while loops with literal booleans conditions - <a href="https://github.com/davidburstromspotify">David Burström</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1717">#1717</a>: [java] Fix false positive in useTryWithResources when using a custom close method with multiple arguments - <a href="https://github.com/jainrish">Rishabh Jain</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1724">#1724</a>: [doc] Correct property override example - <a href="https://github.com/FWDekker">Felix W. Dekker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1737">#1737</a>: [java] fix escaping of CommentDefaultAccessModifier documentation - <a href="https://github.com/itaigilo">itaigilo</a></li>
-</ul>
 
 
 
