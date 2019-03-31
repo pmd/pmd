@@ -236,6 +236,8 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+<!--    <rule ref="category/apex/bestpractices.xml/ApexAssertionsShouldIncludeMessage"/> -->
+<!--    <rule ref="category/apex/bestpractices.xml/ApexUnitTestMethodShouldHaveIsTestAnnotation"/> -->
 
    <!-- SECURITY -->
    <rule ref="category/apex/security.xml/ApexSharingViolations" message="Apex classes should declare a sharing model if DML or SOQL is used">
