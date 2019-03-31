@@ -262,4 +262,28 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(@Nonnull ASTClassLiteral node, Object data) {
         return visit((ASTLiteral) node, data);
     }
+
+
+    // REMOVE ME
+    // deprecated stuff kept for compatibility with existing visitors, not matched by anything
+
+    @Deprecated
+    public Object visit(ASTAllocationExpression node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTTypeArgument node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTWildcardBounds node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
+        return null;
+    }
 }

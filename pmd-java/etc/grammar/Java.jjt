@@ -2126,22 +2126,15 @@ void TypeArguments():
 {}
 {
    LOOKAHEAD(2)
-   "<" {checkForBadGenericsUsage();} TypeArgumentImpl() ( "," TypeArgumentImpl() )* ">"
+   "<" {checkForBadGenericsUsage();} TypeArgument() ( "," TypeArgument() )* ">"
  |
    "<" {checkForBadDiamondUsage();} ">"
 }
 
-void TypeArgumentImpl() #void:
+void TypeArgument() #void:
 {}
 {
    TypeAnnotationList() (ReferenceType() | WildcardType())
-}
-
-// TODO remove me, kept for transition
-void TypeArgument():
-{}
-{
-   (TypeAnnotation())* (ReferenceType() | WildcardType())
 }
 
 void WildcardType():
@@ -2150,12 +2143,6 @@ void WildcardType():
     "?" [  ("extends" {jjtThis.setUpperBound(true);}| "super") AnnotatedRefType() ]
 }
 
-// TODO remove me
-void WildcardBounds():
-{}
-{
-    ("extends" | "super") AnnotatedRefType()
-}
 
 /* JLS https://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-PrimitiveType
 
@@ -2623,28 +2610,6 @@ void ArgumentsList() #ArgumentList :
  "(" [ Expression() ( "," Expression() )* ] ")"
 }
 
- // TODO remove
-void AllocationExpression():
-{}
-{
-  "new" (TypeAnnotation())*
-  (
-    PrimitiveType() ArrayDimsAndInits()
-  |
-    ClassOrInterfaceType()
-     (
-      ArrayDimsAndInits()
-     |
-      ArgumentsList()
-        [
-            { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
-            ClassOrInterfaceBody()
-            { inInterface = inInterfaceOld; } // always restore the flag after leaving the node
-        ]
-     )
-    { checkForBadAnonymousDiamondUsage(); }
-  )
-}
 
 // more straightforward because can't be an array creation expr
 void QualifiedAllocationExpr() #ConstructorCall:
