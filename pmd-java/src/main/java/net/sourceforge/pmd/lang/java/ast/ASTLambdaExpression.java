@@ -6,21 +6,75 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nullable;
+
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
+/**
+ * A lambda expression.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} "->" ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
+ *
+ * </pre>
+ */
 public class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
 
     private JavaTypeDefinition typeDefinition;
 
 
-    public ASTLambdaExpression(int id) {
+    ASTLambdaExpression(int id) {
         super(id);
     }
 
 
-    public ASTLambdaExpression(JavaParser p, int id) {
+    ASTLambdaExpression(JavaParser p, int id) {
         super(p, id);
+    }
+
+
+    public ASTLambdaParameterList getParameters() {
+        return (ASTLambdaParameterList) jjtGetChild(0);
+    }
+
+
+    public boolean isBlockBody() {
+        return jjtGetChild(1) instanceof ASTBlock;
+    }
+
+    public boolean isExpressionBody() {
+        return !isBlockBody();
+    }
+
+    // TODO these are copied from AbstractJavaTypeNode because it's easier to extend abstractMethodLikeNode
+
+
+    @Override
+    @Nullable
+    public Class<?> getType() {
+        return typeDefinition == null ? null : typeDefinition.getType();
+    }
+
+
+    @Override
+    public void setType(Class<?> type) {
+        typeDefinition = JavaTypeDefinition.forClass(type);
+    }
+
+
+    @Override
+    @Nullable
+    public JavaTypeDefinition getTypeDefinition() {
+        return typeDefinition;
+    }
+
+
+    @Override
+    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+        this.typeDefinition = typeDefinition;
     }
 
 
@@ -30,7 +84,6 @@ public class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTEx
     }
 
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -46,32 +99,6 @@ public class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTEx
     @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.LAMBDA;
-    }
-
-    // TODO these are copied from AbstractJavaTypeNode because it's easier to extend abstractMethodLikeNode
-
-
-    @Override
-    public Class<?> getType() {
-        return typeDefinition == null ? null : typeDefinition.getType();
-    }
-
-
-    @Override
-    public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.forClass(type);
-    }
-
-
-    @Override
-    public JavaTypeDefinition getTypeDefinition() {
-        return typeDefinition;
-    }
-
-
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
-        this.typeDefinition = typeDefinition;
     }
 }
 /*

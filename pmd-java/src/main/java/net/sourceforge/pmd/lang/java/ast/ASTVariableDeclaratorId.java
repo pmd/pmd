@@ -120,7 +120,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     public boolean isFormalParameter() {
         return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
-                || isLambdaParamWithNoType();
+                || isLambdaParameter();
     }
 
 
@@ -138,12 +138,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * is not necessarily inferred, see {@link #isTypeInferred()}.
      */
     public boolean isLambdaParameter() {
-        return isLambdaParamWithNoType() || jjtGetParent() instanceof ASTFormalParameter && getNthParent(3) instanceof ASTLambdaExpression;
-    }
-
-
-    private boolean isLambdaParamWithNoType() {
-        return jjtGetParent() instanceof ASTLambdaExpression;
+        return jjtGetParent() instanceof ASTLambdaParameter;
     }
 
 
@@ -172,8 +167,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         if (isResourceDeclaration()) {
             // this is implicit even if "final" is not explicitly declared.
             return true;
-        } else if (isLambdaParamWithNoType()) {
-            return false;
+        } else if (jjtGetParent() instanceof ASTLambdaParameter) {
+            return ((ASTLambdaParameter) jjtGetParent()).isFinal();
         }
 
         if (jjtGetParent() instanceof ASTFormalParameter) {
@@ -235,7 +230,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * since the type node is absent.
      */
     public boolean isTypeInferred() {
-        return isLambdaParamWithNoType() || isLocalVariableTypeInferred() || isLambdaTypeInferred();
+        return isLocalVariableTypeInferred() || isLambdaTypeInferred();
     }
 
 
@@ -252,8 +247,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     }
 
     private boolean isLambdaTypeInferred() {
-        return getNthParent(3) instanceof ASTLambdaExpression
-                && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
+        return jjtGetParent() instanceof ASTLambdaParameter && ((ASTLambdaParameter) jjtGetParent()).isTypeInferred();
     }
 
 
@@ -297,6 +291,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
             // ASTResource is a subclass of ASTFormal parameter for now but this will change
             // and this will need to be corrected here, see #998
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
+        } else if (jjtGetParent() instanceof ASTLambdaParameter) {
+            return ((ASTLambdaParameter) jjtGetParent()).getTypeNode();
         } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;

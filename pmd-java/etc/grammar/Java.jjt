@@ -2427,7 +2427,8 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
  // There's no separate production for CastExpression, because that would force
  // us to repeat the lookahead
- // Those lookaheads are expensive, but comparatively insignificant in a real run
+ // Those lookaheads are very expensive, they're run to disambiguate between
+ // ParenthesizedExpression and CastExpression.
 | LOOKAHEAD("(" TypeAnnotationList() PrimitiveType() ")")
     ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
 | LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus() )
@@ -2480,7 +2481,7 @@ void PrimaryPrefix() #void :
 // todo we can probably simplify the lambda lookaheads
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
 | ("(" Expression() ")")                  #ParenthesizedExpression
 | UnqualifiedAllocationExpr()
 | LOOKAHEAD( TypeOrVoid() "." "class" )
@@ -2537,40 +2538,39 @@ void MethodReference(): // LHS is injected
   [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
 }
 
-void LambdaExpression() :
+void LambdaExpression():
 { checkForBadLambdaUsage(); }
 {
-  VariableDeclaratorId() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) LambdaParameters() "->" ( Expression() | Block() )
-| LOOKAHEAD(3) "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ( Expression() | Block() )
+  LambdaParameterList() "->" ( Expression() | Block() )
 }
 
-void LambdaParameters() #FormalParameters :
+void LambdaParameterList():
 {}
 {
-    "(" [ LambdaParameterList() ] ")"
+      VariableDeclaratorId() #LambdaParameter
+    | LOOKAHEAD("(" <IDENTIFIER> ("," | ")"))
+        "(" [ VariableDeclaratorId() #LambdaParameter(true) ( "," VariableDeclaratorId() #LambdaParameter )* ] ")"
+    | "(" [ LambdaParameter() ( "," LambdaParameter() )* ] ")"
 }
 
-void LambdaParameterList() #void :
-{}
+void LambdaParameter():
+{boolean isVarType = false;}
 {
-    LambdaParameter() ( "," LambdaParameter() )*
-}
-
-void LambdaParameter() #FormalParameter :
-{}
-{
-    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-    LambdaParameterType()
-    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    [
+      ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+      isVarType=LambdaParameterType() { jjtThis.setVarType(); }
+      [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+    ]
     VariableDeclaratorId()
 }
 
-void LambdaParameterType() #void :
+/** Returns true if this is "var". */
+boolean LambdaParameterType() #void :
 {}
 {
-    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } ) <IDENTIFIER>
-    | Type()
+    LOOKAHEAD( { jdkVersion >= 11 && isKeyword("var") } )
+        <IDENTIFIER> { return true; }
+    | Type() { return false; }
 }
 
 void Literal() #void :
@@ -2814,7 +2814,7 @@ void StatementExpression() :
 |
   PreDecrementExpression()
 |
-  // using PostfixExpression here allows us the part of the production tree
+  // using PostfixExpression here allows us to skip the part of the production tree
   // between Expression() and PostfixExpression()
   (PostfixExpression() [ op=AssignmentOperator() {jjtThis.setOp(op);} Expression() ]) #AssignmentExpression(>1)
 }
