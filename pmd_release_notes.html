@@ -1292,6 +1292,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p>Learn more about how to participate on <a href="https://github.com/pmd/pmd/issues/1663">github issue 1663</a>.</p>
 
+<h4 id="java-12-support">Java 12 Support</h4>
+
+<p>This release of PMD brings support for Java 12. PMD can parse the new <a href="http://openjdk.java.net/jeps/325">Switch Expressions</a>
+and resolve the type of such an expression.</p>
+
+<p>Note: The Switch Expressions are a preview language feature of OpenJDK 12 and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you’ll need to enable it via the new environment
+variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd ...
+</code></pre></div></div>
+
 <h4 id="quickstart-ruleset-for-apex">Quickstart Ruleset for Apex</h4>
 
 <p>PMD provides now a quickstart ruleset for Salesforce.com Apex, which you can use as a base ruleset to
@@ -1384,6 +1397,11 @@ line length.</p>
       <li><a href="https://github.com/pmd/pmd/issues/1721">#1721</a>: [doc] Documentation provides an invalid property configuration example</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1537">#1537</a>: [java] Java 12 support</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1701">#1701</a>: [java] UseTryWithResources does not handle multiple argument close methods</li>
@@ -1413,6 +1431,14 @@ line length.</p>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
+
+<h4 id="command-line-interface">Command Line Interface</h4>
+
+<p>The start scripts <code class="highlighter-rouge">run.sh</code>, <code class="highlighter-rouge">pmd.bat</code> and <code class="highlighter-rouge">cpd.bat</code> support the new environment variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code>.
+This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. <code class="highlighter-rouge">PMD_JAVA_OPTS=-Xmx512m</code>)
+or enable preview language features (e.g. <code class="highlighter-rouge">PMD_JAVA_OPTS=--enable-preview</code>).</p>
+
+<p>The previously available variables such as <code class="highlighter-rouge">OPTS</code> or <code class="highlighter-rouge">HEAPSIZE</code> are deprecated and will be removed with PMD 7.0.0.</p>
 
 <h4 id="deprecated-api">Deprecated API</h4>
 
@@ -1458,7 +1484,7 @@ quickstart ruleset <code class="highlighter-rouge">rulesets/apex/quickstart.xml<
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 30, 2019 <br />
+ Site last generated: Mar 31, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

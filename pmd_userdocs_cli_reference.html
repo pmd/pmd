@@ -1861,6 +1861,17 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 </table>
 
+<h2 id="additional-java-runtime-options">Additional Java Runtime Options</h2>
+
+<p>PMD is executed via a Java runtime. In some cases, you might need to set additional runtime options, e.g.
+if you want to analyze a project, that uses one of OpenJDK’s <a href="http://openjdk.java.net/jeps/12">Preview Language Features</a>.</p>
+
+<p>Just set the environment variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code> before executing PMD, e.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS="--enable-preview"
+./run.sh pmd -d ../../../src/main/java/ -f text -R rulesets/java/quickstart.xml
+</code></pre></div></div>
+
 <h2 id="exit-status">Exit Status</h2>
 
 <p>Please note that if PMD detects any violations, it will exit with status 4 (since 5.3).
@@ -2017,7 +2028,7 @@ which can be specified with the <code class="highlighter-rouge">-property</code>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Mar 30, 2019 <br />
+ Site last generated: Mar 31, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
