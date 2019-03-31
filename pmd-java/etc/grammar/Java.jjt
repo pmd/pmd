@@ -2470,17 +2470,25 @@ void SwitchBlock() #void :
 {
     "{"
         (
-            LOOKAHEAD(SwitchLabel() ":") (LOOKAHEAD(2) SwitchLabeledStatementGroup())*
-        |
-            (LOOKAHEAD(2) SwitchLabeledRule())*
-        )
+            SwitchLabel()
+            (
+                "->" SwitchLabeledRulePart() (SwitchLabeledRule())*
+            |
+                ":" (LOOKAHEAD(2) SwitchLabel() ":")* (BlockStatement())* (SwitchLabeledStatementGroup())*
+            )
+        )?
     "}"
 }
 
 void SwitchLabeledRule() #void :
 {checkForSwitchRules();}
 {
-    SwitchLabel() "->"
+    SwitchLabel() "->" SwitchLabeledRulePart()
+}
+
+void SwitchLabeledRulePart() #void:
+{checkForSwitchRules();}
+{
     (
         ( Expression() ";" ) #SwitchLabeledExpression(2)
       |
