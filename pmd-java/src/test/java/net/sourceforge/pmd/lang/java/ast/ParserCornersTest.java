@@ -274,6 +274,23 @@ public class ParserCornersTest {
         Assert.assertTrue("Test setup wrong - variable 'someVarNameSameAsMethodReference' not found anymore!", foundVariable);
     }
 
+    @Test
+    public void testSwitchWithFallthrough() throws Exception {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("11", readAsString("SwitchWithFallthrough.java"));
+        Assert.assertNotNull(compilationUnit);
+        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
+        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+    }
+
+    @Test
+    public void testSwitchStatements() throws Exception {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("11", readAsString("SwitchStatements.java"));
+        Assert.assertNotNull(compilationUnit);
+        ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
+        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+    }
+
+
     private String readAsString(String resource) {
         try (InputStream in = ParserCornersTest.class.getResourceAsStream(resource)) {
             return IOUtils.toString(in, StandardCharsets.UTF_8);

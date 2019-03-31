@@ -147,22 +147,34 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     }
 
     public int getValueAsInt() {
-        // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
-        return (int) getValueAsLong();
+        if (isInt) {
+            // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
+            return (int) getValueAsLong();
+        }
+        return 0;
     }
 
     public long getValueAsLong() {
-        // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
-        BigInteger bigInt = new BigInteger(stripIntValue(), getIntBase());
-        return bigInt.longValue();
+        if (isInt) {
+            // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
+            BigInteger bigInt = new BigInteger(stripIntValue(), getIntBase());
+            return bigInt.longValue();
+        }
+        return 0L;
     }
 
     public float getValueAsFloat() {
-        return Float.parseFloat(stripFloatValue());
+        if (isFloat) {
+            return Float.parseFloat(stripFloatValue());
+        }
+        return Float.NaN;
     }
 
     public double getValueAsDouble() {
-        return Double.parseDouble(stripFloatValue());
+        if (isFloat) {
+            return Double.parseDouble(stripFloatValue());
+        }
+        return Double.NaN;
     }
 
     public void setCharLiteral() {
