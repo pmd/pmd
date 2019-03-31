@@ -17,7 +17,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * <pre class="grammar">
  *
  * (: In increasing precedence order :)
- * Expression ::= {@link ASTAssignmentExpression AssignmentExpression}
+ * Expression ::= {@link ASTLambdaExpression LambdaExpression}
+ *              | {@link ASTAssignmentExpression AssignmentExpression}
  *              | {@link ASTConditionalExpression ConditionalExpression}
  *              | {@link ASTConditionalOrExpression ConditionalOrExpression}
  *              | {@link ASTConditionalAndExpression ConditionalAndExpression}
