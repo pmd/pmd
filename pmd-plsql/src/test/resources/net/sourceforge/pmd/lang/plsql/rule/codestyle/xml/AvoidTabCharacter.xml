@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Using tabs - only the first tab character is reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+	SELECT cmer_id
+		,version
+		,cmp_id
+	BULK COLLECT INTO v_cmer_ids
+		,v_versions
+		,v_cmp_ids
+	FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Using tabs - all lines are reported</description>
+        <rule-property name="eachLine">true</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>2,3,4,6,7,8</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+	SELECT cmer_id
+		,version
+		,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+		,v_versions
+		,v_cmp_ids
+	FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>No tabs</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+    SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>

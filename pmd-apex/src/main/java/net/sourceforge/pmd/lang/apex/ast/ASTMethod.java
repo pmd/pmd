@@ -69,4 +69,16 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
         }
         return false;
     }
+
+    public boolean isConstructor() {
+        return node.getMethodInfo().isConstructor();
+    }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getReturnType() {
+        return node.getReturnTypeRef().toString();
+    }
 }

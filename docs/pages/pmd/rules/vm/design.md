@@ -25,9 +25,18 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 |----|-------------|-----------|-----------|
 |problemDepth|3|The if statement depth reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/vm/design.xml/AvoidDeeplyNestedIfStmts" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/vm/design.xml/AvoidDeeplyNestedIfStmts">
+    <properties>
+        <property name="problemDepth" value="3" />
+    </properties>
+</rule>
 ```
 
 ## CollapsibleIfStatements
@@ -59,13 +68,22 @@ The template is too long. It should be broken up into smaller pieces.
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/vm/design.xml/ExcessiveTemplateLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/vm/design.xml/ExcessiveTemplateLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## NoInlineJavaScript

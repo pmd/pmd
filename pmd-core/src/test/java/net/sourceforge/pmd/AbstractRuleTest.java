@@ -30,12 +30,17 @@ public class AbstractRuleTest {
 
     public static class MyRule extends AbstractRule {
         private static final StringProperty FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
+        private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
+                .defaultValue("bar")
+                .desc("Property without value uses default value")
+                .build();
 
         private static final StringProperty XPATH_PROPERTY = new StringProperty("xpath", "xpath property", "", 2.0f);
 
         public MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
             definePropertyDescriptor(XPATH_PROPERTY);
+            definePropertyDescriptor(FOO_DEFAULT_PROPERTY);
             setName("MyRule");
             setMessage("my rule msg");
             setPriority(RulePriority.MEDIUM);
@@ -223,9 +228,8 @@ public class AbstractRuleTest {
         assertEquals(r1.getRuleClass(), r2.getRuleClass());
         assertEquals(r1.getRuleSetName(), r2.getRuleSetName());
         assertEquals(r1.getSince(), r2.getSince());
-    }
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(AbstractRuleTest.class);
+        assertEquals(r1.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY),
+                r2.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY));
     }
 }

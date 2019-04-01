@@ -92,7 +92,7 @@ public class ASTLiteralTest {
     @Test
     public void testFloatValueParsingNegative() {
         ASTLiteral literal = new ASTLiteral(1);
-        literal.setIntLiteral();
+        literal.setFloatLiteral();
         literal.setImage("-3_456.123_456");
         literal.testingOnlySetBeginColumn(1);
         literal.testingOnlySetEndColumn(7);

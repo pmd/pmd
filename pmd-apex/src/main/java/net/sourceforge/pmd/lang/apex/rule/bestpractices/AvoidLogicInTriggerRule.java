@@ -12,6 +12,10 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
 
+    public AvoidLogicInTriggerRule() {
+        addRuleChainVisit(ASTUserTrigger.class);
+    }
+
     @Override
     public Object visit(ASTUserTrigger node, Object data) {
         List<ASTBlockStatement> blockStatements = node.findDescendantsOfType(ASTBlockStatement.class);

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Example code</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>34</expected-linenumbers>
+        <code><![CDATA[
+CREATE OR REPLACE PACKAGE BODY update_planned_hrs
+IS
+
+PROCEDURE set_new_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER, p_hours IN NUMBER)
+IS
+BEGIN
+   UPDATE employee_on_activity ea
+   SET ea.ea_planned_hours = p_hours
+   WHERE
+            ea.ea_emp_id = p_emp_id
+            AND ea.ea_proj_id = p_project_id;
+
+EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+          RAISE_APPLICATION_ERROR (-20100, 'No such employee or project');
+
+END set_new_planned;
+
+FUNCTION existing_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER) RETURN NUMBER
+
+IS
+
+existing_hours NUMBER(4);
+
+BEGIN
+   SELECT ea.ea_planned_hours INTO existing_hours
+   FROM employee_on_activity ea
+   WHERE
+            ea.ea_emp_id = p_emp_id
+            AND ea.ea_proj_id = p_project_id;
+
+   RETURN (existing_hours);
+
+   EXCEPTION
+          WHEN OTHERS THEN NULL;
+
+   END existing_planned;
+
+END update_planned_hrs;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Fixed Example code</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+CREATE OR REPLACE PACKAGE BODY update_planned_hrs
+IS
+
+PROCEDURE set_new_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER, p_hours IN NUMBER)
+IS
+BEGIN
+   UPDATE employee_on_activity ea
+   SET ea.ea_planned_hours = p_hours
+   WHERE
+            ea.ea_emp_id = p_emp_id
+            AND ea.ea_proj_id = p_project_id;
+
+EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+          RAISE_APPLICATION_ERROR (-20100, 'No such employee or project');
+
+END set_new_planned;
+
+FUNCTION existing_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER) RETURN NUMBER
+
+IS
+
+existing_hours NUMBER(4);
+
+BEGIN
+   SELECT ea.ea_planned_hours INTO existing_hours
+   FROM employee_on_activity ea
+   WHERE
+            ea.ea_emp_id = p_emp_id
+            AND ea.ea_proj_id = p_project_id;
+
+   RETURN (existing_hours);
+
+   EXCEPTION
+          WHEN OTHERS THEN RAISE_APPLICATION_ERROR (-20101, 'Unknown Error occurred');
+
+   END existing_planned;
+
+END update_planned_hrs;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>

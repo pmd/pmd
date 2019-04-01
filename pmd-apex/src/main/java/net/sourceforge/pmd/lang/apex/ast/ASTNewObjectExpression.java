@@ -16,4 +16,8 @@ public class ASTNewObjectExpression extends AbstractApexNode<NewObjectExpression
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public String getType() {
+        return String.valueOf(node.getTypeRef());
+    }
 }

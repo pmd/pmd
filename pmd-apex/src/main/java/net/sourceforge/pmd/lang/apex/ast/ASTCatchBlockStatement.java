@@ -16,4 +16,15 @@ public class ASTCatchBlockStatement extends AbstractApexNode<CatchBlockStatement
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public String getExceptionType() {
+        return String.valueOf(node.getTypeRef());
+    }
+
+    public String getVariableName() {
+        if (node.getVariable() != null) {
+            return node.getVariable().getName();
+        }
+        return null;
+    }
 }

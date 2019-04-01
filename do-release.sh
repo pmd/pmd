@@ -75,12 +75,15 @@ echo
 echo "*   Ensure all the new rules are listed in the proper file:"
 echo "    ${RELEASE_RULESET}"
 echo
+echo "*   Update **pmd-apex/src/main/resources/rulesets/apex/quickstart.xml** and"
+echo "    **pmd-java/src/main/resources/rulesets/java/quickstart.xml** with the new rules."
+echo
 echo "*   Update **docs/pages/next_major_development.md** with the API changes for"
 echo "    the new release based on the release notes"
 echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
-echo "*   Update property `pmd-designer.version` in **pom.xml** to reference the latest pmd-designer release"
+echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the latest pmd-designer release"
 echo "    See <https://search.maven.org/search?q=g:net.sourceforge.pmd%20AND%20a:pmd-ui&core=gav> for the available releases."
 echo
 echo "Press enter to continue..."
