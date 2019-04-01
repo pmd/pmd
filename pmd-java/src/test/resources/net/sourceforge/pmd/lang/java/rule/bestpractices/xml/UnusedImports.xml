@@ -242,6 +242,22 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#1720 False Positive in UnusedImports for Javadoc link with array type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pack.SomeUtility;
+
+public class Foo {
+    /**
+     * The {@link SomeUtility#someHelperMethod(String, SomeObjectArray[])} method does something.
+     */
+    public void someMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
          <description><![CDATA[
 Bug 2606609 : False "UnusedImports" positive in package-info.java
         ]]></description>
