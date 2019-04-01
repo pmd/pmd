@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>All lines are fine - default line length</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+BEGIN
+    SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>One line is too long</description>
+        <rule-property name="maxLineLength">30</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>The line is too long. Only 30 characters are allowed.</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+    SELECT cmer_id
+        ,version
+        ,cmp_id
+    BULK COLLECT INTO v_cmer_ids
+        ,v_versions
+        ,v_cmp_ids
+    FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Multiple lines are too long - only first is reported</description>
+        <rule-property name="maxLineLength">30</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The line is too long. Only 30 characters are allowed.</message>
+        </expected-messages>
+        <code><![CDATA[
+BEGIN
+                                SELECT cmer_id
+                                    ,version
+                                    ,cmp_id
+                                BULK COLLECT INTO v_cmer_ids
+                                    ,v_versions
+                                    ,v_cmp_ids
+                                FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Multiple lines are too long - report all</description>
+        <rule-property name="maxLineLength">30</rule-property>
+        <rule-property name="eachLine">true</rule-property>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>2,3,4,5,6,7,8</expected-linenumbers>
+        <code><![CDATA[
+BEGIN
+                                SELECT cmer_id
+                                    ,version
+                                    ,cmp_id
+                                BULK COLLECT INTO v_cmer_ids
+                                    ,v_versions
+                                    ,v_cmp_ids
+                                FROM cmer;
+END;
+/
+        ]]></code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>

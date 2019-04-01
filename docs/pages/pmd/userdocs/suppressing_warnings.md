@@ -129,7 +129,7 @@ $ cat ~/tmp/Foo.java
 public class Foo {
     void bar() {
         int x = 42;
-        if (x &gt; 5) { // NOPMD
+        if (x > 5) { // NOPMD
         }
     }
 }

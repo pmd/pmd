@@ -39,7 +39,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public AbstractNode(final int id, final int theBeginLine, final int theEndLine, final int theBeginColumn,
-        final int theEndColumn) {
+                        final int theEndColumn) {
         this(id);
 
         beginLine = theBeginLine;
@@ -83,11 +83,6 @@ public abstract class AbstractNode implements Node {
         }
         children[index] = child;
         child.jjtSetChildIndex(index);
-    }
-
-    @Override
-    public void setDataFlowNode(final DataFlowNode dataFlowNode) {
-        this.dataFlowNode = dataFlowNode;
     }
 
     @Override
@@ -183,6 +178,22 @@ public abstract class AbstractNode implements Node {
             return null; // TODO wise?
         }
         return dataFlowNode;
+    }
+
+    @Override
+    public void setDataFlowNode(final DataFlowNode dataFlowNode) {
+        this.dataFlowNode = dataFlowNode;
+    }
+
+    /**
+     * Returns true if this node has a descendant of any type among the provided types.
+     *
+     * @param types Types to test
+     * @deprecated Use {@link #hasDescendantOfAnyType(Class[])}
+     */
+    @Deprecated
+    public final boolean hasDecendantOfAnyType(final Class<?>... types) {
+        return hasDescendantOfAnyType(types);
     }
 
     /**

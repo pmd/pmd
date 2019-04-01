@@ -32,9 +32,19 @@ A rule for the politically correct... we don't want to offend anyone.
 |caseSensitive|false|Case sensitive|no|
 |disallowedTerms|idiot \| jerk|Illegal terms or phrases|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/documentation.xml/CommentContent" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/documentation.xml/CommentContent">
+    <properties>
+        <property name="caseSensitive" value="false" />
+        <property name="disallowedTerms" value="idiot|jerk" />
+    </properties>
+</rule>
 ```
 
 ## CommentRequired
@@ -70,9 +80,25 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 |enumCommentRequirement|Required|Enum comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 |serialVersionUIDCommentRequired|Ignored|Serial version UID comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/documentation.xml/CommentRequired" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/documentation.xml/CommentRequired">
+    <properties>
+        <property name="methodWithOverrideCommentRequirement" value="Ignored" />
+        <property name="accessorCommentRequirement" value="Ignored" />
+        <property name="headerCommentRequirement" value="Required" />
+        <property name="fieldCommentRequirement" value="Required" />
+        <property name="publicMethodCommentRequirement" value="Required" />
+        <property name="protectedMethodCommentRequirement" value="Required" />
+        <property name="enumCommentRequirement" value="Required" />
+        <property name="serialVersionUIDCommentRequired" value="Ignored" />
+    </properties>
+</rule>
 ```
 
 ## CommentSize
@@ -113,9 +139,19 @@ Determines whether the dimensions of non-header comments found are within the sp
 |maxLines|6|Maximum lines|no|
 |maxLineLength|80|Maximum line length|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/documentation.xml/CommentSize" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/documentation.xml/CommentSize">
+    <properties>
+        <property name="maxLines" value="6" />
+        <property name="maxLineLength" value="80" />
+    </properties>
+</rule>
 ```
 
 ## UncommentedEmptyConstructor
@@ -150,9 +186,18 @@ public Foo() {
 |----|-------------|-----------|-----------|
 |ignoreExplicitConstructorInvocation|false|Ignore explicit constructor invocation when deciding whether constructor is empty or not|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/documentation.xml/UncommentedEmptyConstructor">
+    <properties>
+        <property name="ignoreExplicitConstructorInvocation" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UncommentedEmptyMethodBody

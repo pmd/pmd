@@ -88,7 +88,7 @@ public class JavaTokensTokenizerTest {
     }
 
     @Test
-    public void testIgnoreComments() {
+    public void testIgnoreComments() throws IOException {
         JavaTokenizer t = new JavaTokenizer();
         t.setIgnoreAnnotations(false);
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("package foo.bar.baz;" + PMD.EOL

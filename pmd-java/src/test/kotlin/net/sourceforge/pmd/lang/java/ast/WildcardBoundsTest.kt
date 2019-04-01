@@ -1,12 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.should
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
 
-// prototype using a junit syntax
-
-class WildcardBoundsTest : FunSpec({
+class WildcardBoundsTest : ParserTestSpec({
 
     parserTest("Simple grammar test") {
 

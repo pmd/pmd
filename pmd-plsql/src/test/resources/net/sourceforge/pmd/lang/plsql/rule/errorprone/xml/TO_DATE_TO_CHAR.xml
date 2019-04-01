@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Example code</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+
+-- Take single parameter, relying on current default NLS date format
+FUNCTION strip_time (p_date IN DATE) RETURN DATE
+IS
+BEGIN
+   RETURN TO_DATE(TO_CHAR(p_date));
+END strip_time;
+
+
+END date_utilities;
+/
+     ]]>
+        </code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Example code fixed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+
+-- Take single parameter, relying on current default NLS date format
+FUNCTION strip_time (p_date IN DATE) RETURN DATE
+IS
+BEGIN
+   RETURN TRUNC(p_date, 'YEAR');
+END strip_time;
+
+
+END date_utilities;
+/
+     ]]>
+        </code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>
+

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.PUBLIC;
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -31,14 +28,11 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
     public ExcessivePublicCountRule() {
         super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 20d);
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (node.getNode().getModifiers().has(PUBLIC) && !node.getImage().matches("<clinit>|<init>|clone")) {
+        if (node.getModifiers().isPublic() && !node.getImage().matches("<clinit>|<init>|clone")) {
             return NumericConstants.ONE;
         }
         return NumericConstants.ZERO;
@@ -46,7 +40,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 
     @Override
     public Object visit(ASTFieldDeclarationStatements node, Object data) {
-        if (node.getNode().getModifiers().has(PUBLIC) && !node.getNode().getModifiers().has(STATIC)) {
+        if (node.getModifiers().isPublic() && !node.getModifiers().isStatic()) {
             return NumericConstants.ONE;
         }
         return NumericConstants.ZERO;

@@ -21,14 +21,11 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
     public NcssMethodCountRule() {
         super(ASTMethod.class);
         setProperty(MINIMUM_DESCRIPTOR, 40d);
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.getNode().getMethodInfo().isConstructor()) {
+        if (!node.isConstructor()) {
             return super.visit(node, data);
         }
 
@@ -37,7 +34,7 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-        return new String[] { ((ASTMethod) point.getNode()).getNode().getMethodInfo().getName(),
+        return new String[] { ((ASTMethod) point.getNode()).getImage(),
             String.valueOf((int) point.getScore()), };
     }
 }

@@ -31,4 +31,8 @@ public class ASTFieldDeclarationStatements extends AbstractApexNode<FieldDeclara
         }
         return false;
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

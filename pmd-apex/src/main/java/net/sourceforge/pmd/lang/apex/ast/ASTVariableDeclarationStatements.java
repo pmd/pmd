@@ -16,4 +16,8 @@ public class ASTVariableDeclarationStatements extends AbstractApexNode<VariableD
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

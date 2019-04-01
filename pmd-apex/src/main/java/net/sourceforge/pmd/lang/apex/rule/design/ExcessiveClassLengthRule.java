@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import static apex.jorje.semantic.symbol.type.AnnotationTypeInfos.IS_TEST;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 
 /**
@@ -16,15 +14,11 @@ public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
     public ExcessiveClassLengthRule() {
         super(ASTUserClass.class);
         setProperty(MINIMUM_DESCRIPTOR, 1000d);
-
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
-        if (node.getNode().getModifiers().getModifiers().not(IS_TEST)) {
+        if (!node.getModifiers().isTest()) {
             return super.visit(node, data);
         }
 

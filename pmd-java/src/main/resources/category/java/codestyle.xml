@@ -404,7 +404,7 @@ public class Éléphant {}
         <description>
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
-By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
 This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
 property "ignoredAnnotations" to customize the recognized annotations.
         </description>
@@ -1405,11 +1405,15 @@ public class ClassInDefaultPackage {
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
    satisfies not(
-                  string-length($num) <= $acceptableDecimalLength
-                    and not(contains($num,"_"))
-                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                  ( contains($num, ".")
+                    and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
+                    and string-length(substring-after($num, ".")) <= $acceptableDecimalLength
+                    or string-length($num) <= $acceptableDecimalLength
+                  )
+                  and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*(\.([0-9]{3}_)*[0-9]{1,3})?$")
                 )
  ]
 ]]>
@@ -1951,7 +1955,7 @@ which makes the code also more readable.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//VariableInitializer
+//VariableInitializer[preceding-sibling::VariableDeclaratorId[1]/@TypeInferred="false"]
 //PrimaryExpression[not(PrimarySuffix)]
 [not(ancestor::ArgumentList)]
 /PrimaryPrefix/AllocationExpression[ClassOrInterfaceType[@AnonymousClass='false']/TypeArguments//ReferenceType[not(.//TypeArguments)]]

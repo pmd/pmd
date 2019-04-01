@@ -8,15 +8,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class CPPTokenizerTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testUTFwithBOM() {
@@ -69,21 +76,31 @@ public class CPPTokenizerTest {
     @Test
     public void testTokenizerWithSkipBlocks() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
-        Tokens tokens = parse(test, true);
+        Tokens tokens = parse(test, true, new Tokens());
         assertEquals(19, tokens.size());
     }
 
     @Test
     public void testTokenizerWithSkipBlocksPattern() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
-        Tokens tokens = parse(test, true, "#if debug|#endif");
+        Tokens tokens = new Tokens();
+        try {
+            parse(test, true, "#if debug|#endif", tokens);
+        } catch (TokenMgrError ignored) {
+            // ignored
+        }
         assertEquals(31, tokens.size());
     }
 
     @Test
     public void testTokenizerWithoutSkipBlocks() throws Exception {
         String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/cpp_with_asm.cpp"), StandardCharsets.UTF_8);
-        Tokens tokens = parse(test, false);
+        Tokens tokens = new Tokens();
+        try {
+            parse(test, false, tokens);
+        } catch (TokenMgrError ignored) {
+            // ignored
+        }
         assertEquals(37, tokens.size());
     }
 
@@ -128,15 +145,33 @@ public class CPPTokenizerTest {
         assertEquals(9, tokens.size());
     }
 
+    @Test
+    public void testLexicalErrorFilename() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(false));
+        String test = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/issue-1559.cpp"), StandardCharsets.UTF_8);
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(test, "issue-1559.cpp"));
+        CPPTokenizer tokenizer = new CPPTokenizer();
+        tokenizer.setProperties(properties);
+
+        expectedException.expect(TokenMgrError.class);
+        expectedException.expectMessage("Lexical error in file issue-1559.cpp at");
+        tokenizer.tokenize(code, new Tokens());
+    }
+
     private Tokens parse(String snippet) {
-        return parse(snippet, false);
+        try {
+            return parse(snippet, false, new Tokens());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private Tokens parse(String snippet, boolean skipBlocks) {
-        return parse(snippet, skipBlocks, null);
+    private Tokens parse(String snippet, boolean skipBlocks, Tokens tokens) throws IOException {
+        return parse(snippet, skipBlocks, null, tokens);
     }
 
-    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern) {
+    private Tokens parse(String snippet, boolean skipBlocks, String skipPattern, Tokens tokens) throws IOException {
         Properties properties = new Properties();
         properties.setProperty(Tokenizer.OPTION_SKIP_BLOCKS, Boolean.toString(skipBlocks));
         if (skipPattern != null) {
@@ -147,7 +182,6 @@ public class CPPTokenizerTest {
         tokenizer.setProperties(properties);
 
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(snippet));
-        Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
         return tokens;
     }

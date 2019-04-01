@@ -19,13 +19,9 @@ TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-v
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//PrimaryExpression
-    [PrimaryPrefix/Name/@Image='TO_DATE']
-    [count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1]
-    [.//PrimaryExpression
-        [PrimaryPrefix/Name/@Image='TO_CHAR']
-        [count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1]
-    ]
+//FunctionCall[@Image='TO_DATE']
+  [count(Arguments/ArgumentList/Argument) = 1]
+  [Arguments/ArgumentList/Argument//FunctionCall[@Image='TO_CHAR']]
 ```
 
 **Example(s):**
@@ -61,7 +57,8 @@ TO_DATE without date format- use TO_DATE(expression, date-format)
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_DATE'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ]
+//FunctionCall[@Image='TO_DATE']
+  [count(Arguments/ArgumentList/Argument) = 1]
 ```
 
 **Example(s):**
@@ -110,7 +107,8 @@ TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//PrimaryExpression[PrimaryPrefix/Name/@Image='TO_TIMESTAMP'  and count(PrimarySuffix/Arguments/ArgumentList/Argument) = 1 ]
+//FunctionCall[@Image='TO_TIMESTAMP']
+  [count(Arguments/ArgumentList/Argument) = 1]
 ```
 
 **Example(s):**

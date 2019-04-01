@@ -22,6 +22,10 @@ Our latest source of PMD can be found on [GitHub](https://github.com/pmd/pmd). F
 *   [How to build PMD](BUILDING.md)
 *   [How to contribute to PMD](CONTRIBUTING.md)
 
+The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
+Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
+developer documentation.
+
 ## News and Website
 
 More information can be found on our [Website](https://pmd.github.io) and on [SourceForge](https://sourceforge.net/projects/pmd/).

@@ -31,7 +31,7 @@ function upload_baseline() {
     log_info "Generating and uploading baseline for pmdtester..."
     cd ..
     bundle config --local gemfile pmd/Gemfile
-    bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f
+    pmd/.travis/travis_wait "bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f"
     cd target/reports
     BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
     zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
@@ -71,10 +71,10 @@ elif travis_isPush; then
         echo -e "\n\n"
         log_info "This is a release build for tag ${TRAVIS_TAG}"
         echo -e "\n\n"
-        ./mvnw deploy -Possrh,pmd-release $MVN_BUILD_FLAGS
+        ./mvnw deploy -Possrh,sign,pmd-release $MVN_BUILD_FLAGS
     elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         log_info "This is a snapshot build"
-        ./mvnw deploy -Possrh $MVN_BUILD_FLAGS
+        ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS
         push_docs
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
@@ -115,7 +115,7 @@ elif travis_isPush; then
 
         RELEASE_NOTES_TMP=$(mktemp -t)
 
-        .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
+        bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
 
         rsync -avh "$RELEASE_NOTES_TMP" ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
 

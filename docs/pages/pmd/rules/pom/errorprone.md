@@ -50,9 +50,18 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 |----|-------------|-----------|-----------|
 |validTypes|pom , jar , maven-plugin , ejb , war , ear , rar , par|Set of valid types.|yes. Delimiter is ','.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/pom/errorprone.xml/InvalidDependencyTypes" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/pom/errorprone.xml/InvalidDependencyTypes">
+    <properties>
+        <property name="validTypes" value="pom,jar,maven-plugin,ejb,war,ear,rar,par" />
+    </properties>
+</rule>
 ```
 
 ## ProjectVersionAsDependencyVersion

@@ -41,7 +41,9 @@ Properties make it easy to customise the behaviour of a rule directly from the x
 ```xml
 <rule ref="category/java/design.xml/NPathComplexity">
     <properties>
-        <property name="reportLevel">150</property>
+        <property name="reportLevel">
+              <value>150</value>
+        </property>
     </properties>
 </rule>
 ```

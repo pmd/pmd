@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -104,11 +105,16 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
             try (FileInputStream in = new FileInputStream(new File(outputDir, file));
                     InputStream expectedIn = YAHTMLRendererTest.class.getResourceAsStream("yahtml/" + file)) {
                 String data = IOUtils.toString(in, StandardCharsets.UTF_8);
-                String expected = IOUtils.toString(expectedIn, StandardCharsets.UTF_8);
+                String expected = normalizeLineSeparators(IOUtils.toString(expectedIn, StandardCharsets.UTF_8));
 
                 assertEquals("File " + file + " is different", expected, data);
             }
         }
+    }
+
+    private static String normalizeLineSeparators(String s) {
+        return s.replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_WINDOWS), IOUtils.LINE_SEPARATOR_UNIX)
+                .replaceAll(Pattern.quote(IOUtils.LINE_SEPARATOR_UNIX), PMD.EOL);
     }
 
     @Override

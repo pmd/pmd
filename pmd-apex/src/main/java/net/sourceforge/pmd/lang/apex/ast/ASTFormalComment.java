@@ -17,6 +17,11 @@ public class ASTFormalComment extends AbstractApexNodeBase {
         return visitor.visit(this, data);
     }
 
+    @Override
+    public String getImage() {
+        return token;
+    }
+
     public String getToken() {
         return token;
     }

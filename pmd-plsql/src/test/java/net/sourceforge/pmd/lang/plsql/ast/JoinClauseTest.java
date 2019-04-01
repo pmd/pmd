@@ -32,7 +32,7 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         List<ASTInnerCrossJoinClause> joins = input.findDescendantsOfType(ASTInnerCrossJoinClause.class);
-        Assert.assertEquals(1, joins.size());
+        Assert.assertEquals(2, joins.size());
         Assert.assertFalse(joins.get(0).isCross());
         Assert.assertTrue(joins.get(0).isNatural());
     }

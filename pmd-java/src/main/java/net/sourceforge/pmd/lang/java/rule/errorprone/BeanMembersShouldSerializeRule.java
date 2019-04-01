@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -21,22 +22,31 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.rule.AbstractLombokAwareRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
+public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
 
     private String prefixProperty;
 
     private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
 
-
     public BeanMembersShouldSerializeRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        return Arrays.asList(
+            "lombok.Data",
+            "lombok.Getter",
+            "lombok.Value"
+        );
     }
 
     @Override
@@ -62,6 +72,10 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
             return data;
         }
 
+        if (hasLombokAnnotation(node)) {
+            return super.visit(node, data);
+        }
+
         Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingScope(ClassScope.class)
                 .getMethodDeclarations();
         List<ASTMethodDeclarator> getSetMethList = new ArrayList<>(methods.size());
@@ -81,7 +95,8 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : vars.entrySet()) {
             VariableNameDeclaration decl = entry.getKey();
             AccessNode accessNodeParent = decl.getAccessNodeParent();
-            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic()) {
+            if (entry.getValue().isEmpty() || accessNodeParent.isTransient() || accessNodeParent.isStatic() 
+                    || hasIgnoredAnnotation((Annotatable) accessNodeParent)) {
                 continue;
             }
             String varName = StringUtils.capitalize(trimIfPrefix(decl.getImage()));
