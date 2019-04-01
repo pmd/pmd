@@ -391,7 +391,7 @@ Additionally, **Java** allows to toggle suppression by adding the annotations
 all code within will be ignored by CPD.
 
 This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
-It's legacy and the new comment's based approch should be favored.
+It's legacy and the new comment's based approach should be favored.
 
 ```java
     //enable suppression
