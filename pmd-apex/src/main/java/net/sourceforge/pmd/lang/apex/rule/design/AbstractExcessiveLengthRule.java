@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -30,7 +29,7 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
                                  .defaultValue(defaultReportLevel()).build();
 
 
-    protected AbstractExcessiveLengthRule(Class<T> nodeType) {
+    AbstractExcessiveLengthRule(Class<T> nodeType) {
         definePropertyDescriptor(reportLevel);
         addRuleChainVisit(nodeType);
     }
@@ -44,6 +43,8 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
         return false;
     }
 
+    protected abstract boolean isViolation(T node, int reportLevel);
+
 
     @Override
     public Object visit(AbstractApexNodeBase node, Object data) {
@@ -52,12 +53,24 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
         // since we only visit this node, it's ok
 
         if (!isIgnored(t)) {
-            if (t.getEndLine() - t.getBeginLine() > getProperty(reportLevel)) {
+            if (isViolation(t, getProperty(reportLevel))) {
                 addViolation(data, node);
             }
         }
 
         return data;
+    }
+
+    static abstract class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractExcessiveLengthRule<T> {
+
+        AbstractLineLengthCheckRule(Class<T> nodeType) {
+            super(nodeType);
+        }
+
+        @Override
+        protected final boolean isViolation(T node, int reportLevel) {
+            return node.getEndLine() - node.getBeginLine() > reportLevel;
+        }
     }
 
 
