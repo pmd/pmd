@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
+import java.lang.reflect.Modifier;
+
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -31,7 +33,11 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
 
     AbstractCounterCheckRule(Class<T> nodeType) {
         definePropertyDescriptor(reportLevel);
-        addRuleChainVisit(nodeType);
+        if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
+            addRuleChainVisit(nodeType);
+        } else {
+            assert false;
+        }
     }
 
 

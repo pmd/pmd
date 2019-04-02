@@ -18,6 +18,18 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
+import java.lang.reflect.Modifier;
+
+import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
+import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
+import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
+import net.sourceforge.pmd.lang.plsql.ast.ASTTypeSpecification;
+import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
+import net.sourceforge.pmd.lang.plsql.ast.OracleObject;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
@@ -40,12 +52,29 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
                                  .defaultValue(defaultReportLevel()).build();
 
 
-    @SafeVarargs
-    AbstractCounterCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodeTypes) {
+    AbstractCounterCheckRule(Class<T> nodeType) {
         definePropertyDescriptor(reportLevel);
-        addRuleChainVisit(nodeType);
-        for (Class<? extends T> concreteNode : concreteNodeTypes) {
-            addRuleChainVisit(concreteNode);
+        if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
+            addRuleChainVisit(nodeType);
+        } else {
+            determineRulechainVisits(nodeType);
+        }
+    }
+
+    private void determineRulechainVisits(Class<T> abstractNodeType) {
+
+        if (abstractNodeType == OracleObject.class) {
+            addRuleChainVisit(ASTPackageBody.class);
+            addRuleChainVisit(ASTPackageSpecification.class);
+            addRuleChainVisit(ASTProgramUnit.class);
+            addRuleChainVisit(ASTTriggerUnit.class);
+            addRuleChainVisit(ASTTypeSpecification.class);
+        } else if (abstractNodeType == ExecutableCode.class) {
+            addRuleChainVisit(ASTMethodDeclaration.class);
+            addRuleChainVisit(ASTProgramUnit.class);
+            addRuleChainVisit(ASTTriggerTimingPointSection.class);
+            addRuleChainVisit(ASTTriggerUnit.class);
+            addRuleChainVisit(ASTTypeMethod.class);
         }
     }
 
@@ -58,8 +87,12 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
         return false;
     }
 
-    protected abstract boolean isViolation(T node, int reportLevel);
+    protected Object[] getViolationParameters(T node, int metric) {
+        return new Object[] {metric};
+    }
 
+
+    protected abstract int getMetric(T node);
 
     @Override
     public Object visit(PLSQLNode node, Object data) {
@@ -68,8 +101,9 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
         // since we only visit this node, it's ok
 
         if (!isIgnored(t)) {
-            if (isViolation(t, getProperty(reportLevel))) {
-                addViolation(data, node);
+            int metric = getMetric(t);
+            if (metric >= getProperty(reportLevel)) {
+                addViolation(data, node, getViolationParameters(t, metric));
             }
         }
 
@@ -80,12 +114,13 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
 
         @SafeVarargs
         AbstractLineLengthCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodes) {
-            super(nodeType, concreteNodes);
+            super(nodeType);
         }
 
+
         @Override
-        protected final boolean isViolation(T node, int reportLevel) {
-            return node.getEndLine() - node.getBeginLine() > reportLevel;
+        protected int getMetric(T node) {
+            return node.getEndLine() - node.getBeginLine();
         }
     }
 

@@ -14,6 +14,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
+import java.lang.reflect.Modifier;
+
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
@@ -39,8 +41,13 @@ abstract class AbstractCounterCheckRule<T extends JavaNode> extends AbstractJava
     @SafeVarargs
     AbstractCounterCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodeTypes) {
         definePropertyDescriptor(reportLevel);
-        addRuleChainVisit(nodeType);
+        if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
+            addRuleChainVisit(nodeType);
+        } else {
+            assert concreteNodeTypes.length > 1;
+        }
         for (Class<? extends T> concreteNode : concreteNodeTypes) {
+            assert !Modifier.isAbstract(concreteNode.getModifiers()) && !concreteNode.isInterface();
             addRuleChainVisit(concreteNode);
         }
     }
