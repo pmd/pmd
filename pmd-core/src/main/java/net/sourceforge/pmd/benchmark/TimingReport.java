@@ -17,23 +17,35 @@ import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
 public class TimingReport {
 
     private final long wallClockMillis;
-    private final Map<TimedOperationCategory, Map<String, TimedResult>> results;
-
-
+    private final Map<TimedOperationKey, TimedResult> results;
+    
     /* package */ TimingReport(final long wallClockMillis, final Map<TimedOperationKey, TimedResult> accumulatedResults) {
         this.wallClockMillis = wallClockMillis;
-        results = new HashMap<>();
-
-        for (final Map.Entry<TimedOperationKey, TimedResult> entry : accumulatedResults.entrySet()) {
-            final TimedOperationKey timedOperation = entry.getKey();
-            results.computeIfAbsent(timedOperation.category, t -> new HashMap<>())
-                   .put(timedOperation.label, entry.getValue());
-        }
+        results = accumulatedResults;
     }
-
-
-    public Map<TimedOperationCategory, Map<String, TimedResult>> getAllMeasurements() {
-        return results;
+    
+    public Map<String, TimedResult> getLabeledMeasurements(final TimedOperationCategory category) {
+        final Map<String, TimedResult> ret = new HashMap<>();
+        
+        for (final Map.Entry<TimedOperationKey, TimedResult> entry : results.entrySet()) {
+            final TimedOperationKey timedOperation = entry.getKey();
+            if (timedOperation.category == category && timedOperation.label != null) {
+                ret.put(timedOperation.label, entry.getValue());
+            }
+        }
+        
+        return ret;
+    }
+    
+    public TimedResult getUnlabeledMeasurements(final TimedOperationCategory category) {
+        for (final Map.Entry<TimedOperationKey, TimedResult> entry : results.entrySet()) {
+            final TimedOperationKey timedOperation = entry.getKey();
+            if (timedOperation.category == category && timedOperation.label == null) {
+                return entry.getValue();
+            }
+        }
+        
+        return null;
     }
     
     public long getWallClockMillis() {

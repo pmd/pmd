@@ -151,7 +151,8 @@ public class SourceCodeProcessor {
 
     private void executeProcessingStage(AstProcessingStage<?> stage, RootNode root, AstAnalysisContext context) {
 
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.forStage(stage))) {
+        String label = stage.getLanguage().getShortName() + ": " + stage.getDisplayName();
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
             stage.processAST(root, context);
         }
 
