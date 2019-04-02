@@ -65,7 +65,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
 
         // Perform a visitation of the AST to index nodes which need visiting by
         // type
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_VISIT)) {
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_AST_INDEXATION)) {
             indexNodes(nodes, ctx);
         }
 

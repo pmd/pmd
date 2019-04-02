@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -17,7 +16,6 @@ import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
 
 
@@ -38,12 +36,6 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new SymbolFacade().initializeWith((ASTInput) rootNode);
         }
-
-
-        @Override
-        public boolean dependsOnImpl(Rule rule) {
-            return true;
-        }
     },
 
     /**
@@ -53,12 +45,6 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
         @Override
         public void processAST(RootNode rootNode, AstAnalysisContext configuration) {
             new DataFlowFacade().initializeWith(new PLSQLDataFlowHandler(), (ASTInput) rootNode);
-        }
-
-
-        @Override
-        public boolean dependsOnImpl(Rule rule) {
-            return rule.isDfa();
         }
     };
 
@@ -91,33 +77,5 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
     }
 
 
-    /**
-     * Returns true if the given Java rule depends on this stage.
-     *
-     * <p>{@link AbstractPLSQLRule#dependsOn(AstProcessingStage)}
-     * delegates to this implementation after a validity check.
-     * Dispatching on the rule language & forwarding to the
-     * processing stage implementation allows specializing XPath
-     * rules differently from rules written in Java, while keeping
-     * dependency specification inside the processing stage declaration,
-     * for readability. By design, PLSQL XPath rules ignore this
-     * method, it is only relevant to {@link AbstractPLSQLRule}.
-     *
-     * @param rule Rule to check
-     *
-     * @return True if the given rule depends on this stage
-     *
-     * @throws IllegalArgumentException if this rule is not a PL-SQL rule.
-     */
-    @Experimental
-    public final boolean ruleDependsOnThisStage(Rule rule) {
-        if (!rule.getLanguage().equals(getLanguage())) {
-            throw new IllegalArgumentException();
-        }
-        return dependsOnImpl(rule); // this is a template method
-    }
-
-
-    protected abstract boolean dependsOnImpl(Rule rule);
 }
 
