@@ -111,10 +111,9 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
         return data;
     }
 
-    static abstract class AbstractLineLengthCheckRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
+    abstract static class AbstractLineLengthCheckRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
 
-        @SafeVarargs
-        AbstractLineLengthCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodes) {
+        AbstractLineLengthCheckRule(Class<T> nodeType) {
             super(nodeType);
         }
 

@@ -20,7 +20,7 @@ public class ExcessiveTemplateLengthRule extends AbstractVmRule {
                                  .defaultValue(1000)
                                  .build();
 
-    ExcessiveTemplateLengthRule() {
+    public ExcessiveTemplateLengthRule() {
         definePropertyDescriptor(REPORT_LEVEL);
         addRuleChainVisit(ASTprocess.class);
     }

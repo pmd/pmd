@@ -38,8 +38,7 @@ public abstract class AbstractNcssCountRule<T extends PLSQLNode> extends Abstrac
      *
      * @param nodeClass class of node to count
      */
-    @SafeVarargs
-    AbstractNcssCountRule(Class<T> nodeClass, Class<? extends T>... concreteNodeTypes) {
+    AbstractNcssCountRule(Class<T> nodeClass) {
         super(nodeClass);
     }
 

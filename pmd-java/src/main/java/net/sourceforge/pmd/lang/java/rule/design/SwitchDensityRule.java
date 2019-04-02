@@ -27,7 +27,8 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
-    private final PropertyDescriptor<Double> reportLevel =
+    private static final PropertyDescriptor<Double> REPORT_LEVEL =
+        // can't use CommonPropertyDescriptors because we need a double property
         PropertyFactory.doubleProperty("minimum")
                        .desc("Threshold above which a node is reported")
                        .require(positive())
@@ -36,12 +37,13 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
     public SwitchDensityRule() {
         super(ASTSwitchStatement.class);
+        definePropertyDescriptor(REPORT_LEVEL);
     }
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
         double density = new SwitchDensityVisitor().compute(node);
-        if (density >= getProperty(reportLevel)) {
+        if (density >= getProperty(REPORT_LEVEL)) {
             addViolation(data, node);
         }
         return super.visit(node, data);

@@ -69,7 +69,7 @@ abstract class AbstractCounterCheckRule<T extends JavaNode> extends AbstractJava
         return data;
     }
 
-    static abstract class AbstractLineLengthCheckRule<T extends JavaNode> extends AbstractCounterCheckRule<T> {
+    abstract static class AbstractLineLengthCheckRule<T extends JavaNode> extends AbstractCounterCheckRule<T> {
 
         @SafeVarargs
         AbstractLineLengthCheckRule(Class<T> nodeType, Class<? extends T>... concreteNodes) {
