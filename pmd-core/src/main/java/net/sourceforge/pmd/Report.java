@@ -11,18 +11,14 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
-import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.DateTimeUtil;
 import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -44,7 +40,6 @@ public class Report implements Iterable<RuleViolation> {
     // Note that this and the above data structure are both being maintained for
     // a bit
     private final List<RuleViolation> violations = new ArrayList<>();
-    private final Set<Metric> metrics = new HashSet<>();
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
     private List<ProcessingError> errors;
     private List<ConfigurationError> configErrors;
@@ -337,22 +332,6 @@ public class Report implements Iterable<RuleViolation> {
     }
 
     /**
-     * Adds a new metric to the report and notify the listeners
-     *
-     * @param metric
-     *            the metric to add
-     *
-     * @deprecated see {@link StatisticalRule}
-     */
-    @Deprecated
-    public void addMetric(Metric metric) {
-        metrics.add(metric);
-        for (ThreadSafeReportListener listener : listeners) {
-            listener.metricAdded(metric);
-        }
-    }
-
-    /**
      * Adds a new configuration error to the report.
      *
      * @param error
@@ -396,10 +375,6 @@ public class Report implements Iterable<RuleViolation> {
         while (ce.hasNext()) {
             addConfigError(ce.next());
         }
-        Iterator<Metric> m = r.metrics();
-        while (m.hasNext()) {
-            addMetric(m.next());
-        }
         Iterator<RuleViolation> v = r.iterator();
         while (v.hasNext()) {
             RuleViolation violation = v.next();
@@ -411,25 +386,6 @@ public class Report implements Iterable<RuleViolation> {
         while (s.hasNext()) {
             suppressedRuleViolations.add(s.next());
         }
-    }
-
-    /**
-     * Check whether any metrics have been reported
-     *
-     * @return <code>true</code> if there are metrics, <code>false</code>
-     *         otherwise
-     */
-    public boolean hasMetrics() {
-        return !metrics.isEmpty();
-    }
-
-    /**
-     * Iterate over the metrics.
-     *
-     * @return an iterator over the metrics
-     */
-    public Iterator<Metric> metrics() {
-        return metrics.iterator();
     }
 
     public boolean isEmpty() {

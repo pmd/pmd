@@ -160,9 +160,6 @@ public class MultiThreadProcessorTest {
             violations.incrementAndGet();
         }
 
-        @Override
-        public void metricAdded(Metric metric) {
-        }
     }
     
     private static class SimpleRenderer extends AbstractAccumulatingRenderer {
