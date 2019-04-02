@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -25,7 +25,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  *
  * @author David Dixon-Peugh
  */
-public class SwitchDensityRule extends AbstractJavaRule {
+public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
     private final PropertyDescriptor<Double> reportLevel =
         PropertyFactory.doubleProperty("minimum")
@@ -35,7 +35,7 @@ public class SwitchDensityRule extends AbstractJavaRule {
                        .build();
 
     public SwitchDensityRule() {
-        addRuleChainVisit(ASTSwitchStatement.class);
+        super(ASTSwitchStatement.class);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SwitchDensityRule extends AbstractJavaRule {
         if (density >= getProperty(reportLevel)) {
             addViolation(data, node);
         }
-        return null;
+        return super.visit(node, data);
     }
 
     private static class SwitchDensityVisitor extends JavaParserVisitorAdapter {
