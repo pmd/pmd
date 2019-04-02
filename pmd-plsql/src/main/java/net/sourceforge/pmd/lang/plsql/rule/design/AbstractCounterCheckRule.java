@@ -61,6 +61,7 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
         }
     }
 
+    // FIXME find a generic way to add a rulechain visit on an abstract node type
     private void determineRulechainVisits(Class<T> abstractNodeType) {
 
         if (abstractNodeType == OracleObject.class) {

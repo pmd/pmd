@@ -4,34 +4,12 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElseClause;
-import net.sourceforge.pmd.lang.plsql.ast.ASTElsifClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
-import net.sourceforge.pmd.lang.plsql.ast.ASTForStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTLoopStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTStatement;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerUnit;
-import net.sourceforge.pmd.lang.plsql.ast.ASTTypeMethod;
-import net.sourceforge.pmd.lang.plsql.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
-import net.sourceforge.pmd.lang.plsql.rule.AbstractStatisticalPLSQLRule;
-import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * NPath complexity is a measurement of the acyclic execution paths through a
@@ -39,294 +17,26 @@ import net.sourceforge.pmd.util.NumericConstants;
  *
  * @author Jason Bennett
  */
-public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
+public class NPathComplexityRule extends AbstractCounterCheckRule<ExecutableCode> {
 
     public NPathComplexityRule() {
-        super();
-        setProperty(MINIMUM_DESCRIPTOR, 200d);
-    }
-
-    private int complexityMultipleOf(PLSQLNode node, int npathStart, Object data) {
-
-        int npath = npathStart;
-        PLSQLNode n;
-
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            n = (PLSQLNode) node.jjtGetChild(i);
-            npath *= (Integer) n.jjtAccept(this, data);
-        }
-
-        return npath;
+        super(ExecutableCode.class);
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        int npath = complexityMultipleOf(node, 1, data);
+    protected int defaultReportLevel() {
+        return 200;
+    }
 
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(1.0 * npath);
-        point.setMessage(getMessage());
-        addDataPoint(point);
 
-        return npath;
+    @Override
+    protected int getMetric(ExecutableCode node) {
+        return new NPathComplexityVisitor().compute(node);
     }
 
     @Override
-    public Object visit(ASTProgramUnit node, Object data) {
-        int npath = complexityMultipleOf(node, 1, data);
-
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(1.0 * npath);
-        point.setMessage(getMessage());
-        addDataPoint(point);
-
-        return npath;
-    }
-
-    @Override
-    public Object visit(ASTTypeMethod node, Object data) {
-        int npath = complexityMultipleOf(node, 1, data);
-
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(1.0 * npath);
-        point.setMessage(getMessage());
-        addDataPoint(point);
-
-        return npath;
-    }
-
-    @Override
-    public Object visit(ASTTriggerUnit node, Object data) {
-        int npath = complexityMultipleOf(node, 1, data);
-
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(1.0 * npath);
-        point.setMessage(getMessage());
-        addDataPoint(point);
-
-        return npath;
-    }
-
-    @Override
-    public Object visit(ASTTriggerTimingPointSection node, Object data) {
-        int npath = complexityMultipleOf(node, 1, data);
-
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(1.0 * npath);
-        point.setMessage(getMessage());
-        addDataPoint(point);
-
-        return npath;
-    }
-
-    @Override
-    public Object visit(PLSQLNode node, Object data) {
-        int npath = complexityMultipleOf(node, 1, data);
-        return npath;
-    }
-
-    @Override
-    public Object visit(ASTIfStatement node, Object data) {
-        // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
-        // next
-
-        int boolCompIf = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int complexity = 0;
-
-        List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class
-                    || node.jjtGetChild(i).getClass() == ASTElsifClause.class
-                    || node.jjtGetChild(i).getClass() == ASTElseClause.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
-            }
-        }
-
-        /*
-         * SRT if (statementChildren.isEmpty() || statementChildren.size() == 1
-         * && ( null != node.getFirstChildOfType(ASTElseClause.class) )
-         * //.hasElse() || statementChildren.size() != 1 && ( null ==
-         * node.getFirstChildOfType(ASTElseClause.class) ) // !node.hasElse() )
-         * { throw new
-         * IllegalStateException("If node has wrong number of children"); }
-         */
-
-        /*
-         * @TODO Any explicit Elsif clause(s) and Else clause are included in
-         * the list of statements // add path for not taking if if (null ==
-         * node.getFirstChildOfType(ASTElsifClause.class) ) //
-         * !node.hasElse()!node.hasElse()) { complexity++; }
-         * 
-         * if (null == node.getFirstChildOfType(ASTElseClause.class) ) //
-         * !node.hasElse()!node.hasElse()) { complexity++; }
-         */
-
-        for (PLSQLNode element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
-        }
-
-        return boolCompIf + complexity;
-    }
-
-    @Override
-    public Object visit(ASTElsifClause node, Object data) {
-        // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
-        // next
-
-        int boolCompIf = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int complexity = 0;
-
-        List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
-            }
-        }
-
-        /*
-         * SRT if (statementChildren.isEmpty() || statementChildren.size() == 1
-         * && ( null != node.getFirstChildOfType(ASTElseClause.class) )
-         * //.hasElse() || statementChildren.size() != 1 && ( null ==
-         * node.getFirstChildOfType(ASTElseClause.class) ) // !node.hasElse() )
-         * { throw new
-         * IllegalStateException("If node has wrong number of children"); }
-         */
-
-        for (PLSQLNode element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
-        }
-
-        return boolCompIf + complexity;
-    }
-
-    @Override
-    public Object visit(ASTElseClause node, Object data) {
-        // (npath of if + npath of else (or 1) + bool_comp of if) * npath of
-        // next
-
-        int complexity = 0;
-
-        List<PLSQLNode> statementChildren = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            if (node.jjtGetChild(i).getClass() == ASTStatement.class) {
-                statementChildren.add((PLSQLNode) node.jjtGetChild(i));
-            }
-        }
-
-        for (PLSQLNode element : statementChildren) {
-            complexity += (Integer) element.jjtAccept(this, data);
-        }
-
-        return complexity;
-    }
-
-    @Override
-    public Object visit(ASTWhileStatement node, Object data) {
-        // (npath of while + bool_comp of while + 1) * npath of next
-
-        int boolCompWhile = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        Integer nPathWhile = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
-
-        return boolCompWhile + nPathWhile + 1;
-    }
-
-    @Override
-    public Object visit(ASTLoopStatement node, Object data) {
-        // (npath of do + bool_comp of do + 1) * npath of next
-
-        int boolCompDo = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        Integer nPathDo = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
-
-        return boolCompDo + nPathDo + 1;
-    }
-
-    @Override
-    public Object visit(ASTForStatement node, Object data) {
-        // (npath of for + bool_comp of for + 1) * npath of next
-
-        int boolCompFor = sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
-
-        Integer nPathFor = (Integer) ((PLSQLNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
-
-        return boolCompFor + nPathFor + 1;
-    }
-
-    @Override
-    public Object visit(ASTReturnStatement node, Object data) {
-        // return statements are valued at 1, or the value of the boolean
-        // expression
-
-        ASTExpression expr = node.getFirstChildOfType(ASTExpression.class);
-
-        if (expr == null) {
-            return NumericConstants.ONE;
-        }
-
-        int boolCompReturn = sumExpressionComplexity(expr);
-        int conditionalExpressionComplexity = complexityMultipleOf(expr, 1, data);
-
-        if (conditionalExpressionComplexity > 1) {
-            boolCompReturn += conditionalExpressionComplexity;
-        }
-
-        if (boolCompReturn > 0) {
-            return boolCompReturn;
-        }
-        return NumericConstants.ONE;
-    }
-
-    @Override
-    public Object visit(ASTCaseWhenClause node, Object data) {
-        // bool_comp of switch + sum(npath(case_range))
-
-        int boolCompSwitch = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int npath = 1;
-        int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
-
-            // Fall-through labels count as 1 for complexity
-            Integer complexity = (Integer) n.jjtAccept(this, data);
-            caseRange *= complexity;
-        }
-        // add in npath of last label
-        npath += caseRange;
-        return boolCompSwitch + npath;
-    }
-
-    @Override
-    public Object visit(ASTCaseStatement node, Object data) {
-        // bool_comp of switch + sum(npath(case_range))
-
-        int boolCompSwitch = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
-
-        int npath = 0;
-        int caseRange = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            PLSQLNode n = (PLSQLNode) node.jjtGetChild(i);
-
-            // Fall-through labels count as 1 for complexity
-            Integer complexity = (Integer) n.jjtAccept(this, data);
-            caseRange *= complexity;
-        }
-        // add in npath of last label
-        npath += caseRange;
-        return boolCompSwitch + npath;
-    }
-
-    @Override
-    public Object visit(ASTConditionalOrExpression node, Object data) {
-        return NumericConstants.ONE;
+    protected Object[] getViolationParameters(ExecutableCode node, int metric) {
+        return new Object[] {node.getMethodName(), metric};
     }
 
     /**
@@ -337,11 +47,11 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
      *
      * <p>Note that this calculation applies to Cyclomatic Complexity as well.</p>
      *
-     * @param expr
-     *            control structure expression
+     * @param expr control structure expression
+     *
      * @return complexity of the boolean expression
      */
-    public static int sumExpressionComplexity(ASTExpression expr) {
+    static int sumExpressionComplexity(ASTExpression expr) {
         if (expr == null) {
             return 0;
         }
@@ -362,11 +72,5 @@ public class NPathComplexityRule extends AbstractStatisticalPLSQLRule {
         }
 
         return children;
-    }
-
-    @Override
-    public Object[] getViolationParameters(DataPoint point) {
-        return new String[] { ((ExecutableCode) point.getNode()).getMethodName(),
-            String.valueOf((int) point.getScore()), };
     }
 }
