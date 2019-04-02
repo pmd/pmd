@@ -4,10 +4,14 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
  * Rule attempts to count all public methods and public attributes
@@ -23,26 +27,39 @@ import net.sourceforge.pmd.util.NumericConstants;
  *
  * @author ported from Java original of aglover
  */
-public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
+public class ExcessivePublicCountRule extends AbstractApexRule {
+
+
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL =
+        CommonPropertyDescriptors.reportLevelProperty()
+                                 .desc("Minimum number of parameters to trigger a violation")
+                                 .defaultValue(20)
+                                 .require(positive())
+                                 .build();
 
     public ExcessivePublicCountRule() {
-        super(ASTUserClass.class);
-        setProperty(MINIMUM_DESCRIPTOR, 20d);
+        definePropertyDescriptor(REPORT_LEVEL);
+        addRuleChainVisit(ASTUserClass.class);
     }
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
-        if (node.getModifiers().isPublic() && !node.getImage().matches("<clinit>|<init>|clone")) {
-            return NumericConstants.ONE;
-        }
-        return NumericConstants.ZERO;
-    }
+    public Object visit(ASTUserClass node, Object data) {
+        long publicMethods =
+            node.findChildrenOfType(ASTMethod.class)
+                .stream()
+                .filter(it -> it.getModifiers().isPublic() && !it.isSynthetic())
+                .count();
 
-    @Override
-    public Object visit(ASTFieldDeclarationStatements node, Object data) {
-        if (node.getModifiers().isPublic() && !node.getModifiers().isStatic()) {
-            return NumericConstants.ONE;
+        long publicFields =
+            node.findChildrenOfType(ASTFieldDeclarationStatements.class)
+                .stream()
+                .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
+                .count();
+
+        if (publicFields + publicMethods > getProperty(REPORT_LEVEL)) {
+            addViolation(data, node);
         }
-        return NumericConstants.ZERO;
+
+        return data;
     }
 }

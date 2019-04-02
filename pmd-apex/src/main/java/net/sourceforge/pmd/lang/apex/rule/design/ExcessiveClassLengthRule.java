@@ -10,18 +10,19 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
  * This rule detects when a class exceeds a certain threshold. i.e. if a class
  * has more than 1000 lines of code.
  */
-public class ExcessiveClassLengthRule extends ExcessiveLengthRule {
+public class ExcessiveClassLengthRule extends AbstractCounterCheckRule.AbstractLineLengthCheckRule<ASTUserClass> {
+
     public ExcessiveClassLengthRule() {
         super(ASTUserClass.class);
-        setProperty(MINIMUM_DESCRIPTOR, 1000d);
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
-        if (!node.getModifiers().isTest()) {
-            return super.visit(node, data);
-        }
+    protected int defaultReportLevel() {
+        return 1000;
+    }
 
-        return data;
+    @Override
+    protected boolean isIgnored(ASTUserClass node) {
+        return node.getModifiers().isTest();
     }
 }

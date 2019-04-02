@@ -26,7 +26,7 @@ public abstract class AbstractApexOperationMetric extends AbstractApexMetric<AST
      */
     @Override
     public boolean supports(ASTMethod node) {
-        return !node.getImage().matches("(<clinit>|<init>|clone)")
+        return !node.isSynthetic()
             && !node.getFirstChildOfType(ASTModifierNode.class).isAbstract();
     }
 }
