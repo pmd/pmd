@@ -10,9 +10,13 @@ import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
  * This rule detects when a method exceeds a certain threshold. i.e. if a method
  * has more than x lines of code.
  */
-public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
+public class ExcessiveMethodLengthRule extends AbstractCounterCheckRule.AbstractLineLengthCheckRule<ExecutableCode> {
     public ExcessiveMethodLengthRule() {
         super(ExecutableCode.class);
-        setProperty(MINIMUM_DESCRIPTOR, 100d);
+    }
+
+    @Override
+    protected int defaultReportLevel() {
+        return 100;
     }
 }

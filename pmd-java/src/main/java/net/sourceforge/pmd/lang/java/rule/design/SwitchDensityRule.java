@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Switch Density - This is the number of statements over the number of
@@ -20,20 +25,26 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
  *
  * @author David Dixon-Peugh
  */
-public class SwitchDensityRule extends AbstractCounterCheckRule<ASTSwitchStatement> {
+public class SwitchDensityRule extends AbstractJavaRule {
+
+    private final PropertyDescriptor<Double> reportLevel =
+        PropertyFactory.doubleProperty("minimum")
+                       .desc("Threshold above which a node is reported")
+                       .require(positive())
+                       .defaultValue(10d)
+                       .build();
 
     public SwitchDensityRule() {
-        super(ASTSwitchStatement.class);
+        addRuleChainVisit(ASTSwitchStatement.class);
     }
 
     @Override
-    protected int defaultReportLevel() {
-        return 10;
-    }
-
-    @Override
-    protected boolean isViolation(ASTSwitchStatement node, int reportLevel) {
-        return new SwitchDensityVisitor().compute(node) >= reportLevel;
+    public Object visit(ASTSwitchStatement node, Object data) {
+        double density = new SwitchDensityVisitor().compute(node);
+        if (density >= getProperty(reportLevel)) {
+            addViolation(data, node);
+        }
+        return null;
     }
 
     private static class SwitchDensityVisitor extends JavaParserVisitorAdapter {
