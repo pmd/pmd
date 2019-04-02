@@ -1638,7 +1638,7 @@ your API.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Public]/MethodDeclarator/FormalParameters[
+//MethodDeclaration[@Public = 'true']/MethodDeclarator/FormalParameters[
      count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String']) > 3
 ]
 ]]>

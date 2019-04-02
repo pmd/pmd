@@ -58,4 +58,36 @@ public class MyClass {
 		     ]]>
 		</code>
     </test-code>
+    <test-code>
+        <description>
+            <![CDATA[
+non-public methods should not have findings
+            ]]>
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+public class MyClass {
+  protected void connectProtected(String username,
+    String pssd,
+    String databaseName,
+    String databaseAdress)
+  {
+  }
+  void connectPackagePrivate(String username,
+    String pssd,
+    String databaseName,
+    String databaseAdress)
+  {
+  }
+  private void connectPrivate(String username,
+    String pssd,
+    String databaseName,
+    String databaseAdress)
+  {
+  }
+}
+           ]]>
+       </code>
+    </test-code>
 </test-data>
