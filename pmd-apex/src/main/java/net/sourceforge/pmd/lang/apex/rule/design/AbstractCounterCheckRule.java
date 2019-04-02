@@ -19,7 +19,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 6.7.0
  */
-abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends AbstractApexRule {
+abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractApexRule {
 
 
     private final PropertyDescriptor<Integer> reportLevel =
@@ -29,7 +29,7 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
                                  .defaultValue(defaultReportLevel()).build();
 
 
-    AbstractExcessiveLengthRule(Class<T> nodeType) {
+    AbstractCounterCheckRule(Class<T> nodeType) {
         definePropertyDescriptor(reportLevel);
         addRuleChainVisit(nodeType);
     }
@@ -61,7 +61,7 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
         return data;
     }
 
-    static abstract class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractExcessiveLengthRule<T> {
+    static abstract class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
         AbstractLineLengthCheckRule(Class<T> nodeType) {
             super(nodeType);
