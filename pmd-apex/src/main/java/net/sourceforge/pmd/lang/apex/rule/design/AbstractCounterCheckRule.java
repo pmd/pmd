@@ -16,7 +16,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
 /**
- * Abstract class for rules counting the length of some node.
+ * Abstract class for rules counting some integer metric on some node.
  *
  * @author Clément Fournier
  * @since 6.7.0
@@ -36,7 +36,7 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
         if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
             addRuleChainVisit(nodeType);
         } else {
-            assert false;
+            assert false : "Rule chain visits must be concrete node types";
         }
     }
 
@@ -44,12 +44,17 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
     protected abstract int defaultReportLevel();
 
 
+    protected Object[] getViolationParameters(T node, int metric) {
+        return new Object[] {metric};
+    }
+
+
+    protected abstract int getMetric(T node);
+
     /** Return true if the node should be ignored. */
     protected boolean isIgnored(T node) {
         return false;
     }
-
-    protected abstract boolean isViolation(T node, int reportLevel);
 
 
     @Override
@@ -59,8 +64,9 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
         // since we only visit this node, it's ok
 
         if (!isIgnored(t)) {
-            if (isViolation(t, getProperty(reportLevel))) {
-                addViolation(data, node);
+            int metric = getMetric(t);
+            if (metric >= getProperty(reportLevel)) {
+                addViolation(data, node, getViolationParameters(t, metric));
             }
         }
 
@@ -74,9 +80,10 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
         }
 
         @Override
-        protected final boolean isViolation(T node, int reportLevel) {
-            return node.getEndLine() - node.getBeginLine() > reportLevel;
+        protected int getMetric(T node) {
+            return node.getEndLine() - node.getBeginLine();
         }
+
     }
 
 

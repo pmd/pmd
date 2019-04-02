@@ -45,9 +45,10 @@ public abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends Abstr
         super(nodeClass);
     }
 
+
     @Override
-    protected boolean isViolation(T node, int reportLevel) {
-        return (Integer) new NcssVisitor().visit(node, null) + 1 >= reportLevel;
+    protected int getMetric(T node) {
+        return (Integer) new NcssVisitor().visit(node, null) + 1;
     }
 
     private static class NcssVisitor extends ApexParserVisitorAdapter {
