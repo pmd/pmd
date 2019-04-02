@@ -17,7 +17,7 @@ public final class CommonPropertyDescriptors {
     }
 
     public static GenericPropertyBuilder<Integer> reportLevelProperty() {
-        return PropertyFactory.intProperty("reportLevel");
+        return PropertyFactory.intProperty("minimum");
     }
 
 }

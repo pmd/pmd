@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
+import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.CommonPropertyDescriptors;
@@ -22,6 +26,7 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
     private final PropertyDescriptor<Integer> reportLevel =
         CommonPropertyDescriptors.reportLevelProperty()
                                  .desc("Threshold above which a node is reported")
+                                 .require(positive())
                                  .defaultValue(defaultReportLevel()).build();
 
 
@@ -41,7 +46,7 @@ abstract class AbstractExcessiveLengthRule<T extends ApexNode<?>> extends Abstra
 
 
     @Override
-    public Object visit(ApexNode<?> node, Object data) {
+    public Object visit(AbstractApexNodeBase node, Object data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok
