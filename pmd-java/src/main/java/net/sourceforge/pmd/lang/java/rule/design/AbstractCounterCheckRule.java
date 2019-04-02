@@ -15,9 +15,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaMetricsRule;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.rule.CommonPropertyDescriptors;
+import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 

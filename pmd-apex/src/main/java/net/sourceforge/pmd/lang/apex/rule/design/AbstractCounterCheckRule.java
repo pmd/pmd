@@ -9,7 +9,7 @@ import static net.sourceforge.pmd.properties.constraints.NumericConstraints.posi
 import net.sourceforge.pmd.lang.apex.ast.AbstractApexNodeBase;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-import net.sourceforge.pmd.lang.apex.rule.CommonPropertyDescriptors;
+import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
