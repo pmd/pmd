@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -49,8 +53,7 @@ public enum BinaryOp {
     // multiplicative
     MUL("*"),
     DIV("/"),
-    MOD("%"),
-    ;
+    MOD("%");
 
 
     private static final Map<String, BinaryOp> LOOKUP =
@@ -129,6 +132,7 @@ public enum BinaryOp {
     }
 
 
+    @Override
     public String toString() {
         return this.code;
     }

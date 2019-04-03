@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
@@ -58,6 +62,7 @@ public enum AssignmentOp {
     }
 
 
+    @Override
     public String toString() {
         return this.code;
     }

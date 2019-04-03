@@ -1,3 +1,7 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static java.util.stream.Collectors.collectingAndThen;
@@ -47,6 +51,7 @@ public enum UnaryOp {
     }
 
 
+    @Override
     public String toString() {
         return this.code;
     }

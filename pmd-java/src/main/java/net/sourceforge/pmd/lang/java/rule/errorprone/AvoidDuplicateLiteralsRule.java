@@ -34,6 +34,7 @@ import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
 
+@SuppressWarnings("PMD")
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
     private static final Logger LOG = Logger.getLogger(AvoidDuplicateLiteralsRule.class.getName());
 

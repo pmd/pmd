@@ -66,7 +66,7 @@ public interface ASTAnnotation extends TypeNode, ASTMemberValue {
         if (TypeHelper.isA(this, "java.lang.SuppressWarnings")) {
             for (ASTLiteral element : findDescendantsOfType(ASTLiteral.class)) {
                 if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo("\"PMD." + rule.getName() + "\"")
-                        // Check for standard annotations values
+                    // Check for standard annotations values
                     || element.hasImageEqualTo("\"all\"")) {
                     return true;
                 } else if (element.hasImageEqualTo("\"serial\"")) {

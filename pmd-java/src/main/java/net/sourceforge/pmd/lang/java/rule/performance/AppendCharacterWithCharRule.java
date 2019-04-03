@@ -29,13 +29,13 @@ public class AppendCharacterWithCharRule extends AbstractJavaRule {
         if (bs == null) {
             return data;
         }
-// REVERT ME
-//        if (node.isSingleCharacterStringLiteral()) {
-//            if (!InefficientStringBufferingRule.isInStringBufferOperation(node, 8, "append")) {
-//                return data;
-//            }
-//            addViolation(data, node);
-//        }
+        // REVERT ME
+        //        if (node.isSingleCharacterStringLiteral()) {
+        //            if (!InefficientStringBufferingRule.isInStringBufferOperation(node, 8, "append")) {
+        //                return data;
+        //            }
+        //            addViolation(data, node);
+        //        }
         return data;
     }
 }

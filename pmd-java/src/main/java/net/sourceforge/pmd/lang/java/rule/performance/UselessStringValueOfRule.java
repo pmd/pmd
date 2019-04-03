@@ -42,8 +42,8 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
                         ASTType argType = declaration.getNode().jjtGetParent().jjtGetParent()
                                 .getFirstDescendantOfType(ASTType.class);
                         if (argType != null && argType.jjtGetChild(0) instanceof ASTReferenceType
-                            // REVERT ME
-                            // && ((ASTReferenceType) argType.jjtGetChild(0)).isArray()
+                        // REVERT ME
+                        // && ((ASTReferenceType) argType.jjtGetChild(0)).isArray()
                         ) {
                             return super.visit(node, data);
                         }

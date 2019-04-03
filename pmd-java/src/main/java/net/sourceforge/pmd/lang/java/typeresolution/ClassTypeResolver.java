@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
@@ -823,6 +822,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             break;
         default:
             rollupTypeUnaryNumericPromotion(node);
+            break;
         }
 
         return data;
@@ -858,97 +858,98 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 
     @Override
+    @SuppressWarnings("checkstyle")
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
-      return data;
+        return data;
         // visit method arguments in reverse
-//        for (int i = primaryNode.jjtGetNumChildren() - 1; i >= 0; --i) {
-//            ((JavaNode) primaryNode.jjtGetChild(i)).jjtAccept(this, data);
-//        }
-//
-//        JavaTypeDefinition primaryNodeType = null;
-//        AbstractJavaTypeNode previousChild = null;
-//        AbstractJavaTypeNode nextChild;
-//        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
-//
-//        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
-//            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
-//            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
-//                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
-//
-//            // skip children which already have their type assigned
-//            if (currentChild.getType() == null) {
-//                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
-//                if (currentChild.jjtGetLastToken().toString().equals("this")) {
-//
-//                    if (previousChild != null) { // Qualified 'this' expression
-//                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
-//                    } else { // simple 'this' expression
-//                        ASTClassOrInterfaceDeclaration typeDeclaration
-//                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-//
-//                        if (typeDeclaration != null) {
-//                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
-//                        }
-//                    }
-//
-//                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
-//                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
-//
-//                    if (previousChild != null) { // Qualified 'super' expression
-//                        // anonymous classes can't have qualified super expression, thus
-//                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
-//                        // looking for enclosing super types
-//                        currentChild.setTypeDefinition(
-//                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
-//                    } else { // simple 'super' expression
-//                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
-//                    }
-//
-//                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
-//                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
-//                } else if (previousChild != null && previousChild.getType() != null) {
-//                    String currentChildImage = currentChild.getImage();
-//                    if (currentChildImage == null) {
-//                        // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
-//                        currentChildImage = currentChild.jjtGetLastToken().toString();
-//                    }
-//
-//                    ASTArguments astArguments = nextChild != null
-//                            ? nextChild.getFirstChildOfType(ASTArguments.class) : null;
-//
-//                    if (astArguments != null) { // method
-//                        ASTArgumentList astArgumentList = getArgumentList(astArguments);
-//                        int methodArgsArity = getArgumentListArity(astArgumentList);
-//                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArugments(currentChild);
-//
-//                        List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
-//                                                                        currentChildImage,
-//                                                                        typeArguments, methodArgsArity, accessingClass);
-//
-//                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
-//                                                                               methods, astArgumentList));
-//                    } else { // field
-//                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
-//                                                                    currentChildImage, accessingClass));
-//                    }
-//                }
-//            }
-//
-//
-//            if (currentChild.getType() != null) {
-//                primaryNodeType = currentChild.getTypeDefinition();
-//            } else {
-//                // avoid falsely passing tests
-//                primaryNodeType = null;
-//                break;
-//            }
-//
-//            previousChild = currentChild;
-//        }
-//
-//        primaryNode.setTypeDefinition(primaryNodeType);
-//
-//        return data;
+        //        for (int i = primaryNode.jjtGetNumChildren() - 1; i >= 0; --i) {
+        //            ((JavaNode) primaryNode.jjtGetChild(i)).jjtAccept(this, data);
+        //        }
+        //
+        //        JavaTypeDefinition primaryNodeType = null;
+        //        AbstractJavaTypeNode previousChild = null;
+        //        AbstractJavaTypeNode nextChild;
+        //        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
+        //
+        //        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
+        //            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
+        //            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
+        //                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
+        //
+        //            // skip children which already have their type assigned
+        //            if (currentChild.getType() == null) {
+        //                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
+        //                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+        //
+        //                    if (previousChild != null) { // Qualified 'this' expression
+        //                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+        //                    } else { // simple 'this' expression
+        //                        ASTClassOrInterfaceDeclaration typeDeclaration
+        //                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        //
+        //                        if (typeDeclaration != null) {
+        //                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
+        //                        }
+        //                    }
+        //
+        //                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
+        //                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+        //
+        //                    if (previousChild != null) { // Qualified 'super' expression
+        //                        // anonymous classes can't have qualified super expression, thus
+        //                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
+        //                        // looking for enclosing super types
+        //                        currentChild.setTypeDefinition(
+        //                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
+        //                    } else { // simple 'super' expression
+        //                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
+        //                    }
+        //
+        //                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
+        //                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+        //                } else if (previousChild != null && previousChild.getType() != null) {
+        //                    String currentChildImage = currentChild.getImage();
+        //                    if (currentChildImage == null) {
+        //                        // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
+        //                        currentChildImage = currentChild.jjtGetLastToken().toString();
+        //                    }
+        //
+        //                    ASTArguments astArguments = nextChild != null
+        //                            ? nextChild.getFirstChildOfType(ASTArguments.class) : null;
+        //
+        //                    if (astArguments != null) { // method
+        //                        ASTArgumentList astArgumentList = getArgumentList(astArguments);
+        //                        int methodArgsArity = getArgumentListArity(astArgumentList);
+        //                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArugments(currentChild);
+        //
+        //                        List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
+        //                                                                        currentChildImage,
+        //                                                                        typeArguments, methodArgsArity, accessingClass);
+        //
+        //                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
+        //                                                                               methods, astArgumentList));
+        //                    } else { // field
+        //                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
+        //                                                                    currentChildImage, accessingClass));
+        //                    }
+        //                }
+        //            }
+        //
+        //
+        //            if (currentChild.getType() != null) {
+        //                primaryNodeType = currentChild.getTypeDefinition();
+        //            } else {
+        //                // avoid falsely passing tests
+        //                primaryNodeType = null;
+        //                break;
+        //            }
+        //
+        //            previousChild = currentChild;
+        //        }
+        //
+        //        primaryNode.setTypeDefinition(primaryNodeType);
+        //
+        //        return data;
     }
 
     /**

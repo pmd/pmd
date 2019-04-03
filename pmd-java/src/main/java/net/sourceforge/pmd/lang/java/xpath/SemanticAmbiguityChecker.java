@@ -24,8 +24,11 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * REMOVE ME, only for test purposes.
  */
 @Deprecated
-public class SemanticAmbiguityChecker {
+public final class SemanticAmbiguityChecker {
 
+    private SemanticAmbiguityChecker() {
+
+    }
 
     public static SemanticAmbiguityResult semanticCheck(Node node) {
         if (!(node instanceof ASTAmbiguousName)) {
@@ -99,12 +102,7 @@ public class SemanticAmbiguityChecker {
             }
         }
 
-        //noinspection RedundantIfStatement
-        if (numOnDemand == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return numOnDemand == 1;
 
     }
 
