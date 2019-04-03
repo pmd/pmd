@@ -917,10 +917,10 @@ RUNE_LIT
 
 //unicode_value    = unicode_char | little_u_value | big_u_value | escaped_char .
 fragment UNICODE_VALUE
-    : UNICODE_CHAR
-    | LITTLE_U_VALUE
+    : LITTLE_U_VALUE
     | BIG_U_VALUE
     | ESCAPED_CHAR
+    | UNICODE_CHAR
     ;
 
 //byte_value       = octal_byte_value | hex_byte_value .
