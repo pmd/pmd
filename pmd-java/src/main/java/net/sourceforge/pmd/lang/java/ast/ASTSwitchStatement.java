@@ -12,14 +12,9 @@ import org.apache.commons.lang3.EnumUtils;
 
 
 /**
- * Represents a {@code switch} statement.
- *
- * <pre class="grammar">
- *
- * SwitchStatement ::= "switch" "(" {@linkplain ASTExpression Expression} ")" "{"
- *                     ( {@linkplain ASTSwitchLabel SwitchLabel} {@linkplain ASTBlockStatement BlockStatement}* )*
- *                     "}"
- * </pre>
+ * Represents a {@code switch} statement. Its syntax is identical to
+ * {@link ASTSwitchExpression SwitchExpression}, though it does not need
+ * to be exhaustive. See the doc of that node for details.
  */
 public class ASTSwitchStatement extends AbstractJavaNode implements Iterable<ASTSwitchLabel> {
     public ASTSwitchStatement(int id) {

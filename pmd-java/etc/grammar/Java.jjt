@@ -2467,7 +2467,7 @@ void PrimaryPrefix() #void :
 | "super"                                 #SuperExpression
 // todo we can probably simplify the lambda lookaheads
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
 | ("(" Expression() ")")                  #ParenthesizedExpression
 | UnqualifiedAllocationExpr()
@@ -2835,7 +2835,7 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" ( ConditionalExpression() #Expression ) ({checkForMultipleCaseLabels();} "," ( ConditionalExpression() #Expression ) )*
+  "case" (ConditionalExpression()) ({checkForMultipleCaseLabels();} "," (ConditionalExpression()) )*
 |
   "default" {jjtThis.setDefault();}
 )

@@ -4,8 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
+/**
+ * A non-fallthrough switch case, written with an arrow ({@code ->})
+ * instead of a colon.
+ *
+ * <pre class="grammar">
+ *
+ * SwitchLabeledRule ::= {@link ASTSwitchLabeledExpression SwitchLabeledExpression}
+ *                     | {@link ASTSwitchLabeledBlock SwitchLabeledBlock}
+ *                     | {@link ASTSwitchLabeledThrowStatement SwitchLabeledThrowStatement}
+ *
+ * </pre>
+ */
+public interface ASTSwitchLabeledRule extends JavaNode, LeftRecursiveNode {
+    // needs to extend LeftRecursiveNode to fit the text range to the children
 
-public interface ASTSwitchLabeledRule extends Node {
+    /**
+     * Returns the label of this expression.
+     */
+    default ASTSwitchLabel getLabel() {
+        return (ASTSwitchLabel) jjtGetChild(0);
+    }
 
 }

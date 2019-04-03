@@ -7,7 +7,35 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTSwitchExpression extends AbstractJavaTypeNode {
+/**
+ * A switch expression, as introduced in Java 12. This node only occurs
+ * in the contexts where an expression is expected. In particular, if
+ * switch constructs occurring in statement position are parsed as a
+ * {@linkplain ASTSwitchStatement SwitchStatement}, and not a
+ * {@link ASTSwitchExpression SwitchExpression} within a
+ * {@link ASTStatementExpression StatementExpression}. That is
+ * because switch statements are not required to be exhaustive, contrary
+ * to switch expressions.
+ *
+ * <p>Their syntax is identical though.
+ *
+ * <p>TODO Do we group the statements of a SwitchNormalBlock ? Do we unify
+ * their interface ? SwitchStatement implements Iterator&lt;SwitchLabel&gt;
+ * which seems shitty tbh.
+ *
+ * <pre class="grammar">
+ *
+ * SwitchExpression  ::= "switch" "(" {@link ASTExpression Expression} ")" SwitchBlock
+ *
+ * SwitchBlock       ::= SwitchArrowBlock | SwitchNormalBlock
+ *
+ * SwitchArrowBlock  ::=  "{" ( {@link ASTSwitchLabeledRule SwitchLabeledRule} )* "}"
+ * SwitchNormalBlock ::=  "{" ( {@linkplain ASTSwitchLabel SwitchLabel} {@linkplain ASTBlockStatement BlockStatement}* )* "}"
+ *
+ * </pre>
+ */
+public class ASTSwitchExpression extends AbstractJavaTypeNode implements ASTExpression {
+
     ASTSwitchExpression(int id) {
         super(id);
     }
@@ -20,5 +48,15 @@ public class ASTSwitchExpression extends AbstractJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+
+    /**
+     * Gets the expression tested by this switch.
+     * This is the expression between the parentheses.
+     */
+    public ASTExpression getTestedExpression() {
+        return (ASTExpression) jjtGetChild(0);
+    }
+
 }
 /* JavaCC - OriginalChecksum=8b1747ca53f66203ee212a3699a9a2f3 (do not edit this line) */
