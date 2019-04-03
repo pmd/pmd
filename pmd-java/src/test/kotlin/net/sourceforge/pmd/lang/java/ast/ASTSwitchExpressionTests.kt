@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 
 
 /**
@@ -20,6 +21,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
             switch (day) {
                 case FRIDAY, SUNDAY -> 6;
                 case WEDNESDAY      -> 9;
+                case SONNABEND      -> throw new MindBlownException();
                 default             -> {
                     int k = day * 2;
                     int result = f(k);
@@ -59,6 +61,25 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                     it::getValueAsInt shouldBe 9
                 }
             }
+
+            child<ASTSwitchLabeledThrowStatement> {
+                child<ASTSwitchLabel> {
+                    it::isDefault shouldBe false
+
+                    child<ASTVariableReference> {
+                        it::getVariableName shouldBe "SONNABEND"
+                    }
+                }
+                child<ASTThrowStatement> {
+                    child<ASTConstructorCall> {
+                        child<ASTClassOrInterfaceType> {
+                            it::getTypeImage shouldBe "MindBlownException"
+                        }
+                        child<ASTArgumentList> {}
+                    }
+                }
+            }
+
             child<ASTSwitchLabeledBlock> {
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe true
@@ -73,6 +94,46 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+
+    parserTest("Non-trivial labels") {
+
+
+        """ switch (day) {
+                case a + b, 4 * 2 / Math.PI -> 6;
+            }
+        """ should matchExpr<ASTSwitchExpression> {
+
+            it::getTestedExpression shouldBe child<ASTVariableReference> {
+                it::getVariableName shouldBe "day"
+            }
+
+            child<ASTSwitchLabeledExpression> {
+
+                child<ASTSwitchLabel> {
+                    it::isDefault shouldBe false
+
+                    child<ASTAdditiveExpression>(ignoreChildren = true) {
+                        it::getOp shouldBe ADD
+                    }
+                    child<ASTMultiplicativeExpression> {
+                        it::getOp shouldBe DIV
+
+                        child<ASTMultiplicativeExpression>(ignoreChildren = true) {
+                            it::getOp shouldBe MUL
+                        }
+
+                        child<ASTFieldAccess>(ignoreChildren = true) {
+                            it::getFieldName shouldBe "PI"
+                        }
+                    }
+                }
+                child<ASTNumericLiteral> {
+                    it::getValueAsInt shouldBe 6
                 }
             }
         }

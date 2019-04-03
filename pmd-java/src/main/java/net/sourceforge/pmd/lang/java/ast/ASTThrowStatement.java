@@ -5,7 +5,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * A {@code throw} statement.
+ *
+ * <pre class="grammar">
+ *
+ * ThrowStatement ::= "throw" {@link ASTExpression Expression} ";"
+ *
+ * </pre>
+ */
 public class ASTThrowStatement extends AbstractJavaNode {
+
     public ASTThrowStatement(int id) {
         super(id);
     }
