@@ -2,14 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -18,15 +17,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
+
 /**
  * Computes Atfd.
  *
  * @author Clément Fournier
  * @since 6.0.0
- * @deprecated Is internal API, will be moved in 7.0.0
  */
-@Deprecated
-@InternalApi
 public class AtfdBaseVisitor extends JavaParserVisitorAdapter {
 
 

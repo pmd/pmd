@@ -79,7 +79,7 @@ sophisticated metrics, that already give access to detection strategies.
   [Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.java)
 * Create classes `AbstractOperationMetric` and `AbstractClassMetric`. These must implement `Metric<T>` and
   `Metric<O>`, respectively. They typically provide defaults for the `supports` method of each metric.
-  [Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/AbstractJavaOperationMetric.java)
+  [Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/AbstractJavaOperationMetric.java)
 * Create enums `ClassMetricKey` and `OperationMetricKey`. These must implement `MetricKey<T>` and `MetricKey<O>`. The
   enums list all available metric keys for your language.
   [Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/api/JavaOperationMetricKey.java)
@@ -100,5 +100,5 @@ build a `Signature<N>` from a `N` are a good idea.
  the Java framework, you can build a `JavaOperationSigMask` that matches all method signatures with visibility
  `public`. A sigmask implements `SigMask<S>`, where `S` is the type of signature your mask handles.
 * Create utility methods in your abstract class metric class to count signatures matching a specific mask.
-[Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/AbstractJavaClassMetric.java#L52)
+[Example](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/AbstractJavaClassMetric.java#L52)
 

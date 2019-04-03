@@ -2,11 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.visitors;
+package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -21,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
 
 
 /**
@@ -29,10 +28,7 @@ import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
  *
  * @author Clément Fournier
  * @author Jason Bennett
- * @deprecated Is internal API, will be moved in 7.0.0
  */
-@Deprecated
-@InternalApi
 public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
 
     /** Instance. */
@@ -200,9 +196,7 @@ public class NpathBaseVisitor extends JavaParserVisitorReducedAdapter {
     public Object visit(ASTConditionalExpression node, Object data) {
         // bool comp of guard clause + complexity of last two children (= total - 1)
 
-        ASTExpression wrapper = new ASTExpression(Integer.MAX_VALUE);
-        wrapper.jjtAddChild(node.jjtGetChild(0), 0);
-        int boolCompTernary = CycloMetric.booleanExpressionComplexity(wrapper);
+        int boolCompTernary = CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode());
 
         return boolCompTernary + sumChildrenComplexities(node, data) - 1;
     }

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl.internal;
+package net.sourceforge.pmd.lang.java.metrics.internal.visitors;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -19,8 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric;
-import net.sourceforge.pmd.lang.java.metrics.impl.CycloMetric.CycloOption;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
@@ -67,7 +67,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
             if (considerBooleanPaths) {
                 ((MutableInt) data).increment();
             } else if (node.jjtGetNumChildren() > 1 + label.jjtGetChildIndex()
-                    && node.jjtGetChild(label.jjtGetChildIndex() + 1) instanceof ASTBlockStatement) {
+                && node.jjtGetChild(label.jjtGetChildIndex() + 1) instanceof ASTBlockStatement) {
                 // an empty label is only counted if we count boolean paths
                 ((MutableInt) data).increment();
             }

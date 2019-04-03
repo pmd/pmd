@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.metrics.impl;
+package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.List;
 
@@ -12,7 +12,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.impl.internal.CycloVisitor;
+import net.sourceforge.pmd.lang.java.metrics.AbstractJavaOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.visitors.CycloVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
