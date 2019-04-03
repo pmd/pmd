@@ -11,7 +11,6 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <p>This is only relevant to node construction and is package private.
  *
- *
  * @author Clément Fournier
  */
 interface LeftRecursiveNode {

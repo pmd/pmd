@@ -30,12 +30,7 @@ public final class SemanticAmbiguityChecker {
 
     }
 
-    public static SemanticAmbiguityResult semanticCheck(Node node) {
-        if (!(node instanceof ASTAmbiguousName)) {
-            return null;
-        }
-
-        ASTAmbiguousName name = (ASTAmbiguousName) node;
+    public static SemanticAmbiguityResult semanticCheck(ASTAmbiguousName name) {
 
         if (name.jjtGetParent() instanceof ASTExpression) {
 

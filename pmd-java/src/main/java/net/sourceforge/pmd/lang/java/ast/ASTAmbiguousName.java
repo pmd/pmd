@@ -39,8 +39,9 @@ import net.sourceforge.pmd.lang.java.xpath.SemanticAmbiguityChecker;
  *
  * <blockquote>
  * A name is syntactically classified as an ExpressionName in these contexts:
- * ...
- * - As the qualifying expression in a qualified class instance creation expression (§15.9)*
+ *   ...
+ * - As the qualifying expression in a qualified class instance creation
+ *  expression (§15.9)
  * </blockquote>
  *
  * We don't know at the moment the name is parsed that it will be
@@ -49,13 +50,15 @@ import net.sourceforge.pmd.lang.java.xpath.SemanticAmbiguityChecker;
  * expression. In that case, the name can be reclassified, and e.g. if
  * it's a simple name be promoted to {@link ASTVariableReference}. This
  * type of immediate disambiguation is carried out by the {@link AbstractJavaNode#jjtClose()}
- * method of those nodes that can be pushed.
+ * method of those nodes that do force a specific context on their
+ * left-hand side. See also {@link LeftRecursiveNode}.
  *
  * <p>Another mechanism is {@link #forceExprContext()} and {@link #forceTypeContext()},
  * which are called by the parser to promote an ambiguous name to an
- * expression or a type when it's sure they must be one.
+ * expression or a type when exiting from the {@link JavaParser#PrimaryExpression()}
+ * production or {@link JavaParser#ClassOrInterfaceType()}.
  *
- * <p>These two mechanisms perform the first classification step, the
+ * <p>Those two mechanisms perform the first classification step, the
  * one that only depends on the syntactic context and not on semantic
  * information. A second pass on the AST after building the symbol tables
  * would allow us to remove all the remaining ambiguous names.
@@ -99,6 +102,7 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
     public String getTypeImage() {
         return getImage();
     }
+
 
     public List<String> getSegments() {
         return Arrays.asList(getImage().split("\\."));

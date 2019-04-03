@@ -479,6 +479,17 @@ public class JavaParser {
        }
   }
 
+  private void forceTypeContext() {
+       Node top = jjtree.peekNode();
+
+       if (top instanceof ASTAmbiguousName) {
+           // see doc on the method
+           Node replacement = ((ASTAmbiguousName) top).forceTypeContext();
+           jjtree.popNode();
+           jjtree.pushNode(replacement);
+       }
+  }
+
 }
 PARSER_END(JavaParser)
 
@@ -2040,13 +2051,6 @@ void ArrayTypeDim():
 void ReferenceType() #void:
 {}
 {
-
-  // TODO TypeVariable is ambiguous with ClassOrInterfaceType
-  // but I think it would be good to have a node for it nevertheless
-  // to help typeres, since TypeVariables have special types (intersection types)
-  // This could be handled in a rewrite phase, which is necessary for
-  // disambiguation. Since type parameters shadow anything, their disambiguation
-  // is stable regardless of classpath config.
     ( PrimitiveType() Dims() )                           #ArrayType
   | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
 }
@@ -2059,19 +2063,11 @@ void ReferenceType() #void:
 void ClassOrInterfaceType() #void:
 {}
 {
-
-
-
     /*
          FIXME We gobble up all identifiers until we find
            either type arguments or annotations, because
            it may be a FQCN, e.g. java.util.List is a single node.
-
-           But java.util.Map.Entry should be two nodes ((java.util.Map).Entry)
-           I would have said this doesn't matter but the other fixme comment just
-           below shows we need a rewrite phase anyway
        */
-
 
   /*
    First, gobble up all identifiers until the first type arguments
@@ -2095,10 +2091,9 @@ void ClassOrInterfaceType() #void:
 
   /*
     Now if there are other segments, either the previous segment specified type
-    arguments, or the next has an annotation.
-
-    Each of the following segments is its own ClassOrInterfaceType which encloses the
-    previous one. The resulting structure appears left-recursive, but the parser just
+    arguments, or the next has an annotation. Either way we know that all the
+    following segments is a type name. Each segment is parsed as its own ClassOrInterfaceType
+    which encloses the previous one. The resulting structure appears left-recursive, but the parser just
     executes a loop. That scheme preserves the position of type arguments and annotations.
     See #1150.
   */
@@ -2111,14 +2106,7 @@ void ClassOrInterfaceType() #void:
         [ LOOKAHEAD( "<" ) TypeArguments() ]
       ) #ClassOrInterfaceType
   )*
-  {
-    Node top = jjtree.peekNode();
-    if (top instanceof ASTAmbiguousName) {
-      Node replacement = ((ASTAmbiguousName) top).forceTypeContext();
-      jjtree.popNode();
-      jjtree.pushNode(replacement);
-    }
-  }
+  { forceTypeContext(); }
 }
 
 
@@ -2231,19 +2219,7 @@ void Expression() #AssignmentExpression(>1):
 AssignmentOp AssignmentOperator() #void:
 {}
 {
-    ( "="
-    | "*="
-    | "/="
-    | "%="
-    | "+="
-    | "-="
-    | "<<="
-    | ">>="
-    | ">>>="
-    | "&="
-    | "^="
-    | "|="
-    )
+    ( "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|=" )
     {return AssignmentOp.fromImage(getToken(0).getImage());}
 }
 
@@ -3232,8 +3208,10 @@ String VoidName() #void:
 }
 
 // This is used to get JJTree to generate a node.
-// Since variable references are most of the time ambiguous, they're
-// not created directly by the parser
+// Variable references are always ambiguous
+// when they're parsed, so they're not created
+// normally by jjtree, but rather by the disambiguation
+// hooks spread across the parser
 //noinspection JavaCCJccUnusedProduction
 void VariableReference():
 {}
