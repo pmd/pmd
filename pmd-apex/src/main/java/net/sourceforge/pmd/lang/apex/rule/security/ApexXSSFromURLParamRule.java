@@ -114,7 +114,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private String getReturnType(ASTReturnStatement node) {
         ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
         if (method != null) {
-            return method.getNode().getMethodInfo().getReturnType().getApexName();
+            return method.getReturnType();
         }
 
         return "";
@@ -169,7 +169,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 String varType = null;
 
                 if (node instanceof ASTVariableDeclaration) {
-                    varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+                    varType = ((ASTVariableDeclaration) node).getType();
 
                 }
 
@@ -208,7 +208,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
             String varType = null;
             if (node instanceof ASTVariableDeclaration) {
-                varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+                varType = ((ASTVariableDeclaration) node).getType();
             }
 
             if (varType == null || !"id".equalsIgnoreCase(varType)) {

@@ -30,10 +30,10 @@ public class Foo {}
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_remediation\_points\_multiplier|5|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/ClassNamingConventions" />
 ```
@@ -74,7 +74,7 @@ for (int i = 0; i < 42; i++) { // preferred approach
 |cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/ForLoopsMustUseBraces" />
 ```
@@ -117,7 +117,7 @@ else
 |cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/IfElseStmtsMustUseBraces" />
 ```
@@ -156,7 +156,7 @@ if (foo) {  // preferred approach
 |cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/IfStmtsMustUseBraces" />
 ```
@@ -189,9 +189,18 @@ public class Foo {
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |skipTestMethodUnderscores|false|Skip underscores in test methods|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/MethodNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/codestyle.xml/MethodNamingConventions">
+    <properties>
+        <property name="skipTestMethodUnderscores" value="false" />
+    </properties>
+</rule>
 ```
 
 ## OneDeclarationPerLine
@@ -235,9 +244,18 @@ Integer b;
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |strictMode|false|If true, mark combined declaration even if the declarations are on separate lines.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/OneDeclarationPerLine" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/codestyle.xml/OneDeclarationPerLine">
+    <properties>
+        <property name="strictMode" value="false" />
+    </properties>
+</rule>
 ```
 
 ## VariableNamingConventions
@@ -267,7 +285,7 @@ public class Foo {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_remediation\_points\_multiplier|5|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |checkMembers|true|Check member variables|no|
 |checkLocals|true|Check local variables|no|
@@ -281,9 +299,28 @@ public class Foo {
 |parameterPrefix||Method parameter variable prefixes|yes. Delimiter is ','.|
 |parameterSuffix||Method parameter variable suffixes|yes. Delimiter is ','.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/VariableNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/codestyle.xml/VariableNamingConventions">
+    <properties>
+        <property name="checkMembers" value="true" />
+        <property name="checkLocals" value="true" />
+        <property name="checkParameters" value="true" />
+        <property name="staticPrefix" value="" />
+        <property name="staticSuffix" value="" />
+        <property name="memberPrefix" value="" />
+        <property name="memberSuffix" value="" />
+        <property name="localPrefix" value="" />
+        <property name="localSuffix" value="" />
+        <property name="parameterPrefix" value="" />
+        <property name="parameterSuffix" value="" />
+    </properties>
+</rule>
 ```
 
 ## WhileLoopsMustUseBraces
@@ -320,7 +357,7 @@ while (true) {  // preferred approach
 |cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
 |cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/codestyle.xml/WhileLoopsMustUseBraces" />
 ```

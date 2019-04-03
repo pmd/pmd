@@ -268,9 +268,19 @@ public static Foo getFoo() {
 |checkNonStaticMethods|true|Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.|no|
 |checkNonStaticFields|false|Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/multithreading.xml/NonThreadSafeSingleton" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/multithreading.xml/NonThreadSafeSingleton">
+    <properties>
+        <property name="checkNonStaticMethods" value="true" />
+        <property name="checkNonStaticFields" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UnsynchronizedStaticDateFormatter

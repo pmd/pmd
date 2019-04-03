@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.design;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
 import java.util.HashMap;
@@ -47,13 +45,13 @@ public class TooManyFieldsRule extends AbstractApexRule {
         stats = new HashMap<>(5);
         nodes = new HashMap<>(5);
 
-        List<ASTField> l = node.findDescendantsOfType(ASTField.class);
+        List<ASTField> fields = node.findDescendantsOfType(ASTField.class);
 
-        for (ASTField fd : l) {
-            if (fd.getNode().getModifierInfo().all(FINAL, STATIC)) {
+        for (ASTField field : fields) {
+            if (field.getModifiers().isFinal() && field.getModifiers().isStatic()) {
                 continue;
             }
-            ASTUserClass clazz = fd.getFirstParentOfType(ASTUserClass.class);
+            ASTUserClass clazz = field.getFirstParentOfType(ASTUserClass.class);
             if (clazz != null) {
                 bumpCounterFor(clazz);
             }

@@ -50,8 +50,17 @@ cutting through 100% of the document.
 |----|-------------|-----------|-----------|
 |checkSelfDescendantAbreviation|false|descendant::self abreviation, '//', will also trigger this rule.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/xsl/performance.xml/AvoidAxisNavigation" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/xsl/performance.xml/AvoidAxisNavigation">
+    <properties>
+        <property name="checkSelfDescendantAbreviation" value="false" />
+    </properties>
+</rule>
 ```
 

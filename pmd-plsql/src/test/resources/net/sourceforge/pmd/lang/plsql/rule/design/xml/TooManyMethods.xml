@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Too many methods in a package</description>
+        <rule-property name="maxmethods">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code>
+<![CDATA[
+CREATE OR REPLACE PACKAGE update_planned_hrs
+IS
+PROCEDURE method1 (id IN NUMBER);
+PROCEDURE method2 (id IN NUMBER);
+PROCEDURE method3 (id IN NUMBER);
+PROCEDURE method4 (id IN NUMBER);
+FUNCTION getId1() RETURN NUMBER;
+FUNCTION getId2() RETURN NUMBER;
+FUNCTION getId3() RETURN NUMBER;
+FUNCTION getId4() RETURN NUMBER;
+END update_planned_hrs;
+/
+]]>
+</code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Getters are ignored</description>
+        <rule-property name="maxmethods">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code>
+<![CDATA[
+CREATE OR REPLACE PACKAGE update_planned_hrs
+IS
+PROCEDURE method1 (id IN NUMBER);
+PROCEDURE method2 (id IN NUMBER);
+PROCEDURE method3 (id IN NUMBER);
+FUNCTION getId1() RETURN NUMBER;
+FUNCTION isId2() RETURN BOOL;
+FUNCTION getId3() RETURN NUMBER;
+FUNCTION getId4() RETURN NUMBER;
+END update_planned_hrs;
+/
+]]>
+</code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Too many methods in a type definition</description>
+        <rule-property name="maxmethods">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code>
+<![CDATA[
+CREATE TYPE data_typ1 AS OBJECT 
+   ( year NUMBER, 
+     MEMBER FUNCTION prod1(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION prod2(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION prod3(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION prod4(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION prod5(invent NUMBER) RETURN NUMBER 
+   ); 
+/
+]]>
+</code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+    <test-code>
+        <description>Getters/Setters are ignored for types</description>
+        <rule-property name="maxmethods">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code>
+<![CDATA[
+CREATE TYPE data_typ1 AS OBJECT 
+   ( year NUMBER, 
+     MEMBER FUNCTION prod1(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION prod2(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION prod3(invent NUMBER) RETURN NUMBER, 
+     MEMBER FUNCTION getProd(invent NUMBER) RETURN NUMBER, 
+     MEMBER PROCEDURE setProd(invent NUMBER) 
+   ); 
+/
+]]>
+</code>
+        <source-type>plsql</source-type>
+    </test-code>
+
+</test-data>
+

@@ -40,14 +40,14 @@ public class ApexCSRFRule extends AbstractApexRule {
      * @param data
      */
     private void checkForCSRF(ASTMethod node, Object data) {
-        if (node.getNode().getMethodInfo().isConstructor()) {
+        if (node.isConstructor()) {
             if (Helper.foundAnyDML(node)) {
                 addViolation(data, node);
             }
 
         }
 
-        String name = node.getNode().getMethodInfo().getName();
+        String name = node.getImage();
         if (name.equalsIgnoreCase(INIT)) {
             if (Helper.foundAnyDML(node)) {
                 addViolation(data, node);

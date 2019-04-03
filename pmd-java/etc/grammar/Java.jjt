@@ -1,4 +1,7 @@
 /**
+ * Add support for Java 12 switch expressions and switch rules.
+ * Andreas Dangel, Clément Fournier 03/2019
+ *====================================================================
  * Add support for Java 10 Local Variable Type Inference
  * See #743. In Java 10 mode, "var" as local variable type is handled special.
  * Andreas Dangel 04/2018
@@ -376,6 +379,36 @@ public class JavaParser {
   private void checkForBadTypeIdentifierUsage(String image) {
     if (jdkVersion >= 10 && "var".equals(image)) {
       throwParseException("With JDK 10, 'var' is a restricted local variable type and cannot be used for type declarations!");
+    }
+  }
+  private void checkForMultipleCaseLabels() {
+    if (jdkVersion < 12) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 12");
+    }
+  }
+  /**
+   * Keeps track during tree construction, whether we are currently building a switch label.
+   * A switch label must not contain a LambdaExpression.
+   * Unfortunately, we have added LambdaExpression as part of PrimaryPrefix, which is wrong.
+   * To keep compatibility, this flag is used, whether a LambdaExpression should be parsed
+   * in PrimaryPrefix.
+   * See also comment at #Expression().
+   */
+  private boolean inSwitchLabel = false;
+  private void checkForSwitchRules() {
+    if (jdkVersion < 12) {
+      throwParseException("Switch rules in switch statements are only supported with Java 12");
+    }
+  }
+  private void checkForSwitchExpression() {
+    if (jdkVersion < 12) {
+      throwParseException("Switch expressions are only supported with Java 12");
+    }
+  }
+
+  private void checkForBreakExpression() {
+    if (jdkVersion < 12) {
+      throwParseException("Expressions in break statements are only supported with Java 12");
     }
   }
 
@@ -2004,6 +2037,9 @@ void Expression() :
  // separated from the AssignmentExpression production. Their use is restricted
  // to method and constructor argument, cast operand, and the RHS of assignments.
  // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
+ //
+ // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
+ // as a workaround.
 {}
 {
   ConditionalExpression()
@@ -2140,13 +2176,14 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 {
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
 /*
- * This is really ugly... we are repeting the CastExpression lookahead and full expression...
+ * This is really ugly... we are repeating the CastExpression lookahead and full expression...
  * If we don't the lookahead within CastExpression is ignored, and it simply looks for the expression,
  * meaning we can't be explicit as to what can be casted depending on the cast type (primitive or otherwhise)
 */
 | LOOKAHEAD("(" (Annotation())* PrimitiveType() ")") CastExpression()
 | LOOKAHEAD("(" (Annotation())* Type() ( "&" ReferenceType() )* ")" UnaryExpressionNotPlusMinus()) CastExpression()
 | PostfixExpression()
+| SwitchExpression()
 }
 
 void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
@@ -2162,6 +2199,13 @@ void CastExpression() :
     "(" (Annotation())* PrimitiveType() ")"
   ) "(" (TypeAnnotation())* Type() ")" UnaryExpression()
 | "(" (TypeAnnotation())* Type() ( "&" {checkForBadIntersectionTypesInCasts(); jjtThis.setIntersectionTypes(true);} ReferenceType() )* ")" UnaryExpressionNotPlusMinus()
+}
+
+void SwitchExpression() :
+{}
+{
+    {checkForSwitchExpression();}
+    "switch" "(" Expression() ")" SwitchBlock()
 }
 
 void PrimaryExpression() :
@@ -2191,9 +2235,9 @@ void PrimaryPrefix() :
   Literal()
 | LOOKAHEAD(2) "this" {jjtThis.setUsesThisModifier();}
 | "super" {jjtThis.setUsesSuperModifier();}
-| LOOKAHEAD( <IDENTIFIER> "->" ) LambdaExpression()
-| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->" ) LambdaExpression()
-| LOOKAHEAD( FormalParameters() "->" ) LambdaExpression()
+| LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( "(" VariableDeclaratorId() ( "," VariableDeclaratorId() )* ")" "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( FormalParameters() "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD(3) "(" Expression() ")"
 | AllocationExpression()
 | LOOKAHEAD( ResultType() "." "class" ) ResultType() "." "class"
@@ -2415,20 +2459,62 @@ void StatementExpression() :
   PostfixExpression()
 }
 
-void SwitchStatement() :
+void SwitchStatement():
 {}
 {
-  "switch" "(" Expression() ")" "{"
-    ( SwitchLabel() ( BlockStatement() )* )*
-  "}"
+  "switch" "(" Expression() ")" SwitchBlock()
+}
+
+void SwitchBlock() #void :
+{}
+{
+    "{"
+        (
+            SwitchLabel()
+            (
+                "->" SwitchLabeledRulePart() (SwitchLabeledRule())*
+            |
+                ":" (LOOKAHEAD(2) SwitchLabel() ":")* (BlockStatement())* (SwitchLabeledStatementGroup())*
+            )
+        )?
+    "}"
+}
+
+void SwitchLabeledRule() #void :
+{checkForSwitchRules();}
+{
+    SwitchLabel() "->" SwitchLabeledRulePart()
+}
+
+void SwitchLabeledRulePart() #void:
+{checkForSwitchRules();}
+{
+    (
+        ( Expression() ";" ) #SwitchLabeledExpression(2)
+      |
+        ( Block() ) #SwitchLabeledBlock(2)
+      |
+        ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
+    )
+}
+
+// For PMD 7, make this a real node to group the labels + statements
+void SwitchLabeledStatementGroup() #void:
+{}
+{
+    (LOOKAHEAD(2) SwitchLabel() ":")+ ( BlockStatement() )*
 }
 
 void SwitchLabel() :
 {}
 {
-  "case" Expression() ":"
+{ inSwitchLabel = true; }
+(
+  "case" ( ConditionalExpression() #Expression ) ({checkForMultipleCaseLabels();} "," ( ConditionalExpression() #Expression ) )*
 |
-  "default" {jjtThis.setDefault();} ":"
+  "default" {jjtThis.setDefault();}
+)
+{ inSwitchLabel = false; }
 }
 
 void IfStatement() :
@@ -2494,7 +2580,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
+  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() {checkForBreakExpression();} ] ";"
 }
 
 void ContinueStatement() :

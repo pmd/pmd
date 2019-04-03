@@ -48,4 +48,4 @@ if %_needjfxlib% EQU 1 (
 )
 
 
-java %jreopts% -classpath "%classpath%" %OPTS% %MAIN_CLASS% %*
+java %PMD_JAVA_OPTS% %jreopts% -classpath "%classpath%" %OPTS% %MAIN_CLASS% %*
