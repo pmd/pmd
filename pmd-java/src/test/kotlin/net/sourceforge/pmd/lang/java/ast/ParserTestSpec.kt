@@ -1,8 +1,13 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotlintest.*
 import io.kotlintest.specs.IntelliMarker
+import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.test.matchNode
+import net.sourceforge.pmd.lang.ast.test.numChildren
+import net.sourceforge.pmd.lang.ast.test.parent
 import io.kotlintest.should as kotlintestShould
 
 /**
@@ -132,6 +137,33 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
 
             infix fun String.shouldNot(matcher: Matcher<String>) =
                     should(matcher.invert())
+
+            fun inContext(nodeParsingCtx: Companion.NodeParsingCtx<*>, assertions: ImplicitNodeParsingCtx.() -> Unit) {
+                ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
+            }
+
+            inner class ImplicitNodeParsingCtx(private val nodeParsingCtx: Companion.NodeParsingCtx<*>) {
+
+                /**
+                 * A matcher that succeeds if the string parses correctly.
+                 */
+                fun parse(): Matcher<String> = this@VersionedTestCtx.parseIn(nodeParsingCtx)
+
+                fun parseAs(matcher: TreeNodeWrapper<Node, *>.() -> Any): Assertions<String> = { str ->
+                    val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
+                    val idx = node.jjtGetChildIndex()
+                    node.parent kotlintestShould matchNode<Node> {
+                        if (idx > 0) {
+                            unspecifiedChildren(idx)
+                        }
+                        matcher()
+                        val left = it.numChildren - 1 - idx
+                        if (left > 0) {
+                            unspecifiedChildren(left)
+                        }
+                    }
+                }
+            }
         }
     }
 }

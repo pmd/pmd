@@ -32,7 +32,11 @@ public enum UnaryOp {
     /** "~" */
     BITWISE_INVERSE("~"),
     /** "!" */
-    BOOLEAN_NOT("!");
+    BOOLEAN_NOT("!"),
+    /** "++" */
+    INCREMENT("++"),
+    /** "--" */
+    DECREMENT("--");
 
     private static final Map<String, UnaryOp> LOOKUP =
         Arrays.stream(values())
@@ -49,7 +53,6 @@ public enum UnaryOp {
     UnaryOp(String code) {
         this.code = code;
     }
-
 
     @Override
     public String toString() {

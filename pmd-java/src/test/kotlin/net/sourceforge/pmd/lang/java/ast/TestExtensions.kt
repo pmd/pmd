@@ -40,3 +40,71 @@ fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVaria
             otherAssertions(it)
         }
 
+
+fun TreeNodeWrapper<Node, *>.variableRef(name: String, otherAssertions: (ASTVariableReference) -> Unit = {}) =
+        child<ASTVariableReference> {
+            it::getVariableName shouldBe name
+            otherAssertions(it)
+        }
+
+fun TreeNodeWrapper<Node, *>.parenthesized(inside: TreeNodeWrapper<Node, ASTParenthesizedExpression>.() -> ASTExpression) =
+        child<ASTParenthesizedExpression> {
+            it::getWrappedExpression shouldBe inside()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, out ASTExpression>.() -> ASTExpression): ASTExpression =
+        when (op) {
+            UnaryOp.INCREMENT -> child<ASTPreIncrementExpression> {
+                baseExpr()
+            }
+            UnaryOp.DECREMENT -> child<ASTPreDecrementExpression> {
+                baseExpr()
+            }
+            else -> child<ASTUnaryExpression> {
+                it::getOp shouldBe op
+                it::getBaseExpression shouldBe baseExpr()
+            }
+        }
+
+
+fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, ASTPostfixExpression>.() -> ASTPrimaryExpression) =
+        child<ASTPostfixExpression> {
+            it::getOp shouldBe op
+            it::getBaseExpression shouldBe baseExpr()
+        }
+
+fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: TreeNodeWrapper<Node, ASTClassOrInterfaceType>.() -> Unit = {}) =
+        child<ASTClassOrInterfaceType> {
+            it::getSimpleName shouldBe simpleName
+            contents()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType) =
+        child<ASTPrimitiveType> {
+            it::getModelConstant shouldBe type
+            it::getTypeImage shouldBe type.token
+        }
+
+
+fun TreeNodeWrapper<Node, *>.castExpr(contents: TreeNodeWrapper<Node, ASTCastExpression>.() -> Unit) =
+        child<ASTCastExpression> {
+            contents()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: TreeNodeWrapper<Node, ASTAdditiveExpression>.() -> Unit): ASTAdditiveExpression =
+
+        child<ASTAdditiveExpression> {
+            it::getOp shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.number() =
+        child<ASTNumericLiteral> {}
+
+fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =
+        child<ASTBooleanLiteral> {
+            it::isTrue shouldBe value
+        }

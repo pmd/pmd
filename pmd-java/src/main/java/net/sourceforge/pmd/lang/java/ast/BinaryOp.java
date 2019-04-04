@@ -14,8 +14,6 @@ import java.util.Map;
 /**
  * Represents a binary operator.
  *
- * TODO use that
- *
  * @see UnaryOp
  * @see AssignmentOp
  */

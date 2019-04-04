@@ -1,8 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
+import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -14,174 +15,196 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
     parserTest("Simple unary expressions") {
 
-        "-2" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
-            it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
-        }
+        inContext(ExpressionParsingCtx) {
+            "-2" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    number()
+                }
+            }
 
-        "+2" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_PLUS
-            it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
-        }
+            "-2" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    number()
+                }
+            }
 
-        "~2" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.BITWISE_INVERSE
-            it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
-        }
+            "-2" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    number()
+                }
+            }
 
-        "!true" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.BOOLEAN_NOT
-            it::getBaseExpression shouldBe child<ASTBooleanLiteral> {}
+            "-2" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    number()
+                }
+            }
         }
     }
 
     parserTest("Unary expression precedence") {
 
-        "2 + -2" should matchExpr<ASTAdditiveExpression> {
-
-            child<ASTNumericLiteral> {}
-            child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.UNARY_MINUS
-                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+        inContext(ExpressionParsingCtx) {
+            "2 + -2" should parseAs {
+                additiveExpr(ADD) {
+                    number()
+                    unaryExpr(UNARY_MINUS) {
+                        number()
+                    }
+                }
             }
-        }
 
-        "2 +-2" should matchExpr<ASTAdditiveExpression> {
-
-            child<ASTNumericLiteral> {}
-            child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.UNARY_MINUS
-                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            "2 +-2" should parseAs {
+                additiveExpr(ADD) {
+                    number()
+                    unaryExpr(UNARY_MINUS) {
+                        number()
+                    }
+                }
             }
-        }
 
-        "2 + +2" should matchExpr<ASTAdditiveExpression> {
-
-            child<ASTNumericLiteral> {}
-            child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.UNARY_PLUS
-                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            "2 + +2" should parseAs {
+                additiveExpr(ADD) {
+                    number()
+                    unaryExpr(UNARY_PLUS) {
+                        number()
+                    }
+                }
             }
-        }
 
-        "2 ++ 2" should notParseIn(ExpressionParsingCtx)
+            "2 ++ 2" shouldNot parse()
+            "2 -- 2" shouldNot parse()
+        }
     }
 
     parserTest("Unary expression ambiguity corner cases") {
 
-        "(p)+q" should matchExpr<ASTAdditiveExpression> {
-            it::getOp shouldBe BinaryOp.ADD
-
-            child<ASTParenthesizedExpression>(ignoreChildren = true) {}
-            child<ASTVariableReference> {}
-        }
-
-
-        "(p)~q" should matchExpr<ASTCastExpression> {
-            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "p"
-            }
-
-            it::getCastExpression shouldBe child<ASTUnaryExpression> {
-                child<ASTVariableReference> {}
-            }
-        }
-
-        "(p)!q" should matchExpr<ASTCastExpression> {
-            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "p"
-            }
-
-            it::getCastExpression shouldBe child<ASTUnaryExpression> {
-                child<ASTVariableReference> {}
-            }
-        }
-
-        "(p)++" should matchExpr<ASTPostfixExpression> {
-
-            child<ASTParenthesizedExpression> {
-                child<ASTVariableReference> {
-
+        inContext(ExpressionParsingCtx) {
+            "(p)+q" should parseAs {
+                additiveExpr(ADD) {
+                    parenthesized {
+                        variableRef("p")
+                    }
+                    variableRef("q")
                 }
             }
-        }
 
-        PrimitiveType
-                .values()
-                .filter { it.isNumeric }
-                .map { it.token }
-                .forEach { type ->
 
-                    "($type)+q" should matchExpr<ASTCastExpression> {
-                        it::getCastType shouldBe child<ASTPrimitiveType> {
-                            it::getTypeImage shouldBe type
-                        }
+            "(p)~q" should parseAs {
+                castExpr {
+                    classType("p")
 
-                        it::getCastExpression shouldBe child<ASTUnaryExpression> {
-                            child<ASTVariableReference> {}
-                        }
-                    }
-
-                    "($type)-q" should matchExpr<ASTCastExpression> {
-                        it::getCastType shouldBe child<ASTPrimitiveType> {
-                            it::getTypeImage shouldBe type
-                        }
-
-                        it::getCastExpression shouldBe child<ASTUnaryExpression> {
-                            child<ASTVariableReference> {}
-                        }
-                    }
-
-                    "($type)++q" should matchExpr<ASTCastExpression> {
-
-                        it::getCastType shouldBe child<ASTPrimitiveType> {
-                            it::getTypeImage shouldBe type
-                        }
-
-                        it::getCastExpression shouldBe child<ASTPreIncrementExpression> {
-                            child<ASTVariableReference> {}
-                        }
+                    unaryExpr(BITWISE_INVERSE) {
+                        variableRef("q")
                     }
                 }
+            }
 
+            "(p)!q" should parseAs {
+                castExpr {
+                    classType("p")
+
+                    unaryExpr(BOOLEAN_NOT) {
+                        variableRef("q")
+                    }
+                }
+            }
+
+            "(p)++" should parseAs {
+                postfixExpr(INCREMENT) {
+                    parenthesized {
+                        variableRef("p")
+                    }
+                }
+            }
+
+            "i+++i" should parseAs {
+                additiveExpr(ADD) {
+                    postfixExpr(INCREMENT) {
+                        variableRef("i")
+                    }
+                    variableRef("i")
+                }
+            }
+
+            // "++i++" doesn't compile so don't test it
+
+
+            PrimitiveType
+                    .values()
+                    .filter { it.isNumeric }
+                    .forEach { type ->
+
+                        "($type)+q" should parseAs {
+                            castExpr {
+                                primitiveType(type)
+
+                                unaryExpr(UNARY_PLUS) {
+                                    variableRef("q")
+                                }
+                            }
+                        }
+
+                        "($type)-q" should parseAs {
+                            castExpr {
+                                primitiveType(type)
+
+                                unaryExpr(UNARY_MINUS) {
+                                    variableRef("q")
+                                }
+                            }
+                        }
+
+                        "($type)++q" should parseAs {
+                            castExpr {
+                                primitiveType(type)
+
+                                unaryExpr(INCREMENT) {
+                                    variableRef("q")
+                                }
+                            }
+                        }
+                    }
+        }
     }
 
 
     parserTest("Unary expression is right-associative") {
 
-        "!!true" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.BOOLEAN_NOT
-            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.BOOLEAN_NOT
-                it::getBaseExpression shouldBe child<ASTBooleanLiteral> {}
-            }
-        }
+        inContext(ExpressionParsingCtx) {
 
-        "~~1" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.BITWISE_INVERSE
-            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.BITWISE_INVERSE
-                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            "!!true" should parseAs {
+                unaryExpr(UnaryOp.BOOLEAN_NOT) {
+                    unaryExpr(UnaryOp.BOOLEAN_NOT) {
+                        boolean(true)
+                    }
+                }
             }
-        }
 
-        "-~1" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
-            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.BITWISE_INVERSE
-                it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            "~~1" should parseAs {
+                unaryExpr(BITWISE_INVERSE) {
+                    unaryExpr(BITWISE_INVERSE) {
+                        number()
+                    }
+                }
             }
-        }
 
-        "-+-+1" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
-            it::getBaseExpression shouldBe child<ASTUnaryExpression> {
-                it::getOp shouldBe UnaryOp.UNARY_PLUS
-                it::getBaseExpression shouldBe child<ASTUnaryExpression> {
-                    it::getOp shouldBe UnaryOp.UNARY_MINUS
-                    it::getBaseExpression shouldBe child<ASTUnaryExpression> {
-                        it::getOp shouldBe UnaryOp.UNARY_PLUS
-                        it::getBaseExpression shouldBe child<ASTNumericLiteral> {}
+            "-~1" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    unaryExpr(BITWISE_INVERSE) {
+                        number()
+                    }
+                }
+            }
+
+            "-+-+1" should parseAs {
+                unaryExpr(UNARY_MINUS) {
+                    unaryExpr(UNARY_PLUS) {
+                        unaryExpr(UNARY_MINUS) {
+                            unaryExpr(UNARY_PLUS) {
+                                number()
+                            }
+                        }
                     }
                 }
             }

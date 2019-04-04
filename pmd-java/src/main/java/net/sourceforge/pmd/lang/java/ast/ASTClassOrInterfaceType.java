@@ -113,6 +113,12 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements AST
         visitor.visit(this, data);
     }
 
+    /**
+     * Returns the simple name of this type.
+     */
+    public String getSimpleName() {
+        return getImage();
+    }
 
     /**
      * For now this returns the name of the type with all the segments,

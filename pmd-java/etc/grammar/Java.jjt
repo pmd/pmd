@@ -2265,7 +2265,7 @@ void AndExpression() #AndExpression(>1):
 void EqualityExpression() #void:
 {}
 {
-  InstanceOfExpression()  (EqualityExprTail())*
+  InstanceOfExpression() (EqualityExprTail())*
 }
 
 
@@ -2648,7 +2648,6 @@ void UnqualifiedAllocationExpr() #void :
 /*
  * The second LOOKAHEAD specification below is to parse to PrimarySuffix
  * if there is an expression between the "[...]".
- * TODO use ArrayTypeDims
  */
 void ArrayDimsAndInits() #void:
 {}

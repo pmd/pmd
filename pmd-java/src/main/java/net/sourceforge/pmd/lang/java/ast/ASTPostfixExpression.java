@@ -45,4 +45,15 @@ public class ASTPostfixExpression extends AbstractJavaTypeNode implements ASTExp
         return getImage();
     }
 
+    /**
+     * Returns the operator of this postfix expression.
+     */
+    public UnaryOp getOp() {
+        return UnaryOp.fromImage(getImage());
+    }
+
+    public ASTPrimaryExpression getBaseExpression() {
+        return (ASTPrimaryExpression) jjtGetChild(0);
+    }
+
 }

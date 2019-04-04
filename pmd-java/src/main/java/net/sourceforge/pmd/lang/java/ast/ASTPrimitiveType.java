@@ -107,6 +107,11 @@ public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
         }
 
 
+        @Override
+        public String toString() {
+            return getToken();
+        }
+
         /**
          * Returns the token used to represent the type in source,
          * e.g. "int" or "double".
