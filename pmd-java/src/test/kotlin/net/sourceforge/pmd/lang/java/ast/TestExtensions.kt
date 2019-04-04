@@ -74,8 +74,8 @@ fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<
             it::getBaseExpression shouldBe baseExpr()
         }
 
-fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: TreeNodeWrapper<Node, ASTClassOrInterfaceType>.() -> Unit = {}) =
-        child<ASTClassOrInterfaceType> {
+fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: TreeNodeWrapper<Node, ASTClassOrInterfaceType>.() -> Unit = EmptyAssertions) =
+        child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
             it::getSimpleName shouldBe simpleName
             contents()
         }
@@ -94,10 +94,23 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: TreeNodeWrapper<Node, ASTCastExp
         }
 
 
-fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: TreeNodeWrapper<Node, ASTAdditiveExpression>.() -> Unit): ASTAdditiveExpression =
-
+fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: TreeNodeWrapper<Node, ASTAdditiveExpression>.() -> Unit) =
         child<ASTAdditiveExpression> {
             it::getOp shouldBe op
+            assertions()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: TreeNodeWrapper<Node, ASTMultiplicativeExpression>.() -> Unit) =
+        child<ASTMultiplicativeExpression> {
+            it::getOp shouldBe op
+            assertions()
+        }
+
+private val EmptyAssertions: TreeNodeWrapper<Node, out Node>.() -> Unit = {}
+
+fun TreeNodeWrapper<Node, *>.switchExpr(assertions: TreeNodeWrapper<Node, ASTSwitchExpression>.() -> Unit = EmptyAssertions): ASTSwitchExpression =
+        child(ignoreChildren = assertions == EmptyAssertions) {
             assertions()
         }
 

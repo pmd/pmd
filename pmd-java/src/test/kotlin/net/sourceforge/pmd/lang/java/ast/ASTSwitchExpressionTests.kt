@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 
 /**
@@ -134,6 +135,39 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
                 child<ASTNumericLiteral> {
                     it::getValueAsInt shouldBe 6
+                }
+            }
+        }
+    }
+
+    parserTest("Switch precedence") {
+
+
+        inContext(ExpressionParsingCtx) {
+
+            "2 * switch (day) {default -> 6;}" should parseAs {
+                multiplicativeExpr(MUL) {
+                    number()
+                    switchExpr()
+                }
+            }
+
+            "switch (day) {default -> 6;} * 4" should parseAs {
+                multiplicativeExpr(MUL) {
+                    switchExpr()
+                    number()
+                }
+            }
+
+            "switch (day) {default -> 6;} + 6" should parseAs {
+                additiveExpr(ADD) {
+                    switchExpr()
+                    number()
+                }
+            }
+            "-switch (day) {default -> 6;}" should parseAs {
+                unaryExpr(UnaryOp.UNARY_MINUS) {
+                    switchExpr()
                 }
             }
         }
