@@ -23,35 +23,15 @@ import net.sourceforge.pmd.lang.ast.Node;
  * </pre>
  *
  */
-public class ASTConditionalExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTConditionalExpression extends AbstractJavaTypeNode implements ASTExpression {
 
 
-    public ASTConditionalExpression(int id) {
+    ASTConditionalExpression(int id) {
         super(id);
     }
 
-    public ASTConditionalExpression(JavaParser p, int id) {
+    ASTConditionalExpression(JavaParser p, int id) {
         super(p, id);
-    }
-
-
-    /**
-     * @deprecated To be removed in 7.0.0
-     */
-    @Deprecated
-    public void setTernary() {
-        // noop
-    }
-
-
-    /**
-     * This method always returns true.
-     *
-     * @deprecated To be removed in 7.0.0
-     */
-    @Deprecated
-    public boolean isTernary() {
-        return true;
     }
 
 
