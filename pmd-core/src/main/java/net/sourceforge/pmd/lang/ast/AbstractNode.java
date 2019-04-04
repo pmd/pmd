@@ -19,8 +19,11 @@ public abstract class AbstractNode implements Node {
 
     private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
 
+    private static final Node[] EMPTY_ARRAY = new Node[0];
+
     protected Node parent;
-    protected Node[] children;
+    // never null, never contains null elements
+    protected Node[] children = EMPTY_ARRAY;
     protected int childIndex;
     protected int id;
 
@@ -74,9 +77,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public void jjtAddChild(final Node child, final int index) {
-        if (children == null) {
-            children = new Node[index + 1];
-        } else if (index >= children.length) {
+        if (index >= children.length) {
             final Node[] newChildren = new Node[index + 1];
             System.arraycopy(children, 0, newChildren, 0, children.length);
             children = newChildren;
@@ -102,7 +103,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public int jjtGetNumChildren() {
-        return children == null ? 0 : children.length;
+        return children.length;
     }
 
     @Override
@@ -137,7 +138,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public int getBeginColumn() {
         if (beginColumn == -1) {
-            if (children != null && children.length > 0) {
+            if (children.length > 0) {
                 return children[0].getBeginColumn();
             } else {
                 throw new RuntimeException("Unable to determine beginning line of Node.");
