@@ -146,10 +146,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     void insertChild(AbstractJavaNode child, int index, boolean overwrite) {
         // Allow to insert a child without overwriting
         // If the child is null, it is replaced. If it is not null, children are shifted
-        if (children == null) {
-            assert index == 0;
-            children = new Node[] {child};
-        } else if (index <= children.length) {
+        if (index <= children.length) {
             if (overwrite || children[index] == null) {
                 children[index] = child;
             } else {
