@@ -9,6 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @author Clément Fournier
  */
+@Deprecated
 public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
 
     @Override

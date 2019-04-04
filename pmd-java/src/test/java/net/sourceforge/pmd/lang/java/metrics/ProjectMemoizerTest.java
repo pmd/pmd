@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
@@ -68,7 +69,7 @@ public class ProjectMemoizerTest {
 
         final List<Integer> result = new ArrayList<>();
 
-        acu.jjtAccept(new JavaParserVisitorReducedAdapter() {
+        acu.jjtAccept(new JavaParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
                 MetricMemoizer<MethodLikeNode> op = toplevel.getOperationMemoizer(node.getQualifiedName());

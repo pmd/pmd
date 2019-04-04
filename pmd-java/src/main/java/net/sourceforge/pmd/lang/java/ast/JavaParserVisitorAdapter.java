@@ -67,6 +67,18 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTReferenceType) node, data);
     }
 
+
+    @Override
+    public Object visit(@Nonnull ASTIntersectionType node, Object data) {
+        return visit((ASTReferenceType) node, data);
+    }
+
+
+    @Override
+    public Object visit(@Nonnull ASTWildcardType node, Object data) {
+        return visit((ASTReferenceType) node, data);
+    }
+
     @Override
     public Object visit(@Nonnull ASTClassOrInterfaceType node, Object data) {
         return visit((ASTReferenceType) node, data);
@@ -75,6 +87,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     public Object visit(@Nonnull ASTExpression node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
+    }
+
+    @Override
+    public Object visit(@Nonnull ASTLambdaExpression node, Object data) {
+        return visit((ASTExpression) node, data);
     }
 
     @Override
@@ -164,6 +181,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
     public Object visit(@Nonnull ASTPostfixExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Override
+    public Object visit(@Nonnull ASTSwitchExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
 
@@ -261,6 +283,49 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     @Override
     public Object visit(@Nonnull ASTClassLiteral node, Object data) {
         return visit((ASTLiteral) node, data);
+    }
+
+    @Override
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        return visit((ASTAnyTypeDeclaration) node, data);
+    }
+
+
+    public Object visit(ASTAnyTypeDeclaration node, Object data) {
+        return visit((JavaNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        return visit((ASTMethodOrConstructorDeclaration) node, data);
+    }
+
+    @Override
+    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
+        return visit((ASTMethodOrConstructorDeclaration) node, data);
+    }
+
+
+    @Override
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        return visit((ASTMethodOrConstructorDeclaration) node, data);
+    }
+
+
+    public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
+        return visit((MethodLikeNode) node, data);
     }
 
 

@@ -6,7 +6,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTAnnotationMethodDeclaration extends AbstractMethodLikeNode {
+public class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
     public ASTAnnotationMethodDeclaration(int id) {
         super(id);
     }

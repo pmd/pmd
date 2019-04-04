@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class TccAttributeAccessCollector extends JavaParserVisitorReducedAdapter {
+public class TccAttributeAccessCollector extends JavaParserVisitorAdapter {
 
     private final ASTAnyTypeDeclaration exploredClass;
 

@@ -9,7 +9,7 @@ import java.util.Stack;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
  * Fills the PackageStats.
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
  * @author Clément Fournier
  * @since 6.0.0
  */
-public class MultifileVisitor extends JavaParserVisitorReducedAdapter {
+public class MultifileVisitor extends JavaParserVisitorAdapter {
 
     private final Stack<ClassStats> stack = new Stack<>();
     private final PackageStats toplevel;
