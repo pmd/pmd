@@ -11,8 +11,7 @@ import java.util.Locale;
 /**
  * A numeric literal of any type (double, int, long, float, etc).
  */
-public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLiteral {
-
+public final class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLiteral {
 
     // by default is double
     // TODO all of this can be done in jjtCloseNodeScope
@@ -20,12 +19,12 @@ public class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLitera
     private boolean isFloat;
 
 
-    public ASTNumericLiteral(int id) {
+    ASTNumericLiteral(int id) {
         super(id);
     }
 
 
-    public ASTNumericLiteral(JavaParser p, int id) {
+    ASTNumericLiteral(JavaParser p, int id) {
         super(p, id);
     }
 

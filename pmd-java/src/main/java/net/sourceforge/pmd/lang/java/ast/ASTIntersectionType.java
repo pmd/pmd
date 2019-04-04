@@ -29,11 +29,11 @@ import java.util.Iterator;
  *
  * <pre class="grammar">
  *
- * IntersectionType ::= {@link ASTType (AnnotatedType | ClassOrInterfaceType)} ("&" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
+ * IntersectionType ::= {@link ASTType (AnnotatedType | ClassOrInterfaceType)} ("&amp;" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
  *
  * </pre>
  */
-public class ASTIntersectionType extends AbstractJavaTypeNode implements ASTReferenceType, Iterable<ASTType> {
+public final class ASTIntersectionType extends AbstractJavaTypeNode implements ASTReferenceType, Iterable<ASTType> {
 
     ASTIntersectionType(int id) {
         super(id);

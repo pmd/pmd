@@ -28,7 +28,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  * </pre>
  */
 // @formatter:on
-public class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
+public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
 
     ASTClassOrInterfaceType(ASTAmbiguousName lhs, String image) {
         super(JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
+public final class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
 
     private JavaTypeDefinition typeDefinition;
 

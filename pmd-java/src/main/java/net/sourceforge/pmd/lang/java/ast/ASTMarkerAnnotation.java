@@ -17,14 +17,14 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see ASTSingleMemberAnnotation
  * @see ASTNormalAnnotation
  */
-public class ASTMarkerAnnotation extends AbstractJavaTypeNode implements ASTAnnotation {
+public final class ASTMarkerAnnotation extends AbstractJavaTypeNode implements ASTAnnotation {
 
-    public ASTMarkerAnnotation(int id) {
+    ASTMarkerAnnotation(int id) {
         super(id);
     }
 
 
-    public ASTMarkerAnnotation(JavaParser p, int id) {
+    ASTMarkerAnnotation(JavaParser p, int id) {
         super(p, id);
     }
 

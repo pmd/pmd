@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Child of an {@link ASTMethodDeclaration}.
  *
+ * TODO This is not useful, remove
+ *
  * <p>
  *
  * MethodDeclarator ::=  &lt;IDENTIFIER&gt; {@link ASTFormalParameters FormalParameters} ( "[" "]" )*
@@ -15,12 +17,12 @@ package net.sourceforge.pmd.lang.java.ast;
  * </p>
  *
  */
-public class ASTMethodDeclarator extends AbstractJavaNode {
-    public ASTMethodDeclarator(int id) {
+public final class ASTMethodDeclarator extends AbstractJavaNode {
+    ASTMethodDeclarator(int id) {
         super(id);
     }
 
-    public ASTMethodDeclarator(JavaParser p, int id) {
+    ASTMethodDeclarator(JavaParser p, int id) {
         super(p, id);
     }
 

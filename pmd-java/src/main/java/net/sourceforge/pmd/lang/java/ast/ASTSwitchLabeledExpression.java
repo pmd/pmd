@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
  *
  * </pre>
  */
-public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTSwitchLabeledRule {
+public final class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
     ASTSwitchLabeledExpression(int id) {
         super(id);

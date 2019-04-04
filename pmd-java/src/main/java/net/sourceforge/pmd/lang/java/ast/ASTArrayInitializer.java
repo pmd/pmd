@@ -23,12 +23,13 @@ import java.util.Iterator;
  * </pre>
  *
  */
-public class ASTArrayInitializer extends AbstractJavaTypeNode implements ASTExpression, Iterable<ASTExpression> {
-    public ASTArrayInitializer(int id) {
+public final class ASTArrayInitializer extends AbstractJavaTypeNode implements ASTExpression, Iterable<ASTExpression> {
+
+    ASTArrayInitializer(int id) {
         super(id);
     }
 
-    public ASTArrayInitializer(JavaParser p, int id) {
+    ASTArrayInitializer(JavaParser p, int id) {
         super(p, id);
     }
 

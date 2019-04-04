@@ -20,7 +20,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTArrayDimExpr extends AbstractJavaTypeNode {
+public final class ASTArrayDimExpr extends AbstractJavaTypeNode {
 
     ASTArrayDimExpr(int id) {
         super(id);
@@ -30,16 +30,13 @@ public class ASTArrayDimExpr extends AbstractJavaTypeNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
 
-    ASTExpression getExpression() {
+    ASTExpression getLengthExpression() {
         return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
     }
 

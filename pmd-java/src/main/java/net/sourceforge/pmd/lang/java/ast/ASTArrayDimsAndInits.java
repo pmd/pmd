@@ -6,34 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * TODO get rid of Dimensionable here. Ideally reuse {@link ASTArrayTypeDim},
- *     or use a special node for array creation, bc {@link ASTAllocationExpression}
- *     is too broad.
- *
- * Current grammar:
- * <pre class="grammar">
- *
- * ArrayDimsAndInit ::= TypeAnnotation* "[" Expression "]" ( "[" "]" )*
- *                    | ( "[" "]" )+ ArrayInitializer()
- *
- * </pre>
- *
- * Actual JLS (https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-DimExprs):
- * <pre class="grammar">
- *
- * (: This production doesn't exist in the JLS, they have a special production for Array creation expressions :)
- * (: Ideally we'd do the same. :)
- *
- * ArrayDimsAndInit ::= TypeAnnotation* DimExpr* Dim*
- *                    | Dim* {@link ASTArrayInitializer ArrayInitializer}
- *
- * (: Notice that annotations are allowed before any Dim or DimExpr :)
- *
- * DimExpr          ::= TypeAnnotation* [ Expression ]
- * Dim              ::= {@link ASTArrayTypeDim ArrayTypeDim}
- *
- * </pre>
- *
+ * @deprecated Replaced by {@link ASTArrayAllocationDims}
  */
 @Deprecated
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {

@@ -25,9 +25,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  */
-public class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
+public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
-    public ASTPrimitiveType(PrimitiveType type) {
+    ASTPrimitiveType(PrimitiveType type) {
         super(JavaParserTreeConstants.JJTPRIMITIVETYPE);
         setImage(type.getToken());
     }

@@ -15,18 +15,16 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public class ASTArrayTypeDim extends AbstractJavaTypeNode {
-    public ASTArrayTypeDim(int id) {
+public final class ASTArrayTypeDim extends AbstractJavaTypeNode {
+
+    ASTArrayTypeDim(int id) {
         super(id);
     }
 
-    public ASTArrayTypeDim(JavaParser p, int id) {
+    ASTArrayTypeDim(JavaParser p, int id) {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

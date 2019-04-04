@@ -19,13 +19,13 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTConditionalAndExpression extends AbstractJavaTypeNode implements ASTExpression {
-    public ASTConditionalAndExpression(int id) {
+public final class ASTConditionalAndExpression extends AbstractJavaTypeNode implements ASTExpression {
+    ASTConditionalAndExpression(int id) {
         super(id);
     }
 
 
-    public ASTConditionalAndExpression(JavaParser p, int id) {
+    ASTConditionalAndExpression(JavaParser p, int id) {
         super(p, id);
     }
 

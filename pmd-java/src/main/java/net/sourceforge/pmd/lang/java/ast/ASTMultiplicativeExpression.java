@@ -30,7 +30,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </table>
  *
  */
-public class ASTMultiplicativeExpression extends AbstractLrBinaryExpr {
+public final class ASTMultiplicativeExpression extends AbstractLrBinaryExpr {
 
 
     ASTMultiplicativeExpression(int id) {

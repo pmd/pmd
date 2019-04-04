@@ -17,12 +17,12 @@ import org.apache.commons.lang3.StringEscapeUtils;
 public final class ASTStringLiteral extends AbstractJavaTypeNode implements ASTLiteral {
 
 
-    public ASTStringLiteral(int id) {
+    ASTStringLiteral(int id) {
         super(id);
     }
 
 
-    public ASTStringLiteral(JavaParser p, int id) {
+    ASTStringLiteral(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -14,15 +14,16 @@ import java.util.List;
  *
  * <pre class="grammar">
  *
- *      "catch" "(" FormalParameter ")" Block
+ * CatchStatement ::= "catch" "(" {@link ASTFormalParameter FormalParameter} ")" {@link ASTBlock Block}
+ *
  * </pre>
  */
-public class ASTCatchStatement extends AbstractJavaNode {
-    public ASTCatchStatement(int id) {
+public final class ASTCatchStatement extends AbstractJavaNode {
+    ASTCatchStatement(int id) {
         super(id);
     }
 
-    public ASTCatchStatement(JavaParser p, int id) {
+    ASTCatchStatement(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
  *
  * </pre>
  */
-public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitchLabeledRule {
+public final class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
     ASTSwitchLabeledBlock(int id) {
         super(id);

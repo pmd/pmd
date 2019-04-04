@@ -13,6 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * WildcardBounds ::=  ( "extends" | "super" ) ( {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTReferenceType ReferenceType}
  *
  * </pre>
+ * @deprecated Replaced by {@link ASTWildcardType}
  */
 @Deprecated
 public class ASTWildcardBounds extends AbstractJavaTypeNode {

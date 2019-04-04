@@ -21,7 +21,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTArrayAllocationDims extends AbstractJavaNode {
+public final class ASTArrayAllocationDims extends AbstractJavaNode {
 
     ASTArrayAllocationDims(int id) {
         super(id);

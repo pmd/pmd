@@ -9,6 +9,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
@@ -23,7 +24,10 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             it::getParameters shouldBe child {
                 child<ASTLambdaParameter> {
-                    variableId("a")
+                    variableId("a") {
+                        it::isTypeInferred shouldBe true
+                        it::isLambdaParameter shouldBe true
+                    }
                 }
             }
 
@@ -37,11 +41,17 @@ class ASTLambdaExpressionTest : ParserTestSpec({
 
             it::getParameters shouldBe child {
                 child<ASTLambdaParameter> {
-                    variableId("a")
+                    variableId("a") {
+                        it::isTypeInferred shouldBe true
+                        it::isLambdaParameter shouldBe true
+                    }
 
                 }
                 child<ASTLambdaParameter> {
-                    variableId("b")
+                    variableId("b") {
+                        it::isTypeInferred shouldBe true
+                        it::isLambdaParameter shouldBe true
+                    }
                 }
             }
 
@@ -75,14 +85,22 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                 child<ASTLambdaParameter> {
                     it::isFinal shouldBe true
 
-                    it::getTypeNode shouldBe child<ASTPrimitiveType> {}
+                    it::getTypeNode shouldBe primitiveType(INT)
 
-                    variableId("a")
+                    variableId("a") {
+                        it::isFinal shouldBe true
+                        it::isLambdaParameter shouldBe true
+                        it::isTypeInferred shouldBe false
+                    }
                 }
                 child<ASTLambdaParameter> {
                     annotation()
-                    it::getTypeNode shouldBe child<ASTClassOrInterfaceType>(ignoreChildren = true) {}
-                    variableId("b")
+                    it::getTypeNode shouldBe classType("String")
+                    variableId("b") {
+                        it::isFinal shouldBe true
+                        it::isLambdaParameter shouldBe true
+                        it::isTypeInferred shouldBe false
+                    }
                 }
             }
 
@@ -93,16 +111,16 @@ class ASTLambdaExpressionTest : ParserTestSpec({
     }
 
     parserTest("Negative lambda contexts") {
-
-        "a -> {}" shouldNot parseIn(StatementParsingCtx)
-//        "a -> {} + 4" shouldNot parseIn(ExpressionParsingCtx)
-
+        inContext(StatementParsingCtx) {
+            "a -> {}" shouldNot parse()
+        }
     }
 
     parserTest("Positive lambda contexts") {
 
-        "(a -> {})" should parseIn(ExpressionParsingCtx)
-
+        inContext(ExpressionParsingCtx) {
+            "(a -> {})" should parse()
+        }
     }
 
 })

@@ -27,15 +27,15 @@ import java.util.Objects;
  *
  * </pre>
  */
-public class ASTUnaryExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTUnaryExpression extends AbstractJavaTypeNode implements ASTExpression {
 
     private UnaryOp operator;
 
-    public ASTUnaryExpression(int id) {
+    ASTUnaryExpression(int id) {
         super(id);
     }
 
-    public ASTUnaryExpression(JavaParser p, int id) {
+    ASTUnaryExpression(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -21,13 +21,13 @@ import javax.annotation.Nullable;
  *
  * </pre>
  */
-public class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
-    public ASTMethodReference(int id) {
+    ASTMethodReference(int id) {
         super(id);
     }
 
-    public ASTMethodReference(JavaParser p, int id) {
+    ASTMethodReference(JavaParser p, int id) {
         super(p, id);
     }
 

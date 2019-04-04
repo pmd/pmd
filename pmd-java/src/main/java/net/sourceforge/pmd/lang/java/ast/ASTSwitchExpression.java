@@ -34,7 +34,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTSwitchExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTSwitchExpression extends AbstractJavaTypeNode implements ASTExpression {
 
     ASTSwitchExpression(int id) {
         super(id);

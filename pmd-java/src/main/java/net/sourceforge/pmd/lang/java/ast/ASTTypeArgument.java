@@ -14,6 +14,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * TypeArgument ::= ( {@linkplain ASTAnnotation Annotation} )* ( {@linkplain ASTReferenceType ReferenceType} | "?" {@linkplain ASTWildcardBounds WildcardBounds}? )
  *
  * </pre>
+ *
+ * @deprecated Replaced by just an {@link ASTType}
  */
 @Deprecated
 public class ASTTypeArgument extends AbstractJavaTypeNode {

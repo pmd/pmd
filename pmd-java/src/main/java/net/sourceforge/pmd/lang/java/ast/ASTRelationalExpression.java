@@ -19,15 +19,15 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTRelationalExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTRelationalExpression extends AbstractJavaTypeNode implements ASTExpression {
 
     private BinaryOp op;
 
-    public ASTRelationalExpression(int id) {
+    ASTRelationalExpression(int id) {
         super(id);
     }
 
-    public ASTRelationalExpression(JavaParser p, int id) {
+    ASTRelationalExpression(JavaParser p, int id) {
         super(p, id);
     }
 

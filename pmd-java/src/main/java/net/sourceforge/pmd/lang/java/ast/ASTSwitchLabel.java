@@ -20,7 +20,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public class ASTSwitchLabel extends AbstractJavaNode implements Iterable<ASTExpression> {
+public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<ASTExpression> {
 
     private boolean isDefault;
 

@@ -20,13 +20,13 @@ import java.util.Iterator;
  * @see ASTSingleMemberAnnotation
  * @see ASTMarkerAnnotation
  */
-public class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation, Iterable<ASTMemberValuePair> {
-    public ASTNormalAnnotation(int id) {
+public final class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation, Iterable<ASTMemberValuePair> {
+    ASTNormalAnnotation(int id) {
         super(id);
     }
 
 
-    public ASTNormalAnnotation(JavaParser p, int id) {
+    ASTNormalAnnotation(JavaParser p, int id) {
         super(p, id);
     }
 

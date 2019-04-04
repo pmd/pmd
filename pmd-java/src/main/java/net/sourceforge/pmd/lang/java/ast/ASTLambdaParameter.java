@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public class ASTLambdaParameter extends AbstractJavaTypeNode {
+public final class ASTLambdaParameter extends AbstractJavaTypeNode {
 
     private boolean isVarargs;
     private boolean isFinal;

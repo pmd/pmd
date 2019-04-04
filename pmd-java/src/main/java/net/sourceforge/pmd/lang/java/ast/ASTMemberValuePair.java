@@ -14,13 +14,13 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTMemberValuePair extends AbstractJavaNode {
-    public ASTMemberValuePair(int id) {
+public final class ASTMemberValuePair extends AbstractJavaNode {
+    ASTMemberValuePair(int id) {
         super(id);
     }
 
 
-    public ASTMemberValuePair(JavaParser p, int id) {
+    ASTMemberValuePair(JavaParser p, int id) {
         super(p, id);
     }
 

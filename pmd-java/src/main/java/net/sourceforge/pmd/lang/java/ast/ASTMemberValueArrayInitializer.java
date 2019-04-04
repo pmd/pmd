@@ -19,12 +19,12 @@ import java.util.Iterator;
  * </pre>
  *
  */
-public class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue>, ASTMemberValue {
-    public ASTMemberValueArrayInitializer(int id) {
+public final class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue>, ASTMemberValue {
+    ASTMemberValueArrayInitializer(int id) {
         super(id);
     }
 
-    public ASTMemberValueArrayInitializer(JavaParser p, int id) {
+    ASTMemberValueArrayInitializer(JavaParser p, int id) {
         super(p, id);
     }
 

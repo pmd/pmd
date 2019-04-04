@@ -16,6 +16,8 @@ import java.util.Iterator;
  *  MemberValuePairs ::= {@linkplain ASTMemberValuePair MemberValuePair} ( "," {@linkplain ASTMemberValuePair MemberValuePair} )*
  *
  * </pre>
+ *
+ * @deprecated Removed from the tree, added no info
  */
 @Deprecated
 public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {

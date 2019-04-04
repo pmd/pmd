@@ -22,7 +22,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public class ASTLambdaParameterList extends AbstractJavaNode implements Iterable<ASTLambdaParameter> {
+public final class ASTLambdaParameterList extends AbstractJavaNode implements Iterable<ASTLambdaParameter> {
 
     ASTLambdaParameterList(int id) {
         super(id);
