@@ -1,7 +1,20 @@
 /**
- * Change parsing of types to flatten their AST and preserve their structure.
- * Refs #1150 [java] ClassOrInterfaceType AST improvements
- * Clément Fournier 02/2019
+ * Change expression, type and annotation grammar to remove unnecessary nodes,
+ * eliminate some inconsistencies, and most importantly have an expressive tree
+ * for primary expressions. Expressions and types now appear to be left-recursive.
+ * This also introduces AmbiguousName, which are pushed only in syntactically
+ * ambiguous contexts: https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-6.5.1
+ *
+ * Those are the first grammar changes for 7.0.0.
+ * Refs:
+ *   #1661 [java] About operator nodes
+ *   #1367 [java] Parsing error on annotated subclass
+ *   #1150 [java] ClassOrInterfaceType AST improvements
+ *   #1019 [java] Breaking Java Grammar changes for PMD 7.0.0
+ *   #997  [java] Java8 parsing corner case with annotated array types
+ *   #910  [java] AST inconsistency between primitive and reference type arrays
+ *   #497  [java] RFC: new layer of abstraction atop PrimaryExpressions
+ * Clément Fournier 04/2019
  *====================================================================
  * Add support for Java 12 switch expressions and switch rules.
  * Andreas Dangel, Clément Fournier 03/2019
