@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
  *
  * </pre>
  */
-public class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType {
+public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType {
 
     private boolean isUpperBound;
 
