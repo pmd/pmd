@@ -53,7 +53,7 @@ public final class ASTMethodReference extends AbstractJavaTypeNode implements AS
      */
     @Nullable
     public ASTReferenceType getLhsType() {
-        return getChildAs(0, ASTReferenceType.class);
+        return AstImplUtil.getChildAs(this, 0, ASTReferenceType.class);
     }
 
 

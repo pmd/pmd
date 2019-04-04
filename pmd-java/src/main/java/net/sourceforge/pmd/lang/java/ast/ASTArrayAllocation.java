@@ -63,7 +63,7 @@ public final class ASTArrayAllocation extends AbstractJavaTypeNode implements AS
 
     @Nullable
     public ASTArrayInitializer getArrayInitializer() {
-        return getChildAs(jjtGetNumChildren() - 1, ASTArrayInitializer.class);
+        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTArrayInitializer.class);
     }
 
     /**

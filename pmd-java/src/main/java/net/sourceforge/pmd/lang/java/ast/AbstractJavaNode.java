@@ -115,7 +115,9 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return comment;
     }
 
-
+    /**
+     * Replaces the child at index idx with its own children.
+     */
     void flatten(int idx) {
 
         AbstractJavaNode child = (AbstractJavaNode) jjtGetChild(idx);

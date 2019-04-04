@@ -18,7 +18,8 @@ import java.util.function.Function;
  * in scope, this node could be a type, package, or variable name -we
  * can't know for sure. The node is a placeholder for that unknown entity.
  * It implements both {@link ASTType} and {@link ASTPrimaryExpression} to
- * be able to be inserted in their hierarchy.
+ * be able to be inserted in their hierarchy (maybe that should be changed
+ * though).
  *
  * <p>This node corresponds simultaneously to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-6.html#jls-AmbiguousName">AmbiguousName</a>
  * and PackageOrTypeName productions of the JLS.

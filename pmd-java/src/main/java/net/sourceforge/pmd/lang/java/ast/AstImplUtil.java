@@ -7,7 +7,10 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
@@ -46,5 +49,14 @@ final class AstImplUtil {
         }
 
         return false;
+    }
+
+    @Nullable
+    public static <T extends Node> T getChildAs(JavaNode javaNode, int idx, Class<T> type) {
+        if (javaNode.jjtGetNumChildren() <= idx || idx < 0) {
+            return null;
+        }
+        Node child = javaNode.jjtGetChild(idx);
+        return type.isInstance(child) ? type.cast(child) : null;
     }
 }

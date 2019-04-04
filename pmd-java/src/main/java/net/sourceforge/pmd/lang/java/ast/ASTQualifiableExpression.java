@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
  * Node that may be qualified by an expression, e.g. an instance method call or
  * inner class constructor invocation.
  */
-public interface ASTQualifiableExpression extends ASTExpression {
+interface ASTQualifiableExpression extends ASTExpression {
 
     /**
      * Returns the expression to the left of the "." if it exists.
@@ -21,6 +21,6 @@ public interface ASTQualifiableExpression extends ASTExpression {
      */
     @Nullable
     default ASTPrimaryExpression getLhsExpression() {
-        return getChildAs(0, ASTPrimaryExpression.class);
+        return AstImplUtil.getChildAs(this, 0, ASTPrimaryExpression.class);
     }
 }

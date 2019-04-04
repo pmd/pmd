@@ -67,7 +67,7 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
      */
     @Nullable
     public ASTClassOrInterfaceType getLhsType() {
-        return getChildAs(0, ASTClassOrInterfaceType.class);
+        return AstImplUtil.getChildAs(this, 0, ASTClassOrInterfaceType.class);
     }
 
 

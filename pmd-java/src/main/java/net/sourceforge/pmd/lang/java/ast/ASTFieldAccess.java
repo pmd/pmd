@@ -45,7 +45,7 @@ public final class ASTFieldAccess extends AbstractJavaTypeNode implements ASTPri
      */
     @Nullable
     public ASTClassOrInterfaceType getLhsType() {
-        return getChildAs(0, ASTClassOrInterfaceType.class);
+        return AstImplUtil.getChildAs(this, 0, ASTClassOrInterfaceType.class);
     }
 
 
