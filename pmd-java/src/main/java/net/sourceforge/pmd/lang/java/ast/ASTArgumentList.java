@@ -8,18 +8,25 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 
 
-public class ASTArgumentList extends AbstractJavaNode implements Iterable<ASTExpression> {
-    public ASTArgumentList(int id) {
+/**
+ * The argument list of a {@linkplain ASTMethodCall method} or {@linkplain ASTConstructorCall constructor call}.
+ *
+ * <pre class="grammar">
+ *
+ * ArgumentList ::= "(" ( {@link ASTExpression Expression} ( "," {@link ASTExpression Expression})* )? ")"
+ *
+ * </pre>
+ */
+public final class ASTArgumentList extends AbstractJavaNode implements Iterable<ASTExpression> {
+
+    ASTArgumentList(int id) {
         super(id);
     }
 
-    public ASTArgumentList(JavaParser p, int id) {
+    ASTArgumentList(JavaParser p, int id) {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

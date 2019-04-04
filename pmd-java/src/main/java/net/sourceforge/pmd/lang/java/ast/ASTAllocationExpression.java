@@ -5,31 +5,24 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import javax.annotation.Nullable;
-
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
- * An expression starting with "new". Represents both {@linkplain #isQualifiedInstanceCreation() qualified}
- * and unqualified instance creation. Also represents array creation expressions. May declare an anonymous
- * class body.
- *
- * TODO Make interface to be implemented by the new nodes
- *
+ * @deprecated Replaced with {@link ASTArrayAllocation} and {@link ASTConstructorCall}
  */
 @Deprecated
-public final class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode, ASTPrimaryExpression {
+public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
 
     private JavaTypeQualifiedName qualifiedName;
 
 
-    ASTAllocationExpression(int id) {
+    public ASTAllocationExpression(int id) {
         super(id);
     }
 
 
-    ASTAllocationExpression(JavaParser p, int id) {
+    public ASTAllocationExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -42,50 +35,6 @@ public final class ASTAllocationExpression extends AbstractJavaTypeNode implemen
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns true if this expression begins with a primary expression.
-     * Such an expression creates an instance of inner member classes and
-     * their anonymous subclasses. For example, {@code new Outer().new Inner()}
-     * evaluates to an instance of the Inner class, which is nested inside
-     * the new instance of Outer.
-     */
-    public boolean isQualifiedInstanceCreation() {
-        return jjtGetChild(0) instanceof ASTPrimaryExpression;
-    }
-
-
-    /**
-     * Returns the left-hand-side of this expression, if this is a
-     * {@linkplain #isQualifiedInstanceCreation() qualified allocation expression}.
-     */
-    @Nullable
-    public ASTPrimaryExpression getLhsExpression() {
-        return isQualifiedInstanceCreation()
-               ? (ASTPrimaryExpression) jjtGetChild(0)
-               : null;
-    }
-
-
-    /**
-     * Returns the type node. For array creation expressions, this is the
-     * element type of the array, never an {@link ASTArrayType array type}.
-     * The dimensions of the instantiated array are carried by an {@link ASTArrayDimsAndInits}
-     * that is a child of this node.
-     */
-    public ASTType getTypeNode() {
-        return getFirstChildOfType(ASTType.class);
-    }
-
-
-    /**
-     * Returns the dimensions of the array if this is an array creation expression.
-     */
-    @Nullable
-    public ASTArrayDimsAndInits getArrayDims() {
-        return getFirstChildOfType(ASTArrayDimsAndInits.class);
     }
 
 
