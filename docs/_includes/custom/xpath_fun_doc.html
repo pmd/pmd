@@ -1,10 +1,12 @@
 {% for lang in site.data.xpath_funs.langs %}
 
+<!-- Generates the documentation of XPath functions. -->
+
 ### {{ lang.name }}
 
 {{ lang.name }} functions are in the namespace `{{ lang.ns }}`.
 
-<div class="table-responsive">
+<div class="table-responsive" style="border-collapse:collapse;">
     <table>
 
         <thead>
@@ -19,7 +21,9 @@
 
         {% for fun in lang.funs %}
 
-        <tr>
+        {% capture fun_id %}{{ lang.ns | append: '-' | append: fun.name | pp }}{% endcapture %}
+
+        <tr data-toggle="collapse" data-target="{{ fun_id | prepend: '#' }}" class="accordion-toggle">
 
             <td>{{ fun.name }}</td>
             <td>
@@ -47,6 +51,16 @@
                 {% endif %}
             </td>
         </tr>
+
+        <tr>
+            <td colspan="4" class="hiddenRow">
+                <div class="accordion-body collapse" id="{{ fun_id }}">
+                    <h4>{{ fun.name }}</h4>
+                    <p>This is a fun function</p>
+                </div>
+            </td>
+        </tr>
+
 
         {% endfor %}
 
