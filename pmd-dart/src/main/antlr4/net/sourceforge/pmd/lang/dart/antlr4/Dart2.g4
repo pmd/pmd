@@ -35,6 +35,8 @@ WHITESPACE
   :  [ \t\r\n\u000C]+ -> skip
   ;
 
+SEMICOLON: ';' ;
+
 // 8 Variables
 variableDeclaration
   : declaredIdentifier (',' identifier)*
@@ -79,7 +81,7 @@ returnType
   ;
 
 functionBody
-  : 'async'? '=>' expression ';'
+  : 'async'? '=>' expression SEMICOLON
   | ('async' | 'async*' | 'sync*')? block
   ;
 block
@@ -114,11 +116,11 @@ normalFormalParameter
   | simpleFormalParameter
   ;
 functionFormalParameter
-  : metadata 'covariant'? returnType? identifier formalParameterPart
+  : metadata COVARIANT? returnType? identifier formalParameterPart
   ;
 simpleFormalParameter
   : declaredIdentifier
-  | metadata 'covariant'? identifier
+  | metadata COVARIANT? identifier
   ;
 fieldFormalParameter
   : metadata finalConstVarOrType? 'this' '.' identifier formalParameterPart?
@@ -135,24 +137,24 @@ defaultNamedParameter
 
 // 10 Classes
 classDefinition
-  : metadata 'abstract'? 'class' identifier typeParameters?
+  : metadata ABSTRACT? 'class' identifier typeParameters?
     superclass? mixins? interfaces?
     '{' (metadata classMemberDefinition)* '}'
-  | metadata 'abstract'? 'class' mixinApplicationClass
+  | metadata ABSTRACT? 'class' mixinApplicationClass
 ;
 mixins
   : 'with' typeList
   ;
 classMemberDefinition
-  : declaration ';'
+  : declaration SEMICOLON
   | methodSignature functionBody
   ;
 methodSignature
   : constructorSignature initializers?
   | factoryConstructorSignature
-  | 'static'? functionSignature
-  | 'static'? getterSignature
-  | 'static'? setterSignature
+  | STATIC? functionSignature
+  | STATIC? getterSignature
+  | STATIC? setterSignature
   | operatorSignature
   ;
 
@@ -160,15 +162,15 @@ methodSignature
 declaration
   : constantConstructorSignature (redirection | initializers)?
   | constructorSignature (redirection | initializers)?
-  | 'external' constantConstructorSignature
-  | 'external' constructorSignature
-  | ('external' 'static'?)? getterSignature
-  | ('external' 'static'?)? setterSignature
-  | 'external'? operatorSignature
-  | ('external' 'static'?)? functionSignature
-  | 'static' ('final' | 'const') type? staticFinalDeclarationList
+  | EXTERNAL constantConstructorSignature
+  | EXTERNAL constructorSignature
+  | (EXTERNAL STATIC?)? getterSignature
+  | (EXTERNAL STATIC?)? setterSignature
+  | EXTERNAL? operatorSignature
+  | (EXTERNAL STATIC?)? functionSignature
+  | STATIC ('final' | 'const') type? staticFinalDeclarationList
   | 'final' type? initializedIdentifierList
-  | ('static' | 'covariant')? ('var' | type) initializedIdentifierList
+  | (STATIC | COVARIANT)? ('var' | type) initializedIdentifierList
   ;
 
 staticFinalDeclarationList
@@ -180,7 +182,7 @@ staticFinalDeclaration
 
 // 10.1.1 Operators
 operatorSignature
-  : returnType? 'operator' operator formalParameterList
+  : returnType? OPERATOR operator formalParameterList
   ;
 operator
   : '~' | binaryOperator | '[]' | '[]='
@@ -196,11 +198,11 @@ binaryOperator
   ;
 // 10.2 Getters
 getterSignature
-  : returnType? 'get' identifier
+  : returnType? GET identifier
   ;
 // 10.2 Setters
 setterSignature
-  : returnType? 'set' identifier formalParameterList
+  : returnType? SET identifier formalParameterList
   ;
 
 // 10.6 Constructors
@@ -226,10 +228,10 @@ fieldInitializer
 
 // 10.6.2 Factories
 factoryConstructorSignature
-  : 'factory' identifier ('.' identifier)? formalParameterList
+  : FACTORY identifier ('.' identifier)? formalParameterList
   ;
 redirectingFactoryConstructorSignature
-  : 'const'? 'factory' identifier ('.' identifier)? formalParameterList '='
+  : 'const'? FACTORY identifier ('.' identifier)? formalParameterList '='
     type ('.' identifier)?
   ;
 // 10.6.3 Constant Constructors
@@ -239,11 +241,11 @@ constantConstructorSignature: 'const' qualified formalParameterList;
 superclass: 'extends' type;
 
 // 10.10 SUperinterfaces
-interfaces: 'implements' typeList;
+interfaces: IMPLEMENTS typeList;
 
 // 12.1 Mixin Application
 mixinApplicationClass
-  : identifier typeParameters? '=' mixinApplication ';';
+  : identifier typeParameters? '=' mixinApplication SEMICOLON;
 mixinApplication
   : type mixins interfaces?
   ;
@@ -664,7 +666,7 @@ typeCast
   : asOperator type
   ;
 asOperator
-  : 'as'
+  : AS
   ;
 // 17 Statements
 statements
@@ -695,12 +697,12 @@ nonLabledStatment
 
 // 17.2 Expression Statements
 expressionStatement
-  : expression? ';'
+  : expression? SEMICOLON
   ;
 
 // 17.3 Local Variable Declaration
 localVariableDeclaration
-  : initializedVariableDeclaration ';'
+  : initializedVariableDeclaration SEMICOLON
   ;
 // 17.4 Local Function Declaration
 localFunctionDeclaration
@@ -716,13 +718,13 @@ forStatement
   : 'await'? 'for' '(' forLoopParts ')' statement
   ;
 forLoopParts
-  : forInitializerStatement expression? ';' expressionList?
+  : forInitializerStatement expression? SEMICOLON expressionList?
   | declaredIdentifier 'in' expression
   | identifier 'in' expression
   ;
 forInitializerStatement
   : localVariableDeclaration
-  | expression? ';'
+  | expression? SEMICOLON
   ;
 
 // 17.7 While
@@ -732,7 +734,7 @@ whileStatement
   ;
 // 17.8 Do
 doStatement
-  : 'do' statement 'while' '(' expression ')' ';'
+  : 'do' statement 'while' '(' expression ')' SEMICOLON
   ;
 // 17.9 Switch
 switchStatement
@@ -747,7 +749,7 @@ defaultCase
 
 // 17.10 Rethrow
 rethrowStatment
-  : 'rethrow' ';'
+  : 'rethrow' SEMICOLON
   ;
 
 // 17.11 Try
@@ -768,7 +770,7 @@ finallyPart
 // 17.12 Return
 
 returnStatement
-  : 'return' expression? ';'
+  : 'return' expression? SEMICOLON
   ;
 
 // 17.13 Labels
@@ -778,26 +780,26 @@ label
 
 // 17.13 Break
 breakStatement
-  : 'break' identifier? ';'
+  : 'break' identifier? SEMICOLON
   ;
 
 // 17.13 Continue
 continueStatement
-  : 'continue' identifier? ';'
+  : 'continue' identifier? SEMICOLON
   ;
 
 // 17.16.1 Yield
 yieldStatement
-  : 'yield' expression ';'
+  : 'yield' expression SEMICOLON
   ;
 // 17.16.1 Yield-Each
 yieldEachStatement
-  : 'yield*' expression ';'
+  : 'yield*' expression SEMICOLON
   ;
 
 // 17.17 Assert
 assertStatement
-  : assertion ';'
+  : assertion SEMICOLON
   ;
 assertion
   : 'assert' '(' expression (',' expression )? ','? ')'
@@ -808,18 +810,18 @@ topLevelDefinition
   : classDefinition
   | enumType
   | typeAlias
-  | 'external'? functionSignature ';'
-  | 'external'? getterSignature ';'
-  | 'external'? setterSignature ';'
+  | EXTERNAL? functionSignature SEMICOLON
+  | EXTERNAL? getterSignature SEMICOLON
+  | EXTERNAL? setterSignature SEMICOLON
   | functionSignature functionBody
-  | returnType? 'get' identifier functionBody
-  | returnType? 'set' identifier formalParameterList functionBody
-  | ('final' | 'const') type? staticFinalDeclarationList ';'
-  | variableDeclaration ';'
+  | returnType? GET identifier functionBody
+  | returnType? SET identifier formalParameterList functionBody
+  | ('final' | 'const') type? staticFinalDeclarationList SEMICOLON
+  | variableDeclaration SEMICOLON
   ;
 getOrSet
-  : 'get'
-  | 'set'
+  : GET
+  | SET
   ;
 libraryDefinition
   : scriptTag? libraryName? importOrExport* partDirective*
@@ -830,7 +832,7 @@ scriptTag
   ;
 
 libraryName
-  : metadata 'library' dottedIdentifierList ';'
+  : metadata LIBRARY dottedIdentifierList SEMICOLON
   ;
 importOrExport
   : libraryimport
@@ -845,8 +847,8 @@ libraryimport
   ;
 
 importSpecification
-  : 'import' configurableUri ('as' identifier)? combinator* ';'
-//  | 'import' uri 'deferred' 'as' identifier combinator* ';'
+  : IMPORT configurableUri (AS identifier)? combinator* SEMICOLON
+//  | IMPORT uri DEFERRED AS identifier combinator* SEMICOLON
   ;
 
 combinator
@@ -859,15 +861,15 @@ identifierList
 
 // 18.2 Exports
 libraryExport
-  : metadata 'export' configurableUri combinator* ';'
+  : metadata EXPORT configurableUri combinator* SEMICOLON
   ;
 
 // 18.3 Parts
 partDirective
-  : metadata 'part' uri ';'
+  : metadata PART uri SEMICOLON
   ;
 partHeader
-  : metadata 'part' 'of' identifier ('.' identifier)* ';'
+  : metadata PART 'of' identifier ('.' identifier)* SEMICOLON
   ;
 partDeclaration
   : partHeader topLevelDefinition* EOF
@@ -904,13 +906,13 @@ typeList
 
 // 19.3.1 Typedef
 typeAlias
-  : metadata 'typedef' typeAliasBody
+  : metadata TYPEDEF typeAliasBody
   ;
 typeAliasBody
   : functionTypeAlias
   ;
 functionTypeAlias
-  : functionPrefix typeParameters? formalParameterList ';'
+  : functionPrefix typeParameters? formalParameterList SEMICOLON
   ;
 functionPrefix
   : returnType? identifier
@@ -921,6 +923,50 @@ functionPrefix
 //assert, break, case, catch, class, const, continue, default, do, else,
 //enum, extends, false, final, finally, for, if, in, is, new, null, rethrow,
 //return, super, switch, this, throw, true, try, var, void, while, with.
+ABSTRACT: 'abstract' ;
+AS: 'as' ;
+COVARIANT: 'covariant' ;
+DEFERRED: 'deferred' ;
+DYNAMIC: 'dynamic' ;
+EXPORT: 'export' ;
+EXTERNAL: 'external' ;
+FACTORY: 'factory' ;
+FUNCTION: 'Function' ;
+GET: 'get' ;
+IMPLEMENTS: 'implements' ;
+IMPORT: 'import' ;
+INTERFACE: 'interface' ;
+LIBRARY: 'library' ;
+OPERATOR: 'operator' ;
+MIXIN: 'mixin' ;
+PART: 'part' ;
+SET: 'set' ;
+STATIC: 'static' ;
+TYPEDEF: 'typedef' ;
+
+//BUILT_IN_IDENTIFIER
+//  : ABSTRACT
+//  | AS
+//  | COVARIANT
+//  | DEFERRED
+//  | DYNAMIC
+//  | EXPORT
+//  | EXTERNAL
+//  | FACTORY
+//  | FUNCTION
+//  | GET
+//  | IMPLEMENTS
+//  | IMPORT
+//  | INTERFACE
+//  | LIBRARY
+//  | OPERATOR
+//  | MIXIN
+//  | PART
+//  | SET
+//  | STATIC
+//  | TYPEDEF
+//  ;
+
 fragment
 IDENTIFIER_NO_DOLLAR
   : IDENTIFIER_START_NO_DOLLAR
@@ -930,28 +976,6 @@ IDENTIFIER
   : IDENTIFIER_START IDENTIFIER_PART*
   ;
 
-//BUILT_IN_IDENTIFIER
-//  : 'abstract'
-//  | 'as'
-//  | 'covariant'
-//  | 'deferred'
-//  | 'dynamic'
-//  | 'export'
-//  | 'external'
-//  | 'factory'
-//  | 'Function'
-//  | 'get'
-//  | 'implements'
-//  | 'import'
-//  | 'interface'
-//  | 'library'
-//  | 'operator'
-//  | 'mixin'
-//  | 'part'
-//  | 'set'
-//  | 'static'
-//  | 'typedef'
-//  ;
 fragment
 IDENTIFIER_START
   : IDENTIFIER_START_NO_DOLLAR

@@ -36,8 +36,9 @@ public class DartTokenizer extends AntlrTokenizer {
      * </p>
      */
     private static class DartTokenFilter extends AntlrTokenFilter {
-        private boolean discardingPackageAndImport = false;
+        private boolean discardingLibraryAndImport = false;
         private boolean discardingNL = false;
+        private boolean discardingSemicolon = false;
 
         /* default */ DartTokenFilter(final AntlrTokenManager tokenManager) {
             super(tokenManager);
@@ -45,26 +46,31 @@ public class DartTokenizer extends AntlrTokenizer {
 
         @Override
         protected void analyzeToken(final AntlrToken currentToken) {
-            skipPackageAndImport(currentToken);
+            skipLibraryAndImport(currentToken);
             skipNewLines(currentToken);
+            skipSemicolons(currentToken);
         }
 
-        private void skipPackageAndImport(final AntlrToken currentToken) {
+        private void skipLibraryAndImport(final AntlrToken currentToken) {
             final int type = currentToken.getType();
-            /*if (type == Dart.PACKAGE || type == Dart.IMPORT) {
-                discardingPackageAndImport = true;
-            } else if (discardingPackageAndImport && (type == Dart.SEMICOLON || type == Dart.NL)) {
-                discardingPackageAndImport = false;
-            }*/
+            if (type == Dart2Lexer.LIBRARY || type == Dart2Lexer.IMPORT) {
+                discardingLibraryAndImport = true;
+            } else if (discardingLibraryAndImport && (type == Dart2Lexer.SEMICOLON || type == Dart2Lexer.NEWLINE)) {
+                discardingLibraryAndImport = false;
+            }
         }
 
         private void skipNewLines(final AntlrToken currentToken) {
-            discardingNL = false;//currentToken.getType() == Dart.NL;
+            discardingNL = currentToken.getType() == Dart2Lexer.NEWLINE;
+        }
+
+        private void skipSemicolons(final AntlrToken currentToken) {
+            discardingSemicolon = currentToken.getType() == Dart2Lexer.SEMICOLON;
         }
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingPackageAndImport || discardingNL;
+            return discardingLibraryAndImport || discardingNL || discardingSemicolon;
         }
     }
 }
