@@ -6,57 +6,93 @@
 
 {{ lang.name }} functions are in the namespace `{{ lang.ns }}`.
 
-<div class="table-responsive" style="border-collapse:collapse;">
-    <table>
+<div class="table-responsive">
+    <table width="100%">
 
         <thead>
         <tr>
             <th>Function name</th>
-            <th>Parameters</th>
             <th>Description</th>
-            <th>Notes</th>
+            <th></th>
         </tr>
         </thead>
 
 
         {% for fun in lang.funs %}
 
-        {% capture fun_id %}{{ lang.ns | append: '-' | append: fun.name | pp }}{% endcapture %}
+        {% capture fun_id %}{{ lang.ns | append: '-' | append: fun.name }}{% endcapture %}
 
-        <tr data-toggle="collapse" data-target="{{ fun_id | prepend: '#' }}" class="accordion-toggle">
+        <tr data-toggle="collapse" id="{{ fun_id }}" data-target="{{ fun_id | prepend: '#' | append: '-expand' }}" class="accordion-toggle">
 
             <td>{{ fun.name }}</td>
+            <td>{{ fun.shortDescription }}</td>
             <td>
-                {% if fun.parameters.size == 0 %}
-                    None
-                {% elsif fun.params_are_same_as %}
-                    (Same as for `{{ fun.params_are_same_as }}`)
-                {% elsif fun.parameters.size == 1 %}
-                    1: {{ fun.parameters[0].description }}
-                {% else %}
-                <ul>
-                    {% for i in 0..fun.parameters.size %}
-                    {{ assign param = fun.parameters[i] }}
-                    <li>{{ i + 1 }} : {{ param.description }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </td>
-            <td>{{ fun.description }}</td>
-            <td>
-                {% if fun.notes_are_same_as %}
-                    (Same as for `{{ fun.notes_are_same_as }}`)
-                {% else %}
-                    {{ fun.notes }}
-                {% endif %}
+                <button type="button" class="btn btn-link"><i
+                        class="fa fa-ellipsis-h"></i></button>
             </td>
         </tr>
 
         <tr>
             <td colspan="4" class="hiddenRow">
-                <div class="accordion-body collapse" id="{{ fun_id }}">
-                    <h4>{{ fun.name }}</h4>
-                    <p>This is a fun function</p>
+                <div class="accordion-body collapse" id="{{ fun_id | append: '-expand' }}">
+
+                    <div style="margin-left: 15px" class="xpath-fun-doc">
+
+                        <h4 class="fun-details-header">
+                            <span class="fun-ns">{{ lang.ns | append: ':' }}</span><span
+                                class="fun-name">{{ fun.name }}</span><span
+                                class="fun-ns">{{ fun | xpath_fun_type }}</span>
+                        </h4>
+
+                        <div style="margin-left: 30px">
+
+                            <dl>
+                                <dd>{{ fun.description }}</dd>
+                                <dt>Remarks</dt>
+                                <dd>{{ fun.notes }}</dd>
+
+                                {% unless fun.parameters.size == 0 %}
+
+                                <dt>Parameters</dt>
+
+                                <dd>
+                                    <div style="margin-left: 20px">
+                                        <dl>
+                                            {% for param in fun.parameters %}
+                                            <dt>
+                                                <span class="param-name">{{ param.name }}</span>
+                                                <span class="param-type"> as {{ param.type }}</span>
+                                            </dt>
+                                            <dd>{{ param.description }}</dd>
+                                            {% endfor %}
+                                        </dl>
+                                    </div>
+                                </dd>
+
+                                {% endunless %}
+
+                                {% unless fun.examples.size == 0 %}
+
+                            </dl>
+
+
+                            <h5>Examples</h5>
+
+                            <table>
+
+                                {% for example in fun.examples %}
+
+                                <tr>
+                                    <td><code>{{ example.code }}</code></td>
+                                    <td>{{ example.description }}</td>
+                                </tr>
+
+                                {% endfor %}
+                            </table>
+
+                            {% endunless %}
+                        </div>
+                    </div>
                 </div>
             </td>
         </tr>

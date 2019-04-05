@@ -1,27 +1,36 @@
+aliases:
+  - &qname_param
+    name: javaQualifiedName
+    type: "xs:string"
+    description: "The qualified name of a class, possibly with pairs of brackets to indicate an array type.
+                  Can also be a primitive type name."
+  - &needs_typenode "The context node must be a {% jdoc jast::TypeNode %}"
+
 langs:
   - name: "Java"
     ns: "pmd-java"
     funs:
       - name: typeIs
         returnType: "xs:boolean"
+        shortDescription: "Tests a node's static type"
         description: "Returns true if the context node's static type is a subtype of the given type"
-        notes: "The context node must be a {% jdoc jast::TypeNode %}"
+        notes: *needs_typenode
         parameters:
-          - name: javaQualifiedName
-            type: "xs:string"
-            description: "the qualified name of a class, possibly with pairs of brackets to indicate an array type.
-              Can also be a primitive type name."
+          - *qname_param
 
       - name: typeIsExactly
         returnType: "xs:boolean"
+        shortDescription: "Tests a node's static type, ignoring subtypes"
         description: "Returns true if the context node's static type is exactly the given type.
                       In particular, returns false if the context node's type is
                       a subtype of the given type."
-        notes_are_same_as: typeIs
-        params_are_same_as: typeIs
+        notes: *needs_typenode
+        parameters:
+          - *qname_param
 
       - name: metric
         returnType: "xs:decimal?"
+        shortDescription: "Computes and returns the value of a metric"
         description: "Returns the value of the metric as evaluated on the context node"
         notes: "The context node must be a {% jdoc jast::ASTAnyTypeDeclaration %} or a {% jdoc jast::MethodLikeNode %}"
         parameters:
