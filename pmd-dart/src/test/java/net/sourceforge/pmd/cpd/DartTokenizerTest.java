@@ -30,9 +30,9 @@ public class DartTokenizerTest extends AbstractTokenizerTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(
-                new Object[] { "comment.dart" , 5 },
-                new Object[] { "increment.dart" , 185 },
-                new Object[] { "imports.dart" , 1 }
+                new Object[] { "comment.dart", 5 },
+                new Object[] { "increment.dart", 185 },
+                new Object[] { "imports.dart", 1 }
         );
     }
 
