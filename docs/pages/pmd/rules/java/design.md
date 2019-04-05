@@ -2090,7 +2090,7 @@ your API.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//MethodDeclaration[@Public]/MethodDeclarator/FormalParameters[
+//MethodDeclaration[@Public = 'true']/MethodDeclarator/FormalParameters[
      count(FormalParameter/Type/ReferenceType/ClassOrInterfaceType[@Image = 'String']) > 3
 ]
 ```
