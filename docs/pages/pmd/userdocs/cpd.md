@@ -178,11 +178,15 @@ The default format is a text report, and there's also a `csv` report.
 
 Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
 
-    $ export HEAPSIZE=512m
+    $ export PMD_JAVA_OPTS=-Xmx512m
     $ ./run.sh cpd --minimum-tokens 100 --files /usr/local/java/src/java
 
-In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` set the "OPTS"
-variable to `-Xmx512m`.
+In order to change the heap size under Windows, you'll need to edit the batch file `cpd.bat` or
+set the environment variable `PMD_JAVA_OPTS` prior to starting CPD:
+
+    C:\ > cd C:\pmd-bin-{{site.pmd.version}}\bin
+    C:\...\bin > set PMD_JAVA_OPTS=-Xmx512m
+    C:\...\bin > .\cpd.bat --minimum-tokens 100 --files c:\temp\src
 
 
 If you specify a source directory but don't want to scan the sub-directories, you can use the non-recursive option:
@@ -387,7 +391,7 @@ Additionally, **Java** allows to toggle suppression by adding the annotations
 all code within will be ignored by CPD.
 
 This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
-It's legacy and the new comment's based approch should be favored.
+It's legacy and the new comment's based approach should be favored.
 
 ```java
     //enable suppression

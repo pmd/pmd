@@ -33,7 +33,7 @@ The date and the version must be updated in `docs/_config.yml`,  e.g.
 pmd:
     version: 6.0.0
     date: 2017-12-15
-    release_type: minor
+    release_type: major
 ```
 
 The release type could be one of "bugfix", "minor", or "major".
@@ -41,6 +41,10 @@ The release type could be one of "bugfix", "minor", or "major".
 The release notes usual mention any new rules that have been added since the last release.
 Please double check the file `pmd-core/src/main/resources/rulesets/releases/<version>.xml`, so
 that all new rules are listed.
+
+Add the new rules as comments to the quickstart rulesets:
+* `pmd-apex/src/main/resources/rulesets/apex/quickstart.xml`
+* `pmd-java/src/main/resources/rulesets/java/quickstart.xml`
 
 We maintain a documentation for the [next major release](pmd_next_major_development.html). Copy the API
 changes from the current release notes to this document: `docs/pages/next_major_development.md`.

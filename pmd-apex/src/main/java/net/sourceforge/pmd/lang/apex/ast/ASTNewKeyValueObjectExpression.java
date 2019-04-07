@@ -16,4 +16,12 @@ public class ASTNewKeyValueObjectExpression extends AbstractApexNode<NewKeyValue
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public String getType() {
+        return node.getTypeRef().getNames().get(0).getValue();
+    }
+
+    public int getParameterCount() {
+        return node.getParameters().size();
+    }
 }

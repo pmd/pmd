@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.FINAL;
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.STATIC;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
@@ -18,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
+import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -136,8 +135,8 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         if (!checkMembers) {
             return data;
         }
-        boolean isStatic = node.getNode().getFieldInfo().getModifiers().has(STATIC);
-        boolean isFinal = node.getNode().getFieldInfo().getModifiers().has(FINAL);
+        boolean isStatic = node.getModifiers().isStatic();
+        boolean isFinal = node.getModifiers().isFinal();
 
         return checkName(isStatic ? staticPrefixes : memberPrefixes, isStatic ? staticSuffixes : memberSuffixes, node,
                 isStatic, isFinal, data);
@@ -150,7 +149,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
             return data;
         }
 
-        boolean isFinal = node.getNode().getLocalInfo().getModifiers().has(FINAL);
+        boolean isFinal = node.getFirstParentOfType(ASTVariableDeclarationStatements.class).getModifiers().isFinal();
         return checkName(localPrefixes, localSuffixes, node, false, isFinal, data);
     }
 
@@ -160,7 +159,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
             return data;
         }
 
-        boolean isFinal = node.getNode().getModifierInfo().has(FINAL);
+        boolean isFinal = node.getModifiers().isFinal();
         return checkName(parameterPrefixes, parameterSuffixes, node, false, isFinal, data);
     }
 
@@ -207,8 +206,7 @@ public class VariableNamingConventionsRule extends AbstractApexRule {
         if (suffixes != null) {
             for (String suffix : suffixes) {
                 if (varName.endsWith(suffix)) {
-                    varName = varName.substring(0, varName.length() - suffix.length());
-                    break;
+                    return varName.substring(0, varName.length() - suffix.length());
                 }
             }
         }

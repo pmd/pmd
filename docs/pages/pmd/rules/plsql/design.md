@@ -149,9 +149,20 @@ END;
 |showClassesComplexity|true|Add class average violations to the report|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/CyclomaticComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/CyclomaticComplexity">
+    <properties>
+        <property name="showMethodsComplexity" value="true" />
+        <property name="showClassesComplexity" value="true" />
+        <property name="reportLevel" value="10" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveMethodLength
@@ -182,13 +193,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|100.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/ExcessiveMethodLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/ExcessiveMethodLength">
+    <properties>
+        <property name="minimum" value="100.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveObjectLength
@@ -229,13 +249,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/ExcessiveObjectLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/ExcessiveObjectLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessivePackageBodyLength
@@ -276,13 +305,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/ExcessivePackageBodyLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/ExcessivePackageBodyLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessivePackageSpecificationLength
@@ -316,13 +354,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/ExcessivePackageSpecificationLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/ExcessivePackageSpecificationLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveParameterList
@@ -358,13 +405,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|10.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/ExcessiveParameterList" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/ExcessiveParameterList">
+    <properties>
+        <property name="minimum" value="10.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveTypeLength
@@ -405,13 +461,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/ExcessiveTypeLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/ExcessiveTypeLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssMethodCount
@@ -441,13 +506,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|100.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/NcssMethodCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/NcssMethodCount">
+    <properties>
+        <property name="minimum" value="100.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssObjectCount
@@ -479,13 +553,22 @@ CREATE OR REPLACE PACKAGE pkg_
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1500.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/NcssObjectCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/NcssObjectCount">
+    <properties>
+        <property name="minimum" value="1500.0" />
+    </properties>
+</rule>
 ```
 
 ## NPathComplexity
@@ -541,13 +624,22 @@ END;
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|200.0|Minimum reporting threshold|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/NPathComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/NPathComplexity">
+    <properties>
+        <property name="minimum" value="200.0" />
+    </properties>
+</rule>
 ```
 
 ## TooManyFields
@@ -579,9 +671,18 @@ END pkg_too_many_fields;
 |----|-------------|-----------|-----------|
 |maxfields|15|Max allowable fields|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/TooManyFields" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/TooManyFields">
+    <properties>
+        <property name="maxfields" value="15" />
+    </properties>
+</rule>
 ```
 
 ## TooManyMethods
@@ -605,22 +706,22 @@ have more fine grained objects.
       (
       count(/descendant::ProgramUnit[
                                          not (
-                                                starts-with(@Image,'get')
+                                                starts-with(@Name,'get')
                                                 or
-                                                starts-with(@Image,'set')
+                                                starts-with(@Name,'set')
                                                 or
-                                                starts-with(@Image,'is')
+                                                starts-with(@Name,'is')
                                             )
                                        ]
            )
       +
       count(/descendant::TypeMethod[
                                          not (
-                                                starts-with(@Image,'get')
+                                                starts-with(@Name,'get')
                                                 or
-                                                starts-with(@Image,'set')
+                                                starts-with(@Name,'set')
                                                 or
-                                                starts-with(@Image,'is')
+                                                starts-with(@Name,'is')
                                             )
                                        ]
            )
@@ -634,8 +735,17 @@ have more fine grained objects.
 |----|-------------|-----------|-----------|
 |maxmethods|1|The method count reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/plsql/design.xml/TooManyMethods" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/plsql/design.xml/TooManyMethods">
+    <properties>
+        <property name="maxmethods" value="1" />
+    </properties>
+</rule>
 ```
 

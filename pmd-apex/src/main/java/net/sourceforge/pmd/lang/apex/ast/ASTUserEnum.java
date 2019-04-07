@@ -21,4 +21,8 @@ public class ASTUserEnum extends ApexRootNode<UserEnum> {
     public String getImage() {
         return node.getClass().getName();
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

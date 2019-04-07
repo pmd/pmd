@@ -71,10 +71,10 @@ elif travis_isPush; then
         echo -e "\n\n"
         log_info "This is a release build for tag ${TRAVIS_TAG}"
         echo -e "\n\n"
-        ./mvnw deploy -Possrh,pmd-release $MVN_BUILD_FLAGS
+        ./mvnw deploy -Possrh,sign,pmd-release $MVN_BUILD_FLAGS
     elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         log_info "This is a snapshot build"
-        ./mvnw deploy -Possrh $MVN_BUILD_FLAGS
+        ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS
         push_docs
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.

@@ -73,6 +73,26 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.13.0
+
+##### Command Line Interface
+
+The start scripts `run.sh`, `pmd.bat` and `cpd.bat` support the new environment variable `PMD_JAVA_OPTS`.
+This can be used to set arbitrary JVM options for running PMD, such as memory settings (e.g. `PMD_JAVA_OPTS=-Xmx512m`)
+or enable preview language features (e.g. `PMD_JAVA_OPTS=--enable-preview`).
+
+The previously available variables such as `OPTS` or `HEAPSIZE` are deprecated and will be removed with PMD 7.0.0.
+
+##### Deprecated API
+
+*   {% jdoc core::renderers.CodeClimateRule %} is deprecated in 7.0.0 because it was unused for 2 years and
+    created an unwanted dependency.
+    Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" will also be removed.
+    See [#1702](https://github.com/pmd/pmd/pull/1702) for more.
+
+*   The Apex ruleset `rulesets/apex/ruleset.xml` has been deprecated and will be removed in 7.0.0. Please use the new
+    quickstart ruleset `rulesets/apex/quickstart.xml` instead.
+
 #### 6.12.0
 
 No changes.
