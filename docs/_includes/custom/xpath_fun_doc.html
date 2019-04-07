@@ -38,7 +38,9 @@
 
                     <div style="margin-left: 15px" class="xpath-fun-doc">
 
-                        <h4 class="fun-details-header">
+                        <!-- Yeah the ID is duplicated but it's ok on my browser and makes -->
+                        <!--links somehow work when details are collapsed -->
+                        <h4 class="fun-details-header" id="{{ fun_id }}">
                             <span class="fun-ns">{{ lang.ns | append: ':' }}</span><span
                                 class="fun-name">{{ fun.name }}</span><span
                                 class="fun-ns">{{ fun | xpath_fun_type }}</span>
@@ -47,26 +49,24 @@
                         <div style="margin-left: 30px">
 
                             <dl>
-                                <dd>{{ fun.description }}</dd>
+                                <dd>{{ fun.description | render_markdown }}</dd>
                                 <dt>Remarks</dt>
-                                <dd>{{ fun.notes }}</dd>
+                                <dd>{{ fun.notes | render_markdown }}</dd>
 
                                 {% if fun.parameters.size > 0 %}
 
                                 <dt>Parameters</dt>
 
                                 <dd>
-                                    <div style="margin-left: 20px">
-                                        <dl>
-                                            {% for param in fun.parameters %}
-                                            <dt>
-                                                <span class="param-name">{{ param.name }}</span>
-                                                <span class="param-type"> as {{ param.type }}</span>
-                                            </dt>
-                                            <dd>{{ param.description }}</dd>
-                                            {% endfor %}
-                                        </dl>
-                                    </div>
+                                    <dl>
+                                        {% for param in fun.parameters %}
+                                        <dt>
+                                            <span class="param-name">{{ param.name }}</span>
+                                            <span class="param-type"> as {{ param.type }}</span>
+                                        </dt>
+                                        <dd>{{ param.description | render_markdown }}</dd>
+                                        {% endfor %}
+                                    </dl>
                                 </dd>
 
                                 {% endif %}
@@ -76,14 +76,12 @@
                                 <dt>Examples</dt>
 
                                 <dd>
-                                    <div style="margin-left: 20px">
-                                        <dl class="code-examples">
-                                            {% for example in fun.examples %}
-                                            <dt><code>{{ example.code }}</code></dt>
-                                            <dd>{% render %}{{ example.outcome }}{%endrender%}</dd>
-                                            {% endfor %}
-                                        </dl>
-                                    </div>
+                                    <dl class="code-examples">
+                                        {% for example in fun.examples %}
+                                        <dt><code>{{ example.code }}</code></dt>
+                                        <dd>{{ example.outcome | render_markdown }}</dd>
+                                        {% endfor %}
+                                    </dl>
                                 </dd>
                                 {% endif %}
                             </dl>

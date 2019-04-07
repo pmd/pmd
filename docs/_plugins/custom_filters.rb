@@ -1,3 +1,5 @@
+require 'kramdown'
+
 module CustomFilters
 
   # set intersection
@@ -42,6 +44,10 @@ module CustomFilters
       rx <=> ry
     }
 
+  end
+
+  def render_markdown(text)
+    Kramdown::Document.new(text).to_html
   end
 
   def xpath_fun_type(fun_yaml)
