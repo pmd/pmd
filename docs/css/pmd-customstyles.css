@@ -81,3 +81,6 @@ details[open] summary {
     font-style: italic;
     color: darkgray;
 }
+.xpath-fun-doc .code-examples dt {
+    font-weight: normal;
+}

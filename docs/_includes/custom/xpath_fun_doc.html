@@ -12,7 +12,7 @@
         <thead>
         <tr>
             <th>Function name</th>
-            <th>Description</th>
+            <th>Description (click for details)</th>
             <th></th>
         </tr>
         </thead>
@@ -51,7 +51,7 @@
                                 <dt>Remarks</dt>
                                 <dd>{{ fun.notes }}</dd>
 
-                                {% unless fun.parameters.size == 0 %}
+                                {% if fun.parameters.size > 0 %}
 
                                 <dt>Parameters</dt>
 
@@ -69,28 +69,24 @@
                                     </div>
                                 </dd>
 
-                                {% endunless %}
+                                {% endif %}
 
-                                {% unless fun.examples.size == 0 %}
+                                {% if fun.examples.size > 0 %}
 
+                                <dt>Examples</dt>
+
+                                <dd>
+                                    <div style="margin-left: 20px">
+                                        <dl class="code-examples">
+                                            {% for example in fun.examples %}
+                                            <dt><code>{{ example.code }}</code></dt>
+                                            <dd>{% render %}{{ example.outcome }}{%endrender%}</dd>
+                                            {% endfor %}
+                                        </dl>
+                                    </div>
+                                </dd>
+                                {% endif %}
                             </dl>
-
-
-                            <h5>Examples</h5>
-
-                            <table>
-
-                                {% for example in fun.examples %}
-
-                                <tr>
-                                    <td><code>{{ example.code }}</code></td>
-                                    <td>{{ example.description }}</td>
-                                </tr>
-
-                                {% endfor %}
-                            </table>
-
-                            {% endunless %}
                         </div>
                     </div>
                 </div>
@@ -103,18 +99,5 @@
     </table>
 
 </div>
-
-{% unless lang.examples.size == 0 %}
-
-#### Examples
-
-
-{% for example in lang.examples %}
-* `{{ example.code }}`<br/>&nbsp;&nbsp;&nbsp;&nbsp;{{example.outcome }}
-{% endfor %}
-
-
-{% endunless %}
-
 
 {% endfor %}

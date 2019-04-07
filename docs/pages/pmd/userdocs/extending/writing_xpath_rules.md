@@ -32,11 +32,10 @@ The version can be specified with the `version` property in the rule definition,
 
 The default has always been version 1.0.
 
-As of PMD version 6.13.0, XPath versions 1.0 and the 1.0 compatibility mode are
-deprecated. XPath 2.0 is superior in many ways, for example for its support for
+**As of PMD version 6.13.0, XPath versions 1.0 and the 1.0 compatibility mode are
+deprecated**. XPath 2.0 is superior in many ways, for example for its support for
 type checking, sequence values, or quantified expressions. For a detailed
 but approachable review of the features of XPath 2.0 and above, see [the Saxon documentation](https://www.saxonica.com/documentation/index.html#!expressions).
-
 
 It is recommended that you migrate to 2.0 before 7.0.0, but we expect
 to be able to provide an automatic migration tool when releasing 7.0.0. The
