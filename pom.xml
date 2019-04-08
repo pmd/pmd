@@ -1064,6 +1064,30 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         </profile>
 
         <profile>
+            <id>javadoc-aggregate</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <configuration>
+                                <additionalDependencies>
+                                    <additionalDependency>
+                                        <groupId>net.sourceforge.pmd</groupId>
+                                        <artifactId>pmd-apex-jorje</artifactId>
+                                        <version>${project.version}</version>
+                                        <classifier>lib</classifier>
+                                    </additionalDependency>
+                                </additionalDependencies>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+
+        <profile>
             <id>coveralls</id>
             <build>
                 <plugins>

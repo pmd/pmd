@@ -59,8 +59,6 @@ ls -lh pmd-doc-${VERSION}.zip
     true
 )
 
-
-
 #
 # Push the generated site to gh-pages branch
 # only for snapshot builds from branch master
@@ -89,3 +87,5 @@ TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}"
 fi
 
 popd
+
+.travis/build-doc-pmd7.sh
