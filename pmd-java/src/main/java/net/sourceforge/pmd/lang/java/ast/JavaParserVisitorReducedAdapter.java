@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * Visitor adapter with convenient visit methods to e.g. treat contructors and methods the same.
  *
  * @author Clément Fournier
+ *
+ * @deprecated Superseded directly by {@link JavaParserVisitorAdapter}
  */
 @Deprecated
 public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
@@ -29,7 +31,7 @@ public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
         return visit((ASTAnyTypeDeclaration) node, data);
     }
 
-
+    @Override
     public Object visit(ASTAnyTypeDeclaration node, Object data) {
         return visit((JavaNode) node, data);
     }
@@ -47,6 +49,7 @@ public class JavaParserVisitorReducedAdapter extends JavaParserVisitorAdapter {
     }
 
 
+    @Override
     public Object visit(ASTMethodOrConstructorDeclaration node, Object data) {
         return visit((MethodLikeNode) node, data);
     }

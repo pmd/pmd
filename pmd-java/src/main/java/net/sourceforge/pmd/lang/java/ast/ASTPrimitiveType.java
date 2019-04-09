@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -62,9 +61,6 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
     }
 
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -102,7 +98,7 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
             Collections.unmodifiableMap(
                 Arrays.stream(values()).collect(Collectors.toMap(
                     PrimitiveType::getToken,
-                    Function.identity()
+                    t -> t
                 ))
             );
 

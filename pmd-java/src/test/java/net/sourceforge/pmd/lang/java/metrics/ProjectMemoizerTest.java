@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorReducedAdapter;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.MetricKey;
