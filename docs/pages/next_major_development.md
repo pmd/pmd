@@ -61,7 +61,7 @@ by it was inconsistent, and ultimately that level of nesting was unnecessary.
 
 * **Migrating**:
   * Remove all `/Literal/` segments from your XPath expressions
-  * If you tested several types of literals, you can e.g. do it like `/(StringLiteral | CharLiteral)/`
+  * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
   * As is usual, use the designer to explore the new AST structure
 
 * {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are not nodes anymore.
