@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -127,10 +128,11 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     @Override
     @Experimental
     public String getTypeImage() {
-        String ambiguousName = Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("");
-        return Optional.ofNullable(getLhsType()).map(s -> s.getTypeImage() + ".").orElseGet(() -> Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("")) + getImage();
-    }
+        Supplier<String> ambiguousName =
+            () -> Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("");
 
+        return Optional.ofNullable(getLhsType()).map(s -> s.getTypeImage() + ".").orElseGet(ambiguousName) + getImage();
+    }
 
     /**
      * Checks whether the type this node is referring to is declared within the
