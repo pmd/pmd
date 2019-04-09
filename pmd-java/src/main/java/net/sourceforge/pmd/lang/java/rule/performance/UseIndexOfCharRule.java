@@ -37,7 +37,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
     @Override
     protected boolean isViolationArgument(Node arg) {
         return true;
-        // REVERT ME
+        // FIXME - REVERT ME
         // return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
     }
 

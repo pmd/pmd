@@ -81,7 +81,7 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                                 // it shouldn't be happening on valid source
                                 // code.
                                 Number value = -1;
-                                // REVERT ME
+                                //FIXME - REVERT ME
                                 // if (literal.isIntLiteral()) {
                                 //     value = literal.getValueAsInt();
                                 // } else if (literal.isLongLiteral()) {

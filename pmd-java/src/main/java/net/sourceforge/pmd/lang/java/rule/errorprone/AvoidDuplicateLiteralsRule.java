@@ -176,7 +176,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             List<ASTLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
                 ASTLiteral first = occurrences.get(0);
-                //                REVERT ME
+                //  FIXME - REVERT ME
                 //                String rawImage = first.getEscapedStringLiteral();
                 //                Object[] args = {rawImage, occurrences.size(), first.getBeginLine(), };
                 //                addViolation(data, first, args);
