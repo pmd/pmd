@@ -128,7 +128,7 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     @Experimental
     public String getTypeImage() {
         String ambiguousName = Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("");
-        return Optional.ofNullable(getLhsType()).map(s -> s.getTypeImage() + ".").orElse(ambiguousName) + getImage();
+        return Optional.ofNullable(getLhsType()).map(s -> s.getTypeImage() + ".").orElseGet(() -> Optional.ofNullable(getAmbiguousLhs()).map(s -> s.getName() + ".").orElse("")) + getImage();
     }
 
 
