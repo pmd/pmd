@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.containingFile
 import net.sourceforge.pmd.lang.ast.test.firstToken
+import java.lang.IllegalArgumentException
 
 /**
  * @author Clément Fournier
@@ -70,6 +71,44 @@ class TokenOpsTest : FunSpec({
         setup1 { fileTokens ->
             shouldThrow<NoSuchElementException> {
                 TokenOps.nthPrevious(fileTokens[0], fileTokens[3], 4)
+            }
+        }
+    }
+
+    test("Test nth previous token, negative input") {
+
+        setup1 { fileTokens ->
+            shouldThrow<IllegalArgumentException> {
+                TokenOps.nthPrevious(fileTokens[0], fileTokens[3], -15)
+            }
+        }
+    }
+
+
+
+    test("Test nth following token, normal cases") {
+
+        setup1 { fileTokens ->
+            TokenOps.nthFollower(fileTokens[3], 0).image shouldBe "abstract"
+            TokenOps.nthFollower(fileTokens[3], 1).image shouldBe "void"
+            TokenOps.nthFollower(fileTokens[3], 2).image shouldBe "bar"
+        }
+    }
+
+    test("Test nth following token, too far right") {
+
+        setup1 { fileTokens ->
+            shouldThrow<NoSuchElementException> {
+                TokenOps.nthFollower(fileTokens[3], 15)
+            }
+        }
+    }
+
+    test("Test nth following token, stupid input") {
+
+        setup1 { fileTokens ->
+            shouldThrow<IllegalArgumentException> {
+                TokenOps.nthFollower(fileTokens[3], -15)
             }
         }
     }

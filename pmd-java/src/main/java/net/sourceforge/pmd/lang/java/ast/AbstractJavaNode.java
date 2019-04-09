@@ -229,17 +229,19 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
     /**
      * Shift the start and end tokens by the given offsets.
+     * @throws IllegalStateException if the right shift identifies
+     * a token that is left of this node
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
-            jjtSetFirstToken(findTokenSiblingInThoseBounds(jjtGetFirstToken(), leftShift));
+            jjtSetFirstToken(findTokenSiblingInThisNode(jjtGetFirstToken(), leftShift));
         }
         if (rightShift != 0) {
-            jjtSetLastToken(findTokenSiblingInThoseBounds(jjtGetLastToken(), rightShift));
+            jjtSetLastToken(findTokenSiblingInThisNode(jjtGetLastToken(), rightShift));
         }
     }
 
-    private GenericToken findTokenSiblingInThoseBounds(GenericToken token, int shift) {
+    private GenericToken findTokenSiblingInThisNode(GenericToken token, int shift) {
         if (shift == 0) {
             return token;
         } else if (shift < 0) {

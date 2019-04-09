@@ -42,8 +42,10 @@ final class TokenOps {
     }
 
 
-
-    static GenericToken nthFollower(GenericToken token, int n) {
+    public static GenericToken nthFollower(GenericToken token, int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("Negative index?");
+        }
         while (n-- > 0 && token != null) {
             token = token.getNext();
         }
@@ -70,7 +72,7 @@ final class TokenOps {
      * @throws NoSuchElementException If there's less than n tokens to the left of the anchor.
      */
     // test only
-    static GenericToken nthPrevious(GenericToken startHint, GenericToken anchor, int n) {
+    public static GenericToken nthPrevious(GenericToken startHint, GenericToken anchor, int n) {
         if (compare(startHint, anchor) >= 0) {
             throw new IllegalStateException("Wrong left hint, possibly not left enough");
         }
