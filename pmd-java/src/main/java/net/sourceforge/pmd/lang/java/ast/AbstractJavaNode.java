@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -28,29 +29,31 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         this.parser = parser;
     }
 
-
     @Override
-    public void jjtOpen() {
-        if (beginLine == -1 && parser.token.next != null) {
-            beginLine = parser.token.next.beginLine;
-            beginColumn = parser.token.next.beginColumn;
-        }
+    public int getBeginLine() {
+        return jjtGetFirstToken().getBeginLine();
     }
 
+    @Override
+    public int getBeginColumn() {
+        return jjtGetFirstToken().getBeginColumn();
+    }
+
+    @Override
+    public int getEndLine() {
+        return jjtGetLastToken().getEndLine();
+    }
+
+    @Override
+    public int getEndColumn() {
+        return jjtGetLastToken().getEndColumn();
+    }
 
     @Override
     public void jjtClose() {
-        if (beginLine == -1 && children.length == 0) {
-            beginColumn = parser.token.beginColumn;
-        }
-        if (beginLine == -1) {
-            beginLine = parser.token.beginLine;
-        }
         if (this instanceof LeftRecursiveNode) {
             enlargeLeft();
         }
-        endLine = parser.token.endLine;
-        endColumn = parser.token.endColumn;
     }
 
 
@@ -181,26 +184,20 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     }
 
     private void enlargeLeft(AbstractJavaNode child) {
-        if (this.beginLine > child.beginLine) {
-            this.firstToken = child.firstToken;
-            this.beginLine = child.beginLine;
-            this.beginColumn = child.beginColumn;
-        } else if (this.beginLine == child.beginLine
-            && this.beginColumn > child.beginColumn) {
-            this.firstToken = child.firstToken;
-            this.beginColumn = child.beginColumn;
+        GenericToken thisFst = jjtGetFirstToken();
+        GenericToken childFst = child.jjtGetFirstToken();
+
+        if (TokenOps.isBefore(childFst, thisFst)) {
+            jjtSetFirstToken(childFst);
         }
     }
 
     private void enlargeRight(AbstractJavaNode child) {
-        if (this.endLine < child.endLine) {
-            this.lastToken = child.lastToken;
-            this.endLine = child.endLine;
-            this.endColumn = child.endColumn;
-        } else if (this.endLine == child.endLine
-            && this.endColumn < child.endColumn) {
-            this.lastToken = child.lastToken;
-            this.endColumn = child.endColumn;
+        GenericToken thisLast = jjtGetLastToken();
+        GenericToken childLast = child.jjtGetLastToken();
+
+        if (TokenOps.isAfter(childLast, thisLast)) {
+            jjtSetLastToken(childLast);
         }
     }
 
@@ -230,13 +227,33 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         //  the tokens probably...
     }
 
+    /**
+     * Shift the start and end tokens by the given offsets.
+     */
+    void shiftTokens(int leftShift, int rightShift) {
+        if (leftShift != 0) {
+            jjtSetFirstToken(findTokenSiblingInThoseBounds(jjtGetFirstToken(), leftShift));
+        }
+        if (rightShift != 0) {
+            jjtSetLastToken(findTokenSiblingInThoseBounds(jjtGetLastToken(), rightShift));
+        }
+    }
+
+    private GenericToken findTokenSiblingInThoseBounds(GenericToken token, int shift) {
+        if (shift == 0) {
+            return token;
+        } else if (shift < 0) {
+            // expects a positive shift
+            return TokenOps.nthPrevious(jjtGetFirstToken(), token, -shift);
+        } else {
+            return TokenOps.nthFollower(token, +shift);
+        }
+    }
+
+
     void copyTextCoordinates(AbstractJavaNode copy) {
-        this.beginLine = copy.getBeginLine();
-        this.beginColumn = copy.getBeginColumn();
-        this.endLine = copy.getEndLine();
-        this.endColumn = copy.getEndColumn();
-        this.firstToken = copy.jjtGetFirstToken();
-        this.lastToken = copy.jjtGetLastToken();
+        jjtSetFirstToken(copy.jjtGetFirstToken());
+        jjtSetLastToken(copy.jjtGetLastToken());
     }
 
 

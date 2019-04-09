@@ -189,7 +189,8 @@ public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTR
             res.copyTextCoordinates(this);
         }
 
-        shiftColumns(0, -lastSegment.length() - 1);
+        // shift the ident + the dot
+        this.shiftTokens(0, -2);
         setImage(remainingAmbiguous);
         return res;
     }
