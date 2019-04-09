@@ -29,7 +29,7 @@ final class AstImplUtil {
     }
 
     private static boolean isSuppressWarnings(ASTAnnotation astAnnotation) {
-        return TypeHelper.isA(astAnnotation, "java.lang.SuppressWarnings");
+        return TypeHelper.isA(astAnnotation, SuppressWarnings.class);
     }
 
     public static boolean suppresses(ASTAnnotation annotation, Rule rule) {
