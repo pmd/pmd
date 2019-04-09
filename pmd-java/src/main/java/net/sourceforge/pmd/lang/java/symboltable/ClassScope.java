@@ -327,11 +327,11 @@ public class ClassScope extends AbstractJavaScope {
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);
 
-            Optional<PrimitiveType> primitive = PrimitiveType.fromToken(parameterTypes[i]);
+            PrimitiveType primitive = PrimitiveType.fromToken(parameterTypes[i]);
 
             // TODO : this could actually be a primitive array...
-            ASTType type = primitive.isPresent()
-                           ? new ASTPrimitiveType(primitive.get())
+            ASTType type = primitive != null
+                           ? new ASTPrimitiveType(primitive)
                            : new ASTClassOrInterfaceType(parameterTypes[i]);
 
             formalParameter.jjtAddChild(type, 0);

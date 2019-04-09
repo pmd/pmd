@@ -9,11 +9,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 
 
 /**
@@ -27,7 +30,12 @@ import net.sourceforge.pmd.annotation.Experimental;
  */
 public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
 
-    ASTPrimitiveType(PrimitiveType type) {
+    /**
+     * @deprecated Made public for one shady usage in {@link ClassScope}
+     */
+    @Deprecated
+    @InternalApi
+    public ASTPrimitiveType(PrimitiveType type) {
         super(JavaParserTreeConstants.JJTPRIMITIVETYPE);
         setImage(type.getToken());
     }
@@ -70,7 +78,7 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
 
 
     public PrimitiveType getModelConstant() {
-        return PrimitiveType.fromToken(getImage()).get();
+        return Objects.requireNonNull(PrimitiveType.fromToken(getImage()), "Image doesn't denote a primitive type??");
     }
 
 
@@ -127,10 +135,12 @@ public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTT
          *
          * @param token String token
          *
-         * @return A constant, or the empty optional if the token doesn't correspond to a constant
+         * @return A constant, or null if the string doesn't correspond
+         * to a primitive type
          */
-        public static Optional<PrimitiveType> fromToken(String token) {
-            return Optional.ofNullable(LOOKUP.get(token));
+        @Nullable
+        public static PrimitiveType fromToken(String token) {
+            return LOOKUP.get(token);
         }
     }
 

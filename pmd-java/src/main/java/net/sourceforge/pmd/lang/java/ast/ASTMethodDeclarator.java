@@ -5,6 +5,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+
 /**
  * Child of an {@link ASTMethodDeclaration}.
  *
@@ -18,7 +21,13 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  */
 public final class ASTMethodDeclarator extends AbstractJavaNode {
-    ASTMethodDeclarator(int id) {
+
+    /**
+     * @deprecated Made public for one shady usage in {@link ClassScope}
+     */
+    @Deprecated
+    @InternalApi
+    public ASTMethodDeclarator(int id) {
         super(id);
     }
 
