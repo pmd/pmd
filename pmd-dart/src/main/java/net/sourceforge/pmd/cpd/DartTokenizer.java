@@ -32,7 +32,7 @@ public class DartTokenizer extends AntlrTokenizer {
      * Dart-specific tokens.
      * <p>
      * By default, it discards package and import statements, and
-     * enables annotation-based CPD suppression.
+     * enables comment-based CPD suppression.
      * </p>
      */
     private static class DartTokenFilter extends AntlrTokenFilter {
