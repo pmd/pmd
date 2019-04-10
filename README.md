@@ -12,7 +12,7 @@ unnecessary object creation, and so forth. It supports Java, JavaScript, Salesfo
 XML, XSL.
 
 Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
-Apache Velocity, C/C++, C#, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Matlab,
+C/C++, C#, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Matlab,
 Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift, Visualforce, XML and XSL.
 
 ## Source and Documentation
