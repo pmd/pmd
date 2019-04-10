@@ -13,7 +13,7 @@ XML, XSL.
 
 Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
 Apache Velocity, C/C++, C#, Fortran, Go, Groovy, Java, JavaScript, Kotlin, Matlab,
-Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift.
+Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
 
 ## Source and Documentation
 
