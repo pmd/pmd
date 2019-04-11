@@ -19,7 +19,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * Abstract class for rules counting some integer metric on some node.
  *
  * @author Clément Fournier
- * @since 6.7.0
+ * @since 7.0.0
  */
 abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractApexRule {
 
@@ -36,7 +36,7 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
         if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
             addRuleChainVisit(nodeType);
         } else {
-            assert false : "Rule chain visits must be concrete node types";
+            throw new AssertionError("Rule chain visits must be concrete node types");
         }
     }
 
