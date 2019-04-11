@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
+
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
-import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Switch Density - This is the number of statements over the number of
@@ -20,84 +25,62 @@ import net.sourceforge.pmd.stat.DataPoint;
  *
  * @author David Dixon-Peugh
  */
-public class SwitchDensityRule extends AbstractStatisticalJavaRule {
+public class SwitchDensityRule extends AbstractJavaRulechainRule {
 
-    private static class SwitchDensity {
-        private int labels = 0;
-        private int stmts = 0;
-
-        public void addSwitchLabel() {
-            labels++;
-        }
-
-        public void addStatement() {
-            stmts++;
-        }
-
-        public void addStatements(int stmtCount) {
-            stmts += stmtCount;
-        }
-
-        public int getStatementCount() {
-            return stmts;
-        }
-
-        public double getDensity() {
-            if (labels == 0) {
-                return 0;
-            }
-            return (double) stmts / (double) labels;
-        }
-    }
+    private static final PropertyDescriptor<Double> REPORT_LEVEL =
+        // can't use CommonPropertyDescriptors because we need a double property
+        PropertyFactory.doubleProperty("minimum")
+                       .desc("Threshold above which a node is reported")
+                       .require(positive())
+                       .defaultValue(10d)
+                       .build();
 
     public SwitchDensityRule() {
-        super();
-        setProperty(MINIMUM_DESCRIPTOR, 10d);
+        super(ASTSwitchStatement.class);
+        definePropertyDescriptor(REPORT_LEVEL);
     }
 
     @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        SwitchDensity oldData = null;
-
-        if (data instanceof SwitchDensity) {
-            oldData = (SwitchDensity) data;
+        double density = new SwitchDensityVisitor().compute(node);
+        if (density >= getProperty(REPORT_LEVEL)) {
+            addViolation(data, node);
         }
-
-        SwitchDensity density = new SwitchDensity();
-
-        node.childrenAccept(this, density);
-
-        DataPoint point = new DataPoint();
-        point.setNode(node);
-        point.setScore(density.getDensity());
-        point.setMessage(getMessage());
-
-        addDataPoint(point);
-
-        if (data instanceof SwitchDensity) {
-            ((SwitchDensity) data).addStatements(density.getStatementCount());
-        }
-        return oldData;
+        return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTStatement statement, Object data) {
-        if (data instanceof SwitchDensity) {
-            ((SwitchDensity) data).addStatement();
+    private static class SwitchDensityVisitor extends JavaParserVisitorAdapter {
+
+        private int labels = 0;
+        private int stmts = 0;
+        private ASTSwitchStatement root;
+
+
+        double compute(ASTSwitchStatement root) {
+            this.root = root;
+            root.jjtAccept(this, null);
+            return labels == 0 ? 0 : ((double) stmts) / labels;
         }
 
-        statement.childrenAccept(this, data);
 
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTSwitchLabel switchLabel, Object data) {
-        if (data instanceof SwitchDensity) {
-            ((SwitchDensity) data).addSwitchLabel();
+        @Override
+        public Object visit(ASTStatement statement, Object data) {
+            stmts++;
+            return super.visit(statement, data);
         }
 
-        switchLabel.childrenAccept(this, data);
-        return data;
+        @Override
+        public Object visit(ASTExpression node, Object data) {
+            // don't recurse on anonymous class, etc
+            return data;
+        }
+
+        @Override
+        public Object visit(ASTSwitchLabel switchLabel, Object data) {
+            if (switchLabel.jjtGetParent() == root) {
+                labels++;
+            }
+            return super.visit(switchLabel, data);
+        }
     }
 }
