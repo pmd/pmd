@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.lang.reflect.Modifier;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
@@ -26,6 +27,7 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
      * @param visits The rest
      */
     @SafeVarargs
+    @Experimental
     public AbstractJavaRulechainRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {
         if (!isAbstract(first)) {
             addRuleChainVisit(first);
