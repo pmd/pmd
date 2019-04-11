@@ -1,8 +1,12 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.rule.design;
+package net.sourceforge.pmd.lang.apex.rule.internal;
 
 import static net.sourceforge.pmd.properties.constraints.NumericConstraints.positive;
 
@@ -21,7 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * @author Clément Fournier
  * @since 7.0.0
  */
-abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractApexRule {
+public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractApexRule {
 
 
     private final PropertyDescriptor<Integer> reportLevel =
@@ -31,7 +35,7 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
                                  .defaultValue(defaultReportLevel()).build();
 
 
-    AbstractCounterCheckRule(Class<T> nodeType) {
+    public AbstractCounterCheckRule(Class<T> nodeType) {
         definePropertyDescriptor(reportLevel);
         if (!(Modifier.isAbstract(nodeType.getModifiers()) || nodeType.isInterface())) {
             addRuleChainVisit(nodeType);
@@ -73,9 +77,9 @@ abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractA
         return data;
     }
 
-    abstract static class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
+    public static abstract class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
-        AbstractLineLengthCheckRule(Class<T> nodeType) {
+        public AbstractLineLengthCheckRule(Class<T> nodeType) {
             super(nodeType);
         }
 

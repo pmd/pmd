@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
 
 /**
  * This rule detects when a class exceeds a certain threshold. i.e. if a class

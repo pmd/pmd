@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
+import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
 
 /**
  * Rule attempts to count all public methods and public attributes

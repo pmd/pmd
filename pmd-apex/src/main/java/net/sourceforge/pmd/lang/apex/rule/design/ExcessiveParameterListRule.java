@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
+import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
 
 /**
  * This rule detects an abnormally long parameter list. Note: This counts Nodes,
