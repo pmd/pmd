@@ -76,66 +76,30 @@ final class TokenOps {
         if (compare(startHint, anchor) >= 0) {
             throw new IllegalStateException("Wrong left hint, possibly not left enough");
         }
-        CircularBuffer<GenericToken> lookahead = new CircularBuffer<>(n);
+        if (n <= 0) {
+            throw new IllegalArgumentException("Offset can't be less than 1");
+        }
+        int numAway = 0;
+        GenericToken target = startHint;
         GenericToken current = startHint;
         while (current != null && !current.equals(anchor)) {
-            lookahead.add(current);
             current = current.getNext();
+            // wait "n" iterations before starting to advance the target
+            // then advance "target" at the same rate as "current", but
+            // "n" tokens to the left
+            if (numAway == n) {
+                target = target.getNext();
+            } else {
+                numAway++;
+            }
         }
         if (!Objects.equals(current, anchor)) {
             throw new IllegalStateException("Wrong left hint, possibly not left enough");
-        } else if (!lookahead.overflows()) {
-            // not a full cycle, so we're not "n" tokens away from the anchor
+        } else if (numAway != n) {
+            // We're not "n" tokens away from the anchor
             throw new NoSuchElementException("No such token");
         }
 
-        return lookahead.getOldest();
+        return target;
     }
-
-
-    /** A simple non-reusable FIFO circular buffer. */
-    private static final class CircularBuffer<E> {
-
-        private final Object[] contents;
-        /** Index of the element to be overwritten on the next addition. */
-        private int writeIdx;
-        /** Total number of writes performed. */
-        private int writeCount;
-
-
-        private CircularBuffer(int size) {
-            if (size <= 0) {
-                throw new IllegalArgumentException("Buffer size can't be less than 1");
-            }
-            this.contents = new Object[size];
-            this.writeIdx = 0;
-        }
-
-        private int shiftIdx() {
-            int write = writeIdx;
-            writeIdx = (writeIdx + 1) % contents.length;
-            return write;
-        }
-
-        public void add(E elt) {
-            contents[shiftIdx()] = elt;
-            writeCount++;
-        }
-
-        /** Whether a full cycle has been completed at least once. */
-        private boolean overflows() {
-            return writeCount >= contents.length;
-        }
-
-        private int getOldestIdx() {
-            return overflows() ? writeIdx : 0;
-        }
-
-        public E getOldest() {
-            @SuppressWarnings("unchecked")
-            E res = (E) contents[getOldestIdx()];
-            return res;
-        }
-    }
-
 }
