@@ -11,7 +11,7 @@ author: Tom Copeland <tom@infoether.com>
 Duplicate code can be hard to find, especially in a large project.
 But PMD's **Copy/Paste Detector (CPD)** can find it for you!
 
-CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and [some more languages](#supported-languages).
+CPD works with Java, JSP, C/C++, C#, Go, Kotlin, Ruby, Swift and [many more languages](#supported-languages).
 It can be used via [command-line](#cli-usage), or via an [Ant task](#ant-task).
 It can also be run with Maven by using the `cpd-check` goal on the [Maven PMD Plugin](pmd_userdocs_tools_maven.html).
 
@@ -210,12 +210,14 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Apex
 * C#
 * C/C++
+* Dart
 * EcmaScript (JavaScript)
 * Fortran
 * Go
 * Groovy
 * Java
 * Jsp
+* Kotlin
 * Matlab
 * Objective-C
 * Perl
@@ -363,7 +365,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 
 ## Suppression
 
-Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Go**, **Javascript**,
+Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
 **Kotlin**, **Matlab**, **Objective-C**, **PL/SQL**, **Python** and **Swift** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
@@ -391,7 +393,7 @@ Additionally, **Java** allows to toggle suppression by adding the annotations
 all code within will be ignored by CPD.
 
 This approach however, is limited to the locations were `@SuppressWarnings` is accepted.
-It's legacy and the new comment's based approch should be favored.
+It's legacy and the new comment's based approach should be favored.
 
 ```java
     //enable suppression

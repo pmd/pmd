@@ -33,7 +33,7 @@ The date and the version must be updated in `docs/_config.yml`,  e.g.
 pmd:
     version: 6.0.0
     date: 2017-12-15
-    release_type: minor
+    release_type: major
 ```
 
 The release type could be one of "bugfix", "minor", or "major".

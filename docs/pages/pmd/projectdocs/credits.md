@@ -53,7 +53,7 @@ author: Tom Copeland <tom@infoether.org>
 
 *   Pieter Vanraemdonck - JSP grammar/integration/documentation, DontNestJsfInJstlIteration, NoLongScripts,
     NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward
-*   Raik Schroeder - data flow analyis layer, YAHTMLRenderer
+*   Raik Schroeder - data flow analysis layer, YAHTMLRenderer
 *   Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching
 *   Daniel Sheppard - XPath engine integration concept and implementation, advice on Jaxen extension function naming
 *   Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform, fixed DocumentNavigator bug
@@ -78,7 +78,7 @@ author: Tom Copeland <tom@infoether.org>
 *   Jeff Campbell - Found bug and suggested fix for problem with XMLRenderer and SuppressWarnings("PMD") annotations
 *   Kris Jurka - CPD patch to accept ".C" as a filename extension for C/C++ files
 *   Florian Deissenboeck - reported several Java 1.5 grammar bugs
-*   Maarten ter Huurne - BooleanGetMethodName, AddEmptyString, Noticed mispeling in AvoidArrayLoops rule
+*   Maarten ter Huurne - BooleanGetMethodName, AddEmptyString, Noticed misspelling in AvoidArrayLoops rule
 *   Lukas Theussl - Patch to bring Maven configuration files up to date
 *   Jason Bennett - Rewrite of annotation-based warning suppression to allow for rule-specific suppression,
     noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule,
@@ -143,7 +143,7 @@ author: Tom Copeland <tom@infoether.org>
     reported mistake in UnnecessaryLocalBeforeReturn message,
     bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example,
     bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod,
-    suggestion for improving command line interface, mispeling report, suggestion for improving Designer
+    suggestion for improving command line interface, misspelling report, suggestion for improving Designer
     startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars,
     script renaming suggestions, UseLocaleWithCaseConversions rule suggestion
 *   David Karr - reported stale XPath documentation

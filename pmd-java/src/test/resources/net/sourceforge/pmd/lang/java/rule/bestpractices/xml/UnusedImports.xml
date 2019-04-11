@@ -242,6 +242,22 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#1720 False Positive in UnusedImports for Javadoc link with array type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pack.SomeUtility;
+
+public class Foo {
+    /**
+     * The {@link SomeUtility#someHelperMethod(String, SomeObjectArray[])} method does something.
+     */
+    public void someMethod() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
          <description><![CDATA[
 Bug 2606609 : False "UnusedImports" positive in package-info.java
         ]]></description>
@@ -467,6 +483,22 @@ import java.io.FileInputStream;
 
 public class Derived extends FileInputStream {
     /** @see #FileInputStream(File) */
+    void main() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1720 False Positive in UnusedImports for Javadoc @see with array type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+public class Derived extends FileInputStream {
+    /** @see #FileInputStream(File, File[]) */
     void main() {}
 }
         ]]></code>
