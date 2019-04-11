@@ -77,7 +77,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
         return data;
     }
 
-    public static abstract class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
+    public abstract static class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
         public AbstractLineLengthCheckRule(Class<T> nodeType) {
             super(nodeType);
