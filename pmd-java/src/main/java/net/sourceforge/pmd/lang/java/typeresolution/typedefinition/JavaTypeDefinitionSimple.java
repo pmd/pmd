@@ -130,7 +130,7 @@ import java.util.logging.Logger;
         }
 
         /*
-         * Set a default to circuit-brake any recursions (ie: raw types with no generic info)
+         * Set a default to circuit-break any recursions (ie: raw types with no generic info)
          * Object.class is a right answer in those scenarios
          */
         genericArgs[index] = forClass(Object.class);

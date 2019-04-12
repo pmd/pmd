@@ -29,6 +29,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   go
     *   [#1751](https://github.com/pmd/pmd/issues/1751): \[go] Parsing errors encountered with escaped backslash
 *   java
+    *   [#1691](https://github.com/pmd/pmd/issues/1691): \[java] Possible Data Race in JavaTypeDefinitionSimple.getGenericType
     *   [#1729](https://github.com/pmd/pmd/issues/1729): \[java] JavaRuleViolation loses information in `className` field when class has package-private access level
 *   java-bestpractices
     *   [#1720](https://github.com/pmd/pmd/issues/1720): \[java] UnusedImports false positive for Javadoc link with array type
