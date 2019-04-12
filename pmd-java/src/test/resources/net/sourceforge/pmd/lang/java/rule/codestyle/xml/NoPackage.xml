@@ -35,4 +35,15 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+        <test-code>
+        <description><![CDATA[
+no package in top-level enum
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+	BAR;
+}
+     ]]></code>
+    </test-code>
 </test-data>
