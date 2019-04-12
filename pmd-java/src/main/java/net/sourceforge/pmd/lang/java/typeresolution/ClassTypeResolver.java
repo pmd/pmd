@@ -1407,7 +1407,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         } else {
             JavaTypeDefinition def = JavaTypeDefinition.forClass(myType);
-            node.setTypeDefinition(def.withDimensions(arrayDimens));
+            if (def != null) {
+                node.setTypeDefinition(def.withDimensions(arrayDimens));
+            }
         }
     }
 
