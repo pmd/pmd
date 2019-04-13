@@ -35,8 +35,8 @@ public class AntlrRuleChainVisitor extends AbstractRuleChainVisitor {
             }
         };
 
-        for (int i = 0; i < nodes.size(); i++) {
-            antlrVisitor.visit((AntlrBaseNode) nodes.get(i));
+        for (final Node node : nodes) {
+            antlrVisitor.visit((AntlrBaseNode) node);
         }
     }
 }
