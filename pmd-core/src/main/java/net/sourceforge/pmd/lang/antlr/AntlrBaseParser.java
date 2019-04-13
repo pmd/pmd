@@ -41,20 +41,17 @@ public abstract class AntlrBaseParser implements Parser {
         try {
             return new AntlrTokenManager(getLexer(source), fileName);
         } catch (final IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
     public Node parse(final String fileName, final Reader source) throws ParseException {
-        AntlrBaseNode rootNode = null;
         try {
-            rootNode = getRootNode(getParser(getLexer(source)));
+            return getRootNode(getParser(getLexer(source)));
         } catch (final IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new ParseException(e);
         }
-        return rootNode;
     }
 
     private AntlrBaseNode getRootNode(final org.antlr.v4.runtime.Parser parser)
