@@ -806,7 +806,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//MethodDeclarator[@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
+//MethodDeclarator[@Image[matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
            pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -815,7 +815,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         or pmd-java:typeIs('org.testng.annotations.Test')
     ]]
-    [count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
+    [count(..//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
 ```
 
 **Example(s):**
