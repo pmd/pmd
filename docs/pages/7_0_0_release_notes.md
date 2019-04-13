@@ -23,14 +23,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+* [#1648](https://github.com/pmd/pmd/pull/1702): \[apex,vf] Remove CodeClimate dependency - [Robert Sösemann](https://github.com/rsoesemann)
+  Properties "cc_categories", "cc_remediation_points_multiplier", "cc_block_highlighting" can no longer be overridden in rulesets. 
+  They were deprecated without replacement. 
 
 * The old GUI applications accessible through `run.sh designerold` and `run.sh bgastviewer` (and corresponding Batch scripts)
   have been removed from the PMD distribution. Please use the newer rule designer with `run.sh designer`.
   The corresponding classes in packages `java.net.sourceforge.pmd.util.viewer` and `java.net.sourceforge.pmd.util.designer` have
   all been removed.
 
-
 ### External Contributions
+
+*  [#1658](https://github.com/pmd/pmd/pull/1658/): \[core] Node support for Antlr-based languages
 
 {% endtocmaker %}
 

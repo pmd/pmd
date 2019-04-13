@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex unit test methods - test methods should have @isTest annotation.</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,18</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+private class ATest {
+    @isTest
+    static void methodATest() {
+    }
+    static void methodBTest() {
+        System.assert(1==2);
+    }
+    @isTest static void methodCTest() {
+    }
+    @isTest
+    static void methodDTest() {
+        System.assert(3==3);
+    }
+    static void methodETest() {
+        System.debug('I am a debug statement.');
+    }
+    static void methodFTest() {
+        System.assertEquals(1,2);
+    }
+    private void fetchData() {
+    }
+}
+		]]></code>
+    </test-code>
+    <test-code>
+        <description>Test methods should have @isTest annotation.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@isTest
+private class ATest {
+    @setUp
+    static void setUp(){
+    }
+    @isTest
+    static void methodATestOne() {
+        System.assertEquals(1,2);
+    }
+    @isTest
+    static void methodBTest() {
+        System.assertEquals(1,2);
+    }
+    @isTest static void methodC() {
+        System.assertEquals(1,2);
+    }
+    private void fetchData() {
+    }
+}
+		]]></code>
+    </test-code>
+    <test-code>
+        <description>Avoid false positive in non test class methods.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class A {
+    private void fetchData() {
+        System.assertEquals(1,1);
+    }
+}
+		]]></code>
+    </test-code>
+</test-data>

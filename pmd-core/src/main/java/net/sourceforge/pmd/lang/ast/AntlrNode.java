@@ -4,10 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.List;
-
-import org.jaxen.JaxenException;
-
 /**
  * Base interface for all Antlr-based implementation of Node interface.
  * <p>
@@ -72,11 +68,6 @@ public interface AntlrNode extends Node {
 
     @Override
     default void removeChildAtIndex(final int childIndex) {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
-    default List<Node> findChildNodesWithXPath(final String xpathString) throws JaxenException {
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }
 }

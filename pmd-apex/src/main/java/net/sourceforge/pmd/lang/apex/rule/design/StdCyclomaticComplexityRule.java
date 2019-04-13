@@ -82,10 +82,6 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
         definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
         definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
-
-        setProperty(CODECLIMATE_CATEGORIES, "Complexity");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 250);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
     }
 
     @Override
@@ -141,7 +137,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.getImage().matches("<clinit>|<init>|clone")) {
+        if (!node.isSynthetic()) {
             entryStack.push(new Entry());
             super.visit(node, data);
             Entry methodEntry = entryStack.pop();
@@ -155,7 +151,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
             }
 
             if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
-                String methodType = node.getNode().getMethodInfo().isConstructor() ? "constructor" : "method";
+                String methodType = node.isConstructor() ? "constructor" : "method";
                 addViolation(data, node,
                         new String[] { methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints) });
             }

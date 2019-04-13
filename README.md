@@ -12,8 +12,8 @@ unnecessary object creation, and so forth. It supports Java, JavaScript, Salesfo
 XML, XSL.
 
 Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
-Java, C, C++, C#, Groovy, PHP, Ruby, Fortran, JavaScript, PLSQL, Apache Velocity, Scala, Objective C,
-Salesforce.com Apex, Perl, Swift, Matlab, Python.
+C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Matlab,
+Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
 
 ## Source and Documentation
 
@@ -21,6 +21,10 @@ Our latest source of PMD can be found on [GitHub](https://github.com/pmd/pmd). F
 
 *   [How to build PMD](BUILDING.md)
 *   [How to contribute to PMD](CONTRIBUTING.md)
+
+The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd/pmd-designer).
+Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
+developer documentation.
 
 ## News and Website
 

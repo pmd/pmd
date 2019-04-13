@@ -1,14 +1,12 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.should
-import io.kotlintest.specs.FunSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 
-class ASTMethodDeclarationTest : FunSpec({
+class ASTMethodDeclarationTest : ParserTestSpec({
 
     // notes about dsl:
     // * testGroup generates one test per "should" assertion that
@@ -16,7 +14,7 @@ class ASTMethodDeclarationTest : FunSpec({
     //   (without explicitly giving them each a specific name)
     // * the it::isPublic syntax allows including the property name in the error message in case of failure
 
-    testGroup("Non-private interfaces members should be public", javaVersions = Earliest..Latest) {
+    parserTest("Non-private interfaces members should be public", javaVersions = Earliest..Latest) {
 
         genClassHeader = "interface Bar"
 
@@ -55,7 +53,7 @@ class ASTMethodDeclarationTest : FunSpec({
 
     }
 
-    testGroup("Non-default methods in interfaces should be abstract", javaVersions = J1_8..Latest) {
+    parserTest("Non-default methods in interfaces should be abstract", javaVersions = J1_8..Latest) {
 
         genClassHeader = "interface Bar"
 

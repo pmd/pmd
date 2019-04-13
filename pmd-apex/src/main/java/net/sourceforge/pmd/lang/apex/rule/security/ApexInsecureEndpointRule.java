@@ -31,12 +31,6 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
     private final Set<String> httpEndpointStrings = new HashSet<>();
 
-    public ApexInsecureEndpointRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTAssignmentExpression node, Object data) {
         findInsecureEndpoints(node);
@@ -70,9 +64,8 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
         ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
 
         if (literalNode != null && variableNode != null) {
-            Object o = literalNode.getNode().getLiteral();
-            if (o instanceof String) {
-                String literal = (String) o;
+            if (literalNode.isString()) {
+                String literal = literalNode.getImage();
                 if (PATTERN.matcher(literal).matches()) {
                     httpEndpointStrings.add(Helper.getFQVariableName(variableNode));
                 }
@@ -102,13 +95,10 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
     private void runChecks(AbstractApexNode<?> node, Object data) {
         ASTLiteralExpression literalNode = node.getFirstChildOfType(ASTLiteralExpression.class);
-        if (literalNode != null) {
-            Object o = literalNode.getNode().getLiteral();
-            if (o instanceof String) {
-                String literal = (String) o;
-                if (PATTERN.matcher(literal).matches()) {
-                    addViolation(data, literalNode);
-                }
+        if (literalNode != null && literalNode.isString()) {
+            String literal = literalNode.getImage();
+            if (PATTERN.matcher(literal).matches()) {
+                addViolation(data, literalNode);
             }
         }
 

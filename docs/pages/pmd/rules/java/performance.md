@@ -387,9 +387,18 @@ buf.append("1m");           // good
 |----|-------------|-----------|-----------|
 |threshold|1|Max consecutive appends|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/performance.xml/ConsecutiveLiteralAppends" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/performance.xml/ConsecutiveLiteralAppends">
+    <properties>
+        <property name="threshold" value="1" />
+    </properties>
+</rule>
 ```
 
 ## InefficientEmptyStringCheck
@@ -800,9 +809,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |minimumNumberCaseForASwitch|3|Minimum number of branches for a switch|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/performance.xml/TooFewBranchesForASwitchStatement">
+    <properties>
+        <property name="minimumNumberCaseForASwitch" value="3" />
+    </properties>
+</rule>
 ```
 
 ## UnnecessaryWrapperObjectCreation

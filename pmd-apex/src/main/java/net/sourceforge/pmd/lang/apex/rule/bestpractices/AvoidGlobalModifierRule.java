@@ -14,15 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 
-import apex.jorje.semantic.symbol.type.ModifierTypeInfos;
-
 public class AvoidGlobalModifierRule extends AbstractApexRule {
-
-    public AvoidGlobalModifierRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -56,11 +48,11 @@ public class AvoidGlobalModifierRule extends AbstractApexRule {
     }
 
     private boolean isWebService(ASTModifierNode modifierNode) {
-        return modifierNode != null && modifierNode.getNode().getModifiers().has(ModifierTypeInfos.WEB_SERVICE);
+        return modifierNode != null && modifierNode.isWebService();
     }
 
     private boolean isGlobal(ASTModifierNode modifierNode) {
-        return modifierNode != null && modifierNode.getNode().getModifiers().has(ModifierTypeInfos.GLOBAL);
+        return modifierNode != null && modifierNode.isGlobal();
     }
 
     private boolean hasRestAnnotation(ASTModifierNode modifierNode) {

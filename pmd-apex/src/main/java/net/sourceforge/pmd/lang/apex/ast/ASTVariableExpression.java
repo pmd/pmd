@@ -16,4 +16,12 @@ public class ASTVariableExpression extends AbstractApexNode<VariableExpression> 
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    @Override
+    public String getImage() {
+        if (node.getIdentifier() != null) {
+            return node.getIdentifier().getValue();
+        }
+        return null;
+    }
 }

@@ -16,4 +16,12 @@ public class ASTProperty extends AbstractApexNode<Property> {
     public Object jjtAccept(ApexParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public String getType() {
+        return node.getFieldInfo().getType().getApexName();
+    }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

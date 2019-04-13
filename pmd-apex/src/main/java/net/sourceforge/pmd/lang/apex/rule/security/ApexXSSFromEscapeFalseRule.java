@@ -21,12 +21,6 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     private static final String ADD_ERROR = "addError";
 
-    public ApexXSSFromEscapeFalseRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
@@ -48,10 +42,9 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
             Object potentialLiteral = methodCall.jjtGetChild(2);
             if (potentialLiteral instanceof ASTLiteralExpression) {
                 ASTLiteralExpression parameter = (ASTLiteralExpression) potentialLiteral;
-                Object o = parameter.getNode().getLiteral();
-                if (o instanceof Boolean) {
-                    Boolean paramValue = (Boolean) o;
-                    if (paramValue.equals(Boolean.FALSE)) {
+                if (parameter.isBoolean()) {
+                    boolean paramValue = Boolean.parseBoolean(parameter.getImage());
+                    if (!paramValue) {
                         validateLiteralPresence(methodCall, data);
                     }
                 }

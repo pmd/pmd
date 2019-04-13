@@ -43,9 +43,19 @@ function(arg) {
 |allowObjectLiteral|false|Allow a trailing comma within an object literal|no|
 |allowArrayLiteral|false|Allow a trailing comma within an array literal|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/ecmascript/errorprone.xml/AvoidTrailingComma" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/ecmascript/errorprone.xml/AvoidTrailingComma">
+    <properties>
+        <property name="allowObjectLiteral" value="false" />
+        <property name="allowArrayLiteral" value="false" />
+    </properties>
+</rule>
 ```
 
 ## EqualComparison
