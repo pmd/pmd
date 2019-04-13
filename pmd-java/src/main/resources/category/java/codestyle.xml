@@ -1359,8 +1359,9 @@ Detects when a class or interface does not have a package definition.
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]</value>
+                <value>/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]</value>
             </property>
+            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
