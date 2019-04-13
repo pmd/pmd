@@ -3276,7 +3276,7 @@ by the more general rule
 <p>Detects when a class or interface does not have a package definition.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="nf">count</span><span class="p">(</span><span class="nn">preceding:</span><span class="err">:</span><span class="nt">PackageDeclaration</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">/</span><span class="nt">CompilationUnit</span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">PackageDeclaration</span><span class="p">)]</span><span class="o">/</span><span class="nt">TypeDeclaration</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
