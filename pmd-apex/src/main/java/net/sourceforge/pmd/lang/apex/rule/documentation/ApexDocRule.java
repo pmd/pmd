@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.GLOBAL;
-import static apex.jorje.semantic.symbol.type.ModifierTypeInfos.OVERRIDE;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,14 +14,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
+import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
+import net.sourceforge.pmd.lang.apex.ast.AbstractApexNode;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
-
-import apex.jorje.data.Locations;
-import apex.jorje.semantic.ast.modifier.ModifierGroup;
 
 public class ApexDocRule extends AbstractApexRule {
     private static final Pattern DESCRIPTION_PATTERN = Pattern.compile("@description\\s");
@@ -73,7 +69,7 @@ public class ApexDocRule extends AbstractApexRule {
                 addViolationWithMessage(data, node, MISSING_DESCRIPTION_MESSAGE);
             }
 
-            String returnType = node.getNode().getReturnTypeRef().toString();
+            String returnType = node.getReturnType();
             boolean shouldHaveReturn = !(returnType.isEmpty() || "void".equalsIgnoreCase(returnType));
             if (comment.hasReturn != shouldHaveReturn) {
                 if (shouldHaveReturn) {
@@ -84,8 +80,8 @@ public class ApexDocRule extends AbstractApexRule {
             }
 
             // Collect parameter names in order
-            final List<String> params = node.getNode().getMethodInfo().getParameters()
-                    .stream().map(p -> p.getName().getValue()).collect(Collectors.toList());
+            final List<String> params = node.findChildrenOfType(ASTParameter.class)
+                    .stream().map(p -> p.getImage()).collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
                 addViolationWithMessage(data, node, MISMATCHED_PARAM_MESSAGE);
@@ -111,7 +107,7 @@ public class ApexDocRule extends AbstractApexRule {
         return data;
     }
 
-    private void handleClassOrInterface(ApexNode<?> node, Object data) {
+    private void handleClassOrInterface(AbstractApexNode<?> node, Object data) {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
@@ -124,8 +120,8 @@ public class ApexDocRule extends AbstractApexRule {
         }
     }
 
-    private boolean shouldHaveApexDocs(ApexNode<?> node) {
-        if (node.getNode().getLoc() == Locations.NONE) {
+    private boolean shouldHaveApexDocs(AbstractApexNode<?> node) {
+        if (!node.hasRealLoc()) {
             return false;
         }
 
@@ -138,11 +134,7 @@ public class ApexDocRule extends AbstractApexRule {
 
         ASTModifierNode modifier = node.getFirstChildOfType(ASTModifierNode.class);
         if (modifier != null) {
-            boolean isPublic = modifier.isPublic();
-            ModifierGroup modifierGroup = modifier.getNode().getModifiers();
-            boolean isGlobal = modifierGroup.has(GLOBAL);
-            boolean isOverride = modifierGroup.has(OVERRIDE);
-            return (isPublic || isGlobal) && !isOverride;
+            return (modifier.isPublic() || modifier.isGlobal()) && !modifier.isOverride();
         }
         return false;
     }

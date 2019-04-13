@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Example code</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+CREATE OR REPLACE PACKAGE BODY date_utilities
+IS
+
+-- Take single parameter, relying on current default NLS date format
+FUNCTION to_timestamp_single_parameter (p_date_string IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   RETURN TO_TIMESTAMP(p_date_string);
+END to_timestamp_single_parameter;
+
+-- Take 2 parameters, using an explicit date format string
+FUNCTION to_timestamp_two_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2) RETURN DATE
+IS
+BEGIN
+   TO_TIMESTAMP(p_date_string, p_date_format);
+END to_timestamp_two_parameters;
+
+-- Take 3 parameters, using an explicit date format string and an explicit language
+FUNCTION to_timestamp_three_parameters (p_date_string IN VARCHAR2, p_format_mask IN VARCHAR2, p_nls_language VARCHAR2 ) RETURN DATE
+IS
+BEGIN
+   TO_TIMESTAMP(p_date_string, p_format_mask, p_nls_language);
+END to_timestamp_three_parameters;
+
+END date_utilities;
+/
+     ]]>
+        </code>
+        <source-type>plsql</source-type>
+    </test-code>
+</test-data>
+

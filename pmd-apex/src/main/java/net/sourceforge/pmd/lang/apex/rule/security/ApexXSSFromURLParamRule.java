@@ -48,12 +48,6 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     private final Set<String> urlParameterStrings = new HashSet<>();
 
-    public ApexXSSFromURLParamRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 50);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
@@ -120,7 +114,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private String getReturnType(ASTReturnStatement node) {
         ASTMethod method = node.getFirstParentOfType(ASTMethod.class);
         if (method != null) {
-            return method.getNode().getMethodInfo().getReturnType().getApexName();
+            return method.getReturnType();
         }
 
         return "";
@@ -175,7 +169,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 String varType = null;
 
                 if (node instanceof ASTVariableDeclaration) {
-                    varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+                    varType = ((ASTVariableDeclaration) node).getType();
 
                 }
 
@@ -214,7 +208,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
             String varType = null;
             if (node instanceof ASTVariableDeclaration) {
-                varType = ((ASTVariableDeclaration) node).getNode().getLocalInfo().getType().getApexName();
+                varType = ((ASTVariableDeclaration) node).getType();
             }
 
             if (varType == null || !"id".equalsIgnoreCase(varType)) {

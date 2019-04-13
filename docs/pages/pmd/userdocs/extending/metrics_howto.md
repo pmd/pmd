@@ -219,8 +219,8 @@ the Java framework but it's symmetrical in the Apex framework.
 ### The really short guide
 
 1. Determine whether your metric is an operation metric or a class metric and
-   **extend the correct base class** (`AbstractJavaClassMetric` or
-   `AbstractJavaOperationMetric`)
+   **extend the correct base class** ({% jdoc jmx::AbstractJavaClassMetric %} or
+   {% jdoc jmx::AbstractJavaOperationMetric %})
 1. You're immediately prompted by your IDE to **implement the `computeFor` method**.
    This method takes a node of the type you want to handle, a bundle of options,
    and returns the result of the metric.
@@ -237,24 +237,24 @@ the Java framework but it's symmetrical in the Apex framework.
 * **Metrics should be stateless**. In any case, instances of the same metric class
   are considered `equals`. The same instance of your metric will be used to
   compute the metric on the AST of different nodes so it should really be
-  "functionnally pure". That rule also makes you keep it simple and understandable
+  "functionally pure". That rule also makes you keep it simple and understandable
   which is nice.
 * **Implementation patterns:** You can implement your `computeFor` method as you
   like it. But most metrics in our library are implemented following a few
   patterns you may want to look at:
   * *Visitor metrics:* Those metrics use one or more AST visitor to compute their
     value. That's especially good to implement metrics that count some kind of node,
-    e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NpathMetric.java)
-    or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NcssMetric.java).
-    Additionnally, it makes your metric more easily generalisable to other node types.
+    e.g. [NPath complexity](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/internal/NpathMetric.java)
+    or [NCSS](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/internal/NcssMetric.java).
+    Additionally, it makes your metric more easily generalisable to other node types.
 
   * *Signature matching metrics:* That's even more straightforward when you want
     to count the number of methods or fields that match a specific signature, e.g.
     public static final fields. Basically a signature is an object that describes
     a field or method, with info about its modifers and other node-specific info.
      `AbstractJavaClassMetric` has a few methods that allow you to count signatures
-      directly, see e.g. the metrics [NOPA](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/NopaMetric.java)
-      and [WOC](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/impl/WocMetric.java).
+      directly, see e.g. the metrics [NOPA](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/internal/NopaMetric.java)
+      and [WOC](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/metrics/internal/WocMetric.java).
 
 
 ### Capability checking

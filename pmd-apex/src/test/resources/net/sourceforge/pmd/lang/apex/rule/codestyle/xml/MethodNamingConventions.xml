@@ -68,8 +68,8 @@ public class Foo {
     
     <test-code>
         <description>#1573 method names should not contain underscores, but skip test methods 1</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="skipTestMethodUnderscores">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     @isTest
@@ -80,8 +80,8 @@ public class Foo {
 
     <test-code>
         <description>#1573 method names should not contain underscores, but skip test methods 2</description>
-        <expected-problems>0</expected-problems>
         <rule-property name="skipTestMethodUnderscores">true</rule-property>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     void testMethod test_barFoo() {}
@@ -91,8 +91,8 @@ public class Foo {
 
     <test-code>
         <description>#1573 method names should not contain underscores, but skip test methods 3</description>
-        <expected-problems>1</expected-problems>
         <rule-property name="skipTestMethodUnderscores">false</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     @isTest

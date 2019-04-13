@@ -51,7 +51,7 @@ public class ApexMultifileVisitorTest extends ApexParserTest {
         acu.jjtAccept(new ApexParserVisitorAdapter() {
             @Override
             public Object visit(ASTMethod node, Object data) {
-                if (!node.getImage().matches("(<clinit>|<init>|clone)")) {
+                if (!node.isSynthetic()) {
                     assertTrue(toplevel.hasMatchingSig(node.getQualifiedName(), opMask));
                 }
 

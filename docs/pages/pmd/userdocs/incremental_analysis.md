@@ -16,7 +16,7 @@ analysis time dramatically.
 
 The generated report will be *exactly the same* as it would if running without incremental analysis.
 Files included in the final report will reflect exactly those files in your filesystem. Even if
-untouched, files with violations will be listed with full detail. Therefore, its usage is higly recommended.
+untouched, files with violations will be listed with full detail. Therefore, its usage is highly recommended.
 
 
 ### Enabling incremental analysis

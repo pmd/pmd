@@ -120,4 +120,14 @@ public class JavaRuleViolationTest {
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Bar", violation.getClassName());
     }
+    
+    @Test
+    public void testPackageAndPackagePrivateClassesName() {
+        ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { }");
+        ASTImportDeclaration importNode = ast.getFirstDescendantOfType(ASTImportDeclaration.class);
+
+        JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
+        assertEquals("pkg", violation.getPackageName());
+        assertEquals("Foo", violation.getClassName());
+    }
 }

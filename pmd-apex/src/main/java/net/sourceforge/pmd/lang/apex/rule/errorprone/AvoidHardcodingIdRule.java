@@ -28,18 +28,13 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
     }
     
     public AvoidHardcodingIdRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-        
         addRuleChainVisit(ASTLiteralExpression.class);
     }
 
     @Override
     public Object visit(ASTLiteralExpression node, Object data) {
-        Object o = node.getNode().getLiteral();
-        if (o instanceof String) {
-            String literal = (String) o;
+        if (node.isString()) {
+            String literal = node.getImage();
             if (PATTERN.matcher(literal).matches()) {
                 // 18-digit ids are just 15 digit ids + checksums, validate it  or it's not an id
                 if (literal.length() == 18 && !validateChecksum(literal)) {

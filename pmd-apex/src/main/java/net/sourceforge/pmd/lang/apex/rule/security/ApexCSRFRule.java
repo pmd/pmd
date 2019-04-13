@@ -18,12 +18,6 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 public class ApexCSRFRule extends AbstractApexRule {
     public static final String INIT = "init";
 
-    public ApexCSRFRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Security");
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 100);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
@@ -46,14 +40,14 @@ public class ApexCSRFRule extends AbstractApexRule {
      * @param data
      */
     private void checkForCSRF(ASTMethod node, Object data) {
-        if (node.getNode().getMethodInfo().isConstructor()) {
+        if (node.isConstructor()) {
             if (Helper.foundAnyDML(node)) {
                 addViolation(data, node);
             }
 
         }
 
-        String name = node.getNode().getMethodInfo().getName();
+        String name = node.getImage();
         if (name.equalsIgnoreCase(INIT)) {
             if (Helper.foundAnyDML(node)) {
                 addViolation(data, node);

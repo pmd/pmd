@@ -69,4 +69,8 @@ public class ASTUserInterface extends ApexRootNode<UserInterface> implements AST
         }
         return false;
     }
+
+    public ASTModifierNode getModifiers() {
+        return getFirstChildOfType(ASTModifierNode.class);
+    }
 }

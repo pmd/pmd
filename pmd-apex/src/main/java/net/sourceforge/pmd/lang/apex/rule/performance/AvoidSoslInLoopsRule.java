@@ -15,14 +15,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 public class AvoidSoslInLoopsRule extends AbstractApexRule {
 
-    public AvoidSoslInLoopsRule() {
-        setProperty(CODECLIMATE_CATEGORIES, "Performance");
-        // Note: Often more complicated as just moving the SOSL a few lines.
-        // Involves Maps...
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 150);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-    }
-
     @Override
     public Object visit(ASTSoslExpression node, Object data) {
         if (insideLoop(node) && parentNotReturn(node) && parentNotForEach(node)) {

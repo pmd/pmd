@@ -47,9 +47,18 @@ public abstract class Foo { // should be AbstractFoo
 |----|-------------|-----------|-----------|
 |strict|true|Also flag classes, that are named Abstract, but are not abstract.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/AbstractNaming" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/AbstractNaming">
+    <properties>
+        <property name="strict" value="true" />
+    </properties>
+</rule>
 ```
 
 ## AtLeastOneConstructor
@@ -79,9 +88,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |ignoredAnnotations|lombok.Data \| lombok.Value \| lombok.Builder \| lombok.NoArgsConstructor \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/AtLeastOneConstructor" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/AtLeastOneConstructor">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.Data|lombok.Value|lombok.Builder|lombok.NoArgsConstructor|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor" />
+    </properties>
+</rule>
 ```
 
 ## AvoidDollarSigns
@@ -334,9 +352,18 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
 |----|-------------|-----------|-----------|
 |checkParameterizedMethods|false|Check parameterized methods|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/BooleanGetMethodName" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/BooleanGetMethodName">
+    <properties>
+        <property name="checkParameterizedMethods" value="false" />
+    </properties>
+</rule>
 ```
 
 ## CallSuperInConstructor
@@ -421,9 +448,23 @@ public class Éléphant {}
 |annotationPattern|\[A-Z\]\[a-zA-Z0-9\]\*|Regex which applies to annotation names|no|
 |utilityClassPattern|\[A-Z\]\[a-zA-Z0-9\]+(Utils?\|Helper)|Regex which applies to utility class names|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/ClassNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <properties>
+        <property name="classPattern" value="[A-Z][a-zA-Z0-9]*" />
+        <property name="abstractClassPattern" value="[A-Z][a-zA-Z0-9]*" />
+        <property name="interfacePattern" value="[A-Z][a-zA-Z0-9]*" />
+        <property name="enumPattern" value="[A-Z][a-zA-Z0-9]*" />
+        <property name="annotationPattern" value="[A-Z][a-zA-Z0-9]*" />
+        <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper)" />
+    </properties>
+</rule>
 ```
 
 ## CommentDefaultAccessModifier
@@ -434,7 +475,7 @@ public class Éléphant {}
 
 To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
 we must add a comment at the beginning of it's declaration.
-By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.
+By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
 This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
 property &quot;ignoredAnnotations&quot; to customize the recognized annotations.
 
@@ -472,9 +513,19 @@ public class Foo {
 |ignoredAnnotations|com.google.common.annotations.VisibleForTesting \| android.support.annotation.VisibleForTesting|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |regex|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|Regular expression|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/CommentDefaultAccessModifier">
+    <properties>
+        <property name="ignoredAnnotations" value="com.google.common.annotations.VisibleForTesting|android.support.annotation.VisibleForTesting" />
+        <property name="regex" value="\/\*\s+(default|package)\s+\*\/" />
+    </properties>
+</rule>
 ```
 
 ## ConfusingTernary
@@ -506,9 +557,18 @@ boolean bar(int x, int y) {
 |----|-------------|-----------|-----------|
 |ignoreElseIf|false|Ignore conditions with an else-if case|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/ConfusingTernary" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ConfusingTernary">
+    <properties>
+        <property name="ignoreElseIf" value="false" />
+    </properties>
+</rule>
 ```
 
 ## ControlStatementBraces
@@ -573,9 +633,24 @@ while (true) {  // preferred approach
 |checkCaseStmt|false|Require that cases of a switch have braces|no|
 |allowEmptyLoop|false|Allow loops with an empty statement, e.g. 'while(true);'|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/ControlStatementBraces" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ControlStatementBraces">
+    <properties>
+        <property name="checkIfElseStmt" value="true" />
+        <property name="checkSingleIfStmt" value="true" />
+        <property name="checkWhileStmt" value="true" />
+        <property name="checkForStmt" value="true" />
+        <property name="checkDoWhileStmt" value="true" />
+        <property name="checkCaseStmt" value="false" />
+        <property name="allowEmptyLoop" value="false" />
+    </properties>
+</rule>
 ```
 
 ## DefaultPackage
@@ -763,9 +838,20 @@ public class HelloWorldBean {
 |ignoreAnonymousClassDeclarations|true|Ignore Field Declarations, that are initialized with anonymous class declarations|no|
 |ignoreInterfaceDeclarations|false|Ignore Interface Declarations that precede fields.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass">
+    <properties>
+        <property name="ignoreEnumDeclarations" value="true" />
+        <property name="ignoreAnonymousClassDeclarations" value="true" />
+        <property name="ignoreInterfaceDeclarations" value="false" />
+    </properties>
+</rule>
 ```
 
 ## FieldNamingConventions
@@ -816,9 +902,24 @@ class Foo {
 |defaultFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to field names|no|
 |exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/FieldNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FieldNamingConventions">
+    <properties>
+        <property name="publicConstantPattern" value="[A-Z][A-Z_0-9]*" />
+        <property name="constantPattern" value="[A-Z][A-Z_0-9]*" />
+        <property name="enumConstantPattern" value="[A-Z][A-Z_0-9]*" />
+        <property name="finalFieldPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="staticFieldPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="defaultFieldPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="exclusions" value="serialVersionUID" />
+    </properties>
+</rule>
 ```
 
 ## ForLoopShouldBeWhileLoop
@@ -933,9 +1034,21 @@ class Foo {
 |lambdaParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to inferred-type lambda parameter names|no|
 |explicitLambdaParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to explicitly-typed lambda parameter names|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/FormalParameterNamingConventions">
+    <properties>
+        <property name="methodParameterPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="finalMethodParameterPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="lambdaParameterPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="explicitLambdaParameterPattern" value="[a-z][a-zA-Z0-9]*" />
+    </properties>
+</rule>
 ```
 
 ## GenericsNaming
@@ -1172,9 +1285,28 @@ public class LinguisticNaming {
 |checkVariables|true|Check local variable names and types for inconsistent naming.|no|
 |booleanFieldPrefixes|is \| has \| can \| have \| will \| should|The prefixes of fields and variables that indicate boolean.|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/LinguisticNaming" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LinguisticNaming">
+    <properties>
+        <property name="ignoredAnnotations" value="java.lang.Override" />
+        <property name="checkBooleanMethod" value="true" />
+        <property name="checkGetters" value="true" />
+        <property name="checkSetters" value="true" />
+        <property name="checkPrefixedTransformMethods" value="true" />
+        <property name="checkTransformMethods" value="false" />
+        <property name="booleanMethodPrefixes" value="is|has|can|have|will|should" />
+        <property name="transformMethodNames" value="to|as" />
+        <property name="checkFields" value="true" />
+        <property name="checkVariables" value="true" />
+        <property name="booleanFieldPrefixes" value="is|has|can|have|will|should" />
+    </properties>
+</rule>
 ```
 
 ## LocalHomeNamingConvention
@@ -1276,9 +1408,18 @@ public class Bar {
 |----|-------------|-----------|-----------|
 |ignoreForEachDecl|false|Ignore non-final loop variables in a for-each statement.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LocalVariableCouldBeFinal">
+    <properties>
+        <property name="ignoreForEachDecl" value="false" />
+    </properties>
+</rule>
 ```
 
 ## LocalVariableNamingConventions
@@ -1324,9 +1465,20 @@ class Foo {
 |finalVarPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final local variable names|no|
 |catchParameterPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to exception block parameter names|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LocalVariableNamingConventions">
+    <properties>
+        <property name="localVarPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="finalVarPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="catchParameterPattern" value="[a-z][a-zA-Z0-9]*" />
+    </properties>
+</rule>
 ```
 
 ## LongVariable
@@ -1362,9 +1514,18 @@ public class Something {
 |----|-------------|-----------|-----------|
 |minimum|17|The variable length reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/LongVariable" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/LongVariable">
+    <properties>
+        <property name="minimum" value="17" />
+    </properties>
+</rule>
 ```
 
 ## MDBAndSessionBeanNamingConvention
@@ -1467,9 +1628,22 @@ public class Foo {
 |junit3TestPattern|test\[A-Z0-9\]\[a-zA-Z0-9\]\*|Regex which applies to JUnit 3 test method names|no|
 |junit4TestPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to JUnit 4 test method names|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/MethodNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/MethodNamingConventions">
+    <properties>
+        <property name="methodPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="staticPattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="nativePattern" value="[a-z][a-zA-Z0-9]*" />
+        <property name="junit3TestPattern" value="test[A-Z0-9][a-zA-Z0-9]*" />
+        <property name="junit4TestPattern" value="[a-z][a-zA-Z0-9]*" />
+    </properties>
+</rule>
 ```
 
 ## MIsLeadingVariableName
@@ -1728,9 +1902,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |minimum|5|Number of characters that are required as a minimum for a class name.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/ShortClassName" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ShortClassName">
+    <properties>
+        <property name="minimum" value="5" />
+    </properties>
+</rule>
 ```
 
 ## ShortMethodName
@@ -1761,9 +1944,18 @@ public class ShortMethod {
 |----|-------------|-----------|-----------|
 |minimum|3|Number of characters that are required as a minimum for a method name.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/ShortMethodName" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ShortMethodName">
+    <properties>
+        <property name="minimum" value="3" />
+    </properties>
+</rule>
 ```
 
 ## ShortVariable
@@ -1810,9 +2002,18 @@ public class Something {
 |----|-------------|-----------|-----------|
 |minimum|3|Number of characters that are required as a minimum for a variable name.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/ShortVariable" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/ShortVariable">
+    <properties>
+        <property name="minimum" value="3" />
+    </properties>
+</rule>
 ```
 
 ## SuspiciousConstantFieldName
@@ -1885,9 +2086,18 @@ import static Yoko; // Too much !
 |----|-------------|-----------|-----------|
 |maximumStaticImports|4|All static imports can be disallowed by setting this to 0|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/TooManyStaticImports" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/TooManyStaticImports">
+    <properties>
+        <property name="maximumStaticImports" value="4" />
+    </properties>
+</rule>
 ```
 
 ## UnnecessaryAnnotationValueElement
@@ -1963,9 +2173,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |ignoredAnnotations|javax.inject.Inject|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UnnecessaryConstructor" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UnnecessaryConstructor">
+    <properties>
+        <property name="ignoredAnnotations" value="javax.inject.Inject" />
+    </properties>
+</rule>
 ```
 
 ## UnnecessaryFullyQualifiedName
@@ -2022,9 +2241,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |statementOrderMatters|true|If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn">
+    <properties>
+        <property name="statementOrderMatters" value="true" />
+    </properties>
+</rule>
 ```
 
 ## UnnecessaryModifier
@@ -2299,11 +2527,15 @@ that are misplaced (not making groups of 3 digits) are reported.
  (: Filter out ignored field name :)
  [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
  [
-   some $num in tokenize(@Image, "[.dDfFlLeE+\-]")
+   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
    satisfies not(
-                  string-length($num) <= $acceptableDecimalLength
-                    and not(contains($num,"_"))
-                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*$")
+                  ( contains($num, ".")
+                    and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
+                    and string-length(substring-after($num, ".")) <= $acceptableDecimalLength
+                    or string-length($num) <= $acceptableDecimalLength
+                  )
+                  and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*(\.([0-9]{3}_)*[0-9]{1,3})?$")
                 )
  ]
 ```
@@ -2322,9 +2554,18 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |acceptableDecimalLength|4|Length under which literals in base 10 are not required to have underscores|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/UseUnderscoresInNumericLiterals">
+    <properties>
+        <property name="acceptableDecimalLength" value="4" />
+    </properties>
+</rule>
 ```
 
 ## VariableNamingConventions
@@ -2373,9 +2614,29 @@ public class Foo {
 |checkParameters|true|Check constructor and method parameter variables|no|
 |checkNativeMethodParameters|true|Check method parameter of native methods|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/codestyle.xml/VariableNamingConventions" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/codestyle.xml/VariableNamingConventions">
+    <properties>
+        <property name="parameterSuffix" value="" />
+        <property name="parameterPrefix" value="" />
+        <property name="localSuffix" value="" />
+        <property name="localPrefix" value="" />
+        <property name="memberSuffix" value="" />
+        <property name="memberPrefix" value="" />
+        <property name="staticSuffix" value="" />
+        <property name="staticPrefix" value="" />
+        <property name="checkMembers" value="true" />
+        <property name="checkLocals" value="true" />
+        <property name="checkParameters" value="true" />
+        <property name="checkNativeMethodParameters" value="true" />
+    </properties>
+</rule>
 ```
 
 ## WhileLoopsMustUseBraces

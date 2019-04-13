@@ -71,13 +71,24 @@ function bar() {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|rhinoLanguageVersion|VERSION\_DEFAULT|Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.|no|
+|rhinoLanguageVersion|default|Specifies the Rhino Language Version to use for parsing.  Defaults to Rhino default.|no|
 |recordingLocalJsDocComments|true|Specifies that JsDoc comments are produced in the AST.|no|
 |recordingComments|true|Specifies that comments are produced in the AST.|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/ecmascript/bestpractices.xml/ConsistentReturn" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/ecmascript/bestpractices.xml/ConsistentReturn">
+    <properties>
+        <property name="rhinoLanguageVersion" value="default" />
+        <property name="recordingLocalJsDocComments" value="true" />
+        <property name="recordingComments" value="true" />
+    </properties>
+</rule>
 ```
 
 ## GlobalVariable
