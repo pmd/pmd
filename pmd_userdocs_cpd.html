@@ -1285,7 +1285,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <p>Duplicate code can be hard to find, especially in a large project.
 But PMD’s <strong>Copy/Paste Detector (CPD)</strong> can find it for you!</p>
 
-<p>CPD works with Java, JSP, C, C++, C#, Fortran and PHP code and <a href="#supported-languages">some more languages</a>.
+<p>CPD works with Java, JSP, C/C++, C#, Go, Kotlin, Ruby, Swift and <a href="#supported-languages">many more languages</a>.
 It can be used via <a href="#cli-usage">command-line</a>, or via an <a href="#ant-task">Ant task</a>.
 It can also be run with Maven by using the <code class="highlighter-rouge">cpd-check</code> goal on the <a href="pmd_userdocs_tools_maven.html">Maven PMD Plugin</a>.</p>
 
@@ -1838,12 +1838,14 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
   <li>Apex</li>
   <li>C#</li>
   <li>C/C++</li>
+  <li>Dart</li>
   <li>EcmaScript (JavaScript)</li>
   <li>Fortran</li>
   <li>Go</li>
   <li>Groovy</li>
   <li>Java</li>
   <li>Jsp</li>
+  <li>Kotlin</li>
   <li>Matlab</li>
   <li>Objective-C</li>
   <li>Perl</li>
@@ -2222,7 +2224,7 @@ the CPD task as usual and right after it invoke the Ant XSLT script like this:</
 
 <h2 id="suppression">Suppression</h2>
 
-<p>Arbitrary blocks of code can be ignored through comments on <strong>Java</strong>, <strong>C/C++</strong>, <strong>Go</strong>, <strong>Javascript</strong>,
+<p>Arbitrary blocks of code can be ignored through comments on <strong>Java</strong>, <strong>C/C++</strong>, <strong>Dart</strong>, <strong>Go</strong>, <strong>Javascript</strong>,
 <strong>Kotlin</strong>, <strong>Matlab</strong>, <strong>Objective-C</strong>, <strong>PL/SQL</strong>, <strong>Python</strong> and <strong>Swift</strong> by including the keywords <code class="highlighter-rouge">CPD-OFF</code> and <code class="highlighter-rouge">CPD-ON</code>.</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">someParameterizedFactoryMethod</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
@@ -2308,7 +2310,7 @@ the comment based approach will be extended to those of them that can support it
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 5, 2019 <br />
+ Site last generated: Apr 13, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

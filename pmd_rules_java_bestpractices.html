@@ -2125,7 +2125,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
 <p>This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclarator</span><span class="p">[</span><span class="na">@Image</span><span class="p">[</span><span class="nn">fn:</span><span class="nf">matches</span><span class="p">(.,</span><span class="s1">'^test'</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclarator</span><span class="p">[</span><span class="na">@Image</span><span class="p">[</span><span class="nf">matches</span><span class="p">(.,</span><span class="s1">'^test'</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="p">..</span><span class="err">/</span><span class="p">..</span><span class="o">/</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="w">
            </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.Test'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.Test'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.api.RepeatedTest'</span><span class="p">)</span><span class="w">
@@ -2134,7 +2134,7 @@ Customize the maximum number of assertions used by this Rule to suit your needs.
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.junit.jupiter.params.ParameterizedTest'</span><span class="p">)</span><span class="w">
         </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.testng.annotations.Test'</span><span class="p">)</span><span class="w">
     </span><span class="p">]]</span><span class="w">
-    </span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="p">[</span><span class="nn">fn:</span><span class="nf">matches</span><span class="p">(.,</span><span class="s1">'^assert'</span><span class="p">)]])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$maximumAsserts</span><span class="p">]</span><span class="w">
+    </span><span class="p">[</span><span class="nf">count</span><span class="p">(..</span><span class="o">//</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="na">@Image</span><span class="p">[</span><span class="nf">matches</span><span class="p">(.,</span><span class="s1">'^assert'</span><span class="p">)]])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">$maximumAsserts</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -3246,7 +3246,7 @@ a block <code class="highlighter-rouge">{}</code> is sufficient.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 5, 2019 <br />
+ Site last generated: Apr 13, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
