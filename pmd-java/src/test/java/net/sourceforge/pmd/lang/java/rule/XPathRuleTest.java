@@ -99,6 +99,24 @@ public class XPathRuleTest extends RuleTst {
         assertEquals(3, rv.getBeginLine());
     }
 
+    @Test
+    public void testFnPrefixOnSaxon() throws Exception {
+        rule.setXPath("//VariableDeclaratorId[fn:matches(@Image, 'fiddle')]");
+        rule.setVersion(XPathRuleQuery.XPATH_2_0);
+        Report report = getReportForTestString(rule, TEST2);
+        RuleViolation rv = report.iterator().next();
+        assertEquals(3, rv.getBeginLine());
+    }
+
+    @Test
+    public void testNoFnPrefixOnSaxon() throws Exception {
+        rule.setXPath("//VariableDeclaratorId[matches(@Image, 'fiddle')]");
+        rule.setVersion(XPathRuleQuery.XPATH_2_0);
+        Report report = getReportForTestString(rule, TEST2);
+        RuleViolation rv = report.iterator().next();
+        assertEquals(3, rv.getBeginLine());
+    }
+
 
     /**
      * Test for problem reported in bug #1219 PrimarySuffix/@Image does not work
