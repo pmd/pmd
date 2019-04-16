@@ -115,12 +115,12 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         final ASTVariableInitializer initializer = variableDeclaration.getAccessNodeParent()
                 .getFirstDescendantOfType(ASTVariableInitializer.class);
         
-        // Get the block statements for each, so we can compare apples to apples
-        final ASTBlockStatement initializerStmt = variableDeclaration.getAccessNodeParent()
-                .getFirstParentOfType(ASTBlockStatement.class);
-        final ASTBlockStatement rtnStmt = rtn.getFirstParentOfType(ASTBlockStatement.class);
-        
         if (initializer != null) {
+            // Get the block statements for each, so we can compare apples to apples
+            final ASTBlockStatement initializerStmt = variableDeclaration.getAccessNodeParent()
+                    .getFirstParentOfType(ASTBlockStatement.class);
+            final ASTBlockStatement rtnStmt = rtn.getFirstParentOfType(ASTBlockStatement.class);
+            
             final List<ASTName> referencedNames = initializer.findDescendantsOfType(ASTName.class);
             for (final ASTName refName : referencedNames) {
                 // TODO : Shouldn't the scope allow us to search for a var name occurrences directly, moving up through parent scopes?
