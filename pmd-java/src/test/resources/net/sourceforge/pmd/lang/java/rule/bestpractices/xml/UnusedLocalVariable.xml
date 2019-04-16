@@ -389,4 +389,23 @@ public class Test {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1190 [java] UnusedLocalVariable/UnusedPrivateField false-positive</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+
+public class UnusedLocalVariable {
+
+    public void testSomething() {
+        InputStream is = new InputStream();
+        
+        try (is) {
+            System.out.println("foo!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
