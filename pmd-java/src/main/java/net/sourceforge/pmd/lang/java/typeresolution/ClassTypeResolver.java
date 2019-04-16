@@ -508,6 +508,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                             + typeToSearch.getType() + " due to: " + e;
                     LOG.log(Level.WARNING, message);
                 }
+                // TODO : report a missing class once we start doing that...
                 return null;
             }
 
