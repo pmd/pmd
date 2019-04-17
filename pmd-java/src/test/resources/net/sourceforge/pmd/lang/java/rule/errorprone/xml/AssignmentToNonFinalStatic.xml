@@ -31,4 +31,19 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+rule violated twice
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static int x;
+     Foo(int y) {
+         x = y;
+         x = y;
+     }
+}
+     ]]></code>
+    </test-code>
 </test-data>
