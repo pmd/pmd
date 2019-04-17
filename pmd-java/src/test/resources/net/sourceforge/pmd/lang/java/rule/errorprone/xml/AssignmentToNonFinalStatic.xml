@@ -8,6 +8,7 @@
 clear rule violation
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
  static int x;
@@ -36,6 +37,7 @@ public class Foo {
 rule violated twice
      ]]></description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
  static int x;
