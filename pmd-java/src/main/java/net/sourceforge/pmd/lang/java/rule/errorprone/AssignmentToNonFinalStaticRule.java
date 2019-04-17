@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,15 +34,16 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
                 continue;
             }
 
-            final Node location = initializedInConstructor(entry.getValue());
-            if (location != null) {
+            final List<Node> locations = initializedInConstructor(entry.getValue());
+            for (final Node location : locations) {
                 addViolation(data, location, decl.getImage());
             }
         }
         return super.visit(node, data);
     }
 
-    private Node initializedInConstructor(List<NameOccurrence> usages) {
+    private List<Node> initializedInConstructor(List<NameOccurrence> usages) {
+        final List<Node> unsafeAssignments = new ArrayList<>();
         for (NameOccurrence occ : usages) {
             // specifically omitting prefix and postfix operators as there are
             // legitimate usages of these with static fields, e.g. typesafe enum pattern.
@@ -49,12 +51,12 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
                 Node node = occ.getLocation();
                 Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
-                    return node;
+                    unsafeAssignments.add(node);
                 }
             }
         }
 
-        return null;
+        return unsafeAssignments;
     }
 
 }
