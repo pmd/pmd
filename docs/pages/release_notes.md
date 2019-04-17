@@ -101,6 +101,12 @@ The designer will still be shipped with PMD's binaries.
 *   The new PLSQL rule {% rule "plsql/codestyle/LineLength" %} (`plsql-codestyle`) helps to enforce a maximum
     line length.
 
+### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
+    assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
+    find the offending statements.
+
 ### Fixed Issues
 
 *   doc
@@ -152,6 +158,7 @@ The previously available variables such as `OPTS` or `HEAPSIZE` are deprecated a
 *   [#1717](https://github.com/pmd/pmd/pull/1717): \[java] Fix false positive in useTryWithResources when using a custom close method with multiple arguments - [Rishabh Jain](https://github.com/jainrish)
 *   [#1724](https://github.com/pmd/pmd/pull/1724): \[doc] Correct property override example - [Felix W. Dekker](https://github.com/FWDekker)
 *   [#1737](https://github.com/pmd/pmd/pull/1737): \[java] fix escaping of CommentDefaultAccessModifier documentation - [itaigilo](https://github.com/itaigilo)
+*   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
