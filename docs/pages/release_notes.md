@@ -24,6 +24,12 @@ Being based on a proper Antlr grammar, CPD can:
 *   ignore imports / libraries
 *   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
+### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
+    assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
+    find the offending statements.
+
 ### Fixed Issues
 
 *   go
@@ -44,6 +50,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1752](https://github.com/pmd/pmd/pull/1752): \[java] UseObjectForClearerAPI Only For Public - [Björn Kautler](https://github.com/Vampire)
 *   [#1761](https://github.com/pmd/pmd/pull/1761): \[dart] \[cpd] Added CPD support for Dart - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1776](https://github.com/pmd/pmd/pull/1776): \[java] Show more detailed message when can't resolve field type - [Andrey Fomin](https://github.com/andrey-fomin)
+*   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
