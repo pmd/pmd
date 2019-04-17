@@ -33,16 +33,15 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
                 continue;
             }
 
-            if (initializedInConstructor(entry.getValue())) {
-                addViolation(data, decl.getNode(), decl.getImage());
+            final Node location = initializedInConstructor(entry.getValue());
+            if (location != null) {
+                addViolation(data, location, decl.getImage());
             }
         }
         return super.visit(node, data);
     }
 
-    private boolean initializedInConstructor(List<NameOccurrence> usages) {
-        boolean initInConstructor = false;
-
+    private Node initializedInConstructor(List<NameOccurrence> usages) {
         for (NameOccurrence occ : usages) {
             // specifically omitting prefix and postfix operators as there are
             // legitimate usages of these with static fields, e.g. typesafe enum pattern.
@@ -50,12 +49,12 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRule {
                 Node node = occ.getLocation();
                 Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
-                    initInConstructor = true;
+                    return node;
                 }
             }
         }
 
-        return initInConstructor;
+        return null;
     }
 
 }
