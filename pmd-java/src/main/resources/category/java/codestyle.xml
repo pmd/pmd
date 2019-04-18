@@ -1350,11 +1350,11 @@ public class Foo {
     <rule name="NoPackage"
           language="java"
           since="3.3"
-          message="All classes and interfaces must belong to a named package"
+          message="All classes, interfaces, enums and annotations must belong to a named package"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#nopackage">
         <description>
-Detects when a class or interface does not have a package definition.
+Detects when a class, interface, enum or annotation does not have a package definition.
         </description>
         <priority>3</priority>
         <properties>

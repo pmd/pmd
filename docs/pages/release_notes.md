@@ -30,6 +30,9 @@ Being based on a proper Antlr grammar, CPD can:
     assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
     find the offending statements.
 
+*   The Java rule {% rule "java/codestyle/NoPackage" %} (`java-codestyle`) will now report additionally enums
+    and annotations that do not have a package declaration.
+
 ### Fixed Issues
 
 *   go
@@ -38,6 +41,8 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1729](https://github.com/pmd/pmd/issues/1729): \[java] JavaRuleViolation loses information in `className` field when class has package-private access level
 *   java-bestpractices
     *   [#1720](https://github.com/pmd/pmd/issues/1720): \[java] UnusedImports false positive for Javadoc link with array type
+*   java-codestyle
+    *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
 *   java-design
     *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
 
