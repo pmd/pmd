@@ -14,7 +14,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### Dart support
+#### Dart support
 
 Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker), and built on top of the ongoing efforts to fully support Antlr-based languages,
 PMD now has CPD support for [Dart](https://www.dartlang.org/).
