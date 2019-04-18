@@ -1286,7 +1286,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<p>#### Dart support</p>
+<h4 id="dart-support">Dart support</h4>
 
 <p>Thanks to the contribution from <a href="https://github.com/maikelsteneker">Maikel Steneker</a>, and built on top of the ongoing efforts to fully support Antlr-based languages,
 PMD now has CPD support for <a href="https://www.dartlang.org/">Dart</a>.</p>
@@ -1301,9 +1301,15 @@ PMD now has CPD support for <a href="https://www.dartlang.org/">Dart</a>.</p>
 <h3 id="modified-rules">Modified Rules</h3>
 
 <ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#assignmenttononfinalstatic"><code class="highlighter-rouge">AssignmentToNonFinalStatic</code></a> (<code class="highlighter-rouge">java-errorprone</code>) will now report on each
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#assignmenttononfinalstatic"><code class="highlighter-rouge">AssignmentToNonFinalStatic</code></a> (<code class="highlighter-rouge">java-errorprone</code>) will now report on each
 assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
-find the offending statements.</li>
+find the offending statements.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#nopackage"><code class="highlighter-rouge">NoPackage</code></a> (<code class="highlighter-rouge">java-codestyle</code>) will now report additionally enums
+and annotations that do not have a package declaration.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1322,6 +1328,11 @@ find the offending statements.</li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1720">#1720</a>: [java] UnusedImports false positive for Javadoc link with array type</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1782">#1782</a>: [java] NoPackage: False Negative for enums</li>
     </ul>
   </li>
   <li>java-design
@@ -1360,7 +1371,7 @@ find the offending statements.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Apr 17, 2019 <br />
+ Site last generated: Apr 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
