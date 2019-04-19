@@ -41,6 +41,7 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1532](https://github.com/pmd/pmd/issues/1532): \[java] NPE with incomplete auxclasspath
     *   [#1729](https://github.com/pmd/pmd/issues/1729): \[java] JavaRuleViolation loses information in `className` field when class has package-private access level
 *   java-bestpractices
+    *   [#1190](https://github.com/pmd/pmd/issues/1190): \[java] UnusedLocalVariable/UnusedPrivateField false-positive 
     *   [#1720](https://github.com/pmd/pmd/issues/1720): \[java] UnusedImports false positive for Javadoc link with array type
 *   java-codestyle
     *   [#1755](https://github.com/pmd/pmd/issues/1775): \[java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines

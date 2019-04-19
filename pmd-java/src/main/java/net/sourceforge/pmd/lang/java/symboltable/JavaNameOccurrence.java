@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -87,9 +88,12 @@ public class JavaNameOccurrence implements NameOccurrence {
             primaryExpression = location.jjtGetParent().jjtGetParent();
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
             primaryExpression = location.jjtGetParent().jjtGetParent().jjtGetParent();
+        } else if (location.jjtGetParent() instanceof ASTResource) {
+            return false;
         } else {
             throw new RuntimeException(
-                    "Found a NameOccurrence (" + location + ") that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = "
+                    "Found a NameOccurrence (" + location + ") that didn't have an ASTPrimary Expression"
+                            + " as parent or grandparent nor is a concise resource.  Parent = "
                             + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent()
                             + " (location line " + location.getBeginLine() + " col " + location.getBeginColumn() + ")");
         }
