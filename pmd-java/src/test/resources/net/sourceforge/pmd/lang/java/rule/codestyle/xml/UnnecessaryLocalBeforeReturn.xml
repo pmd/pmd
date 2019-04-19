@@ -232,4 +232,19 @@ public class UnnecessaryLocalBeforeReturnFP {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1775 [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public Object test2() {
+        int i = 0;
+        Object o = thing()
+        	.make(i);
+        return o; // true positive
+    }  
+}
+        ]]></code>
+    </test-code>
 </test-data>
