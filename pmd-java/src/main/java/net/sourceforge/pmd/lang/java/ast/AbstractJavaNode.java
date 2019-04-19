@@ -248,7 +248,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
             // expects a positive shift
             return TokenOps.nthPrevious(jjtGetFirstToken(), token, -shift);
         } else {
-            return TokenOps.nthFollower(token, +shift);
+            return TokenOps.nthFollower(token, shift);
         }
     }
 
