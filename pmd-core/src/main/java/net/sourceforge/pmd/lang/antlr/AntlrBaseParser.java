@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.antlr;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,21 +47,17 @@ public abstract class AntlrBaseParser implements Parser {
     public Node parse(final String fileName, final Reader source) throws ParseException {
         try {
             return getRootNode(getParser(getLexer(source)));
-        } catch (final IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (final IOException e) {
             throw new ParseException(e);
         }
-    }
-
-    private AntlrBaseNode getRootNode(final org.antlr.v4.runtime.Parser parser)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        final Method rootMethod = parser.getClass().getMethod(parser.getRuleNames()[0]);
-        return (AntlrBaseNode) rootMethod.invoke(parser);
     }
 
     @Override
     public Map<Integer, String> getSuppressMap() {
         return new HashMap<>();
     }
+
+    protected abstract AntlrBaseNode getRootNode(org.antlr.v4.runtime.Parser parser);
 
     protected abstract Lexer getLexer(Reader source) throws IOException;
 

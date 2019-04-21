@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.Parser;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.antlr.AntlrBaseParser;
+import net.sourceforge.pmd.lang.ast.AntlrBaseNode;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftLexer;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
 
@@ -24,6 +25,11 @@ public class SwiftParserAdapter extends AntlrBaseParser {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
         super(parserOptions);
+    }
+
+    @Override
+    protected AntlrBaseNode getRootNode(final Parser parser) {
+        return ((SwiftParser) parser).topLevel();
     }
 
     @Override
