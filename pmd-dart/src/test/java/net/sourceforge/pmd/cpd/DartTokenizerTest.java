@@ -31,6 +31,7 @@ public class DartTokenizerTest extends AbstractTokenizerTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(
                 new Object[] { "comment.dart", 5 },
+                new Object[] { "escaped_string.dart", 17 },
                 new Object[] { "increment.dart", 185 },
                 new Object[] { "imports.dart", 1 }
         );
