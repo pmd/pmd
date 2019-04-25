@@ -1950,17 +1950,17 @@ Token t;}
 void ExplicitConstructorInvocation() :
 {}
 {
-  LOOKAHEAD("this" ArgumentsList() ";") "this" {jjtThis.setIsThis();} ArgumentsList() ";"
+  LOOKAHEAD("this" ArgumentsList() ";") "this" ArgumentsList() ";"
 |
-  LOOKAHEAD(TypeArguments() "this" ArgumentsList() ";") TypeArguments() "this" {jjtThis.setIsThis();} ArgumentsList() ";"
+  LOOKAHEAD(TypeArguments() "this" ArgumentsList() ";") TypeArguments() "this" ArgumentsList() ";"
 |
-  [LOOKAHEAD(PrimaryExpression() "." SuperInvocationTail()) PrimaryExpression() "." ] SuperInvocationTail(jjtThis)
+  [LOOKAHEAD(PrimaryExpression() "." SuperInvocationTail()) PrimaryExpression() "." ] SuperInvocationTail() {jjtThis.setIsSuper();}
 }
 
-void SuperInvocationTail(ASTExplicitConstructorInvocation node) #void:
+void SuperInvocationTail() #void:
 {}
 {
-   [ TypeArguments() ] "super" {node.setIsSuper();} ArgumentsList() ";"
+   [ TypeArguments() ] "super" ArgumentsList() ";"
 }
 
 void Initializer() :

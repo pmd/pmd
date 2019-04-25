@@ -9,7 +9,8 @@ import java.util.Iterator;
 
 
 /**
- * The argument list of a {@linkplain ASTMethodCall method} or {@linkplain ASTConstructorCall constructor call}.
+ * The argument list of a {@linkplain ASTMethodCall method}, {@linkplain ASTConstructorCall constructor call},
+ * or {@linkplain ASTExplicitConstructorInvocation explicit constructor invocation}.
  *
  * <pre class="grammar">
  *
@@ -38,6 +39,12 @@ public final class ASTArgumentList extends AbstractJavaNode implements Iterable<
         visitor.visit(this, data);
     }
 
+    /**
+     * Returns the number of arguments of this list.
+     */
+    public int getArgumentCount() {
+        return jjtGetNumChildren();
+    }
 
     @Override
     public Iterator<ASTExpression> iterator() {
