@@ -1805,7 +1805,7 @@ void EnumBody():
 void EnumConstant():
 {}
 {
-  VariableDeclaratorId() [ ArgumentsList() ] [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
+  VariableDeclaratorId() [ ArgumentList() ] [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
 }
 
 void TypeParameters():
@@ -1950,9 +1950,9 @@ Token t;}
 void ExplicitConstructorInvocation() :
 {}
 {
-  LOOKAHEAD("this" ArgumentsList() ";") "this" ArgumentsList() ";"
+  LOOKAHEAD("this" ArgumentList() ";") "this" ArgumentList() ";"
 |
-  LOOKAHEAD(TypeArguments() "this" ArgumentsList() ";") TypeArguments() "this" ArgumentsList() ";"
+  LOOKAHEAD(TypeArguments() "this" ArgumentList() ";") TypeArguments() "this" ArgumentList() ";"
 |
   [LOOKAHEAD(PrimaryExpression() "." SuperInvocationTail()) PrimaryExpression() "." ] SuperInvocationTail() {jjtThis.setIsSuper();}
 }
@@ -1960,7 +1960,7 @@ void ExplicitConstructorInvocation() :
 void SuperInvocationTail() #void:
 {}
 {
-   [ TypeArguments() ] "super" ArgumentsList() ";"
+   [ TypeArguments() ] "super" ArgumentList() ";"
 }
 
 void Initializer() :
@@ -2498,7 +2498,7 @@ void PrimarySuffix() #void :
 {}
 {
   MethodReference()
-| ArgumentsList()                   #MethodCall(2)
+| ArgumentList()                    #MethodCall(2)
 | ("[" Expression() "]")            #ArrayAccess(2)
 // all the following start with a "."
 | LOOKAHEAD(2) "." "this"           #ThisExpression(1)
@@ -2521,8 +2521,8 @@ void MemberSelector() #void :
 {}
 {
   // if there are type arguments, this is a method call
-  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentsList()) #MethodCall
-| LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                   #MethodCall
+  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentList())  #MethodCall
+| LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                    #MethodCall
 |              ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);})                                   #FieldAccess
 }
 
@@ -2609,10 +2609,10 @@ void StringLiteral():
 void Arguments() : // TODO remove
 {}
 {
-  ArgumentsList()
+  ArgumentList()
 }
 
-void ArgumentsList() #ArgumentList :
+void ArgumentList() :
 {}
 {
  "(" [ Expression() ( "," Expression() )* ] ")"
@@ -2629,7 +2629,7 @@ void QualifiedAllocationExpr() #ConstructorCall:
    [ TypeArguments() ]
    TypeAnnotationList()
    ClassOrInterfaceType()
-   ArgumentsList()
+   ArgumentList()
    [
        { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
        ClassOrInterfaceBody() #AnonymousClassDeclaration
@@ -2659,7 +2659,7 @@ void UnqualifiedAllocationExpr() #void :
            (
               ArrayDimsAndInits() {isArrayInit=true;}
            |
-             ArgumentsList()
+             ArgumentList()
                [
                    { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
                    ClassOrInterfaceBody() #AnonymousClassDeclaration
