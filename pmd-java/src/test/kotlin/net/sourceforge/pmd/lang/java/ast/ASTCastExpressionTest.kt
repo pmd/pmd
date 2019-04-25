@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 class ASTCastExpressionTest : ParserTestSpec({
 
-    parserTest("Class instance creation") {
+    parserTest("Simple cast") {
 
         "(Foo) obj" should matchExpr<ASTCastExpression> {
 
@@ -33,7 +34,20 @@ class ASTCastExpressionTest : ParserTestSpec({
             unspecifiedChild()
         }
     }
+    parserTest("Nested casts") {
 
+        inContext(ExpressionParsingCtx) {
+            "(Foo) (int) obj" should parseAs {
+                castExpr {
+                    classType("Foo")
+                    castExpr {
+                        primitiveType(INT)
+                        variableRef("obj")
+                    }
+                }
+            }
+        }
+    }
 
     parserTest("Test intersection in cast", javaVersions = JavaVersion.J1_8..JavaVersion.Latest) {
 

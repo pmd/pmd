@@ -35,4 +35,64 @@ class ASTThisExpressionTest : ParserTestSpec({
             }
         }
     }
+
+
+    parserTest("This/cast lookahead bug in parens") {
+
+        inContext(ParserTestCtx.Companion.ExpressionParsingCtx) {
+
+            """
+                (Set<String>) (new Transformer() {
+                    public Object transform(final Object obj) {
+                        final String value = this.attributes.get(key);
+                    }
+                })
+            """.trim() should parseAs {
+                castExpr {
+                    classType("Set") {
+                        unspecifiedChild()
+                    }
+                    parenthesized {
+                        child<ASTConstructorCall>(ignoreChildren = true) {
+
+                        }
+                    }
+                }
+            }
+            """
+                (Set<String>) (OUTER.this)
+            """.trim() should parseAs {
+                castExpr {
+                    classType("Set") {
+                        unspecifiedChild()
+                    }
+                    parenthesized {
+                        child<ASTThisExpression>(ignoreChildren = true) {
+
+                        }
+                    }
+                }
+            }
+
+            """
+                (Set<String>) new Transformer() {
+                    public Object transform(final Object obj) {
+                        final String value = HGXLIFFTypeConfiguration.this.attributes.get(key);
+                    }
+                }
+            """.trim() should parseAs {
+                castExpr {
+                    classType("Set") {
+                        unspecifiedChild()
+                    }
+                    child<ASTConstructorCall>(ignoreChildren = true) {
+
+                    }
+                }
+            }
+        }
+
+    }
+
+
 })
