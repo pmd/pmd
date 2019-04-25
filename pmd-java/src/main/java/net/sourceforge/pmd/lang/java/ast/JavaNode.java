@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import javax.annotation.Nullable;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -60,6 +63,20 @@ public interface JavaNode extends ScopedNode {
 
 
     void setScope(Scope scope);
+
+
+    /** Returns the first child of this node, or null if this node has no children. */
+    @Nullable
+    default Node getFirstChild() {
+        return jjtGetNumChildren() > 0 ? jjtGetChild(0) : null;
+    }
+
+
+    /** Returns the last child of this node, or null if this node has no children. */
+    @Nullable
+    default Node getLastChild() {
+        return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
+    }
 
 
 }

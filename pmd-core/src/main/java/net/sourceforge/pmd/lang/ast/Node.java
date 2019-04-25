@@ -280,16 +280,6 @@ public interface Node {
         return null;
     }
 
-    /** Returns the first child of this node, or null if this node has no children. */
-    default Node getFirstChild() {
-        return jjtGetNumChildren() > 0 ? jjtGetChild(0) : null;
-    }
-
-
-    /** Returns the last child of this node, or null if this node has no children. */
-    default Node getLastChild() {
-        return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
-    }
 
     /**
      * Traverses down the tree to find the first descendant instance of type descendantType without crossing find

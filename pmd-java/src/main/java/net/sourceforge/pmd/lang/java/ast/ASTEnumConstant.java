@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum declaration}.
+ * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
  *
  * <pre class="grammar">
  *
