@@ -7,6 +7,20 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
+/**
+ * Represents an enum declaration. This is a {@linkplain Node#isFindBoundary() find boundary}
+ * for tree traversal methods.
+ *
+ * <pre class="grammar">
+ *
+ * EnumDeclaration ::= "enum"
+ *                     &lt;IDENTIFIER&gt;
+ *                     {@linkplain ASTImplementsList ImplementsList}?
+ *                     {@link ASTEnumBody EnumBody}
+ * </pre>
+ */
 public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
 
 
@@ -35,6 +49,12 @@ public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
         return TypeKind.ENUM;
     }
 
+    /**
+     * Returns the enum constants declared by this enum.
+     */
+    public List<ASTEnumConstant> getConstants() {
+        return getFirstChildOfType(ASTEnumBody.class).findChildrenOfType(ASTEnumConstant.class);
+    }
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {

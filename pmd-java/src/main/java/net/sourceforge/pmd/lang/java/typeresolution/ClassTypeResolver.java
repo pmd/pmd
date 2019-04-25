@@ -630,6 +630,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node == null || node.isTypeInferred()) {
             return super.visit(node, data);
+        } else if (node.isEnumConstant()) {
+            Class<?> enumClass = getEnclosingTypeDeclarationClass(node);
+            node.setTypeDefinition(JavaTypeDefinition.forClass(enumClass));
+            return data;
         }
 
         // Type common to all declarations in the same statement

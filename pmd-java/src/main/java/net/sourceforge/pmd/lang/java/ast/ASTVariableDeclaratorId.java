@@ -149,6 +149,12 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return getNthParent(2) instanceof ASTFieldDeclaration;
     }
 
+    /**
+     * Returns true if this node declares an enum constant.
+     */
+    public boolean isEnumConstant() {
+        return jjtGetParent() instanceof ASTEnumConstant;
+    }
 
     /**
      * Returns the name of the variable.
@@ -283,7 +289,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * node. See {@link #getType()} for an explanation.
      *
      * @return the type node, or {@code null} if there is no explicit type,
-     * e.g. if {@link #isTypeInferred()} returns true.
+     *     e.g. if {@link #isTypeInferred()} returns true.
      */
     @Nullable
     public ASTType getTypeNode() {

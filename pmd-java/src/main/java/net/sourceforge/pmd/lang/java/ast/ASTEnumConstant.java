@@ -11,11 +11,9 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum declaration}.
  *
- * <p>TODO since there's no VariableDeclaratorId, this might not play well with the symbol table!
- *
  * <pre class="grammar">
  *
- * EnumConstant ::= &lt;IDENTIFIER&gt; {@linkplain ASTArguments Arguments}? {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}?
+ * EnumConstant ::= {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
@@ -63,6 +61,14 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
         this.qualifiedName = qname;
     }
 
+    public ASTVariableDeclaratorId getId() {
+        return (ASTVariableDeclaratorId) jjtGetChild(0);
+    }
+
+    @Override
+    public String getImage() {
+        return getId().getImage();
+    }
 
     /**
      * Returns true if this enum constant defines a body,
@@ -71,7 +77,7 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
      * returns {@code null}.
      */
     public boolean isAnonymousClass() {
-        return getFirstChildOfType(ASTClassOrInterfaceBody.class) != null;
+        return getFirstChildOfType(ASTAnonymousClassDeclaration.class) != null;
     }
 
 }

@@ -97,7 +97,7 @@ public class ClassScope extends AbstractJavaScope {
     public ClassScope(final ClassNameDeclaration classNameDeclaration) {
         // this.className = getParent().getEnclosingClassScope().getClassName()
         // + "$" + String.valueOf(anonymousInnerClassCounter);
-        int v = anonymousInnerClassCounter.get().intValue();
+        int v = anonymousInnerClassCounter.get();
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
         classDeclaration = classNameDeclaration;
