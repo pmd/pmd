@@ -23,11 +23,11 @@ import javax.annotation.Nonnull;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
@@ -44,7 +44,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -247,19 +246,20 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+
+    @Override
+    public Object visit(@Nonnull ASTAnonymousClassDeclaration node, Object data) {
+        populateType(node, node.getQualifiedName().toString());
+
+        return super.visit(node, data);
+    }
+
+
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         super.visit(node, data);
 
         String typeName = node.getImage();
-
-        if (node.isAnonymousClass()) {
-            QualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
-
-            if (parent != null) {
-                typeName = parent.getQualifiedName().toString();
-            }
-        }
 
         // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
         populateType(node, typeName, 0);

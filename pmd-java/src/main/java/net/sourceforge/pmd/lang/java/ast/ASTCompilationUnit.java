@@ -6,7 +6,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;

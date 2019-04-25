@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-
-
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum declaration}.
  *
@@ -17,9 +14,8 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  *
  * </pre>
  */
-public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiableNode {
+public class ASTEnumConstant extends AbstractJavaNode {
 
-    private JavaTypeQualifiedName qualifiedName;
 
     public ASTEnumConstant(int id) {
         super(id);
@@ -44,23 +40,6 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
     }
 
 
-    /**
-     * Gets the qualified name of the anonymous class
-     * declared by this node, or null if this node
-     * doesn't declare any.
-     *
-     * @see #isAnonymousClass()
-     */
-    @Override
-    public JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
-    }
-
-
-    public void setQualifiedName(JavaTypeQualifiedName qname) {
-        this.qualifiedName = qname;
-    }
-
     public ASTVariableDeclaratorId getId() {
         return (ASTVariableDeclaratorId) jjtGetChild(0);
     }
@@ -72,9 +51,7 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
 
     /**
      * Returns true if this enum constant defines a body,
-     * which is compiled like an anonymous class. If this
-     * method returns false, then {@link #getQualifiedName()}
-     * returns {@code null}.
+     * which is compiled like an anonymous class.
      */
     public boolean isAnonymousClass() {
         return getFirstChildOfType(ASTAnonymousClassDeclaration.class) != null;

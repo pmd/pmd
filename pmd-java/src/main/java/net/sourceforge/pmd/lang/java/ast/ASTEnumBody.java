@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * EnumBody ::= "{"
  *              [( {@link ASTAnnotation Annotation} )* {@link ASTEnumConstant EnumConstant} ( "," ( {@link ASTAnnotation Annotation} )* {@link ASTEnumConstant EnumConstant} )* ]
- * 	            [ "," ]
+ *              [ "," ]
  *              [ ";" ( {@link ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration} )* ]
  *              "}"
  *

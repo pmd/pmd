@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -109,9 +110,10 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     /**
      * Initialises the visitor and starts it.
+     *
      * @param classLoader The classloader that will be used by type qualified names
      *                    to load their type.
-     * @param rootNode The root hierarchy
+     * @param rootNode    The root hierarchy
      */
     public void initializeWith(ClassLoader classLoader, ASTCompilationUnit rootNode) {
         this.classLoader = PMDASMClassLoader.getInstance(classLoader);
@@ -221,30 +223,10 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(ASTAllocationExpression node, Object data) {
-        if (!node.isAnonymousClass()) {
-            return super.visit(node, data);
-        }
+    public Object visit(@Nonnull ASTAnonymousClassDeclaration node, Object data) {
 
         updateContextForAnonymousClass();
         node.setQualifiedName(contextClassQName());
-
-        super.visit(node, data);
-        rollbackClassContext();
-
-        return data;
-    }
-
-
-    @Override
-    public Object visit(ASTEnumConstant node, Object data) {
-        if (!node.isAnonymousClass()) {
-            return super.visit(node, data);
-        }
-
-        updateContextForAnonymousClass();
-        node.setQualifiedName(contextClassQName());
-
         super.visit(node, data);
         rollbackClassContext();
 
