@@ -60,6 +60,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -701,34 +702,25 @@ public class ClassTypeResolverTest {
     public void testThisExpression() {
         ASTCompilationUnit compilationUnit = parseAndTypeResolveForClass15(ThisExpression.class);
         // need to cross borders, to find expressions of the nested classes
-        List<ASTPrimaryExpression> expressions = compilationUnit.findDescendantsOfType(ASTPrimaryExpression.class, true);
-        List<ASTPrimaryPrefix> prefixes = compilationUnit.findDescendantsOfType(ASTPrimaryPrefix.class, true);
+        List<ASTThisExpression> expressions = compilationUnit.findDescendantsOfType(ASTThisExpression.class, true);
 
         int index = 0;
 
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
 
-        assertEquals(ThisExpression.ThisExprNested.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.ThisExprNested.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.ThisExprNested.class, expressions.get(index++).getType());
 
         // Qualified this
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
         assertEquals(ThisExpression.class, ((TypeNode) expressions.get(index++).jjtGetChild(1)).getType());
 
-        assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.ThisExprStaticNested.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index++).getType());
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
-        assertEquals("All expressions not tested", index, prefixes.size());
     }
 
 
