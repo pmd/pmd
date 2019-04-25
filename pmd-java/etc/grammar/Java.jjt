@@ -236,6 +236,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class JavaParser {
 
   private int jdkVersion = 0;
+  private boolean afterSuper;
 
   public void setJdkVersion(int jdkVersion) {
    this.jdkVersion = jdkVersion;
@@ -1950,11 +1951,18 @@ Token t;}
 void ExplicitConstructorInvocation() :
 {}
 {
-  LOOKAHEAD("this" Arguments() ";") "this" {jjtThis.setIsThis();} Arguments() ";"
+  LOOKAHEAD("this" ArgumentsList() ";") "this" {jjtThis.setIsThis();} ArgumentsList() ";"
 |
-  LOOKAHEAD(TypeArguments() "this" Arguments() ";") TypeArguments() "this" {jjtThis.setIsThis();} Arguments() ";"
+  LOOKAHEAD(TypeArguments() "this" ArgumentsList() ";") TypeArguments() "this" {jjtThis.setIsThis();} ArgumentsList() ";"
 |
-  [ LOOKAHEAD(PrimaryExpression() ".") PrimaryExpression() "." ] [ TypeArguments() ] "super" {jjtThis.setIsSuper();} Arguments() ";"
+  LOOKAHEAD(PrimaryExpression() "." SuperInvocationTail()) PrimaryExpression() "." SuperInvocationTail(jjtThis)
+| SuperInvocationTail(jjtThis)
+}
+
+void SuperInvocationTail(ASTExplicitConstructorInvocation node) #void:
+{}
+{
+   [ TypeArguments() ] "super" {node.setIsSuper();} ArgumentsList() ";"
 }
 
 void Initializer() :
@@ -2439,7 +2447,7 @@ void SwitchExpression() :
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(2) PrimarySuffix() )* {forceExprContext();}
+  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead()) PrimarySuffix() )* {forceExprContext();}
 }
 
 /*
@@ -2473,7 +2481,14 @@ void PrimaryPrefix() #void :
 // we choke on the type parameters
 | LOOKAHEAD( ReferenceType() "::" )
     ReferenceType()
-| AmbiguousName()
+| AmbiguousName() [ LOOKAHEAD("." ("super" "." | "this" ) )
+       // The LHS of this or super is necessarily a type name, ie ambiguous
+       // Having this here instead of in PrimarySuffix makes the grammar more
+       // restrictive and also allows ExplicitConstructorInvocation to be parsed
+       ( LOOKAHEAD("." "super" ".") "." "super"    #SuperExpression(1)
+       | LOOKAHEAD(2) "." "this"                   #ThisExpression(1)
+       )
+  ]
 }
 
 /**
@@ -2490,19 +2505,26 @@ void PrimarySuffix() #void :
 | ArgumentsList()                   #MethodCall(2)
 | ("[" Expression() "]")            #ArrayAccess(2)
 // all the following start with a "."
-| LOOKAHEAD(2) ("." "this")         #ThisExpression(1)
-| LOOKAHEAD(2) ("." "super")        #SuperExpression(1)
 // lookahead("." "new")
 | LOOKAHEAD(2) QualifiedAllocationExpr()
-| MemberSelector() // more complex method call patterns
+| LOOKAHEAD("." [TypeArguments()] <IDENTIFIER>) MemberSelector() // more complex method call patterns
 }
 
+void SuffixLAhead() #void:
+{}
+{
+    "." ("new" | [ TypeArguments() ] <IDENTIFIER>)
+    | "::"
+    | "["
+    | "("
+}
 
 void MemberSelector() #void :
 {}
 {
   // if there are type arguments, this is a method call
-  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentsList()) #MethodCall
+  LOOKAHEAD(2)
+   ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentsList()) #MethodCall
 | LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentsList())                   #MethodCall
 |              ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);})                                   #FieldAccess
 }

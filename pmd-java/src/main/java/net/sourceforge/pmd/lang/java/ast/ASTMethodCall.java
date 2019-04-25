@@ -38,7 +38,7 @@ public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrim
     public void jjtClose() {
         super.jjtClose();
 
-        if (getImage() != null) {
+        if (getImage() != null || jjtGetChild(0) instanceof ASTSuperExpression) {
             return;
         }
 
