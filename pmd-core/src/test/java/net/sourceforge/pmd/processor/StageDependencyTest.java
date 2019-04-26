@@ -18,7 +18,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.internal.util.RulesetStageDependencyHelper;
+import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -32,14 +32,18 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public class StageDependencyTest {
 
+    private final LanguageVersion version = LanguageRegistry.findLanguageByTerseName("dummy").getVersion("1.0");
+
     private DummyNode process(String source, RuleSets ruleSets) {
+        PMDConfiguration configuration = new PMDConfiguration();
+        return process(source, ruleSets, new RulesetStageDependencyHelper(configuration), configuration);
+    }
+
+    private DummyNode process(String source, RuleSets ruleSets, RulesetStageDependencyHelper helper, PMDConfiguration configuration) {
 
         RuleContext context = new RuleContext();
 
-        PMDConfiguration configuration = new PMDConfiguration();
-        RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);
 
-        LanguageVersion version = LanguageRegistry.findLanguageByTerseName("dummy").getVersion("1.0");
         Parser parser = PMD.parserFor(version, configuration);
         context.setLanguageVersion(version);
 
@@ -54,7 +58,7 @@ public class StageDependencyTest {
     @Test
     public void testSimpleDependency() throws PMDException {
 
-        DummyNode root = process("foo bar", singleRule(new PredicateTestRule(DummyAstStages.FOO)));
+        DummyNode root = process("foo bar", withRules(new PredicateTestRule(DummyAstStages.FOO)));
 
         Assert.assertTrue(DummyAstStages.FOO.hasProcessed(root));
         Assert.assertFalse(DummyAstStages.BAR.hasProcessed(root));
@@ -63,7 +67,7 @@ public class StageDependencyTest {
     @Test
     public void testNoDependency() throws PMDException {
 
-        DummyNode root = process("foo bar", singleRule(new PredicateTestRule()));
+        DummyNode root = process("foo bar", withRules(new PredicateTestRule()));
 
         Assert.assertFalse(DummyAstStages.FOO.hasProcessed(root));
         Assert.assertFalse(DummyAstStages.BAR.hasProcessed(root));
@@ -72,9 +76,13 @@ public class StageDependencyTest {
     @Test
     public void testDependencyUnion() throws PMDException {
 
-        RuleSets ruleSets = singleRule(new PredicateTestRule(DummyAstStages.FOO));
-        ruleSets.addRuleSet(new RuleSetFactory().createSingleRuleRuleSet(new PredicateTestRule(DummyAstStages.BAR)));
-        DummyNode root = process("foo bar", ruleSets);
+        DummyNode root =
+            process("foo bar",
+                    withRules(
+                        new PredicateTestRule(DummyAstStages.FOO),
+                        new PredicateTestRule(DummyAstStages.BAR)
+                    )
+            );
 
         Assert.assertTrue(DummyAstStages.FOO.hasProcessed(root));
         Assert.assertTrue(DummyAstStages.BAR.hasProcessed(root));
@@ -83,16 +91,61 @@ public class StageDependencyTest {
     @Test
     public void testTransitiveDependency() throws PMDException {
 
-        DummyNode root = process("foo bar", singleRule(new PredicateTestRule(DummyAstStages.RUNS_FOO)));
+        DummyNode root = process("foo bar", withRules(new PredicateTestRule(DummyAstStages.RUNS_FOO)));
 
         Assert.assertTrue(DummyAstStages.FOO.hasProcessed(root));
         Assert.assertFalse(DummyAstStages.BAR.hasProcessed(root));
         Assert.assertTrue(DummyAstStages.RUNS_FOO.hasProcessed(root));
     }
 
+    @Test
+    public void testNoRecomputation() throws PMDException {
 
-    private static RuleSets singleRule(Rule r) {
-        return new RuleSets(new RuleSetFactory().createSingleRuleRuleSet(r));
+        PMDConfiguration configuration = new PMDConfiguration();
+        RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);
+
+        RuleSets ruleSets = withRules(new PredicateTestRule(DummyAstStages.RUNS_FOO));
+
+        List<AstProcessingStage<?>> stages1 = helper.testOnlyGetDependencies(ruleSets, version);
+
+        process("foo bar", ruleSets);
+
+        List<AstProcessingStage<?>> stages2 = helper.testOnlyGetDependencies(ruleSets, version);
+
+        Assert.assertSame(stages1, stages2);
+    }
+
+    @Test
+    public void testDependencyOrdering() throws PMDException {
+
+        PMDConfiguration configuration = new PMDConfiguration();
+        RulesetStageDependencyHelper helper = new RulesetStageDependencyHelper(configuration);
+
+        RuleSets ruleSets = withRules(
+            new PredicateTestRule(DummyAstStages.FOO),
+            new PredicateTestRule(DummyAstStages.BAR)
+        );
+
+        RuleSets ruleSets2 = withRules(
+            new PredicateTestRule(DummyAstStages.BAR),
+            new PredicateTestRule(DummyAstStages.FOO)
+        );
+
+        List<AstProcessingStage<?>> stages1 = helper.testOnlyGetDependencies(ruleSets, version);
+        List<AstProcessingStage<?>> stages2 = helper.testOnlyGetDependencies(ruleSets2, version);
+
+        Assert.assertNotSame(stages1, stages2);
+        Assert.assertEquals(stages1, stages2);
+    }
+
+
+    private static RuleSets withRules(Rule r, Rule... rs) {
+        RuleSets ruleSets = new RuleSets(new RuleSetFactory().createSingleRuleRuleSet(r));
+        for (Rule rule : rs) {
+            ruleSets.addRuleSet(new RuleSetFactory().createSingleRuleRuleSet(rule));
+        }
+
+        return ruleSets;
     }
 
     private static class PredicateTestRule extends AbstractRule {

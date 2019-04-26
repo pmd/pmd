@@ -2,7 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.internal.util;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +42,11 @@ public class RulesetStageDependencyHelper {
 
     public RulesetStageDependencyHelper(PMDConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+
+    public List<AstProcessingStage<?>> testOnlyGetDependencies(RuleSets ruleSets, LanguageVersion languageVersion) {
+        return getDependencies(ruleSets, languageVersion);
     }
 
     /** Gets the stage dependencies of the ruleset for the given language version. */
