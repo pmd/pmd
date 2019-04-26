@@ -1689,11 +1689,11 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-Detects when a class or interface does not have a package definition.
+Detects when a class, interface, enum or annotation does not have a package definition.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
+/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]
 ```
 
 **Example(s):**
