@@ -15,7 +15,13 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
  */
 public enum DummyAstStages implements AstProcessingStage<DummyAstStages> {
     FOO,
-    BAR;
+    BAR,
+    RUNS_FOO {
+        @Override
+        public List<DummyAstStages> getDependencies() {
+            return Collections.singletonList(FOO);
+        }
+    };
 
 
     @Override

@@ -80,6 +80,15 @@ public class StageDependencyTest {
         Assert.assertTrue(DummyAstStages.FOO.hasProcessed(root));
         Assert.assertTrue(DummyAstStages.BAR.hasProcessed(root));
     }
+    @Test
+    public void testTransitiveDependency() throws PMDException {
+
+        DummyNode root = process("foo bar", singleRule(new PredicateTestRule(DummyAstStages.RUNS_FOO)));
+
+        Assert.assertTrue(DummyAstStages.FOO.hasProcessed(root));
+        Assert.assertFalse(DummyAstStages.BAR.hasProcessed(root));
+        Assert.assertTrue(DummyAstStages.RUNS_FOO.hasProcessed(root));
+    }
 
 
     private static RuleSets singleRule(Rule r) {

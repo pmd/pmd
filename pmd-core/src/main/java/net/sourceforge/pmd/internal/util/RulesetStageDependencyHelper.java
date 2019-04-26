@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
@@ -78,8 +80,10 @@ public class RulesetStageDependencyHelper {
             stages.removeAll(result);
         }
 
-        result.sort(AstProcessingStage::compare);
-        return Collections.unmodifiableList(result);
+        return result.stream()
+                     .flatMap(it -> Stream.concat(Stream.of(it), it.getDependencies().stream()))
+                     .sorted(AstProcessingStage::compare)
+                     .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
 
