@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -223,7 +222,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(@Nonnull ASTAnonymousClassDeclaration node, Object data) {
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
 
         updateContextForAnonymousClass();
         node.setQualifiedName(contextClassQName());

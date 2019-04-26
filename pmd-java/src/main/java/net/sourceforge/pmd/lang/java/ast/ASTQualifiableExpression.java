@@ -4,9 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import javax.annotation.Nullable;
-
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Node that may be qualified by an expression, e.g. an instance method call or
  * inner class constructor invocation.

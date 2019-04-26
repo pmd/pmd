@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -248,7 +247,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 
     @Override
-    public Object visit(@Nonnull ASTAnonymousClassDeclaration node, Object data) {
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
         populateType(node, node.getQualifiedName().toString());
 
         return super.visit(node, data);
@@ -1079,7 +1078,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(@Nonnull ASTIntersectionType node, Object data) {
+    public Object visit(ASTIntersectionType node, Object data) {
         List<ASTType> typeNodes = IteratorUtil.toList(node.iterator());
 
         // TypeBound will have at least one child, but maybe more

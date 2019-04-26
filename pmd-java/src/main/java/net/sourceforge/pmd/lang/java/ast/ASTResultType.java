@@ -5,9 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import javax.annotation.Nullable;
-
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Return type of a method. TODO maybe make it implement {@link ASTType}.
  *

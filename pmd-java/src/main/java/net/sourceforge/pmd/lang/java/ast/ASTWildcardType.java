@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import javax.annotation.Nullable;
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Represents a wildcard type. Those can only occur when nested in an
  * {@link ASTTypeArguments} node.

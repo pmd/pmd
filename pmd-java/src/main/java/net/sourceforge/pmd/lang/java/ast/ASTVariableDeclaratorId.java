@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
-import javax.annotation.Nullable;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;

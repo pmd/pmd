@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 
 import java.util.Optional;
-import javax.annotation.Nullable;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
  *

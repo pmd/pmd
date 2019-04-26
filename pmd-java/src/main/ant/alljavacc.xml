@@ -97,18 +97,14 @@
         <!-- Changes are then copied on other visitors -->
         <replace file="${base-visitor-interface-file}">
             <replacefilter token="public interface" value="
-import javax.annotation.Nonnull;
-import net.sourceforge.pmd.annotation.UnknownNullabilityApi;
-
-@UnknownNullabilityApi
 public interface" />
             <replacefilter token="JavaParserVisitor" value="${base-visitor-interface-name}" />
             <replacefilter token="SimpleNode" value="JavaNode" />
             <!-- Default methods -->
-            <replacefilter token="public Object visit(" value="default Object visit(@Nonnull " />
+            <replacefilter token="public Object visit(" value="default Object visit(" />
             <replacefilter token=");" value=") { return visit((JavaNode) node, data); }" />
-            <replacefilter token="default Object visit(@Nonnull JavaNode node, Object data) { return visit((JavaNode) node, data); }"
-                           value="default Object visit(@Nonnull JavaNode node, Object data) { return node.childrenAccept(this, data); }" />
+            <replacefilter token="default Object visit(JavaNode node, Object data) { return visit((JavaNode) node, data); }"
+                           value="default Object visit(JavaNode node, Object data) { return node.childrenAccept(this, data); }" />
         </replace>
 
         <!-- Deprecated nodes -->
