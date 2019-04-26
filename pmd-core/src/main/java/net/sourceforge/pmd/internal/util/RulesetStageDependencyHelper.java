@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
@@ -64,26 +64,27 @@ public class RulesetStageDependencyHelper {
         }
     }
 
+    /** Builds a sorted list of the dependencies of the given ruleset. */
     private List<AstProcessingStage<?>> buildDependencyList(RuleSets ruleSets, LanguageVersion languageVersion) {
         List<AstProcessingStage<?>> stages = new ArrayList<>(languageVersion.getLanguageVersionHandler().getProcessingStages());
-        List<AstProcessingStage<?>> result = new ArrayList<>();
+        SortedSet<AstProcessingStage<?>> result = new TreeSet<>();
 
+        // this loops runs until either all stages have already been
+        // picked or there are still rules left
         for (Rule rule : ruleSets.getAllRules()) {
             if (stages.isEmpty()) {
-                return result;
+                return Collections.unmodifiableList(new ArrayList<>(result));
             }
             for (AstProcessingStage<?> stage : stages) {
                 if (rule.dependsOn(stage)) {
                     result.add(stage);
+                    result.addAll(stage.getDependencies());
                 }
             }
             stages.removeAll(result);
         }
 
-        return result.stream()
-                     .flatMap(it -> Stream.concat(Stream.of(it), it.getDependencies().stream()))
-                     .sorted(AstProcessingStage::compare)
-                     .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        return Collections.unmodifiableList(new ArrayList<>(result));
     }
 
 
