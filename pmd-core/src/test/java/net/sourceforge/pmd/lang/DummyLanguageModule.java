@@ -14,9 +14,11 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -62,17 +64,23 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
+
+        public Handler() {
+            super(DummyAstStages.class);
+        }
+
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();
         }
+
 
         @Override
         public Parser getParser(ParserOptions parserOptions) {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
+                    DummyNode node = new DummyRootNode(1);
                     node.testingOnlySetBeginLine(1);
                     node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
@@ -95,6 +103,14 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
             };
         }
+    }
+
+    private static class DummyRootNode extends DummyNode implements RootNode {
+
+        public DummyRootNode(int id) {
+            super(id);
+        }
+
     }
 
     public static class RuleViolationFactory extends AbstractRuleViolationFactory {

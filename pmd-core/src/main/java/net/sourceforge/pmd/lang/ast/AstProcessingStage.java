@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import net.sourceforge.pmd.RuleSets;
@@ -71,7 +73,9 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
      * <p>Returns an empty list if this stage only depends
      * on the parser stage.
      */
-    List<T> getDependencies();
+    default List<T> getDependencies() {
+        return emptyList();
+    }
 
 
     /**
