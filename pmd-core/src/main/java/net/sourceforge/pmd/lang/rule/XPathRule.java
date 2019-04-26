@@ -170,7 +170,7 @@ public class XPathRule extends AbstractRule {
 
     @Override
     public boolean dependsOn(AstProcessingStage<?> stage) {
-        // FIXME
+        // FIXME must be made language-specific
         return true;
     }
 }

@@ -160,6 +160,7 @@ public class SourceCodeProcessor {
     }
 
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
+
         // basically:
         // 1. make the union of all stage dependencies of each rule, by language, for the Rulesets
         // 2. order them by dependency
@@ -169,6 +170,9 @@ public class SourceCodeProcessor {
         // They're probably costly and if we do this here without changing anything,
         // they'll be done on each file! Btw currently the "usesDfa" and such are nested loops testing
         // all rules of all rulesets, but they're run on each file too!
+
+        // FIXME - this implementation is a hack to wire-in stages without
+        //  needing to change RuleSet immediately
 
         // With mutable RuleSets, caching of the value can't be guaranteed to be accurate...
         // The approach I'd like to take is either
