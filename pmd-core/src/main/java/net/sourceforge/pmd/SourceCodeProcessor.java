@@ -8,19 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
+import net.sourceforge.pmd.internal.util.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
-import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -29,11 +25,12 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 public class SourceCodeProcessor {
 
     private final PMDConfiguration configuration;
-    private final Map<RuleSets, Map<LanguageVersion, List<AstProcessingStage<?>>>> dependenciesByRuleset = new HashMap<>();
+    private final RulesetStageDependencyHelper dependencyHelper;
 
 
     public SourceCodeProcessor(PMDConfiguration configuration) {
         this.configuration = configuration;
+        dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
     /**
@@ -120,44 +117,6 @@ public class SourceCodeProcessor {
     }
 
 
-    private List<AstProcessingStage<?>> buildDependencyList(RuleSets ruleSets, LanguageVersion languageVersion) {
-        List<AstProcessingStage<?>> stages = new ArrayList<>(languageVersion.getLanguageVersionHandler().getProcessingStages());
-        List<AstProcessingStage<?>> result = new ArrayList<>();
-
-        for (Rule rule : ruleSets.getAllRules()) {
-            if (stages.isEmpty()) {
-                return result;
-            }
-            for (AstProcessingStage<?> stage : stages) {
-                if (rule.dependsOn(stage)) {
-                    result.add(stage);
-                }
-            }
-            stages.removeAll(result);
-        }
-
-        result.sort(AstProcessingStage::compare);
-        return Collections.unmodifiableList(result);
-    }
-
-
-    /** Gets the stage dependencies of the ruleset for the given language version. */
-    private List<AstProcessingStage<?>> getDependencies(RuleSets ruleSets, LanguageVersion languageVersion) {
-        Map<LanguageVersion, List<AstProcessingStage<?>>> byLanguage = dependenciesByRuleset.computeIfAbsent(ruleSets, r -> new HashMap<>());
-
-        return byLanguage.computeIfAbsent(languageVersion, l -> buildDependencyList(ruleSets, l));
-    }
-
-
-    private void executeProcessingStage(AstProcessingStage<?> stage, RootNode root, AstAnalysisContext context) {
-
-        String label = stage.getLanguage().getShortName() + ": " + stage.getDisplayName();
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.LANGUAGE_SPECIFIC_PROCESSING, label)) {
-            stage.processAST(root, context);
-        }
-
-
-    }
 
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
 
@@ -192,33 +151,15 @@ public class SourceCodeProcessor {
 
         Parser parser = PMD.parserFor(languageVersion, configuration);
 
-        Node rootNode = parse(ctx, sourceCode, parser);
+        RootNode rootNode = (RootNode) parse(ctx, sourceCode, parser);
 
-        AstAnalysisContext context = buildContext(languageVersion);
-
-        getDependencies(ruleSets, languageVersion)
-                .forEach(stage -> executeProcessingStage(stage, (RootNode) rootNode, context));
-
+        dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
         List<Node> acus = Collections.singletonList(rootNode);
         ruleSets.apply(acus, ctx, languageVersion.getLanguage());
     }
 
 
-    private AstAnalysisContext buildContext(LanguageVersion languageVersion) {
-        return new AstAnalysisContext() {
-            @Override
-            public ClassLoader getTypeResolutionClassLoader() {
-                return configuration.getClassLoader();
-            }
-
-
-            @Override
-            public LanguageVersion getLanguageVersion() {
-                return languageVersion;
-            }
-        };
-    }
 
 
     private void determineLanguage(RuleContext ctx) {
