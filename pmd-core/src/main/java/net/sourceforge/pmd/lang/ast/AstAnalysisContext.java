@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * Configuration relevant to e.g. an {@link AstProcessingStage}.
  *
  * @author Clément Fournier
- * @since 6.10.0
+ * @since 7.0.0
  */
 @Experimental
 public interface AstAnalysisContext {
