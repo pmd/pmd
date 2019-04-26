@@ -266,6 +266,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.2.61</kotlin.version>
+        <dokka.version>0.9.18</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
@@ -1008,6 +1009,11 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
 
