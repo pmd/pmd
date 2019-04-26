@@ -107,7 +107,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
 
     private static class DummyRootNode extends DummyNode implements RootNode {
 
-        public DummyRootNode(int id) {
+        DummyRootNode(int id) {
             super(id);
         }
 

@@ -32,8 +32,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public class StageDependencyTest {
 
-    private DummyNode process(String source, RuleSets ruleSets) throws PMDException {
-        // god it's so hard to test anything...
+    private DummyNode process(String source, RuleSets ruleSets) {
 
         RuleContext context = new RuleContext();
 
@@ -80,6 +79,7 @@ public class StageDependencyTest {
         Assert.assertTrue(DummyAstStages.FOO.hasProcessed(root));
         Assert.assertTrue(DummyAstStages.BAR.hasProcessed(root));
     }
+
     @Test
     public void testTransitiveDependency() throws PMDException {
 
@@ -99,7 +99,7 @@ public class StageDependencyTest {
 
         private final List<DummyAstStages> dependencies;
 
-        public PredicateTestRule(DummyAstStages... dependencies) {
+        PredicateTestRule(DummyAstStages... dependencies) {
             this.dependencies = Arrays.asList(dependencies);
         }
 
@@ -116,6 +116,11 @@ public class StageDependencyTest {
         @Override
         public void apply(List<? extends Node> nodes, RuleContext ctx) {
 
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
         }
 
         @Override
