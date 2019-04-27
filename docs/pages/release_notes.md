@@ -29,6 +29,11 @@ Being based on a proper Antlr grammar, CPD can:
 *   ignore imports / libraries
 *   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md).
+
 ### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
@@ -42,6 +47,7 @@ Being based on a proper Antlr grammar, CPD can:
 
 *   all
     *   [#1788](https://github.com/pmd/pmd/issues/1788): \[cpd] \[core] Use better `ClassLoader` for `ServiceLoader` in `LanguageFactory`
+    *   [#1515](https://github.com/pmd/pmd/issues/1515): \[core] Module pmd-lang-test is missing javadoc artifact
 *   go
     *   [#1751](https://github.com/pmd/pmd/issues/1751): \[go] Parsing errors encountered with escaped backslash
 *   java
@@ -59,6 +65,8 @@ Being based on a proper Antlr grammar, CPD can:
 
 ### API Changes
 
+No changes.
+
 ### External Contributions
 
 *   [#1745](https://github.com/pmd/pmd/pull/1745): \[doc] Fixed some errors in docs - [0xflotus](https://github.com/0xflotus)
@@ -68,6 +76,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1776](https://github.com/pmd/pmd/pull/1776): \[java] Show more detailed message when can't resolve field type - [Andrey Fomin](https://github.com/andrey-fomin)
 *   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
+*   [#1791](https://github.com/pmd/pmd/pull/1791): \[dart] \[cpd] Dart escaped string - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 

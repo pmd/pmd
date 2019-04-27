@@ -39,14 +39,12 @@ matrix:
       env: BUILD=deploy
 
 before_install:
-  - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
   - bash .travis/setup-secrets.sh
   - bash .travis/configure-maven.sh
   - rvm install 2.4.1
   - rvm use 2.4.1
-# Install OpenJDK 11 - see https://sormuras.github.io/blog/2018-03-20-jdk-matrix.html
 install:
-  - . ./install-jdk.sh -F 12 -L GPL -W $HOME/jdk
+  - . .travis/install-openjdk.sh
   - gem install bundler
   - bundle install --with=release_notes_preprocessing --path=vendor/bundle
 before_script: true
@@ -85,8 +83,8 @@ notifications:
 cache:
   directories:
   - "$HOME/.m2"
+  - "$HOME/.cache"
   - vendor/bundle
-  - "$HOME/jdk"
   - "$HOME/.rvm/"
 
 # Secure Keys, that need to be set for snapshot builds
