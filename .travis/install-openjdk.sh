@@ -1,4 +1,18 @@
-OPENJDK_ARCHIVE=OpenJDK11U-x64_linux_11.0.3_7.tar.gz
+#
+# Original sources:
+# Linux: https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/jdk-11.0.3%2B7/
+#        https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-x64_linux_11.0.3_7.tar.gz
+# MacOSX: https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/jdk-11.0.3%2B7/
+#         https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.3_7.tar.gz
+#
+
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OPENJDK_ARCHIVE=OpenJDK11U-jdk_x64_mac_hotspot_11.0.3_7.tar.gz
+else
+    OPENJDK_ARCHIVE=OpenJDK11U-x64_linux_11.0.3_7.tar.gz
+fi
+
 DOWNLOAD_URL=https://pmd-code.org/${OPENJDK_ARCHIVE}
 LOCAL_DIR=${HOME}/.cache/openjdk
 TARGET_DIR=${HOME}/openjdk11
