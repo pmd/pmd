@@ -9,10 +9,10 @@
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     OPENJDK_ARCHIVE=OpenJDK11U-jdk_x64_mac_hotspot_11.0.3_7.tar.gz
-    COMPONENTS_TO_STRIP=4
+    COMPONENTS_TO_STRIP=3 # e.g. jdk-11.0.3+7/Contents/Home/bin/java
 else
     OPENJDK_ARCHIVE=OpenJDK11U-x64_linux_11.0.3_7.tar.gz
-    COMPONENTS_TO_STRIP=1
+    COMPONENTS_TO_STRIP=1 # e.g. openjdk-11.0.3+7/bin/java
 fi
 
 DOWNLOAD_URL=https://pmd-code.org/${OPENJDK_ARCHIVE}
