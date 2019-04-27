@@ -9,8 +9,10 @@
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     OPENJDK_ARCHIVE=OpenJDK11U-jdk_x64_mac_hotspot_11.0.3_7.tar.gz
+    COMPONENTS_TO_STRIP=4
 else
     OPENJDK_ARCHIVE=OpenJDK11U-x64_linux_11.0.3_7.tar.gz
+    COMPONENTS_TO_STRIP=1
 fi
 
 DOWNLOAD_URL=https://pmd-code.org/${OPENJDK_ARCHIVE}
@@ -20,7 +22,7 @@ TARGET_DIR=${HOME}/openjdk11
 mkdir -p ${LOCAL_DIR}
 mkdir -p ${TARGET_DIR}
 wget --quiet --directory-prefix ${LOCAL_DIR} --timestamping --continue ${DOWNLOAD_URL}
-tar --extract --file ${LOCAL_DIR}/${OPENJDK_ARCHIVE} -C ${TARGET_DIR} --strip-components 1
+tar --extract --file ${LOCAL_DIR}/${OPENJDK_ARCHIVE} -C ${TARGET_DIR} --strip-components=${COMPONENTS_TO_STRIP}
 
 export JAVA_HOME=${TARGET_DIR}
 export PATH=${JAVA_HOME}/bin:$PATH
