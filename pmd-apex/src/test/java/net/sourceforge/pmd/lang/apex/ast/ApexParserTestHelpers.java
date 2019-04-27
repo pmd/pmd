@@ -22,11 +22,4 @@ public class ApexParserTestHelpers {
         return parser.parse(reader);
     }
 
-    public static void dumpNode(Node node) {
-        DumpFacade facade = new DumpFacade();
-        StringWriter writer = new StringWriter();
-        facade.initializeWith(writer, "", true, (ApexNode<?>) node);
-        facade.visit((ApexNode<?>) node, "");
-        System.out.println(writer.toString());
-    }
 }

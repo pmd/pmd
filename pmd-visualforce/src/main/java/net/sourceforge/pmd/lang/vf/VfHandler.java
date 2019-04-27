@@ -4,18 +4,12 @@
 
 package net.sourceforge.pmd.lang.vf;
 
-import java.io.Writer;
-
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.vf.ast.DumpFacade;
-import net.sourceforge.pmd.lang.vf.ast.VfNode;
 import net.sourceforge.pmd.lang.vf.rule.VfRuleViolationFactory;
 
 public class VfHandler extends AbstractPmdLanguageVersionHandler {
@@ -35,13 +29,4 @@ public class VfHandler extends AbstractPmdLanguageVersionHandler {
         return new VfParser(parserOptions);
     }
 
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (VfNode) rootNode);
-            }
-        };
-    }
 }

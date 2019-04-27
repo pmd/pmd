@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Writer;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -114,17 +113,6 @@ public interface LanguageVersionHandler {
      */
     @Deprecated
     VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
-
-    /**
-     * Get the DumpFacade.
-     *
-     * @param writer
-     *            The writer to dump to.
-     * @return VisitorStarter
-     * @deprecated The dump façade is not that useful and will be completely scrapped with PMD 7.0.0
-     */
-    @Deprecated
-    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
 
 
     /**
