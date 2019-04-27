@@ -24,6 +24,11 @@ Being based on a proper Antlr grammar, CPD can:
 *   ignore imports / libraries
 *   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md).
+
 ### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
@@ -54,6 +59,8 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
 
 ### API Changes
+
+No changes.
 
 ### External Contributions
 
