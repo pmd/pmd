@@ -79,6 +79,11 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
     parserTest("Unary expression ambiguity corner cases") {
 
+        // the following cases test ambiguity between cast of unary, and eg parenthesized additive expr
+
+        // see https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-UnaryExpressionNotPlusMinus
+        // comments about ambiguity are below grammar
+
         inContext(ExpressionParsingCtx) {
             "(p)+q" should parseAs {
                 additiveExpr(ADD) {
@@ -117,6 +122,9 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     }
                 }
             }
+
+            "(p)++q" shouldNot parse()
+            "(p)--q" shouldNot parse()
 
             "i+++i" should parseAs {
                 additiveExpr(ADD) {
@@ -164,6 +172,19 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 }
                             }
                         }
+
+                        "($type)--q" should parseAs {
+                            castExpr {
+                                primitiveType(type)
+
+                                unaryExpr(DECREMENT) {
+                                    variableRef("q")
+                                }
+                            }
+                        }
+
+                        "($type)++" shouldNot parse()
+                        "($type)--" shouldNot parse()
                     }
         }
     }

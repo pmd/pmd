@@ -503,6 +503,18 @@ public class JavaParser {
        }
   }
 
+  private boolean nextIsPlusOrMinus() {
+        switch (getToken(1).kind) {
+            case PLUS:
+            case MINUS:
+            case INCR:
+            case DECR:
+                return true;
+            default:
+                return false;
+        }
+  }
+
 }
 PARSER_END(JavaParser)
 
@@ -2409,11 +2421,12 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
  ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
  // There's no separate production for CastExpression, because that would force
  // us to repeat the lookahead
- // Those lookaheads are very expensive, they're run to disambiguate between
+ // Those lookaheads are quite expensive, they're run to disambiguate between
  // ParenthesizedExpression and CastExpression.
 | LOOKAHEAD("(" TypeAnnotationList() PrimitiveType() ")")
     ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
-| LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus() )
+ // here we avoid looking ahead for a whole unary expression, instead just testing the token after ")"
+| LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" LOOKAHEAD({!nextIsPlusOrMinus()}) )
     ("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
 | PostfixExpression()
 | SwitchExpression()
@@ -2507,7 +2520,7 @@ void PrimarySuffix() #void :
 | LOOKAHEAD("." [TypeArguments()] <IDENTIFIER>) MemberSelector() // more complex method call patterns
 }
 
-void SuffixLAhead() #void:
+private void SuffixLAhead() #void:
 {}
 {
     // not "super", otherwise runs into conflicts with ExplicitConstructorInvocation
