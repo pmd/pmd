@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast;
+package net.sourceforge.pmd.lang.xml.ast.internal;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -22,15 +22,16 @@ import org.xml.sax.SAXException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xml.XmlParserOptions;
+import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 
-public class XmlParser {
+public class XmlParserImpl {
 
     private final XmlParserOptions parserOptions;
     private Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 
 
-    public XmlParser(XmlParserOptions parserOptions) {
+    public XmlParserImpl(XmlParserOptions parserOptions) {
         this.parserOptions = parserOptions;
     }
 
@@ -94,8 +95,8 @@ public class XmlParser {
     /**
      * The root should implement {@link RootNode}.
      */
-    public static class RootXmlNode extends XmlNodeWrapper implements RootNode {
-        RootXmlNode(XmlParser parser, Node domNode) {
+    static class RootXmlNode extends XmlNodeWrapper implements RootNode {
+        RootXmlNode(XmlParserImpl parser, Node domNode) {
             super(parser, domNode);
         }
     }

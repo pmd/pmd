@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast;
+package net.sourceforge.pmd.lang.xml.ast.internal;
 
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
 
 
@@ -29,14 +30,14 @@ import net.sourceforge.pmd.util.CompoundIterator;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public class XmlNodeWrapper extends AbstractNode implements XmlNode {
+class XmlNodeWrapper extends AbstractNode implements XmlNode {
 
-    private final XmlParser parser;
+    private final XmlParserImpl parser;
     private Object userData;
     private final org.w3c.dom.Node node;
 
 
-    public XmlNodeWrapper(XmlParser parser, org.w3c.dom.Node domNode) {
+    XmlNodeWrapper(XmlParserImpl parser, org.w3c.dom.Node domNode) {
         super(0);
         this.node = domNode;
         this.parser = parser;
