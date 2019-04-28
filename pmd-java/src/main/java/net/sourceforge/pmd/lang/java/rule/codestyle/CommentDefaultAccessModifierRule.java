@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -85,10 +87,27 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
     }
 
     @Override
+    public Object visit(final ASTAnnotationTypeDeclaration decl, final Object data) {
+        if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for top-level annotation declarations
+            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level annotation"));
+        }
+        return super.visit(decl, data);
+    }
+
+    @Override
+    public Object visit(final ASTEnumDeclaration decl, final Object data) {
+        if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for top-level enums
+            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level enum"));
+        }
+        return super.visit(decl, data);
+    }
+
+    @Override
     public Object visit(final ASTClassOrInterfaceDeclaration decl, final Object data) {
-        // check for nested classes
-        if (decl.isNested() && shouldReport(decl)) {
+        if (decl.isNested() && shouldReport(decl)) { // check for nested classes
             addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "nested class"));
+        } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // and for top-level ones
+            addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level class"));
         }
         return super.visit(decl, data);
     }
@@ -106,14 +125,15 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
                 .getFirstParentOfType(AbstractAnyTypeDeclaration.class);
 
         boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
-        boolean isEnumConstructor = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.ENUM
-                && decl instanceof ASTConstructorDeclaration;
 
-        // ignore if it's an Interface / Annotation / Enum constructor
-        return isConcreteClass && !isEnumConstructor
-                // check if the field/method/nested class has a default access
-                // modifier
-                && decl.isPackagePrivate()
+        // ignore if it's an Interface / Annotation
+        return isConcreteClass && shouldReportTypeDeclaration(decl);
+    }
+
+    private boolean shouldReportTypeDeclaration(final AbstractJavaAccessNode decl) {
+        // check if the class/method/field has a default access
+        // modifier
+        return decl.isPackagePrivate()
                 // if is a default access modifier check if there is a comment
                 // in this line
                 && !interestingLineNumberComments.contains(decl.getBeginLine())
