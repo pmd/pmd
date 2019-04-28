@@ -6,10 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 
 import net.sourceforge.pmd.lang.apex.ApexParserOptions;
-import net.sourceforge.pmd.lang.ast.Node;
 
 import apex.jorje.semantic.ast.compilation.Compilation;
 

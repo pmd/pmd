@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
