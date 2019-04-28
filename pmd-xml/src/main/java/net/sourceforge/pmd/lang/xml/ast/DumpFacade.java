@@ -69,7 +69,7 @@ public class DumpFacade {
 
         // Extras
         List<String> extras = new ArrayList<>();
-        Iterator<Attribute> iterator = node.getAttributeIterator();
+        Iterator<Attribute> iterator = node.getXPathAttributesIterator();
         while (iterator.hasNext()) {
             Attribute attribute = iterator.next();
             extras.add(attribute.getName() + "=" + StringUtil.escapeWhitespace(attribute.getValue()));
