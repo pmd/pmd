@@ -25,8 +25,9 @@ import net.sourceforge.pmd.lang.xml.XmlParserOptions;
 
 
 public class XmlParser {
-    protected final XmlParserOptions parserOptions;
-    protected Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
+
+    private final XmlParserOptions parserOptions;
+    private Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 
 
     public XmlParser(XmlParserOptions parserOptions) {
@@ -34,10 +35,9 @@ public class XmlParser {
     }
 
 
-    protected Document parseDocument(Reader reader) throws ParseException {
+    private Document parseDocument(String xmlData) throws ParseException {
         nodeCache.clear();
         try {
-            String xmlData = IOUtils.toString(reader);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setNamespaceAware(parserOptions.isNamespaceAware());
@@ -51,10 +51,7 @@ public class XmlParser {
             dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
             documentBuilder.setEntityResolver(parserOptions.getEntityResolver());
-            Document document = documentBuilder.parse(new InputSource(new StringReader(xmlData)));
-            DOMLineNumbers lineNumbers = new DOMLineNumbers(document, xmlData);
-            lineNumbers.determine();
-            return document;
+            return documentBuilder.parse(new InputSource(new StringReader(xmlData)));
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new ParseException(e);
         }
@@ -62,8 +59,16 @@ public class XmlParser {
 
 
     public XmlNode parse(Reader reader) {
-        Document document = parseDocument(reader);
-        XmlNode root = new RootXmlNode(this, document);
+        String xmlData;
+        try {
+            xmlData = IOUtils.toString(reader);
+        } catch (IOException e) {
+            throw new ParseException(e);
+        }
+        Document document = parseDocument(xmlData);
+        RootXmlNode root = new RootXmlNode(this, document);
+        DOMLineNumbers lineNumbers = new DOMLineNumbers(root, xmlData);
+        lineNumbers.determine();
         nodeCache.put(document, root);
         return root;
     }
