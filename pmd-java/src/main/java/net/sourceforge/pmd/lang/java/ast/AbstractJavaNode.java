@@ -217,17 +217,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
 
     /**
-     * Shifts the begin and end columns of this node by the given offsets.
-     */
-    void shiftColumns(int beginShift, int endShift) {
-        this.beginColumn += beginShift;
-        this.endColumn += endShift;
-
-        // TODO change the tokens. We need to link index
-        //  the tokens probably...
-    }
-
-    /**
      * Shift the start and end tokens by the given offsets.
      * @throws IllegalStateException if the right shift identifies
      * a token that is left of this node
