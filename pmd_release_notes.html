@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.14.0</li>
+    <li class="sidebarTitle">PMD 6.15.0</li>
     
     
     
@@ -1278,102 +1278,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-april-2019---6140">??-April-2019 - 6.14.0</h2>
+  <h2 id="-may-2019---6150">??-May-2019 - 6.15.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.14.0.</p>
+<p>The PMD team is pleased to announce PMD 6.15.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="dart-support">Dart support</h4>
-
-<p>Thanks to the contribution from <a href="https://github.com/maikelsteneker">Maikel Steneker</a>, and built on top of the ongoing efforts to fully support Antlr-based languages,
-PMD now has CPD support for <a href="https://www.dartlang.org/">Dart</a>.</p>
-
-<p>Being based on a proper Antlr grammar, CPD can:</p>
-<ul>
-  <li>ignore comments</li>
-  <li>ignore imports / libraries</li>
-  <li>honor <a href="pmd_userdocs_cpd.html#suppression">comment-based suppressions</a></li>
-</ul>
-
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md">PMD Designer Changelog</a>.</p>
-
-<h3 id="modified-rules">Modified Rules</h3>
-
-<ul>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#assignmenttononfinalstatic"><code class="highlighter-rouge">AssignmentToNonFinalStatic</code></a> (<code class="highlighter-rouge">java-errorprone</code>) will now report on each
-assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
-find the offending statements.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#nopackage"><code class="highlighter-rouge">NoPackage</code></a> (<code class="highlighter-rouge">java-codestyle</code>) will now report additionally enums
-and annotations that do not have a package declaration.</p>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>all
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1515">#1515</a>: [core] Module pmd-lang-test is missing javadoc artifact</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1788">#1788</a>: [cpd] [core] Use better <code class="highlighter-rouge">ClassLoader</code> for <code class="highlighter-rouge">ServiceLoader</code> in <code class="highlighter-rouge">LanguageFactory</code></li>
-      <li><a href="https://github.com/pmd/pmd/issues/1794">#1794</a>: [core] Ruleset Compatibility fails with excluding rules</li>
-    </ul>
-  </li>
-  <li>go
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1751">#1751</a>: [go] Parsing errors encountered with escaped backslash</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1532">#1532</a>: [java] NPE with incomplete auxclasspath</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1691">#1691</a>: [java] Possible Data Race in JavaTypeDefinitionSimple.getGenericType</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1729">#1729</a>: [java] JavaRuleViolation loses information in <code class="highlighter-rouge">className</code> field when class has package-private access level</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1190">#1190</a>: [java] UnusedLocalVariable/UnusedPrivateField false-positive</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1720">#1720</a>: [java] UnusedImports false positive for Javadoc link with array type</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1775">#1755</a>: [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1782">#1782</a>: [java] NoPackage: False Negative for enums</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1760">#1760</a>: [java] UseObjectForClearerAPI flags private methods</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<p>No changes.</p>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1745">#1745</a>: [doc] Fixed some errors in docs - <a href="https://github.com/0xflotus">0xflotus</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1746">#1746</a>: [java] Update rule to prevent UnusedImport when using JavaDoc with array type - <a href="https://github.com/itaigilo">itaigilo</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1752">#1752</a>: [java] UseObjectForClearerAPI Only For Public - <a href="https://github.com/Vampire">Björn Kautler</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1761">#1761</a>: [dart] [cpd] Added CPD support for Dart - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1776">#1776</a>: [java] Show more detailed message when can’t resolve field type - <a href="https://github.com/andrey-fomin">Andrey Fomin</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1781">#1781</a>: [java] Location change in AssignmentToNonFinalStatic - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1789">#1789</a>: [cpd] [core] Use current classloader instead of Thread’s classloader - <a href="https://github.com/aaschmid">Andreas Schmid</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1791">#1791</a>: [dart] [cpd] Dart escaped string - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-</ul>
 
 
 
