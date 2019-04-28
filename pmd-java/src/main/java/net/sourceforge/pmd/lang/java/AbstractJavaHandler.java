@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,8 +17,6 @@ import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.DumpFacade;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
@@ -124,16 +121,6 @@ public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHand
             @Override
             public void start(Node rootNode) {
                 new TypeResolutionFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
-            }
-        };
-    }
-
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
             }
         };
     }

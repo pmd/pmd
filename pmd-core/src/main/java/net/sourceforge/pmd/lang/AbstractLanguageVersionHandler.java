@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.Writer;
-
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 
@@ -49,11 +47,6 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
 
     @Override
     public VisitorStarter getTypeResolutionFacade(ClassLoader classLoader) {
-        return VisitorStarter.DUMMY;
-    }
-
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return VisitorStarter.DUMMY;
     }
 

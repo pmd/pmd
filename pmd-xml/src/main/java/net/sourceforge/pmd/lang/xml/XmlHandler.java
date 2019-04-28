@@ -4,18 +4,12 @@
 
 package net.sourceforge.pmd.lang.xml;
 
-import java.io.Writer;
-
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.xml.ast.DumpFacade;
-import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.lang.xml.rule.XmlRuleViolationFactory;
 
 /**
@@ -43,13 +37,4 @@ public class XmlHandler extends AbstractPmdLanguageVersionHandler {
         return new XmlParser(parserOptions);
     }
 
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (XmlNode) rootNode);
-            }
-        };
-    }
 }
