@@ -400,7 +400,7 @@ public class XmlParserTest {
     private void assertNode(Node node, String toString, int childs, Object... atts) {
         Assert.assertEquals(toString, String.valueOf(node));
         Assert.assertEquals(childs, node.jjtGetNumChildren());
-        Iterator<Attribute> attributeIterator = ((XmlNode) node).getAttributeIterator();
+        Iterator<Attribute> attributeIterator = node.getXPathAttributesIterator();
         if (atts != null) {
             for (int i = 0; i < atts.length; i += 2) {
                 Assert.assertTrue(attributeIterator.hasNext());
@@ -440,7 +440,7 @@ public class XmlParserTest {
         Assert.assertEquals(toString, String.valueOf(node));
         Assert.assertEquals(0, node.jjtGetNumChildren());
         Assert.assertEquals(text, StringUtil.escapeWhitespace(node.getImage()));
-        Iterator<Attribute> attributeIterator = ((XmlNode) node).getAttributeIterator();
+        Iterator<Attribute> attributeIterator = node.getXPathAttributesIterator();
         Assert.assertTrue(attributeIterator.hasNext());
         Attribute attribute = attributeIterator.next();
         Assert.assertEquals("Image", attribute.getName());
