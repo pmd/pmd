@@ -41,8 +41,9 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 ### Fixed Issues
 
 *   all
-    *   [#1788](https://github.com/pmd/pmd/issues/1788): \[cpd] \[core] Use better `ClassLoader` for `ServiceLoader` in `LanguageFactory`
     *   [#1515](https://github.com/pmd/pmd/issues/1515): \[core] Module pmd-lang-test is missing javadoc artifact
+    *   [#1788](https://github.com/pmd/pmd/issues/1788): \[cpd] \[core] Use better `ClassLoader` for `ServiceLoader` in `LanguageFactory`
+    *   [#1794](https://github.com/pmd/pmd/issues/1794): \[core] Ruleset Compatibility fails with excluding rules
 *   go
     *   [#1751](https://github.com/pmd/pmd/issues/1751): \[go] Parsing errors encountered with escaped backslash
 *   java
