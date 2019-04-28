@@ -7,9 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.ast.SingleChildNode;
-
 
 /**
  * Represents a list of member values in an {@linkplain ASTNormalAnnotation annotation}.
@@ -20,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.SingleChildNode;
  *
  * </pre>
  */
-public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair>, SingleChildNode<ASTMemberValuePair> {
+public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
     public ASTMemberValuePairs(int id) {
         super(id);
     }
@@ -46,12 +43,6 @@ public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<AS
     @Override
     public ASTMemberValuePair jjtGetChild(int index) {
         return (ASTMemberValuePair) super.jjtGetChild(index);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public NodeStream<ASTMemberValuePair> childrenStream() {
-        return (NodeStream<ASTMemberValuePair>) super.childrenStream();
     }
 
 
