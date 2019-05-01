@@ -18,6 +18,23 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated APIs
+
+##### For removal
+
+*   The `DumpFacades` in all languages, that could be used to transform a AST into a textual representation,
+    will be removed with PMD 7. The rule designer is a better way to inspect nodes.
+    *   {% jdoc !q!apex::lang.apex.ast.DumpFacade %}
+    *   {% jdoc !q!java::lang.java.ast.DumpFacade %}
+    *   {% jdoc !q!javascript::lang.ecmascript.ast.DumpFacade %}
+    *   {% jdoc !q!jsp::lang.jsp.ast.DumpFacade %}
+    *   {% jdoc !q!plsql::lang.plsql.ast.DumpFacade %}
+    *   {% jdoc !q!visualforce::lang.vf.ast.DumpFacade %}
+    *   {% jdoc !q!vm::lang.vm.ast.AbstractVmNode#dump(String, boolean, Writer) %}
+    *   {% jdoc !q!xml::lang.xml.ast.DumpFacade %}
+*   The method {% jdoc !c!core::lang.LanguageVersionHandler#getDumpFacade(Writer, String, boolean) %} will be
+    removed as well.
+
 ### External Contributions
 
 *   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
