@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
+import net.sourceforge.pmd.lang.ast.AbstractNode
+import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import java.util.*
 
@@ -21,6 +23,16 @@ val Node.childIndex: Int
 
 val Node.parent: Node?
     get() = this.jjtGetParent()
+
+val Node.containingFile: Node
+    get() = generateSequence(this) { it.parent }.last()
+
+
+val Node.firstToken: GenericToken
+    get() = (this as AbstractNode).jjtGetFirstToken()
+
+val Node.lastToken: GenericToken
+    get() = (this as AbstractNode).jjtGetLastToken()
 
 
 fun Node.getChild(i: Int) = jjtGetChild(i)
