@@ -43,17 +43,19 @@ val Node.endPosition: TextPosition
 fun Node.assertTextRangeIsOk() {
 
     // they're defined
-    assert(beginLine >= 0)
-    assert(endLine >= 0)
-    assert(beginColumn >= 0)
-    assert(endColumn >= 0)
+    assert(beginLine >= 0) { "Begin line is not set" }
+    assert(endLine >= 0) { "End line is not set" }
+    assert(beginColumn >= 0) { "Begin column is not set" }
+    assert(endColumn >= 0) { "End column is not set" }
 
     // they're in the right order
     textRange.assertOrdered()
 
     val parent = parent ?: return
 
-    assert(textRange in parent.textRange)
+    assert(textRange in parent.textRange) {
+        "The text range is not a subrange of that of the parent"
+    }
 }
 
 
