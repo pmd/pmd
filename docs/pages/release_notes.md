@@ -33,7 +33,7 @@ This is a {{ site.pmd.release_type }} release.
     *   {% jdoc !q!vm::lang.vm.ast.AbstractVmNode#dump(String, boolean, Writer) %}
     *   {% jdoc !q!xml::lang.xml.ast.DumpFacade %}
 *   The method {% jdoc !c!core::lang.LanguageVersionHandler#getDumpFacade(Writer, String, boolean) %} will be
-    removed as well.
+    removed as well. It is deprecated, along with all its implementations in the subclasses of {% jdoc core::lang.LanguageVersionHandler %}.
 
 ### External Contributions
 
