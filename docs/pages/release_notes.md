@@ -20,5 +20,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
+
 {% endtocmaker %}
 
