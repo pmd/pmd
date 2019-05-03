@@ -2906,9 +2906,9 @@ ASTTrimExpression TrimExpression() :
 {
   (
 	"(" { sb.append("(");}
-	 [ ( <LEADING> | <TRAILING> | <BOTH> ){ sb.append(" "); sb.append(token.toString()); }  ]
-	 [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-	 ( <FROM>  )  { sb.append(token.image);}
+	 [ [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); }  ]
+	 [ <CHARACTER_LITERAL>  { sb.append(" ");  sb.append(token.image); } ]
+	 ( <FROM> ) { sb.append(token.image); } ]
 	 simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
 	")" { sb.append(")");}
   )
