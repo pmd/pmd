@@ -2284,7 +2284,7 @@ ASTInsertIntoClause InsertIntoClause() :
 ASTValuesClause ValuesClause() :
 {}
 {
-    <VALUES> "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
+    <VALUES> [ "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")" | <IDENTIFIER> ]
     { return jjtThis; }
 }
 ASTMultiTableInsert MultiTableInsert() :
