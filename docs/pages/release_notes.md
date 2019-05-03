@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-bestpractices
     *   [#1738](https://github.com/pmd/pmd/issues/1738): \[java] MethodReturnsInternalArray does not work in inner classes
+*   java-codestyle
+    *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
 
 ### API Changes
 

@@ -136,7 +136,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                                 final ASTBlockStatement location = occ.getLocation().getFirstParentOfType(ASTBlockStatement.class);
                                 
                                 // Is it used after initializing our "unnecessary" local but before the return statement?
-                                if (isAfter(location, initializerStmt) && isAfter(rtnStmt, location)) {
+                                if (location != null && isAfter(location, initializerStmt) && isAfter(rtnStmt, location)) {
                                     return true;
                                 }
                             }
