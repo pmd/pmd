@@ -2270,7 +2270,7 @@ ASTInsertStatement InsertStatement() :
 ASTSingleTableInsert SingleTableInsert() :
 {}
 {
-    InsertIntoClause() ( ValuesClause() | Subquery() )
+    InsertIntoClause() ( ValuesClause() [ ReturningClause() ] | Subquery() )
     { return jjtThis; }
 }
 
