@@ -45,6 +45,8 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
 *   java-design
     *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
+*   python
+    *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
 
 ### API Changes
 
@@ -56,6 +58,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1761](https://github.com/pmd/pmd/pull/1761): \[dart] \[cpd] Added CPD support for Dart - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1776](https://github.com/pmd/pmd/pull/1776): \[java] Show more detailed message when can't resolve field type - [Andrey Fomin](https://github.com/andrey-fomin)
 *   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
