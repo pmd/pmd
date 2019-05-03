@@ -1541,6 +1541,8 @@ ASTSimpleExpression SimpleExpression() :
                      | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
                      | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
                      | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
+                     | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT")
+                     | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS")
                      ) { sb.append('%').append(token.image); }
  |
     LOOKAHEAD(2)
