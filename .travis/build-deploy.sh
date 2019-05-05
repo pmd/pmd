@@ -61,9 +61,11 @@ elif travis_isPullRequest; then
     ./mvnw verify $MVN_BUILD_FLAGS
 	(
             set +e
-            # if ${TRAVIS_BRANCH} is master, the script will fail since there is local master branch
-            git checkout -b ${TRAVIS_BRANCH} origin/${TRAVIS_BRANCH}
-            git checkout -qf FETCH_HEAD
+            # Create a corresponding remote branch locally
+            if ! git show-ref --verify --quiet refs/heads/${TRAVIS_BRANCH}; then
+                git fetch --no-tags origin +refs/heads/${TRAVIS_BRANCH}:refs/remotes/origin/${TRAVIS_BRANCH}
+                git branch ${TRAVIS_BRANCH} origin/${TRAVIS_BRANCH}
+            fi
             log_info "Running danger"
             bundle exec danger --verbose
 	)
