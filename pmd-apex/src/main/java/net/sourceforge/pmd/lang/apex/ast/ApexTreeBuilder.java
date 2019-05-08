@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -221,17 +220,17 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     // The Apex nodes with children to build.
     private Stack<AstNode> parents = new Stack<>();
-    
+
     private AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private ListIterator<TokenLocation> apexDocTokenLocations;
+    private List<ApexDocTokenLocation> apexDocTokenLocations;
 
     public ApexTreeBuilder(String sourceCode) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
-        apexDocTokenLocations = buildApexDocTokenLocations(sourceCode).listIterator();
+        apexDocTokenLocations = buildApexDocTokenLocations(sourceCode);
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
@@ -279,11 +278,17 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     private void buildFormalComment(AstNode node) {
         if (parents.peek() == node) {
             ApexNode<?> parent = (ApexNode<?>) nodes.peek();
-            TokenLocation tokenLocation = getApexDocTokenLocation(getApexDocIndex(parent));
+            ApexDocTokenLocation tokenLocation = getApexDocTokenLocation(getApexDocIndex(parent));
             if (tokenLocation != null) {
                 ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
                 comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
                         tokenLocation.index + tokenLocation.token.length());
+
+                // move existing nodes so that we can insert the comment as the first node
+                for (int i = parent.jjtGetNumChildren(); i > 0; i--) {
+                    parent.jjtAddChild(parent.jjtGetChild(i - 1), i);
+                }
+
                 parent.jjtAddChild(comment, 0);
                 comment.jjtSetParent(parent);
             }
@@ -291,43 +296,50 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
     }
 
     private int getApexDocIndex(ApexNode<?> node) {
-        final int index = node.getNode().getLoc().getStartIndex();
+        ASTAnnotation annotation = node.getFirstDescendantOfType(ASTAnnotation.class);
+        ApexNode<?> firstNode = annotation == null ? node : annotation;
+        final int index = firstNode.getNode().getLoc().getStartIndex();
         return sourceCode.lastIndexOf('\n', index);
     }
 
-    private TokenLocation getApexDocTokenLocation(int index) {
-        TokenLocation last = null;
-        while (apexDocTokenLocations.hasNext()) {
-            final TokenLocation location = apexDocTokenLocations.next();
-            if (location.index >= index) {
-                // rollback, the next token corresponds to a different node
-                apexDocTokenLocations.previous();
-                
-                if (last != null) {
-                    return last;
+    private ApexDocTokenLocation getApexDocTokenLocation(int index) {
+        for (ApexDocTokenLocation loc : apexDocTokenLocations) {
+            if (index >= loc.targetStart) {
+                if (index <= loc.targetEnd) {
+                    return loc;
                 }
-                return null;
+            } else {
+                // remaining tokens start after the index we are looking for
+                break;
             }
-            last = location;
         }
-        return last;
+        return null;
     }
 
-    private static List<TokenLocation> buildApexDocTokenLocations(String source) {
+    private static List<ApexDocTokenLocation> buildApexDocTokenLocations(String source) {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
-        ArrayList<TokenLocation> tokenLocations = new ArrayList<>();
+        ArrayList<ApexDocTokenLocation> tokenLocations = new ArrayList<>();
         int startIndex = 0;
         Token token = lexer.nextToken();
         int endIndex = lexer.getCharIndex();
+
+        String currentToken = null;
+        int currentIndex = 0;
+        int currentTargetStart = 0;
+
         while (token.getType() != Token.EOF) {
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
-
                 // Filter only block comments starting with "/**"
                 if (token.getText().startsWith("/**")) {
-                    tokenLocations.add(new TokenLocation(startIndex, token.getText()));
+                    currentToken = token.getText();
+                    currentIndex = startIndex;
+                    currentTargetStart = lexer.getCharIndex();
                 }
+            } else if (currentToken != null && token.getType() != ApexLexer.WS) {
+                tokenLocations.add(new ApexDocTokenLocation(currentIndex, currentToken, currentTargetStart, lexer.getCharIndex()));
+                currentToken = null;
             }
             // TODO : Check other non-doc comments and tokens of type ApexLexer.EOL_COMMENT for "NOPMD" suppressions
             startIndex = endIndex;
@@ -338,13 +350,17 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return tokenLocations;
     }
 
-    private static class TokenLocation {
+    private static class ApexDocTokenLocation {
         int index;
         String token;
+        int targetStart;
+        int targetEnd;
 
-        TokenLocation(int index, String token) {
+        ApexDocTokenLocation(int index, String token, int targetStart, int targetEnd) {
             this.index = index;
             this.token = token;
+            this.targetStart = targetStart;
+            this.targetEnd = targetEnd;
         }
     }
 
@@ -364,9 +380,12 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     @Override
     public boolean visit(UserInterface node, AdditionalPassScope scope) {
-        final boolean ret = visit(node);
+        return visit(node);
+    }
+
+    @Override
+    public void visitEnd(UserInterface node, AdditionalPassScope scope) {
         buildFormalComment(node);
-        return ret;
     }
 
     @Override
@@ -651,9 +670,12 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     @Override
     public boolean visit(Property node, AdditionalPassScope scope) {
-        final boolean ret = visit(node);
+        return visit(node);
+    }
+
+    @Override
+    public void visitEnd(Property node, AdditionalPassScope scope) {
         buildFormalComment(node);
-        return ret;
     }
 
     @Override
@@ -718,16 +740,22 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     @Override
     public boolean visit(UserClass node, AdditionalPassScope scope) {
-        final boolean ret = visit(node);
+        return visit(node);
+    }
+
+    @Override
+    public void visitEnd(UserClass node, AdditionalPassScope scope) {
         buildFormalComment(node);
-        return ret;
     }
 
     @Override
     public boolean visit(Method node, AdditionalPassScope scope) {
-        final boolean ret = visit(node);
+        return visit(node);
+    }
+
+    @Override
+    public void visitEnd(Method node, AdditionalPassScope scope) {
         buildFormalComment(node);
-        return ret;
     }
 
     @Override
