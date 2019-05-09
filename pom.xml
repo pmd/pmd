@@ -256,6 +256,9 @@
                     <configuration>
                         <forkMode>once</forkMode>
                         <runOrder>alphabetical</runOrder>
+                        <systemPropertyVariables>
+                            <mvn.project.src.test.resources>${project.basedir}/src/test/resources</mvn.project.src.test.resources>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>
