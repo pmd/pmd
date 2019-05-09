@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static Integer staticProperty { get; set; }
+    public Integer instanceProperty { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>default is camel case</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The static property name 'STATIC_PROPERTY' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The instance property name 'INSTANCE_PROPERTY' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public static Integer STATIC_PROPERTY { get; set; }
+    public Integer INSTANCE_PROPERTY { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ignores methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void BAR() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom static property pattern</description>
+        <rule-property name="staticPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The instance property name 'INSTANCE_PROPERTY' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public static Integer STATIC_PROPERTY { get; set; }
+    public Integer INSTANCE_PROPERTY { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom instance property pattern</description>
+        <rule-property name="instancePattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The static property name 'STATIC_PROPERTY' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public static Integer STATIC_PROPERTY { get; set; }
+    public Integer INSTANCE_PROPERTY { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
