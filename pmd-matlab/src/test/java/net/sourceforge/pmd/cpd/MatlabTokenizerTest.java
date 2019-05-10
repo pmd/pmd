@@ -54,4 +54,14 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
         TokenEntry.getEOF();
         assertEquals(2, tokens.size()); // 2 tokens: "end" + EOF
     }
+
+    @Test
+    public void testDoubleQuotedStrings() throws IOException {
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
+                "error(\"This is a double-quoted string\");"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(6, tokens.size());
+    }
 }
