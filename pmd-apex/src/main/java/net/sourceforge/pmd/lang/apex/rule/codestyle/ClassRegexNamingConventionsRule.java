@@ -16,8 +16,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class ClassRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    private static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]*";
-
     private static final PropertyDescriptor<Pattern> TEST_CLASS_REGEX = prop("testClassPattern", "test class",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE).build();
     

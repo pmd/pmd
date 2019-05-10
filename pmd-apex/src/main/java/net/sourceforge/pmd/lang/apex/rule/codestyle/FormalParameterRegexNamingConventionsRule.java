@@ -14,8 +14,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class FormalParameterRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    private static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]*";
-
     private static final PropertyDescriptor<Pattern> FINAL_METHOD_PARAMETER_REGEX = prop("finalMethodParameterPattern", "final method parameter",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 

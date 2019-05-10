@@ -17,8 +17,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    private static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]*";
-
     private static final PropertyDescriptor<Pattern> ENUM_CONSTANT_REGEX = prop("enumConstantPattern", "enum constant field",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue("[A-Z][A-Z0-9_]*").build();
 
