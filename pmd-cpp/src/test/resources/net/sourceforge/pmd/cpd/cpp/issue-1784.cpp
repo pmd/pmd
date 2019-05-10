@@ -4,7 +4,8 @@ namespace ABC
   {
 
 #ifdef USE_QT
-    const char* perPixelQml = "QML(
+    const char* perPixelQml = R"QML(
+    )NOTTHEND";
 )QML";
   }
 }

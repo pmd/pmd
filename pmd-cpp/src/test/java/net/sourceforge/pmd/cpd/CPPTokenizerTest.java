@@ -159,6 +159,31 @@ public class CPPTokenizerTest {
         tokenizer.tokenize(code, new Tokens());
     }
 
+    @Test
+    public void testStringPrefixes() {
+        final String code = "char     a =  '\\x30';         // character, no semantics" + PMD.EOL
+                + "wchar_t  b = L'\\xFFEF';       // wide character, no semantics" + PMD.EOL
+                + "char16_t c = u'\\u00F6';       // 16-bit, assumed UTF16?" + PMD.EOL
+                + "char32_t d = U'\\U0010FFFF';   // 32-bit, assumed UCS-4" + PMD.EOL
+                + "char     A[] =  \"Hello\\x0A\";         // byte string, \"narrow encoding\"" + PMD.EOL
+                + "wchar_t  B[] = L\"Hell\\xF6\\x0A\";      // wide string, impl-def'd encoding" + PMD.EOL
+                + "char16_t C[] = u\"Hell\\u00F6\";        // (1)" + PMD.EOL
+                + "char32_t D[] = U\"Hell\\U000000F6\\U0010FFFF\"; // (2)" + PMD.EOL
+                + "auto     E[] = u8\"\\u00F6\\U0010FFFF\"; // (3)";
+        Tokens tokens = parse(code);
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals(58, tokens.size());
+    }
+
+    @Test
+    public void testRawStringLiterals() throws IOException {
+        final String code = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/issue-1784.cpp"), StandardCharsets.UTF_8);
+        Tokens tokens = parse(code);
+        System.out.println(tokens.getTokens());
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals(16, tokens.size());
+    }
+
     private Tokens parse(String snippet) {
         try {
             return parse(snippet, false, new Tokens());
