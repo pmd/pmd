@@ -57,4 +57,12 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>ignores null parameter names</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public with sharing class MyException extends Exception { }
+        ]]></code>
+    </test-code>
+
 </test-data>

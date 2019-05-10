@@ -31,6 +31,11 @@ public class FormalParameterRegexNamingConventionsRule extends AbstractRegexNami
 
     @Override
     public Object visit(ASTParameter node, Object data) {
+        // classes that extend Exception will contains methods that have parameters with null names
+        if (node.getImage() == null) {
+            return data;
+        }
+
         if (node.getModifiers().isFinal()) {
             checkMatches(FINAL_METHOD_PARAMETER_REGEX, node, data);
         } else {
