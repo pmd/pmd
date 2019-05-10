@@ -54,4 +54,14 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
         TokenEntry.getEOF();
         assertEquals(2, tokens.size()); // 2 tokens: "end" + EOF
     }
+
+    @Test
+    public void testQuestionMark() throws IOException {
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("classdef Class1" + PMD.EOL
+                + "properties (SetAccess = ?Class2)"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        TokenEntry.getEOF();
+        assertEquals(10, tokens.size());
+    }
 }
