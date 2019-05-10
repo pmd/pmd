@@ -52,7 +52,7 @@ public class Foo {
         <description>test class default is title case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The test class name 'TEST_CLASS' doesn't match '[a-zA-Z0-9]+'</message>
+            <message>The test class name 'TEST_CLASS' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 @isTest
@@ -64,7 +64,7 @@ public class TEST_CLASS { }
         <description>abstract class default is title case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The abstract class name 'ABSTRACT_CLASS' doesn't match '[a-zA-Z0-9]+'</message>
+            <message>The abstract class name 'ABSTRACT_CLASS' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public abstract class ABSTRACT_CLASS { }
@@ -75,7 +75,7 @@ public abstract class ABSTRACT_CLASS { }
         <description>class default is title case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The class name 'FOO_CLASS' doesn't match '[a-zA-Z0-9]+'</message>
+            <message>The class name 'FOO_CLASS' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public class FOO_CLASS { }
@@ -86,7 +86,7 @@ public class FOO_CLASS { }
         <description>interface default is title case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The interface name 'FOO_INTERFACE' doesn't match '[a-zA-Z0-9]+'</message>
+            <message>The interface name 'FOO_INTERFACE' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public interface FOO_INTERFACE { }
@@ -97,7 +97,7 @@ public interface FOO_INTERFACE { }
         <description>enum default is title case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The enum name 'FOO_ENUM' doesn't match '[a-zA-Z0-9]+'</message>
+            <message>The enum name 'FOO_ENUM' doesn't match '[A-Z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {

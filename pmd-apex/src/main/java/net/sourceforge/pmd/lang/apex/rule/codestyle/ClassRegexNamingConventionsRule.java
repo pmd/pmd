@@ -16,22 +16,22 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class ClassRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    private static final String TITLE_CASE = "[a-zA-Z0-9]+";
+    private static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]*";
 
     private static final PropertyDescriptor<Pattern> TEST_CLASS_REGEX = prop("testClassPattern", "test class",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(TITLE_CASE).build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE).build();
     
     private static final PropertyDescriptor<Pattern> ABSTRACT_CLASS_REGEX = prop("abstractClassPattern", "abstract class",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(TITLE_CASE).build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE).build();
     
     private static final PropertyDescriptor<Pattern> CLASS_REGEX = prop("classPattern", "class",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(TITLE_CASE).build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE).build();
     
     private static final PropertyDescriptor<Pattern> INTERFACE_REGEX = prop("interfacePattern", "interface",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(TITLE_CASE).build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE).build();
     
     private static final PropertyDescriptor<Pattern> ENUM_REGEX = prop("enumPattern", "enum",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(TITLE_CASE).build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(PASCAL_CASE).build();
 
     public ClassRegexNamingConventionsRule() {
         definePropertyDescriptor(TEST_CLASS_REGEX);
