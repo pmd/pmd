@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class MethodRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
@@ -41,6 +42,10 @@ public class MethodRegexNamingConventionsRule extends AbstractRegexNamingConvent
         }
 
         if ("<clinit>".equals(node.getImage()) || "clone".equals(node.getImage())) {
+            return data;
+        }
+
+        if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
             return data;
         }
 

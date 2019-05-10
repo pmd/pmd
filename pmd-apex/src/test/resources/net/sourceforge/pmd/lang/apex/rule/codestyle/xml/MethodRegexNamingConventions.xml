@@ -67,6 +67,18 @@ public class FOO {
     </test-code>
 
     <test-code>
+        <description>ignores enum methods</description>
+        <rule-property name="instancePattern">Z</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    enum Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>custom test method pattern</description>
         <rule-property name="testPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>2</expected-problems>
