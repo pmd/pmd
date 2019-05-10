@@ -11,12 +11,16 @@ import java.util.regex.Pattern;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
+import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
     private static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]*";
+
+    private static final PropertyDescriptor<Pattern> ENUM_CONSTANT_REGEX = prop("enumConstantPattern", "enum constant field",
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue("[A-Z][A-Z0-9_]*").build();
 
     private static final PropertyDescriptor<Pattern> CONSTANT_REGEX = prop("constantPattern", "constant field",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
@@ -31,6 +35,7 @@ public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventi
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
     public FieldRegexNamingConventionsRule() {
+        definePropertyDescriptor(ENUM_CONSTANT_REGEX);
         definePropertyDescriptor(CONSTANT_REGEX);
         definePropertyDescriptor(FINAL_REGEX);
         definePropertyDescriptor(STATIC_REGEX);
@@ -47,7 +52,9 @@ public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventi
 
         ASTModifierNode modifiers = node.getModifiers();
 
-        if (modifiers.isFinal() && modifiers.isStatic()) {
+        if (node.getFirstParentOfType(ASTUserEnum.class) != null) {
+            checkMatches(ENUM_CONSTANT_REGEX, node, data);
+        } else if (modifiers.isFinal() && modifiers.isStatic()) {
             checkMatches(CONSTANT_REGEX, node, data);
         } else if (modifiers.isFinal()) {
             checkMatches(FINAL_REGEX, node, data);
