@@ -316,7 +316,65 @@ TOKEN :
 | <  STRING : <STRPREF>
       "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
 
-| <  RSTRING : "R\"(" ( ~[")"] | ( ")" ~["\""] ) )* ")\"" >
+}
+
+// Raw C++11 string literal support
+// https://en.cppreference.com/w/cpp/language/string_literal
+TOKEN :
+{
+  <  RSTRING : <STRPREF> "R\"" >
+  {
+    StringBuffer sb = new StringBuffer(16);
+
+    // delim ------+
+    //            vvv
+    // Matching R"...(...)..."
+    //               ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == '(') break;
+      sb.append(curChar);
+    }
+    final String delim = sb.toString();
+
+    sb = new StringBuffer(256);
+rstringbody:
+    // Matching R"...(...)..."
+    //                   ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      sb.append(curChar);
+      if (curChar == ')') {
+	// delim --------------+
+	//                    vvv
+	// Matching R"...(...)..."
+	//                    ^^^
+	for (int i = 0; i < delim.length(); i++) {
+	  try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return; }
+	  if (delim.charAt(i) != curChar) {
+	    input_stream.backup(1);
+	    continue rstringbody;
+	  }
+	  sb.append(curChar);
+	}
+	// Matching R"...(...)..."
+	//                       ^
+	try { curChar = input_stream.readChar(); }
+	catch(java.io.IOException e) { return; }
+	if (curChar != '"') {
+	  input_stream.backup(1);
+	  continue rstringbody;
+	}
+	sb.append(curChar);
+	break;
+      }
+    }
+    // Setting final token image
+    matchedToken.image += delim + "(" + sb.toString();
+  }
 }
 
 TOKEN :
