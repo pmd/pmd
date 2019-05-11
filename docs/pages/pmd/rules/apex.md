@@ -116,7 +116,7 @@ folder: pmd/rules
 
     [AvoidDeeplyNestedIfStmts](pmd_rules_apex_design.html#avoiddeeplynestedifstmts), [ExcessiveClassLength](pmd_rules_apex_design.html#excessiveclasslength), [ExcessiveParameterList](pmd_rules_apex_design.html#excessiveparameterlist), [ExcessivePublicCount](pmd_rules_apex_design.html#excessivepubliccount), [NcssConstructorCount](pmd_rules_apex_design.html#ncssconstructorcount), [NcssMethodCount](pmd_rules_apex_design.html#ncssmethodcount), [NcssTypeCount](pmd_rules_apex_design.html#ncsstypecount), [StdCyclomaticComplexity](pmd_rules_apex_design.html#stdcyclomaticcomplexity), [TooManyFields](pmd_rules_apex_design.html#toomanyfields)
 
-*   Default ruleset used by the CodeClimate Engine for Salesforce.com Apex (`rulesets/apex/ruleset.xml`):
+*   Default ruleset for Salesforce.com Apex (`rulesets/apex/ruleset.xml`):
 
     <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  This ruleset is for backwards compatibility.
 
