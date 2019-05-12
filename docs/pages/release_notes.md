@@ -58,6 +58,8 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
     *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
 *   java-design
     *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
+*   matlab
+    *   [#1830](https://github.com/pmd/pmd/issues/1830): \[matlab] \[cpd] Parse error with comments
 
 ### API Changes
 
@@ -73,6 +75,7 @@ No changes.
 *   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
 *   [#1791](https://github.com/pmd/pmd/pull/1791): \[dart] \[cpd] Dart escaped string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
