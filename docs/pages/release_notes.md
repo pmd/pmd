@@ -29,6 +29,17 @@ Being based on a proper Antlr grammar, CPD can:
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md).
 
+#### Enhanced Matlab support
+
+Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse matlab programs which use the question mark operator to specify access to
+class members:
+
+```
+lassdef Class1
+properties (SetAccess = ?Class2)
+```
+
 ### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
@@ -73,6 +84,7 @@ No changes.
 *   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
 *   [#1791](https://github.com/pmd/pmd/pull/1791): \[dart] \[cpd] Dart escaped string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 

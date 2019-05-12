@@ -61,7 +61,6 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
                 + "properties (SetAccess = ?Class2)"));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
         assertEquals(10, tokens.size());
     }
 }
