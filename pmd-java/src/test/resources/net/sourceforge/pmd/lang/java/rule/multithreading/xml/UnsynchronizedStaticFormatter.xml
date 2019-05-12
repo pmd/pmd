@@ -32,7 +32,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description>3, Inside synchronized, OK</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -62,7 +62,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description>5, Use DateFormat, ok</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.text.DateFormat;
 
@@ -149,4 +149,19 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>#1815 static synchronized, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    static synchronized void bar() {
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+
 </test-data>

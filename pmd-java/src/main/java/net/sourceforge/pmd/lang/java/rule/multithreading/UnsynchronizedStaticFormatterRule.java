@@ -69,7 +69,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
             }
 
             ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
-            if (method != null && !method.isSynchronized()) {
+            if (method != null && ( !method.isSynchronized() || !method.isStatic() )) {
                 addViolation(data, n);
             }
         }
