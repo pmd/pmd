@@ -1301,6 +1301,14 @@ properties (SetAccess = ?Class2)
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>str = "This is a string"
 </code></pre></div></div>
 
+<h4 id="enhanced-c-support">Enhanced C++ support</h4>
+
+<p>CPD now supports digit separators in C++ (language module “cpp”). This is a C++14 feature.</p>
+
+<p>Example: <code class="highlighter-rouge">auto integer_literal = 1'000'000;</code></p>
+
+<p>The single quotes can be used to add some structure to large numbers.</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1341,6 +1349,7 @@ properties (SetAccess = ?Class2)
   <li><a href="https://github.com/pmd/pmd/pull/1803">#1803</a>: [dart] [cpd] Dart escape sequences - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1807">#1807</a>: [ci] Fix missing local branch issues when executing pmd-regression-tester - <a href="https://github.com/djydewang">BBG</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1813">#1813</a>: [matlab] [cpd] Matlab comments - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1819">#1819</a>: [cpp] [cpd] Add support for digit separators - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1821">#1821</a>: [matlab] [cpd] Matlab question mark token - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1822">#1822</a>: [matlab] [cpd] Double quoted string - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
 </ul>
