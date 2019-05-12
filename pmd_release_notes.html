@@ -1286,6 +1286,21 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="enhanced-matlab-support">Enhanced Matlab support</h4>
+
+<p>Thanks to the contributions from <a href="https://github.com/maikelsteneker">Maikel Steneker</a> CPD for Matlab can
+now parse Matlab programs which use the question mark operator to specify access to
+class members:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>classdef Class1
+properties (SetAccess = ?Class2)
+</code></pre></div></div>
+
+<p>CPD also understands now double quoted strings, which are supported since version R2017a of Matlab:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>str = "This is a string"
+</code></pre></div></div>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1309,6 +1324,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <li><a href="https://github.com/pmd/pmd/issues/1810">#1810</a>: [python] [cpd] Parse error when using Python 2 backticks</li>
     </ul>
   </li>
+  <li>matlab
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1830">#1830</a>: [matlab] [cpd] Parse error with comments</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="api-changes">API Changes</h3>
@@ -1320,6 +1340,9 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="https://github.com/pmd/pmd/pull/1802">#1802</a>: [python] [cpd] Add support for Python 2 backticks - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1803">#1803</a>: [dart] [cpd] Dart escape sequences - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1807">#1807</a>: [ci] Fix missing local branch issues when executing pmd-regression-tester - <a href="https://github.com/djydewang">BBG</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1813">#1813</a>: [matlab] [cpd] Matlab comments - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1821">#1821</a>: [matlab] [cpd] Matlab question mark token - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1822">#1822</a>: [matlab] [cpd] Double quoted string - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
 </ul>
 
 
@@ -1338,7 +1361,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 11, 2019 <br />
+ Site last generated: May 12, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
