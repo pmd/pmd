@@ -65,7 +65,6 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
                 + "end"));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens); // should not result in parse error
-        TokenEntry.getEOF();
         assertEquals(28, tokens.size());
     }
 
@@ -83,7 +82,14 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
                 + "msgbox('Hello World!','Hello World!');"));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens); // should not result in parse error
-        TokenEntry.getEOF();
         assertEquals(13, tokens.size());
+    }
+
+    public void testQuestionMark() throws IOException {
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("classdef Class1" + PMD.EOL
+                + "properties (SetAccess = ?Class2)"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        assertEquals(10, tokens.size());
     }
 }

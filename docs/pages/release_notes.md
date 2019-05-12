@@ -14,6 +14,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Enhanced Matlab support
+
+Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse matlab programs which use the question mark operator to specify access to
+class members:
+
+```
+lassdef Class1
+properties (SetAccess = ?Class2)
+```
+
 ### Fixed Issues
 
 *   dart
@@ -36,6 +47,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1807](https://github.com/pmd/pmd/pull/1807): \[ci] Fix missing local branch issues when executing pmd-regression-tester - [BBG](https://github.com/djydewang)
 *   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
