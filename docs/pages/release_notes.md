@@ -16,13 +16,19 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Enhanced Matlab support
 
-Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
-now parse matlab programs which use the question mark operator to specify access to
+Thanks to the contributions from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse Matlab programs which use the question mark operator to specify access to
 class members:
 
 ```
-lassdef Class1
+classdef Class1
 properties (SetAccess = ?Class2)
+```
+
+CPD also understands now double quoted strings, which are supported since version R2017a of Matlab:
+
+```
+str = "This is a string"
 ```
 
 ### Fixed Issues
@@ -48,6 +54,7 @@ properties (SetAccess = ?Class2)
 *   [#1807](https://github.com/pmd/pmd/pull/1807): \[ci] Fix missing local branch issues when executing pmd-regression-tester - [BBG](https://github.com/djydewang)
 *   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 

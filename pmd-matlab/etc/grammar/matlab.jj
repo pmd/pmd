@@ -140,6 +140,7 @@ PARSER_END(MatlabParser)
 <DEFAULT> TOKEN :
 {
     < STRING: "'" ( <ESC_SEQ> | "'" "'" | ~["\\","'","\n"] )* "'" >
+|   < DSTRING: "\"" ( "\\" | "\"" "\"" | ~["\\","\"","\n"] )* "\"" >
 |   < #ESC_SEQ:
       "\\" ( "b" | "t" | "n" | "f" | "r" | "\"" | "'" | "\\" )
     | <UNICODE_ESC>

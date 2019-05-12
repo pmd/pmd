@@ -51,7 +51,6 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
         ));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens);
-        TokenEntry.getEOF();
         assertEquals(2, tokens.size()); // 2 tokens: "end" + EOF
     }
 
@@ -85,11 +84,22 @@ public class MatlabTokenizerTest extends AbstractTokenizerTest {
         assertEquals(13, tokens.size());
     }
 
+    @Test
     public void testQuestionMark() throws IOException {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("classdef Class1" + PMD.EOL
                 + "properties (SetAccess = ?Class2)"));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(sourceCode, tokens);
         assertEquals(10, tokens.size());
+    }
+
+    @Test
+    public void testDoubleQuotedStrings() throws IOException {
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
+                "error(\"This is a double-quoted string\");"));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens);
+        assertEquals("\"This is a double-quoted string\"", tokens.getTokens().get(2).toString());
+        assertEquals(6, tokens.size());
     }
 }
