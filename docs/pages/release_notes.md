@@ -29,6 +29,16 @@ Being based on a proper Antlr grammar, CPD can:
 This PMD release ships a new version of the pmd-designer.
 For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md).
 
+#### Enhanced Matlab support
+
+Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse double quoted strings, which are supported since version R2017a of Matlab:
+
+```
+str = "This is a string"
+```
+
+
 ### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
@@ -73,6 +83,7 @@ No changes.
 *   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
 *   [#1791](https://github.com/pmd/pmd/pull/1791): \[dart] \[cpd] Dart escaped string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
