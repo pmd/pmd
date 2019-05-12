@@ -41,11 +41,11 @@ PARSER_END(MatlabParser)
   "\n" : DEFAULT
 }
 
-MORE:
+<DEFAULT, TRANSPOSE> MORE:
 { "%{": IN_COMMENT }
 
-SPECIAL_TOKEN:
-{ <SINGLE_LINE_COMMENT: "%"(~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
+<DEFAULT, TRANSPOSE> SPECIAL_TOKEN:
+{ <SINGLE_LINE_COMMENT: "%"~["{"](~["\n","\r"])* ("\n"|"\r"|"\r\n")?> }
 
 <IN_COMMENT> SPECIAL_TOKEN:
 { <MULTI_LINE_COMMENT: "%}">: DEFAULT }
