@@ -31,6 +31,14 @@ CPD also understands now double quoted strings, which are supported since versio
 str = "This is a string"
 ```
 
+#### Enhanced C++ support
+
+CPD now supports digit separators in C++ (language module "cpp"). This is a C++14 feature.
+
+Example: `auto integer_literal = 1'000'000;`
+
+The single quotes can be used to add some structure to large numbers.
+
 ### Fixed Issues
 
 *   dart
@@ -53,6 +61,7 @@ str = "This is a string"
 *   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1807](https://github.com/pmd/pmd/pull/1807): \[ci] Fix missing local branch issues when executing pmd-regression-tester - [BBG](https://github.com/djydewang)
 *   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1819](https://github.com/pmd/pmd/pull/1819): \[cpp] \[cpd] Add support for digit separators - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
 
