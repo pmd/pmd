@@ -159,27 +159,70 @@ public class CPPTokenizerTest {
         tokenizer.tokenize(code, new Tokens());
     }
 
+    public void testStringPrefix(String code, String expToken, int tokenIndex, int expNoTokens) {
+        final Tokens tokens = parse(code);
+        final TokenEntry token = tokens.getTokens().get(tokenIndex);
+        assertEquals(expNoTokens, tokens.size());
+        assertEquals(expToken, token.toString());
+    }
+
+    public void testCharacterPrefix(String code, String expToken) {
+        testStringPrefix(code, expToken, 3, 6);
+    }
+
+    public void testStringPrefix(String code, String expToken) {
+        testStringPrefix(code, expToken, 5, 8);
+    }
+
     @Test
-    public void testStringPrefixes() {
-        final String code = "char     a =  '\\x30';         // character, no semantics" + PMD.EOL
-                + "wchar_t  b = L'\\xFFEF';       // wide character, no semantics" + PMD.EOL
-                + "char16_t c = u'\\u00F6';       // 16-bit, assumed UTF16?" + PMD.EOL
-                + "char32_t d = U'\\U0010FFFF';   // 32-bit, assumed UCS-4" + PMD.EOL
-                + "char     A[] =  \"Hello\\x0A\";         // byte string, \"narrow encoding\"" + PMD.EOL
-                + "wchar_t  B[] = L\"Hell\\xF6\\x0A\";      // wide string, impl-def'd encoding" + PMD.EOL
-                + "char16_t C[] = u\"Hell\\u00F6\";        // (1)" + PMD.EOL
-                + "char32_t D[] = U\"Hell\\U000000F6\\U0010FFFF\"; // (2)" + PMD.EOL
-                + "auto     E[] = u8\"\\u00F6\\U0010FFFF\"; // (3)";
-        Tokens tokens = parse(code);
-        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
-        assertEquals(58, tokens.size());
+    public void testCharacterPrefixNoPrefix() {
+        testCharacterPrefix("char a =  '\\x30';", "'\\x30'");
+    }
+
+    @Test
+    public void testCharacterPrefixWideCharacter() {
+        testCharacterPrefix("wchar_t b = L'\\xFFEF';", "L'\\xFFEF'");
+    }
+
+    @Test
+    public void testCharacterPrefixChar16() {
+        testCharacterPrefix("char16_t c = u'\\u00F6';", "u'\\u00F6'");
+    }
+
+    @Test
+    public void testCharacterPrefixChar32() {
+        testCharacterPrefix("char32_t d = U'\\U0010FFFF';", "U'\\U0010FFFF'");
+    }
+
+    @Test
+    public void testStringPrefixNoPrefix() {
+        testStringPrefix("char A[] = \"Hello\\x0A\";", "\"Hello\\x0A\"");
+    }
+
+    @Test
+    public void testStringPrefixWideString() {
+        testStringPrefix("wchar_t B[] = L\"Hell\\xF6\\x0A\";", "L\"Hell\\xF6\\x0A\"");
+    }
+
+    @Test
+    public void testStringPrefixChar16() {
+        testStringPrefix("char16_t C[] = u\"Hell\\u00F6\";", "u\"Hell\\u00F6\"");
+    }
+
+    @Test
+    public void testStringPrefixChar32() {
+        testStringPrefix("char32_t D[] = U\"Hell\\U000000F6\\U0010FFFF\";", "U\"Hell\\U000000F6\\U0010FFFF\"");
+    }
+
+    @Test
+    public void testStringPrefixUtf8() {
+        testStringPrefix("auto E[] = u8\"\\u00F6\\U0010FFFF\";", "u8\"\\u00F6\\U0010FFFF\"");
     }
 
     @Test
     public void testRawStringLiterals() throws IOException {
         final String code = IOUtils.toString(CPPTokenizerTest.class.getResourceAsStream("cpp/issue-1784.cpp"), StandardCharsets.UTF_8);
         Tokens tokens = parse(code);
-        System.out.println(tokens.getTokens());
         assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
         assertEquals(16, tokens.size());
     }
