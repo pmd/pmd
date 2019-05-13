@@ -96,7 +96,7 @@ public final class CppParser {
      if (t.kind != ID && t.kind != SCOPE)
         return null;
 
-     StringBuffer s = new StringBuffer();
+     StringBuilder s = new StringBuilder();
 
      int i;
      if (t.kind != SCOPE)
@@ -309,10 +309,11 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN :
 {
+  < #CHRPREF : <STRPREF>>
+| <  CHARACTER : <CHRPREF>
+      "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
 
-  <  CHARACTER : ("L")? "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
-
-| < #STRPREF : (["L", "u", "U"] | "u8")? >
+| < #STRPREF : ("L" | "u" | "U" | "u8")? >
 | <  STRING : <STRPREF>
       "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
 
@@ -324,7 +325,7 @@ TOKEN :
 {
   <  RSTRING : <STRPREF> "R\"" >
   {
-    StringBuffer sb = new StringBuffer(16);
+    StringBuilder sb = new StringBuilder(16);
 
     // delim ------+
     //            vvv
@@ -338,14 +339,12 @@ TOKEN :
     }
     final String delim = sb.toString();
 
-    sb = new StringBuffer(256);
 rstringbody:
     // Matching R"...(...)..."
     //                   ^
     for (;;) {
       try { curChar = input_stream.readChar(); }
       catch(java.io.IOException e) { return; }
-      sb.append(curChar);
       if (curChar == ')') {
 	// delim --------------+
 	//                    vvv
@@ -358,7 +357,6 @@ rstringbody:
 	    input_stream.backup(1);
 	    continue rstringbody;
 	  }
-	  sb.append(curChar);
 	}
 	// Matching R"...(...)..."
 	//                       ^
@@ -368,12 +366,13 @@ rstringbody:
 	  input_stream.backup(1);
 	  continue rstringbody;
 	}
-	sb.append(curChar);
 	break;
       }
     }
     // Setting final token image
-    matchedToken.image += delim + "(" + sb.toString();
+    matchedToken.image = input_stream.GetImage();
+    matchedToken.endLine = input_stream.getEndLine();
+    matchedToken.endColumn = input_stream.getEndColumn();
   }
 }
 
