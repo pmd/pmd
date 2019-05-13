@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.lang.reflect.Field;
-
-import apex.jorje.data.Identifier;
 import apex.jorje.semantic.ast.compilation.UserEnum;
 
 public class ASTUserEnum extends ApexRootNode<UserEnum> {
@@ -22,14 +19,8 @@ public class ASTUserEnum extends ApexRootNode<UserEnum> {
 
     @Override
     public String getImage() {
-        try {
-            Field field = node.getClass().getDeclaredField("name");
-            field.setAccessible(true);
-            Identifier name = (Identifier) field.get(node);
-            return name.getValue();
-        } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        String apexName = node.getDefiningType().getApexName();
+        return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 
     public ASTModifierNode getModifiers() {
