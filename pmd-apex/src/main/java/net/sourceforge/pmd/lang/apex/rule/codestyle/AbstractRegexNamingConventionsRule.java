@@ -15,8 +15,8 @@ import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 abstract class AbstractRegexNamingConventionsRule extends AbstractApexRule {
-    protected static final String CAMEL_CASE = "[a-z][a-zA-Z0-9]*";
-    protected static final String PASCAL_CASE = "[A-Z][a-zA-Z0-9]*";
+    protected static final Pattern CAMEL_CASE = Pattern.compile("[a-z][a-zA-Z0-9]*");
+    protected static final Pattern PASCAL_CASE = Pattern.compile("[A-Z][a-zA-Z0-9]*");
 
     abstract String displayName(String name);
 
