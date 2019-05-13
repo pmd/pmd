@@ -227,6 +227,18 @@ public class CPPTokenizerTest {
         assertEquals(16, tokens.size());
     }
 
+    @Test
+    public void testDigitSeparators() {
+        final String code = "auto integer_literal = 1'000'000;" + PMD.EOL
+                + "auto floating_point_literal = 0.000'015'3;" + PMD.EOL
+                + "auto hex_literal = 0x0F00'abcd'6f3d;" + PMD.EOL
+                + "auto silly_example = 1'0'0'000'00;";
+        Tokens tokens = parse(code);
+        assertTrue(TokenEntry.getEOF() != tokens.getTokens().get(0));
+        assertEquals("1'000'000", tokens.getTokens().get(3).toString());
+        assertEquals(21, tokens.size());
+    }
+
     private Tokens parse(String snippet) {
         try {
             return parse(snippet, false, new Tokens());

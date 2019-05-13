@@ -14,65 +14,56 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
-#### Dart support
+#### Enhanced Matlab support
 
-Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker), and built on top of the ongoing efforts to fully support Antlr-based languages,
-PMD now has CPD support for [Dart](https://www.dartlang.org/).
+Thanks to the contributions from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse Matlab programs which use the question mark operator to specify access to
+class members:
 
-Being based on a proper Antlr grammar, CPD can:
-*   ignore comments
-*   ignore imports / libraries
-*   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+```
+classdef Class1
+properties (SetAccess = ?Class2)
+```
 
-#### Updated PMD Designer
+CPD also understands now double quoted strings, which are supported since version R2017a of Matlab:
 
-This PMD release ships a new version of the pmd-designer.
-For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md).
+```
+str = "This is a string"
+```
 
-### Modified Rules
+#### Enhanced C++ support
 
-*   The Java rule {% rule "java/errorprone/AssignmentToNonFinalStatic" %} (`java-errorprone`) will now report on each
-    assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
-    find the offending statements.
+CPD now supports digit separators in C++ (language module "cpp"). This is a C++14 feature.
 
-*   The Java rule {% rule "java/codestyle/NoPackage" %} (`java-codestyle`) will now report additionally enums
-    and annotations that do not have a package declaration.
+Example: `auto integer_literal = 1'000'000;`
+
+The single quotes can be used to add some structure to large numbers.
 
 ### Fixed Issues
 
-*   all
-    *   [#1515](https://github.com/pmd/pmd/issues/1515): \[core] Module pmd-lang-test is missing javadoc artifact
-    *   [#1788](https://github.com/pmd/pmd/issues/1788): \[cpd] \[core] Use better `ClassLoader` for `ServiceLoader` in `LanguageFactory`
-    *   [#1794](https://github.com/pmd/pmd/issues/1794): \[core] Ruleset Compatibility fails with excluding rules
-*   go
-    *   [#1751](https://github.com/pmd/pmd/issues/1751): \[go] Parsing errors encountered with escaped backslash
-*   java
-    *   [#1532](https://github.com/pmd/pmd/issues/1532): \[java] NPE with incomplete auxclasspath
-    *   [#1691](https://github.com/pmd/pmd/issues/1691): \[java] Possible Data Race in JavaTypeDefinitionSimple.getGenericType
-    *   [#1729](https://github.com/pmd/pmd/issues/1729): \[java] JavaRuleViolation loses information in `className` field when class has package-private access level
+*   dart
+    *   [#1809](https://github.com/pmd/pmd/issues/1809): \[dart] \[cpd] Parse error with escape sequences
 *   java-bestpractices
-    *   [#1190](https://github.com/pmd/pmd/issues/1190): \[java] UnusedLocalVariable/UnusedPrivateField false-positive 
-    *   [#1720](https://github.com/pmd/pmd/issues/1720): \[java] UnusedImports false positive for Javadoc link with array type
+    *   [#1738](https://github.com/pmd/pmd/issues/1738): \[java] MethodReturnsInternalArray does not work in inner classes
 *   java-codestyle
-    *   [#1755](https://github.com/pmd/pmd/issues/1775): \[java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines
-    *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
-*   java-design
-    *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
+    *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
+*   python
+    *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
+*   matlab
+    *   [#1830](https://github.com/pmd/pmd/issues/1830): \[matlab] \[cpd] Parse error with comments
 
 ### API Changes
 
-No changes.
-
 ### External Contributions
 
-*   [#1745](https://github.com/pmd/pmd/pull/1745): \[doc] Fixed some errors in docs - [0xflotus](https://github.com/0xflotus)
-*   [#1746](https://github.com/pmd/pmd/pull/1746): \[java] Update rule to prevent UnusedImport when using JavaDoc with array type - [itaigilo](https://github.com/itaigilo)
-*   [#1752](https://github.com/pmd/pmd/pull/1752): \[java] UseObjectForClearerAPI Only For Public - [Björn Kautler](https://github.com/Vampire)
-*   [#1761](https://github.com/pmd/pmd/pull/1761): \[dart] \[cpd] Added CPD support for Dart - [Maikel Steneker](https://github.com/maikelsteneker)
-*   [#1776](https://github.com/pmd/pmd/pull/1776): \[java] Show more detailed message when can't resolve field type - [Andrey Fomin](https://github.com/andrey-fomin)
-*   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
-*   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
-*   [#1791](https://github.com/pmd/pmd/pull/1791): \[dart] \[cpd] Dart escaped string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1799](https://github.com/pmd/pmd/pull/1799): \[java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - [Srinivasan Venkatachalam](https://github.com/Srini1993)
+*   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1807](https://github.com/pmd/pmd/pull/1807): \[ci] Fix missing local branch issues when executing pmd-regression-tester - [BBG](https://github.com/djydewang)
+*   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1819](https://github.com/pmd/pmd/pull/1819): \[cpp] \[cpd] Add support for digit separators - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
