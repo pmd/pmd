@@ -17,7 +17,7 @@ class ASTArrayTypeTest : ParserTestSpec({
                 it::getImage shouldBe "ArrayTypes"
             }
 
-            it::getDimensions shouldBe child {
+            it::getDimensions shouldBe child<ASTArrayTypeDims> {
 
                 child<ASTArrayTypeDim> {}
                 child<ASTArrayTypeDim> {}
@@ -27,7 +27,7 @@ class ASTArrayTypeTest : ParserTestSpec({
     }
 
     parserTest("Multi-Dim Array allocation") {
-        "new ArrayTypes[][][] { }" should matchExpr<ASTAllocationExpression> {
+        "new ArrayTypes[][][] { }" should matchExpr<ASTArrayAllocation> {
 
             // not an array type
             child<ASTClassOrInterfaceType> {
