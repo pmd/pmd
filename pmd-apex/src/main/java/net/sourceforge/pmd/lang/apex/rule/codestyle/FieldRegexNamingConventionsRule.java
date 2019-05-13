@@ -18,10 +18,10 @@ public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventi
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
     private static final PropertyDescriptor<Pattern> ENUM_CONSTANT_REGEX = prop("enumConstantPattern", "enum constant field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue("[A-Z][A-Z0-9_]*").build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(ALL_CAPS).build();
 
     private static final PropertyDescriptor<Pattern> CONSTANT_REGEX = prop("constantPattern", "constant field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
+            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(ALL_CAPS).build();
 
     private static final PropertyDescriptor<Pattern> FINAL_REGEX = prop("finalPattern", "final field",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();

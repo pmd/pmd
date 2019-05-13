@@ -10,7 +10,7 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
-    final static Integer constantField;
+    final static Integer CONSTANT_FIELD;
     final Integer finalField;
     static Integer staticField;
     Integer instanceField;
@@ -22,17 +22,17 @@ public class Foo {
     </test-code>
 
     <test-code>
-    <description>default is camel case</description>
+    <description>default is all caps for constants, camel case for others</description>
     <expected-problems>4</expected-problems>
     <expected-messages>
-        <message>The constant field name 'CONSTANT_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
         <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
     </expected-messages>
     <code><![CDATA[
 public class Foo {
-    final static Integer CONSTANT_FIELD;
+    final static Integer constantField;
     final Integer FINAL_FIELD;
     static Integer STATIC_FIELD;
     Integer INSTANCE_FIELD;
@@ -89,7 +89,7 @@ public class Foo {
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    final static Integer CONSTANT_FIELD;
+    final static Integer constantField;
     final Integer FINAL_FIELD;
     static Integer STATIC_FIELD;
     Integer INSTANCE_FIELD;
@@ -102,13 +102,13 @@ public class Foo {
         <rule-property name="finalPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>The constant field name 'CONSTANT_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
             <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    final static Integer CONSTANT_FIELD;
+    final static Integer constantField;
     final Integer FINAL_FIELD;
     static Integer STATIC_FIELD;
     Integer INSTANCE_FIELD;
@@ -121,13 +121,13 @@ public class Foo {
         <rule-property name="staticPattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>The constant field name 'CONSTANT_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
             <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    final static Integer CONSTANT_FIELD;
+    final static Integer constantField;
     final Integer FINAL_FIELD;
     static Integer STATIC_FIELD;
     Integer INSTANCE_FIELD;
@@ -140,13 +140,13 @@ public class Foo {
         <rule-property name="instancePattern">[a-zA-Z0-9_]+</rule-property>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>The constant field name 'CONSTANT_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
             <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
             <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    final static Integer CONSTANT_FIELD;
+    final static Integer constantField;
     final Integer FINAL_FIELD;
     static Integer STATIC_FIELD;
     Integer INSTANCE_FIELD;
