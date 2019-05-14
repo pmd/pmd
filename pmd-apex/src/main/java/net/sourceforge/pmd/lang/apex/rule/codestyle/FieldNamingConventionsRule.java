@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
+public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
     private static final PropertyDescriptor<Pattern> ENUM_CONSTANT_REGEX = prop("enumConstantPattern", "enum constant field",
@@ -32,12 +32,17 @@ public class FieldRegexNamingConventionsRule extends AbstractRegexNamingConventi
     private static final PropertyDescriptor<Pattern> INSTANCE_REGEX = prop("instancePattern", "instance field",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
-    public FieldRegexNamingConventionsRule() {
+    public FieldNamingConventionsRule() {
         definePropertyDescriptor(ENUM_CONSTANT_REGEX);
         definePropertyDescriptor(CONSTANT_REGEX);
         definePropertyDescriptor(FINAL_REGEX);
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
+
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
+        // Note: x10 as Apex has not automatic refactoring
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 
         addRuleChainVisit(ASTField.class);
     }

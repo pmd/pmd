@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import net.sourceforge.pmd.testframework.PmdRuleTst;
 
-public class FieldRegexNamingConventionsTest extends PmdRuleTst {
+public class PropertyNamingConventionsTest extends PmdRuleTst {
     // no additional unit tests
 }

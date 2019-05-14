@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class LocalVariableRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
+public class LocalVariableNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
     private static final PropertyDescriptor<Pattern> FINAL_REGEX = prop("finalLocalPattern", "final local variable",
@@ -21,9 +21,14 @@ public class LocalVariableRegexNamingConventionsRule extends AbstractRegexNaming
     private static final PropertyDescriptor<Pattern> LOCAL_REGEX = prop("localPattern", "local variable",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
-    public LocalVariableRegexNamingConventionsRule() {
+    public LocalVariableNamingConventionsRule() {
         definePropertyDescriptor(FINAL_REGEX);
         definePropertyDescriptor(LOCAL_REGEX);
+
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
+        // Note: x10 as Apex has not automatic refactoring
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 
         addRuleChainVisit(ASTVariableDeclaration.class);
     }

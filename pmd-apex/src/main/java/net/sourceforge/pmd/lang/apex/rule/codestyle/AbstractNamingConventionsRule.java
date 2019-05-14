@@ -14,9 +14,10 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-abstract class AbstractRegexNamingConventionsRule extends AbstractApexRule {
+abstract class AbstractNamingConventionsRule extends AbstractApexRule {
     protected static final Pattern CAMEL_CASE = Pattern.compile("[a-z][a-zA-Z0-9]*");
-    protected static final Pattern PASCAL_CASE = Pattern.compile("[A-Z][a-zA-Z0-9]*");
+    protected static final Pattern CAMEL_CASE_WITH_UNDERSCORES = Pattern.compile("[a-z][a-zA-Z0-9_]*");
+    protected static final Pattern PASCAL_CASE_WITH_UNDERSCORES = Pattern.compile("[A-Z][a-zA-Z0-9_]*");
     protected static final Pattern ALL_CAPS = Pattern.compile("[A-Z][A-Z0-9_]*");
 
     abstract String displayName(String name);
@@ -27,6 +28,14 @@ abstract class AbstractRegexNamingConventionsRule extends AbstractApexRule {
         if (!regex.matcher(name).matches()) {
             String displayName = displayName(propertyDescriptor.name());
             addViolation(data, node, new Object[] { displayName, name, regex.toString() });
+        }
+    }
+
+    protected void checkMatches(PropertyDescriptor<Pattern> propertyDescriptor, Pattern overridePattern, ApexNode<?> node, Object data) {
+        String name = node.getImage();
+        if (!overridePattern.matcher(name).matches()) {
+            String displayName = displayName(propertyDescriptor.name());
+            addViolation(data, node, new Object[] { displayName, name, overridePattern.toString() });
         }
     }
 

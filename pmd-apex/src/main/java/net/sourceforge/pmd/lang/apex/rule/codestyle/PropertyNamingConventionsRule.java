@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class PropertyRegexNamingConventionsRule extends AbstractRegexNamingConventionsRule {
+public class PropertyNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
     private static final PropertyDescriptor<Pattern> STATIC_REGEX = prop("staticPattern", "static property",
@@ -21,9 +21,14 @@ public class PropertyRegexNamingConventionsRule extends AbstractRegexNamingConve
     private static final PropertyDescriptor<Pattern> INSTANCE_REGEX = prop("instancePattern", "instance property",
             DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
 
-    public PropertyRegexNamingConventionsRule() {
+    public PropertyNamingConventionsRule() {
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
+
+        setProperty(CODECLIMATE_CATEGORIES, "Style");
+        // Note: x10 as Apex has not automatic refactoring
+        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
+        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
 
         addRuleChainVisit(ASTField.class);
     }

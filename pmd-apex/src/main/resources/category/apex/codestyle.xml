@@ -11,25 +11,9 @@ Rules which enforce a specific coding style.
 
     <rule name="ClassNamingConventions"
           since="5.5.0"
-          message="Class names should begin with an uppercase character"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.ClassNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#classnamingconventions">
-        <description>
-Class names should always begin with an upper case character.
-        </description>
-        <priority>1</priority>
-        <example>
-<![CDATA[
-public class Foo {}
-]]>
-        </example>
-    </rule>
-
-    <rule name="ClassRegexNamingConventions"
-          since="6.15.0"
-          message="The {0} name ''{1}'' doesn''t match ''{2}''"
-          class="net.sourceforge.pmd.lang.apex.rule.codestyle.ClassRegexNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#classregexnamingconventions">
         <description>
             Configurable naming conventions for type declarations. This rule reports
             type declarations which do not match the regex that applies to their
@@ -43,7 +27,7 @@ public class Foo {}
             <![CDATA[
 public class FooClass { } // This is in pascal case, so it's ok
 
-public class FOO_CLASS { } // This will be reported unless you change the regex
+public class fooClass { } // This will be reported unless you change the regex
 ]]>
         </example>
     </rule>
@@ -118,11 +102,11 @@ if (foo) {  // preferred approach
         </example>
     </rule>
 
-    <rule name="FieldRegexNamingConventions"
+    <rule name="FieldNamingConventions"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
-          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldRegexNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fieldregexnamingconventions">
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fieldnamingconventions">
         <description>
             Configurable naming conventions for field declarations. This rule reports variable declarations
             which do not match the regex that applies to their specific kind ---e.g. constants (static final),
@@ -177,11 +161,11 @@ for (int i = 0; i < 42; i++) { // preferred approach
         </example>
     </rule>
 
-    <rule name="FormalParameterRegexNamingConventions"
+    <rule name="FormalParameterNamingConventions"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
-          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FormalParameterRegexNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#formalparameterregexnamingconventions">
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.FormalParameterNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#formalparameternamingconventions">
         <description>
             Configurable naming conventions for formal parameters of methods.
             This rule reports formal parameters which do not match the regex that applies to their
@@ -202,11 +186,11 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="LocalVariableRegexNamingConventions"
+    <rule name="LocalVariableNamingConventions"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
-          class="net.sourceforge.pmd.lang.apex.rule.codestyle.LocalVariableRegexNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#localvariableregexnamingconventions">
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.LocalVariableNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#localvariablenamingconventions">
         <description>
             Configurable naming conventions for local variable declarations.
             This rule reports variable declarations which do not match the regex that applies to their
@@ -231,28 +215,9 @@ public class Foo {
 
     <rule name="MethodNamingConventions"
           since="5.5.0"
-          message="Method name does not begin with a lower case character."
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.MethodNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#methodnamingconventions">
-        <description>
-Method names should always begin with a lower case character, and should not contain underscores.
-        </description>
-        <priority>1</priority>
-        <example>
-<![CDATA[
-public class Foo {
-    public void fooStuff() {
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="MethodRegexNamingConventions"
-          since="6.15.0"
-          message="The {0} name ''{1}'' doesn''t match ''{2}''"
-          class="net.sourceforge.pmd.lang.apex.rule.codestyle.MethodRegexNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#methodregexnamingconventions">
         <description>
             Configurable naming conventions for method declarations. This rule reports
             method declarations which do not match the regex that applies to their
@@ -313,11 +278,11 @@ Integer b;
         </example>
     </rule>
 
-    <rule name="PropertyRegexNamingConventions"
+    <rule name="PropertyNamingConventions"
           since="6.15.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
-          class="net.sourceforge.pmd.lang.apex.rule.codestyle.PropertyRegexNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#propertyregexnamingconventions">
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.PropertyNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#propertynamingconventions">
         <description>
             Configurable naming conventions for property declarations. This rule reports
             property declarations which do not match the regex that applies to their
