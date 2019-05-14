@@ -305,6 +305,7 @@ public class Foo {
 
     <rule name="VariableNamingConventions"
           since="5.5.0"
+          deprecated="true"
           message="{0} variable {1} should begin with {2}"
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.VariableNamingConventionsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#variablenamingconventions">
@@ -312,6 +313,12 @@ public class Foo {
 A variable naming conventions rule - customize this to your liking.  Currently, it
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.
+
+This rule is deprecated. The rule is replaced
+by the more general rules {% rule apex/codestyle/FieldNamingConventions %},
+{% rule apex/codestyle/FormalParameterNamingConventions %},
+{% rule apex/codestyle/LocalVariableNamingConventions %}, and
+{% rule apex/codestyle/PropertyNamingConventions %}.
         </description>
         <priority>1</priority>
         <example>
