@@ -96,7 +96,7 @@ public final class CppParser {
      if (t.kind != ID && t.kind != SCOPE)
         return null;
 
-     StringBuffer s = new StringBuffer();
+     StringBuilder s = new StringBuilder();
 
      int i;
      if (t.kind != SCOPE)
@@ -313,12 +313,71 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN :
 {
+  < #CHRPREF : <STRPREF>>
+| <  CHARACTER : <CHRPREF>
+      "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
 
-  <  CHARACTER : ("L")? "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
+| < #STRPREF : ("L" | "u" | "U" | "u8")? >
+| <  STRING : <STRPREF>
+      "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
 
-| <  STRING : ("L")? "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
+}
 
-| <  RSTRING : "R\"(" ( ~[")"] | ( ")" ~["\""] ) )* ")\"" >
+// Raw C++11 string literal support
+// https://en.cppreference.com/w/cpp/language/string_literal
+TOKEN :
+{
+  <  RSTRING : <STRPREF> "R\"" >
+  {
+    StringBuilder sb = new StringBuilder(16);
+
+    // delim ------+
+    //            vvv
+    // Matching R"...(...)..."
+    //               ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == '(') break;
+      sb.append(curChar);
+    }
+    final String delim = sb.toString();
+
+rstringbody:
+    // Matching R"...(...)..."
+    //                   ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == ')') {
+	// delim --------------+
+	//                    vvv
+	// Matching R"...(...)..."
+	//                    ^^^
+	for (int i = 0; i < delim.length(); i++) {
+	  try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return; }
+	  if (delim.charAt(i) != curChar) {
+	    input_stream.backup(1);
+	    continue rstringbody;
+	  }
+	}
+	// Matching R"...(...)..."
+	//                       ^
+	try { curChar = input_stream.readChar(); }
+	catch(java.io.IOException e) { return; }
+	if (curChar != '"') {
+	  input_stream.backup(1);
+	  continue rstringbody;
+	}
+	break;
+      }
+    }
+    // Setting final token image
+    matchedToken.image = input_stream.GetImage();
+    matchedToken.endLine = input_stream.getEndLine();
+    matchedToken.endColumn = input_stream.getEndColumn();
+  }
 }
 
 TOKEN :
