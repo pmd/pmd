@@ -1309,9 +1309,16 @@ properties (SetAccess = ?Class2)
 
 <p>The single quotes can be used to add some structure to large numbers.</p>
 
+<p>CPD also parses raw string literals now correctly (see <a href="https://github.com/pmd/pmd/issues/1784">#1784</a>).</p>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>cpp
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1784">#1784</a>: [cpp] Improve support for raw string literals</li>
+    </ul>
+  </li>
   <li>dart
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1809">#1809</a>: [dart] [cpd] Parse error with escape sequences</li>
@@ -1350,6 +1357,7 @@ properties (SetAccess = ?Class2)
   <li><a href="https://github.com/pmd/pmd/pull/1807">#1807</a>: [ci] Fix missing local branch issues when executing pmd-regression-tester - <a href="https://github.com/djydewang">BBG</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1813">#1813</a>: [matlab] [cpd] Matlab comments - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1819">#1819</a>: [cpp] [cpd] Add support for digit separators - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1820">#1820</a>: [cpp] [cpd] Improve support for raw string literals - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1821">#1821</a>: [matlab] [cpd] Matlab question mark token - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1822">#1822</a>: [matlab] [cpd] Double quoted string - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
 </ul>
@@ -1370,7 +1378,7 @@ properties (SetAccess = ?Class2)
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 12, 2019 <br />
+ Site last generated: May 16, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
