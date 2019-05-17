@@ -1012,10 +1012,37 @@
 ,
 
 {
+"title": "FieldNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "FieldNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#fieldnamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "ForLoopsMustUseBraces (Apex, Code Style)",
 "tags": "",
 "keywords": "ForLoopsMustUseBraces",
 "url": "pmd_rules_apex_codestyle.html#forloopsmustusebraces",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "FormalParameterNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "FormalParameterNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#formalparameternamingconventions",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "LocalVariableNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "LocalVariableNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#localvariablenamingconventions",
 "summary": "Rules which enforce a specific coding style."
 }
 ,
@@ -1034,6 +1061,15 @@
 "tags": "",
 "keywords": "OneDeclarationPerLine",
 "url": "pmd_rules_apex_codestyle.html#onedeclarationperline",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
+"title": "PropertyNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "PropertyNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#propertynamingconventions",
 "summary": "Rules which enforce a specific coding style."
 }
 ,

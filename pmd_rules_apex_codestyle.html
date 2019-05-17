@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, ForLoopsMustUseBraces, MethodNamingConventions, OneDeclarationPerLine, VariableNamingConventions, WhileLoopsMustUseBraces">
+<meta name="keywords" content=" Code Style, ClassNamingConventions, IfElseStmtsMustUseBraces, IfStmtsMustUseBraces, FieldNamingConventions, ForLoopsMustUseBraces, FormalParameterNamingConventions, LocalVariableNamingConventions, MethodNamingConventions, OneDeclarationPerLine, PropertyNamingConventions, VariableNamingConventions, WhileLoopsMustUseBraces">
 <title>Code Style | PMD Source Code Analyzer</title>
 <link rel="stylesheet" href="css/syntax.css">
 
@@ -1287,13 +1287,20 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> High (1)</p>
 
-<p>Class names should always begin with an upper case character.</p>
+<p>Configurable naming conventions for type declarations. This rule reports
+type declarations which do not match the regex that applies to their
+specific kind (e.g. enum or interface). Each regex can be configured through
+properties.</p>
+
+<p>By default this rule uses the standard Apex naming convention (Pascal case).</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/ClassNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.ClassNamingConventionsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooClass</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This is in pascal case, so it's ok</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">fooClass</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
 </code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
@@ -1326,11 +1333,155 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
       <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
       <td>no</td>
     </tr>
+    <tr>
+      <td>testClassPattern</td>
+      <td>[A-Z][a-zA-Z0-9_]*</td>
+      <td>Regex which applies to test class names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>abstractClassPattern</td>
+      <td>[A-Z][a-zA-Z0-9_]*</td>
+      <td>Regex which applies to abstract class names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>classPattern</td>
+      <td>[A-Z][a-zA-Z0-9_]*</td>
+      <td>Regex which applies to class names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>interfacePattern</td>
+      <td>[A-Z][a-zA-Z0-9_]*</td>
+      <td>Regex which applies to interface names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>enumPattern</td>
+      <td>[A-Z][a-zA-Z0-9_]*</td>
+      <td>Regex which applies to enum names</td>
+      <td>no</td>
+    </tr>
   </tbody>
 </table>
 
 <p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/ClassNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/ClassNamingConventions"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"abstractClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"classPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"interfacePattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="fieldnamingconventions">FieldNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 6.15.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for field declarations. This rule reports variable declarations
+which do not match the regex that applies to their specific kind —e.g. constants (static final),
+static field, final field. Each regex can be configured through properties.</p>
+
+<p>By default this rule uses the standard Apex naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/FieldNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.FieldNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="n">Integer</span> <span class="n">instanceField</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
+
+    <span class="n">Integer</span> <span class="n">INSTANCE_FIELD</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>enumConstantPattern</td>
+      <td>[A-Z][A-Z0-9_]*</td>
+      <td>Regex which applies to enum constant field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>constantPattern</td>
+      <td>[A-Z][A-Z0-9_]*</td>
+      <td>Regex which applies to constant field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>finalPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to final field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>staticPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to static field names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>instancePattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to instance field names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/FieldNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/FieldNamingConventions"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumConstantPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][A-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"constantPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][A-Z0-9_]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"finalPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"staticPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"instancePattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="forloopsmustusebraces">ForLoopsMustUseBraces</h2>
@@ -1394,6 +1545,88 @@ from the rest.</p>
 
 <p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/ForLoopsMustUseBraces"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="formalparameternamingconventions">FormalParameterNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 6.15.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for formal parameters of methods.
+This rule reports formal parameters which do not match the regex that applies to their
+specific kind (e.g. method parameter, or final method parameter). Each regex can be
+configured through properties.</p>
+
+<p>By default this rule uses the standard Apex naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/FormalParameterNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.FormalParameterNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">bar</span><span class="o">(</span><span class="n">Integer</span> <span class="n">methodParameter</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
+
+    <span class="kd">public</span> <span class="nf">baz</span><span class="o">(</span><span class="n">Integer</span> <span class="n">METHOD_PARAMETER</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>finalMethodParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to final method parameter names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>methodParameterPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to method parameter names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/FormalParameterNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/FormalParameterNamingConventions"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"finalMethodParameterPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"methodParameterPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="ifelsestmtsmustusebraces">IfElseStmtsMustUseBraces</h2>
@@ -1522,20 +1755,28 @@ controlled from the rest.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/IfStmtsMustUseBraces"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
-<h2 id="methodnamingconventions">MethodNamingConventions</h2>
+<h2 id="localvariablenamingconventions">LocalVariableNamingConventions</h2>
 
-<p><strong>Since:</strong> PMD 5.5.0</p>
+<p><strong>Since:</strong> PMD 6.15.0</p>
 
 <p><strong>Priority:</strong> High (1)</p>
 
-<p>Method names should always begin with a lower case character, and should not contain underscores.</p>
+<p>Configurable naming conventions for local variable declarations.
+This rule reports variable declarations which do not match the regex that applies to their
+specific kind (e.g. local variable, or final local variable). Each regex can be configured through
+properties.</p>
 
-<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/MethodNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.MethodNamingConventionsRule</a></p>
+<p>By default this rule uses the standard Apex naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/LocalVariableNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.LocalVariableNamingConventionsRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">fooStuff</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">Foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Integer</span> <span class="n">localVariable</span><span class="o">;</span> <span class="c1">// This is in camel case, so it's ok</span>
+
+        <span class="n">Integer</span> <span class="n">LOCAL_VARIABLE</span><span class="o">;</span> <span class="c1">// This will be reported unless you change the regex</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -1571,9 +1812,108 @@ controlled from the rest.</p>
       <td>no</td>
     </tr>
     <tr>
+      <td>finalLocalPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to final local variable names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>localPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to local variable names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/LocalVariableNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/LocalVariableNamingConventions"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"finalLocalPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"localPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="methodnamingconventions">MethodNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 5.5.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for method declarations. This rule reports
+method declarations which do not match the regex that applies to their
+specific kind (e.g. static method, or test method). Each regex can be
+configured through properties.</p>
+
+<p>By default this rule uses the standard Apex naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/MethodNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.MethodNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">instanceMethod</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">INSTANCE_METHOD</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+    <tr>
       <td>skipTestMethodUnderscores</td>
       <td>false</td>
-      <td>Skip underscores in test methods</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Skip underscores in test methods</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>testPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to test method names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>staticPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to static method names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>instancePattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to instance method names</td>
       <td>no</td>
     </tr>
   </tbody>
@@ -1586,7 +1926,9 @@ controlled from the rest.</p>
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/MethodNamingConventions"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"skipTestMethodUnderscores"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"staticPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"instancePattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -1672,7 +2014,91 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="propertynamingconventions">PropertyNamingConventions</h2>
+
+<p><strong>Since:</strong> PMD 6.15.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Configurable naming conventions for property declarations. This rule reports
+property declarations which do not match the regex that applies to their
+specific kind (e.g. static property, or instance property). Each regex can be
+configured through properties.</p>
+
+<p>By default this rule uses the standard Apex naming convention (Camel case).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/PropertyNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.PropertyNamingConventionsRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="n">instanceProperty</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// This is in camel case, so it's ok</span>
+
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="n">INSTANCE_PROPERTY</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// This will be reported unless you change the regex</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>cc_categories</td>
+      <td>Style</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories</td>
+      <td>yes. Delimiter is ‘|’.</td>
+    </tr>
+    <tr>
+      <td>cc_remediation_points_multiplier</td>
+      <td>1</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>cc_block_highlighting</td>
+      <td>false</td>
+      <td><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>staticPattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to static property names</td>
+      <td>no</td>
+    </tr>
+    <tr>
+      <td>instancePattern</td>
+      <td>[a-z][a-zA-Z0-9]*</td>
+      <td>Regex which applies to instance property names</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/PropertyNamingConventions"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/codestyle.xml/PropertyNamingConventions"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"staticPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"instancePattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <h2 id="variablenamingconventions">VariableNamingConventions</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
 
 <p><strong>Since:</strong> PMD 5.5.0</p>
 
@@ -1681,6 +2107,12 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 <p>A variable naming conventions rule - customize this to your liking.  Currently, it
 checks for final variables that should be fully capitalized and non-final variables
 that should not include underscores.</p>
+
+<p>This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
+by the more general rules <a href="pmd_rules_apex_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a>,
+<a href="pmd_rules_apex_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a>,
+<a href="pmd_rules_apex_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a>, and
+<a href="pmd_rules_apex_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/VariableNamingConventionsRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.VariableNamingConventionsRule</a></p>
 
