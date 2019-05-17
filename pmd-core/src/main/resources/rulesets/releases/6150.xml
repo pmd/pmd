@@ -8,10 +8,10 @@
 This ruleset contains links to rules that are new in PMD v6.15.0
   </description>
 
-    <rule ref="category/apex/codestyle/FieldNamingConventions"/>
-    <rule ref="category/apex/codestyle/FormalParameterNamingConventions"/>
-    <rule ref="category/apex/codestyle/LocalVariableNamingConventions"/>
-    <rule ref="category/apex/codestyle/PropertyNamingConventions"/>
+    <rule ref="category/apex/codestyle.xml/FieldNamingConventions"/>
+    <rule ref="category/apex/codestyle.xml/FormalParameterNamingConventions"/>
+    <rule ref="category/apex/codestyle.xml/LocalVariableNamingConventions"/>
+    <rule ref="category/apex/codestyle.xml/PropertyNamingConventions"/>
 
 </ruleset>
 
