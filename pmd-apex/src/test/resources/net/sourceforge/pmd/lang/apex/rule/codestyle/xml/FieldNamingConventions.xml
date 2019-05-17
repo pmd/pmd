@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final static Integer CONSTANT_FIELD;
+    final Integer finalField;
+    static Integer staticField;
+    Integer instanceField;
+    enum FooEnum {
+        DEFAULT
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+    <description>default is all caps for constants, camel case for others</description>
+    <expected-problems>4</expected-problems>
+    <expected-messages>
+        <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
+        <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+    </expected-messages>
+    <code><![CDATA[
+public class Foo {
+    final static Integer constantField;
+    final Integer FINAL_FIELD;
+    static Integer STATIC_FIELD;
+    Integer INSTANCE_FIELD;
+}
+        ]]></code>
+</test-code>
+
+    <test-code>
+        <description>enum default is all caps and underscores</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The enum constant field name 'default' doesn't match '[A-Z][A-Z0-9_]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    enum FooEnum {
+        default
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ignores properties</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Integer BAR { get; set; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom enum constant pattern</description>
+        <rule-property name="enumConstantPattern">[a-zA-Z0-9]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    enum FooEnum {
+        default
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom constant pattern</description>
+        <rule-property name="constantPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    final static Integer constantField;
+    final Integer FINAL_FIELD;
+    static Integer STATIC_FIELD;
+    Integer INSTANCE_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom final pattern</description>
+        <rule-property name="finalPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
+            <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    final static Integer constantField;
+    final Integer FINAL_FIELD;
+    static Integer STATIC_FIELD;
+    Integer INSTANCE_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom static pattern</description>
+        <rule-property name="staticPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
+            <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The instance field name 'INSTANCE_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    final static Integer constantField;
+    final Integer FINAL_FIELD;
+    static Integer STATIC_FIELD;
+    Integer INSTANCE_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom instance pattern</description>
+        <rule-property name="instancePattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>The constant field name 'constantField' doesn't match '[A-Z][A-Z0-9_]*'</message>
+            <message>The final field name 'FINAL_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The static field name 'STATIC_FIELD' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    final static Integer constantField;
+    final Integer FINAL_FIELD;
+    static Integer STATIC_FIELD;
+    Integer INSTANCE_FIELD;
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
