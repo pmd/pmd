@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class AbstractJspNode extends AbstractNode implements JspNode {
 
@@ -29,7 +30,7 @@ public class AbstractJspNode extends AbstractNode implements JspNode {
 
     @Override
     public void jjtClose() {
-        if (beginLine == -1 && (children == null || children.length == 0)) {
+        if (beginLine == -1 && children.length == 0) {
             beginColumn = parser.token.beginColumn;
         }
         if (beginLine == -1) {
@@ -52,11 +53,10 @@ public class AbstractJspNode extends AbstractNode implements JspNode {
      */
     @Override
     public Object childrenAccept(JspParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((JspNode) children[i]).jjtAccept(visitor, data);
-            }
+        for (Node child : children) {
+            ((JspNode) child).jjtAccept(visitor, data);
         }
+
         return data;
     }
 
