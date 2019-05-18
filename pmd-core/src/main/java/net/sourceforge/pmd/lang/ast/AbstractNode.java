@@ -5,19 +5,15 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
  * Base class for all implementations of the Node interface.
  */
 public abstract class AbstractNode implements Node {
-
-    private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
 
     protected Node parent;
     protected Node[] children;
@@ -83,6 +79,7 @@ public abstract class AbstractNode implements Node {
         }
         children[index] = child;
         child.jjtSetChildIndex(index);
+        child.jjtSetParent(this);
     }
 
     @Override
@@ -241,6 +238,8 @@ public abstract class AbstractNode implements Node {
 
     public void jjtSetLastToken(final GenericToken token) {
         this.lastToken = token;
+        this.endLine = token.getEndLine();
+        this.endColumn = token.getEndColumn();
     }
 
     @Override
@@ -267,21 +266,8 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * <p>This default implementation adds compatibility with the previous
-     * way to get the xpath node name, which used {@link Object#toString()}.
-     * <p>
-     * <p>Please override it. It may be removed in a future major version.
-     */
     @Override
-    // @Deprecated // FUTURE 7.0.0 make abstract
-    public String getXPathNodeName() {
-        LOG.warning("getXPathNodeName should be overriden in classes derived from AbstractNode. "
-            + "The implementation is provided for compatibility with existing implementors,"
-            + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
-            + ".");
-        return toString();
+    public String toString() {
+        return getXPathNodeName();
     }
 }
