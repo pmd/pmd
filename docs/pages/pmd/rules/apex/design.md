@@ -39,9 +39,6 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|200|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |problemDepth|3|The if statement depth reporting threshold|no|
 
 **Use this rule with the default properties by just referencing it:**
@@ -73,7 +70,7 @@ program. As such, they include all control flow statements, such as 'if', 'while
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity &gt;= 10.
-Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+Additionally, classes with many methods of moderate complexity get reported as well once the total of their
 methods' complexities reaches 40, even if none of the methods was directly reported.
 
 Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
@@ -113,9 +110,6 @@ public class Complicated {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |classReportLevel|40|Total class complexity reporting threshold|no|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
 
@@ -169,12 +163,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|1000.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|150|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|1000|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -185,7 +174,7 @@ public class Foo {
 ``` xml
 <rule ref="category/apex/design.xml/ExcessiveClassLength">
     <properties>
-        <property name="minimum" value="1000.0" />
+        <property name="minimum" value="1000" />
     </properties>
 </rule>
 ```
@@ -218,12 +207,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|4.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|4|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -234,7 +218,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 ``` xml
 <rule ref="category/apex/design.xml/ExcessiveParameterList">
     <properties>
-        <property name="minimum" value="4.0" />
+        <property name="minimum" value="4" />
     </properties>
 </rule>
 ```
@@ -272,12 +256,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|20.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|150|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|20|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -288,7 +267,7 @@ public class Foo {
 ``` xml
 <rule ref="category/apex/design.xml/ExcessivePublicCount">
     <properties>
-        <property name="minimum" value="20.0" />
+        <property name="minimum" value="20" />
     </properties>
 </rule>
 ```
@@ -325,12 +304,7 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|20.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|20|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -341,7 +315,7 @@ public class Foo extends Bar {
 ``` xml
 <rule ref="category/apex/design.xml/NcssConstructorCount">
     <properties>
-        <property name="minimum" value="20.0" />
+        <property name="minimum" value="20" />
     </properties>
 </rule>
 ```
@@ -377,12 +351,7 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|40.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|40|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -393,7 +362,7 @@ public class Foo extends Bar {
 ``` xml
 <rule ref="category/apex/design.xml/NcssMethodCount">
     <properties>
-        <property name="minimum" value="40.0" />
+        <property name="minimum" value="40" />
     </properties>
 </rule>
 ```
@@ -431,12 +400,7 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|500.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|250|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|500|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -447,7 +411,7 @@ public class Foo extends Bar {
 ``` xml
 <rule ref="category/apex/design.xml/NcssTypeCount">
     <properties>
-        <property name="minimum" value="500.0" />
+        <property name="minimum" value="500" />
     </properties>
 </rule>
 ```
@@ -510,9 +474,6 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|250|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 |showClassesComplexity|true|Add class average violations to the report|no|
 |showMethodsComplexity|true|Add method average violations to the report|no|
@@ -568,9 +529,6 @@ public class Person {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|200|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |maxfields|15|Max allowable fields|no|
 
 **Use this rule with the default properties by just referencing it:**
