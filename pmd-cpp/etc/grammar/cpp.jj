@@ -96,7 +96,7 @@ public final class CppParser {
      if (t.kind != ID && t.kind != SCOPE)
         return null;
 
-     StringBuffer s = new StringBuffer();
+     StringBuilder s = new StringBuilder();
 
      int i;
      if (t.kind != SCOPE)
@@ -284,37 +284,100 @@ TOKEN :
 
 TOKEN [IGNORE_CASE] :
 {
-  <  OCTALINT : "0" (["0"-"7"])* >
+  <  OCTALINT : "0" (["'", "0"-"7"])* >
 | <  OCTALLONG : <OCTALINT> "l" >
 | <  UNSIGNED_OCTALINT : <OCTALINT> "u" >
 | <  UNSIGNED_OCTALLONG : <OCTALINT> ("ul" | "lu") >
 
-| <  DECIMALINT : ["1"-"9"] (["0"-"9"])* >
+| < #DECIMALDIGIT : ["'", "0"-"9"] >
+
+| <  DECIMALINT : ["1"-"9"] (<DECIMALDIGIT>)* >
 | <  DECIMALLONG : <DECIMALINT> ["u","l"] >
 | <  UNSIGNED_DECIMALINT : <DECIMALINT> "u" >
 | <  UNSIGNED_DECIMALLONG : <DECIMALINT> ("ul" | "lu") >
 
 
-| <  HEXADECIMALINT : "0x" (["0"-"9","a"-"f"])+ >
+| <  HEXADECIMALINT : "0x" (<DECIMALDIGIT> | ["a"-"f"])+ >
 | <  HEXADECIMALLONG : <HEXADECIMALINT> (["u","l"])? >
 | <  UNSIGNED_HEXADECIMALINT : <HEXADECIMALINT> "u" >
 | <  UNSIGNED_HEXADECIMALLONG : <HEXADECIMALINT> ("ul" | "lu") >
 
 
-| <  FLOATONE : ((["0"-"9"])+ "." (["0"-"9"])* | (["0"-"9"])* "." (["0"-"9"])+)
-              ("e" (["-","+"])? (["0"-"9"])+)? (["f","l"])? >
+| <  FLOATONE : (["0"-"9"](<DECIMALDIGIT>)* "."
+              | "." (<DECIMALDIGIT>)+
+              | ["0"-"9"](<DECIMALDIGIT>)* "." (<DECIMALDIGIT>)+)
+              ("e" (["-","+"])? (<DECIMALDIGIT>)+)? (["f","l"])? >
 
-| <  FLOATTWO : (["0"-"9"])+ "e" (["-","+"])?  (["0"-"9"])+ (["f","l"])? >
+| <  FLOATTWO : ["0"-"9"](<DECIMALDIGIT>)* "e" (["-","+"])? (<DECIMALDIGIT>)+ (["f","l"])? >
 }
 
 TOKEN :
 {
+  < #CHRPREF : <STRPREF>>
+| <  CHARACTER : <CHRPREF>
+      "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
 
-  <  CHARACTER : ("L")? "'" ( ( ~["'","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] ) ) )* "'" >
+| < #STRPREF : ("L" | "u" | "U" | "u8")? >
+| <  STRING : <STRPREF>
+      "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
 
-| <  STRING : ("L")? "\"" ( ( ~["\"","\\","\r","\n"] ) | ( "\\" ( ~["\n","\r"] | "\n" | "\r\n" ) ) )* "\"" >
+}
 
-| <  RSTRING : "R\"(" ( ~[")"] | ( ")" ~["\""] ) )* ")\"" >
+// Raw C++11 string literal support
+// https://en.cppreference.com/w/cpp/language/string_literal
+TOKEN :
+{
+  <  RSTRING : <STRPREF> "R\"" >
+  {
+    StringBuilder sb = new StringBuilder(16);
+
+    // delim ------+
+    //            vvv
+    // Matching R"...(...)..."
+    //               ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == '(') break;
+      sb.append(curChar);
+    }
+    final String delim = sb.toString();
+
+rstringbody:
+    // Matching R"...(...)..."
+    //                   ^
+    for (;;) {
+      try { curChar = input_stream.readChar(); }
+      catch(java.io.IOException e) { return; }
+      if (curChar == ')') {
+	// delim --------------+
+	//                    vvv
+	// Matching R"...(...)..."
+	//                    ^^^
+	for (int i = 0; i < delim.length(); i++) {
+	  try { curChar = input_stream.readChar(); }
+	  catch(java.io.IOException e) { return; }
+	  if (delim.charAt(i) != curChar) {
+	    input_stream.backup(1);
+	    continue rstringbody;
+	  }
+	}
+	// Matching R"...(...)..."
+	//                       ^
+	try { curChar = input_stream.readChar(); }
+	catch(java.io.IOException e) { return; }
+	if (curChar != '"') {
+	  input_stream.backup(1);
+	  continue rstringbody;
+	}
+	break;
+      }
+    }
+    // Setting final token image
+    matchedToken.image = input_stream.GetImage();
+    matchedToken.endLine = input_stream.getEndLine();
+    matchedToken.endColumn = input_stream.getEndColumn();
+  }
 }
 
 TOKEN :

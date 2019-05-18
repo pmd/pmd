@@ -44,15 +44,7 @@ public class HelloWorld {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/documentation.xml/ApexDoc" />
 ```

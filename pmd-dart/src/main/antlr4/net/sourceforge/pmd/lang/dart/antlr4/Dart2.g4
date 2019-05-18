@@ -344,8 +344,8 @@ booleanLiteral
 stringLiteral: SingleLineString;
 //stringLiteral: SingleLineString;
 SingleLineString
-  : '"' (~["] | '\\"')* '"'
-  | '\'' (~['] | '\\\'')* '\''
+  : '"' (~[\\"] | '\\\\' | ESCAPE_SEQUENCE | '\\"')* '"'
+  | '\'' (~[\\'] | '\\\\' | ESCAPE_SEQUENCE | '\\\'')* '\''
 //  | 'r\'' (~('\'' | NEWLINE))* '\'' // TODO
 //  | 'r"' (~('\'' | NEWLINE))* '"'
   ;
@@ -369,6 +369,7 @@ ESCAPE_SEQUENCE
   | '\\x' HEX_DIGIT HEX_DIGIT
   | '\\u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT
   | '\\u{' HEX_DIGIT_SEQUENCE '}'
+  | '\\$'
   ;
 fragment
 HEX_DIGIT_SEQUENCE

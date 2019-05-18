@@ -34,15 +34,7 @@ trigger AccountTrigger on Account (before insert, before update) {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" />
 ```
@@ -74,15 +66,7 @@ public without sharing class Foo {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|100|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" />
 ```
@@ -110,15 +94,7 @@ A full list of supported annotations can be found at https://developer.salesforc
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations" />
 ```
@@ -151,15 +127,7 @@ public void doSomething() {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyCatchBlock" />
 ```
@@ -190,15 +158,7 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyIfStmt" />
 ```
@@ -231,15 +191,7 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyStatementBlock" />
 ```
@@ -281,15 +233,7 @@ public class Foo {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock" />
 ```
@@ -319,15 +263,7 @@ public void bar(Integer a, Integer b) {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyWhileStmt" />
 ```
@@ -353,15 +289,7 @@ public class MyClass {
 }
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
 ```
