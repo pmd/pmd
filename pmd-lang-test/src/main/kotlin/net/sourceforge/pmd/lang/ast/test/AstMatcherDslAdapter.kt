@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import com.github.oowekyala.treeutils.TreeLikeAdapter
+import com.github.oowekyala.treeutils.DoublyLinkedTreeLikeAdapter
 import com.github.oowekyala.treeutils.matchers.MatchingConfig
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
@@ -12,10 +12,12 @@ import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import net.sourceforge.pmd.lang.ast.Node
 
 /** An adapter for [baseShouldMatchSubtree]. */
-object NodeTreeLikeAdapter : TreeLikeAdapter<Node> {
+object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
     override fun getChildren(node: Node): List<Node> = node.findChildrenOfType(Node::class.java)
 
     override fun nodeName(type: Class<out Node>): String = type.simpleName.removePrefix("AST")
+
+    override fun getParent(node: Node): Node? = node.parent
 }
 
 /** A subtree matcher written in the DSL documented on [TreeNodeWrapper]. */
@@ -24,9 +26,15 @@ typealias NodeSpec<N> = TreeNodeWrapper<Node, N>.() -> Unit
 /** A function feedable to [io.kotlintest.should], which fails the test if an [AssertionError] is thrown. */
 typealias Assertions<M> = (M) -> Unit
 
+val DefaultMatchingConfig = MatchingConfig(
+        adapter = NodeTreeLikeAdapter,
+        errorPrinter = KotlintestBeanTreePrinter(NodeTreeLikeAdapter),
+        implicitAssertions = { it.assertTextRangeIsOk() }
+)
+
 /** A shorthand for [baseShouldMatchSubtree] providing the [NodeTreeLikeAdapter]. */
 inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>) {
-    this.baseShouldMatchSubtree(MatchingConfig(adapter = NodeTreeLikeAdapter, errorPrinter = KotlintestBeanTreePrinter(NodeTreeLikeAdapter)), ignoreChildren, nodeSpec)
+    this.baseShouldMatchSubtree(DefaultMatchingConfig, ignoreChildren, nodeSpec)
 }
 
 /**
