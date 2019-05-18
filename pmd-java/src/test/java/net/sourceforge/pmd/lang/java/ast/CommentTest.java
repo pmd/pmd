@@ -100,6 +100,10 @@ public class CommentTest {
         Token t = new Token();
         t.image = comment;
         Comment node = new Comment(t) {
+            @Override
+            public String getXPathNodeName() {
+                return "DummyComment";
+            }
         };
         return node.getFilteredComment();
     }
