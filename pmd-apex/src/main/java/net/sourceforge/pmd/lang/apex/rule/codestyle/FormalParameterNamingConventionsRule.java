@@ -24,11 +24,6 @@ public class FormalParameterNamingConventionsRule extends AbstractNamingConventi
         definePropertyDescriptor(FINAL_METHOD_PARAMETER_REGEX);
         definePropertyDescriptor(METHOD_PARAMETER_REGEX);
 
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        // Note: x10 as Apex has not automatic refactoring
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-
         addRuleChainVisit(ASTParameter.class);
     }
 

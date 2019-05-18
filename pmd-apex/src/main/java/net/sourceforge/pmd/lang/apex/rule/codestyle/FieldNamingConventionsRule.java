@@ -39,11 +39,6 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
 
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        // Note: x10 as Apex has not automatic refactoring
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-
         addRuleChainVisit(ASTField.class);
     }
 

@@ -25,11 +25,6 @@ public class LocalVariableNamingConventionsRule extends AbstractNamingConvention
         definePropertyDescriptor(FINAL_REGEX);
         definePropertyDescriptor(LOCAL_REGEX);
 
-        setProperty(CODECLIMATE_CATEGORIES, "Style");
-        // Note: x10 as Apex has not automatic refactoring
-        setProperty(CODECLIMATE_REMEDIATION_MULTIPLIER, 1);
-        setProperty(CODECLIMATE_BLOCK_HIGHLIGHTING, false);
-
         addRuleChainVisit(ASTVariableDeclaration.class);
     }
 
