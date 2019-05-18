@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>all is well</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        final Integer finalLocalVariable;
+        Integer localVariable;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>default is camel case</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The final local variable name 'FINAL_LOCAL_VARIABLE' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+            <message>The local variable name 'LOCAL_VARIABLE' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        final Integer FINAL_LOCAL_VARIABLE;
+        Integer LOCAL_VARIABLE;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom final local pattern</description>
+        <rule-property name="finalLocalPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The local variable name 'LOCAL_VARIABLE' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        Integer LOCAL_VARIABLE;
+        final Integer FINAL_LOCAL_VARIABLE;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>custom local pattern</description>
+        <rule-property name="localPattern">[a-zA-Z0-9_]+</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The final local variable name 'FINAL_LOCAL_VARIABLE' doesn't match '[a-z][a-zA-Z0-9]*'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+        Integer LOCAL_VARIABLE;
+        final Integer FINAL_LOCAL_VARIABLE;
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
