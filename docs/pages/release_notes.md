@@ -19,8 +19,77 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Enhanced Matlab support
+
+Thanks to the contributions from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse Matlab programs which use the question mark operator to specify access to
+class members:
+
+```
+classdef Class1
+properties (SetAccess = ?Class2)
+```
+
+CPD also understands now double quoted strings, which are supported since version R2017a of Matlab:
+
+```
+str = "This is a string"
+```
+
+#### Enhanced C++ support
+
+CPD now supports digit separators in C++ (language module "cpp"). This is a C++14 feature.
+
+Example: `auto integer_literal = 1'000'000;`
+
+The single quotes can be used to add some structure to large numbers.
+
+CPD also parses raw string literals now correctly (see [#1784](https://github.com/pmd/pmd/issues/1784)).
+
+#### New Rules
+
+*   The new Apex rule {% rule "apex/codestyle/FieldNamingConventions" %} (`apex-codestyle`) checks the naming
+    conventions for field declarations. By default this rule uses the standard Apex naming convention (Camel case),
+    but it can be configured through properties.
+
+*   The new Apex rule {% rule "apex/codestyle/FormalParameterNamingConventions" %} (`apex-codestyle`) checks the
+    naming conventions for formal parameters of methods. By default this rule uses the standard Apex naming
+    convention (Camel case), but it can be configured through properties.
+
+*   The new Apex rule {% rule "apex/codestyle/LocalVariableNamingConventions" %} (`apex-codestyle`) checks the
+    naming conventions for local variable declarations. By default this rule uses the standard Apex naming
+    convention (Camel case), but it can be configured through properties.
+
+*   The new Apex rule {% rule "apex/codestyle/PropertyNamingConventions" %} (`apex-codestyle`) checks the naming
+    conventions for property declarations. By default this rule uses the standard Apex naming convention (Camel case),
+    but it can be configured through properties.
+
+#### Modified Rules
+
+*   The Apex rule {% rule "apex/codestyle/ClassNamingConventions" %} (`apex-codestyle`) can now be configured
+    using various properties for the specific kind of type declarations (e.g. class, interface, enum).
+    As before, this rule uses by default the standard Apex naming convention (Pascal case).
+
+*   The Apex rule {% rule "apex/codestyle/MethodNamingConventions" %} (`apex-codestyle`) can now be configured
+    using various properties to differenciate e.g. static methods and test methods.
+    As before, this rule uses by default the standard Apex naming convention (Camel case).
+
+#### Deprecated Rules
+
+*   The Apex rule {% rule "apex/codestyle/VariableNamingConventions" %} (`apex-codestyle`) has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general rules
+    {% rule "apex/codestyle/FieldNamingConventions" %},
+    {% rule "apex/codestyle/FormalParameterNamingConventions" %},
+    {% rule "apex/codestyle/LocalVariableNamingConventions" %}, and
+    {% rule "apex/codestyle/PropertyNamingConventions" %}.
+
 ### Fixed Issues
 
+*   apex
+    *   [#1321](https://github.com/pmd/pmd/issues/1321): \[apex] Should VariableNamingConventions require properties to start with a lowercase letter?
+    *   [#1783](https://github.com/pmd/pmd/issues/1783): \[apex] comments on constructor not recognized when the Class has inner class
+*   cpp
+    *   [#1784](https://github.com/pmd/pmd/issues/1784): \[cpp] Improve support for raw string literals
 *   dart
     *   [#1809](https://github.com/pmd/pmd/issues/1809): \[dart] \[cpd] Parse error with escape sequences
 *   java-bestpractices
@@ -29,6 +98,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
 *   python
     *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
+*   matlab
+    *   [#1830](https://github.com/pmd/pmd/issues/1830): \[matlab] \[cpd] Parse error with comments
 
 ### API Changes
 
@@ -38,6 +109,13 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1807](https://github.com/pmd/pmd/pull/1807): \[ci] Fix missing local branch issues when executing pmd-regression-tester - [BBG](https://github.com/djydewang)
+*   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1816](https://github.com/pmd/pmd/pull/1816): \[apex] Fix ApexDoc handling with inner classes - [Jeff Hube](https://github.com/jeffhube)
+*   [#1817](https://github.com/pmd/pmd/pull/1817): \[apex] Add configurable naming convention rules - [Jeff Hube](https://github.com/jeffhube)
+*   [#1819](https://github.com/pmd/pmd/pull/1819): \[cpp] \[cpd] Add support for digit separators - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1820](https://github.com/pmd/pmd/pull/1820): \[cpp] \[cpd] Improve support for raw string literals - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
