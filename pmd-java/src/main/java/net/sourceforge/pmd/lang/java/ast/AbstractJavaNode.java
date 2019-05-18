@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
@@ -32,7 +33,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
     @Override
     public void jjtClose() {
-        if (beginLine == -1 && (children == null || children.length == 0)) {
+        if (beginLine == -1 && children.length == 0) {
             beginColumn = parser.token.beginColumn;
         }
         if (beginLine == -1) {
@@ -62,22 +63,20 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
      */
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((JavaNode) children[i]).jjtAccept(visitor, data);
-            }
+        for (Node child : children) {
+            ((JavaNode) child).jjtAccept(visitor, data);
         }
+
         return data;
     }
 
 
     @Override
     public <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; i++) {
-                ((JavaNode) children[i]).jjtAccept(visitor, data);
-            }
+        for (Node child : children) {
+            ((JavaNode) child).jjtAccept(visitor, data);
         }
+
     }
 
 
