@@ -35,7 +35,11 @@ public class DartTokenizerTest extends AbstractTokenizerTest {
                 new Object[] { "escaped_backslash.dart", 14 },
                 new Object[] { "escaped_string.dart", 17 },
                 new Object[] { "increment.dart", 185 },
-                new Object[] { "imports.dart", 1 }
+                new Object[] { "imports.dart", 1 },
+                new Object[] { "regex.dart", 13 },
+                new Object[] { "regex2.dart", 13 },
+                new Object[] { "regex3.dart", 13 },
+                new Object[] { "string_with_backslashes.dart", 9 }
         );
     }
 
