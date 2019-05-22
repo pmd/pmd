@@ -106,6 +106,9 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
     }
 
+    // FIXME those are not in sync with JavaParserVisitorAdapter
+    // See #1786
+
     public Object visit(ASTAnnotation node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
     }

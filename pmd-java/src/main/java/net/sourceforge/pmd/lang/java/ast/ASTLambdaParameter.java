@@ -30,11 +30,11 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode {
     private boolean isFinal;
     private boolean isVarType;
 
-    public ASTLambdaParameter(int id) {
+    ASTLambdaParameter(int id) {
         super(id);
     }
 
-    public ASTLambdaParameter(JavaParser p, int id) {
+    ASTLambdaParameter(JavaParser p, int id) {
         super(p, id);
     }
 

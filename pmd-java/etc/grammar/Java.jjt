@@ -2516,7 +2516,6 @@ void PrimarySuffix() #void :
 | ("[" Expression() "]")            #ArrayAccess(2)
 // all the following start with a "."
 | LOOKAHEAD(2) "." "this"           #ThisExpression(1)
-// lookahead("." "new")
 | LOOKAHEAD(2) QualifiedAllocationExpr()
 | LOOKAHEAD("." [TypeArguments()] <IDENTIFIER>) MemberSelector() // more complex method call patterns
 }

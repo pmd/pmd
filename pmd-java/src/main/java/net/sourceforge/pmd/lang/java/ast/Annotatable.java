@@ -17,15 +17,23 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 public interface Annotatable extends JavaNode {
 
     /**
-     * Get all annotations present on this node.
-     *
-     * @return all annotations present on this node.
+     * Returns all annotations present on this node.
      */
     List<ASTAnnotation> getDeclaredAnnotations();
 
 
+    /**
+     * Returns the annotation with the given qualified name if it is present,
+     * otherwise returns null. The argument should be a qualified name, though
+     * this method will find also usages of an annotation that use the simple
+     * name if it is in scope.
+     *
+     * <p>E.g. {@code getAnnotation("java.lang.Override")} will find both
+     * {@code @java.lang.Override} and {@code @Override}.
+     */
     @Nullable
     default ASTAnnotation getAnnotation(String annotQualifiedName) {
+        // TODO use node streams
         List<ASTAnnotation> annotations = getDeclaredAnnotations();
         for (ASTAnnotation annotation : annotations) {
             if (TypeHelper.isA(annotation, annotQualifiedName)) {
@@ -36,6 +44,10 @@ public interface Annotatable extends JavaNode {
     }
 
 
+    /**
+     * Returns true if any annotation in the given collection is present,
+     * using {@link #isAnnotationPresent(String)}, otherwise false.
+     */
     default boolean isAnyAnnotationPresent(Collection<String> annotQualifiedNames) {
         for (String annotQualifiedName : annotQualifiedNames) {
             if (isAnnotationPresent(annotQualifiedName)) {
@@ -46,6 +58,11 @@ public interface Annotatable extends JavaNode {
     }
 
 
+    /**
+     * Returns true if an annotation with the given qualified name is
+     * applied to this node. In this case, {@link #getAnnotation(String)}
+     * will not return null.
+     */
     default boolean isAnnotationPresent(String annotQualifiedName) {
         return getAnnotation(annotQualifiedName) != null;
     }
