@@ -30,8 +30,8 @@ fun String.addArticle() = when (this[0].toLowerCase()) {
     else -> "a $this"
 }
 
-fun TreeNodeWrapper<Node, *>.annotation(spec: TreeNodeWrapper<Node, ASTAnnotation>.() -> Unit={}) =
-        child(ignoreChildren = false, nodeSpec = spec)
+fun TreeNodeWrapper<Node, *>.annotation(spec: TreeNodeWrapper<Node, ASTAnnotation>.() -> Unit = EmptyAssertions) =
+        child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
 
 
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =

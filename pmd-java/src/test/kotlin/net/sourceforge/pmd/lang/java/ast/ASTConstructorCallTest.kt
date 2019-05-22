@@ -39,7 +39,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getExplicitTypeArguments shouldBe null
 
-            child<ASTMarkerAnnotation> {
+            annotation {
                 it::getAnnotationName shouldBe "Lol"
             }
 
@@ -139,7 +139,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getExplicitTypeArguments shouldBe null
 
-            child<ASTMarkerAnnotation> {
+            annotation {
                 it::getAnnotationName shouldBe "Lol"
             }
 
