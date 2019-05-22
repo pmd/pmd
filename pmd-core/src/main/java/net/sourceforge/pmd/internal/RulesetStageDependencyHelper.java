@@ -79,10 +79,10 @@ public class RulesetStageDependencyHelper {
         SortedSet<AstProcessingStage<?>> result = new TreeSet<>();
 
         // this loops runs until either all stages have already been
-        // picked or there are still rules left
+        // picked or there are no rules left, whichever comes first
         for (Rule rule : ruleSets.getAllRules()) {
             if (stages.isEmpty()) {
-                return Collections.unmodifiableList(new ArrayList<>(result));
+                break; // to the return
             }
             for (AstProcessingStage<?> stage : stages) {
                 if (rule.dependsOn(stage)) {
