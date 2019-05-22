@@ -25,7 +25,7 @@ class ASTCastExpressionTest : ParserTestSpec({
 
         "(@F Foo) obj" should matchExpr<ASTCastExpression> {
 
-            annotation()
+            annotation("F")
 
             it::getCastType shouldBe child<ASTClassOrInterfaceType> {
 
@@ -53,7 +53,7 @@ class ASTCastExpressionTest : ParserTestSpec({
 
         "(@F Foo & Bar) obj" should matchExpr<ASTCastExpression> {
 
-            annotation()
+            annotation("F")
 
             it::getCastType shouldBe child<ASTIntersectionType> {
 

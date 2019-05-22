@@ -34,10 +34,29 @@ fun TreeNodeWrapper<Node, *>.annotation(spec: TreeNodeWrapper<Node, ASTAnnotatio
         child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
 
 
+fun TreeNodeWrapper<Node, *>.annotation(name: String, spec: TreeNodeWrapper<Node, ASTAnnotation>.() -> Unit = EmptyAssertions) =
+        child<ASTAnnotation>(ignoreChildren = spec == EmptyAssertions) {
+            it::getAnnotationName shouldBe name
+            spec()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: TreeNodeWrapper<Node, ASTEnumConstant>.() -> Unit = EmptyAssertions) =
+        child<ASTEnumConstant> {
+            it::getName shouldBe name
+            spec()
+        }
+
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
         child<ASTVariableDeclaratorId>(ignoreChildren = true) {
             it::getVariableName shouldBe name
             otherAssertions(it)
+        }
+
+fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: TreeNodeWrapper<Node, ASTVariableDeclarator>.() -> Unit = EmptyAssertions) =
+        child<ASTVariableDeclarator> {
+            it::getVariableId shouldBe variableId(name)
+            spec()
         }
 
 
@@ -79,6 +98,34 @@ fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<
             it::getBaseExpression shouldBe baseExpr()
         }
 
+fun TreeNodeWrapper<Node, *>.typeParamList(contents: TreeNodeWrapper<Node, ASTTypeParameters>.() -> Unit) =
+        child(nodeSpec = contents)
+
+fun TreeNodeWrapper<Node, *>.typeArgList(contents: TreeNodeWrapper<Node, ASTTypeArguments>.() -> Unit = EmptyAssertions) =
+        child(ignoreChildren = contents == EmptyAssertions, nodeSpec = contents)
+
+fun TreeNodeWrapper<Node, *>.diamond() =
+        child<ASTTypeArguments> {
+            it::isDiamond shouldBe true
+        }
+
+fun TreeNodeWrapper<Node, *>.block(contents: TreeNodeWrapper<Node, ASTBlock>.() -> Unit = EmptyAssertions) =
+        child<ASTBlock>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.fieldDecl(contents: TreeNodeWrapper<Node, ASTFieldDeclaration>.() -> Unit) =
+        child<ASTFieldDeclaration> {
+            contents()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.typeParam(name: String, contents: TreeNodeWrapper<Node, ASTTypeParameter>.() -> ASTType? = { null }) =
+        child<ASTTypeParameter> {
+            it::getParameterName shouldBe name
+            it::getTypeBoundNode shouldBe contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: TreeNodeWrapper<Node, ASTClassOrInterfaceType>.() -> Unit = EmptyAssertions) =
         child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
             it::getSimpleName shouldBe simpleName
@@ -96,6 +143,25 @@ fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType)
 fun TreeNodeWrapper<Node, *>.castExpr(contents: TreeNodeWrapper<Node, ASTCastExpression>.() -> Unit) =
         child<ASTCastExpression> {
             contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: TreeNodeWrapper<Node, ASTStringLiteral>.() -> Unit = EmptyAssertions) =
+        child<ASTStringLiteral> {
+            it::getImage shouldBe image
+            contents()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.ambiguousName(image: String, contents: TreeNodeWrapper<Node, ASTAmbiguousName>.() -> Unit = EmptyAssertions) =
+        child<ASTAmbiguousName> {
+            it::getImage shouldBe image
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: TreeNodeWrapper<Node, ASTMemberValuePair>.() -> ASTMemberValue) =
+        child<ASTMemberValuePair> {
+            it::getMemberName shouldBe name
+            it::getMemberValue shouldBe contents()
         }
 
 

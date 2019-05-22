@@ -397,6 +397,20 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                     acu.getFirstDescendantOfType(ASTCastExpression::class.java).castType
         }
 
+        object AnnotationParsingCtx : NodeParsingCtx<ASTAnnotation>("annotation") {
+            override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
+                """
+                ${ctx.imports.joinToString(separator = "\n")}
+                ${ctx.genClassHeader} {
+                    Object f = ($construct Type) null;
+                }
+                """.trimIndent()
+
+            override fun retrieveNode(acu: ASTCompilationUnit): ASTAnnotation =
+                    acu.getFirstDescendantOfType(ASTCastExpression::class.java)
+                       .getFirstChildOfType(ASTAnnotation::class.java)
+        }
+
         object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parameters") {
             override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
                     """
