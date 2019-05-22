@@ -13,7 +13,6 @@ import java.util.Locale;
  */
 public final class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLiteral {
 
-    // TODO all of this can be done in jjtCloseNodeScope
     /**
      * True if this is an integral literal, ie int OR long,
      * false if this is a floating-point literal, ie float OR double.
@@ -31,9 +30,6 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
     }
 
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -61,12 +57,9 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
        return isIntegral && !isLongLiteral();
     }
 
+    // TODO all of this can be done once in jjtCloseNodeScope
 
-    /**
-     * Checks whether this literal is a long integer.
-     *
-     * @return <code>true</code> if this literal is a long
-     */
+
     @Override
     public boolean isLongLiteral() {
         if (isIntegral) {
@@ -89,11 +82,6 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
     }
 
 
-    /**
-     * Checks whether this literal describes a double.
-     *
-     * @return <code>true</code> if this literal is a double.
-     */
     @Override
     public boolean isDoubleLiteral() {
         return !isIntegral && !isFloatLiteral();
@@ -101,13 +89,9 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
 
 
     private String stripIntValue() {
-        String image = getImage().toLowerCase(Locale.ROOT).replaceAll("_", "");
+        String image = getImage().toLowerCase(Locale.ROOT).replaceAll("_++", "");
 
-        boolean isNegative = false;
-        if (image.charAt(0) == '-') {
-            isNegative = true;
-            image = image.substring(1);
-        }
+        // literals never have a sign.
 
         char last = image.charAt(image.length() - 1);
         // This method is only called if this is an int,
@@ -126,33 +110,34 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
             }
         }
 
-        if (isNegative) {
-            return "-" + image;
-        }
         return image;
     }
 
 
     private String stripFloatValue() {
-        return getImage().toLowerCase(Locale.ROOT).replaceAll("[_l]", "");
+        // This method is only called if this is a floating point literal.
+        // there can't be any 'l' suffix that the double parser doesn't support,
+        // so it's enough to just remove underscores
+        return getImage().replaceAll("_++", "");
     }
-
 
     private int getIntBase() {
         final String image = getImage().toLowerCase(Locale.ROOT);
-        final int offset = image.charAt(0) == '-' ? 1 : 0;
-        if (image.startsWith("0x", offset)) {
+        if (image.startsWith("0x")) {
             return 16;
         }
-        if (image.startsWith("0b", offset)) {
+        if (image.startsWith("0b")) {
             return 2;
         }
-        if (image.startsWith("0", offset) && image.length() > 1) {
+        if (image.startsWith("0") && image.length() > 1) {
             return 8;
         }
         return 10;
     }
 
+    // From 7.0.x, these methods always return a meaningful number, the
+    // closest we can find.
+    // In 6.0.x, eg getValueAsInt was giving up when this was a double.
 
     public int getValueAsInt() {
         if (isIntegral) {
@@ -183,6 +168,5 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
     public double getValueAsDouble() {
         return isIntegral ? (double) getValueAsLong() : Double.parseDouble(stripFloatValue());
     }
-
 
 }
