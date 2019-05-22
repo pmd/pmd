@@ -187,7 +187,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         GenericToken thisFst = jjtGetFirstToken();
         GenericToken childFst = child.jjtGetFirstToken();
 
-        if (TokenOps.isBefore(childFst, thisFst)) {
+        if (TokenUtils.isBefore(childFst, thisFst)) {
             jjtSetFirstToken(childFst);
         }
     }
@@ -196,7 +196,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         GenericToken thisLast = jjtGetLastToken();
         GenericToken childLast = child.jjtGetLastToken();
 
-        if (TokenOps.isAfter(childLast, thisLast)) {
+        if (TokenUtils.isAfter(childLast, thisLast)) {
             jjtSetLastToken(childLast);
         }
     }
@@ -235,9 +235,9 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
             return token;
         } else if (shift < 0) {
             // expects a positive shift
-            return TokenOps.nthPrevious(jjtGetFirstToken(), token, -shift);
+            return TokenUtils.nthPrevious(jjtGetFirstToken(), token, -shift);
         } else {
-            return TokenOps.nthFollower(token, shift);
+            return TokenUtils.nthFollower(token, shift);
         }
     }
 

@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  *
  * @author Clément Fournier
  */
-final class TokenOps {
+final class TokenUtils {
 
     /**
      * Assumes no two tokens overlap, and that the two tokens are from
@@ -25,7 +25,7 @@ final class TokenOps {
     private static final Comparator<GenericToken> TOKEN_POS_COMPARATOR
         = Comparator.comparing(GenericToken::getBeginLine).thenComparing(GenericToken::getBeginColumn);
 
-    private TokenOps() {
+    private TokenUtils() {
 
     }
 

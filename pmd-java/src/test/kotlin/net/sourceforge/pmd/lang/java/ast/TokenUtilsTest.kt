@@ -16,7 +16,7 @@ import java.lang.IllegalArgumentException
 /**
  * @author Clément Fournier
  */
-class TokenOpsTest : FunSpec({
+class TokenUtilsTest : FunSpec({
 
     fun setup1(assertions: Assertions<List<GenericToken>>) {
         with(ParserTestCtx(JavaVersion.J11)) {
@@ -45,9 +45,9 @@ class TokenOpsTest : FunSpec({
 
             val absToken = fileTokens[3].also { it.image shouldBe "abstract" }
 
-            TokenOps.nthPrevious(fileTokens[0], absToken, 1).image shouldBe "{"
-            TokenOps.nthPrevious(fileTokens[0], absToken, 2).image shouldBe "Foo"
-            TokenOps.nthPrevious(fileTokens[0], absToken, 3).image shouldBe "class"
+            TokenUtils.nthPrevious(fileTokens[0], absToken, 1).image shouldBe "{"
+            TokenUtils.nthPrevious(fileTokens[0], absToken, 2).image shouldBe "Foo"
+            TokenUtils.nthPrevious(fileTokens[0], absToken, 3).image shouldBe "class"
         }
     }
 
@@ -56,12 +56,12 @@ class TokenOpsTest : FunSpec({
         setup1 { fileTokens ->
             // hint is after
             shouldThrow<IllegalStateException> {
-                TokenOps.nthPrevious(fileTokens[4], fileTokens[3], 1)
+                TokenUtils.nthPrevious(fileTokens[4], fileTokens[3], 1)
             }
 
             // same hint
             shouldThrow<IllegalStateException> {
-                TokenOps.nthPrevious(fileTokens[3], fileTokens[3], 2)
+                TokenUtils.nthPrevious(fileTokens[3], fileTokens[3], 2)
             }
         }
     }
@@ -70,7 +70,7 @@ class TokenOpsTest : FunSpec({
 
         setup1 { fileTokens ->
             shouldThrow<NoSuchElementException> {
-                TokenOps.nthPrevious(fileTokens[0], fileTokens[3], 4)
+                TokenUtils.nthPrevious(fileTokens[0], fileTokens[3], 4)
             }
         }
     }
@@ -79,7 +79,7 @@ class TokenOpsTest : FunSpec({
 
         setup1 { fileTokens ->
             shouldThrow<IllegalArgumentException> {
-                TokenOps.nthPrevious(fileTokens[0], fileTokens[3], -15)
+                TokenUtils.nthPrevious(fileTokens[0], fileTokens[3], -15)
             }
         }
     }
@@ -89,9 +89,9 @@ class TokenOpsTest : FunSpec({
     test("Test nth following token, normal cases") {
 
         setup1 { fileTokens ->
-            TokenOps.nthFollower(fileTokens[3], 0).image shouldBe "abstract"
-            TokenOps.nthFollower(fileTokens[3], 1).image shouldBe "void"
-            TokenOps.nthFollower(fileTokens[3], 2).image shouldBe "bar"
+            TokenUtils.nthFollower(fileTokens[3], 0).image shouldBe "abstract"
+            TokenUtils.nthFollower(fileTokens[3], 1).image shouldBe "void"
+            TokenUtils.nthFollower(fileTokens[3], 2).image shouldBe "bar"
         }
     }
 
@@ -99,7 +99,7 @@ class TokenOpsTest : FunSpec({
 
         setup1 { fileTokens ->
             shouldThrow<NoSuchElementException> {
-                TokenOps.nthFollower(fileTokens[3], 15)
+                TokenUtils.nthFollower(fileTokens[3], 15)
             }
         }
     }
@@ -108,7 +108,7 @@ class TokenOpsTest : FunSpec({
 
         setup1 { fileTokens ->
             shouldThrow<IllegalArgumentException> {
-                TokenOps.nthFollower(fileTokens[3], -15)
+                TokenUtils.nthFollower(fileTokens[3], -15)
             }
         }
     }
