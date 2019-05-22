@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FunSpec
+import net.sourceforge.pmd.lang.ast.test.shouldBe
+
 
 /**
  * @author Clément Fournier
@@ -35,9 +35,10 @@ class ASTArrayTypeTest : ParserTestSpec({
                 it::getImage shouldBe "ArrayTypes"
             }
 
-            child<ASTArrayDimsAndInits> {
-                child<ASTArrayInitializer> { }
+            child<ASTArrayAllocationDims> {
+                unspecifiedChildren(3)
             }
+            child<ASTArrayInitializer> { }
         }
     }
 
