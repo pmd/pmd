@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -89,18 +91,37 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     }
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {
+        Class<?> declaration = method.getDeclaringClass();
         if (method.isAnnotationPresent(NoAttribute.class)) {
             return true;
-        } else if (nodeClass.isAnnotationPresent(NoAttribute.class)) {
-            NoAttrScope annotation = nodeClass.getAnnotation(NoAttribute.class).scope();
-            Class declaration = method.getDeclaringClass();
-            return annotation == NoAttrScope.ALL
-                || annotation == NoAttrScope.INHERITED
-                && !declaration.equals(nodeClass)
-                && declaration != Node.class
-                && declaration != AbstractNode.class;
+        } else {
+
+            if (declaration == Node.class || declaration == AbstractNode.class) {
+                // attributes from Node and AbstractNode are never suppressed
+                // we don't know what might go wrong if we do suppress them
+                return false;
+            }
+
+            NoAttribute declAnnot = declaration.getAnnotation(NoAttribute.class);
+
+            if (declAnnot != null && declAnnot.scope() == NoAttrScope.ALL) {
+                // then the parent didn't want children to inherit the attr
+                return true;
+            }
+
+
+            NoAttribute localAnnot = nodeClass.getAnnotation(NoAttribute.class);
+
+            if (localAnnot == null) {
+                return false;
+            } else if (declaration != nodeClass) {
+                // then the node suppressed the attributes of its parent
+                return localAnnot.scope() == NoAttrScope.INHERITED;
+            } else {
+                // then declaration == nodeClass so we need the scope to be ALL
+                return localAnnot.scope() == NoAttrScope.ALL;
+            }
         }
-        return false;
     }
 
     private boolean isConsideredReturnType(Class<?> klass) {
