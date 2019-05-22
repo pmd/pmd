@@ -1230,30 +1230,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTAnnotation node, Object data) {
         super.visit(node, data);
-        rollupTypeUnary(node);
+        // FIXME this is a hack because visit(ASTName) is too powerful,
+        // Annotations don't have a Name node anymore so we imitate this
+        ASTName name = new ASTName(node.getImage());
+        name.jjtSetParent(node);
+        visit(name, data);
+        if (name.getTypeDefinition() != null) {
+            node.setTypeDefinition(name.getTypeDefinition());
+        }
         return data;
     }
 
-    @Override
-    public Object visit(ASTNormalAnnotation node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTMarkerAnnotation node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTSingleMemberAnnotation node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
 
     // Roll up the type based on type of the first child node.
     private void rollupTypeUnary(TypeNode typeNode) {
