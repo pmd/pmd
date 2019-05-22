@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -28,7 +29,7 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
     public Object visit(ASTResource node, Object data) {
         // is this a concise resource reference?
         if (node.jjtGetNumChildren() == 1) {
-            ASTName nameNode = (ASTName) node.jjtGetChild(0);
+            ASTExpression nameNode = (ASTExpression) node.jjtGetChild(0);
             for (StringTokenizer st = new StringTokenizer(nameNode.getImage(), "."); st.hasMoreTokens();) {
                 JavaNameOccurrence occ = new JavaNameOccurrence(nameNode, st.nextToken());
                 new Search(occ).execute();
