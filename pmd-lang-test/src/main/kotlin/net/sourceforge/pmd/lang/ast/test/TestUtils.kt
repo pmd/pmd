@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.test
 
-import io.kotlintest.should
+import io.kotlintest.Matcher
+import io.kotlintest.equalityMatcher
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
-import io.kotlintest.shouldBe as ktShouldBe
+import io.kotlintest.should
 
 /**
  * Extension to add the name of a property to error messages.
@@ -15,7 +16,12 @@ import io.kotlintest.shouldBe as ktShouldBe
  * @see [shouldBe].
  */
 infix fun <N, V : N> KCallable<N>.shouldEqual(expected: V?) =
-        assertWrapper(this, expected) { n, v -> n ktShouldBe v }
+        assertWrapper(this, expected) { n, v ->
+            // using shouldBe would perform numeric conversion
+            // eg (3.0 shouldBe 3L) passes, even though (3.0 != 3L)
+            // equalityMatcher doesn't do this conversion
+            n.should(equalityMatcher(v) as Matcher<N>)
+        }
 
 private fun <N, V> assertWrapper(callable: KCallable<N>, right: V, asserter: (N, V) -> Unit) {
 

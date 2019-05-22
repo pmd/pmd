@@ -76,9 +76,23 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
 
 }
 
+private val javaImplicitAssertions: Assertions<Node> = {
+    DefaultMatchingConfig.implicitAssertions(it)
+
+    if (it is ASTLiteral) {
+        it::isNumericLiteral shouldBe (it is ASTNumericLiteral)
+        it::isCharLiteral shouldBe (it is ASTCharLiteral)
+        it::isClassLiteral shouldBe (it is ASTClassLiteral)
+        it::isStringLiteral shouldBe (it is ASTStringLiteral)
+        it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
+        it::isNullLiteral shouldBe (it is ASTNullLiteral)
+    }
+}
+
 
 val JavaMatchingConfig = DefaultMatchingConfig.copy(
-        errorPrinter = CustomTreePrinter
+        errorPrinter = CustomTreePrinter,
+        implicitAssertions = javaImplicitAssertions
 )
 
 /** Java-specific matching method. */

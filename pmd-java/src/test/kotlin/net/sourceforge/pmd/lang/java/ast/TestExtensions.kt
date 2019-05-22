@@ -4,6 +4,7 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldMatch
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
 
@@ -196,8 +197,19 @@ fun TreeNodeWrapper<Node, *>.switchExpr(assertions: TreeNodeWrapper<Node, ASTSwi
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.number() =
-        child<ASTNumericLiteral> {}
+fun TreeNodeWrapper<Node, *>.number(primitiveType: ASTPrimitiveType.PrimitiveType? = null, assertions: TreeNodeWrapper<Node, ASTNumericLiteral>.() -> Unit = EmptyAssertions) =
+        child<ASTNumericLiteral> {
+            if (primitiveType != null) {
+                it::getPrimitiveType shouldBe primitiveType
+
+                it::isIntLiteral shouldBe (primitiveType == INT)
+                it::isDoubleLiteral shouldBe (primitiveType == DOUBLE)
+                it::isFloatLiteral shouldBe (primitiveType == FLOAT)
+                it::isLongLiteral shouldBe (primitiveType == LONG)
+            }
+
+            assertions()
+        }
 
 fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =
         child<ASTBooleanLiteral> {
