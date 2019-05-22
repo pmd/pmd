@@ -1,7 +1,16 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.test.NodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_6
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_7
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
@@ -159,10 +168,7 @@ class ASTLiteralTest : ParserTestSpec({
 
         "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
             it::getOp shouldBe UnaryOp.UNARY_MINUS
-            it::getBaseExpression shouldBe child<ASTNumericLiteral> {
-                it::isCharLiteral shouldBe false
-                it::isNumericLiteral shouldBe true
-                it::isIntLiteral shouldBe true
+            it::getBaseExpression shouldBe number(INT) {
                 it::getImage shouldBe "0X0000_000f"
                 it::getValueAsInt shouldBe 15
                 it::getValueAsFloat shouldBe 15f
@@ -213,11 +219,7 @@ class ASTLiteralTest : ParserTestSpec({
         "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
             it::getOp shouldBe UnaryOp.UNARY_MINUS
 
-            it::getBaseExpression shouldBe child<ASTNumericLiteral> {
-                it::isIntLiteral shouldBe false
-                it::isDoubleLiteral shouldBe true
-                it::isNumericLiteral shouldBe true
-                it::isFloatLiteral shouldBe false
+            it::getBaseExpression shouldBe number(DOUBLE) {
                 it::getValueAsInt shouldBe 3456
                 it::getValueAsFloat shouldBe 3456.123456f
                 it::getValueAsDouble shouldBe 3456.123456
@@ -233,30 +235,110 @@ class ASTLiteralTest : ParserTestSpec({
         // p1  multiplies by 2
         // p-1 divides by 2
 
-        "0x0fp1f" should matchExpr<ASTNumericLiteral> {
-            it::isIntLiteral shouldBe false
-            it::isDoubleLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isLongLiteral shouldBe false
-            it::isFloatLiteral shouldBe true
+        inContext(ExpressionParsingCtx) {
 
-            it::getValueAsDouble shouldBe 30.0
-            it::getValueAsFloat shouldBe 30f
-            it::getValueAsInt shouldBe 30
+            val exp30f: NodeSpec<*> = {
+                number(FLOAT) {
+                    it::getValueAsDouble shouldBe 30.0
+                    it::getValueAsFloat shouldBe 30f
+                    it::getValueAsInt shouldBe 30
+                }
+            }
+
+
+            "0x0fp1f" should parseAs(exp30f)
+
+            @Suppress("LocalVariableName")
+            val exp7_5d: NodeSpec<*> = {
+                number(DOUBLE) {
+                    it::getValueAsDouble shouldBe 7.5
+                    it::getValueAsFloat shouldBe 7.5f
+                    it::getValueAsInt shouldBe 7
+                }
+            }
+
+            "0x0fp-1" should parseAs(exp7_5d)
+            "0x0fp-1d" should parseAs(exp7_5d)
+
+            // the L is forbidden, since it's floating point
+            "0x0fp1l" shouldNot parse()
+        }
+    }
+
+    parserTest("Hex integral literals") {
+
+
+        inContext(ExpressionParsingCtx) {
+
+            fun hex15(type: PrimitiveType): TreeNodeWrapper<Node, *>.() -> ASTNumericLiteral = {
+                number(type) {
+                    it::getValueAsDouble shouldBe 15.0
+                    it::getValueAsFloat shouldBe 15f
+                    it::getValueAsInt shouldBe 15
+                    it::getValueAsLong shouldBe 15L
+                }
+            }
+
+            "0x0fl" should parseAs(hex15(LONG))
+            "0x0fL" should parseAs(hex15(LONG))
+            "0X0fl" should parseAs(hex15(LONG))
+            "0X0fL" should parseAs(hex15(LONG))
+            "0X0FL" should parseAs(hex15(LONG))
+            "0x0f" should parseAs(hex15(INT))
+            "0x0F" should parseAs(hex15(INT))
+            "0X0f" should parseAs(hex15(INT))
+            "0X0F" should parseAs(hex15(INT))
+            "0x0_0__0f" should parseAs(hex15(INT))
+            "0x0_0__0F" should parseAs(hex15(INT))
+
+            "-0X0000_000f" should parseAs {
+                unaryExpr(UnaryOp.UNARY_MINUS) {
+                    hex15(INT)()
+                }
+            }
+        }
+    }
+
+    parserTestGroup("Binary numeric literals") {
+
+        onVersions(Earliest..J1_6) {
+            // binary literals were introduced in 1.7
+
+            inContext(ExpressionParsingCtx) {
+
+                "0b011" shouldNot parse()
+                "0B011" shouldNot parse()
+                "0B0_1__1" shouldNot parse()
+
+                "0B0_1__1l" shouldNot parse()
+                "0b0_11L" shouldNot parse()
+
+            }
         }
 
-        "0x0fp-1" should matchExpr<ASTNumericLiteral> {
-            it::isIntLiteral shouldBe false
-            it::isDoubleLiteral shouldBe true
-            it::isNumericLiteral shouldBe true
-            it::isLongLiteral shouldBe false
-            it::isFloatLiteral shouldBe false
+        onVersions(J1_7..Latest) {
+            fun binaryThree(type: PrimitiveType): NodeSpec<*> = {
+                number(type) {
+                    it::getValueAsDouble shouldBe 3.0
+                    it::getValueAsFloat shouldBe 3f
+                    it::getValueAsInt shouldBe 3
+                    it::getValueAsLong shouldBe 3L
+                }
+            }
 
-            it::getValueAsDouble shouldBe 7.5
-            it::getValueAsFloat shouldBe 7.5f
-            it::getValueAsInt shouldBe 7
+            inContext(ExpressionParsingCtx) {
+                "0b011" should parseAs(binaryThree(INT))
+                "0B011" should parseAs(binaryThree(INT))
+                "0B0_1__1" should parseAs(binaryThree(INT))
+
+                "0B0_1__1l" should parseAs(binaryThree(LONG))
+                "0b0_11L" should parseAs(binaryThree(LONG))
+
+                "0b05" shouldNot parse()
+                "0b_1" shouldNot parse()
+                "0b1_" shouldNot parse()
+            }
         }
-
     }
 
 })

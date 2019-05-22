@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.math.BigInteger;
 import java.util.Locale;
 
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
+
 
 /**
  * A numeric literal of any type (double, int, long, float, etc).
@@ -59,6 +61,13 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
 
     // TODO all of this can be done once in jjtCloseNodeScope
 
+    public PrimitiveType getPrimitiveType() {
+        if (isIntegral) {
+            return isLongLiteral() ? PrimitiveType.LONG : PrimitiveType.INT;
+        }else {
+            return isFloatLiteral() ? PrimitiveType.FLOAT : PrimitiveType.DOUBLE;
+        }
+    }
 
     @Override
     public boolean isLongLiteral() {
