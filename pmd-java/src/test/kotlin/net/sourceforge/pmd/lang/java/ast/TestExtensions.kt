@@ -46,6 +46,11 @@ fun TreeNodeWrapper<Node, *>.variableRef(name: String, otherAssertions: (ASTVari
             it::getVariableName shouldBe name
             otherAssertions(it)
         }
+fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, otherAssertions: TreeNodeWrapper<Node, ASTFieldAccess>.() -> Unit) =
+        child<ASTFieldAccess> {
+            it::getFieldName shouldBe name
+            otherAssertions()
+        }
 
 fun TreeNodeWrapper<Node, *>.parenthesized(inside: TreeNodeWrapper<Node, ASTParenthesizedExpression>.() -> ASTExpression) =
         child<ASTParenthesizedExpression> {
@@ -97,6 +102,17 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: TreeNodeWrapper<Node, ASTCastExp
 fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: TreeNodeWrapper<Node, ASTAdditiveExpression>.() -> Unit) =
         child<ASTAdditiveExpression> {
             it::getOp shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.equalityExpr(op: BinaryOp, assertions: TreeNodeWrapper<Node, ASTEqualityExpression>.() -> Unit) =
+        child<ASTEqualityExpression> {
+            it::getOp shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.andExpr(assertions: TreeNodeWrapper<Node, ASTAndExpression>.() -> Unit) =
+        child<ASTAndExpression> {
             assertions()
         }
 

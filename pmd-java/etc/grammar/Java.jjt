@@ -503,18 +503,6 @@ public class JavaParser {
        }
   }
 
-  private boolean nextIsPlusOrMinus() {
-        switch (getToken(1).kind) {
-            case PLUS:
-            case MINUS:
-            case INCR:
-            case DECR:
-                return true;
-            default:
-                return false;
-        }
-  }
-
 }
 PARSER_END(JavaParser)
 
@@ -2426,10 +2414,21 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
 | LOOKAHEAD("(" TypeAnnotationList() PrimitiveType() ")")
     ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
  // here we avoid looking ahead for a whole unary expression, instead just testing the token after ")"
-| LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" LOOKAHEAD({!nextIsPlusOrMinus()}) )
+| LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExprNotPmStart() )
     ("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
 | PostfixExpression()
 | SwitchExpression()
+}
+
+private void UnaryExprNotPmStart() #void:
+{}
+{
+   //  Condensed FIRST set of UnaryExpressionNotPlusMinus
+   //  Avoid looking ahead for a whole UnaryExpressionNotPlusMinus, but just for a token
+
+   "~" | "!" | "(" | "switch" | "new" | "this" | "super" | Literal()
+   | <IDENTIFIER>
+   | "void" | PrimitiveType()
 }
 
 void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
