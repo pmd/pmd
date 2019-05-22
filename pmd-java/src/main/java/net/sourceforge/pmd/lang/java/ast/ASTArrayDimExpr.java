@@ -36,7 +36,7 @@ public final class ASTArrayDimExpr extends AbstractJavaTypeNode {
     }
 
 
-    ASTExpression getLengthExpression() {
+    public ASTExpression getLengthExpression() {
         return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
     }
 

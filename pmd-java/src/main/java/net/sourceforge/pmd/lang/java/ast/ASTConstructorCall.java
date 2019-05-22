@@ -13,8 +13,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * ClassInstanceCreationExpression   ::= UnqualifiedAlloc
- *                                     | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc
+ * ConstructorCall   ::= UnqualifiedAlloc
+ *                     | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc
  *
  * UnqualifiedAlloc                  ::=
  *      "new" {@link ASTTypeArguments TypeArguments}? ClassOrInterfaceTypeToInstantiate {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
