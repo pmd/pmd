@@ -153,4 +153,39 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
         // so we don't test those
     }
+
+    parserTest("Neg tests, not explicit invocations") {
+
+
+        "Foo() { this.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTBlockStatement>(ignoreChildren = true) {}
+        }
+
+        "Foo() { super.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTBlockStatement>(ignoreChildren = true) {}
+        }
+
+        "Foo() { super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTBlockStatement>(ignoreChildren = true) {}
+        }
+
+
+        "Foo() { A.super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTBlockStatement>(ignoreChildren = true) {}
+        }
+
+    }
+
 })

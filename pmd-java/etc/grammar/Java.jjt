@@ -1950,18 +1950,20 @@ Token t;}
 void ExplicitConstructorInvocation() :
 {}
 {
-  LOOKAHEAD("this" ArgumentList() ";") "this" ArgumentList() ";"
-|
-  LOOKAHEAD(TypeArguments() "this" ArgumentList() ";") TypeArguments() "this" ArgumentList() ";"
-|
-  [LOOKAHEAD(PrimaryExpression() "." SuperInvocationTail()) PrimaryExpression() "." ] SuperInvocationTail() {jjtThis.setIsSuper();}
+   // We may only lookahead one token here, because:
+   // * "this" or "super" can't appear in the primary expression in case of
+   //   qualified super call (last branch), or else compile error, so if we
+   //   see one of them, then the rest is necessarily the arguments
+   // * No primary expression may start with "<", meaning we can use it to
+   //   know we're looking forward to type arguments
+  ( LOOKAHEAD("<")      TypeArguments() ( "this" | "super" {jjtThis.setIsSuper();} )
+  | LOOKAHEAD("this")   "this"
+  | LOOKAHEAD("super")  "super"                            {jjtThis.setIsSuper();}
+  | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
+  )
+  ArgumentList() ";"
 }
 
-void SuperInvocationTail() #void:
-{}
-{
-   [ TypeArguments() ] "super" ArgumentList() ";"
-}
 
 void Initializer() :
 {}
