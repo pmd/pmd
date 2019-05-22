@@ -2,6 +2,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * @author Clément Fournier
@@ -156,12 +157,17 @@ class ASTLiteralTest : ParserTestSpec({
             it::getImage shouldBe "0b0000_0010"
         }
 
-        "-0X0000_000f" should matchExpr<ASTNumericLiteral> {
-            it::isCharLiteral shouldBe false
-            it::isNumericLiteral shouldBe true
-            it::isIntLiteral shouldBe true
-            it::getValueAsInt shouldBe -15
-            it::getImage shouldBe "-0X0000_000f"
+        "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getBaseExpression shouldBe child<ASTNumericLiteral> {
+                it::isCharLiteral shouldBe false
+                it::isNumericLiteral shouldBe true
+                it::isIntLiteral shouldBe true
+                it::getImage shouldBe "0X0000_000f"
+                it::getValueAsInt shouldBe 15
+                it::getValueAsFloat shouldBe 15f
+                it::getValueAsDouble shouldBe 15.0
+            }
         }
 
         "12l" should matchExpr<ASTNumericLiteral> {
@@ -204,15 +210,51 @@ class ASTLiteralTest : ParserTestSpec({
             it::getImage shouldBe "12f"
         }
 
-        "-3_456.123_456" should matchExpr<ASTNumericLiteral> {
+        "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
+            it::getOp shouldBe UnaryOp.UNARY_MINUS
+
+            it::getBaseExpression shouldBe child<ASTNumericLiteral> {
+                it::isIntLiteral shouldBe false
+                it::isDoubleLiteral shouldBe true
+                it::isNumericLiteral shouldBe true
+                it::isFloatLiteral shouldBe false
+                it::getValueAsInt shouldBe 3456
+                it::getValueAsFloat shouldBe 3456.123456f
+                it::getValueAsDouble shouldBe 3456.123456
+                it::getImage shouldBe "3_456.123_456"
+            }
+        }
+
+    }
+
+    parserTest("Hex floating point literals") {
+
+        // the exponent is binary:
+        // p1  multiplies by 2
+        // p-1 divides by 2
+
+        "0x0fp1f" should matchExpr<ASTNumericLiteral> {
+            it::isIntLiteral shouldBe false
+            it::isDoubleLiteral shouldBe false
+            it::isNumericLiteral shouldBe true
+            it::isLongLiteral shouldBe false
+            it::isFloatLiteral shouldBe true
+
+            it::getValueAsDouble shouldBe 30.0
+            it::getValueAsFloat shouldBe 30f
+            it::getValueAsInt shouldBe 30
+        }
+
+        "0x0fp-1" should matchExpr<ASTNumericLiteral> {
             it::isIntLiteral shouldBe false
             it::isDoubleLiteral shouldBe true
             it::isNumericLiteral shouldBe true
+            it::isLongLiteral shouldBe false
             it::isFloatLiteral shouldBe false
-            it::getValueAsInt shouldBe -3456
-            it::getValueAsFloat shouldBe -3456.123456f
-            it::getValueAsDouble shouldBe -3456.123456
-            it::getImage shouldBe "-3_456.123_456"
+
+            it::getValueAsDouble shouldBe 7.5
+            it::getValueAsFloat shouldBe 7.5f
+            it::getValueAsInt shouldBe 7
         }
 
     }

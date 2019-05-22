@@ -13,10 +13,12 @@ import java.util.Locale;
  */
 public final class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLiteral {
 
-    // by default is double
     // TODO all of this can be done in jjtCloseNodeScope
-    private boolean isInt;
-    private boolean isFloat;
+    /**
+     * True if this is an integral literal, ie int OR long,
+     * false if this is a floating-point literal, ie float OR double.
+     */
+    private boolean isIntegral;
 
 
     ASTNumericLiteral(int id) {
@@ -45,22 +47,18 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
 
 
     void setIntLiteral() {
-        this.isInt = true;
+        this.isIntegral = true;
     }
 
 
     void setFloatLiteral() {
-        this.isFloat = true;
+        this.isIntegral = false;
     }
 
 
     @Override
     public boolean isIntLiteral() {
-        String image = getImage();
-        if (isInt && image != null && image.length() > 0) {
-            return !image.endsWith("l") && !image.endsWith("L");
-        }
-        return false;
+       return isIntegral && !isLongLiteral();
     }
 
 
@@ -71,19 +69,19 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
      */
     @Override
     public boolean isLongLiteral() {
-        String image = getImage();
-        if (isInt && image != null && image.length() > 0) {
-            return image.endsWith("l") || image.endsWith("L");
+        if (isIntegral) {
+            String image = getImage();
+            char lastChar = image.charAt(image.length() - 1);
+            return lastChar == 'l' || lastChar == 'L';
         }
         return false;
     }
 
 
-
     @Override
     public boolean isFloatLiteral() {
-        String image = getImage();
-        if (isFloat && image != null && image.length() > 0) {
+        if (!isIntegral) {
+            String image = getImage();
             char lastChar = image.charAt(image.length() - 1);
             return lastChar == 'f' || lastChar == 'F';
         }
@@ -98,12 +96,7 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
      */
     @Override
     public boolean isDoubleLiteral() {
-        String image = getImage();
-        if (isFloat && image != null && image.length() > 0) {
-            char lastChar = image.charAt(image.length() - 1);
-            return lastChar == 'd' || lastChar == 'D' || Character.isDigit(lastChar) || lastChar == '.';
-        }
-        return false;
+        return !isIntegral && !isFloatLiteral();
     }
 
 
@@ -117,7 +110,10 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
         }
 
         char last = image.charAt(image.length() - 1);
-        if (last == 'l' || last == 'd' || last == 'f') {
+        // This method is only called if this is an int,
+        // in which case the 'd' and 'f' suffixes can only
+        // be hex digits, which we must not remove
+        if (last == 'l') {
             image = image.substring(0, image.length() - 1);
         }
 
@@ -138,7 +134,7 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
 
 
     private String stripFloatValue() {
-        return getImage().toLowerCase(Locale.ROOT).replaceAll("_", "");
+        return getImage().toLowerCase(Locale.ROOT).replaceAll("[_l]", "");
     }
 
 
@@ -159,37 +155,33 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
 
 
     public int getValueAsInt() {
-        if (isInt) {
+        if (isIntegral) {
             // the downcast allows to parse 0x80000000+ numbers as negative instead of a NumberFormatException
             return (int) getValueAsLong();
+        } else {
+            return (int) getValueAsDouble();
         }
-        return 0;
     }
 
 
     public long getValueAsLong() {
-        if (isInt) {
+        if (isIntegral) {
             // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
             BigInteger bigInt = new BigInteger(stripIntValue(), getIntBase());
             return bigInt.longValue();
+        } else {
+            return (long) getValueAsDouble();
         }
-        return 0L;
     }
 
 
     public float getValueAsFloat() {
-        if (isFloat) {
-            return Float.parseFloat(stripFloatValue());
-        }
-        return Float.NaN;
+        return isIntegral ? (float) getValueAsLong() : (float) getValueAsDouble();
     }
 
 
     public double getValueAsDouble() {
-        if (isFloat) {
-            return Double.parseDouble(stripFloatValue());
-        }
-        return Double.NaN;
+        return isIntegral ? (double) getValueAsLong() : Double.parseDouble(stripFloatValue());
     }
 
 
