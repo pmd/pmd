@@ -4,10 +4,7 @@ import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotlintest.*
 import io.kotlintest.specs.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.Assertions
-import net.sourceforge.pmd.lang.ast.test.matchNode
-import net.sourceforge.pmd.lang.ast.test.numChildren
-import net.sourceforge.pmd.lang.ast.test.parent
+import net.sourceforge.pmd.lang.ast.test.*
 import io.kotlintest.should as kotlintestShould
 
 /**
@@ -149,7 +146,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
                  */
                 fun parse(): Matcher<String> = this@VersionedTestCtx.parseIn(nodeParsingCtx)
 
-                fun parseAs(matcher: TreeNodeWrapper<Node, *>.() -> Any): Assertions<String> = { str ->
+                fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
                     val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
                     val idx = node.jjtGetChildIndex()
                     node.parent kotlintestShould matchNode<Node> {

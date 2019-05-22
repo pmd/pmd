@@ -1,9 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotlintest.shouldBe
-import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
+import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
@@ -270,7 +269,7 @@ class ASTLiteralTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
 
-            fun hex15(type: PrimitiveType): TreeNodeWrapper<Node, *>.() -> ASTNumericLiteral = {
+            fun hex15(type: PrimitiveType): ValuedNodeSpec<*, ASTNumericLiteral> = {
                 number(type) {
                     it::getValueAsDouble shouldBe 15.0
                     it::getValueAsFloat shouldBe 15f
@@ -279,21 +278,24 @@ class ASTLiteralTest : ParserTestSpec({
                 }
             }
 
-            "0x0fl" should parseAs(hex15(LONG))
-            "0x0fL" should parseAs(hex15(LONG))
-            "0X0fl" should parseAs(hex15(LONG))
-            "0X0fL" should parseAs(hex15(LONG))
-            "0X0FL" should parseAs(hex15(LONG))
-            "0x0f" should parseAs(hex15(INT))
-            "0x0F" should parseAs(hex15(INT))
-            "0X0f" should parseAs(hex15(INT))
-            "0X0F" should parseAs(hex15(INT))
-            "0x0_0__0f" should parseAs(hex15(INT))
-            "0x0_0__0F" should parseAs(hex15(INT))
+            val hex15l = hex15(LONG)
+            val hex15i = hex15(INT)
+
+            "0x0fl" should parseAs(hex15l)
+            "0x0fL" should parseAs(hex15l)
+            "0X0fl" should parseAs(hex15l)
+            "0X0fL" should parseAs(hex15l)
+            "0X0FL" should parseAs(hex15l)
+            "0x0f" should parseAs(hex15i)
+            "0x0F" should parseAs(hex15i)
+            "0X0f" should parseAs(hex15i)
+            "0X0F" should parseAs(hex15i)
+            "0x0_0__0f" should parseAs(hex15i)
+            "0x0_0__0F" should parseAs(hex15i)
 
             "-0X0000_000f" should parseAs {
                 unaryExpr(UnaryOp.UNARY_MINUS) {
-                    hex15(INT)()
+                    hex15i()
                 }
             }
         }
