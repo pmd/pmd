@@ -2084,12 +2084,6 @@ void ReferenceType() #void:
 void ClassOrInterfaceType() #void:
 {}
 {
-    /*
-         FIXME We gobble up all identifiers until we find
-           either type arguments or annotations, because
-           it may be a FQCN, e.g. java.util.List is a single node.
-       */
-
   /*
    First, gobble up all identifiers until the first type arguments
    or annotation is found. The name is ambiguous between package or

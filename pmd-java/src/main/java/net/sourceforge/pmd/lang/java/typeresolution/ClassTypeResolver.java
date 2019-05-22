@@ -260,7 +260,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         String typeName = node.getImage();
 
-        // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
         populateType(node, typeName, 0);
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
