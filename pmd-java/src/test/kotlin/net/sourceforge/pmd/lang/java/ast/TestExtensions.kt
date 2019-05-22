@@ -214,6 +214,26 @@ fun TreeNodeWrapper<Node, *>.number(primitiveType: ASTPrimitiveType.PrimitiveTyp
             assertions()
         }
 
+fun TreeNodeWrapper<Node, *>.int(value: Int? = null, assertions: NodeSpec<ASTNumericLiteral> = EmptyAssertions) =
+        number(primitiveType = INT) {
+            if (value != null) {
+                it::getValueAsInt shouldBe value
+            }
+
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.dimExpr(assertions: NodeSpec<ASTArrayDimExpr> = EmptyAssertions, lengthExpr: ValuedNodeSpec<ASTArrayDimExpr, ASTExpression>) =
+        child<ASTArrayDimExpr> {
+            assertions()
+            it::getLengthExpression shouldBe lengthExpr()
+        }
+
+fun TreeNodeWrapper<Node, *>.arrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =
+        child<ASTArrayTypeDim> {
+            assertions()
+        }
+
 fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =
         child<ASTBooleanLiteral> {
             it::isTrue shouldBe value
