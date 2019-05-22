@@ -28,7 +28,7 @@ subtrees, and allows to explore them more easily and consistently.
 TODO document that when we're done discussing the semantic rewrite phase.
 
 * **Migrating**:
-  * There is currently no way to match abstract types with XPath, so `Type`
+  * There is currently no way to match abstract types (or interfaces) with XPath, so `Type`
   and `ReferenceType` name tests won't match anything anymore.
   * `Type/ReferenceType/ClassOrInterfaceType` -> `ClassOrInterfaceType`
   * `Type/PrimitiveType` -> `PrimitiveType`.
@@ -49,8 +49,7 @@ those nodes can no more be found in ASTs.
 
 * **Migrating**:
   * Basically, `Expression/X` or `Expression/PrimaryExpression/X`, just becomes `X`
-  * In XPath rules, the axis step `*[@Expression=true()]` matches any expression, though
-  neither `/Expression/` nor `/PrimaryExpression/` can match anything now.
+  * There is currently no way to match abstract or interface types with XPath, so `Expression` or `PrimaryExpression`  name tests won't match anything anymore. However, the axis step *[@Expression=true()] matches any expression.
 
 * {% jdoc jast::ASTLiteral %} has been turned into an interface. The fact that {% jdoc jast::ASTNullLiteral %}
 and {% jdoc jast::ASTBooleanLiteral %} were nested within it but other literals types were all directly represented
@@ -64,7 +63,7 @@ by it was inconsistent, and ultimately that level of nesting was unnecessary.
   * If you tested several types of literals, you can e.g. do it like `/*[self::StringLiteral or self::CharLiteral]/`
   * As is usual, use the designer to explore the new AST structure
 
-* {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are not nodes anymore.
+* The nodes {% jdoc_old jast::ASTPrimaryPrefix %} and {% jdoc_old jast::ASTPrimarySuffix %} are removed from the grammar.
 Subtrees for primary expressions appear to be left-recursive now. For example,
 
 ```java
@@ -80,7 +79,7 @@ Expression
   + PrimarySuffix
     + Arguments
   + PrimarySuffix
-    + Name[@Image="foo.bar"]
+    + Name[@Image="bar.foo"]
   + PrimarySuffix
     + Arguments
       + ArgumentsList
