@@ -109,8 +109,6 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 }
             }
 
-            "T.B<C>.super::foo" shouldNot parse()
-
         }
 
     }

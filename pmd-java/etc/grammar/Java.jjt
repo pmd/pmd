@@ -2498,7 +2498,8 @@ void PrimaryPrefix() #void :
 {
   Literal()
 | "this"                                  #ThisExpression
-| "super"                                 #SuperExpression
+| "super"                                 #SuperExpression(true)
+    ("." MemberSelector() | MethodReference())
 | UnqualifiedAllocationExpr()
 | ("void" "." "class")                    #ClassLiteral
 | (PrimitiveType() [ Dims() ] )           #ArrayType(>1)
