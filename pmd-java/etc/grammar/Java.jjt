@@ -1717,6 +1717,7 @@ int Modifiers() #void:
 }
 {
  (
+  LOOKAHEAD(2)
   (
    "public" { modifiers |= AccessNode.PUBLIC; }
   | "static" { modifiers |= AccessNode.STATIC; }
@@ -1730,7 +1731,7 @@ int Modifiers() #void:
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
-  | LOOKAHEAD("@" <IDENTIFIER>) Annotation()
+  | Annotation()
   )
  )*
  {
@@ -2252,6 +2253,10 @@ void Expression() #AssignmentExpression(>1):
  // as a workaround.
 {AssignmentOp op = null;}
 {
+  LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
+| LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
+|
   ConditionalExpression()
   [
     LOOKAHEAD(2) op=AssignmentOperator() {jjtThis.setOp(op);} Expression()
@@ -2438,9 +2443,18 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
     ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
  // here we avoid looking ahead for a whole unary expression, instead just testing the token after ")"
 | LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExprNotPmStart() )
-    ("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
+    ("(" TypeAnnotationList() IntersectionType(true) ")" CastSubject()) #CastExpression
 | PostfixExpression()
 | SwitchExpression()
+}
+
+private void CastSubject() #void:
+{}
+{
+    LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
+  | LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
+  | LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
+  | UnaryExpressionNotPlusMinus()
 }
 
 private void UnaryExprNotPmStart() #void:
@@ -2499,14 +2513,6 @@ void PrimaryPrefix() #void :
        MethodReference()
      | "." "class"                        #ClassLiteral(1)
     )
-
-
-// todo we can probably simplify the lambda lookaheads
-//   by moving them out of primary prefix!
-| LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
-
 
 | ("(" Expression() ")")                  #ParenthesizedExpression
 | AmbiguousName() [ LOOKAHEAD(Step2Lahead()) PrimaryStep2() ]
