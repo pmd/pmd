@@ -1986,8 +1986,9 @@ void ExplicitConstructorInvocation() :
   | LOOKAHEAD("super")  "super"                            {jjtThis.setIsSuper();}
   | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
   )
-  ArgumentList() ";"
+  // reset this before parsing the arguments list
   {inExplicitConstructorInvoc = false;}
+  ArgumentList() ";"
 }
 
 

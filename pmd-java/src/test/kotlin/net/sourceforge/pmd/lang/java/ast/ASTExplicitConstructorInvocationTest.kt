@@ -154,6 +154,39 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
         // so we don't test those
     }
 
+    parserTest("Arguments of invocations") {
+
+        """
+		WebSocketReceivePublisher() {
+			super(AbstractListenerWebSocketSession.this.getLogPrefix());
+		}
+        """ should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTExplicitConstructorInvocation> {
+                it::isThis shouldBe false
+                it::isSuper shouldBe true
+                it::isQualified shouldBe false
+                it::getArgumentCount shouldBe 1
+
+                it::getExplicitTypeArguments shouldBe null
+                it::getLhsExpression shouldBe null
+
+                it::getArgumentsList shouldBe child {
+                    child<ASTMethodCall> {
+                        child<ASTThisExpression> {
+                            classType("AbstractListenerWebSocketSession")
+                        }
+                        it::getArguments shouldBe child {}
+                    }
+                }
+            }
+        }
+
+
+    }
+
     parserTest("Neg tests, not explicit invocations") {
 
 
