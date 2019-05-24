@@ -50,16 +50,29 @@ public abstract class Foo { // should be AbstractFoo
 
     <rule name="ArrayInitializationVerboseness"
         language="java"
-        since="1.1"
-        message="Array initialization does not require assignment to new object, assignment to {--array content--} is sufficient"
-        class="net.sourceforge.pmd.lang.java.rule.codestyle.ArrayInitializationVerbosenessRule"
+        since="6.15.0"
+        message="Array initialization can be written shorter"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#arrayinitializationverboseness">
         <description>
 <![CDATA[
-Arrays can be initialized simply with curly braces without requiring to create new array object
+When declaring and initializing array fields or variables, it is not necessary to explicitly create a new array
+using `new`. Instead one can simply define the initial content of the array as a expression in curly braces.
+
+E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 };`.
 ]]>
         </description>
         <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//VariableDeclarator
+    [VariableDeclaratorId[@ArrayType = true()]]
+    [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
+                ]]></value>
+            </property>
+            <property name="version" value="2.0"/>
+        </properties>
         <example>
 <![CDATA[
 Foo[] x = new Foo[] { ... }; // Overly verbose
