@@ -59,6 +59,9 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     conventions for property declarations. By default this rule uses the standard Apex naming convention (Camel case),
     but it can be configured through properties.
 
+*   The new Java rule {% rule "java/codestyle/UseShortArrayInitializer" %} (`java-codestyle`) searches for
+    array initialization expressions, which can be written shorter.
+
 #### Modified Rules
 
 *   The Apex rule {% rule "apex/codestyle/ClassNamingConventions" %} (`apex-codestyle`) can now be configured
@@ -100,6 +103,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 *   java-bestpractices
     *   [#1738](https://github.com/pmd/pmd/issues/1738): \[java] MethodReturnsInternalArray does not work in inner classes
 *   java-codestyle
+    *   [#1495](https://github.com/pmd/pmd/issues/1495): \[java] Rule to detect overly verbose array initializiation
     *   [#1684](https://github.com/pmd/pmd/issues/1684): \[java] Properly whitelist serialPersistentFields
     *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
 *   python
@@ -128,6 +132,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 
 ### External Contributions
 
+*   [#1647](https://github.com/pmd/pmd/pull/1647): \[java] Rule to detect overly verbose array initialization - [Victor](https://github.com/IDoCodingStuffs)
 *   [#1799](https://github.com/pmd/pmd/pull/1799): \[java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - [Srinivasan Venkatachalam](https://github.com/Srini1993)
 *   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
