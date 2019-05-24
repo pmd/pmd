@@ -10,7 +10,6 @@ import java.io.Reader;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.Parser;
 
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.antlr.AntlrBaseParser;
@@ -21,15 +20,15 @@ import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
 /**
  * Adapter for the SwiftParser.
  */
-public class SwiftParserAdapter extends AntlrBaseParser {
+public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser> {
 
     public SwiftParserAdapter(final ParserOptions parserOptions) {
         super(parserOptions);
     }
 
     @Override
-    protected AntlrBaseNode getRootNode(final Parser parser) {
-        return ((SwiftParser) parser).topLevel();
+    protected AntlrBaseNode getRootNode(final SwiftParser parser) {
+        return parser.topLevel();
     }
 
     @Override
@@ -38,7 +37,7 @@ public class SwiftParserAdapter extends AntlrBaseParser {
     }
 
     @Override
-    protected Parser getParser(final Lexer lexer) {
+    protected SwiftParser getParser(final Lexer lexer) {
         return new SwiftParser(new CommonTokenStream(lexer));
     }
 

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.ParseException;
 /**
  * Generic Antlr parser adapter for all Antlr parsers.
  */
-public abstract class AntlrBaseParser implements Parser {
+public abstract class AntlrBaseParser<T extends org.antlr.v4.runtime.Parser> implements Parser {
 
     protected final ParserOptions parserOptions;
 
@@ -57,9 +57,9 @@ public abstract class AntlrBaseParser implements Parser {
         return new HashMap<>();
     }
 
-    protected abstract AntlrBaseNode getRootNode(org.antlr.v4.runtime.Parser parser);
+    protected abstract AntlrBaseNode getRootNode(T parser);
 
     protected abstract Lexer getLexer(Reader source) throws IOException;
 
-    protected abstract org.antlr.v4.runtime.Parser getParser(Lexer lexer);
+    protected abstract T getParser(Lexer lexer);
 }
