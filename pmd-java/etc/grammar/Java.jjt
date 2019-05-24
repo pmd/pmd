@@ -2478,9 +2478,6 @@ void PrimaryExpression() #void :
 
 /*
   Expressions that may be present at the start of a primary expression.
-
-  TODO some lookaheads can be simplified if we're ok with loosing some strictness
-
  */
 void PrimaryPrefix() #void :
 {Token t;}
@@ -2498,25 +2495,13 @@ void PrimaryPrefix() #void :
 
 
 // todo we can probably simplify the lambda lookaheads
+//   by moving them out of primary prefix!
 | LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
 | LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
 
 
 | ("(" Expression() ")")                  #ParenthesizedExpression
-//| LOOKAHEAD( TypeOrVoid() "." "class" )
-//    (TypeOrVoid() "." "class") #ClassLiteral
-//| LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" )
-//    ReferenceType() MethodReference()
-// not a constructor reference, and is just a sequence of identifiers: could be an expression or a type
-//| LOOKAHEAD( Name() "::"  )
-//    AmbiguousName() MethodReference()
-// we know it's not just a sequence of identifiers, so if
-// ReferenceType matches, there are type parameters or annots,
-// which means we shouldn't parse as an ambiguous name otherwise
-// we choke on the type parameters
-//| LOOKAHEAD( ReferenceType() "::" )
-//    ReferenceType() MethodReference()
 | AmbiguousName() [ PrimaryStep2() ]
 }
 
@@ -2552,10 +2537,7 @@ void PrimarySuffix() #void :
 {}
 {
   MethodReference()
-//| ArgumentList()                    #MethodCall(2)
 | "[" Expression() "]"              #ArrayAccess(2)
-// all the following start with a "."
-//| LOOKAHEAD(2) "." "this"           #ThisExpression(1)
 | "." MemberSelector()
 }
 
