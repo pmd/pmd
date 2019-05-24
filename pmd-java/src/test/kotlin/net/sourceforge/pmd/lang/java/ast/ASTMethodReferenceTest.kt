@@ -83,6 +83,12 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 }
             }
         }
+
+        "java.util.Map<String, String>.Entry<String, String>::foo" should matchExpr<ASTMethodReference> {
+
+            it::getMethodName shouldBe "foo"
+            it::getLhsType shouldBe classType("Entry") // ignore the rest
+        }
     }
 
     parserTest("Constructor reference") {

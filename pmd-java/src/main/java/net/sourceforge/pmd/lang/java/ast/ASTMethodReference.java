@@ -35,12 +35,21 @@ public final class ASTMethodReference extends AbstractJavaTypeNode implements AS
     }
 
 
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+        ASTReferenceType lhs = getLhsType();
+        if (isConstructorReference() && lhs instanceof ASTAmbiguousName) {
+            replaceChildAt(0, ((ASTAmbiguousName) lhs).forceTypeContext());
+        }
+    }
+
     /**
      * Returns true if this is a constructor reference,
      * e.g. {@code ArrayList::new}.
      */
     public boolean isConstructorReference() {
-        return getImage().equals("new");
+        return "new".equals(getImage());
     }
 
 
