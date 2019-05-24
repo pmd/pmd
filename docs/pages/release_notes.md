@@ -69,6 +69,16 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     using various properties to differenciate e.g. static methods and test methods.
     As before, this rule uses by default the standard Apex naming convention (Camel case).
 
+*   The Java rule {% rule "java/codestyle/FieldNamingConventions" %} (`java-codestyle`) now by default ignores
+    the field `serialPersistentFields`. Since this is a field which needs to have this special name, no
+    field naming conventions can be applied here. It is excluded the same way like `serialVersionUID` via the
+    property `exclusions`.
+
+*   The Java rule {% rule "java/documentation/CommentRequired" %} (`java-documentation`) has a new property
+    `serialPersistentFieldsCommentRequired` with the default value "Ignored". This means that from now
+    on comments for the field `serialPersistentFields` are not required anymore. You can change the property
+    to restore the old behavior.
+
 #### Deprecated Rules
 
 *   The Apex rule {% rule "apex/codestyle/VariableNamingConventions" %} (`apex-codestyle`) has been deprecated and
@@ -90,6 +100,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 *   java-bestpractices
     *   [#1738](https://github.com/pmd/pmd/issues/1738): \[java] MethodReturnsInternalArray does not work in inner classes
 *   java-codestyle
+    *   [#1684](https://github.com/pmd/pmd/issues/1684): \[java] Properly whitelist serialPersistentFields
     *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
 *   python
     *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
@@ -128,6 +139,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 *   [#1820](https://github.com/pmd/pmd/pull/1820): \[cpp] \[cpd] Improve support for raw string literals - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1840](https://github.com/pmd/pmd/pull/1840): \[java] Whitelist serialPersistentFields - [Marcel Härle](https://github.com/marcelhaerle)
 
 {% endtocmaker %}
 
