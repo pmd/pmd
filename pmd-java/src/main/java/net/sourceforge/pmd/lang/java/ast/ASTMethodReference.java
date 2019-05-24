@@ -7,6 +7,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Method or constructor reference expression.
  *

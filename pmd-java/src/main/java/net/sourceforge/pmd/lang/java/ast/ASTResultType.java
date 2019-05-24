@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Return type of a method. TODO maybe make it implement {@link ASTType}.
  *
@@ -16,11 +17,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public class ASTResultType extends AbstractJavaNode {
-    public ASTResultType(int id) {
+
+    ASTResultType(int id) {
         super(id);
     }
 
-    public ASTResultType(JavaParser p, int id) {
+    ASTResultType(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -56,7 +56,7 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
 
     @Override
     public boolean isIntLiteral() {
-       return isIntegral && !isLongLiteral();
+        return isIntegral && !isLongLiteral();
     }
 
     // TODO all of this can be done once in jjtCloseNodeScope
@@ -64,7 +64,7 @@ public final class ASTNumericLiteral extends AbstractJavaTypeNode implements AST
     public PrimitiveType getPrimitiveType() {
         if (isIntegral) {
             return isLongLiteral() ? PrimitiveType.LONG : PrimitiveType.INT;
-        }else {
+        } else {
             return isFloatLiteral() ? PrimitiveType.FLOAT : PrimitiveType.DOUBLE;
         }
     }

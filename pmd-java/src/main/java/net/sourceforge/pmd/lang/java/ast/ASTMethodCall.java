@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
  * and unqualified invocation expressions.
@@ -20,8 +21,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
-
-
 
     ASTMethodCall(int id) {
         super(id);
