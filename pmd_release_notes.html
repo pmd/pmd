@@ -1349,6 +1349,18 @@ As before, this rule uses by default the standard Apex naming convention (Pascal
 using various properties to differenciate e.g. static methods and test methods.
 As before, this rule uses by default the standard Apex naming convention (Camel case).</p>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now by default ignores
+the field <code class="highlighter-rouge">serialPersistentFields</code>. Since this is a field which needs to have this special name, no
+field naming conventions can be applied here. It is excluded the same way like <code class="highlighter-rouge">serialVersionUID</code> via the
+property <code class="highlighter-rouge">exclusions</code>.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_documentation.html#commentrequired"><code class="highlighter-rouge">CommentRequired</code></a> (<code class="highlighter-rouge">java-documentation</code>) has a new property
+<code class="highlighter-rouge">serialPersistentFieldsCommentRequired</code> with the default value “Ignored”. This means that from now
+on comments for the field <code class="highlighter-rouge">serialPersistentFields</code> are not required anymore. You can change the property
+to restore the old behavior.</p>
+  </li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -1388,6 +1400,7 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general rules
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1684">#1684</a>: [java] Properly whitelist serialPersistentFields</li>
       <li><a href="https://github.com/pmd/pmd/issues/1804">#1804</a>: [java] NPE in UnnecessaryLocalBeforeReturnRule</li>
     </ul>
   </li>
@@ -1441,6 +1454,8 @@ removed as well. It is deprecated, along with all its implementations in the sub
   <li><a href="https://github.com/pmd/pmd/pull/1820">#1820</a>: [cpp] [cpd] Improve support for raw string literals - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1821">#1821</a>: [matlab] [cpd] Matlab question mark token - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1822">#1822</a>: [matlab] [cpd] Double quoted string - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1837">#1837</a>: [core] Minor performance improvements - <a href="https://github.com/TheRealHaui">Michael Hausegger</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1840">#1840</a>: [java] Whitelist serialPersistentFields - <a href="https://github.com/marcelhaerle">Marcel Härle</a></li>
 </ul>
 
 
@@ -1459,7 +1474,7 @@ removed as well. It is deprecated, along with all its implementations in the sub
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 18, 2019 <br />
+ Site last generated: May 24, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
