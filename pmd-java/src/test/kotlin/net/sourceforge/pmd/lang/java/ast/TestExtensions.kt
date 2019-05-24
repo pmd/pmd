@@ -137,6 +137,12 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
         }
 
 
+fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
+        child<ASTArrayType>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
+
 fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType) =
         child<ASTPrimitiveType> {
             it::getModelConstant shouldBe type
@@ -153,6 +159,13 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
         child<ASTStringLiteral> {
             it::getImage shouldBe image
             contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.classLiteral(contents: ValuedNodeSpec<ASTClassLiteral, ASTType?>) =
+        child<ASTClassLiteral> {
+            val tn = it.typeNode
+            it::isVoid shouldBe (tn == null)
+            it::getTypeNode shouldBe contents()
         }
 
 
