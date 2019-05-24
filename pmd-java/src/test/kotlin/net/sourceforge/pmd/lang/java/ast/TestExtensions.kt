@@ -206,6 +206,23 @@ fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSp
             assertions()
         }
 
+fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference>) =
+        child<ASTMethodReference> {
+            it::getMethodName shouldBe methodName
+            it::isConstructorReference shouldBe false
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTReferenceType>) =
+        child<ASTMethodReference> {
+            it::getMethodName shouldBe null
+            it::getImage shouldBe "new"
+            it::isConstructorReference shouldBe true
+            it::getLhsExpression shouldBe null
+            it::getAmbiguousLhs shouldBe null
+            it::getLhsType shouldBe assertions()
+        }
+
 private val EmptyAssertions: NodeSpec<out Node> = {}
 
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =

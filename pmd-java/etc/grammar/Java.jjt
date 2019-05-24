@@ -2547,7 +2547,7 @@ void PrimaryStep2() #void:
         | MemberSelector()
         // we need to lookahead for the dot after "super", because in qualified
         // super constructor invocation the "super" might be followed by a "("
-        | LOOKAHEAD("super" ".") "super"      #SuperExpression(1) "." MemberSelector()
+        | "super"      #SuperExpression(1) ("." MemberSelector() | MethodReference())
     )
     | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
     | "[" Expression() "]"              #ArrayAccess(2)
@@ -2587,7 +2587,7 @@ void MethodReference(): // LHS is injected
   "::" {jjtree.extendLeft();}
   [TypeArguments()]
   ( "new" | <IDENTIFIER> ) {setLastTokenImage(jjtThis);}
-  {/*empty*/}
+  {/* empty, to set the image before jjtClose */}
 }
 
 // This factorises the lookahead for a lambda expression
