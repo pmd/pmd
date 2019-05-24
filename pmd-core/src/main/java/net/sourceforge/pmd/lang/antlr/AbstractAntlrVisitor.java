@@ -79,7 +79,7 @@ public abstract class AbstractAntlrVisitor<T> extends AbstractRule implements Pa
         }
     }
 
-    public Object visit(final AntlrBaseNode node) {
+    public T visit(final AntlrBaseNode node) {
         return node.accept(this);
     }
 }
