@@ -9,8 +9,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;

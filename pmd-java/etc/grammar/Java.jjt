@@ -511,6 +511,13 @@ public class JavaParser {
        prev.jjtSetLastToken(top.jjtGetLastToken());
   }
 
+  /**
+     * Keeps track during tree construction, whether we are currently building an
+     * explicit constructor invocation. Then the PrimaryExpression that may prefix
+     * a qualified super constructor call may not consume "super" tokens.
+     */
+    private boolean inExplicitConstructorInvoc = false;
+
 }
 PARSER_END(JavaParser)
 
@@ -1710,7 +1717,6 @@ int Modifiers() #void:
 }
 {
  (
-  LOOKAHEAD(2)
   (
    "public" { modifiers |= AccessNode.PUBLIC; }
   | "static" { modifiers |= AccessNode.STATIC; }
@@ -1724,7 +1730,7 @@ int Modifiers() #void:
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
-  | Annotation()
+  | LOOKAHEAD("@" <IDENTIFIER>) Annotation()
   )
  )*
  {
@@ -1966,7 +1972,7 @@ Token t;}
 }
 
 void ExplicitConstructorInvocation() :
-{}
+{inExplicitConstructorInvoc = true;}
 {
    // We may only lookahead one token here, because:
    // * "this" or "super" can't appear in the primary expression in case of
@@ -1980,6 +1986,7 @@ void ExplicitConstructorInvocation() :
   | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
   )
   ArgumentList() ";"
+  {inExplicitConstructorInvoc = false;}
 }
 
 
@@ -2502,8 +2509,27 @@ void PrimaryPrefix() #void :
 
 
 | ("(" Expression() ")")                  #ParenthesizedExpression
-| AmbiguousName() [ PrimaryStep2() ]
+| AmbiguousName() [ LOOKAHEAD(Step2Lahead()) PrimaryStep2() ]
 }
+
+// this describes the cases where the PrimaryPrefix may fall
+// into PrimaryStep2
+private void Step2Lahead() #void:
+{}
+{
+   "<" | "::" | "(" | "@" | "["
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
+}
+
+private void SuffixLAhead() #void:
+{}
+{
+   "::" | "["
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." (<IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
+}
+
 
 // Step right after the *first* ambiguous name if any
 // then we have more options than a primary suffix,
@@ -2539,15 +2565,6 @@ void PrimarySuffix() #void :
   MethodReference()
 | "[" Expression() "]"              #ArrayAccess(2)
 | "." MemberSelector()
-}
-
-private void SuffixLAhead() #void:
-{}
-{
-    // not "super", otherwise runs into conflicts with ExplicitConstructorInvocation
-      "." ("new" | <IDENTIFIER> | "<")
-    | "::"
-    | "["
 }
 
 void MemberSelector() #void :
