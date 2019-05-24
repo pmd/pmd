@@ -17,37 +17,33 @@ class ASTRelationalExpressionTest : ParserTestSpec({
 
     parserTest("Relational expressions operator") {
 
-        "1 < 3" should matchExpr<ASTRelationalExpression> {
+        "b < 3" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.LT
 
-            child<ASTNumericLiteral> {}
-
-            child<ASTNumericLiteral> {}
+            variableRef("b")
+            number()
         }
 
 
-        "1 <= 3" should matchExpr<ASTRelationalExpression> {
+        "a <= 3" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.LE
 
-            child<ASTNumericLiteral> {}
-
-            child<ASTNumericLiteral> {}
+            variableRef("a")
+            number()
         }
 
-        "1 > 3" should matchExpr<ASTRelationalExpression> {
+        "1 > b" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.GT
 
-            child<ASTNumericLiteral> {}
-
-            child<ASTNumericLiteral> {}
+            number()
+            variableRef("b")
         }
 
         "1 >= 3" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.GE
 
-            child<ASTNumericLiteral> {}
-
-            child<ASTNumericLiteral> {}
+            number()
+            number()
         }
     }
 

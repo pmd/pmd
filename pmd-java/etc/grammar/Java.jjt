@@ -2517,7 +2517,7 @@ void PrimaryPrefix() #void :
 private void Step2Lahead() #void:
 {}
 {
-   "<" | "::" | "(" | "@" | "["
+   "::" | "(" | "@" | "[" | TypeArguments()
    | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
    | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
 }
