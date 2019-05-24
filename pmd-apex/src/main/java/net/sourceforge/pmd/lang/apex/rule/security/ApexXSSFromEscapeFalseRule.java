@@ -48,10 +48,9 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
             Object potentialLiteral = methodCall.jjtGetChild(2);
             if (potentialLiteral instanceof ASTLiteralExpression) {
                 ASTLiteralExpression parameter = (ASTLiteralExpression) potentialLiteral;
-                Object o = parameter.getNode().getLiteral();
-                if (o instanceof Boolean) {
-                    Boolean paramValue = (Boolean) o;
-                    if (paramValue.equals(Boolean.FALSE)) {
+                if (parameter.isBoolean()) {
+                    boolean paramValue = Boolean.parseBoolean(parameter.getImage());
+                    if (!paramValue) {
                         validateLiteralPresence(methodCall, data);
                     }
                 }

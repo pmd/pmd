@@ -8,7 +8,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.12.0-SNAPSHOT</version>
+        <version>6.15.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -105,6 +105,11 @@
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-cs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-dart</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -242,7 +247,7 @@
                 <dependency>
                     <groupId>net.sourceforge.pmd</groupId>
                     <artifactId>pmd-ui</artifactId>
-                    <version>${project.version}</version>
+                    <version>${pmd-designer.version}</version>
                 </dependency>
             </dependencies>
         </profile>

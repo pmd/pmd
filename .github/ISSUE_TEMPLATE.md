@@ -1,6 +1,8 @@
 <!-- Please, prefix the report title with the language it applies to within brackets, such as [java] or [apex].
 If not specific to a language, you can use [core]. -->
 
+<!-- NB: issues about the rule designer should be opened at https://github.com/pmd/pmd-designer/issues -->
+
 **Affects PMD Version:** 
 
 **Rule:**

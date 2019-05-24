@@ -5,10 +5,9 @@
 package net.sourceforge.pmd.cpd;
 
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.Token;
 
 import net.sourceforge.pmd.cpd.token.AntlrToken;
+import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
 
@@ -17,46 +16,55 @@ import net.sourceforge.pmd.lang.kotlin.antlr4.Kotlin;
  */
 public class KotlinTokenizer extends AntlrTokenizer {
 
-    private boolean discardingPackageAndImport = false;
-
     @Override
     protected AntlrTokenManager getLexerForSource(SourceCode sourceCode) {
         CharStream charStream = AntlrTokenizer.getCharStreamFromSourceCode(sourceCode);
-        final Lexer lexer = new Kotlin(charStream);
-        final AntlrTokenManager tokenManager = new AntlrTokenManager(lexer, sourceCode.getFileName()) {
-            @Override
-            public Object getNextToken() {
-                AntlrToken nextToken;
-                boolean done = false;
-                do {
-                    nextToken = (AntlrToken) super.getNextToken();
-                    analyzeTokenStart(nextToken);
-                    if (!nextToken.isHidden() && nextToken.getType() != Kotlin.NL && !isDiscarding()) {
-                        done = true;
-                    }
-                    analyzeTokenEnd(nextToken);
-                } while (!done && nextToken.getType() != Token.EOF);
-                return nextToken;
-            }
-        };
-        return tokenManager;
+        return new AntlrTokenManager(new Kotlin(charStream), sourceCode.getFileName());
     }
 
-    private boolean isDiscarding() {
-        return discardingPackageAndImport;
+    @Override
+    protected AntlrTokenFilter getTokenFilter(final AntlrTokenManager tokenManager) {
+        return new KotlinTokenFilter(tokenManager);
     }
 
-    private void analyzeTokenStart(final AntlrToken currentToken) {
-        final int type = currentToken.getType();
-        if (type == Kotlin.PACKAGE || type == Kotlin.IMPORT) {
-            discardingPackageAndImport = true;
+    /**
+     * The {@link KotlinTokenFilter} extends the {@link AntlrTokenFilter} to discard
+     * Kotlin-specific tokens.
+     * <p>
+     * By default, it discards package and import statements, and
+     * enables annotation-based CPD suppression.
+     * </p>
+     */
+    private static class KotlinTokenFilter extends AntlrTokenFilter {
+        private boolean discardingPackageAndImport = false;
+        private boolean discardingNL = false;
+
+        /* default */ KotlinTokenFilter(final AntlrTokenManager tokenManager) {
+            super(tokenManager);
         }
-    }
 
-    private void analyzeTokenEnd(final AntlrToken currentToken) {
-        final int type = currentToken.getType();
-        if (discardingPackageAndImport && (type == Kotlin.SEMICOLON || type == Kotlin.NL)) {
-            discardingPackageAndImport = false;
+        @Override
+        protected void analyzeToken(final AntlrToken currentToken) {
+            skipPackageAndImport(currentToken);
+            skipNewLines(currentToken);
+        }
+
+        private void skipPackageAndImport(final AntlrToken currentToken) {
+            final int type = currentToken.getType();
+            if (type == Kotlin.PACKAGE || type == Kotlin.IMPORT) {
+                discardingPackageAndImport = true;
+            } else if (discardingPackageAndImport && (type == Kotlin.SEMICOLON || type == Kotlin.NL)) {
+                discardingPackageAndImport = false;
+            }
+        }
+
+        private void skipNewLines(final AntlrToken currentToken) {
+            discardingNL = currentToken.getType() == Kotlin.NL;
+        }
+
+        @Override
+        protected boolean isLanguageSpecificDiscarding() {
+            return discardingPackageAndImport || discardingNL;
         }
     }
 }

@@ -30,4 +30,12 @@ public class ASTReferenceExpression extends AbstractApexNode<ReferenceExpression
     public ReferenceType getReferenceType() {
         return node.getReferenceType();
     }
+
+    @Override
+    public String getImage() {
+        if (node.getNames() != null && !node.getNames().isEmpty()) {
+            return node.getNames().get(0).getValue();
+        }
+        return null;
+    }
 }

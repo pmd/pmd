@@ -14,11 +14,17 @@ public class ASTBreakStatement extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public String getImage() {
+        String result = super.getImage();
+        if (result == null && hasDescendantOfType(ASTName.class)) {
+            result = getFirstDescendantOfType(ASTName.class).getImage();
+        }
+        return result;
     }
 }

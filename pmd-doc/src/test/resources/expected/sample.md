@@ -76,9 +76,26 @@ public class JumbledIncrementerRule1 {
 |sampleRegexProperty6|\\b|The property is of type regex|no|
 |sampleRegexProperty7|\\n|The property is of type regex|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/sample.xml/JumbledIncrementer" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/sample.xml/JumbledIncrementer">
+    <properties>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1|Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
+    </properties>
+</rule>
 ```
 
 ## MovedRule
@@ -223,9 +240,26 @@ public class JumbledIncrementerRule1 {
 |sampleRegexProperty6|\\b|The property is of type regex|no|
 |sampleRegexProperty7|\\n|The property is of type regex|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/sample.xml/RenamedRule" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/sample.xml/RenamedRule">
+    <properties>
+        <property name="sampleAdditionalProperty" value="the value" />
+        <property name="sampleMultiStringProperty" value="Value1|Value2" />
+        <property name="sampleRegexProperty1" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="sampleRegexProperty2" value="[a-z]*" />
+        <property name="sampleRegexProperty3" value="\s+" />
+        <property name="sampleRegexProperty4" value="_dd_" />
+        <property name="sampleRegexProperty5" value="[0-9]{1,3}" />
+        <property name="sampleRegexProperty6" value="\b" />
+        <property name="sampleRegexProperty7" value="\n" />
+    </properties>
+</rule>
 ```
 
 ## XSSInDocumentation
@@ -296,7 +330,18 @@ public class Bar {
 |XSSpropertyTest &lt;script&gt;alert('XSS');&lt;/script&gt;|&lt;script&gt;alert('XSS');&lt;/script&gt;|&lt;script&gt;alert('XSS');&lt;/script&gt;|no|
 |escapingNeeded|this is escaped: \||You should be able to use \| in the description|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/sample.xml/XSSInDocumentation" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/sample.xml/XSSInDocumentation">
+    <properties>
+        <property name="sampleRegexProperty" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="XSSpropertyTest <script>alert('XSS');</script>" value="<script>alert('XSS');</script>" />
+        <property name="escapingNeeded" value="this is escaped: |" />
+    </properties>
+</rule>
 ```

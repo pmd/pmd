@@ -39,14 +39,23 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|200|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |problemDepth|3|The if statement depth reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/AvoidDeeplyNestedIfStmts" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/AvoidDeeplyNestedIfStmts">
+    <properties>
+        <property name="problemDepth" value="3" />
+    </properties>
+</rule>
 ```
 
 ## CyclomaticComplexity
@@ -104,15 +113,25 @@ public class Complicated {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |classReportLevel|40|Total class complexity reporting threshold|no|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/CyclomaticComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/CyclomaticComplexity">
+    <properties>
+        <property name="classReportLevel" value="40" />
+        <property name="methodReportLevel" value="10" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveClassLength
@@ -150,16 +169,25 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|1000.0|Minimum reporting threshold|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|150|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/ExcessiveClassLength" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/ExcessiveClassLength">
+    <properties>
+        <property name="minimum" value="1000.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessiveParameterList
@@ -190,16 +218,25 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|4.0|Minimum reporting threshold|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/ExcessiveParameterList" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/ExcessiveParameterList">
+    <properties>
+        <property name="minimum" value="4.0" />
+    </properties>
+</rule>
 ```
 
 ## ExcessivePublicCount
@@ -235,16 +272,25 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|20.0|Minimum reporting threshold|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|150|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/ExcessivePublicCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/ExcessivePublicCount">
+    <properties>
+        <property name="minimum" value="20.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssConstructorCount
@@ -279,16 +325,25 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|20.0|Minimum reporting threshold|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/NcssConstructorCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/NcssConstructorCount">
+    <properties>
+        <property name="minimum" value="20.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssMethodCount
@@ -322,16 +377,25 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|40.0|Minimum reporting threshold|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/NcssMethodCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/NcssMethodCount">
+    <properties>
+        <property name="minimum" value="40.0" />
+    </properties>
+</rule>
 ```
 
 ## NcssTypeCount
@@ -367,16 +431,25 @@ public class Foo extends Bar {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||Top score value|no|
-|minimum||Minimum reporting threshold|no|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
-|sigma||Sigma value|no|
+|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
+|minimum|500.0|Minimum reporting threshold|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|250|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
+|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/NcssTypeCount" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/NcssTypeCount">
+    <properties>
+        <property name="minimum" value="500.0" />
+    </properties>
+</rule>
 ```
 
 ## StdCyclomaticComplexity
@@ -437,16 +510,27 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|250|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 |showClassesComplexity|true|Add class average violations to the report|no|
 |showMethodsComplexity|true|Add method average violations to the report|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/StdCyclomaticComplexity" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/StdCyclomaticComplexity">
+    <properties>
+        <property name="reportLevel" value="10" />
+        <property name="showClassesComplexity" value="true" />
+        <property name="showMethodsComplexity" value="true" />
+    </properties>
+</rule>
 ```
 
 ## TooManyFields
@@ -484,13 +568,22 @@ public class Person {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|Code Climate Block Highlighting|no|
+|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
+|cc\_remediation\_points\_multiplier|200|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
+|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |maxfields|15|Max allowable fields|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/apex/design.xml/TooManyFields" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/apex/design.xml/TooManyFields">
+    <properties>
+        <property name="maxfields" value="15" />
+    </properties>
+</rule>
 ```
 

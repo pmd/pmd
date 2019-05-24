@@ -38,7 +38,7 @@ public abstract class AbstractApexNode<T extends AstNode> extends AbstractApexNo
         return node;
     }
 
-    protected boolean hasRealLoc() {
+    public boolean hasRealLoc() {
         try {
             Location loc = node.getLoc();
             return loc != null && Locations.isReal(loc);

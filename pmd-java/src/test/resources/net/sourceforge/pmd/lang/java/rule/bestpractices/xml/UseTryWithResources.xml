@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Code sample</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) in.close();
+            } catch (IOException ignored) {
+                // ignored
+            }
+        }
+
+        // better use try-with-resources
+        try (InputStream in2 = openInputStream()) {
+            int i = in2.read();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>With IOUtils.closeQuietly 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>With IOUtils.closeQuietly 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeQuietly(in);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple Resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in1 = null;
+        InputStream in2 = null;
+        try {
+            in1 = openInputStream();
+            in2 = openInputStream();
+            int x = in1.read();
+            int y = in2.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in1 != null) in1.close();
+            } catch (IOException ignored) {
+                // ignored
+            }
+            IOUtils.closeQuietly(in2);
+        }
+
+        // better use try-with-resources
+        try (InputStream in3 = openInputStream(); InputStream in4 = openInputStream()) {
+            int x = in3.read();
+            int y = in4.read();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Custom close methods</description>
+        <rule-property name="closeMethods">myClose2,myClose</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null;
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            myClose(in);
+        }
+
+        // this block doesn't trigger the rule because of the custom close methods property
+        try {
+            in = openInputStream();
+            int i = in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative with two resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        Reader r1 = new FileReader(file);
+        try (Reader r2 = new FileReader(otherFile)) {
+        } finally {
+            r1.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive with no autocloseable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TryWithResources {
+    public void run() {
+        var noAutoclosable = new Object() {
+            public void close() {}
+        };
+        try {
+            System.out.println(noAutocloseable);
+        } finally {
+            noAutoclosable.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Custom close methods with multiple arguments</description>
+        <rule-property name="closeMethods">myClose2,myClose</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class TryWithResources {
+    public void run() {
+        InputStream in = null, in2 = null;
+        try {
+            in = openInputStream();
+            in2 = openInputStream();
+            int i = in.read(), j = in2.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            myClose(in, in2);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

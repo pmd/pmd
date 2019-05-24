@@ -58,9 +58,23 @@ function getX() {
 |allowTernaryResults|false|Allow assignment within the result expressions of a ternary operator|no|
 |allowIncrementDecrement|false|Allow increment or decrement operators within the conditional expression of an if, for, or while statement|no|
 
-**Use this rule by referencing it:**
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/ecmascript/codestyle.xml/AssignmentInOperand" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/ecmascript/codestyle.xml/AssignmentInOperand">
+    <properties>
+        <property name="allowIf" value="false" />
+        <property name="allowFor" value="false" />
+        <property name="allowWhile" value="false" />
+        <property name="allowTernary" value="false" />
+        <property name="allowTernaryResults" value="false" />
+        <property name="allowIncrementDecrement" value="false" />
+    </properties>
+</rule>
 ```
 
 ## ForLoopsMustUseBraces

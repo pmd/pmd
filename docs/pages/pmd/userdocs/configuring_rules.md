@@ -41,7 +41,9 @@ Properties make it easy to customise the behaviour of a rule directly from the x
 ```xml
 <rule ref="category/java/design.xml/NPathComplexity">
     <properties>
-        <property name="reportLevel">150</property>
+        <property name="reportLevel">
+              <value>150</value>
+        </property>
     </properties>
 </rule>
 ```
@@ -52,7 +54,7 @@ Properties are assigned a value with a `property` element, which should mention 
 <property name="reportLevel" value="150"/>
 ```
 
-All property assignements must be enclosed in a `properties` element, which is itself inside a `rule` element.
+All property assignments must be enclosed in a `properties` element, which is itself inside a `rule` element.
 
 {%include tip.html content="The properties of a rule are documented with the rule, e.g. [here](pmd_rules_java_design.html#npathcomplexity) for NPathComplexity. Note that **assigning a value to a property that does not exist throws an error!**" %}
 

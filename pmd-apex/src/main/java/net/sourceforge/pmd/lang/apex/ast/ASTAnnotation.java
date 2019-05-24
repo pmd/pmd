@@ -47,4 +47,8 @@ public class ASTAnnotation extends AbstractApexNode<Annotation> {
 
         return false;
     }
+
+    public boolean isResolved() {
+        return node.getType().isResolved();
+    }
 }

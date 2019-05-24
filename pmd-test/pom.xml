@@ -8,13 +8,15 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>6.12.0-SNAPSHOT</version>
+        <version>6.15.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <!-- overrides the default scope from inherited dependency management. -->
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.pmd</groupId>

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 import net.sf.saxon.om.Item;
+import net.sf.saxon.om.NamespaceConstant;
 import net.sf.saxon.om.ValueRepresentation;
 import net.sf.saxon.sxpath.AbstractStaticContext;
 import net.sf.saxon.sxpath.IndependentContext;
@@ -192,6 +193,8 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             if (XPATH_1_0_COMPATIBILITY.equals(version)) {
                 ((AbstractStaticContext) xpathStaticContext).setBackwardsCompatibilityMode(true);
             }
+
+            ((IndependentContext) xpathEvaluator.getStaticContext()).declareNamespace("fn", NamespaceConstant.FN);
 
             // Register PMD functions
             Initializer.initialize((IndependentContext) xpathStaticContext);

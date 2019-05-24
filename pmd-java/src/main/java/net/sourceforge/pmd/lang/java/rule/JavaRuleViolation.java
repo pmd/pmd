@@ -119,6 +119,19 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                     }
                 }
             }
+            
+            // Still not found?
+            if (qualifiedName == null) {
+                for (ClassNameDeclaration c : classes) {
+                    // find the first package-private class/enum declaration
+                    if (c.getAccessNodeParent() instanceof AccessNode) {
+                        if (((AccessNode) c.getAccessNodeParent()).isPackagePrivate()) {
+                            qualifiedName = c.getImage();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         if (qualifiedName != null) {
