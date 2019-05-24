@@ -2244,19 +2244,9 @@ void Expression() #AssignmentExpression(>1):
  * a primary expression.  Consider adding a semantic predicate to work
  * around this.
  */
- // It also allows lambda expressions in many more contexts as allowed by the JLS.
- // Lambda expressions are not a PrimaryExpression in the JLS, instead they're
- // separated from the AssignmentExpression production. Their use is restricted
- // to method and constructor argument, cast operand, and the RHS of assignments.
- // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
- //
- // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
- // as a workaround.
 {AssignmentOp op = null;}
 {
-  LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
+  LOOKAHEAD( LambdaLahead() ) LambdaExpression()
 |
   ConditionalExpression()
   [
@@ -2271,12 +2261,16 @@ AssignmentOp AssignmentOperator() #void:
     {return AssignmentOp.fromImage(getToken(0).getImage());}
 }
 
-// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
-// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ LOOKAHEAD(2) "?" Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [ "?" Expression() ":" TernaryTail() ]
+}
+
+private void TernaryTail() #void:
+{}
+{
+    LOOKAHEAD(LambdaLahead()) LambdaExpression() | ConditionalExpression()
 }
 
 void ConditionalOrExpression() #ConditionalOrExpression(>1):
@@ -2452,9 +2446,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
 private void CastSubject() #void:
 {}
 {
-    LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
-  | LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
-  | LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
+    LOOKAHEAD( LambdaLahead() ) LambdaExpression()
   | UnaryExpressionNotPlusMinus()
 }
 
@@ -2538,12 +2530,14 @@ private void SuffixLAhead() #void:
 }
 
 
-// Step right after the *first* ambiguous name if any
-// then we have more options than a primary suffix,
-// we can still expect the rest of a type name +
+// Step right after the *first* ambiguous name if any.
+// Then we have more options than a primary suffix,
+// we can still expect to have some class type and a
+// class literal, or some type arguments and a method reference
 void PrimaryStep2() #void:
 {}
 {
+      // Can't be followed by array dims, because it would raise an error for generic array creation
       {forceTypeContext();} TypeArguments() {injectTop();} ( "." ClassTypeSegment() )* MethodReference()
     | MethodReference()
     | ArgumentList()                          #MethodCall(2)
@@ -2574,6 +2568,9 @@ void PrimarySuffix() #void :
 | "." MemberSelector()
 }
 
+/**
+ * Part of a primary suffix that immediately follows a dot.
+ */
 void MemberSelector() #void :
 {}
 {
@@ -2593,6 +2590,30 @@ void MethodReference(): // LHS is injected
   {/*empty*/}
 }
 
+// This factorises the lookahead for a lambda expression
+// It's necessary because in all contexts a lambda may appear in,
+// the arguments could be interpreted as a variable reference,
+// or the start of a parenthesized expression
+private void LambdaLahead() #void :
+{}
+{
+  LOOKAHEAD({!inSwitchLabel})
+(
+  <IDENTIFIER>
+| "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")"
+| LambdaParameterList()
+)
+"->"
+}
+
+// Lambda expressions are not a PrimaryExpression in the JLS, instead they're
+// separated from the AssignmentExpression production. Their use is restricted
+// to method and constructor call argument, cast operand, the RHS of assignments,
+// and the tail of a ternary expression
+// https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
+//
+// To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
+// as a workaround.
 void LambdaExpression():
 { checkForBadLambdaUsage(); }
 {
