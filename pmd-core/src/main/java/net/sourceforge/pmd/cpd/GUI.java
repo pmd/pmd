@@ -421,7 +421,7 @@ public class GUI implements CPDListener {
         ignoreAnnotationsCheckbox.setEnabled(current.canIgnoreAnnotations());
         ignoreUsingsCheckbox.setEnabled(current.canIgnoreUsings());
         extensionField.setText(current.extensions()[0]);
-        boolean enableExtension = current.extensions()[0].length() == 0;
+        boolean enableExtension = current.extensions()[0].isEmpty();
         extensionField.setEnabled(enableExtension);
         extensionLabel.setEnabled(enableExtension);
     }
@@ -611,7 +611,7 @@ public class GUI implements CPDListener {
     private boolean isLegalPath(String path, LanguageConfig config) {
         String[] extensions = config.extensions();
         for (int i = 0; i < extensions.length; i++) {
-            if (path.endsWith(extensions[i]) && extensions[i].length() > 0) {
+            if (path.endsWith(extensions[i]) && !extensions[i].isEmpty()) {
                 return true;
             }
         }
