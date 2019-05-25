@@ -128,6 +128,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 *   [#1820](https://github.com/pmd/pmd/pull/1820): \[cpp] \[cpd] Improve support for raw string literals - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1838](https://github.com/pmd/pmd/pull/1838): \[dart] [cpd] Improved string tokenization - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
