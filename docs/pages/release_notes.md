@@ -97,6 +97,8 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     *   [#1784](https://github.com/pmd/pmd/issues/1784): \[cpp] Improve support for raw string literals
 *   dart
     *   [#1809](https://github.com/pmd/pmd/issues/1809): \[dart] \[cpd] Parse error with escape sequences
+*   java
+    *   [#1842](https://github.com/pmd/pmd/issues/1842): \[java] Annotated module declarations cause parse error
 *   java-bestpractices
     *   [#1738](https://github.com/pmd/pmd/issues/1738): \[java] MethodReturnsInternalArray does not work in inner classes
 *   java-codestyle
