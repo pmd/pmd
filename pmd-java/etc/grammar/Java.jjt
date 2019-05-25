@@ -2517,9 +2517,9 @@ void PrimaryPrefix() #void :
 
 // This describes the cases where the PrimaryPrefix may fall
 // into PrimaryStep2. Notice that type arguments is still possible,
-// as well as annotations ("@")
+// as well as annotations ("@") before an annotated array type.
 // If we are in an explicit constructor invocation, then super or
-// this is disallowed.
+// this are disallowed.
 private void Step2Lahead() #void:
 {}
 {
@@ -2531,6 +2531,7 @@ private void Step2Lahead() #void:
 private void SuffixLAhead() #void:
 {}
 {
+   // this is simpler than the step 2 lookahead
    "::" | "["
    | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
    | LOOKAHEAD({inExplicitConstructorInvoc}) "." (<IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
@@ -2559,7 +2560,7 @@ void PrimaryStep2() #void:
         | MemberSelector()
     )
     | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
-    | "[" Expression() "]"              #ArrayAccess(2)
+    | {forceExprContext();} "[" Expression() "]"            #ArrayAccess(2)
 }
 
 /**
@@ -2573,7 +2574,7 @@ void PrimarySuffix() #void :
 {}
 {
   MethodReference()
-| "[" Expression() "]"              #ArrayAccess(2)
+| {forceExprContext();} "[" Expression() "]"              #ArrayAccess(2)
 | "." MemberSelector()
 }
 
@@ -2587,11 +2588,11 @@ void MemberSelector() #void :
    *  A name is syntactically classified as an ExpressionName [...] as the
    * qualifying expression in a qualified class instance creation expression (§15.9)*
    */
-   {forceExprContext();} QualifiedAllocationExpr()
+  {forceExprContext();} QualifiedAllocationExpr()
   // if there are type arguments, this is a method call
-|               (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
-| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                    #MethodCall(2)
-|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                   #FieldAccess(1)
+|              (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
+| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                   #MethodCall(2)
+|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                  #FieldAccess(1)
 }
 
 void MethodReference(): // LHS is injected

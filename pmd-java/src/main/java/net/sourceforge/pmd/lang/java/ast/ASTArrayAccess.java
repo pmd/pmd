@@ -27,21 +27,6 @@ public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPri
         super(p, id);
     }
 
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        /* JLS:
-         *  A name is syntactically classified as an ExpressionName in these contexts:
-         *       ...
-         *     - As the array reference expression in an array access expression (§15.10.3)
-         */
-        Node firstChild = jjtGetChild(0);
-
-        if (firstChild instanceof ASTAmbiguousName) {
-            replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).forceExprContext());
-        }
-    }
 
     /**
      * Returns the expression to the left of the "[".
