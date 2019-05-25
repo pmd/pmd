@@ -2521,14 +2521,13 @@ void PrimaryPrefix() #void :
 // This describes the cases where the PrimaryPrefix may fall
 // into PrimaryStep2. Notice that type arguments is still possible,
 // as well as annotations ("@") before an annotated array type.
-// If we are in an explicit constructor invocation, then super or
-// this are disallowed.
+// If we are in an explicit constructor invocation, then super is disallowed.
 private void Step2Lahead() #void:
 {}
 {
    "::" | "(" | "@" | "[" | TypeArguments()
    | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
-   | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new" | "this") // not super in this case
 }
 
 private void SuffixLAhead() #void:
@@ -2548,8 +2547,8 @@ private void SuffixLAhead() #void:
 void PrimaryStep2() #void:
 {}
 {
-      // Can't be followed by array dims, because it would raise an error for generic array creation
-      {forceTypeContext();} TypeArguments() {injectTop();} ( "." ClassTypeSegment() )* MethodReference()
+      // If the class is a parameterised type, then we can only expect a method reference
+      {forceTypeContext();} TypeArguments() {injectTop();} ( "." ClassTypeSegment() )* [ Dims() #ArrayType(2) ] MethodReference()
     | MethodReference()
     | ArgumentList()                          #MethodCall(2)
     | "." (

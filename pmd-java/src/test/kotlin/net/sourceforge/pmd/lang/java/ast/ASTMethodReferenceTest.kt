@@ -165,6 +165,23 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 }
             }
 
+            "Class<?>[]::new" should parseAs {
+                constructorRef {
+                    it::getTypeArguments shouldBe null
+
+                    arrayType {
+                        classType("Class") {
+                            typeArgList {
+                                child<ASTWildcardType> { }
+                            }
+                        }
+                        it::getDimensions shouldBe child {
+                            arrayDim()
+                        }
+                    }
+                }
+            }
+
             "ArrayList::<String>new" should parseAs {
                 constructorRef {
                     val lhs = classType("ArrayList")

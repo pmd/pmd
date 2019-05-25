@@ -78,7 +78,7 @@ class ASTMethodCallTest : ParserTestSpec({
                 child<ASTLambdaExpression>(ignoreChildren = true) {}
             }
         }
-        
+
         "foo.bar(foo::bar).foreach(System.out::println)" should matchExpr<ASTMethodCall> {
 
             it::getMethodName shouldBe "foreach"
