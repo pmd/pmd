@@ -113,6 +113,18 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
     }
 
+    parserTest("Neg tests") {
+
+        inContext(ExpressionParsingCtx) {
+
+            "foo::bar::bar" shouldNot parse()
+            "foo::bar.foo()" shouldNot parse()
+            "foo::bar.foo" shouldNot parse()
+
+        }
+
+    }
+
     parserTest("Constructor reference") {
 
         inContext(ExpressionParsingCtx) {

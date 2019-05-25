@@ -2481,13 +2481,16 @@ void SwitchExpression() :
  * A PrimaryPrefix corresponds to an unqualified primary expression,
  * e.g "new Foo()". Then, if any, suffixes of the form e.g. ".method()",
  * ".field" or "::ref" are added, each time enclosing the previous node.
+ * Iteration stops after the first method reference, or we can't continue.
  *
  * The resulting subtree looks left-recursive, but the parsing is iterative.
  */
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead()) PrimarySuffix() )* {forceExprContext();}
+  // the lookahead here stops iteration after the first method reference,
+  // because nothing can be chained after a method reference.
+  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead(), {!(jjtree.peekNode() instanceof ASTMethodReference)}) PrimarySuffix() )* {forceExprContext();}
 }
 
 /*
@@ -2565,10 +2568,8 @@ void PrimaryStep2() #void:
 
 /**
  * Productions that may be present after a PrimaryPrefix. The way this is written makes for a nice tree,
- * but also allows many invalid things to be written (which is fine because we parse compilable code).
- * E.g. this allows `foo().this::bar[0].this`
- *
- * Not all PrimaryPrefix expressions are here, eg
+ * but would method references to be stacked (like `foo.foo()::bar.foo()::foo`) if we weren't
+ * checking for that in the semantic lookahead in PrimaryExpression.
  */
 void PrimarySuffix() #void :
 {}
@@ -2579,7 +2580,8 @@ void PrimarySuffix() #void :
 }
 
 /**
- * Part of a primary suffix that immediately follows a dot.
+ * Part of a primary suffix that immediately follows a dot. Also
+ * part of step 2.
  */
 void MemberSelector() #void :
 {}
