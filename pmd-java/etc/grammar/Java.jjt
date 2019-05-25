@@ -1979,6 +1979,7 @@ void ExplicitConstructorInvocation() :
    // * "this" or "super" can't appear in the primary expression in case of
    //   qualified super call (last branch), or else compile error, so if we
    //   see one of them, then the rest is necessarily the arguments
+   //   But: "this" may appear if it's qualified!
    // * No primary expression may start with "<", meaning we can use it to
    //   know we're looking forward to type arguments
   ( LOOKAHEAD("<")      TypeArguments() ( "this" | "super" {jjtThis.setIsSuper();} )
@@ -2520,12 +2521,16 @@ void PrimaryPrefix() #void :
 
 // This describes the cases where the PrimaryPrefix may fall
 // into PrimaryStep2. Notice that type arguments is still possible,
-// as well as annotations ("@") before an annotated array type.
+// as well as annotations ("@") before an annotated array type,
+// or qualified "this".
 // If we are in an explicit constructor invocation, then super is disallowed.
 private void Step2Lahead() #void:
 {}
 {
-   "::" | "(" | "@" | "[" | TypeArguments()
+   "::" | "(" | "@" | "["
+   // the type arguments must be followed by what may complete a class type + method ref
+   // otherwise we choke on eg `i < w >> 1`, because `< w >` matches type arguments
+   | TypeArguments() ("[" | "." | "@" | "::")
    | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
    | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new" | "this") // not super in this case
 }
@@ -2547,7 +2552,8 @@ private void SuffixLAhead() #void:
 void PrimaryStep2() #void:
 {}
 {
-      // If the class is a parameterised type, then we can only expect a method reference
+      // If we find type parameters, then we can only expect a method reference
+      // class literals or qualifiers to static member access/call may not be parameterised
       {forceTypeContext();} TypeArguments() {injectTop();} ( "." ClassTypeSegment() )* [ Dims() #ArrayType(2) ] MethodReference()
     | MethodReference()
     | ArgumentList()                          #MethodCall(2)
