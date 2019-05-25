@@ -2583,7 +2583,11 @@ void PrimarySuffix() #void :
 void MemberSelector() #void :
 {}
 {
-  QualifiedAllocationExpr()
+  /* JLS §6.5.1:
+   *  A name is syntactically classified as an ExpressionName [...] as the
+   * qualifying expression in a qualified class instance creation expression (§15.9)*
+   */
+   {forceExprContext();} QualifiedAllocationExpr()
   // if there are type arguments, this is a method call
 |               (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
 | LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                    #MethodCall(2)
