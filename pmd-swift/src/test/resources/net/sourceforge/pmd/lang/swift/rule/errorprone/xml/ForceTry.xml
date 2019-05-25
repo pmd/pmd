@@ -20,7 +20,7 @@ do {
         <description><![CDATA[
 Bad example #1
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 func a() throws {}
 try! a()

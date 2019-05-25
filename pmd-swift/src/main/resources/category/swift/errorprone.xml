@@ -13,7 +13,8 @@
           language="swift"
           since="7.0"
           message="Force casts should be avoided."
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcecast">
         <description>
             Force casts should be avoided.
         </description>
@@ -22,23 +23,19 @@
             <property name="xpath">
                 <value>
                     <![CDATA[
-//type_casting_operator[@Image = 'as!']
+//TypeCastingOperatorContext[@Text = 'as!']
 ]]>
                 </value>
             </property>
         </properties>
-        <example>
-            <![CDATA[
-NSNumber() as! Int
-]]>
-        </example>
     </rule>
 
     <rule name="ForceTry"
           language="swift"
           since="7.0"
           message="Force tries should be avoided."
-          class="net.sourceforge.pmd.lang.rule.XPathRule">
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcetry">
         <description>
             Force tries should be avoided.
         </description>
@@ -47,15 +44,11 @@ NSNumber() as! Int
             <property name="xpath">
                 <value>
                     <![CDATA[
-
+//TryOperatorContext[@Text = 'try!']
 ]]>
                 </value>
             </property>
             <property name="version" value="2.0"/>
         </properties>
-        <example>
-            <![CDATA[
-]]>
-        </example>
     </rule>
 </ruleset>

@@ -12,7 +12,8 @@ Rules which enforce generally accepted best practices.
     <rule name="ProhibitedInterfaceBuilder"
           since="7.0"
           message="Creating views using Interface Builder should be avoided."
-          class="net.sourceforge.pmd.lang.swift.rule.bestpractices.ProhibitedInterfaceBuilder">
+          class="net.sourceforge.pmd.lang.swift.rule.bestpractices.ProhibitedInterfaceBuilderRule"
+          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder">
         <description>
             Creating views using Interface Builder should be avoided.
         </description>

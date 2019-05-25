@@ -83,7 +83,11 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
 
     @Override
     public Node jjtGetChild(final int index) {
-        return (Node) children.get(index); // TODO: review if all children are Nodes
+        try {
+            return (Node) children.get(index);
+        } catch (final ClassCastException e) {
+            return new AntlrBaseNode();
+        }
     }
 
     @Override
@@ -94,6 +98,6 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     // TODO: should we make it abstract due to the comment in AbstractNode ?
     @Override
     public String getXPathNodeName() {
-        return toString();
+        return getClass().getSimpleName();
     }
 }
