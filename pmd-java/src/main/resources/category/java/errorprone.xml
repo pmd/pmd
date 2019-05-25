@@ -2632,7 +2632,7 @@ class Foo{
           typeResolution="true">
         <description>
 A logger should normally be defined private static final and be associated with the correct class.
-Private final Log log; is also allowed for rare cases where loggers need to be passed around,
+`private final Log log;` is also allowed for rare cases where loggers need to be passed around,
 with the restriction that the logger needs to be passed into the constructor.
         </description>
         <priority>3</priority>
@@ -2641,33 +2641,37 @@ with the restriction that the logger needs to be passed into the constructor.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration[
- FieldDeclaration//ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]
-  and not (
-   (: check logger name :)
-   (
-    FieldDeclaration[$requireStaticFinalLogger][@Final=true()][@Static=true()][.//VariableDeclaratorId[@Image=$loggerName or @Image=$staticLoggerName]]
-    |
-    FieldDeclaration[$requireStaticFinalLogger = false()][.//VariableDeclaratorId[@Image=$loggerName or @Image=$staticLoggerName]]
-   )
-   and
-   (: in place initialization with method argument pointing to current class (even for Enums) :)
-   .//ArgumentList//ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration/@Image or @Image = ancestor::EnumDeclaration/@Image]
-  )
-  and not (
-   (: final logger initialized inside constructor :)
-   FieldDeclaration[@Final=true()][@Private=true()][.//VariableDeclaratorId[@Image=$loggerName or @Image=$staticLoggerName]]
-   [count(.//VariableInitializer)=0]
-   [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image=$loggerName or @Image=$staticLoggerName]][count(.//AllocationExpression)=0]]
+//FieldDeclaration
+[.//ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+[
+    (: check modifiers :)
+    (@Private = false() or @Final = false())
+    (: check logger name :)
+    or (@Static and .//VariableDeclaratorId[@Image != $staticLoggerName])
+    or (@Static = false() and .//VariableDeclaratorId[@Image != $loggerName])
+
+    (: check logger argument type matches class or enum name :)
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@Image]
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@Image]
+]
+[not(
+     (: special case - final logger initialized inside constructor :)
+     count(.//VariableInitializer)=0
+     and @Static = false()
+     and
+     ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
+        [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
+        [AssignmentOperator[@Image = '=']]
+        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Image]]
+        [count(.//AllocationExpression)=0]
   )
 ]
 ]]>
                 </value>
             </property>
-            <property name="staticLoggerName" type="String" description="deprecated!(Use 'loggerName' property) Name of the static Logger variable" value="LOG"/>
-            <property name="loggerName" type="String" description="Name of the Logger variable" value="LOG"/>
+            <property name="staticLoggerName" type="String" description="Name of the static Logger variable" value="LOG"/>
+            <property name="loggerName" type="String" description="Name of the Logger instance variable" value="log"/>
             <property name="loggerClass" type="String" description="Class name of the logger" value="Log"/>
-            <property name="requireStaticFinalLogger" type="Boolean" description="Static final logger is required" value="false"/>
         </properties>
         <example>
  <![CDATA[
