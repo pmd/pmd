@@ -33,6 +33,9 @@ Being based on a proper Antlr grammar, CPD can:
 *   The Java rule {% rule "java/codestyle/NoPackage" %} (`java-codestyle`) will now report additionally enums
     and annotations that do not have a package declaration.
 
+*   The Java rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} (`java-codestyle`) now reports also
+    missing comments for top-level classes and annotations, that are package-private.
+
 ### Fixed Issues
 
 *   all
@@ -49,6 +52,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   java-codestyle
     *   [#1755](https://github.com/pmd/pmd/issues/1775): \[java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines
     *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
+    *   [#1793](https://github.com/pmd/pmd/issues/1793): \[java] CommentDefaultAccessModifier not working for classes
 *   java-design
     *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
 
@@ -63,6 +67,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1776](https://github.com/pmd/pmd/pull/1776): \[java] Show more detailed message when can't resolve field type - [Andrey Fomin](https://github.com/andrey-fomin)
 *   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
+*   [#1798](https://github.com/pmd/pmd/pull/1798): \[java] Make CommentDefaultAccessModifier work for top-level classes - [Boris Petrov](https://github.com/boris-petrov)
 
 {% endtocmaker %}
 
