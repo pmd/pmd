@@ -103,7 +103,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
         if (localAnnot == null) {
             return false;
-        } else if (declaration != nodeClass) {
+        } else if (!declaration.equals(nodeClass)) {
             // then the node suppressed the attributes of its parent
             return localAnnot.scope() == NoAttrScope.INHERITED;
         } else {

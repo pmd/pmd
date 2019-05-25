@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.ast.xpath;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -71,11 +70,11 @@ public class NoAttributeTest {
 
     private static class DummyNodeParent extends DummyNode {
 
-        public DummyNodeParent(int id) {
+        DummyNodeParent(int id) {
             super(id);
         }
 
-        public DummyNodeParent(int id, boolean findBoundary) {
+        DummyNodeParent(int id, boolean findBoundary) {
             super(id, findBoundary);
         }
 
@@ -101,14 +100,9 @@ public class NoAttributeTest {
     @NoAttribute(scope = NoAttrScope.INHERITED)
     private static class NodeNoInherited extends DummyNodeParent {
 
-        public NodeNoInherited(int id) {
+        NodeNoInherited(int id) {
             super(id);
         }
-
-        public NodeNoInherited(int id, boolean findBoundary) {
-            super(id, findBoundary);
-        }
-
 
         // getSomeName is inherited and filtered out by NoAttrScope.INHERITED
         // getSomeInt is inherited but overridden here, so NoAttrScope.INHERITED has no effect
@@ -145,7 +139,7 @@ public class NoAttributeTest {
 
     private static class NodeAllAttr extends DummyNodeParent {
 
-        public NodeAllAttr(int id) {
+        NodeAllAttr(int id) {
             super(id);
         }
     }
@@ -154,7 +148,7 @@ public class NoAttributeTest {
     private static class NodeNoAttrAll extends DummyNodeParent {
 
 
-        public NodeNoAttrAll(int id) {
+        NodeNoAttrAll(int id) {
             super(id);
         }
 
@@ -168,7 +162,7 @@ public class NoAttributeTest {
     private static class NodeNoAttrAllChild extends NodeNoAttrAll {
 
 
-        public NodeNoAttrAllChild(int id) {
+        NodeNoAttrAllChild(int id) {
             super(id);
         }
 
