@@ -900,7 +900,7 @@ class Foo {
 |finalFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to final field names|no|
 |staticFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to static field names|no|
 |defaultFieldPattern|\[a-z\]\[a-zA-Z0-9\]\*|Regex which applies to field names|no|
-|exclusions|serialVersionUID|Names of fields to whitelist.|yes. Delimiter is '\|'.|
+|exclusions|serialVersionUID \| serialPersistentFields|Names of fields to whitelist.|yes. Delimiter is '\|'.|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -917,7 +917,7 @@ class Foo {
         <property name="finalFieldPattern" value="[a-z][a-zA-Z0-9]*" />
         <property name="staticFieldPattern" value="[a-z][a-zA-Z0-9]*" />
         <property name="defaultFieldPattern" value="[a-z][a-zA-Z0-9]*" />
-        <property name="exclusions" value="serialVersionUID" />
+        <property name="exclusions" value="serialVersionUID|serialPersistentFields" />
     </properties>
 </rule>
 ```

@@ -79,6 +79,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 |protectedMethodCommentRequirement|Required|Protected method constructor comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 |enumCommentRequirement|Required|Enum comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 |serialVersionUIDCommentRequired|Ignored|Serial version UID comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|serialPersistentFieldsCommentRequired|Ignored|Serial persistent fields comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -97,6 +98,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
         <property name="protectedMethodCommentRequirement" value="Required" />
         <property name="enumCommentRequirement" value="Required" />
         <property name="serialVersionUIDCommentRequired" value="Ignored" />
+        <property name="serialPersistentFieldsCommentRequired" value="Ignored" />
     </properties>
 </rule>
 ```

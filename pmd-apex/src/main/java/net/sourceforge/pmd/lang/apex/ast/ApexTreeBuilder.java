@@ -6,10 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
 
@@ -19,6 +18,8 @@ import org.antlr.runtime.Token;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
+import apex.jorje.data.Location;
+import apex.jorje.data.Locations;
 import apex.jorje.parser.impl.ApexLexer;
 import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.semantic.ast.compilation.AnonymousClass;
@@ -221,17 +222,17 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
 
     // The Apex nodes with children to build.
     private Stack<AstNode> parents = new Stack<>();
-    
+
     private AdditionalPassScope scope = new AdditionalPassScope(Errors.createErrors());
 
     private final SourceCodePositioner sourceCodePositioner;
     private final String sourceCode;
-    private ListIterator<TokenLocation> apexDocTokenLocations;
+    private List<ApexDocTokenLocation> apexDocTokenLocations;
 
     public ApexTreeBuilder(String sourceCode) {
         this.sourceCode = sourceCode;
         sourceCodePositioner = new SourceCodePositioner(sourceCode);
-        apexDocTokenLocations = buildApexDocTokenLocations(sourceCode).listIterator();
+        apexDocTokenLocations = buildApexDocTokenLocations(sourceCode);
     }
 
     static <T extends AstNode> AbstractApexNode<T> createNodeAdapter(T node) {
@@ -273,60 +274,87 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         nodes.pop();
         parents.pop();
 
+        if (nodes.isEmpty()) {
+            // add the comments only at the end of the processing as the last step
+            addFormalComments();
+        }
+
         return node;
     }
 
-    private void buildFormalComment(AstNode node) {
-        if (parents.peek() == node) {
-            ApexNode<?> parent = (ApexNode<?>) nodes.peek();
-            TokenLocation tokenLocation = getApexDocTokenLocation(getApexDocIndex(parent));
-            if (tokenLocation != null) {
+    private void addFormalComments() {
+        for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
+            ApexNode<?> parent = tokenLocation.nearestNode;
+            if (parent != null) {
                 ASTFormalComment comment = new ASTFormalComment(tokenLocation.token);
                 comment.calculateLineNumbers(sourceCodePositioner, tokenLocation.index,
                         tokenLocation.index + tokenLocation.token.length());
+
+                // move existing nodes so that we can insert the comment as the first node
+                for (int i = parent.jjtGetNumChildren(); i > 0; i--) {
+                    parent.jjtAddChild(parent.jjtGetChild(i - 1), i);
+                }
+
                 parent.jjtAddChild(comment, 0);
                 comment.jjtSetParent(parent);
             }
         }
     }
 
-    private int getApexDocIndex(ApexNode<?> node) {
-        final int index = node.getNode().getLoc().getStartIndex();
-        return sourceCode.lastIndexOf('\n', index);
-    }
-
-    private TokenLocation getApexDocTokenLocation(int index) {
-        TokenLocation last = null;
-        while (apexDocTokenLocations.hasNext()) {
-            final TokenLocation location = apexDocTokenLocations.next();
-            if (location.index >= index) {
-                // rollback, the next token corresponds to a different node
-                apexDocTokenLocations.previous();
-                
-                if (last != null) {
-                    return last;
-                }
-                return null;
-            }
-            last = location;
+    private void buildFormalComment(AstNode node) {
+        if (parents.peek() == node) {
+            ApexNode<?> parent = (ApexNode<?>) nodes.peek();
+            assignApexDocTokenToNode(node, parent);
         }
-        return last;
     }
 
-    private static List<TokenLocation> buildApexDocTokenLocations(String source) {
+    /**
+     * Only remembers the node, to which the comment could belong.
+     * Since the visiting order of the nodes does not match the source order,
+     * the nodes appearing later in the source might be visiting first.
+     * The correct node will then be visited afterwards, and since the distance
+     * to the comment is smaller, it overrides the remembered node.
+     * @param jorjeNode the original node
+     * @param node the potential parent node, to which the comment could belong
+     */
+    private void assignApexDocTokenToNode(AstNode jorjeNode, ApexNode<?> node) {
+        Location loc = jorjeNode.getLoc();
+        if (!Locations.isReal(loc)) {
+            // Synthetic nodes such as "<clinit>" don't have a location in the
+            // source code, since they are generated by the compiler
+            return;
+        }
+        // find the token, that appears as close as possible before the node
+        int nodeStart = loc.getStartIndex();
+        for (ApexDocTokenLocation tokenLocation : apexDocTokenLocations) {
+            if (tokenLocation.index > nodeStart) {
+                // this and all remaining tokens are after the node
+                // so no need to check the remaining tokens.
+                break;
+            }
+
+            int distance = nodeStart - tokenLocation.index;
+            if (tokenLocation.nearestNode == null || distance < tokenLocation.nearestNodeDistance) {
+                tokenLocation.nearestNode = node;
+                tokenLocation.nearestNodeDistance = distance;
+            }
+        }
+    }
+
+    private static List<ApexDocTokenLocation> buildApexDocTokenLocations(String source) {
         ANTLRStringStream stream = new ANTLRStringStream(source);
         ApexLexer lexer = new ApexLexer(stream);
 
-        ArrayList<TokenLocation> tokenLocations = new ArrayList<>();
+        List<ApexDocTokenLocation> tokenLocations = new LinkedList<>();
         int startIndex = 0;
         Token token = lexer.nextToken();
         int endIndex = lexer.getCharIndex();
+
         while (token.getType() != Token.EOF) {
             if (token.getType() == ApexLexer.BLOCK_COMMENT) {
-
                 // Filter only block comments starting with "/**"
                 if (token.getText().startsWith("/**")) {
-                    tokenLocations.add(new TokenLocation(startIndex, token.getText()));
+                    tokenLocations.add(new ApexDocTokenLocation(startIndex, token.getText()));
                 }
             }
             // TODO : Check other non-doc comments and tokens of type ApexLexer.EOL_COMMENT for "NOPMD" suppressions
@@ -338,11 +366,13 @@ public final class ApexTreeBuilder extends AstVisitor<AdditionalPassScope> {
         return tokenLocations;
     }
 
-    private static class TokenLocation {
+    private static class ApexDocTokenLocation {
         int index;
         String token;
+        ApexNode<?> nearestNode;
+        int nearestNodeDistance;
 
-        TokenLocation(int index, String token) {
+        ApexDocTokenLocation(int index, String token) {
             this.index = index;
             this.token = token;
         }

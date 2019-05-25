@@ -43,6 +43,7 @@ public class XmlHandler extends AbstractLanguageVersionHandler {
         return new XmlParser(parserOptions);
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {

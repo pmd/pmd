@@ -52,6 +52,10 @@ private class Foo { }
     <test-code>
         <description>class comment should have description</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Missing ApexDoc @description</message>
+        </expected-messages>
         <code><![CDATA[
 /**
  */
@@ -398,4 +402,49 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1783 correct comments for constructor and inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+
+    /**
+     * @description Foo
+     */
+    public Foo() {
+    }
+
+    /**
+     * @description Bar
+     */
+    public class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1783 correct comments for constructor and inner class - false negative</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * @description Foo
+ */
+public class Foo {
+
+    /**
+     * @description Foo
+     */
+    public Foo() {
+    }
+
+    public class Bar {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
