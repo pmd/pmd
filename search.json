@@ -1673,6 +1673,15 @@
 ,
 
 {
+"title": "UseShortArrayInitializer (Java, Code Style)",
+"tags": "",
+"keywords": "UseShortArrayInitializer",
+"url": "pmd_rules_java_codestyle.html#useshortarrayinitializer",
+"summary": "Rules which enforce a specific coding style."
+}
+,
+
+{
 "title": "VariableNamingConventions (Java, Code Style)",
 "tags": "",
 "keywords": "VariableNamingConventions",
