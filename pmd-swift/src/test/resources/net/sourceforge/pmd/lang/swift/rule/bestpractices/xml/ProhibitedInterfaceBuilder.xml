@@ -31,7 +31,7 @@ class ViewController: UIViewController {
         <description><![CDATA[
 Bad example #1
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 class ViewController: UIViewController {
     @IBOutlet var label: UILabel!
@@ -43,7 +43,7 @@ class ViewController: UIViewController {
         <description><![CDATA[
 Bad example #2
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 class ViewController: UIViewController {
     @IBAction func buttonTapped(_ sender: UIButton) {}
