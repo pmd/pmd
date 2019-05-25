@@ -1334,6 +1334,10 @@ convention (Camel case), but it can be configured through properties.</p>
 conventions for property declarations. By default this rule uses the standard Apex naming convention (Camel case),
 but it can be configured through properties.</p>
   </li>
+  <li>
+    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#useshortarrayinitializer"><code class="highlighter-rouge">UseShortArrayInitializer</code></a> (<code class="highlighter-rouge">java-codestyle</code>) searches for
+array initialization expressions, which can be written shorter.</p>
+  </li>
 </ul>
 
 <h4 id="modified-rules">Modified Rules</h4>
@@ -1409,6 +1413,7 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general rules
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1495">#1495</a>: [java] Rule to detect overly verbose array initializiation</li>
       <li><a href="https://github.com/pmd/pmd/issues/1684">#1684</a>: [java] Properly whitelist serialPersistentFields</li>
       <li><a href="https://github.com/pmd/pmd/issues/1804">#1804</a>: [java] NPE in UnnecessaryLocalBeforeReturnRule</li>
     </ul>
@@ -1453,6 +1458,7 @@ removed as well. It is deprecated, along with all its implementations in the sub
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1647">#1647</a>: [java] Rule to detect overly verbose array initialization - <a href="https://github.com/IDoCodingStuffs">Victor</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1798">#1798</a>: [java] Make CommentDefaultAccessModifier work for top-level classes - <a href="https://github.com/boris-petrov">Boris Petrov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1799">#1799</a>: [java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1802">#1802</a>: [python] [cpd] Add support for Python 2 backticks - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
