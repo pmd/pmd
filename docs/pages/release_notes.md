@@ -82,6 +82,12 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     on comments for the field `serialPersistentFields` are not required anymore. You can change the property
     to restore the old behavior.
 
+*   The Java rule {% rule "java/errorprone/ProperLogger" %} (`java-errorprone`) has two new properties
+    to configure the logger class (e.g. "org.slf4j.Logger") and the logger name of the special case,
+    when the logger is not static. The name of the static logger variable was already configurable.
+    The new property "loggerClass" allows to use this rule for different logging frameworks.
+    This rule covers all the cases of the now deprecated rule {% rule "java/errorprone/LoggerIsNotStaticFinal" %}.
+
 *   The Java rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} (`java-codestyle`) now reports also
     missing comments for top-level classes and annotations, that are package-private.
 
@@ -93,6 +99,9 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     {% rule "apex/codestyle/FormalParameterNamingConventions" %},
     {% rule "apex/codestyle/LocalVariableNamingConventions" %}, and
     {% rule "apex/codestyle/PropertyNamingConventions" %}.
+
+*   The Java rule {%rule "java/errorprone/LoggerIsNotStaticFinal" %} (`java-errorprone`) has been deprecated
+    and will be removed with PMD 7.0.0. The rule is replaced by {% rule "java/errorprone/ProperLogger" %}.
 
 ### Fixed Issues
 
@@ -139,6 +148,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 ### External Contributions
 
 *   [#1647](https://github.com/pmd/pmd/pull/1647): \[java] Rule to detect overly verbose array initialization - [Victor](https://github.com/IDoCodingStuffs)
+*   [#1762](https://github.com/pmd/pmd/pull/1762): \[java] LoggerIsNotStaticFinal and ProperLogger - make class-name configurable - [Ivo Šmíd](https://github.com/bedla)
 *   [#1798](https://github.com/pmd/pmd/pull/1798): \[java] Make CommentDefaultAccessModifier work for top-level classes - [Boris Petrov](https://github.com/boris-petrov)
 *   [#1799](https://github.com/pmd/pmd/pull/1799): \[java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - [Srinivasan Venkatachalam](https://github.com/Srini1993)
 *   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
