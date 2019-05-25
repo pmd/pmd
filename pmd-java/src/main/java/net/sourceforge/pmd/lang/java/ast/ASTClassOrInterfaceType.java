@@ -66,10 +66,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
      * Gets the owner type of this type if it's not ambiguous. This is a
      * type we know for sure that this type is a member of.
      *
-     * TODO for now, all lhs are classified as ambiguous because they may be
-     *   a package name. This must be taken care of by a disambiguation phase
-     *   that takes the symbol table into account.
-     *
      * @return A type, or null if this is a base type
      */
     @Nullable

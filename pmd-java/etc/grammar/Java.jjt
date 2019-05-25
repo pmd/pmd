@@ -2509,11 +2509,17 @@ void PrimaryPrefix() #void :
     )
 
 | ("(" Expression() ")")                  #ParenthesizedExpression
+// If it is an ambiguous name, then we may go on
+// into the next step, which is less restricted
+// than PrimarySuffix
 | AmbiguousName() [ LOOKAHEAD(Step2Lahead()) PrimaryStep2() ]
 }
 
-// this describes the cases where the PrimaryPrefix may fall
-// into PrimaryStep2
+// This describes the cases where the PrimaryPrefix may fall
+// into PrimaryStep2. Notice that type arguments is still possible,
+// as well as annotations ("@")
+// If we are in an explicit constructor invocation, then super or
+// this is disallowed.
 private void Step2Lahead() #void:
 {}
 {
@@ -2544,11 +2550,13 @@ void PrimaryStep2() #void:
     | ArgumentList()                          #MethodCall(2)
     | "." (
           {forceTypeContext();} "class"       #ClassLiteral(1)
-        | "this"                              #ThisExpression(1)
+          // qualified this or super
+        | {forceTypeContext();} "this"        #ThisExpression(1)
+        | {forceTypeContext();} "super"       #SuperExpression(1)
+            // here we force the super to be followed by something,
+            // "super" alone is not a valid expression
+            ("." MemberSelector() | MethodReference())
         | MemberSelector()
-        // we need to lookahead for the dot after "super", because in qualified
-        // super constructor invocation the "super" might be followed by a "("
-        | "super"      #SuperExpression(1) ("." MemberSelector() | MethodReference())
     )
     | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
     | "[" Expression() "]"              #ArrayAccess(2)
