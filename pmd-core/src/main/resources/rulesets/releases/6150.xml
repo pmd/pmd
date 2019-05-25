@@ -13,5 +13,6 @@ This ruleset contains links to rules that are new in PMD v6.15.0
     <rule ref="category/apex/codestyle.xml/LocalVariableNamingConventions"/>
     <rule ref="category/apex/codestyle.xml/PropertyNamingConventions"/>
 
+    <rule ref="category/java/codestyle.xml/UseShortArrayInitializer"/>
 </ruleset>
 

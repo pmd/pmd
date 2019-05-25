@@ -2117,6 +2117,39 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UseShortArrayInitializer"
+        language="java"
+        since="6.15.0"
+        message="Array initialization can be written shorter"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useshortarrayinitializer">
+        <description>
+<![CDATA[
+When declaring and initializing array fields or variables, it is not necessary to explicitly create a new array
+using `new`. Instead one can simply define the initial content of the array as a expression in curly braces.
+
+E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 };`.
+]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//VariableDeclarator
+    [VariableDeclaratorId[@ArrayType = true() and @TypeInferred = false()]]
+    [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
+                ]]></value>
+            </property>
+            <property name="version" value="2.0"/>
+        </properties>
+        <example>
+<![CDATA[
+Foo[] x = new Foo[] { ... }; // Overly verbose
+Foo[] x = { ... }; //Equivalent to above line
+]]>
+        </example>
+    </rule>
+
     <rule name="VariableNamingConventions"
           since="1.2"
           deprecated="true"
