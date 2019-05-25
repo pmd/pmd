@@ -2804,11 +2804,8 @@ void ArrayDimExpr() #void:
 void Statement() :
 {}
 {
-  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD(2) LabeledStatement()
-| Block()
+  Block()
 | EmptyStatement()
-| StatementExpression() ";"
 | SwitchStatement()
 | IfStatement()
 | WhileStatement()
@@ -2820,6 +2817,12 @@ void Statement() :
 | ThrowStatement()
 | SynchronizedStatement()
 | TryStatement()
+// testing the hard cases last optimises the code gen
+// all the previous cases are trivial for the parser
+// because they start with a different token
+| LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD(2) LabeledStatement()
+| StatementExpression() ";"
 }
 
 void LabeledStatement() :
