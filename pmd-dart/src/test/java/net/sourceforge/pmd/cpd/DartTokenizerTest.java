@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -35,7 +36,12 @@ public class DartTokenizerTest extends AbstractTokenizerTest {
                 new Object[] { "escaped_backslash.dart", 14 },
                 new Object[] { "escaped_string.dart", 17 },
                 new Object[] { "increment.dart", 185 },
-                new Object[] { "imports.dart", 1 }
+                new Object[] { "imports.dart", 1 },
+                new Object[] { "regex.dart", 13 },
+                new Object[] { "regex2.dart", 13 },
+                new Object[] { "regex3.dart", 13 },
+                new Object[] { "string_with_backslashes.dart", 9 },
+                new Object[] { "string_multiline.dart", 13 }
         );
     }
 
@@ -48,7 +54,7 @@ public class DartTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-        return IOUtils.toString(DartTokenizer.class.getResourceAsStream(this.filename));
+        return IOUtils.toString(DartTokenizer.class.getResourceAsStream(this.filename), StandardCharsets.UTF_8);
     }
 
     @Test
