@@ -2135,9 +2135,8 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//(LocalVariableDeclaration[@TypeInferred = false()] | FieldDeclaration)
-  /VariableDeclarator
-    [VariableDeclaratorId[@ArrayType = true()]]
+//VariableDeclarator
+    [VariableDeclaratorId[@ArrayType = true() and @TypeInferred = false()]]
     [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
                 ]]></value>
             </property>
