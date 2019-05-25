@@ -1361,6 +1361,10 @@ property <code class="highlighter-rouge">exclusions</code>.</p>
 on comments for the field <code class="highlighter-rouge">serialPersistentFields</code> are not required anymore. You can change the property
 to restore the old behavior.</p>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="highlighter-rouge">CommentDefaultAccessModifier</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now reports also
+missing comments for top-level classes and annotations, that are package-private.</p>
+  </li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -1412,6 +1416,7 @@ will be removed with PMD 7.0.0. The rule is replaced by the more general rules
   <li>matlab
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1830">#1830</a>: [matlab] [cpd] Parse error with comments</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1793">#1793</a>: [java] CommentDefaultAccessModifier not working for classes</li>
     </ul>
   </li>
 </ul>
@@ -1443,6 +1448,7 @@ removed as well. It is deprecated, along with all its implementations in the sub
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1798">#1798</a>: [java] Make CommentDefaultAccessModifier work for top-level classes - <a href="https://github.com/boris-petrov">Boris Petrov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1799">#1799</a>: [java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1802">#1802</a>: [python] [cpd] Add support for Python 2 backticks - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1803">#1803</a>: [dart] [cpd] Dart escape sequences - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
@@ -1474,7 +1480,7 @@ removed as well. It is deprecated, along with all its implementations in the sub
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: May 24, 2019 <br />
+ Site last generated: May 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
