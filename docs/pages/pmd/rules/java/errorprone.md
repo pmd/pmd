@@ -245,7 +245,7 @@ for (int i = 0; i < 10; i++) {
 
 The method Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object. It should not be invoked by application logic.
-
+            
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCallingFinalizeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidCallingFinalizeRule.java)
@@ -270,7 +270,7 @@ void foo() {
 
 **Priority:** Medium (3)
 
-Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the
+Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the 
 original error, causing other, more subtle problems later on.
 
 **This rule is defined by the following XPath expression:**
@@ -303,7 +303,7 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
+Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as 
 OutOfMemoryError that should be exposed and managed separately.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidCatchingThrowableRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidCatchingThrowableRule.java)
@@ -464,8 +464,8 @@ public class A {
 
 **Priority:** Medium (3)
 
-It can be confusing to have a field name with the same name as a method. While this is permitted,
-having information (field) and actions (method) is not clear naming. Developers versed in
+It can be confusing to have a field name with the same name as a method. While this is permitted, 
+having information (field) and actions (method) is not clear naming. Developers versed in 
 Smalltalk often prefer this approach as the methods denote accessor methods.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.AvoidFieldNameMatchingMethodNameRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidFieldNameMatchingMethodNameRule.java)
@@ -764,9 +764,9 @@ boolean x = (y == Double.NaN);
 
 **Priority:** Medium (3)
 
-If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable.
-Member variables need to be marked as transient, static, or have accessor methods in the class. Marking
-variables as transient is the safest and easiest modification. Accessor methods should follow the Java
+If a class is a bean, or is referenced by a bean directly or indirectly it needs to be serializable. 
+Member variables need to be marked as transient, static, or have accessor methods in the class. Marking 
+variables as transient is the safest and easiest modification. Accessor methods should follow the Java 
 naming conventions, i.e. for a variable named foo, getFoo() and setFoo() accessor methods should be provided.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.BeanMembersShouldSerializeRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/BeanMembersShouldSerializeRule.java)
@@ -1527,7 +1527,7 @@ public class MyActivity extends Activity {
 
 **Priority:** Medium Low (4)
 
-Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions
+Throwing exceptions within a 'finally' block is confusing since they may mask other exceptions 
 or code defects.
 Note: This is a PMD implementation of the Lint4j rule &quot;A throw in a finally block&quot;
 
@@ -1623,8 +1623,8 @@ public class Count {
 
 **Priority:** Medium (3)
 
-Empty Catch Block finds instances where an exception is caught, but nothing is done.
-In most circumstances, this swallows an exception which should either be acted on
+Empty Catch Block finds instances where an exception is caught, but nothing is done.  
+In most circumstances, this swallows an exception which should either be acted on 
 or reported.
 
 **This rule is defined by the following XPath expression:**
@@ -1830,7 +1830,7 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for'
+An empty statement (or a semicolon by itself) that is not used as the sole body of a 'for' 
 or 'while' loop is probably a bug.  It could also be a double semicolon, which has no purpose
 and should be removed.
 
@@ -1961,7 +1961,7 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-Empty While Statement finds all instances where a while statement does nothing.
+Empty While Statement finds all instances where a while statement does nothing.  
 If it is a timing loop, then you should use Thread.sleep() for it; if it is
 a while loop that does a lot in the exit expression, rewrite it to make it clearer.
 
@@ -2109,7 +2109,7 @@ protected void finalize() {
 
 Methods named finalize() should not have parameters.  It is confusing and most likely an attempt to
 overload Object.finalize(). It will not be called by the VM.
-
+            
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
@@ -2139,9 +2139,9 @@ public class Foo {
 
 **Priority:** Medium (3)
 
-When overriding the finalize(), the new method should be set as protected.  If made public,
+When overriding the finalize(), the new method should be set as protected.  If made public, 
 other classes may invoke it at inappropriate times.
-
+            
 Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
 
 **This rule is defined by the following XPath expression:**
@@ -2391,15 +2391,11 @@ public class Foo extends TestCase {
 
 ## LoggerIsNotStaticFinal
 
-<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
-
 **Since:** PMD 2.0
 
 **Priority:** Medium High (2)
 
 In most cases, the Logger reference can be declared as static and final.
-
-This rule is deprecated. The rule is replaced by {% rule java/errorprone/ProperLogger %}.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -2854,26 +2850,16 @@ with the restriction that the logger needs to be passed into the constructor.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//ClassOrInterfaceBodyDeclaration[
- FieldDeclaration//ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]
-  and not (
-   (: check logger name :)
-   (
-    FieldDeclaration[$requireStaticFinalLogger][@Final=true()][@Static=true()][.//VariableDeclaratorId[@Image=$loggerName or @Image=$staticLoggerName]]
-    |
-    FieldDeclaration[$requireStaticFinalLogger = false()][.//VariableDeclaratorId[@Image=$loggerName or @Image=$staticLoggerName]]
-   )
-   and
-   (: in place initialization with method argument pointing to current class (even for Enums) :)
-   .//ArgumentList//ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration/@Image or @Image = ancestor::EnumDeclaration/@Image]
-  )
-  and not (
-   (: final logger initialized inside constructor :)
-   FieldDeclaration[@Final=true()][@Private=true()][.//VariableDeclaratorId[@Image=$loggerName or @Image=$staticLoggerName]]
-   [count(.//VariableInitializer)=0]
-   [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image=$loggerName or @Image=$staticLoggerName]][count(.//AllocationExpression)=0]]
-  )
-]
+//ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
+ and
+ not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
+ and
+ //ArgumentList//ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration/@Image or @Image = ancestor::EnumDeclaration/@Image])
+ and
+ not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
+ [count(.//VariableInitializer)=0]
+ [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
+ )]
 ```
 
 **Example(s):**
@@ -2891,10 +2877,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|staticLoggerName|LOG|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> (Use 'loggerName' property) Name of the static Logger variable|no|
-|loggerName|LOG|Name of the Logger variable|no|
-|loggerClass|Log|Class name of the logger|no|
-|requireStaticFinalLogger|false|Static final logger is required|no|
+|staticLoggerName|LOG|Name of the static Logger variable|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -2905,9 +2888,7 @@ public class Foo {
 ``` xml
 <rule ref="category/java/errorprone.xml/ProperLogger">
     <properties>
-        <property name="loggerName" value="LOG" />
-        <property name="loggerClass" value="Log" />
-        <property name="requireStaticFinalLogger" value="false" />
+        <property name="staticLoggerName" value="LOG" />
     </properties>
 </rule>
 ```
@@ -3149,7 +3130,7 @@ new StringBuffer()      //  16
 new StringBuffer(6)     //  6
 new StringBuffer("hello world")  // 11 + 16 = 27
 new StringBuffer('A')   //  chr(A) = 65
-new StringBuffer("A")   //  1 + 16 = 17
+new StringBuffer("A")   //  1 + 16 = 17 
 
 new StringBuilder()     //  16
 new StringBuilder(6)    //  6
@@ -3304,7 +3285,7 @@ public void foo() {
 
 **Priority:** Medium (3)
 
-Test classes end with the suffix Test. Having a non-test class with that name is not a good practice,
+Test classes end with the suffix Test. Having a non-test class with that name is not a good practice, 
 since most people will assume it is a test case. Test classes have test methods named testXXX.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/TestClassWithoutTestCasesRule.java)
@@ -3682,7 +3663,7 @@ class Foo {
 
 **Priority:** Medium (3)
 
-In J2EE, the getClassLoader() method might not work as expected. Use
+In J2EE, the getClassLoader() method might not work as expected. Use 
 Thread.currentThread().getContextClassLoader() instead.
 
 **This rule is defined by the following XPath expression:**
