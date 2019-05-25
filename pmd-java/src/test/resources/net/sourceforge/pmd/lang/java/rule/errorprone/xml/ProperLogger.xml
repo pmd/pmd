@@ -29,7 +29,6 @@ public class Foo {
         <description><![CDATA[
 Ok, special case
         ]]></description>
-        <rule-property name="loggerName">log</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -56,14 +55,13 @@ public enum Foo {
         <description><![CDATA[
 bug 1626232, a separate variable initialization should not confuse the rule
         ]]></description>
-        <rule-property name="loggerName">log</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     private String bar = "";
     private final Log log;
-    Foo(Log log1) {
-        this.log = log1;
+    Foo(Log log) {
+        this.log = log;
     }
 }
  ]]>    </code>
@@ -93,9 +91,7 @@ public class Foo {
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Custom logger-class with invalid logger variable name
-        ]]></description>
+        <description>Custom logger-class with invalid logger variable name</description>
         <rule-property name="loggerClass">MyLog</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -105,10 +101,8 @@ public class Foo {
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Public logger
-        ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>Public logger</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
     public static final Log LOG = LogFactory.getLog(Foo.class);
@@ -116,44 +110,25 @@ public class Foo {
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Public logger when static final required
-        ]]></description>
-        <rule-property name="requireStaticFinalLogger">true</rule-property>
-        <expected-problems>0</expected-problems>
+        <description>package-private logger</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    public static final Log LOG = LogFactory.getLog(Foo.class);
+    static final Log LOG = LogFactory.getLog(Foo.class);
 }
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Logger initialized as String constant from class name
-        ]]></description>
-        <expected-problems>0</expected-problems>
+        <description>package-private logger non static</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    Log LOG = LogFactory.getLog(Foo.class.getName());
+    final Log LOG = LogFactory.getLog(Foo.class);
 }
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Package-protected logger when static final is not required
-        ]]></description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Foo {
-    Log LOG = LogFactory.getLog(Foo.class);
-}
- ]]>    </code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Package-protected logger when static final is required
-        ]]></description>
-        <rule-property name="requireStaticFinalLogger">true</rule-property>
+        <description>package-private logger non static and non final</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -162,27 +137,103 @@ public class Foo {
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Check type resolution of logger
-        ]]></description>
-        <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
-        <expected-problems>0</expected-problems>
+        <description>Public logger when static final required</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(Foo.class);
+    public static final Log LOG = LogFactory.getLog(Foo.class);
 }
  ]]>    </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Check type resolution of logger with invalid logger specified
-        ]]></description>
-        <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
+        <description>Logger initialized as String constant from class name (java.util.logging)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+
+public class Foo {
+    private static final Logger LOG = Logger.getLogger(Foo.class.getName());
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description>non-private Logger initialized as String constant from class name</description>
+        <rule-property name="loggerClass">java.util.logging.Logger</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.logging.Logger;
+
+public class Foo {
+    Logger LOG = Logger.getLogger(Foo.class.getName());
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description>Package-protected logger when static final is not required</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
-    org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(Bar.class);
+    Log LOG = LogFactory.getLog(Foo.class);
 }
  ]]>    </code>
+    </test-code>
+    <test-code>
+        <description>Package-protected logger when static final is required</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    Log LOG = LogFactory.getLog(Foo.class);
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description>Check type resolution of logger</description>
+        <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Foo.class);
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description>Check type resolution of logger with invalid logger specified</description>
+        <rule-property name="loggerClass">org.slf4j.Logger</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Foo {
+    private static final Logger LOG = LoggerFactory.getLogger(Bar.class);
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description>similar to special case but with creating a new logger instead of passing in</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Log log;
+    public Foo() {
+        this.log = LogFactory.getLog(Foo.class);
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>similar to special case but with creating a new logger instead of passing in</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Log log;
+    public Foo() {
+        this.log = new Log(Foo.class);
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
