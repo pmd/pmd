@@ -79,6 +79,9 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     on comments for the field `serialPersistentFields` are not required anymore. You can change the property
     to restore the old behavior.
 
+*   The Java rule {% rule "java/codestyle/CommentDefaultAccessModifier" %} (`java-codestyle`) now reports also
+    missing comments for top-level classes and annotations, that are package-private.
+
 #### Deprecated Rules
 
 *   The Apex rule {% rule "apex/codestyle/VariableNamingConventions" %} (`apex-codestyle`) has been deprecated and
@@ -106,6 +109,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
     *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
 *   matlab
     *   [#1830](https://github.com/pmd/pmd/issues/1830): \[matlab] \[cpd] Parse error with comments
+    *   [#1793](https://github.com/pmd/pmd/issues/1793): \[java] CommentDefaultAccessModifier not working for classes
 
 ### API Changes
 
@@ -128,6 +132,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 
 ### External Contributions
 
+*   [#1798](https://github.com/pmd/pmd/pull/1798): \[java] Make CommentDefaultAccessModifier work for top-level classes - [Boris Petrov](https://github.com/boris-petrov)
 *   [#1799](https://github.com/pmd/pmd/pull/1799): \[java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - [Srinivasan Venkatachalam](https://github.com/Srini1993)
 *   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
