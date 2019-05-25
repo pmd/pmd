@@ -1366,6 +1366,13 @@ on comments for the field <code class="highlighter-rouge">serialPersistentFields
 to restore the old behavior.</p>
   </li>
   <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#properlogger"><code class="highlighter-rouge">ProperLogger</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has two new properties
+to configure the logger class (e.g. “org.slf4j.Logger”) and the logger name of the special case,
+when the logger is not static. The name of the static logger variable was already configurable.
+The new property “loggerClass” allows to use this rule for different logging frameworks.
+This rule covers all the cases of the now deprecated rule <a href="pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="highlighter-rouge">LoggerIsNotStaticFinal</code></a>.</p>
+  </li>
+  <li>
     <p>The Java rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="highlighter-rouge">CommentDefaultAccessModifier</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now reports also
 missing comments for top-level classes and annotations, that are package-private.</p>
   </li>
@@ -1374,12 +1381,18 @@ missing comments for top-level classes and annotations, that are package-private
 <h4 id="deprecated-rules">Deprecated Rules</h4>
 
 <ul>
-  <li>The Apex rule <a href="pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) has been deprecated and
+  <li>
+    <p>The Apex rule <a href="pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) has been deprecated and
 will be removed with PMD 7.0.0. The rule is replaced by the more general rules
 <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>,
 <a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>,
 <a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>, and
-<a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="highlighter-rouge">PropertyNamingConventions</code></a>.</li>
+<a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="highlighter-rouge">PropertyNamingConventions</code></a>.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="highlighter-rouge">LoggerIsNotStaticFinal</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been deprecated
+and will be removed with PMD 7.0.0. The rule is replaced by <a href="pmd_rules_java_errorprone.html#properlogger"><code class="highlighter-rouge">ProperLogger</code></a>.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1459,6 +1472,7 @@ removed as well. It is deprecated, along with all its implementations in the sub
 
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/1647">#1647</a>: [java] Rule to detect overly verbose array initialization - <a href="https://github.com/IDoCodingStuffs">Victor</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1762">#1762</a>: [java] LoggerIsNotStaticFinal and ProperLogger - make class-name configurable - <a href="https://github.com/bedla">Ivo Šmíd</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1798">#1798</a>: [java] Make CommentDefaultAccessModifier work for top-level classes - <a href="https://github.com/boris-petrov">Boris Petrov</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1799">#1799</a>: [java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1802">#1802</a>: [python] [cpd] Add support for Python 2 backticks - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
