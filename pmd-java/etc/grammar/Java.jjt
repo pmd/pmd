@@ -2247,8 +2247,6 @@ void Expression() #AssignmentExpression(>1):
  */
 {AssignmentOp op = null;}
 {
-  LOOKAHEAD( LambdaLahead() ) LambdaExpression()
-|
   ConditionalExpression()
   [
     LOOKAHEAD(2) op=AssignmentOperator() {jjtThis.setOp(op);} Expression()
@@ -2265,13 +2263,7 @@ AssignmentOp AssignmentOperator() #void:
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ "?" Expression() ":" TernaryTail() ]
-}
-
-private void TernaryTail() #void:
-{}
-{
-    LOOKAHEAD(LambdaLahead()) LambdaExpression() | ConditionalExpression()
+  ConditionalOrExpression() [ "?" Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() #ConditionalOrExpression(>1):
@@ -2439,16 +2431,9 @@ void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)
     ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
  // here we avoid looking ahead for a whole unary expression, instead just testing the token after ")"
 | LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExprNotPmStart() )
-    ("(" TypeAnnotationList() IntersectionType(true) ")" CastSubject()) #CastExpression
+    ("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
 | PostfixExpression()
 | SwitchExpression()
-}
-
-private void CastSubject() #void:
-{}
-{
-    LOOKAHEAD( LambdaLahead() ) LambdaExpression()
-  | UnaryExpressionNotPlusMinus()
 }
 
 private void UnaryExprNotPmStart() #void:
@@ -2511,6 +2496,8 @@ void PrimaryPrefix() #void :
        MethodReference()
      | "." "class"                        #ClassLiteral(1)
     )
+
+| LOOKAHEAD(LambdaLahead()) LambdaExpression()
 
 | ("(" Expression() ")")                  #ParenthesizedExpression
 // If it is an ambiguous name, then we may go on

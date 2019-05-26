@@ -119,34 +119,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
     parserTest("Positive lambda contexts") {
 
         inContext(ExpressionParsingCtx) {
-            // We allow lambdas in any parenthesized expression
-            // this is weaker than the JLS, but they use semantics to forbid this
             "(a -> {})" should parse()
-            // conditional expression
-            "(cond ? a -> b : () -> c)" should parse()
-            "cond ? () -> {} : a -> c" should parse()
-            "cond ? () -> b : (() -> c)" should parse()
-            "cond ? (a -> {}) : () -> c" should parse()
-            "a = cond ? (a -> {}) : () -> c" should parse()
-            // method or constructor arg
-            "foo(a = cond ? (a -> {}) : () -> c)" should parse()
-            "foo(() -> c)" should parse()
-            "new Foo(() -> c)" should parse()
-            "new Foo(a -> c)" should parse()
-            "new Foo(a -> {})" should parse()
-            // cast subject
-            "(Cast) () -> c" should parse()
-            // RHS of assignments
-            "k = () -> c" should parse()
-        }
-
-        inContext(StatementParsingCtx) {
-            //  RHS of assignments
-            "St f = cond ? a -> b : () -> c;" should parse()
-            "St f = () -> c;" should parse()
-            "St f = k = () -> c;" should parse()
-            "St f = (k = () -> c);" should parse()
-            "St f = (() -> c);" should parse()
         }
     }
 
