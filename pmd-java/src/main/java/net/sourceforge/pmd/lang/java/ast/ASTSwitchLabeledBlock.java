@@ -4,9 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
-
-public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitchLabeledRule {
+/**
+ * One of the {@linkplain ASTSwitchLabeledRule SwitchLabeledRule}s.
+ *
+ * <pre class="grammar">
+ *
+ * SwitchLabeledBlock ::= {@link ASTSwitchLabel SwitchLabel} "->" {@link ASTBlock Block}
+ *
+ * </pre>
+ */
+public final class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
     ASTSwitchLabeledBlock(int id) {
         super(id);
@@ -19,14 +26,5 @@ public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitch
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-        if (jjtGetNumChildren() > 0) {
-            AbstractNode firstChild = (AbstractNode) jjtGetChild(0);
-            jjtSetFirstToken(firstChild.jjtGetFirstToken());
-        }
     }
 }

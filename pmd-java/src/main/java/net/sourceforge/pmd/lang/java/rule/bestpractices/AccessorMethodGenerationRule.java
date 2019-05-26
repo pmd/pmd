@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.AbstractJavaScope;
@@ -71,7 +70,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
         if (node.isFinal()) {
             for (final ASTVariableDeclarator varDecl: node.findChildrenOfType(ASTVariableDeclarator.class)) {
                 if (varDecl.hasInitializer()) {
-                    ASTVariableInitializer varInit = varDecl.getInitializer();
+                    ASTExpression varInit = varDecl.getInitializer();
                     List<ASTExpression> initExpression = varInit.findDescendantsOfType(ASTExpression.class);
                     boolean isConstantExpression = true;
                     constantCheck:

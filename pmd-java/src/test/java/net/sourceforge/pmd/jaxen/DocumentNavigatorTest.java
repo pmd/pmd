@@ -16,6 +16,7 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.UnsupportedAxisException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.testframework.RuleTst;
 
+@Ignore("These tests uses primary prefix which was removed, and document navigator will anyway be dropped for node streams")
 public class DocumentNavigatorTest extends RuleTst {
 
     private TestRule rule;

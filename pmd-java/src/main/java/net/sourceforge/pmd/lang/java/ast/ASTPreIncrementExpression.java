@@ -10,13 +10,13 @@ package net.sourceforge.pmd.lang.java.ast;
  * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}
  * and the like.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * PreIncrementExpression ::= "++" {@linkplain ASTPrimaryExpression PrimaryExpression}
  *
  * </pre>
  */
-public class ASTPreIncrementExpression extends AbstractJavaTypeNode {
+public class ASTPreIncrementExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTPreIncrementExpression(int id) {
         super(id);
     }

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractPoorMethodCall;
 
 /**
@@ -37,7 +36,9 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
     @Override
     protected boolean isViolationArgument(Node arg) {
-        return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
+        return true;
+        // FIXME - REVERT ME
+        // return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
     }
 
 }

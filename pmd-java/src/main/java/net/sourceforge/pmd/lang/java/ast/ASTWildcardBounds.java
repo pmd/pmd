@@ -8,13 +8,18 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a type bound on a wildcard {@linkplain ASTTypeArgument type argument}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * WildcardBounds ::=  ( "extends" | "super" ) ( {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTReferenceType ReferenceType}
  *
  * </pre>
+ * @deprecated Replaced by {@link ASTWildcardType}
  */
+@Deprecated
 public class ASTWildcardBounds extends AbstractJavaTypeNode {
+
+    private boolean isUpperBound;
+
     public ASTWildcardBounds(int id) {
         super(id);
     }
@@ -24,13 +29,16 @@ public class ASTWildcardBounds extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    void setUpperBound(boolean upperBound) {
+        isUpperBound = upperBound;
+    }
 
     /**
      * Returns true if this is an upper type bound, e.g.
      * in {@code <? extends Integer>}.
      */
     public boolean isUpperBound() {
-        return jjtGetFirstToken().toString().equals("extends");
+        return isUpperBound;
     }
 
 

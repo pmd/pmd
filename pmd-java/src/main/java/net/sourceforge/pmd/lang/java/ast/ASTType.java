@@ -5,75 +5,76 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.Experimental;
+
+
 /**
  * Represents a type reference.
  *
- * <pre>
+ * <p>Corresponds to the JLS's <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-Type">Type</a>.
  *
- * Type ::= {@linkplain ASTReferenceType ReferenceType} | {@linkplain ASTPrimitiveType PrimitiveType}
+ * <pre class="grammar">
+ *
+ * Type ::= {@link ASTReferenceType ReferenceType}
+ *        | {@link ASTPrimitiveType PrimitiveType}
  *
  * </pre>
  *
- * Note: it is not exactly the same the "UnnanType" defined in JLS.
+ * Note: it is not exactly the same the "UnannType" defined in JLS.
+ *
+ * TODO implement {@link Annotatable}. Ideally, any type annotations
+ * would be children of this node, not of the parent node.
  */
-public class ASTType extends AbstractJavaTypeNode {
-    public ASTType(int id) {
-        super(id);
-    }
-
-    public ASTType(JavaParser p, int id) {
-        super(p, id);
-    }
+public interface ASTType extends TypeNode {
 
     /**
-     * Accept the visitor. *
+     * For now this returns the name of the type with all the segments,
+     * without annotations, array dimensions, or type parameters. Experimental
+     * because we need to specify it, eg it would be more useful to have
+     * a method return a qualified name with help of the symbol table.
      */
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
-    }
-
-
-    public String getTypeImage() {
-        ASTClassOrInterfaceType refType = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
-        if (refType != null) {
-            return refType.getImage();
-        }
-        return getFirstDescendantOfType(ASTPrimitiveType.class).getImage();
-    }
-
-
-    @Deprecated
-    public int getArrayDepth() {
-        if (jjtGetNumChildren() != 0
-                && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
-            return ((Dimensionable) jjtGetChild(0)).getArrayDepth();
-        }
-        return 0; // this is not an array
-    }
-
+    @Experimental
+    String getTypeImage();
 
     /**
-     *
-     * @deprecated Use {@link #isArrayType()}
+     * Returns the number of array dimensions of this type.
+     * This is 0 unless this node {@linkplain #isArrayType()}.
      */
-    @Deprecated
-    public boolean isArray() {
-        return isArrayType();
+    default int getArrayDepth() {
+        return 0;
+    }
+
+    @Nullable
+    default ASTPrimitiveType asPrimitiveType() {
+        return isPrimitiveType() ? (ASTPrimitiveType) this : null;
+    }
+
+    @Nullable
+    default ASTReferenceType asReferenceType() {
+        return isReferenceType() ? (ASTReferenceType) this : null;
     }
 
 
-    /**
-     * Returns true if this type is an array type.
-     *
-     */
-    public boolean isArrayType() {
-        return getArrayDepth() > 0;
+    default boolean isPrimitiveType() {
+        return this instanceof ASTPrimitiveType;
     }
+
+
+    default boolean isReferenceType() {
+        return !isPrimitiveType();
+    }
+
+
+    default boolean isArrayType() {
+        return this instanceof ASTArrayType;
+    }
+
+
+    default boolean isClassOrInterfaceType() {
+        return this instanceof ASTClassOrInterfaceType;
+    }
+
+
 }

@@ -6,85 +6,68 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 
 class Java11Test : ParserTestSpec({
 
+    parserTestGroup("Test lambda parameter with var keyword") {
 
-    parserTest("var keyword should be a normal type pre-java 11", javaVersions = J1_8..J10) {
+        // var keyword should be a normal type pre-java 11
+        onVersions(J1_8..J10) {
 
-        "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
-            child<ASTFormalParameters> {
-                child<ASTFormalParameter> {
-                    child<ASTType> {
-                        it.typeImage shouldBe "var"
-
-                        child<ASTReferenceType> {
-                            child<ASTClassOrInterfaceType> {
-                                it.image shouldBe "var"
-                            }
+            "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
+                child<ASTLambdaParameterList> {
+                    child<ASTLambdaParameter> {
+                        child<ASTClassOrInterfaceType> {
+                            it.image shouldBe "var"
                         }
+                        variableId("x")
+                    }
+                }
+
+                unspecifiedChild()
+            }
+
+            "(var x, var y) -> x + y" should matchExpr<ASTLambdaExpression> {
+                child<ASTLambdaParameterList> {
+                    child<ASTLambdaParameter> {
+                        child<ASTClassOrInterfaceType> {
+                            it.image shouldBe "var"
+                        }
+                        variableId("x")
                     }
 
-                    child<ASTVariableDeclaratorId> { }
-                }
-            }
-
-            unspecifiedChild()
-        }
-
-        "(var x, var y) -> x + y" should matchExpr<ASTLambdaExpression> {
-            child<ASTFormalParameters> {
-                child<ASTFormalParameter> {
-                    child<ASTType> {
-                        it.typeImage shouldBe "var"
-
-                        child<ASTReferenceType> {
-                            child<ASTClassOrInterfaceType> {
-                                it.image shouldBe "var"
-                            }
+                    child<ASTLambdaParameter> {
+                        child<ASTClassOrInterfaceType> {
+                            it.image shouldBe "var"
                         }
+                        variableId("y")
                     }
-                    child<ASTVariableDeclaratorId> { }
                 }
 
-                child<ASTFormalParameter> {
-                    child<ASTType> {
-                        it.typeImage shouldBe "var"
-
-                        child<ASTReferenceType> {
-                            child<ASTClassOrInterfaceType> {
-                                it.image shouldBe "var"
-                            }
-                        }
-                    }
-                    child<ASTVariableDeclaratorId> { }
-
-                }
+                unspecifiedChild()
             }
 
-            unspecifiedChild()
+            "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
+                child<ASTLambdaParameterList> {
+                    child<ASTLambdaParameter> {
+                        annotation()
+                        child<ASTType>(ignoreChildren = true) {}
+                        variableId("x")
+                    }
+                }
+                unspecifiedChild()
+            }
         }
 
-        "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
-            child<ASTFormalParameters> {
-                child<ASTFormalParameter> {
-                    child<ASTAnnotation>(ignoreChildren = true) {}
-                    child<ASTType>(ignoreChildren = true) {}
-                    child<ASTVariableDeclaratorId> {}
+        // var keyword should generate no type after java 11
+        onVersions(J11..Latest) {
+            "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
+                child<ASTLambdaParameterList> {
+                    child<ASTLambdaParameter> {
+                        it.isTypeInferred shouldBe true
+                        variableId("x")
+                    }
                 }
+
+                unspecifiedChild()
             }
-            unspecifiedChild()
-        }
-    }
-
-    parserTest("var keyword should generate no type after java 11", javaVersions = J11..Latest) {
-
-        "(var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
-            child<ASTFormalParameters> {
-                child<ASTFormalParameter> {
-                    it.isTypeInferred shouldBe true
-                    child<ASTVariableDeclaratorId> { }
-                }
-            }
-
-            unspecifiedChild()
         }
     }
 

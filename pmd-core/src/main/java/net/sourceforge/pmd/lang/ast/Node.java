@@ -280,6 +280,7 @@ public interface Node {
         return null;
     }
 
+
     /**
      * Traverses down the tree to find the first descendant instance of type descendantType without crossing find
      * boundaries.

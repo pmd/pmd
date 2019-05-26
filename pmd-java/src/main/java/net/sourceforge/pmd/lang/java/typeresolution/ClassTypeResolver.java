@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.typeresolution;
 
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
-import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getMethodExplicitTypeArugments;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.LOWER_WILDCARD;
 import static net.sourceforge.pmd.lang.java.typeresolution.typedefinition.TypeDefinitionType.UPPER_BOUND;
@@ -21,19 +20,20 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.QualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -43,7 +43,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -54,6 +53,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInstanceOfExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
@@ -80,18 +80,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeBound;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
-import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -249,22 +245,22 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+
+    @Override
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
+        populateType(node, node.getQualifiedName().toString());
+
+        return super.visit(node, data);
+    }
+
+
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         super.visit(node, data);
 
         String typeName = node.getImage();
 
-        if (node.isAnonymousClass()) {
-            QualifiableNode parent = node.getFirstParentOfAnyType(ASTAllocationExpression.class, ASTEnumConstant.class);
-
-            if (parent != null) {
-                typeName = parent.getQualifiedName().toString();
-            }
-        }
-
-        // FIXME, we should discard the array depth on this node, it should only be known to ASTReferenceType (#910)
-        populateType(node, typeName, node.getArrayDepth());
+        populateType(node, typeName, 0);
 
         ASTTypeArguments typeArguments = node.getFirstChildOfType(ASTTypeArguments.class);
 
@@ -279,6 +275,23 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         return data;
     }
+
+
+    @Override
+    public Object visit(ASTArrayType node, Object data) {
+
+        ASTType element = node.getElementType();
+
+        element.jjtAccept(this, data);
+
+        JavaTypeDefinition def = element.getTypeDefinition();
+        if (def != null) {
+            node.setTypeDefinition(def.withDimensions(node.getArrayDepth()));
+        }
+
+        return data;
+    }
+
 
     /**
      * Set's the node's type to the found Class in the node's name (if there is a class to be found).
@@ -547,8 +560,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         return null;
                     }
 
-                    if (typeNode.jjtGetChild(0) instanceof ASTReferenceType) {
-                        return ((TypeNode) typeNode.jjtGetChild(0)).getTypeDefinition();
+                    if (typeNode instanceof ASTReferenceType) {
+                        return typeNode.getTypeDefinition();
                     } else { // primitive type
                         return JavaTypeDefinition.forClass(typeNode.getType());
                     }
@@ -615,6 +628,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (node == null || node.isTypeInferred()) {
             return super.visit(node, data);
+        } else if (node.isEnumConstant()) {
+            Class<?> enumClass = getEnclosingTypeDeclarationClass(node);
+            node.setTypeDefinition(JavaTypeDefinition.forClass(enumClass));
+            return data;
         }
 
         // Type common to all declarations in the same statement
@@ -627,12 +644,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTType node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
 
     private void populateVariableDeclaratorFromType(ASTLocalVariableDeclaration node, JavaTypeDefinition typeDefinition) {
         // assign this type to VariableDeclarator and VariableDeclaratorId
@@ -711,31 +722,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTReferenceType node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-
-        JavaTypeDefinition elementTypeDef = node.getTypeDefinition();
-        if (elementTypeDef != null) {
-            // FIXME when ClassOrInterfaceType resolves type without dimensions, remove the test here
-            if (!elementTypeDef.isArrayType()) {
-                node.setTypeDefinition(elementTypeDef.withDimensions(node.getArrayDepth()));
-            }
-        }
-        return data;
-    }
-
-    @Override
     public Object visit(ASTPrimitiveType node, Object data) {
         populateType(node, node.getImage());
         return super.visit(node, data);
-    }
-
-    @Override
-    public Object visit(ASTExpression node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
     }
 
     @Override
@@ -825,7 +814,19 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTUnaryExpression node, Object data) {
         super.visit(node, data);
-        rollupTypeUnaryNumericPromotion(node);
+
+        switch (node.getOp()) {
+        case BOOLEAN_NOT:
+            populateType(node, "boolean");
+            break;
+        case BITWISE_INVERSE:
+            rollupTypeUnary(node);
+            break;
+        default:
+            rollupTypeUnaryNumericPromotion(node);
+            break;
+        }
+
         return data;
     }
 
@@ -840,17 +841,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTPreDecrementExpression node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
-        super.visit(node, data);
-        if ("!".equals(node.getImage())) {
-            populateType(node, "boolean");
-        } else {
-            rollupTypeUnary(node);
-        }
         return data;
     }
 
@@ -870,96 +860,98 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 
     @Override
+    @SuppressWarnings("checkstyle")
     public Object visit(ASTPrimaryExpression primaryNode, Object data) {
-        // visit method arguments in reverse
-        for (int i = primaryNode.jjtGetNumChildren() - 1; i >= 0; --i) {
-            ((JavaNode) primaryNode.jjtGetChild(i)).jjtAccept(this, data);
-        }
-
-        JavaTypeDefinition primaryNodeType = null;
-        AbstractJavaTypeNode previousChild = null;
-        AbstractJavaTypeNode nextChild;
-        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
-
-        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
-            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
-            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
-                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
-
-            // skip children which already have their type assigned
-            if (currentChild.getType() == null) {
-                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
-                if (currentChild.jjtGetLastToken().toString().equals("this")) {
-
-                    if (previousChild != null) { // Qualified 'this' expression
-                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
-                    } else { // simple 'this' expression
-                        ASTClassOrInterfaceDeclaration typeDeclaration
-                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-
-                        if (typeDeclaration != null) {
-                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
-                        }
-                    }
-
-                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
-                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
-
-                    if (previousChild != null) { // Qualified 'super' expression
-                        // anonymous classes can't have qualified super expression, thus
-                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
-                        // looking for enclosing super types
-                        currentChild.setTypeDefinition(
-                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
-                    } else { // simple 'super' expression
-                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
-                    }
-
-                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
-                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
-                } else if (previousChild != null && previousChild.getType() != null) {
-                    String currentChildImage = currentChild.getImage();
-                    if (currentChildImage == null) {
-                        // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
-                        currentChildImage = currentChild.jjtGetLastToken().toString();
-                    }
-
-                    ASTArguments astArguments = nextChild != null
-                            ? nextChild.getFirstChildOfType(ASTArguments.class) : null;
-
-                    if (astArguments != null) { // method
-                        ASTArgumentList astArgumentList = getArgumentList(astArguments);
-                        int methodArgsArity = getArgumentListArity(astArgumentList);
-                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArugments(currentChild);
-
-                        List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
-                                                                        currentChildImage,
-                                                                        typeArguments, methodArgsArity, accessingClass);
-
-                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
-                                                                               methods, astArgumentList));
-                    } else { // field
-                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
-                                                                    currentChildImage, accessingClass));
-                    }
-                }
-            }
-
-
-            if (currentChild.getType() != null) {
-                primaryNodeType = currentChild.getTypeDefinition();
-            } else {
-                // avoid falsely passing tests
-                primaryNodeType = null;
-                break;
-            }
-
-            previousChild = currentChild;
-        }
-
-        primaryNode.setTypeDefinition(primaryNodeType);
-
         return data;
+        // visit method arguments in reverse
+        //        for (int i = primaryNode.jjtGetNumChildren() - 1; i >= 0; --i) {
+        //            ((JavaNode) primaryNode.jjtGetChild(i)).jjtAccept(this, data);
+        //        }
+        //
+        //        JavaTypeDefinition primaryNodeType = null;
+        //        AbstractJavaTypeNode previousChild = null;
+        //        AbstractJavaTypeNode nextChild;
+        //        Class<?> accessingClass = getEnclosingTypeDeclarationClass(primaryNode);
+        //
+        //        for (int childIndex = 0; childIndex < primaryNode.jjtGetNumChildren(); ++childIndex) {
+        //            AbstractJavaTypeNode currentChild = (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex);
+        //            nextChild = childIndex + 1 < primaryNode.jjtGetNumChildren()
+        //                    ? (AbstractJavaTypeNode) primaryNode.jjtGetChild(childIndex + 1) : null;
+        //
+        //            // skip children which already have their type assigned
+        //            if (currentChild.getType() == null) {
+        //                // Last token, because if 'this' is a Suffix, it'll have tokens '.' and 'this'
+        //                if (currentChild.jjtGetLastToken().toString().equals("this")) {
+        //
+        //                    if (previousChild != null) { // Qualified 'this' expression
+        //                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+        //                    } else { // simple 'this' expression
+        //                        ASTClassOrInterfaceDeclaration typeDeclaration
+        //                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        //
+        //                        if (typeDeclaration != null) {
+        //                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
+        //                        }
+        //                    }
+        //
+        //                    // Last token, because if 'super' is a Suffix, it'll have tokens '.' and 'super'
+        //                } else if (currentChild.jjtGetLastToken().toString().equals("super")) {
+        //
+        //                    if (previousChild != null) { // Qualified 'super' expression
+        //                        // anonymous classes can't have qualified super expression, thus
+        //                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
+        //                        // looking for enclosing super types
+        //                        currentChild.setTypeDefinition(
+        //                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
+        //                    } else { // simple 'super' expression
+        //                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
+        //                    }
+        //
+        //                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
+        //                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+        //                } else if (previousChild != null && previousChild.getType() != null) {
+        //                    String currentChildImage = currentChild.getImage();
+        //                    if (currentChildImage == null) {
+        //                        // this.<Something>foo(); <Something>foo would be in a Suffix and would have a null image
+        //                        currentChildImage = currentChild.jjtGetLastToken().toString();
+        //                    }
+        //
+        //                    ASTArguments astArguments = nextChild != null
+        //                            ? nextChild.getFirstChildOfType(ASTArguments.class) : null;
+        //
+        //                    if (astArguments != null) { // method
+        //                        ASTArgumentList astArgumentList = getArgumentList(astArguments);
+        //                        int methodArgsArity = getArgumentListArity(astArgumentList);
+        //                        List<JavaTypeDefinition> typeArguments = getMethodExplicitTypeArugments(currentChild);
+        //
+        //                        List<MethodType> methods = getApplicableMethods(previousChild.getTypeDefinition(),
+        //                                                                        currentChildImage,
+        //                                                                        typeArguments, methodArgsArity, accessingClass);
+        //
+        //                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
+        //                                                                               methods, astArgumentList));
+        //                    } else { // field
+        //                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
+        //                                                                    currentChildImage, accessingClass));
+        //                    }
+        //                }
+        //            }
+        //
+        //
+        //            if (currentChild.getType() != null) {
+        //                primaryNodeType = currentChild.getTypeDefinition();
+        //            } else {
+        //                // avoid falsely passing tests
+        //                primaryNodeType = null;
+        //                break;
+        //            }
+        //
+        //            previousChild = currentChild;
+        //        }
+        //
+        //        primaryNode.setTypeDefinition(primaryNodeType);
+        //
+        //        return data;
     }
 
     /**
@@ -1037,13 +1029,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return null;
     }
 
-    @Override
-    public Object visit(ASTPrimaryPrefix node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-
-        return data;
-    }
 
     @Override
     public Object visit(ASTTypeArgument node, Object data) {
@@ -1092,31 +1077,32 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     @Override
+    public Object visit(ASTIntersectionType node, Object data) {
+        List<ASTType> typeNodes = IteratorUtil.toList(node.iterator());
+
+        // TypeBound will have at least one child, but maybe more
+        JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
+        int i = 0;
+        for (ASTType bound : typeNodes) {
+            bounds[i++] = bound.getTypeDefinition();
+        }
+
+        node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
+
+        return super.visit(node, data);
+    }
+
+    @Override
     public Object visit(ASTTypeParameter node, Object data) {
         if (!node.hasTypeBound()) { // type parameter doesn't have declared upper bounds
             node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
         } else {
             super.visit(node, data);
             rollupTypeUnary(node);
+            if (node.getTypeDefinition() != null && !node.getTypeDefinition().isUpperBound()) {
+                node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, node.getTypeDefinition()));
+            }
         }
-
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTTypeBound node, Object data) {
-        super.visit(node, data);
-
-        List<ASTClassOrInterfaceType> typeNodes = node.getBoundTypeNodes();
-
-        // TypeBound will have at least one child, but maybe more
-        JavaTypeDefinition[] bounds = new JavaTypeDefinition[typeNodes.size()];
-        int i = 0;
-        for (ASTClassOrInterfaceType bound : typeNodes) {
-            bounds[i++] = bound.getTypeDefinition();
-        }
-
-        node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
 
         return data;
     }
@@ -1127,36 +1113,34 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    @Override
-    public Object visit(ASTBooleanLiteral node, Object data) {
-        populateType(node, "boolean");
-        return super.visit(node, data);
-    }
 
     @Override
     public Object visit(ASTLiteral node, Object data) {
         super.visit(node, data);
-        if (node.jjtGetNumChildren() != 0) {
-            rollupTypeUnary(node);
+        if (node.isIntLiteral()) {
+            populateType(node, "int");
+        } else if (node.isLongLiteral()) {
+            populateType(node, "long");
+        } else if (node.isFloatLiteral()) {
+            populateType(node, "float");
+        } else if (node.isDoubleLiteral()) {
+            populateType(node, "double");
+        } else if (node.isCharLiteral()) {
+            populateType(node, "char");
+        } else if (node.isStringLiteral()) {
+            populateType(node, "java.lang.String");
+        } else if (node.isBooleanLiteral()) {
+            populateType(node, "boolean");
+        } else if (node.isClassLiteral()) {
+            populateType(node, "java.lang.Class");
+        } else if (node.isNullLiteral()) {
+            // no explicit type
         } else {
-            if (node.isIntLiteral()) {
-                populateType(node, "int");
-            } else if (node.isLongLiteral()) {
-                populateType(node, "long");
-            } else if (node.isFloatLiteral()) {
-                populateType(node, "float");
-            } else if (node.isDoubleLiteral()) {
-                populateType(node, "double");
-            } else if (node.isCharLiteral()) {
-                populateType(node, "char");
-            } else if (node.isStringLiteral()) {
-                populateType(node, "java.lang.String");
-            } else {
-                throw new IllegalStateException("PMD error, unknown literal type!");
-            }
+            throw new IllegalStateException("PMD error, unknown literal type!");
         }
         return data;
     }
+
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
@@ -1245,30 +1229,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTAnnotation node, Object data) {
         super.visit(node, data);
-        rollupTypeUnary(node);
+        // FIXME this is a hack because visit(ASTName) is too powerful,
+        // Annotations don't have a Name node anymore so we imitate this
+        ASTName name = new ASTName(node.getImage());
+        name.jjtSetParent(node);
+        visit(name, data);
+        if (name.getTypeDefinition() != null) {
+            node.setTypeDefinition(name.getTypeDefinition());
+        }
         return data;
     }
 
-    @Override
-    public Object visit(ASTNormalAnnotation node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTMarkerAnnotation node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTSingleMemberAnnotation node, Object data) {
-        super.visit(node, data);
-        rollupTypeUnary(node);
-        return data;
-    }
 
     // Roll up the type based on type of the first child node.
     private void rollupTypeUnary(TypeNode typeNode) {

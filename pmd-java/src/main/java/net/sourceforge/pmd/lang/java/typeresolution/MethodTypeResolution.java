@@ -22,7 +22,11 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberSelector;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -136,7 +140,7 @@ public final class MethodTypeResolution {
                     // primitive type; then the method is not applicable and there is no need to proceed with inference.
                     Class<?>[] methodParameterTypes = methodType.getMethod().getParameterTypes();
                     for (int argIndex = 0; argIndex < argCount; ++argIndex) {
-                        if (((ASTExpression) argList.jjtGetChild(argIndex)).isStandAlonePrimitive()) {
+                        if (isStandAlonePrimitive((ASTExpression) argList.jjtGetChild(argIndex))) {
                             if (!methodParameterTypes[argIndex].isPrimitive()) {
                                 continue outter; // this method is not applicable
                             }
@@ -176,6 +180,32 @@ public final class MethodTypeResolution {
         }
 
         return selectedMethods;
+    }
+
+
+    private static boolean isStandAlonePrimitive(ASTExpression expression) {
+        if (expression.jjtGetNumChildren() != 1) {
+            return false;
+        }
+
+        ASTPrimaryExpression primaryExpression = expression.getFirstChildOfType(ASTPrimaryExpression.class);
+
+        if (primaryExpression == null || primaryExpression.jjtGetNumChildren() != 1) {
+            return false;
+        }
+
+        ASTPrimaryPrefix primaryPrefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+
+        if (primaryPrefix == null || primaryPrefix.jjtGetNumChildren() != 1) {
+            return false;
+        }
+
+        ASTLiteral literal = primaryPrefix.getFirstChildOfType(ASTLiteral.class);
+
+        // if it is not a string literal and not a null, then it is one of
+        // byte, short, char, int, long, float, double, boolean
+        return literal != null && !literal.isStringLiteral()
+            && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
     }
 
     public static MethodType parameterizeInvocation(JavaTypeDefinition context, Method method,

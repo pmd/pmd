@@ -6,21 +6,21 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a single member-value pair in an annotation.
+ * Represents a single member-value pair in a {@linkplain ASTNormalAnnotation NormalAnnotation}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MemberValuePair ::=  &lt;IDENTIFIER&gt; "=" {@linkplain ASTMemberValue MemberValue}
  *
  * </pre>
  */
-public class ASTMemberValuePair extends AbstractJavaNode {
-    public ASTMemberValuePair(int id) {
+public final class ASTMemberValuePair extends AbstractJavaNode {
+    ASTMemberValuePair(int id) {
         super(id);
     }
 
 
-    public ASTMemberValuePair(JavaParser p, int id) {
+    ASTMemberValuePair(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -42,8 +42,8 @@ public class ASTMemberValuePair extends AbstractJavaNode {
 
 
     @Override
-    public ASTMemberValuePairs jjtGetParent() {
-        return (ASTMemberValuePairs) super.jjtGetParent();
+    public ASTNormalAnnotation jjtGetParent() {
+        return (ASTNormalAnnotation) super.jjtGetParent();
     }
 
 

@@ -13,18 +13,21 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to ShiftExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
- * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "<" | ">" | "<=" | ">=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
+ * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
  *
  * </pre>
  */
-public class ASTRelationalExpression extends AbstractJavaTypeNode {
-    public ASTRelationalExpression(int id) {
+public final class ASTRelationalExpression extends AbstractJavaTypeNode implements ASTExpression {
+
+    private BinaryOp op;
+
+    ASTRelationalExpression(int id) {
         super(id);
     }
 
-    public ASTRelationalExpression(JavaParser p, int id) {
+    ASTRelationalExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -38,4 +41,19 @@ public class ASTRelationalExpression extends AbstractJavaTypeNode {
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
     }
+
+    @Override
+    public void setImage(String image) {
+        super.setImage(image);
+        op = BinaryOp.fromImage(image);
+    }
+
+    public BinaryOp getOp() {
+        return op;
+    }
+
+    public String getOpName() {
+        return op.name();
+    }
+
 }

@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
-
 /**
  * Represents a type bound on a {@linkplain ASTTypeParameter type parameter}.
  * Type bounds specify the type of the type variable to which they apply as
@@ -15,9 +12,9 @@ import java.util.List;
  * The first bound type is a class or interface type, while the additional
  * bounds are necessarily interface types.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} ( "&" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTClassOrInterfaceType ClassOrInterfaceType} )*
+ * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTType Type}
  *
  * </pre>
  */
@@ -36,8 +33,8 @@ public class ASTTypeBound extends AbstractJavaTypeNode {
      * Returns a list with the type bounds of this node.
      * The returned list has at least one element.
      */
-    public List<ASTClassOrInterfaceType> getBoundTypeNodes() {
-        return findChildrenOfType(ASTClassOrInterfaceType.class);
+    public ASTType getTypeNode() {
+        return getFirstChildOfType(ASTType.class);
     }
 
 

@@ -13,13 +13,13 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to ConditionalAndExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ConditionalOrExpression ::=  {@linkplain ASTConditionalAndExpression ConditionalAndExpression} ( "||" {@linkplain ASTConditionalAndExpression ConditionalAndExpression} )+
  *
  * </pre>
  */
-public class ASTConditionalOrExpression extends AbstractJavaTypeNode {
+public class ASTConditionalOrExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTConditionalOrExpression(int id) {
         super(id);
     }

@@ -8,9 +8,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -129,7 +129,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         ClassNameDeclaration classNameDeclaration = new ClassNameDeclaration(node);
         s.addDeclaration(classNameDeclaration);
 
-        if (node instanceof ASTClassOrInterfaceBody) {
+        if (node instanceof ASTAnonymousClassDeclaration) {
             addScope(new ClassScope(classNameDeclaration), node);
         } else {
             addScope(new ClassScope(node.getImage(), classNameDeclaration), node);
@@ -189,13 +189,9 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ASTClassOrInterfaceBody node, Object data) {
-        if (node.isAnonymousInnerClass() || node.isEnumChild()) {
-            createClassScope(node);
-            cont(node);
-        } else {
-            super.visit(node, data);
-        }
+    public Object visit(ASTAnonymousClassDeclaration node, Object data) {
+        createClassScope(node);
+        cont(node);
         return data;
     }
 

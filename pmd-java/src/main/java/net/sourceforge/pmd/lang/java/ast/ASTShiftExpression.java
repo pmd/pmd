@@ -9,23 +9,33 @@ package net.sourceforge.pmd.lang.java.ast;
  * Represents a shift expression on a numeric value. This has a precedence greater than {@link ASTRelationalExpression},
  * and lower than {@link ASTAdditiveExpression}.
  *
+ * <pre class="grammar">
+ *
+ * ShiftExpression ::=  {@linkplain ASTShiftExpression AdditiveExpression} ( ( "&lt;&lt;"  | "&gt;&gt;" | "&gt;&gt;&gt;" ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
+ *
+ * </pre>
+ *
  * <p>Note that the children of this node are not necessarily {@link ASTAdditiveExpression},
  * rather, they are expressions with an operator precedence greater or equal to AdditiveExpression.
  *
- *
- * <pre>
- *
- * ShiftExpression ::=  {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "<<"  | {@linkplain ASTRSIGNEDSHIFT RSIGNEDSHIFT} | {@linkplain ASTRUNSIGNEDSHIFT RUNSIGNEDSHIFT} ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
- *
- * </pre>
+ * <p>The first child may be another ShiftExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 >> 2 >> 3}</td><td>{@code (1 >> 2 >> 3)}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3}</td><td>{@code ((1 >> 2) << 3)}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3 + 4}</td><td>{@code ((1 >> 2) << (3 + 4))}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3 << 4}</td><td>{@code ((1 >> 2) << 3 << 4)}</td></tr>
+ *     <tr><td>{@code 1 >> 2 << 3 << 4 >> 5}</td><td>{@code (((1 >> 2) << 3 << 4) >> 5)}</td></tr>
+ * </table>
  */
-// TODO we could merge the productions for ASTRSIGNEDSHIFT and ASTRUNSIGNEDSHIFT into this node using a #void production that sets the image of the parent
-public class ASTShiftExpression extends AbstractJavaTypeNode {
-    public ASTShiftExpression(int id) {
+public final class ASTShiftExpression extends AbstractLrBinaryExpr implements ASTExpression {
+    ASTShiftExpression(int id) {
         super(id);
     }
 
-    public ASTShiftExpression(JavaParser p, int id) {
+    ASTShiftExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -38,14 +48,6 @@ public class ASTShiftExpression extends AbstractJavaTypeNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    /**
-     * Returns the image of the operator, i.e. "<<", ">>", or ">>>".
-     */
-    public String getOperator() {
-        return getImage();
     }
 
 }

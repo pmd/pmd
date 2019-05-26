@@ -5,23 +5,31 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTCastExpression extends AbstractJavaTypeNode {
-    private boolean intersectionTypes = false;
+/**
+ * Represents a type cast expression.
+ *
+ * <pre class="grammar">
+ *
+ * CastExpression ::= "(" {@link ASTAnnotation TypeAnnotation} {@link ASTType Type} ")" {@linkplain ASTUnaryExpression UnaryExpression}
+ *
+ * </pre>
+ */
+public final class ASTCastExpression extends AbstractJavaTypeNode implements ASTExpression {
 
     public ASTCastExpression(int id) {
         super(id);
     }
 
-    public ASTCastExpression(JavaParser p, int id) {
+    ASTCastExpression(JavaParser p, int id) {
         super(p, id);
     }
 
-    public void setIntersectionTypes(boolean intersectionTypes) {
-        this.intersectionTypes = intersectionTypes;
+    public ASTType getCastType() {
+        return getFirstChildOfType(ASTType.class);
     }
 
-    public boolean hasIntersectionTypes() {
-        return intersectionTypes;
+    public ASTExpression getCastExpression() {
+        return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
     }
 
     /**

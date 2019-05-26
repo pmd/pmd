@@ -9,13 +9,15 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents a single type argument in a {@linkplain ASTTypeArguments type arguments list}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TypeArgument ::= ( {@linkplain ASTAnnotation Annotation} )* ( {@linkplain ASTReferenceType ReferenceType} | "?" {@linkplain ASTWildcardBounds WildcardBounds}? )
  *
  * </pre>
+ *
+ * @deprecated Replaced by just an {@link ASTType}
  */
-// TODO should implement Annotatable when we use can use Java 8 mixins instead of an abstract class
+@Deprecated
 public class ASTTypeArgument extends AbstractJavaTypeNode {
     public ASTTypeArgument(int id) {
         super(id);

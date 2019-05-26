@@ -5,6 +5,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+/**
+ * Return type of a method. TODO maybe make it implement {@link ASTType}.
+ *
+ * <pre class="grammar">
+ *
+ * ResultType ::= "void" | {@link ASTType Type}
+ *
+ * </pre>
+ */
 public class ASTResultType extends AbstractJavaNode {
     public ASTResultType(int id) {
         super(id);
@@ -15,11 +25,20 @@ public class ASTResultType extends AbstractJavaNode {
     }
 
     public boolean returnsArray() {
-        return !isVoid() && ((ASTType) jjtGetChild(0)).isArray();
+        return !isVoid() && ((ASTType) jjtGetChild(0)).isArrayType();
     }
 
     public boolean isVoid() {
         return jjtGetNumChildren() == 0;
+    }
+
+
+    /**
+     * Returns the enclosed type node, or an null if this is void.
+     */
+    @Nullable
+    public ASTType getTypeNode() {
+        return isVoid() ? null : (ASTType) jjtGetChild(0);
     }
 
     /**

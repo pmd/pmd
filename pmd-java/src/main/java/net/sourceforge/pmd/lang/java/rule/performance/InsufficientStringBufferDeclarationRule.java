@@ -209,7 +209,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                                 // any number, regardless of the base will be converted to base 10
                                 // e.g. 0xdeadbeef -> will be converted to a
                                 // base 10 integer string: 3735928559
-                                anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
+                                // anticipatedLength += String.valueOf(literal.getValueAsLong()).length();
                             }
                         } else {
                             anticipatedLength += str.length();
@@ -275,7 +275,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 // don't add the constructor's length
                 iConstructorLength = 14 + str.length();
             } else if (literal.isIntLiteral()) {
-                iConstructorLength = literal.getValueAsInt();
+                // iConstructorLength = literal.getValueAsInt();
             }
         } else {
             iConstructorLength = -1;

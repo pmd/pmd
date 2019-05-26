@@ -5,12 +5,22 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTNullLiteral extends AbstractJavaTypeNode {
-    public ASTNullLiteral(int id) {
+/**
+ * The null literal.
+ *
+ * <pre class="grammar">
+ *
+ * NullLiteral ::= "null"
+ *
+ * </pre>
+ */
+public final class ASTNullLiteral extends AbstractJavaTypeNode implements ASTLiteral {
+    ASTNullLiteral(int id) {
         super(id);
     }
 
-    public ASTNullLiteral(JavaParser p, int id) {
+
+    ASTNullLiteral(JavaParser p, int id) {
         super(p, id);
     }
 

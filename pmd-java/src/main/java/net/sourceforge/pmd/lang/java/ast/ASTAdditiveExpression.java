@@ -10,21 +10,37 @@ package net.sourceforge.pmd.lang.java.ast;
  * This has a precedence greater than {@link ASTShiftExpression}, and lower
  * than {@link ASTMultiplicativeExpression}.
  *
- * <p>Note that the children of this node are not necessarily {@link ASTMultiplicativeExpression},
- * rather, they are expressions with an operator precedence greater or equal to MultiplicativeExpression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AdditiveExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
  *
  * </pre>
+ *
+ * <p>Note that the children of this node are not necessarily {@link ASTMultiplicativeExpression},
+ * rather, they are expressions with an operator precedence greater or equal to MultiplicativeExpression.
+ *
+ * <p>The first child may be another AdditiveExpression only
+ * if its operator is different. For example, if parentheses represent
+ * nesting:
+ * <table summary="Nesting examples">
+ * <tr><th></th><th>Parses as</th></tr>
+ *     <tr><td>{@code 1 + 2 + 3}</td><td>{@code (1 + 2 + 3)}</td></tr>
+ *     <tr><td>{@code 1 + 2 / 3}</td><td>{@code (1 + (2 / 3))}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 / 4}</td><td>{@code ((1 + 2) - 3)}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 - 4}</td><td>{@code ((1 + 2) - 3 - 4)}</td></tr>
+ *     <tr><td>{@code 1 + 2 - 3 - 4 + 5}</td><td>{@code (((1 + 2) - 3 - 4) + 5)}</td></tr>
+ * </table>
+ *
  */
-public class ASTAdditiveExpression extends AbstractJavaTypeNode {
-    public ASTAdditiveExpression(int id) {
+public class ASTAdditiveExpression extends AbstractLrBinaryExpr {
+
+
+    ASTAdditiveExpression(int id) {
         super(id);
     }
 
-    public ASTAdditiveExpression(JavaParser p, int id) {
+    ASTAdditiveExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -39,11 +55,4 @@ public class ASTAdditiveExpression extends AbstractJavaTypeNode {
         visitor.visit(this, data);
     }
 
-
-    /**
-     * Returns the image of the operator, i.e. "+" or "-".
-     */
-    public String getOperator() {
-        return getImage();
-    }
 }

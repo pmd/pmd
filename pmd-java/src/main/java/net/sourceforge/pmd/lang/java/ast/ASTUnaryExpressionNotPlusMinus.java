@@ -13,13 +13,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * <p>Note that the child of this node is not necessarily an {@link ASTUnaryExpression},
  * rather, it can be an expression with an operator precedence greater or equal to a UnaryExpression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * UnaryExpressionNotPlusMinus ::=  ( "~" | "!" ) {@linkplain ASTUnaryExpression UnaryExpression}
  *
  * </pre>
+ * @deprecated Merged into {@link ASTUnaryExpression}
  */
-public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
+@Deprecated
+public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode implements ASTExpression {
     public ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
     }

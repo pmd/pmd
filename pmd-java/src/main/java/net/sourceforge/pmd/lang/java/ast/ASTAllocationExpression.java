@@ -8,21 +8,24 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
+/**
+ * @deprecated Replaced with {@link ASTArrayAllocation} and {@link ASTConstructorCall}
+ */
+@Deprecated
 public class ASTAllocationExpression extends AbstractJavaTypeNode implements JavaQualifiableNode {
 
     private JavaTypeQualifiedName qualifiedName;
+
 
     public ASTAllocationExpression(int id) {
         super(id);
     }
 
+
     public ASTAllocationExpression(JavaParser p, int id) {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

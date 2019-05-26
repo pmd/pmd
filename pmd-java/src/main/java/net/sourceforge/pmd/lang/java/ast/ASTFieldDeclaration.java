@@ -24,7 +24,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * was specified or not. If you want to know whether the modifier was explicitly
  * stated, use e.g {@link #isSyntacticallyPublic()}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * FieldDeclaration ::= Modifiers {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
  *
@@ -200,6 +200,10 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         }
 
         return signature;
+    }
+
+    public ASTType getTypeNode() {
+        return getFirstChildOfType(ASTType.class);
     }
 
 

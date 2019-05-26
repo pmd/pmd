@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -126,6 +127,7 @@ public class XPathRuleTest extends RuleTst {
      *             any error
      */
     @Test
+    @Ignore("Primary suffix has been removed")
     public void testImageOfPrimarySuffix() throws Exception {
         final String SUFFIX = "import java.io.File;\n" + "\n" + "public class TestSuffix {\n"
                 + "    public static void main(String args[]) {\n" + "        new File(\"subdirectory\").list();\n"

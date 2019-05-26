@@ -13,19 +13,19 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to InclusiveOrExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
- * ConditionalAndExpression ::=  {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} ( "&&" {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} )+
+ * ConditionalAndExpression ::=  {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} ( "&amp;&amp;" {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} )+
  *
  * </pre>
  */
-public class ASTConditionalAndExpression extends AbstractJavaTypeNode {
-    public ASTConditionalAndExpression(int id) {
+public final class ASTConditionalAndExpression extends AbstractJavaTypeNode implements ASTExpression {
+    ASTConditionalAndExpression(int id) {
         super(id);
     }
 
 
-    public ASTConditionalAndExpression(JavaParser p, int id) {
+    ASTConditionalAndExpression(JavaParser p, int id) {
         super(p, id);
     }
 

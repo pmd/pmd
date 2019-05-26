@@ -16,42 +16,22 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <p>Note that the children of this node are not necessarily {@link ASTConditionalOrExpression},
  * rather, they are expressions with an operator precedence greater or equal to ConditionalOrExpression.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
  *
  * </pre>
  *
  */
-public class ASTConditionalExpression extends AbstractJavaTypeNode {
+public final class ASTConditionalExpression extends AbstractJavaTypeNode implements ASTExpression {
 
 
-    public ASTConditionalExpression(int id) {
+    ASTConditionalExpression(int id) {
         super(id);
     }
 
-    public ASTConditionalExpression(JavaParser p, int id) {
+    ASTConditionalExpression(JavaParser p, int id) {
         super(p, id);
-    }
-
-
-    /**
-     * @deprecated To be removed in 7.0.0
-     */
-    @Deprecated
-    public void setTernary() {
-        // noop
-    }
-
-
-    /**
-     * This method always returns true.
-     *
-     * @deprecated To be removed in 7.0.0
-     */
-    @Deprecated
-    public boolean isTernary() {
-        return true;
     }
 
 

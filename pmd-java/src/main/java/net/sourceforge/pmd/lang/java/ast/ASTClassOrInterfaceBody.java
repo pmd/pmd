@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * Represents the body of a {@linkplain ASTClassOrInterfaceDeclaration class or interface declaration}.
  * This includes anonymous classes, including those defined within an {@linkplain ASTEnumConstant enum constant}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ClassOrInterfaceBody ::=  "{"  {@linkplain ASTClassOrInterfaceBodyDeclaration ClassOrInterfaceBodyDeclaration}* "}"
  *

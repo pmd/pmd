@@ -31,9 +31,13 @@ public final class TypeHelper {
             return isA(n, clazz);
         }
 
+        // FIXME checking against the image is for the most part meaningless.
+        //   Many type nodes don't have an image or have one that has no relation
+        //   to their type. The TypeNode interface should have a method getTypeImage,
+        //   or better, we could use symbols instead.
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     /**
      * Checks whether the resolved type of the given {@link TypeNode} n is exactly of the type
      * given by the clazzName.
@@ -41,6 +45,8 @@ public final class TypeHelper {
      * @param n the type node to check
      * @param clazzName the class name to compare to
      * @return <code>true</code> if type node n is exactly of type clazzName.
+     *
+     * @throws NullPointerException if n is null
      */
     public static boolean isExactlyA(final TypeNode n, final String clazzName) {
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);

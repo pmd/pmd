@@ -15,8 +15,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * method's formal parameter. Also used in the {@link ASTCatchStatement}
  * production to represent the declared exception variable.
  * Also used in LambdaExpressions for the LambdaParameters.
- * <pre>
- *      ( "final" | Annotation )* Type ( "|" Type )* [ "..." ] VariableDeclaratorId
+ *
+ * <pre class="grammar">
+ *
+ * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} ( "|" {@link ASTType Type} )* [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
  * </pre>
  */
 public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, CanSuppressWarnings {
@@ -112,7 +114,7 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     @Deprecated
     public boolean isArray() {
         return isVarargs()
-                || getTypeNode() != null && getTypeNode().isArray()
+                || getTypeNode() != null && getTypeNode().isArrayType()
                 || getVariableDeclaratorId().isArray();
     }
 

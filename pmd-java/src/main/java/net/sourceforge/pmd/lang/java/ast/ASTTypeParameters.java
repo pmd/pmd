@@ -12,7 +12,7 @@ import java.util.Iterator;
 /**
  * Represents a list of type parameters.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * TypeParameters ::= "<" {@linkplain ASTTypeParameter TypeParameter} ( "," {@linkplain ASTTypeParameter TypeParameter} )* ">"
  *

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -62,8 +63,8 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
                         && !getProperty(ALLOW_FOR_DESCRIPTOR))
                 && (node.hasDescendantOfType(ASTAssignmentOperator.class)
                         || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && (node.hasDescendantOfAnyType(ASTPreIncrementExpression.class,
-                                                                ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
+                                && (((AbstractNode) node).hasDescendantOfAnyType(ASTPreIncrementExpression.class,
+                                                                                 ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
 
             addViolation(data, node);
             return data;

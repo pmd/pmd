@@ -40,6 +40,12 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
 
 
     @Override
+    public ASTFormalParameter jjtGetChild(int index) {
+        return (ASTFormalParameter) super.jjtGetChild(index);
+    }
+
+
+    @Override
     public Iterator<ASTFormalParameter> iterator() {
         return new NodeChildrenIterator<>(this, ASTFormalParameter.class);
     }

@@ -398,7 +398,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+        List<ASTAnonymousClassDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTAnonymousClassDeclaration.class, TEST);
 
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
         assertFalse(classes.get(0).getQualifiedName().isLocalClass());
@@ -419,7 +419,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+        List<ASTAnonymousClassDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTAnonymousClassDeclaration.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());
@@ -440,7 +440,7 @@ public class JavaQualifiedNameTest {
                 + "  };"
                 + "}}";
 
-        List<ASTAllocationExpression> classes = ParserTstUtil.getOrderedNodes(ASTAllocationExpression.class, TEST);
+        List<ASTAnonymousClassDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTAnonymousClassDeclaration.class, TEST);
 
         assertNotEquals(classes.get(0), classes.get(1));
         assertEquals(QualifiedNameFactory.ofString("Bzaz$1"), classes.get(0).getQualifiedName());

@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.AbstractSpec
-import io.kotlintest.TestContext
-import io.kotlintest.TestType
+import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
+import io.kotlintest.*
 import io.kotlintest.specs.IntelliMarker
-import net.sourceforge.pmd.lang.ast.test.Assertions
+import net.sourceforge.pmd.lang.ast.Node
+import net.sourceforge.pmd.lang.ast.test.*
 import io.kotlintest.should as kotlintestShould
 
 /**
@@ -29,7 +29,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
      * with separate tests for separate versions.
      *
      * Calls to "should" in the block are intercepted to create
-     * a new test.
+     * a new test, with the given [name] as a common prefix.
      *
      * This is useful to make a batch of grammar specs for grammar
      * regression tests without bothering to find a name.
@@ -123,6 +123,42 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : AbstractSpec(),
             infix fun String.should(matcher: Assertions<String>) {
                 containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
                     this@should kotlintestShould matcher
+                }
+            }
+
+            infix fun String.should(matcher: Matcher<String>) {
+                containedParserTestImpl(context, "'$this'", javaVersion = javaVersion) {
+                    this@should kotlintestShould matcher
+                }
+            }
+
+            infix fun String.shouldNot(matcher: Matcher<String>) =
+                    should(matcher.invert())
+
+            fun inContext(nodeParsingCtx: Companion.NodeParsingCtx<*>, assertions: ImplicitNodeParsingCtx.() -> Unit) {
+                ImplicitNodeParsingCtx(nodeParsingCtx).assertions()
+            }
+
+            inner class ImplicitNodeParsingCtx(private val nodeParsingCtx: Companion.NodeParsingCtx<*>) {
+
+                /**
+                 * A matcher that succeeds if the string parses correctly.
+                 */
+                fun parse(): Matcher<String> = this@VersionedTestCtx.parseIn(nodeParsingCtx)
+
+                fun parseAs(matcher: ValuedNodeSpec<Node, Any>): Assertions<String> = { str ->
+                    val node = nodeParsingCtx.parseNode(str, this@VersionedTestCtx)
+                    val idx = node.jjtGetChildIndex()
+                    node.parent kotlintestShould matchNode<Node> {
+                        if (idx > 0) {
+                            unspecifiedChildren(idx)
+                        }
+                        matcher()
+                        val left = it.numChildren - 1 - idx
+                        if (left > 0) {
+                            unspecifiedChildren(left)
+                        }
+                    }
                 }
             }
         }

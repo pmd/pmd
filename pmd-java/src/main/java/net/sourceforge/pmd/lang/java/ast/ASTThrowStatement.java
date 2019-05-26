@@ -5,7 +5,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * A {@code throw} statement.
+ *
+ * <pre class="grammar">
+ *
+ * ThrowStatement ::= "throw" {@link ASTExpression Expression} ";"
+ *
+ * </pre>
+ */
 public class ASTThrowStatement extends AbstractJavaNode {
+
     public ASTThrowStatement(int id) {
         super(id);
     }
@@ -36,6 +46,8 @@ public class ASTThrowStatement extends AbstractJavaNode {
      * if the throw statement is like throw e: this method returns 'e'. A
      * special case of returning <code>null</code> is when the throws is like
      * throw this.e or throw this.
+     *
+     * This is too specific
      *
      * <p>TODO - use symbol table (?)</p>
      *

@@ -6,3 +6,4 @@
  * Contains the classes and interfaces modelling the Java AST.
  */
 package net.sourceforge.pmd.lang.java.ast;
+

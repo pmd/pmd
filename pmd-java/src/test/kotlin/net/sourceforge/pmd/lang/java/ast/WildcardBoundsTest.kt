@@ -1,20 +1,23 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
+
 
 class WildcardBoundsTest : ParserTestSpec({
 
     parserTest("Simple grammar test") {
 
-        "SomeClass<? extends Another>" should matchType<ASTWildcardBounds> {
+        "SomeClass<? extends Another>" should matchType<ASTClassOrInterfaceType> {
 
-            val ref = child<ASTReferenceType> {
-                child<ASTClassOrInterfaceType> {
-                    it.image shouldBe "Another"
+            it::getTypeArguments shouldBe child {
+                child<ASTWildcardType> {
+
+                    it::getTypeBoundNode shouldBe child<ASTClassOrInterfaceType> {
+                        it::getTypeImage shouldBe "Another"
+                    }
                 }
             }
 
-            it.typeBoundNode shouldBe ref
         }
     }
 

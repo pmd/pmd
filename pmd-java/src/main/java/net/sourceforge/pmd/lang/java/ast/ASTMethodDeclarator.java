@@ -5,17 +5,42 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTMethodDeclarator extends AbstractJavaNode {
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+
+/**
+ * Child of an {@link ASTMethodDeclaration}.
+ *
+ * TODO This is not useful, remove
+ *
+ * <p>
+ *
+ * MethodDeclarator ::=  &lt;IDENTIFIER&gt; {@link ASTFormalParameters FormalParameters} ( "[" "]" )*
+ *
+ * </p>
+ *
+ */
+public final class ASTMethodDeclarator extends AbstractJavaNode {
+
+    /**
+     * @deprecated Made public for one shady usage in {@link ClassScope}
+     */
+    @Deprecated
+    @InternalApi
     public ASTMethodDeclarator(int id) {
         super(id);
     }
 
-    public ASTMethodDeclarator(JavaParser p, int id) {
+    ASTMethodDeclarator(JavaParser p, int id) {
         super(p, id);
     }
 
     public int getParameterCount() {
-        return getFirstChildOfType(ASTFormalParameters.class).getParameterCount();
+        return getFormalParameters().getParameterCount();
+    }
+
+    public ASTFormalParameters getFormalParameters() {
+        return (ASTFormalParameters) jjtGetChild(0);
     }
 
     /**

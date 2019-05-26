@@ -12,8 +12,10 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 /**
  * Method declaration node.
  *
- * <pre>
+ * <pre class="grammar">
+ *
  * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
+ *
  * </pre>
  *
  */
@@ -149,6 +151,10 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
     @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.METHOD;
+    }
+
+    public ASTTypeParameters getTypeParameters() {
+        return getFirstChildOfType(ASTTypeParameters.class);
     }
 
     //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration

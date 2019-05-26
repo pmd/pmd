@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
@@ -97,7 +97,7 @@ public class ClassScope extends AbstractJavaScope {
     public ClassScope(final ClassNameDeclaration classNameDeclaration) {
         // this.className = getParent().getEnclosingClassScope().getClassName()
         // + "$" + String.valueOf(anonymousInnerClassCounter);
-        int v = anonymousInnerClassCounter.get().intValue();
+        int v = anonymousInnerClassCounter.get();
         this.className = "Anonymous$" + v;
         anonymousInnerClassCounter.set(v + 1);
         classDeclaration = classNameDeclaration;
@@ -326,31 +326,21 @@ public class ClassScope extends AbstractJavaScope {
             formalParameter.jjtAddChild(variableDeclaratorId, 1);
             variableDeclaratorId.jjtSetParent(formalParameter);
 
-            ASTType type = new ASTType(JavaParserTreeConstants.JJTTYPE);
+            PrimitiveType primitive = PrimitiveType.fromToken(parameterTypes[i]);
+
+            // TODO : this could actually be a primitive array...
+            ASTType type = primitive != null
+                           ? new ASTPrimitiveType(primitive)
+                           : new ASTClassOrInterfaceType(parameterTypes[i]);
+
             formalParameter.jjtAddChild(type, 0);
             type.jjtSetParent(formalParameter);
 
-            if (PRIMITIVE_TYPES.contains(parameterTypes[i])) {
-                ASTPrimitiveType primitiveType = new ASTPrimitiveType(JavaParserTreeConstants.JJTPRIMITIVETYPE);
-                primitiveType.setImage(parameterTypes[i]);
-                type.jjtAddChild(primitiveType, 0);
-                primitiveType.jjtSetParent(type);
-            } else {
-                ASTReferenceType referenceType = new ASTReferenceType(JavaParserTreeConstants.JJTREFERENCETYPE);
-                type.jjtAddChild(referenceType, 0);
-                referenceType.jjtSetParent(type);
-
-                // TODO : this could actually be a primitive array...
-                ASTClassOrInterfaceType classOrInterfaceType = new ASTClassOrInterfaceType(
-                        JavaParserTreeConstants.JJTCLASSORINTERFACETYPE);
-                classOrInterfaceType.setImage(parameterTypes[i]);
-                referenceType.jjtAddChild(classOrInterfaceType, 0);
-                classOrInterfaceType.jjtSetParent(referenceType);
-            }
         }
 
         return new MethodNameDeclaration(methodDeclarator);
     }
+
 
     /**
      * Provide a list of types of the parameters of the given method

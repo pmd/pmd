@@ -15,9 +15,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * May be found as a child of {@linkplain ASTFieldDeclaration field declarations} and
  * {@linkplain ASTLocalVariableDeclaration local variable declarations}.
  *
- * <pre>
+ * <pre class="grammar">
  *
- * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ( "=" {@linkplain ASTVariableInitializer VariableInitializer} )?
+ * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ( "=" {@linkplain ASTExpression Expression} )?
  *
  * </pre>
  */
@@ -73,8 +73,8 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
     /**
      * Returns the initializer, of the variable, or null if it doesn't exist.
      */
-    public ASTVariableInitializer getInitializer() {
-        return hasInitializer() ? (ASTVariableInitializer) jjtGetChild(1) : null;
+    public ASTExpression getInitializer() {
+        return hasInitializer() ? (ASTExpression) jjtGetChild(1) : null;
     }
 
 

@@ -20,11 +20,19 @@ object NodeTreeLikeAdapter : DoublyLinkedTreeLikeAdapter<Node> {
     override fun getParent(node: Node): Node? = node.parent
 }
 
+/** A [NodeSpec] that returns a value. */
+typealias ValuedNodeSpec<I, O> = TreeNodeWrapper<Node, I>.() -> O
+
 /** A subtree matcher written in the DSL documented on [TreeNodeWrapper]. */
-typealias NodeSpec<N> = TreeNodeWrapper<Node, N>.() -> Unit
+typealias NodeSpec<N> = ValuedNodeSpec<N, Unit>
 
 /** A function feedable to [io.kotlintest.should], which fails the test if an [AssertionError] is thrown. */
 typealias Assertions<M> = (M) -> Unit
+
+fun <N : Node> ValuedNodeSpec<N, *>.ignoreResult(): NodeSpec<N> {
+    val me = this
+    return { this.me() }
+}
 
 val DefaultMatchingConfig = MatchingConfig(
         adapter = NodeTreeLikeAdapter,
@@ -33,8 +41,8 @@ val DefaultMatchingConfig = MatchingConfig(
 )
 
 /** A shorthand for [baseShouldMatchSubtree] providing the [NodeTreeLikeAdapter]. */
-inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>) {
-    this.baseShouldMatchSubtree(DefaultMatchingConfig, ignoreChildren, nodeSpec)
+inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = false, noinline nodeSpec: ValuedNodeSpec<N, *>) {
+    this.baseShouldMatchSubtree(DefaultMatchingConfig, ignoreChildren, nodeSpec.ignoreResult())
 }
 
 /**
@@ -55,5 +63,5 @@ inline fun <reified N : Node> Node?.shouldMatchNode(ignoreChildren: Boolean = fa
  *
  * @return A matcher for AST nodes, suitable for use by [io.kotlintest.should].
  */
-inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: NodeSpec<N>)
+inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinline nodeSpec: ValuedNodeSpec<N, *>)
         : Assertions<Node?> = { it.shouldMatchNode(ignoreChildren, nodeSpec) }

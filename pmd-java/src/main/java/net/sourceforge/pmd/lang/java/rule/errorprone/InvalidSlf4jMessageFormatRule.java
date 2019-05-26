@@ -212,7 +212,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         int result = 0;
 
         try {
-            List<Node> literals = node
+            List<? extends Node> literals = node
                     .findChildNodesWithXPath(
                             "AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true']"
                                     + "|PrimaryExpression/PrimaryPrefix/Literal[@StringLiteral='true']");

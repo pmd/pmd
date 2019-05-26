@@ -120,7 +120,6 @@ public abstract class JavaTypeDefinition implements TypeDefinition {
 
     public abstract boolean isArrayType();
 
-
     /**
      * Gets the component type of this type definition if it
      * is an array type. The component type of an array is

@@ -81,17 +81,18 @@ public class RedundantFieldInitializerRule extends AbstractJavaRule {
                                 // it shouldn't be happening on valid source
                                 // code.
                                 Number value = -1;
-                                if (literal.isIntLiteral()) {
-                                    value = literal.getValueAsInt();
-                                } else if (literal.isLongLiteral()) {
-                                    value = literal.getValueAsLong();
-                                } else if (literal.isFloatLiteral()) {
-                                    value = literal.getValueAsFloat();
-                                } else if (literal.isDoubleLiteral()) {
-                                    value = literal.getValueAsDouble();
-                                } else if (literal.isCharLiteral()) {
-                                    value = (int) literal.getImage().charAt(1);
-                                }
+                                //FIXME - REVERT ME
+                                // if (literal.isIntLiteral()) {
+                                //     value = literal.getValueAsInt();
+                                // } else if (literal.isLongLiteral()) {
+                                //     value = literal.getValueAsLong();
+                                // } else if (literal.isFloatLiteral()) {
+                                //     value = literal.getValueAsFloat();
+                                // } else if (literal.isDoubleLiteral()) {
+                                //     value = literal.getValueAsDouble();
+                                // } else if (literal.isCharLiteral()) {
+                                //     value = (int) literal.getImage().charAt(1);
+                                // }
 
                                 if (value.doubleValue() == 0) {
                                     addViolation(data, variableDeclarator);

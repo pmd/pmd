@@ -11,7 +11,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * Represents an {@code if} statement, possibly with an {@code else} statement.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * IfStatement ::= "if" "(" {@linkplain ASTExpression Expression} ")" {@linkplain ASTStatement Statement}
  *                 ( "else" {@linkplain ASTStatement Statement} )?

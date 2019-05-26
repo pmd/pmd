@@ -31,7 +31,7 @@ public class ASTVariableDeclaratorIdTest {
         ASTCompilationUnit acu = getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next();
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode();
         assertEquals("String", name.getImage());
     }
 
@@ -40,7 +40,7 @@ public class ASTVariableDeclaratorIdTest {
         ASTCompilationUnit acu = getNodes(ASTCompilationUnit.class, TEST_ANNOTATIONS).iterator().next();
         ASTVariableDeclaratorId id = acu.findDescendantsOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNode();
         assertEquals("String", name.getImage());
     }
 
@@ -50,7 +50,6 @@ public class ASTVariableDeclaratorIdTest {
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
         ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertEquals("File", f.getTypeNode().getTypeImage());
-        assertEquals("File", f.getTypeNameNode().jjtGetChild(0).getImage());
     }
 
     @Test
@@ -59,7 +58,6 @@ public class ASTVariableDeclaratorIdTest {
         ASTLambdaExpression lambda = acu.getFirstDescendantOfType(ASTLambdaExpression.class);
         ASTVariableDeclaratorId f = lambda.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         assertNull(f.getTypeNode());
-        assertNull(f.getTypeNameNode());
     }
 
     private static final String TYPE_NAME_NODE = "public class Test {" + PMD.EOL + "  private String bar;" + PMD.EOL

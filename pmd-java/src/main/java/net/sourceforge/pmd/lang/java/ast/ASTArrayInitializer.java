@@ -5,18 +5,34 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public class ASTArrayInitializer extends AbstractJavaNode {
-    public ASTArrayInitializer(int id) {
+import java.util.Iterator;
+
+
+/**
+ * An array initializer. May occur in two syntactic contexts:
+ * <ul>
+ * <li>The right-hand side of a {@linkplain ASTVariableDeclarator variable declarator}
+ * <li>Inside an {@linkplain ASTArrayAllocation array allocation expression}
+ * </ul>
+ *
+ * <pre class="grammar">
+ *
+ * ArrayInitializer ::= "{" ( "," )? "}"
+ *                    | "{" {@link ASTExpression Expression} ( "," {@link ASTExpression Expression} )* ( "," )? "}"
+ *
+ * </pre>
+ *
+ */
+public final class ASTArrayInitializer extends AbstractJavaTypeNode implements ASTExpression, Iterable<ASTExpression> {
+
+    ASTArrayInitializer(int id) {
         super(id);
     }
 
-    public ASTArrayInitializer(JavaParser p, int id) {
+    ASTArrayInitializer(JavaParser p, int id) {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -26,5 +42,11 @@ public class ASTArrayInitializer extends AbstractJavaNode {
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    @Override
+    public Iterator<ASTExpression> iterator() {
+        return new NodeChildrenIterator<>(this, ASTExpression.class);
     }
 }

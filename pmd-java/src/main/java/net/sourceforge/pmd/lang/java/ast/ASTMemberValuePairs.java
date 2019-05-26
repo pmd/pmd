@@ -11,12 +11,15 @@ import java.util.Iterator;
 /**
  * Represents a list of member values in an {@linkplain ASTNormalAnnotation annotation}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  *  MemberValuePairs ::= {@linkplain ASTMemberValuePair MemberValuePair} ( "," {@linkplain ASTMemberValuePair MemberValuePair} )*
  *
  * </pre>
+ *
+ * @deprecated Removed from the tree, added no info
  */
+@Deprecated
 public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
     public ASTMemberValuePairs(int id) {
         super(id);

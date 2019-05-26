@@ -11,7 +11,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 /**
  * Update clause of a {@linkplain ASTForStatement for statement}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * ForUpdate ::= {@linkplain ASTStatementExpressionList StatementExpressionList}
  *

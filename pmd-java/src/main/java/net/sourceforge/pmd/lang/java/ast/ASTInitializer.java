@@ -5,6 +5,16 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * A class or instance initializer. Don't confuse with {@link ASTVariableInitializer}.
+ *
+ * <pre class="grammar">
+ *
+ * Initializer ::= "static"? {@link ASTBlock Block}
+ *
+ * </pre>
+ *
+ */
 public class ASTInitializer extends AbstractJavaNode {
 
     private boolean isStatic;

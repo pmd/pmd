@@ -10,19 +10,19 @@ package net.sourceforge.pmd.lang.java.ast;
  * This is one of the {@linkplain ASTUnaryExpression PrefixExpression}
  * and has the same precedence.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * PostfixExpression ::= {@linkplain ASTPrimaryExpression PrimaryExpression} ( "++" | "--" )
  *
  * </pre>
  */
-public class ASTPostfixExpression extends AbstractJavaTypeNode {
+public final class ASTPostfixExpression extends AbstractJavaTypeNode implements ASTExpression {
 
-    public ASTPostfixExpression(int id) {
+    ASTPostfixExpression(int id) {
         super(id);
     }
 
-    public ASTPostfixExpression(JavaParser p, int id) {
+    ASTPostfixExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -43,6 +43,17 @@ public class ASTPostfixExpression extends AbstractJavaTypeNode {
      */
     public String getOperator() {
         return getImage();
+    }
+
+    /**
+     * Returns the operator of this postfix expression.
+     */
+    public UnaryOp getOp() {
+        return UnaryOp.fromImage(getImage());
+    }
+
+    public ASTPrimaryExpression getBaseExpression() {
+        return (ASTPrimaryExpression) jjtGetChild(0);
     }
 
 }

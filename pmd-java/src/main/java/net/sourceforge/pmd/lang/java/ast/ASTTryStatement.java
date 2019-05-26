@@ -10,8 +10,10 @@ import java.util.List;
 
 /**
  * Try statement node.
- * <pre>
+ * <pre class="grammar">
+ *
  * TryStatement ::= "try" ( ResourceSpecification )? Block ( CatchStatement )* [ FinallyStatement ]
+ *
  * </pre>
  */
 public class ASTTryStatement extends AbstractJavaNode {

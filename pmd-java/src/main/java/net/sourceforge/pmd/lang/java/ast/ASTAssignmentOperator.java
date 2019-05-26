@@ -13,7 +13,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *  AssignmentOperator ::= "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|="
  *
  * </pre>
+ * @deprecated Superseded by {@link ASTAssignmentExpression}
  */
+@Deprecated
 public class ASTAssignmentOperator extends AbstractJavaNode {
     private boolean isCompound;
 

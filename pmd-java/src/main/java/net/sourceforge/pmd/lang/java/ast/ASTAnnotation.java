@@ -5,47 +5,30 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.sourceforge.pmd.Rule;
 
 
 /**
- * Represents an annotation. This node has three possible children,
- * that correspond to specific syntactic variants.
+ * Represents an annotation. This node has three specific syntactic variants,
+ * represented by nodes that implement this interface.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * Annotation ::= {@linkplain ASTNormalAnnotation NormalAnnotation}
  *              | {@linkplain ASTSingleMemberAnnotation SingleMemberAnnotation}
  *              | {@linkplain ASTMarkerAnnotation MarkerAnnotation}
  *
  * </pre>
- *
  */
-public class ASTAnnotation extends AbstractJavaTypeNode {
-
-    private static final List<String> UNUSED_RULES
-            = Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter");
-
-    private static final List<String> SERIAL_RULES = Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID");
-
-    public ASTAnnotation(int id) {
-        super(id);
-    }
-
-    public ASTAnnotation(JavaParser p, int id) {
-        super(p, id);
-    }
+public interface ASTAnnotation extends TypeNode, ASTMemberValue {
 
 
     /**
      * Returns the name of the annotation as it is used,
      * eg {@code java.lang.Override} or {@code Override}.
      */
-    public String getAnnotationName() {
-        return jjtGetChild(0).jjtGetChild(0).getImage();
+    default String getAnnotationName() {
+        return getImage();
     }
 
     // @formatter:off
@@ -72,41 +55,8 @@ public class ASTAnnotation extends AbstractJavaTypeNode {
      * @return True if this annotation suppresses the given rule
      */
     // @formatter:on
-    public boolean suppresses(Rule rule) {
-
-        if (jjtGetChild(0) instanceof ASTMarkerAnnotation) {
-            return false;
-        }
-
-        // if (SuppressWarnings.class.equals(getType())) { // typeres is not always on
-        if (isSuppressWarnings()) {
-            for (ASTLiteral element : findDescendantsOfType(ASTLiteral.class)) {
-                if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo("\"PMD." + rule.getName() + "\"")
-                        // Check for standard annotations values
-                        || element.hasImageEqualTo("\"all\"")
-                        || element.hasImageEqualTo("\"serial\"") && SERIAL_RULES.contains(rule.getName())
-                        || element.hasImageEqualTo("\"unused\"") && UNUSED_RULES.contains(rule.getName())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    private boolean isSuppressWarnings() {
-        return "SuppressWarnings".equals(getAnnotationName()) || "java.lang.SuppressWarnings".equals(getAnnotationName());
-    }
-
-    @Override
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-
-    @Override
-    public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
-        visitor.visit(this, data);
+    default boolean suppresses(Rule rule) {
+        return AstImplUtil.suppresses(this, rule);
     }
 }
+

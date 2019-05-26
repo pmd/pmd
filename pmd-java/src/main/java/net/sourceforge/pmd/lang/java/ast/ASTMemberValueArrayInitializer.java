@@ -12,20 +12,19 @@ import java.util.Iterator;
 /**
  * Represents an array of member values in an annotation {@linkplain ASTMemberValue member value}.
  *
- * <pre>
+ * <pre class="grammar">
  *
  * MemberValueArrayInitializer ::= "{" ( {@linkplain ASTMemberValue MemberValue} ( "," {@linkplain ASTMemberValue MemberValue} )*  ","? )? "}"
  *
  * </pre>
  *
- *
  */
-public class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue> {
-    public ASTMemberValueArrayInitializer(int id) {
+public final class ASTMemberValueArrayInitializer extends AbstractJavaNode implements Iterable<ASTMemberValue>, ASTMemberValue {
+    ASTMemberValueArrayInitializer(int id) {
         super(id);
     }
 
-    public ASTMemberValueArrayInitializer(JavaParser p, int id) {
+    ASTMemberValueArrayInitializer(JavaParser p, int id) {
         super(p, id);
     }
 

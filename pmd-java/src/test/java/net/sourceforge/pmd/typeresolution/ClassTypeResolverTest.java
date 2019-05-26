@@ -38,13 +38,15 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -53,11 +55,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -181,11 +182,12 @@ public class ClassTypeResolverTest {
         ASTCompilationUnit acu = parseAndTypeResolveForClass15(EnumWithAnonymousInnerClass.class);
         // try it in jshell, an enum constant with a body is compiled to an anonymous class,
         // the counter is shared with other anonymous classes of the enum
-        Class<?> enumAnon = acu.getFirstDescendantOfType(ASTEnumConstant.class).getQualifiedName().getType();
+        Class<?> enumAnon = acu.getFirstDescendantOfType(ASTAnonymousClassDeclaration.class).getQualifiedName().getType();
         assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$1", enumAnon.getName());
 
-        Class<?> inner = acu.getFirstDescendantOfType(ASTAllocationExpression.class)
-                            .getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType();
+        Class<?> inner = acu.getFirstDescendantOfType(ASTConstructorCall.class)
+                            .getAnonymousClassDeclaration()
+                            .getType();
         assertEquals("net.sourceforge.pmd.typeresolution.testdata.EnumWithAnonymousInnerClass$2", inner.getName());
     }
 
@@ -698,34 +700,25 @@ public class ClassTypeResolverTest {
     public void testThisExpression() {
         ASTCompilationUnit compilationUnit = parseAndTypeResolveForClass15(ThisExpression.class);
         // need to cross borders, to find expressions of the nested classes
-        List<ASTPrimaryExpression> expressions = compilationUnit.findDescendantsOfType(ASTPrimaryExpression.class, true);
-        List<ASTPrimaryPrefix> prefixes = compilationUnit.findDescendantsOfType(ASTPrimaryPrefix.class, true);
+        List<ASTThisExpression> expressions = compilationUnit.findDescendantsOfType(ASTThisExpression.class, true);
 
         int index = 0;
 
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
 
-        assertEquals(ThisExpression.ThisExprNested.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.ThisExprNested.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.ThisExprNested.class, expressions.get(index++).getType());
 
         // Qualified this
-        assertEquals(ThisExpression.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.class, prefixes.get(index).getType());
+        assertEquals(ThisExpression.class, expressions.get(index++).getType());
         assertEquals(ThisExpression.class, ((TypeNode) expressions.get(index++).jjtGetChild(1)).getType());
 
-        assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index).getType());
-        assertEquals(ThisExpression.ThisExprStaticNested.class, prefixes.get(index++).getType());
+        assertEquals(ThisExpression.ThisExprStaticNested.class, expressions.get(index++).getType());
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
-        assertEquals("All expressions not tested", index, prefixes.size());
     }
 
 
@@ -792,14 +785,41 @@ public class ClassTypeResolverTest {
 
         // Object[][] b = new Object[1][0];
         // ----------
-        assertEquals(Object[][].class, referenceTypes.get(index++).getType());
+        assertEquals(Object[][].class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isArrayType());
+
+        // Object[][] b = new Object[1][0];
+        // ------
+        assertEquals(Object.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
+
+        // Object[][] b = new Object[1][0];
+        //                    ------
+        assertEquals(Object.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
 
         // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
         // ----------------
-        assertEquals(ArrayTypes[][][].class, referenceTypes.get(index++).getType());
+        assertEquals(ArrayTypes[][][].class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isArrayType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
+        // ----------
+        assertEquals(ArrayTypes.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { ... };
+        //                          ----------
+        assertEquals(ArrayTypes.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
+
+        // ArrayTypes[][][] c = new ArrayTypes[][][] { new ArrayTypes[1][2] };
+        //                                                 ----------
+        assertEquals(ArrayTypes.class, referenceTypes.get(index).getType());
+        assertTrue(referenceTypes.get(index++).isClassOrInterfaceType());
 
         // Make sure we got them all
-        assertEquals("All expressions not tested", index, referenceTypes.size());
+        assertEquals("All expressions not tested", referenceTypes.size(), index);
     }
 
 
@@ -822,11 +842,11 @@ public class ClassTypeResolverTest {
     private void testPrimitiveTypeFieldDecl(Node declaration) throws JaxenException {
         // public int[] a, b[];
 
-        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTReferenceType.class);
         assertNotNull(typeNode);
-        assertTrue(typeNode.isArray());
+        assertTrue(typeNode.isArrayType());
         assertEquals(1, typeNode.getArrayDepth());
-        assertEquals("int", typeNode.getFirstChildOfType(ASTPrimitiveType.class).getImage());
+        assertEquals("int", typeNode.getFirstChildOfType(ASTArrayType.class).getFirstChildOfType(ASTPrimitiveType.class).getImage());
 
         ASTVariableDeclaratorId aID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(aID);
@@ -849,11 +869,14 @@ public class ClassTypeResolverTest {
 
         // public String[] c, d[];
 
-        ASTReferenceType typeNode = declaration.getFirstChildOfType(ASTType.class).getFirstChildOfType(ASTReferenceType.class);
+        ASTArrayType arrayType = (ASTArrayType) declaration.getFirstChildOfType(ASTType.class);
+        ASTReferenceType typeNode = arrayType.getFirstChildOfType(ASTClassOrInterfaceType.class);
         assertNotNull(typeNode);
-        assertTrue(typeNode.isArray());
-        assertEquals(1, typeNode.getArrayDepth());
-        assertEquals("String", typeNode.getFirstChildOfType(ASTClassOrInterfaceType.class).getImage());
+        assertFalse(typeNode.isArrayType());
+        assertTrue(arrayType.isArrayType());
+        assertEquals(1, arrayType.getArrayDepth());
+        assertEquals(0, typeNode.getArrayDepth());
+        assertEquals("String", typeNode.getImage());
 
         ASTVariableDeclaratorId cID = declaration.getFirstChildOfType(ASTVariableDeclarator.class).getFirstChildOfType(ASTVariableDeclaratorId.class);
         assertNotNull(cID);

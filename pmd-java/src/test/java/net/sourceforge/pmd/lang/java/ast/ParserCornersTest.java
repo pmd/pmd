@@ -106,10 +106,12 @@ public class ParserCornersTest {
         String test18 = readAsString("/net/sourceforge/pmd/ast/ParserCornerCases18.java");
         ASTCompilationUnit cu = parseJava18(test18);
 
-        Assert.assertEquals(21, cu.findChildNodesWithXPath("//FormalParameter").size());
+        Assert.assertEquals(13, cu.findChildNodesWithXPath("//FormalParameter").size());
+        Assert.assertEquals(32, cu.findChildNodesWithXPath("//LambdaParameter").size());
+        Assert.assertEquals(8, cu.findChildNodesWithXPath("//LambdaParameter[@TypeInferred='false']").size());
         Assert.assertEquals(4,
                 cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='true']").size());
-        Assert.assertEquals(17,
+        Assert.assertEquals(9,
                 cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
     }
 

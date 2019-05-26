@@ -14,13 +14,13 @@ package net.sourceforge.pmd.lang.java.ast;
  * rather, they are expressions with an operator precedence greater or equal to EqualityExpression.
  *
  *
- * <pre>
+ * <pre class="grammar">
  *
  * AndExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression} ( "&" {@linkplain ASTEqualityExpression EqualityExpression} )+
  *
  * </pre>
  */
-public class ASTAndExpression extends AbstractJavaTypeNode {
+public class ASTAndExpression extends AbstractJavaTypeNode implements ASTExpression {
     public ASTAndExpression(int id) {
         super(id);
     }

@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
@@ -52,6 +54,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return getPackageDeclaration() == null;
     }
 
+    @Nullable
     public ASTPackageDeclaration getPackageDeclaration() {
         if (jjtGetNumChildren() > 0) {
             Node n = jjtGetChild(0);

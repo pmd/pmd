@@ -26,8 +26,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testNameWithThisOrSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
-        ASTName name = new ASTName(1);
-        name.setImage("foo");
+        ASTName name = new ASTName("foo");
         ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
         prefix.setUsesThisModifier();
         name.jjtAddChild(prefix, 1);
@@ -39,8 +38,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testNameWithSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
-        ASTName name = new ASTName(1);
-        name.setImage("foo");
+        ASTName name = new ASTName("foo");
         ASTPrimaryPrefix prefix = new ASTPrimaryPrefix(2);
         prefix.setUsesSuperModifier();
         name.jjtAddChild(prefix, 1);

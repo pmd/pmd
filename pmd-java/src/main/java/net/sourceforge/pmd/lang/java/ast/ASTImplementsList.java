@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * Represents the {@code implements} clause of a class declaration.
  *
- * <pre>
+ * <pre class="grammar">
  *  ExtendsList ::= "implements" (TypeAnnotation)* ClassOrInterfaceType
  *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
  * </pre>

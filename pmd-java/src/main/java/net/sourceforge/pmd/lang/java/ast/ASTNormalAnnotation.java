@@ -5,29 +5,35 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Iterator;
+
 /**
  * Represents an annotation that with a parenthesized list
  * of key-value pairs (possibly empty).
  *
- * <pre>
+ * <pre class="grammar">
  *
- * NormalAnnotation ::=  "@" {@linkplain ASTName Name} "(" {@linkplain ASTMemberValuePairs MemberValuePairs}? ")"
+ * NormalAnnotation ::=  "@" Name "(" ( {@linkplain ASTMemberValuePair MemberValuePair} ( "," {@linkplain ASTMemberValuePair MemberValuePair} )* )? ")"
  *
  * </pre>
  *
  * @see ASTSingleMemberAnnotation
  * @see ASTMarkerAnnotation
  */
-public class ASTNormalAnnotation extends AbstractJavaTypeNode {
-    public ASTNormalAnnotation(int id) {
+public final class ASTNormalAnnotation extends AbstractJavaTypeNode implements ASTAnnotation, Iterable<ASTMemberValuePair> {
+    ASTNormalAnnotation(int id) {
         super(id);
     }
 
 
-    public ASTNormalAnnotation(JavaParser p, int id) {
+    ASTNormalAnnotation(JavaParser p, int id) {
         super(p, id);
     }
 
+    @Override
+    public Iterator<ASTMemberValuePair> iterator() {
+        return new NodeChildrenIterator<>(this, ASTMemberValuePair.class);
+    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -40,18 +46,4 @@ public class ASTNormalAnnotation extends AbstractJavaTypeNode {
         visitor.visit(this, data);
     }
 
-
-    /**
-     * Returns the name of the annotation as it is used,
-     * eg {@code java.lang.Override} or {@code Override}.
-     */
-    public String getAnnotationName() {
-        return jjtGetChild(0).getImage();
-    }
-
-
-    @Override
-    public ASTAnnotation jjtGetParent() {
-        return (ASTAnnotation) super.jjtGetParent();
-    }
 }
