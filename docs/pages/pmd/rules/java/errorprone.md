@@ -2399,7 +2399,8 @@ public class Foo extends TestCase {
 
 In most cases, the Logger reference can be declared as static and final.
 
-This rule is deprecated. The rule is replaced by {% rule java/errorprone/ProperLogger %}.
+This rule is deprecated and will be removed with PMD 7.0.0.
+The rule is replaced by {% rule java/errorprone/ProperLogger %}.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
