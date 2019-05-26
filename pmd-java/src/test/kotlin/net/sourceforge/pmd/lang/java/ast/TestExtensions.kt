@@ -69,8 +69,8 @@ fun TreeNodeWrapper<Node, *>.variableRef(name: String, otherAssertions: (ASTVari
             it::getVariableName shouldBe name
             otherAssertions(it)
         }
-fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, otherAssertions: NodeSpec<ASTFieldAccess>) =
-        child<ASTFieldAccess> {
+fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
+        child<ASTFieldAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getFieldName shouldBe name
             otherAssertions()
         }

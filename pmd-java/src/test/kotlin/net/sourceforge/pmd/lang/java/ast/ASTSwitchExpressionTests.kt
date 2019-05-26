@@ -30,46 +30,32 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
         """.trimIndent() should matchExpr<ASTSwitchExpression> {
-            it::getTestedExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "day"
+            it::getTestedExpression shouldBe variableRef("day")
+
+            child<ASTSwitchLabeledExpression> {
+                child<ASTSwitchLabel> {
+                    it::isDefault shouldBe false
+
+                    variableRef("FRIDAY")
+                    variableRef("SUNDAY")
+                }
+                int(6)
             }
 
             child<ASTSwitchLabeledExpression> {
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "FRIDAY"
-                    }
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "SUNDAY"
-                    }
+                    variableRef("WEDNESDAY")
                 }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 6
-                }
-            }
-
-            child<ASTSwitchLabeledExpression> {
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
-
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "WEDNESDAY"
-                    }
-                }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 9
-                }
+                int(9)
             }
 
             child<ASTSwitchLabeledThrowStatement> {
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "SONNABEND"
-                    }
+                    variableRef("SONNABEND")
                 }
                 child<ASTThrowStatement> {
                     child<ASTConstructorCall> {
@@ -109,33 +95,26 @@ class ASTSwitchExpressionTests : ParserTestSpec({
             }
         """ should matchExpr<ASTSwitchExpression> {
 
-            it::getTestedExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "day"
-            }
+            it::getTestedExpression shouldBe variableRef("day")
 
             child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    child<ASTAdditiveExpression>(ignoreChildren = true) {
-                        it::getOp shouldBe ADD
+                    additiveExpr(ADD) {
+                        variableRef("a")
+                        variableRef("b")
                     }
-                    child<ASTMultiplicativeExpression> {
-                        it::getOp shouldBe DIV
-
-                        child<ASTMultiplicativeExpression>(ignoreChildren = true) {
-                            it::getOp shouldBe MUL
+                    multiplicativeExpr(DIV) {
+                        multiplicativeExpr(MUL) {
+                            int(4)
+                            int(2)
                         }
-
-                        child<ASTFieldAccess>(ignoreChildren = true) {
-                            it::getFieldName shouldBe "PI"
-                        }
+                        fieldAccess("PI")
                     }
                 }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 6
-                }
+                int(6)
             }
         }
     }
@@ -188,8 +167,16 @@ class ASTSwitchExpressionTests : ParserTestSpec({
             }
         """.trimIndent() should matchExpr<ASTSwitchExpression> {
 
-            it::getTestedExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "day"
+            it::getTestedExpression shouldBe variableRef("day")
+
+            child<ASTSwitchLabeledExpression> {
+
+                child<ASTSwitchLabel> {
+                    it::isDefault shouldBe false
+
+                    variableRef("FRIDAY")
+                }
+                int(6)
             }
 
             child<ASTSwitchLabeledExpression> {
@@ -197,49 +184,26 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "FRIDAY"
-                    }
-                }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 6
-                }
-            }
-
-            child<ASTSwitchLabeledExpression> {
-
-                child<ASTSwitchLabel> {
-                    it::isDefault shouldBe false
-
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "WEDNESDAY"
-                    }
+                    variableRef("WEDNESDAY")
                 }
 
                 child<ASTSwitchExpression> {
 
-                    it::getTestedExpression shouldBe child<ASTVariableReference> {
-                        it::getVariableName shouldBe "foo"
-                    }
+                    it::getTestedExpression shouldBe variableRef("foo")
+
                     child<ASTSwitchLabeledExpression> {
                         child<ASTSwitchLabel> {
                             it::isDefault shouldBe false
 
-                            child<ASTNumericLiteral> {
-                                it::getValueAsInt shouldBe 2
-                            }
+                            int(2)
                         }
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 5
-                        }
+                        int(5)
                     }
                     child<ASTSwitchLabeledExpression> {
                         child<ASTSwitchLabel> {
                             it::isDefault shouldBe true
                         }
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 3
-                        }
+                        int(3)
                     }
                 }
             }
@@ -247,9 +211,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe true
                 }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 3
-                }
+                int(3)
             }
         }
     }
@@ -270,7 +232,8 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """.trimIndent() should matchStmt<ASTSwitchStatement> {
             it::isExhaustiveEnumSwitch shouldBe false
 
-            it::getTestedExpression shouldBe child(ignoreChildren = true) {}
+            it::getTestedExpression shouldBe variableRef("day")
+
             child<ASTSwitchLabel> {
                 it::isDefault shouldBe false
 
@@ -327,19 +290,14 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """.trimIndent() should matchStmt<ASTSwitchStatement> {
             it::isExhaustiveEnumSwitch shouldBe false
 
-            it::getTestedExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "day"
-            }
+            it::getTestedExpression shouldBe variableRef("day")
+
             child<ASTSwitchLabeledExpression> {
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "THURSDAY"
-                    }
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "SATURDAY"
-                    }
+                    variableRef("THURSDAY")
+                    variableRef("SATURDAY")
                 }
                 child<ASTMethodCall>(ignoreChildren = true) {
                     it::getMethodName shouldBe "println"
@@ -349,9 +307,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    child<ASTVariableReference> {
-                        it::getVariableName shouldBe "WEDNESDAY"
-                    }
+                    variableRef("WEDNESDAY")
                 }
                 child<ASTMethodCall>(ignoreChildren = true) {
                     it::getMethodName shouldBe "println"
@@ -371,17 +327,13 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """.trimIndent() should matchStmt<ASTSwitchStatement> {
             it::isExhaustiveEnumSwitch shouldBe false
 
-            it::getTestedExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "day"
-            }
+            it::getTestedExpression shouldBe variableRef("day")
 
 
             child<ASTSwitchLabel> {
                 it::isDefault shouldBe false
 
-                child<ASTVariableReference> {
-                    it::getVariableName shouldBe "TUESDAY"
-                }
+                variableRef("TUESDAY")
             }
             child<ASTBlockStatement>(ignoreChildren = true) { }
 
