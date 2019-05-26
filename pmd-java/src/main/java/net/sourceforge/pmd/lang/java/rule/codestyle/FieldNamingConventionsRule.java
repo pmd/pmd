@@ -26,7 +26,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     private static final PropertyDescriptor<List<String>> EXCLUDED_NAMES =
             PropertyFactory.stringListProperty("exclusions")
                            .desc("Names of fields to whitelist.")
-                           .defaultValues("serialVersionUID")
+                           .defaultValues("serialVersionUID", "serialPersistentFields")
                            .build();
 
 

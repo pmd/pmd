@@ -125,6 +125,7 @@ public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHand
         };
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getMultifileFacade() {
         return new VisitorStarter() {
