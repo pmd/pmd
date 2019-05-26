@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.15.0</li>
+    <li class="sidebarTitle">PMD 6.16.0</li>
     
     
     
@@ -1278,217 +1278,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-may-2019---6150">??-May-2019 - 6.15.0</h2>
+  <h2 id="-june-2019---6160">??-June-2019 - 6.16.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.15.0.</p>
+<p>The PMD team is pleased to announce PMD 6.16.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="enhanced-matlab-support">Enhanced Matlab support</h4>
-
-<p>Thanks to the contributions from <a href="https://github.com/maikelsteneker">Maikel Steneker</a> CPD for Matlab can
-now parse Matlab programs which use the question mark operator to specify access to
-class members:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>classdef Class1
-properties (SetAccess = ?Class2)
-</code></pre></div></div>
-
-<p>CPD also understands now double quoted strings, which are supported since version R2017a of Matlab:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>str = "This is a string"
-</code></pre></div></div>
-
-<h4 id="enhanced-c-support">Enhanced C++ support</h4>
-
-<p>CPD now supports digit separators in C++ (language module “cpp”). This is a C++14 feature.</p>
-
-<p>Example: <code class="highlighter-rouge">auto integer_literal = 1'000'000;</code></p>
-
-<p>The single quotes can be used to add some structure to large numbers.</p>
-
-<p>CPD also parses raw string literals now correctly (see <a href="https://github.com/pmd/pmd/issues/1784">#1784</a>).</p>
-
-<h4 id="new-rules">New Rules</h4>
-
-<ul>
-  <li>
-    <p>The new Apex rule <a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) checks the naming
-conventions for field declarations. By default this rule uses the standard Apex naming convention (Camel case),
-but it can be configured through properties.</p>
-  </li>
-  <li>
-    <p>The new Apex rule <a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) checks the
-naming conventions for formal parameters of methods. By default this rule uses the standard Apex naming
-convention (Camel case), but it can be configured through properties.</p>
-  </li>
-  <li>
-    <p>The new Apex rule <a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) checks the
-naming conventions for local variable declarations. By default this rule uses the standard Apex naming
-convention (Camel case), but it can be configured through properties.</p>
-  </li>
-  <li>
-    <p>The new Apex rule <a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="highlighter-rouge">PropertyNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) checks the naming
-conventions for property declarations. By default this rule uses the standard Apex naming convention (Camel case),
-but it can be configured through properties.</p>
-  </li>
-  <li>
-    <p>The new Java rule <a href="pmd_rules_java_codestyle.html#useshortarrayinitializer"><code class="highlighter-rouge">UseShortArrayInitializer</code></a> (<code class="highlighter-rouge">java-codestyle</code>) searches for
-array initialization expressions, which can be written shorter.</p>
-  </li>
-</ul>
-
-<h4 id="modified-rules">Modified Rules</h4>
-
-<ul>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_codestyle.html#classnamingconventions"><code class="highlighter-rouge">ClassNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) can now be configured
-using various properties for the specific kind of type declarations (e.g. class, interface, enum).
-As before, this rule uses by default the standard Apex naming convention (Pascal case).</p>
-  </li>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_codestyle.html#methodnamingconventions"><code class="highlighter-rouge">MethodNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) can now be configured
-using various properties to differenciate e.g. static methods and test methods.
-As before, this rule uses by default the standard Apex naming convention (Camel case).</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now by default ignores
-the field <code class="highlighter-rouge">serialPersistentFields</code>. Since this is a field which needs to have this special name, no
-field naming conventions can be applied here. It is excluded the same way like <code class="highlighter-rouge">serialVersionUID</code> via the
-property <code class="highlighter-rouge">exclusions</code>.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_documentation.html#commentrequired"><code class="highlighter-rouge">CommentRequired</code></a> (<code class="highlighter-rouge">java-documentation</code>) has a new property
-<code class="highlighter-rouge">serialPersistentFieldsCommentRequired</code> with the default value “Ignored”. This means that from now
-on comments for the field <code class="highlighter-rouge">serialPersistentFields</code> are not required anymore. You can change the property
-to restore the old behavior.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#properlogger"><code class="highlighter-rouge">ProperLogger</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has two new properties
-to configure the logger class (e.g. “org.slf4j.Logger”) and the logger name of the special case,
-when the logger is not static. The name of the static logger variable was already configurable.
-The new property “loggerClass” allows to use this rule for different logging frameworks.
-This rule covers all the cases of the now deprecated rule <a href="pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="highlighter-rouge">LoggerIsNotStaticFinal</code></a>.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="highlighter-rouge">CommentDefaultAccessModifier</code></a> (<code class="highlighter-rouge">java-codestyle</code>) now reports also
-missing comments for top-level classes and annotations, that are package-private.</p>
-  </li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-
-<ul>
-  <li>
-    <p>The Apex rule <a href="pmd_rules_apex_codestyle.html#variablenamingconventions"><code class="highlighter-rouge">VariableNamingConventions</code></a> (<code class="highlighter-rouge">apex-codestyle</code>) has been deprecated and
-will be removed with PMD 7.0.0. The rule is replaced by the more general rules
-<a href="pmd_rules_apex_codestyle.html#fieldnamingconventions"><code class="highlighter-rouge">FieldNamingConventions</code></a>,
-<a href="pmd_rules_apex_codestyle.html#formalparameternamingconventions"><code class="highlighter-rouge">FormalParameterNamingConventions</code></a>,
-<a href="pmd_rules_apex_codestyle.html#localvariablenamingconventions"><code class="highlighter-rouge">LocalVariableNamingConventions</code></a>, and
-<a href="pmd_rules_apex_codestyle.html#propertynamingconventions"><code class="highlighter-rouge">PropertyNamingConventions</code></a>.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#loggerisnotstaticfinal"><code class="highlighter-rouge">LoggerIsNotStaticFinal</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has been deprecated
-and will be removed with PMD 7.0.0. The rule is replaced by <a href="pmd_rules_java_errorprone.html#properlogger"><code class="highlighter-rouge">ProperLogger</code></a>.</p>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1321">#1321</a>: [apex] Should VariableNamingConventions require properties to start with a lowercase letter?</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1783">#1783</a>: [apex] comments on constructor not recognized when the Class has inner class</li>
-    </ul>
-  </li>
-  <li>cpp
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1784">#1784</a>: [cpp] Improve support for raw string literals</li>
-    </ul>
-  </li>
-  <li>dart
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1809">#1809</a>: [dart] [cpd] Parse error with escape sequences</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1842">#1842</a>: [java] Annotated module declarations cause parse error</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1738">#1738</a>: [java] MethodReturnsInternalArray does not work in inner classes</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1495">#1495</a>: [java] Rule to detect overly verbose array initializiation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1684">#1684</a>: [java] Properly whitelist serialPersistentFields</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1804">#1804</a>: [java] NPE in UnnecessaryLocalBeforeReturnRule</li>
-    </ul>
-  </li>
-  <li>python
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1810">#1810</a>: [python] [cpd] Parse error when using Python 2 backticks</li>
-    </ul>
-  </li>
-  <li>matlab
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1830">#1830</a>: [matlab] [cpd] Parse error with comments</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1793">#1793</a>: [java] CommentDefaultAccessModifier not working for classes</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
-<h4 id="deprecated-apis">Deprecated APIs</h4>
-
-<h5 id="for-removal">For removal</h5>
-
-<ul>
-  <li>The <code class="highlighter-rouge">DumpFacades</code> in all languages, that could be used to transform a AST into a textual representation,
-will be removed with PMD 7. The rule designer is a better way to inspect nodes.
-    <ul>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.15.0/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.apex.ast.DumpFacade</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.15.0/net/sourceforge/pmd/lang/java/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.ast.DumpFacade</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-javascript/6.15.0/net/sourceforge/pmd/lang/ecmascript/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.ecmascript.ast.DumpFacade</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.15.0/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.jsp.ast.DumpFacade</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-plsql/6.15.0/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.plsql.ast.DumpFacade</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.15.0/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.vf.ast.DumpFacade</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.15.0/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(String,boolean,Writer)"><code class="highlighter-rouge">net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump</code></a></li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-xml/6.15.0/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.xml.ast.DumpFacade</code></a></li>
-    </ul>
-  </li>
-  <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.15.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDumpFacade(Writer,String,boolean)"><code class="highlighter-rouge">LanguageVersionHandler#getDumpFacade</code></a> will be
-removed as well. It is deprecated, along with all its implementations in the subclasses of <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.15.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#"><code class="highlighter-rouge">LanguageVersionHandler</code></a>.</li>
-</ul>
-
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1647">#1647</a>: [java] Rule to detect overly verbose array initialization - <a href="https://github.com/IDoCodingStuffs">Victor</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1762">#1762</a>: [java] LoggerIsNotStaticFinal and ProperLogger - make class-name configurable - <a href="https://github.com/bedla">Ivo Šmíd</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1798">#1798</a>: [java] Make CommentDefaultAccessModifier work for top-level classes - <a href="https://github.com/boris-petrov">Boris Petrov</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1799">#1799</a>: [java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1802">#1802</a>: [python] [cpd] Add support for Python 2 backticks - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1803">#1803</a>: [dart] [cpd] Dart escape sequences - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1807">#1807</a>: [ci] Fix missing local branch issues when executing pmd-regression-tester - <a href="https://github.com/djydewang">BBG</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1813">#1813</a>: [matlab] [cpd] Matlab comments - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1816">#1816</a>: [apex] Fix ApexDoc handling with inner classes - <a href="https://github.com/jeffhube">Jeff Hube</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1817">#1817</a>: [apex] Add configurable naming convention rules - <a href="https://github.com/jeffhube">Jeff Hube</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1819">#1819</a>: [cpp] [cpd] Add support for digit separators - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1820">#1820</a>: [cpp] [cpd] Improve support for raw string literals - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1821">#1821</a>: [matlab] [cpd] Matlab question mark token - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1822">#1822</a>: [matlab] [cpd] Double quoted string - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1837">#1837</a>: [core] Minor performance improvements - <a href="https://github.com/TheRealHaui">Michael Hausegger</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1838">#1838</a>: [dart] [cpd] Improved string tokenization - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1840">#1840</a>: [java] Whitelist serialPersistentFields - <a href="https://github.com/marcelhaerle">Marcel Härle</a></li>
-</ul>
 
 
 
