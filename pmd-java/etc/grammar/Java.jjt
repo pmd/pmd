@@ -2215,11 +2215,6 @@ void ResultType() :
    "void" | AnnotatedType()
 }
 
-void TypeOrVoid() #void:
-{}
-{
-  "void" | Type()
-}
 
 // TODO rename to ThrowsClause
 void NameList() :

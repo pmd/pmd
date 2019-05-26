@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+@Deprecated
 public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     private boolean isArguments;

@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+@Deprecated
 public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
 
     private boolean usesThisModifier;
