@@ -1440,11 +1440,11 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-    LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
-    LOOKAHEAD(3) <NOT> { jjtThis.setType(token.getImage()); } Condition()
+   LOOKAHEAD(1) <NOT> { jjtThis.setType(token.getImage()); } Condition()
  |
-    LOOKAHEAD(3) Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+    Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  )
     { return jjtThis; }
 }

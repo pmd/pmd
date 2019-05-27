@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   plsql
+    *   [#1828](https://github.com/pmd/pmd/issues/1828): \[plsql] Parentheses stopped working
+
 ### API Changes
 
 ### External Contributions
