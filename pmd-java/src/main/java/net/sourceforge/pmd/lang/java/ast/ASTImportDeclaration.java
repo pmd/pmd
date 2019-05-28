@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an import declaration in a Java file.
  *
@@ -15,7 +17,6 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS 7.5</a>
- *
  */
 // TODO should this really be a type node?
 // E.g. for on-demand imports, what's the type of this node? There's no type name, just a package name
@@ -30,10 +31,14 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     private boolean isStatic;
     private Package pkg;
 
+    @InternalApi
+    @Deprecated
     public ASTImportDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTImportDeclaration(JavaParser p, int id) {
         super(p, id);
     }

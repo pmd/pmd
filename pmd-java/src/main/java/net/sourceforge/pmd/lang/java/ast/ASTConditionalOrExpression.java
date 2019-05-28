@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a boolean OR-expression. This has a precedence greater than {@link ASTConditionalExpression},
  * and lower than {@link ASTConditionalAndExpression}.
@@ -20,10 +22,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTConditionalOrExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTConditionalOrExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTConditionalOrExpression(JavaParser p, int id) {
         super(p, id);
     }

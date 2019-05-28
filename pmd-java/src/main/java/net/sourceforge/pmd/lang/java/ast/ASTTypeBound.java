@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Represents a type bound on a {@linkplain ASTTypeParameter type parameter}.
@@ -22,11 +24,16 @@ import java.util.List;
  * </pre>
  */
 public class ASTTypeBound extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTTypeBound(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTTypeBound(JavaParser p, int id) {
         super(p, id);
     }

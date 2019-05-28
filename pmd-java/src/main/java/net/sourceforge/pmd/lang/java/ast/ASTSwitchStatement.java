@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.EnumUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Represents a {@code switch} statement.
@@ -21,10 +23,15 @@ import org.apache.commons.lang3.EnumUtils;
  * </pre>
  */
 public class ASTSwitchStatement extends AbstractJavaNode implements Iterable<ASTSwitchLabel> {
+
+    @InternalApi
+    @Deprecated
     public ASTSwitchStatement(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTSwitchStatement(JavaParser p, int id) {
         super(p, id);
     }

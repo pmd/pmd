@@ -5,14 +5,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
 
     private String thisOrSuper;
 
+    @InternalApi
+    @Deprecated
     public ASTExplicitConstructorInvocation(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTExplicitConstructorInvocation(JavaParser p, int id) {
         super(p, id);
     }

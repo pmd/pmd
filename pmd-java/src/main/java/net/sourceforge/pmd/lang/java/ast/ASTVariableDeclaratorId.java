@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -40,10 +41,14 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     private VariableNameDeclaration nameDeclaration;
     private boolean explicitReceiverParameter = false;
 
+    @InternalApi
+    @Deprecated
     public ASTVariableDeclaratorId(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTVariableDeclaratorId(JavaParser p, int id) {
         super(p, id);
     }
@@ -79,6 +84,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
     /**
      * Returns true if the declared variable has an array type.
+     *
      * @deprecated Use {@link #hasArrayType()}
      */
     @Override
@@ -112,7 +118,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     public boolean isFormalParameter() {
         return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
-                || isLambdaParamWithNoType();
+            || isLambdaParamWithNoType();
     }
 
 
@@ -130,7 +136,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * is not necessarily inferred, see {@link #isTypeInferred()}.
      */
     public boolean isLambdaParameter() {
-        return isLambdaParamWithNoType() || jjtGetParent() instanceof ASTFormalParameter && getNthParent(3) instanceof ASTLambdaExpression;
+        return isLambdaParamWithNoType()
+            || jjtGetParent() instanceof ASTFormalParameter && getNthParent(3) instanceof ASTLambdaExpression;
     }
 
 
@@ -245,7 +252,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
 
     private boolean isLambdaTypeInferred() {
         return getNthParent(3) instanceof ASTLambdaExpression
-                && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
+            && jjtGetParent().getFirstChildOfType(ASTType.class) == null;
     }
 
     /**
@@ -269,7 +276,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      * node. See {@link #getType()} for an explanation.
      *
      * @return the type node, or {@code null} if there is no explicit type,
-     * e.g. if {@link #isTypeInferred()} returns true.
+     *     e.g. if {@link #isTypeInferred()} returns true.
      */
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {

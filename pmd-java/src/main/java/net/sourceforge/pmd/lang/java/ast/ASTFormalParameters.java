@@ -8,12 +8,19 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
+
+    @InternalApi
+    @Deprecated
     public ASTFormalParameters(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTFormalParameters(JavaParser p, int id) {
         super(p, id);
     }
@@ -21,7 +28,7 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
     public int getParameterCount() {
         final List<ASTFormalParameter> parameters = findChildrenOfType(ASTFormalParameter.class);
         return !parameters.isEmpty() && parameters.get(0).isExplicitReceiverParameter()
-                ? parameters.size() - 1 : parameters.size();
+               ? parameters.size() - 1 : parameters.size();
     }
 
     /**

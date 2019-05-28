@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an expression, in the most general sense.
  * This corresponds roughly to the <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-AssignmentExpression">AssignmentExpression</a>
@@ -18,10 +20,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTExpression(JavaParser p, int id) {
         super(p, id);
     }
@@ -56,6 +63,6 @@ public class ASTExpression extends AbstractJavaTypeNode {
         // if it is not a string literal and not a null, then it is one of
         // byte, short, char, int, long, float, double, boolean
         return literal != null && !literal.isStringLiteral()
-                && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
+            && (literal.jjtGetNumChildren() == 0 || !(literal.jjtGetChild(0) instanceof ASTNullLiteral));
     }
 }

@@ -5,13 +5,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTCastExpression extends AbstractJavaTypeNode {
+
     private boolean intersectionTypes = false;
 
+    @InternalApi
+    @Deprecated
     public ASTCastExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTCastExpression(JavaParser p, int id) {
         super(p, id);
     }

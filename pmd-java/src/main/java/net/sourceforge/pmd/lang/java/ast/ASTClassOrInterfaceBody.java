@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents the body of a {@linkplain ASTClassOrInterfaceDeclaration class or interface declaration}.
  * This includes anonymous classes, including those defined within an {@linkplain ASTEnumConstant enum constant}.
@@ -16,10 +18,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTClassOrInterfaceBody extends AbstractJavaNode {
+
+    @InternalApi
+    @Deprecated
     public ASTClassOrInterfaceBody(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTClassOrInterfaceBody(JavaParser p, int id) {
         super(p, id);
     }

@@ -5,16 +5,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class ASTName extends AbstractJavaTypeNode {
 
     private NameDeclaration nd;
 
+    @InternalApi
+    @Deprecated
     public ASTName(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTName(JavaParser p, int id) {
         super(p, id);
     }

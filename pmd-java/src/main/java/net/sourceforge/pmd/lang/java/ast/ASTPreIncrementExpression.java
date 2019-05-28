@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a pre-increment expression on a variable.
  * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}
@@ -17,10 +19,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTPreIncrementExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTPreIncrementExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTPreIncrementExpression(JavaParser p, int id) {
         super(p, id);
     }

@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a {@code for}-loop, or a foreach loop.
  *
@@ -18,11 +20,16 @@ package net.sourceforge.pmd.lang.java.ast;
 // TODO this should be split into two different nodes, otherwise
 // we can't enrich the API without returning null half the time
 public class ASTForStatement extends AbstractJavaNode {
+
+    @InternalApi
+    @Deprecated
     public ASTForStatement(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTForStatement(JavaParser p, int id) {
         super(p, id);
     }

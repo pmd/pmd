@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
@@ -17,10 +18,14 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
 
+    @InternalApi
+    @Deprecated
     public ASTCompilationUnit(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTCompilationUnit(JavaParser p, int id) {
         super(p, id);
     }

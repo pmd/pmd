@@ -6,14 +6,20 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;
 
+    @InternalApi
+    @Deprecated
     public ASTConstructorDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTConstructorDeclaration(JavaParser p, int id) {
         super(p, id);
     }

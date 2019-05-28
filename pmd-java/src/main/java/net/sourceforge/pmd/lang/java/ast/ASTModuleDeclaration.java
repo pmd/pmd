@@ -6,13 +6,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTModuleDeclaration extends AbstractJavaNode {
+
     private boolean open;
 
+    @InternalApi
+    @Deprecated
     public ASTModuleDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTModuleDeclaration(JavaParser p, int id) {
         super(p, id);
     }

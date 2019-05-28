@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a boolean negation or bitwise inverse operation.
  * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}
@@ -20,10 +22,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTUnaryExpressionNotPlusMinus(JavaParser p, int id) {
         super(p, id);
     }

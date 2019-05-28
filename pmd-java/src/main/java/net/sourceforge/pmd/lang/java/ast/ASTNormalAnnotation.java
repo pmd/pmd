@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an annotation that with a parenthesized list
  * of key-value pairs (possibly empty).
@@ -19,11 +21,16 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see ASTMarkerAnnotation
  */
 public class ASTNormalAnnotation extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTNormalAnnotation(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTNormalAnnotation(JavaParser p, int id) {
         super(p, id);
     }

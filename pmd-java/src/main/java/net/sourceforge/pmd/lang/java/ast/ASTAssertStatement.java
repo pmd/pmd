@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an {@code assert} statement.
  *
@@ -15,10 +17,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTAssertStatement extends AbstractJavaNode {
+
+    @InternalApi
+    @Deprecated
     public ASTAssertStatement(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTAssertStatement(JavaParser p, int id) {
         super(p, id);
     }

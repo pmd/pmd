@@ -7,13 +7,19 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
 
+    @InternalApi
+    @Deprecated
     public ASTAnnotationTypeDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTAnnotationTypeDeclaration(JavaParser p, int id) {
         super(p, id);
     }

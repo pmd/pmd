@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an annotation using the shorthand syntax for the default member.
  *
@@ -18,10 +20,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see ASTNormalAnnotation
  */
 public class ASTSingleMemberAnnotation extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTSingleMemberAnnotation(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTSingleMemberAnnotation(JavaParser p, int id) {
         super(p, id);
     }

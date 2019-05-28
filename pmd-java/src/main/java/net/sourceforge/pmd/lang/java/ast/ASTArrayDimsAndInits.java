@@ -5,13 +5,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
+
     private int arrayDepth;
 
+    @InternalApi
+    @Deprecated
     public ASTArrayDimsAndInits(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTArrayDimsAndInits(JavaParser p, int id) {
         super(p, id);
     }

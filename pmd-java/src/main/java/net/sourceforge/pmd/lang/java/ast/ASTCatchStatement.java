@@ -8,6 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Catch statement node.
@@ -16,10 +18,15 @@ import java.util.List;
  * </pre>
  */
 public class ASTCatchStatement extends AbstractJavaNode {
+
+    @InternalApi
+    @Deprecated
     public ASTCatchStatement(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTCatchStatement(JavaParser p, int id) {
         super(p, id);
     }

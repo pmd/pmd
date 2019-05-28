@@ -5,11 +5,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTThrowStatement extends AbstractJavaNode {
+
+    @InternalApi
+    @Deprecated
     public ASTThrowStatement(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTThrowStatement(JavaParser p, int id) {
         super(p, id);
     }
@@ -33,7 +40,7 @@ public class ASTThrowStatement extends AbstractJavaNode {
      * <p>TODO - use symbol table (?)</p>
      *
      * @return the image of the first ASTClassOrInterfaceType node found or
-     *         <code>null</code>
+     *     <code>null</code>
      */
     public final String getFirstClassOrInterfaceTypeImage() {
         final ASTClassOrInterfaceType t = getFirstDescendantOfType(ASTClassOrInterfaceType.class);

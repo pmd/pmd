@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
@@ -15,15 +16,18 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  * <pre>
  * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
  * </pre>
- *
  */
 public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
 
 
+    @InternalApi
+    @Deprecated
     public ASTMethodDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTMethodDeclaration(JavaParser p, int id) {
         super(p, id);
     }
@@ -101,7 +105,7 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
         Node potentialTypeDeclaration = getNthParent(3);
 
         return potentialTypeDeclaration instanceof ASTClassOrInterfaceDeclaration
-                && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
+            && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
     }
 
 

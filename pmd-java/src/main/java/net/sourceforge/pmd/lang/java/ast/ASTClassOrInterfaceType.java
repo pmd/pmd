@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -16,13 +17,17 @@ import net.sourceforge.pmd.lang.ast.Node;
  * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@linkplain ASTTypeArguments TypeArguments}? ( "." &lt;IDENTIFIER&gt;  {@linkplain ASTTypeArguments TypeArguments}? )*
  *
  * </pre>
- *
  */
 public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTClassOrInterfaceType(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTClassOrInterfaceType(JavaParser p, int id) {
         super(p, id);
     }
@@ -38,7 +43,7 @@ public class ASTClassOrInterfaceType extends AbstractJavaTypeNode {
      * to check this, if {@link #getType()} is null.
      *
      * @return <code>true</code> if this node referencing a type in the same
-     *         compilation unit, <code>false</code> otherwise.
+     *     compilation unit, <code>false</code> otherwise.
      */
     public boolean isReferenceToClassSameCompilationUnit() {
         ASTCompilationUnit root = getFirstParentOfType(ASTCompilationUnit.class);

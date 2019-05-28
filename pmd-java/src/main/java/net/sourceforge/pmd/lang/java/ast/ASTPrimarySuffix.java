@@ -5,15 +5,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     private boolean isArguments;
     private boolean isArrayDereference;
 
+    @InternalApi
+    @Deprecated
     public ASTPrimarySuffix(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTPrimarySuffix(JavaParser p, int id) {
         super(p, id);
     }
@@ -40,7 +46,7 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
      * called when there are no arguments it returns <code>-1</code>.
      *
      * @return A non-negative argument number when there are arguments,
-     *         <code>-1</code> otherwise.
+     *     <code>-1</code> otherwise.
      */
     public int getArgumentCount() {
         if (!this.isArguments()) {

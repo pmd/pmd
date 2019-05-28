@@ -6,11 +6,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTResource extends ASTFormalParameter {
+
+    @InternalApi
+    @Deprecated
     public ASTResource(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTResource(JavaParser p, int id) {
         super(p, id);
     }

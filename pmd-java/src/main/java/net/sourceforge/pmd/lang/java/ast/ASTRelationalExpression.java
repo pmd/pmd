@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a comparison on two numeric values. This has a precedence greater than {@link ASTEqualityExpression},
  * and lower than {@link ASTShiftExpression}. This has the same precedence as a {@link ASTInstanceOfExpression}.
@@ -20,10 +22,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTRelationalExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTRelationalExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTRelationalExpression(JavaParser p, int id) {
         super(p, id);
     }

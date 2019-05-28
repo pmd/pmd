@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
@@ -12,10 +13,14 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
 
     private JavaTypeQualifiedName qualifiedName;
 
+    @InternalApi
+    @Deprecated
     public ASTAllocationExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTAllocationExpression(JavaParser p, int id) {
         super(p, id);
     }

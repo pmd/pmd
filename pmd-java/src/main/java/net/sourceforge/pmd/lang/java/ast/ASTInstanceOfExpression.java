@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a type test on an object. This has a precedence greater than {@link ASTEqualityExpression},
  * and lower than {@link ASTShiftExpression}. This has the same precedence as a {@link ASTRelationalExpression}.
@@ -20,11 +22,16 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTInstanceOfExpression(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTInstanceOfExpression(JavaParser p, int id) {
         super(p, id);
     }

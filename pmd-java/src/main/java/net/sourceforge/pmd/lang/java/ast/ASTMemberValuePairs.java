@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Represents a list of member values in an {@linkplain ASTNormalAnnotation annotation}.
@@ -18,11 +20,16 @@ import java.util.Iterator;
  * </pre>
  */
 public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
+
+    @InternalApi
+    @Deprecated
     public ASTMemberValuePairs(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTMemberValuePairs(JavaParser p, int id) {
         super(p, id);
     }

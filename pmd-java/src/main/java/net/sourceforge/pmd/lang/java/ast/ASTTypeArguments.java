@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
@@ -16,13 +18,17 @@ import java.util.Iterator;
  *  TypeArguments ::= "<" {@linkplain ASTTypeArgument TypeArgument} ( "," {@linkplain ASTTypeArgument TypeArgument} )* ">"
  *                  | "<" ">"
  * </pre>
- *
  */
 public class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTTypeArgument> {
+
+    @InternalApi
+    @Deprecated
     public ASTTypeArguments(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTTypeArguments(JavaParser p, int id) {
         super(p, id);
     }

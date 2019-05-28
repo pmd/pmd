@@ -6,6 +6,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
@@ -23,10 +24,14 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
 
     private boolean isVarargs;
 
+    @InternalApi
+    @Deprecated
     public ASTFormalParameter(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTFormalParameter(JavaParser p, int id) {
         super(p, id);
     }
@@ -106,8 +111,8 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     @Deprecated
     public boolean isArray() {
         return isVarargs()
-                || getTypeNode() != null && getTypeNode().isArray()
-                || getVariableDeclaratorId().isArray();
+            || getTypeNode() != null && getTypeNode().isArray()
+            || getVariableDeclaratorId().isArray();
     }
 
     @Override

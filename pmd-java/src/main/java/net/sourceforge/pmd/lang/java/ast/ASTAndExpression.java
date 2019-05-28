@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a non-shortcut boolean AND-expression.
  * This has a precedence greater than {@link ASTExclusiveOrExpression},
@@ -21,10 +23,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTAndExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTAndExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTAndExpression(JavaParser p, int id) {
         super(p, id);
     }

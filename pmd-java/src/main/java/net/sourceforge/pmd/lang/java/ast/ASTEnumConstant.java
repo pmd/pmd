@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
@@ -23,10 +24,14 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
 
     private JavaTypeQualifiedName qualifiedName;
 
+    @InternalApi
+    @Deprecated
     public ASTEnumConstant(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTEnumConstant(JavaParser p, int id) {
         super(p, id);
     }

@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a unary postfix operation on a value.
  * This is one of the {@linkplain ASTUnaryExpression PrefixExpression}
@@ -18,10 +20,14 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public class ASTPostfixExpression extends AbstractJavaTypeNode {
 
+    @InternalApi
+    @Deprecated
     public ASTPostfixExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTPostfixExpression(JavaParser p, int id) {
         super(p, id);
     }

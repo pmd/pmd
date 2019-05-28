@@ -7,13 +7,19 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
 
 
+    @InternalApi
+    @Deprecated
     public ASTEnumDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTEnumDeclaration(JavaParser p, int id) {
         super(p, id);
     }

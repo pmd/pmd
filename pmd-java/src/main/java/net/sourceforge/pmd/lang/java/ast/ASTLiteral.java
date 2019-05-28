@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTLiteral extends AbstractJavaTypeNode {
 
     private boolean isInt;
@@ -21,12 +23,16 @@ public class ASTLiteral extends AbstractJavaTypeNode {
      * String.
      */
     private static final Pattern SINGLE_CHAR_ESCAPE_PATTERN = Pattern
-            .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
+        .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
 
+    @InternalApi
+    @Deprecated
     public ASTLiteral(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTLiteral(JavaParser p, int id) {
         super(p, id);
     }

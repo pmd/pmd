@@ -4,12 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTSwitchLabeledBlock extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
+    @Deprecated
+    @InternalApi
     ASTSwitchLabeledBlock(int id) {
         super(id);
     }
 
+    @Deprecated
+    @InternalApi
     ASTSwitchLabeledBlock(JavaParser p, int id) {
         super(p, id);
     }

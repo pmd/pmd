@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an annotation with no declared member, e.g. {@code @Override}.
  *
@@ -19,11 +21,15 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public class ASTMarkerAnnotation extends AbstractJavaTypeNode {
 
+    @InternalApi
+    @Deprecated
     public ASTMarkerAnnotation(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTMarkerAnnotation(JavaParser p, int id) {
         super(p, id);
     }

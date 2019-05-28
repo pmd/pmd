@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a unary prefix operation on a value.
  * This has a precedence greater than {@link ASTMultiplicativeExpression}.
@@ -26,10 +28,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTUnaryExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTUnaryExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTUnaryExpression(JavaParser p, int id) {
         super(p, id);
     }

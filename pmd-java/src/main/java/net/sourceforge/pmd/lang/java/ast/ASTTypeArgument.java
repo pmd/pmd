@@ -6,6 +6,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a single type argument in a {@linkplain ASTTypeArguments type arguments list}.
  *
@@ -17,10 +19,15 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 // TODO should implement Annotatable when we use can use Java 8 mixins instead of an abstract class
 public class ASTTypeArgument extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTTypeArgument(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTTypeArgument(JavaParser p, int id) {
         super(p, id);
     }

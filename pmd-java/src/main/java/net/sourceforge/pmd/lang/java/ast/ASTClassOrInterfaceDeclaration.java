@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -25,7 +26,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *                                 {@linkplain ASTImplementsList ImplementsList}?
  *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
  * </pre>
- *
  */
 public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
@@ -34,10 +34,14 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isInterface;
 
+    @InternalApi
+    @Deprecated
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
         super(p, id);
     }
@@ -68,7 +72,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
                     isLocal = false;
                     break;
                 } else if (current instanceof ASTMethodOrConstructorDeclaration
-                        || current instanceof ASTInitializer) {
+                    || current instanceof ASTInitializer) {
                     isLocal = true;
                     break;
                 }
@@ -128,8 +132,8 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
     public List<ASTClassOrInterfaceType> getSuperInterfacesTypeNodes() {
 
         Iterable<ASTClassOrInterfaceType> it = isInterface()
-                ? getFirstChildOfType(ASTExtendsList.class)
-                : getFirstChildOfType(ASTImplementsList.class);
+                                               ? getFirstChildOfType(ASTExtendsList.class)
+                                               : getFirstChildOfType(ASTImplementsList.class);
 
         return it == null ? Collections.<ASTClassOrInterfaceType>emptyList() : CollectionUtil.toList(it.iterator());
     }

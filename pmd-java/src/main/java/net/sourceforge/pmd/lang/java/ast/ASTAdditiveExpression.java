@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an addition operation on two or more values, or string concatenation.
  * This has a precedence greater than {@link ASTShiftExpression}, and lower
@@ -20,10 +22,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTAdditiveExpression extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTAdditiveExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTAdditiveExpression(JavaParser p, int id) {
         super(p, id);
     }

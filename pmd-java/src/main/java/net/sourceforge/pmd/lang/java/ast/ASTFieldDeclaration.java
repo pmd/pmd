@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -15,7 +16,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Represents a field declaration in the body of a type declaration.
  *
- * <p>This statement may define several variables, possibly of different types (see {@link ASTVariableDeclaratorId#getType()}).
+ * <p>This statement may define several variables, possibly of different types (see {@link
+ * ASTVariableDeclaratorId#getType()}).
  * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
  *
  * <p>{@link AccessNode} methods take into account the syntactic context of the
@@ -40,10 +42,14 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     private JavaFieldSignature signature;
 
 
+    @InternalApi
+    @Deprecated
     public ASTFieldDeclaration(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTFieldDeclaration(JavaParser p, int id) {
         super(p, id);
     }
@@ -169,12 +175,10 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
      * VariableDeclartorId node and returns its image or <code>null</code> if
      * the child node is not found.
      *
+     * @return a String representing the name of the variable
      *
      * @deprecated FieldDeclaration may declare several variables, so this is not exhaustive
-     *             Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
-     *
-     *
-     * @return a String representing the name of the variable
+     *     Iterate on the {@linkplain ASTVariableDeclaratorId VariableDeclaratorIds} instead
      */
     @Deprecated
     public String getVariableName() {
@@ -208,7 +212,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
     /**
      * @deprecated FieldDeclaration may declare several variables with a different type
-     *             It won't implement TypeNode anymore come 7.0.0
+     *     It won't implement TypeNode anymore come 7.0.0
      */
     @Override
     @Deprecated
@@ -218,9 +222,8 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
 
 
     /**
-     *
      * @deprecated FieldDeclaration may declare several variables with a different type
-     *             It won't implement TypeNode anymore come 7.0.0
+     *     It won't implement TypeNode anymore come 7.0.0
      */
     @Override
     @Deprecated

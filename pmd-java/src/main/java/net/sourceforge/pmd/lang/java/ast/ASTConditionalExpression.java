@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -21,15 +22,18 @@ import net.sourceforge.pmd.lang.ast.Node;
  * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
  *
  * </pre>
- *
  */
 public class ASTConditionalExpression extends AbstractJavaTypeNode {
 
 
+    @InternalApi
+    @Deprecated
     public ASTConditionalExpression(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTConditionalExpression(JavaParser p, int id) {
         super(p, id);
     }

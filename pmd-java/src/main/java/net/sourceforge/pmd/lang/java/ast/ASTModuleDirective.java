@@ -6,7 +6,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTModuleDirective extends AbstractJavaNode {
+
     public enum DirectiveType {
         REQUIRES, EXPORTS, OPENS, USES, PROVIDES;
     }
@@ -19,10 +22,14 @@ public class ASTModuleDirective extends AbstractJavaNode {
 
     private RequiresModifier requiresModifier;
 
+    @InternalApi
+    @Deprecated
     public ASTModuleDirective(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTModuleDirective(JavaParser p, int id) {
         super(p, id);
     }

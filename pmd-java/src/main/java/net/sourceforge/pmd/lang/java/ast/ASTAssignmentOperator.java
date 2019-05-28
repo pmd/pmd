@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents an assignment operator in an {@linkplain ASTExpression assignment expression}.
  *
@@ -15,12 +17,17 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTAssignmentOperator extends AbstractJavaNode {
+
     private boolean isCompound;
 
+    @InternalApi
+    @Deprecated
     public ASTAssignmentOperator(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTAssignmentOperator(JavaParser p, int id) {
         super(p, id);
     }

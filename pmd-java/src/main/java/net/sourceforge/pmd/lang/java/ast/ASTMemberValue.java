@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents the value of a member of an annotation.
  * This can appear in a {@linkplain ASTMemberValuePair member-value pair},
@@ -19,11 +21,16 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public class ASTMemberValue extends AbstractJavaNode {
+
+    @InternalApi
+    @Deprecated
     public ASTMemberValue(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTMemberValue(JavaParser p, int id) {
         super(p, id);
     }

@@ -5,6 +5,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Represents a type reference.
  *
@@ -17,10 +19,15 @@ package net.sourceforge.pmd.lang.java.ast;
  * Note: it is not exactly the same the "UnnanType" defined in JLS.
  */
 public class ASTType extends AbstractJavaTypeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTType(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTType(JavaParser p, int id) {
         super(p, id);
     }
@@ -45,7 +52,7 @@ public class ASTType extends AbstractJavaTypeNode {
     @Deprecated
     public int getArrayDepth() {
         if (jjtGetNumChildren() != 0
-                && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
+            && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
             return ((Dimensionable) jjtGetChild(0)).getArrayDepth();
         }
         return 0; // this is not an array
@@ -53,7 +60,6 @@ public class ASTType extends AbstractJavaTypeNode {
 
 
     /**
-     *
      * @deprecated Use {@link #isArrayType()}
      */
     @Deprecated
@@ -64,7 +70,6 @@ public class ASTType extends AbstractJavaTypeNode {
 
     /**
      * Returns true if this type is an array type.
-     *
      */
     public boolean isArrayType() {
         return getArrayDepth() > 0;

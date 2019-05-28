@@ -6,12 +6,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTLambdaExpression extends AbstractMethodLikeNode {
+
+    @InternalApi
+    @Deprecated
     public ASTLambdaExpression(int id) {
         super(id);
     }
 
 
+    @InternalApi
+    @Deprecated
     public ASTLambdaExpression(JavaParser p, int id) {
         super(p, id);
     }

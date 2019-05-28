@@ -5,15 +5,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
 
     private boolean usesThisModifier;
     private boolean usesSuperModifier;
 
+    @InternalApi
+    @Deprecated
     public ASTPrimaryPrefix(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public ASTPrimaryPrefix(JavaParser p, int id) {
         super(p, id);
     }
