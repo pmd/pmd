@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode implements TypeNode {
+
     /**
      * Type definition, used to get the type of the node.
      */

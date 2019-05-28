@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
-
+@Deprecated
+@InternalApi
 public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements MethodLikeNode {
     private JavaOperationQualifiedName qualifiedName;
 

@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode implements AccessNode {
 
     private int modifiers;
