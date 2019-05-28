@@ -59,6 +59,8 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
         return qualifiedName;
     }
 
+    @InternalApi
+    @Deprecated
     public void setQualifiedName(JavaTypeQualifiedName qname) {
         this.qualifiedName = qname;
     }

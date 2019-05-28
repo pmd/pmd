@@ -24,6 +24,8 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    @InternalApi
+    @Deprecated
     public void setUsesThisModifier() {
         usesThisModifier = true;
     }
@@ -32,6 +34,8 @@ public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
         return this.usesThisModifier;
     }
 
+    @InternalApi
+    @Deprecated
     public void setUsesSuperModifier() {
         usesSuperModifier = true;
     }

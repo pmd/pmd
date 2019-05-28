@@ -45,6 +45,8 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         return visitor.visit(this, data);
     }
 
+    @InternalApi
+    @Deprecated
     public void setIntLiteral() {
         this.isInt = true;
     }
@@ -74,6 +76,8 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         return false;
     }
 
+    @InternalApi
+    @Deprecated
     public void setFloatLiteral() {
         this.isFloat = true;
     }
@@ -183,6 +187,8 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         return Double.NaN;
     }
 
+    @InternalApi
+    @Deprecated
     public void setCharLiteral() {
         this.isChar = true;
     }
@@ -191,6 +197,8 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         return isChar;
     }
 
+    @InternalApi
+    @Deprecated
     public void setStringLiteral() {
         this.isString = true;
     }

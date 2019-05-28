@@ -39,10 +39,14 @@ public class ASTExplicitConstructorInvocation extends AbstractJavaNode {
         }
     }
 
+    @InternalApi
+    @Deprecated
     public void setIsThis() {
         this.thisOrSuper = "this";
     }
 
+    @InternalApi
+    @Deprecated
     public void setIsSuper() {
         this.thisOrSuper = "super";
     }

@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 @Deprecated
 @InternalApi
 public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
+
     private JavaTypeDefinition typeDefinition;
 
     public AbstractJavaTypeNode(int i) {
@@ -31,6 +32,8 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
         return typeDefinition == null ? null : typeDefinition.getType();
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setType(Class<?> type) {
         typeDefinition = JavaTypeDefinition.forClass(type);
@@ -41,6 +44,8 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
         return typeDefinition;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;

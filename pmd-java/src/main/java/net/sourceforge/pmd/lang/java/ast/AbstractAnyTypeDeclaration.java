@@ -33,7 +33,7 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     @Override
     public final boolean isNested() {
         return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration
-                || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
+            || jjtGetParent() instanceof ASTAnnotationTypeMemberDeclaration;
     }
 
 
@@ -83,6 +83,8 @@ public abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeN
     }
 
 
+    @InternalApi
+    @Deprecated
     public void setQualifiedName(JavaTypeQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
         this.typeDefinition = JavaTypeDefinition.forClass(qualifiedName.getType());

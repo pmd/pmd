@@ -23,6 +23,8 @@ public class ASTCastExpression extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    @InternalApi
+    @Deprecated
     public void setIntersectionTypes(boolean intersectionTypes) {
         this.intersectionTypes = intersectionTypes;
     }

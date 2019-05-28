@@ -90,6 +90,8 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return this.isInterface;
     }
 
+    @InternalApi
+    @Deprecated
     public void setInterface() {
         this.isInterface = true;
     }

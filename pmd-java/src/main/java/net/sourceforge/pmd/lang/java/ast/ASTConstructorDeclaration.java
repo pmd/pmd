@@ -42,6 +42,8 @@ public class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclar
         return this.containsComment;
     }
 
+    @InternalApi
+    @Deprecated
     public void setContainsComment() {
         this.containsComment = true;
     }

@@ -40,6 +40,8 @@ public class ASTModuleDirective extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+    @InternalApi
+    @Deprecated
     public void setType(DirectiveType type) {
         this.type = type;
     }
@@ -48,6 +50,8 @@ public class ASTModuleDirective extends AbstractJavaNode {
         return String.valueOf(type);
     }
 
+    @InternalApi
+    @Deprecated
     public void setRequiresModifier(RequiresModifier requiresModifier) {
         this.requiresModifier = requiresModifier;
     }

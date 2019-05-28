@@ -30,6 +30,8 @@ public class ASTModuleDeclaration extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+    @InternalApi
+    @Deprecated
     public void setOpen(boolean open) {
         this.open = open;
     }

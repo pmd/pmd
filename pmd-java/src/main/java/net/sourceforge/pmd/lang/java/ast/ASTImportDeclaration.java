@@ -47,6 +47,8 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     /**
      * @deprecated Will be made private with 7.0.0
      */
+    @InternalApi
+    @Deprecated
     @Deprecated
     public void setImportOnDemand() {
         isImportOnDemand = true;
@@ -74,6 +76,8 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
     /**
      * @deprecated Will be made private with 7.0.0
      */
+    @InternalApi
+    @Deprecated
     @Deprecated
     public void setStatic() {
         isStatic = true;
@@ -140,6 +144,8 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return visitor.visit(this, data);
     }
 
+    @InternalApi
+    @Deprecated
     public void setPackage(Package packge) {
         this.pkg = packge;
     }

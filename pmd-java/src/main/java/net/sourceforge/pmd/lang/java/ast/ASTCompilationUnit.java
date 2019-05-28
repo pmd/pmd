@@ -34,6 +34,8 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return comments;
     }
 
+    @InternalApi
+    @Deprecated
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
@@ -62,6 +64,8 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         return classTypeResolver;
     }
 
+    @InternalApi
+    @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
         this.classTypeResolver = classTypeResolver;
     }

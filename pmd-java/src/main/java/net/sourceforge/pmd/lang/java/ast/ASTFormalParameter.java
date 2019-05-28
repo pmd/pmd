@@ -40,7 +40,8 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     /**
      * @deprecated Will be made private in 7.0.0
      */
-    // Should be made package-private
+    @InternalApi
+    @Deprecated
     @Deprecated
     public void setVarargs() {
         isVarargs = true;
@@ -169,6 +170,8 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
      * Noop, the type of this node is defined by the type
      * of the declarator id.
      */
+    @InternalApi
+    @Deprecated
     @Override
     public void setTypeDefinition(JavaTypeDefinition type) {
         // see javadoc
@@ -178,6 +181,8 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
      * Noop, the type of this node is defined by the type
      * of the declarator id.
      */
+    @InternalApi
+    @Deprecated
     @Override
     public void setType(Class<?> type) {
         // see javadoc

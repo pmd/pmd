@@ -58,6 +58,8 @@ public class ASTEnumConstant extends AbstractJavaNode implements JavaQualifiable
     }
 
 
+    @InternalApi
+    @Deprecated
     public void setQualifiedName(JavaTypeQualifiedName qname) {
         this.qualifiedName = qname;
     }

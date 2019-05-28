@@ -62,6 +62,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return nameDeclaration;
     }
 
+    @InternalApi
+    @Deprecated
     public void setNameDeclaration(VariableNameDeclaration decl) {
         nameDeclaration = decl;
     }
@@ -195,6 +197,8 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     /**
      * @deprecated Will be made private with 7.0.0
      */
+    @InternalApi
+    @Deprecated
     @Deprecated
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;

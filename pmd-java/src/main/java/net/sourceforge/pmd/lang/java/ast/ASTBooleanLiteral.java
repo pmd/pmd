@@ -23,6 +23,8 @@ public class ASTBooleanLiteral extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    @InternalApi
+    @Deprecated
     public void setTrue() {
         isTrue = true;
     }

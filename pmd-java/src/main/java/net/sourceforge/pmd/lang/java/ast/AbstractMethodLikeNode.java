@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 @Deprecated
 @InternalApi
 public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode implements MethodLikeNode {
+
     private JavaOperationQualifiedName qualifiedName;
 
 
@@ -23,6 +24,8 @@ public abstract class AbstractMethodLikeNode extends AbstractJavaAccessNode impl
     }
 
 
+    @InternalApi
+    @Deprecated
     public void setQualifiedName(JavaOperationQualifiedName qualifiedName) {
         this.qualifiedName = qualifiedName;
     }

@@ -43,6 +43,8 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
         return typeDefinition;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;

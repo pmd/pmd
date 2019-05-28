@@ -40,6 +40,8 @@ public class ASTSwitchLabel extends AbstractJavaNode {
 
     @InternalApi
     @Deprecated
+    @InternalApi
+    @Deprecated
     public void setDefault() {
         isDefault = true;
     }

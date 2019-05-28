@@ -42,6 +42,8 @@ public class ASTConditionalExpression extends AbstractJavaTypeNode {
     /**
      * @deprecated To be removed in 7.0.0
      */
+    @InternalApi
+    @Deprecated
     @Deprecated
     public void setTernary() {
         // noop

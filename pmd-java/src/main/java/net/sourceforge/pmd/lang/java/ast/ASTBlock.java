@@ -35,6 +35,8 @@ public class ASTBlock extends AbstractJavaNode {
         return this.containsComment;
     }
 
+    @InternalApi
+    @Deprecated
     public void setContainsComment() {
         this.containsComment = true;
     }

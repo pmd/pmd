@@ -24,6 +24,8 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
         super(p, id);
     }
 
+    @InternalApi
+    @Deprecated
     public void setIsArrayDereference() {
         isArrayDereference = true;
     }
@@ -32,6 +34,8 @@ public class ASTPrimarySuffix extends AbstractJavaTypeNode {
         return isArrayDereference;
     }
 
+    @InternalApi
+    @Deprecated
     public void setIsArguments() {
         this.isArguments = true;
     }

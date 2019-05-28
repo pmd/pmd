@@ -35,6 +35,8 @@ public class ASTInitializer extends AbstractJavaNode {
         return isStatic;
     }
 
+    @InternalApi
+    @Deprecated
     public void setStatic() {
         isStatic = true;
     }

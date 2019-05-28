@@ -33,6 +33,8 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
     }
 
     // TODO this could be determined from the image of the operator, no need to set it in the parser...
+    @InternalApi
+    @Deprecated
     public void setCompound() {
         isCompound = true;
     }
