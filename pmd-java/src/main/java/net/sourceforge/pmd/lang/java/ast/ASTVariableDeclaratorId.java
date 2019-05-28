@@ -198,7 +198,6 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
      */
     @InternalApi
     @Deprecated
-    @Deprecated
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }

@@ -38,8 +38,6 @@ public class ASTIfStatement extends AbstractJavaNode {
 
     @InternalApi
     @Deprecated
-    @InternalApi
-    @Deprecated
     public void setHasElse() {
         this.hasElse = true;
     }
