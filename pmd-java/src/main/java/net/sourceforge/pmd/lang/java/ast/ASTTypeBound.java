@@ -16,10 +16,12 @@ package net.sourceforge.pmd.lang.java.ast;
  * TypeBound ::= "extends" {@linkplain ASTAnnotation Annotation}* {@linkplain ASTType Type}
  *
  * </pre>
+ *
+ * @deprecated Since the annotations now nest inside the type, this is just replaced by the type node alone.
  */
+@Deprecated
 public final class ASTTypeBound extends AbstractJavaTypeNode {
-
-    ASTTypeBound(int id) {
+    public ASTTypeBound(int id) {
         super(id);
     }
 

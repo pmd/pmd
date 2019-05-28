@@ -12,10 +12,10 @@ import java.util.Iterator;
 
 
 /**
- * A list of annotations. The individual annotations may
- * actually be separated by identifiers, e.g. in {@code @Foo java.util.@Bar List},
- * in which both annotations are in the same list. Other modifiers may
- * also separate the annotations, e.g. in {@code @Foo public @Bar class AClass {}}.
+ * A list of annotations. This can be found in {@link ASTType types},
+ * or declarations.
+ *
+ * <p>Other modifiers may separate the annotations, e.g. in {@code @Foo public @Bar class AClass {}}.
  * In both of these cases, there's no other node between the annotations anyway
  *
  * <pre class="grammar">

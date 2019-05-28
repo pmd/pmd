@@ -17,12 +17,23 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceDeclaration ::= ( "class" | "interface" )
+ * ClassOrInterfaceDeclaration ::= ClassModifier*
+ *                                 ( "class" | "interface" )
  *                                 &lt;IDENTIFIER&gt;
  *                                 {@linkplain ASTTypeParameters TypeParameters}?
  *                                 {@linkplain ASTExtendsList ExtendsList}?
  *                                 {@linkplain ASTImplementsList ImplementsList}?
  *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ *
+ *
+ * (:
+ *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
+ *    if there are any annotations, otherwise no node is pushed.
+ * :)
+ * ClassModifier ::=  "public" | "private"  | "protected"
+ *                  | "final"  | "abstract" | "static" | "strictfp"
+ *                  | {@linkplain ASTAnnotation Annotation}
+ *
  * </pre>
  */
 public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {

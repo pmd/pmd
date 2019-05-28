@@ -10,14 +10,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
  *
- * <p> Type bounds specify the type of the type variable to which they apply as
- * an <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.9">intersection type</a>.
- * The first bound type is a class or interface type, while the additional
- * bounds are necessarily interface types.
+ * <p>The bound of a type parameter may only be an upper bound ("extends").
+ * The bound is represented by the type node directly. The type node may
+ * be an {@link ASTIntersectionType intersection type}.
  *
  * <pre class="grammar">
  *
- * TypeParameter ::= {@linkplain ASTAnnotationList AnnotationList}? &lt;IDENTIFIER&gt; ( "extends" {@link ASTType TypeBound} )?
+ * TypeParameter ::= {@linkplain ASTAnnotationList AnnotationList}? &lt;IDENTIFIER&gt; ( "extends" {@link ASTReferenceType Type} )?
  *
  * </pre>
  *

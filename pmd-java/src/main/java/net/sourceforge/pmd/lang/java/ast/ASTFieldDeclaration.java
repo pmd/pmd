@@ -14,9 +14,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Represents a field declaration in the body of a type declaration.
  *
- * <p>This statement may define several variables, possibly of different types (see {@link
- * ASTVariableDeclaratorId#getType()}).
- * The nodes corresponding to the declared variables are accessible through {@link #iterator()}.
+ * <p>This declaration may define several variables, possibly of different
+ * types (see {@link ASTVariableDeclaratorId#getType()}). The nodes
+ * corresponding to the declared variables are accessible through {@link #iterator()}.
  *
  * <p>{@link AccessNode} methods take into account the syntactic context of the
  * declaration, e.g. {@link #isPublic()} will always return true if the field is
@@ -26,12 +26,15 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * <pre class="grammar">
  *
- * FieldDeclaration ::= Modifiers {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ * FieldDeclaration ::= FieldModifier* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )* ";"
  *
- * Modifiers        ::= "public" | "static" | "protected" | "private"
- *                    | "final"  | "abstract" | "synchronized"
- *                    | "native" | "transient" | "volatile" | "strictfp"
- *                    | "default"  | {@linkplain ASTAnnotation Annotation}
+ * (:
+ *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
+ *    if there are any annotations, otherwise no node is pushed.
+ * :)
+ * FieldModifier ::= "public" | "static"    | "protected" | "private"
+ *                 | "final"  | "transient" | "volatile"
+ *                 | {@linkplain ASTAnnotation Annotation}
  *
  * </pre>
  */

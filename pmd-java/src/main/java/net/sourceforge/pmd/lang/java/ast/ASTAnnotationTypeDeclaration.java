@@ -6,6 +6,32 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+/**
+ * The declaration of an annotation type.
+ *
+ * <p>Note that in constrast to interface types, no {@linkplain ASTExtendsList extends clause}
+ * is permitted, and an annotation type cannot be generic.
+ *
+ * <pre class="grammar">
+ *
+ * AnnotationTypeDeclaration ::= AnnotationTypeModifier*
+ *                               "@" "interface"
+ *                               &lt;IDENTIFIER&gt;
+ *                               {@link ASTAnnotationTypeBody AnnotationTypeBody}
+ *
+ *
+ *
+ * (:
+ *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
+ *    if there are any annotations, otherwise no node is pushed.
+ * :)
+ * AnnotationTypeModifier ::= "public" | "private"  | "protected"
+ *                          | "abstract" | "static"
+ *                          | {@linkplain ASTAnnotation Annotation}
+ *
+ * </pre>
+ *
+ */
 public final class ASTAnnotationTypeDeclaration extends AbstractAnyTypeDeclaration {
 
 

@@ -23,7 +23,8 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
  *
  * <pre class="grammar">
  *
- * PrimitiveType ::= "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
+ * PrimitiveType ::= {@link ASTAnnotationList AnnotationList}?
+ *                   "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
  *
  * </pre>
  */

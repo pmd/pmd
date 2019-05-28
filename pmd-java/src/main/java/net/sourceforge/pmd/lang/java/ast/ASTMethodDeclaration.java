@@ -10,11 +10,27 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 
 /**
- * Method declaration node.
+ * A method declaration, in a class or interface declaration. This cannot
+ * be found in {@linkplain ASTAnnotationTypeDeclaration annotation types},
+ * which instead have {@linkplain ASTAnnotationMethodDeclaration annotation methods}.
  *
  * <pre class="grammar">
  *
- * MethodDeclaration := [ TypeParameters() ] (TypeAnnotation())* ResultType() MethodDeclarator() [ "throws" NameList() ] ( Block() | ";" )
+ * MethodDeclaration ::= MethodModifier*
+ *                       {@link ASTTypeParameters TypeParameters}?
+ *                       {@link ASTResultType ResultType}
+ *                       {@link ASTMethodDeclarator MethodDeclarator}
+ *                       ("throws" {@link ASTNameList NameList})?
+ *                       ({@link ASTBlock Block} | ";" )
+ *
+ *
+ * (:
+ *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
+ *    if there are any annotations, otherwise no node is pushed.
+ * :)
+ * MethodModifier ::= "public" | "private"  | "protected" | "static"
+ *                  | "final"  | "abstract" | "native"
+ *                  | {@linkplain ASTAnnotation Annotation}
  *
  * </pre>
  */
