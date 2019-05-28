@@ -45,17 +45,11 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         endColumn = parser.token.endColumn;
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
         if (children != null) {
