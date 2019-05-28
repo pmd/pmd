@@ -31,14 +31,15 @@ class ASTArrayAllocationTest : ParserTestSpec({
 
         "new @Foo int[3][2]" should matchExpr<ASTArrayAllocation> {
 
-            child<ASTMarkerAnnotation> {
-                it::getAnnotationName shouldBe "Foo"
-            }
+
 
             it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::isBoolean shouldBe false
                 it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
                 it::getTypeImage shouldBe "int"
+
+                annotationList {
+                    annotation("Foo")
+                }
             }
 
             it::getArrayDims shouldBe child {
@@ -118,7 +119,6 @@ class ASTArrayAllocationTest : ParserTestSpec({
         "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayAllocation> {
 
             it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::isBoolean shouldBe false
                 it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
                 it::getTypeImage shouldBe "int"
             }

@@ -47,7 +47,9 @@ class Java11Test : ParserTestSpec({
             "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
                 child<ASTLambdaParameterList> {
                     child<ASTLambdaParameter> {
-                        annotation()
+                        annotationList {
+                            annotation()
+                        }
                         child<ASTType>(ignoreChildren = true) {}
                         variableId("x")
                     }

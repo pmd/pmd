@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
+import java.util.Collections;
+import java.util.List;
 
-    ASTPackageDeclaration(int id) {
+public class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable {
+    public ASTPackageDeclaration(int id) {
         super(id);
     }
 
@@ -14,6 +16,16 @@ public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
         super(p, id);
     }
 
+
+    @Override
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        ASTAnnotationList lst = getFirstChildOfType(ASTAnnotationList.class);
+        return lst == null ? Collections.emptyList() : lst.findChildrenOfType(ASTAnnotation.class);
+    }
+
+    /**
+     * Accept the visitor. *
+     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

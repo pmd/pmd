@@ -38,6 +38,10 @@ fun TreeNodeWrapper<Node, *>.annotation(spec: ValuedNodeSpec<ASTAnnotation, Unit
         child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
 
 
+fun TreeNodeWrapper<Node, *>.annotationList(spec: NodeSpec<ASTAnnotationList> = EmptyAssertions) =
+        child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
+
+
 fun TreeNodeWrapper<Node, *>.annotation(name: String, spec: NodeSpec<ASTAnnotation> = EmptyAssertions) =
         child<ASTAnnotation>(ignoreChildren = spec == EmptyAssertions) {
             it::getAnnotationName shouldBe name

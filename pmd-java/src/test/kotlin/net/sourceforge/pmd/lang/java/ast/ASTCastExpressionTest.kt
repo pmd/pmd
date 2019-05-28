@@ -14,26 +14,28 @@ class ASTCastExpressionTest : ParserTestSpec({
 
     parserTest("Simple cast") {
 
-        "(Foo) obj" should matchExpr<ASTCastExpression> {
+        inContext(ExpressionParsingCtx) {
 
-            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
-
+            "(Foo) obj" should parseAs {
+                castExpr {
+                    it::getCastType shouldBe classType("Foo")
+                    unspecifiedChild()
+                }
             }
 
-            unspecifiedChild()
-        }
-
-        "(@F Foo) obj" should matchExpr<ASTCastExpression> {
-
-            annotation("F")
-
-            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
-
+            "(@F Foo) obj" should parseAs {
+                castExpr {
+                    it::getCastType shouldBe classType("Foo") {
+                        annotationList {
+                            annotation("F")
+                        }
+                    }
+                    unspecifiedChild()
+                }
             }
-
-            unspecifiedChild()
         }
     }
+
     parserTest("Nested casts") {
 
         inContext(ExpressionParsingCtx) {
@@ -51,26 +53,29 @@ class ASTCastExpressionTest : ParserTestSpec({
 
     parserTest("Test intersection in cast", javaVersions = JavaVersion.J1_8..Latest) {
 
-        "(@F Foo & Bar) obj" should matchExpr<ASTCastExpression> {
+        inContext(ExpressionParsingCtx) {
+            "(@F Foo & Bar) obj" should parseAs {
 
-            annotation("F")
+                castExpr {
+                    it::getCastType shouldBe child<ASTIntersectionType> {
 
-            it::getCastType shouldBe child<ASTIntersectionType> {
+                        classType("Foo") {
+                            // annotations nest on the inner node
+                            annotationList {
+                                annotation("F")
+                            }
+                        }
 
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "Foo"
-                }
+                        classType("Bar")
+                    }
 
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "Bar"
+                    unspecifiedChild()
                 }
 
             }
 
-            unspecifiedChild()
+            "(@F Foo & @B Bar) obj" shouldNot parse()
         }
-
-        "(@F Foo & @B Bar) obj" should notParseIn(ExpressionParsingCtx)
     }
 
     parserTest("Test intersection ambiguity", javaVersions = Earliest..Latest) {

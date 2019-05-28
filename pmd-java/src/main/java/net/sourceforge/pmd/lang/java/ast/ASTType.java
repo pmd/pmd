@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -23,10 +26,19 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * Note: it is not exactly the same the "UnannType" defined in JLS.
  *
- * TODO implement {@link Annotatable}. Ideally, any type annotations
- * would be children of this node, not of the parent node.
  */
-public interface ASTType extends TypeNode {
+public interface ASTType extends TypeNode, Annotatable {
+
+    /**
+     * Returns all annotations present on this node.
+     */
+    @Override
+    default List<ASTAnnotation> getDeclaredAnnotations() {
+        // TODO use node streams
+        ASTAnnotationList lst = getFirstChildOfType(ASTAnnotationList.class);
+        return lst == null ? Collections.emptyList() : lst.findChildrenOfType(ASTAnnotation.class);
+    }
+
 
     /**
      * For now this returns the name of the type with all the segments,

@@ -15,6 +15,7 @@ package net.sourceforge.pmd.lang.java.ast
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.TypeParametersParsingCtx
 
 /**
  * @author Clément Fournier
@@ -24,66 +25,50 @@ class ASTTypeParametersTest : ParserTestSpec({
 
     parserTest("Test simple parameters", javaVersions = J1_8..Latest) {
 
-        "<T>" should matchTypeParameters {
+        inContext(TypeParametersParsingCtx) {
 
-            child<ASTTypeParameter> {
-                it::getParameterName shouldBe "T"
-                it::getTypeBoundNode shouldBe null
-            }
-
-        }
-
-        "<T, S>" should matchTypeParameters {
-
-            child<ASTTypeParameter> {
-                it::getParameterName shouldBe "T"
-                it::getTypeBoundNode shouldBe null
-            }
-
-            child<ASTTypeParameter> {
-                it::getParameterName shouldBe "S"
-                it::getTypeBoundNode shouldBe null
-            }
-
-        }
-
-        "<@F T, S>" should matchTypeParameters {
-
-            child<ASTTypeParameter> {
-                it::getParameterName shouldBe "T"
-                it::getTypeBoundNode shouldBe null
-
-                child<ASTMarkerAnnotation> {}
-
-            }
-
-            child<ASTTypeParameter> {
-                it::getParameterName shouldBe "S"
-                it::getTypeBoundNode shouldBe null
-            }
-        }
-
-        "<@F T extends @N Runnable>" should matchTypeParameters {
-
-            child<ASTTypeParameter> {
-                it::getParameterName shouldBe "T"
-
-                child<ASTMarkerAnnotation> {
-                    it::getAnnotationName shouldBe "F"
+            "<T>" should parseAs {
+                typeParamList {
+                    typeParam("T")
                 }
+            }
 
-                val bound = child<ASTTypeBound> {
 
-                    child<ASTMarkerAnnotation> {
-                        it::getAnnotationName shouldBe "N"
+            "<T, S>" should parseAs {
+                typeParamList {
+                    typeParam("T")
+                    typeParam("S")
+                }
+            }
+
+            "<@F T, S>" should parseAs {
+                typeParamList {
+                    typeParam("T") {
+                        annotationList {
+                            annotation("F")
+                        }
+
+                        null
                     }
+                    typeParam("S")
+                }
+            }
 
-                    it::getTypeNode shouldBe child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "Runnable"
+
+            "<@F T extends @N Runnable>" should parseAs {
+                typeParamList {
+                    typeParam("T") {
+                        annotationList {
+                            annotation("F")
+                        }
+
+                        classType("Runnable") {
+                            annotationList {
+                                annotation("N")
+                            }
+                        }
                     }
                 }
-
-                it::getTypeBoundNode shouldBe bound.typeNode
             }
         }
     }
