@@ -101,40 +101,6 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::getBlock shouldBe child {}
 
         }
-// TODO
-//        "void bar() throws SomeGenericException<?> { }" should matchDeclaration<ASTMethodDeclaration> {
-//            it::getResultType shouldBe child {
-//                it::getTypeNode shouldBe null
-//                it::isVoid shouldBe true
-//            }
-//
-//            it::getMethodDeclarator shouldBe child {
-//                it::getParameterCount shouldBe 0
-//
-//                it::getFormalParameters shouldBe child {
-//                    it::getParameterCount shouldBe 0
-//                }
-//            }
-//
-//            it::getThrows shouldBe child {
-//                child<ASTClassOrInterfaceType> {
-//                    it::getTypeImage shouldBe "SomeGenericException"
-//
-//                    it::getTypeArguments shouldBe child {
-//                        it::isDiamond shouldBe false
-//
-//                        child<ASTWildcardType> {
-//                            it::hasLowerBound shouldBe false
-//                            it::hasUpperBound shouldBe false
-//                            it::getTypeBoundNode shouldBe null
-//                            it::getTypeImage shouldBe "?"
-//                        }
-//                    }
-//                }
-//            }
-//
-//            it::getBlock shouldBe child {}
-//        }
     }
 
     parserTest("Annotation placement") {
