@@ -60,6 +60,7 @@
 
 
         <replace file="${target-package-dir}/JJTJavaParserState.java">
+            <replacefilter token="/*" value="/**"/>
             <replacetoken><![CDATA[  /* Pushes a node on to the stack. */]]></replacetoken>
             <replacevalue>
                 <![CDATA[
@@ -73,9 +74,44 @@
     mk--;
   }
 
+  /**
+   * Peek the nth node from the top of the stack.
+   * peekNode(0) == peekNode()
+   */
+  public Node peekNode(int n) {
+    return nodes.get(nodes.size() - n - 1);
+  }
+
+  public boolean isInjectionPending() {
+    return isInjectionPending;
+  }
+
+  /** If true, then the top of the stack will be injected in the next node to be opened.
+    * This is not very flexible, but it's enough. The grammar needs to take care of the order
+    * in which nodes are opened in a few places... When the nodes are conditional, it may
+    * get more complicated.
+    */
+  private boolean isInjectionPending;
+
+  public void injectRight() {
+       if (nodeCreated()) {
+            isInjectionPending = true;
+       }
+  }
+
   /* Pushes a node on to the stack. */]]>
             </replacevalue>
-            <replacefilter token="/*" value="/**" />
+        </replace>
+
+        <replace file="${target-package-dir}/JJTJavaParserState.java">
+            <replacetoken><![CDATA[mk = sp;]]></replacetoken>
+            <replacevalue><![CDATA[
+    mk = sp;
+    if (isInjectionPending) {
+        mk--;
+        isInjectionPending = false;
+    }]]>
+            </replacevalue>
         </replace>
 
 
