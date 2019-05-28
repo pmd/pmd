@@ -5,6 +5,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+@Deprecated
 public class ASTMemberSelector extends AbstractJavaNode {
     public ASTMemberSelector(int id) {
         super(id);

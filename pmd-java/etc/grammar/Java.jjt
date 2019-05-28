@@ -2393,10 +2393,10 @@ void MultiplicativeExprTail() #MultiplicativeExpression:
   }
   UnaryExpression()
 }
-void UnaryExpression() #UnaryExpression((jjtn000.getImage() != null)):
+void UnaryExpression() #void:
 {}
 {
-  ("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()
+    (("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()) #UnaryExpression
   | PreIncrementExpression()
   | PreDecrementExpression()
   | UnaryExpressionNotPlusMinus()
@@ -2414,10 +2414,10 @@ void PreDecrementExpression() :
   "--" PrimaryExpression()
 }
 
-void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)):
+void UnaryExpressionNotPlusMinus() #void:
 {}
 {
- ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
+ (( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");}) UnaryExpression()) #UnaryExpression
  // There's no separate production for CastExpression, because that would force
  // us to repeat the lookahead
  // Those lookaheads are quite expensive, they're run to disambiguate between
@@ -2502,9 +2502,9 @@ void PrimaryPrefix() #void :
 }
 
 // This describes the cases where the PrimaryPrefix may fall
-// into PrimaryStep2. Notice that type arguments is still possible,
-// as well as annotations ("@") before an annotated array type,
-// or qualified "this".
+// into PrimaryStep2, after seeing an AmbiguousName. Notice
+// that type arguments is still possible, as well as annotations
+// ("@") before an annotated array type, or qualified "this".
 // If we are in an explicit constructor invocation, then super is disallowed.
 private void Step2Lahead() #void:
 {}
@@ -2549,14 +2549,15 @@ void PrimaryStep2() #void:
             ("." MemberSelector() | MethodReference())
         | MemberSelector()
     )
+    // catches the case where the ambig name is the start of an array type
     | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
+    // and here, the array expr in an array access
     | {forceExprContext();} "[" Expression() "]"            #ArrayAccess(2)
 }
 
 /**
- * Productions that may be present after a PrimaryPrefix. The way this is written makes for a nice tree,
- * but would method references to be stacked (like `foo.foo()::bar.foo()::foo`) if we weren't
- * checking for that in the semantic lookahead in PrimaryExpression.
+ * Productions that may be present after a PrimaryPrefix. Basically
+ * allows for call chains. We loop on this production in PrimaryExpression.
  */
 void PrimarySuffix() #void :
 {}
