@@ -517,22 +517,9 @@ public class JavaParser {
       }
   }
 
-   /**
-     * Takes the two nodes at the top of the stack and inject the next-to-last as the first
-     * child of the last. Basically it transforms eg [A][B] into [[A]B].
-     *
-     * jjtree.extendLeft can only be used while the node is open, this one allows
-     * doing it after the fact.
-     */
-    private void wrapLeft() {
-      AbstractJavaNode lastSegment = (AbstractJavaNode) jjtree.popNode();
-      Node previousSegment = jjtree.popNode();
 
-      lastSegment.insertChild((AbstractJavaNode) previousSegment, 0, false);
-      jjtree.pushNode(lastSegment);
-    }
-
-  // make the top node a child of the second node on the stack
+  // make the top node the last child of the second node on the stack
+  // If the stack ends with ..[A][B], then it becomes ..[A[B]]
   private void injectTop() {
        AbstractJavaNode top = (AbstractJavaNode) jjtree.popNode();
        AbstractJavaNode prev = (AbstractJavaNode) jjtree.peekNode();
