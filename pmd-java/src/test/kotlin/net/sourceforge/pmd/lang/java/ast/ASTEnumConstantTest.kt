@@ -65,18 +65,14 @@ class ASTEnumConstantTest : ParserTestSpec({
             child<ASTEnumBody> {
 
                 child<ASTEnumConstant> {
-                    annotationList {
-                        annotation("C")
-                    }
+                    annotation("C")
 
                     variableId("B")
                 }
 
                 child<ASTEnumConstant> {
-                    annotationList {
-                        annotation("A")
-                        annotation("a")
-                    }
+                    annotation("A")
+                    annotation("a")
 
                     variableId("C")
                 }

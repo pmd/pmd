@@ -18,10 +18,6 @@ package net.sourceforge.pmd.lang.java.ast;
  *                            {@link ASTBlock Block} TODO there's no Block here for now, just a list of statements
  *
  *
- * (:
- *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
- *    if there are any annotations, otherwise no node is pushed.
- * :)
  * ConstructorModifier ::= "public" | "private"  | "protected"
  *                       | {@linkplain ASTAnnotation Annotation}
  *

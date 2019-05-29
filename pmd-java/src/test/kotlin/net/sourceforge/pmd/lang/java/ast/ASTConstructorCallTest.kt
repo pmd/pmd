@@ -42,11 +42,7 @@ class ASTConstructorCallTest : ParserTestSpec({
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
 
-                annotationList {
-                    annotation {
-                        it::getAnnotationName shouldBe "Lol"
-                    }
-                }
+                annotation("Lol")
 
                 it::getTypeArguments shouldBe child {
                     unspecifiedChild()
@@ -144,12 +140,7 @@ class ASTConstructorCallTest : ParserTestSpec({
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
 
-
-                annotationList {
-                    annotation {
-                        it::getAnnotationName shouldBe "Lol"
-                    }
-                }
+                annotation("Lol")
 
                 it::getTypeArguments shouldBe child {
                     unspecifiedChild()

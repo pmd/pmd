@@ -96,7 +96,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 }
             }
 
-            it::getThrows shouldBe child(ignoreChildren = true){} //TODO
+            it::getThrows shouldBe child(ignoreChildren = true) {} //TODO
 
             it::getBlock shouldBe child {}
 
@@ -107,9 +107,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "@OnDecl <T extends K> @OnType Ret bar() { return; }" should matchDeclaration<ASTMethodDeclaration> {
 
-            annotationList {
-                annotation("OnDecl")
-            }
+            annotation("OnDecl")
 
             typeParamList {
                 typeParam("T") {
@@ -121,9 +119,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 it::isVoid shouldBe false
 
                 classType("Ret") {
-                    annotationList {
-                        annotation("OnType")
-                    }
+                    annotation("OnType")
                 }
             }
 

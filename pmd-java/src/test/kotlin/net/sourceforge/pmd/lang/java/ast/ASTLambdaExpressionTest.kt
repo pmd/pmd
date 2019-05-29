@@ -94,9 +94,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                     }
                 }
                 child<ASTLambdaParameter> {
-                    annotationList {
-                        annotation()
-                    }
+                    annotation()
                     it::getTypeNode shouldBe classType("List")
                     variableId("b") {
                         it::isFinal shouldBe false

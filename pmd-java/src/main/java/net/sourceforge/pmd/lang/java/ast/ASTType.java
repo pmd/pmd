@@ -35,9 +35,7 @@ public interface ASTType extends TypeNode, Annotatable {
      */
     @Override
     default List<ASTAnnotation> getDeclaredAnnotations() {
-        // TODO use node streams
-        ASTAnnotationList lst = getFirstChildOfType(ASTAnnotationList.class);
-        return lst == null ? Collections.emptyList() : lst.findChildrenOfType(ASTAnnotation.class);
+        return findChildrenOfType(ASTAnnotation.class);
     }
 
 

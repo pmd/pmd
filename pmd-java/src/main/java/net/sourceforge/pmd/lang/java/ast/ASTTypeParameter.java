@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * TypeParameter ::= {@linkplain ASTAnnotationList AnnotationList}? &lt;IDENTIFIER&gt; ( "extends" {@link ASTReferenceType Type} )?
+ * TypeParameter ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; ( "extends" {@link ASTReferenceType Type} )?
  *
  * </pre>
  *

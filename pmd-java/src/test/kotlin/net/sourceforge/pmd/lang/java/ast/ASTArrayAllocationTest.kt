@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.properties.Gen.Companion.int
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
 /**
@@ -37,9 +38,7 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
                 it::getTypeImage shouldBe "int"
 
-                annotationList {
-                    annotation("Foo")
-                }
+                annotation("Foo")
             }
 
             it::getArrayDims shouldBe child {
@@ -61,18 +60,14 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
                 it::getTypeImage shouldBe "int"
 
-                annotationList {
-                    annotation("Foo")
-                }
+                annotation("Foo")
             }
 
             it::getArrayDims shouldBe child {
                 it::getArrayDepth shouldBe 2
 
                 dimExpr {
-                    annotationList {
-                        annotation("Bar")
-                    }
+                    annotation("Bar")
                     int(3)
                 }
                 dimExpr {

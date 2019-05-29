@@ -24,10 +24,6 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  *                       ({@link ASTBlock Block} | ";" )
  *
  *
- * (:
- *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
- *    if there are any annotations, otherwise no node is pushed.
- * :)
  * MethodModifier ::= "public" | "private"  | "protected" | "static"
  *                  | "final"  | "abstract" | "native"
  *                  | {@linkplain ASTAnnotation Annotation}

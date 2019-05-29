@@ -64,20 +64,18 @@ class ASTTypeTest : ParserTestSpec({
         inContext(TypeParsingCtx) {
 
 
-            "@B java.util.@C Map" should parseAs {
+            "@B @H java.util.@C @K Map" should parseAs {
 
                 classType("Map") {
                     it::getLhsType shouldBe classType("util") {
                         it::getLhsType shouldBe classType("java") {
-                            annotationList {
-                                annotation("B")
-                            }
+                            annotation("B")
+                            annotation("H")
                         }
                     }
 
-                    annotationList {
-                        annotation("C")
-                    }
+                    annotation("C")
+                    annotation("K")
 
                     it::getTypeImage shouldBe "java.util.Map"
                 }
@@ -96,9 +94,7 @@ class ASTTypeTest : ParserTestSpec({
                     it::getName shouldBe "java.util.Map"
                 }
 
-                annotationList {
-                    annotation("Foo")
-                }
+                annotation("Foo")
 
                 it::getTypeArguments shouldBe child {
 
@@ -133,9 +129,7 @@ class ASTTypeTest : ParserTestSpec({
                     }
 
 
-                    annotationList {
-                        annotation("A")
-                    }
+                    annotation("A")
                 }
 
                 it::getTypeArguments shouldBe child {

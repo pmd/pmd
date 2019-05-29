@@ -1727,9 +1727,10 @@ void ImportDeclaration() :
  * syntax errors for simple modifier mistakes. It will also enable us to give
  * better error messages.
  */
-int Modifiers() #AnnotationList(>0):
+int Modifiers() #void:
 {
    int modifiers = 0;
+   int numAnnots = 0;
 }
 {
  (
@@ -1747,11 +1748,11 @@ int Modifiers() #AnnotationList(>0):
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
-  | Annotation()
+  | Annotation() {numAnnots++;}
   )
  )*
  {
-    jjtree.injectRight();
+    jjtree.injectRight(numAnnots);
     return modifiers;
  }
 }
@@ -2047,25 +2048,33 @@ Dims:
 void IntersectionType(boolean inCast) #IntersectionType(isIntersection):
 {boolean isIntersection=false;}
 {
-  // The first type may be annotated, but the annotations are handled outside
+  // Only the first type may be annotated
   AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} ClassOrInterfaceType() )*
 }
 
-void AnnotationList() #AnnotationList(>0):
+void AnnotationList() #void:
 {}
 {
   (Annotation())*
 }
 
-void TypeAnnotListNoInject() #AnnotationList(>0):
-{}
+int TypeAnnotListNoInject() #void:
+{int num = 0;}
 {
-   (TypeAnnotation())*
+   ( TypeAnnotation() {num++;} )*
+   {
+     return num;
+   }
 }
+
+// Type annotation lists are by default injected in the
+// next node to be opened (most likely a type).
+// Sometimes (array dims), this need not be and TypeAnnotListNoInject
+// should be used.
 void TypeAnnotationList() #void:
-{}
+{int size=0;}
 {
-   TypeAnnotListNoInject() { jjtree.injectRight(); }
+   size=TypeAnnotListNoInject() { jjtree.injectRight(size); }
 }
 
 void AnnotatedType() #void:
@@ -2139,19 +2148,30 @@ void ClassOrInterfaceType() #void:
 {
 
   (LOOKAHEAD({jjtree.isInjectionPending()})
-        // If there are annotations pending injection, then they're necessarily type annotations
-        // Since they wouldn't compile if the first segment wasn't a type name,
-        // we know that the whole type is unambiguous so we avoid gobbling a full ambiguous name
+        // Perhaps surprisingly a type annotation binds to the closest segment
+        // So in "@B Map.Entry", "@B" binds to "Map", and Map is required to be a type name.
+        // If the annotation is not applicable to TYPE_USE then it doesn't compile
+
+        // So if there are annotations pending injection here, then they're necessarily
+        // type annotations, since otherwise they would have been consumed in the
+        // annotation list of a declaration.
+
+        // Eg in "public abstract @F int foo();", "@F" is part of the modifier list of the method.
+        // but in "public abstract <T> @F T foo();", "@F" is necessarily a type annotation, and indeed
+        // is in a separate AnnotationList (it follows the type parameters so is not a modifier).
+
+        // To sum it up, if we have annotations pending, then the first segment is necessarily
+        // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
+        // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
 
         (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassOrInterfaceType
   |
 
-      /*
-       First, gobble up all identifiers until the first type arguments
-       or annotation is found. The name is ambiguous between package or
-       type name unless type arguments are present, in which case we can
-       be sure that the last segment is a type name.
-      */
+
+       // Otherwise, for now we have no clue until the first type arguments
+       // or annotation is found. The name is ambiguous between package or
+       // type name unless type arguments are present, in which case we can
+       // be sure that the last segment is a type name.
 
       AmbiguousName()
       [ TypeArguments() #ClassOrInterfaceType(2) ]
@@ -2167,16 +2187,17 @@ void ClassOrInterfaceType() #void:
         }
       }
    )
-      /*
-        Now if there are other segments, either the previous segment specified type
-        arguments, or the next has an annotation. Either way we know that all the
-        following segments is a type name. Each segment is parsed as its own ClassOrInterfaceType
-        which encloses the previous one. The resulting structure appears left-recursive, but the parser just
-        executes a loop. That scheme preserves the position of type arguments and annotations.
-        See #1150.
-      */
-      ( LOOKAHEAD(2) "." ClassTypeSegment() )*
-      { forceTypeContext(); }
+
+  /*
+    Now if there are other segments, either the previous segment specified type
+    arguments, or the next has an annotation. Either way we know that all the
+    following segments is a type name. Each segment is parsed as its own ClassOrInterfaceType
+    which encloses the previous one. The resulting structure appears left-recursive, but the parser just
+    executes a loop. That scheme preserves the position of type arguments and annotations.
+    See #1150.
+  */
+  ( LOOKAHEAD(2) "." ClassTypeSegment() )*
+  { forceTypeContext(); }
 }
 
 private void ClassTypeSegment() #ClassOrInterfaceType:
@@ -2903,14 +2924,14 @@ void LocalVariableDeclaration() :
   ( "," VariableDeclarator() )*
 }
 
-private boolean LocalVarModifierList() #AnnotationList(>0):
+private boolean LocalVarModifierList() #void:
 {boolean isFinal = false;}
 {
     ( "final" {isFinal = true;} | Annotation() )*
     {return isFinal;}
 }
 
-void LocalVariableType() #void :
+void LocalVariableType() #void:
 {}
 {
   LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) <IDENTIFIER>

@@ -69,6 +69,9 @@
   * If the node is closed, one additional node from the stack will be popped
   * and added to its children. This allows mimicking "left-recursive" nodes,
   * while keeping the parsing iterative.
+  *
+  * This does not affect the stack unless the current jjtThis is closed in
+  * the future.
   */
   public void extendLeft() {
     mk--;
@@ -83,20 +86,18 @@
   }
 
   public boolean isInjectionPending() {
-    return isInjectionPending;
+    return numPendingInjection > 0;
   }
 
-  /** If true, then the top of the stack will be injected in the next node to be opened.
-    * This is not very flexible, but it's enough. The grammar needs to take care of the order
-    * in which nodes are opened in a few places... When the nodes are conditional, it may
-    * get more complicated.
+  /** If non-zero, then the top "n" nodes of the stack will be injected as the first children of the next
+    * node to be opened. This is not very flexible, but it's enough. The grammar needs to take
+    * care of the order in which nodes are opened in a few places, in most cases this just means using
+    * eg A() B() #N(2) instead of (A() B()) #N, so as not to open N before A.
     */
-  private boolean isInjectionPending;
+  private int numPendingInjection;
 
-  public void injectRight() {
-       if (nodeCreated()) {
-            isInjectionPending = true;
-       }
+  public void injectRight(int n) {
+       numPendingInjection = n;
   }
 
   /* Pushes a node on to the stack. */]]>
@@ -110,9 +111,9 @@
             <replacetoken><![CDATA[mk = sp;]]></replacetoken>
             <replacevalue><![CDATA[
     mk = sp;
-    if (isInjectionPending) {
-        mk--;
-        isInjectionPending = false;
+    if (isInjectionPending()) {
+        mk -= numPendingInjection;
+        numPendingInjection = 0;
     }]]>
             </replacevalue>
         </replace>

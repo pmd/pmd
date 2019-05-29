@@ -21,8 +21,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceType ::= {@link ASTAnnotationList AnnotationList}? &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
- *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName}) "." {@link ASTAnnotationList AnnotationList}? &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ * ClassOrInterfaceType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName}) "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
  */

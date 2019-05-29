@@ -1,4 +1,3 @@
-
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
@@ -47,9 +46,7 @@ class Java11Test : ParserTestSpec({
             "(@Nonnull var x) -> String.valueOf(x)" should matchExpr<ASTLambdaExpression> {
                 child<ASTLambdaParameterList> {
                     child<ASTLambdaParameter> {
-                        annotationList {
-                            annotation()
-                        }
+                        annotation("Nonnull")
                         child<ASTType>(ignoreChildren = true) {}
                         variableId("x")
                     }

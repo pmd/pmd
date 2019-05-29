@@ -26,9 +26,7 @@ class ASTCastExpressionTest : ParserTestSpec({
             "(@F Foo) obj" should parseAs {
                 castExpr {
                     it::getCastType shouldBe classType("Foo") {
-                        annotationList {
-                            annotation("F")
-                        }
+                        annotation("F")
                     }
                     unspecifiedChild()
                 }
@@ -61,9 +59,7 @@ class ASTCastExpressionTest : ParserTestSpec({
 
                         classType("Foo") {
                             // annotations nest on the inner node
-                            annotationList {
-                                annotation("F")
-                            }
+                            annotation("F")
                         }
 
                         classType("Bar")

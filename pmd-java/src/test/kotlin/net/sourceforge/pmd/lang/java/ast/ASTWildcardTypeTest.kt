@@ -9,8 +9,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.TypeParsingCtx
 
 /**
@@ -71,21 +72,21 @@ class ASTWildcardTypeTest : ParserTestSpec({
     parserTest("Annotation placement", javaVersions = J1_8..Latest) {
 
         inContext(TypeParsingCtx) {
-            "List<@A @B ? extends B>" should parseAs {
+            "List<@A @B ? extends @C B>" should parseAs {
 
                 classType("List") {
                     typeArgList {
                         child<ASTWildcardType> {
 
-                            annotationList {
-                                annotation { }
-                                annotation { }
-                            }
+                            annotation("A")
+                            annotation("B")
 
                             it::hasUpperBound shouldBe true
                             it::hasLowerBound shouldBe false
 
-                            it::getTypeBoundNode shouldBe classType("B")
+                            it::getTypeBoundNode shouldBe classType("B") {
+                                annotation("C")
+                            }
                         }
                     }
                 }

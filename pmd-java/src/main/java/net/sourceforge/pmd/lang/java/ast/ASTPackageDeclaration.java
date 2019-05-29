@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable {
@@ -19,8 +18,7 @@ public class ASTPackageDeclaration extends AbstractJavaNode implements Annotatab
 
     @Override
     public List<ASTAnnotation> getDeclaredAnnotations() {
-        ASTAnnotationList lst = getFirstChildOfType(ASTAnnotationList.class);
-        return lst == null ? Collections.emptyList() : lst.findChildrenOfType(ASTAnnotation.class);
+        return findChildrenOfType(ASTAnnotation.class);
     }
 
     /**

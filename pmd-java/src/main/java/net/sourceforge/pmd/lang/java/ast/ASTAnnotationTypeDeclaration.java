@@ -21,10 +21,6 @@ import java.util.List;
  *
  *
  *
- * (:
- *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
- *    if there are any annotations, otherwise no node is pushed.
- * :)
  * AnnotationTypeModifier ::= "public" | "private"  | "protected"
  *                          | "abstract" | "static"
  *                          | {@linkplain ASTAnnotation Annotation}

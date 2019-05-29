@@ -28,10 +28,6 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * FieldDeclaration ::= FieldModifier* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )* ";"
  *
- * (:
- *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
- *    if there are any annotations, otherwise no node is pushed.
- * :)
  * FieldModifier ::= "public" | "static"    | "protected" | "private"
  *                 | "final"  | "transient" | "volatile"
  *                 | {@linkplain ASTAnnotation Annotation}

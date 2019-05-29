@@ -26,10 +26,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  *
  *
- * (:
- *    The modifier list is represented by an {@link ASTAnnotationList AnnotationList}
- *    if there are any annotations, otherwise no node is pushed.
- * :)
  * EnumModifier ::= "public" | "private"  | "protected"
  *                | "strictfp" | "static"
  *                | {@linkplain ASTAnnotation Annotation}

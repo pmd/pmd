@@ -12,7 +12,6 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.TypeParametersParsingCtx
@@ -44,9 +43,7 @@ class ASTTypeParametersTest : ParserTestSpec({
             "<@F T, S>" should parseAs {
                 typeParamList {
                     typeParam("T") {
-                        annotationList {
-                            annotation("F")
-                        }
+                        annotation("F")
 
                         null
                     }
@@ -58,14 +55,10 @@ class ASTTypeParametersTest : ParserTestSpec({
             "<@F T extends @N Runnable>" should parseAs {
                 typeParamList {
                     typeParam("T") {
-                        annotationList {
-                            annotation("F")
-                        }
+                        annotation("F")
 
                         classType("Runnable") {
-                            annotationList {
-                                annotation("N")
-                            }
+                            annotation("N")
                         }
                     }
                 }
