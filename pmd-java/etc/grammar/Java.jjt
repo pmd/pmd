@@ -2071,29 +2071,39 @@ void AnnotationList() #AnnotationList(>0):
 {
   (Annotation())*
 }
-void TypeAnnotationList() #AnnotationList(>0):
+
+void TypeAnnotListNoInject() #AnnotationList(>0):
 {}
 {
-  (TypeAnnotation())*
+   (TypeAnnotation())*
+}
+void TypeAnnotationList() #void:
+{}
+{
+   TypeAnnotListNoInject() {
+    if (jjtree.nodeCreated()) {
+      jjtree.injectRight();
+    }
+  }
 }
 
 void AnnotatedType() #void:
 {}
 {
-  TypeAnnotationList() {jjtree.injectRight();} Type()
+  TypeAnnotationList() Type()
 }
 
 
 void AnnotatedRefType() #void:
 {}
 {
-  TypeAnnotationList() {jjtree.injectRight();} ReferenceType()
+  TypeAnnotationList() ReferenceType()
 }
 
 void AnnotatedClassOrInterfaceType() #void:
 {}
 {
-  TypeAnnotationList() {jjtree.injectRight();} ClassOrInterfaceType()
+  TypeAnnotationList() ClassOrInterfaceType()
 }
 
 /*
@@ -2125,7 +2135,7 @@ void Dims() #ArrayTypeDims:
 void ArrayTypeDim():
 {}
 {
-   TypeAnnotationList() "[" "]"
+   TypeAnnotListNoInject() "[" "]"
 }
 
 void ReferenceType() #void:
@@ -2191,7 +2201,7 @@ void ClassOrInterfaceType() #void:
 private void ClassTypeSegment() #ClassOrInterfaceType:
 {}
 {
-     TypeAnnotationList()
+     TypeAnnotListNoInject()
      <IDENTIFIER>
      // We'll enclose the previous segment
      { setLastTokenImage(jjtThis);  jjtree.extendLeft();}
@@ -2781,7 +2791,7 @@ void UnqualifiedAllocationExpr() #void :
 {
    (
      (
-       "new" [ TypeArguments() ] TypeAnnotationList() {jjtree.injectRight();}
+       "new" [ TypeArguments() ] TypeAnnotationList()
        (
          PrimitiveType() ArrayDimsAndInits(){isArrayInit=true;}
        |
@@ -2822,7 +2832,7 @@ void ArrayDimsAndInits() #void:
 void ArrayDimExpr() #void:
 {boolean hasExpr=false;}
 {
-  ((TypeAnnotationList() "[" [ Expression() {hasExpr=true;} ] "]") #ArrayDimExpr(hasExpr) ) #ArrayTypeDim(!hasExpr)
+  ((TypeAnnotListNoInject() "[" [ Expression() {hasExpr=true;} ] "]") #ArrayDimExpr(hasExpr) ) #ArrayTypeDim(!hasExpr)
 }
 
 
