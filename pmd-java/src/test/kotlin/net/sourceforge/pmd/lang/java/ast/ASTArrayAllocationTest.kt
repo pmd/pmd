@@ -53,6 +53,33 @@ class ASTArrayAllocationTest : ParserTestSpec({
                 }
             }
         }
+        "new @Foo int @Bar [3][2]" should matchExpr<ASTArrayAllocation> {
+
+
+
+            it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
+                it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
+                it::getTypeImage shouldBe "int"
+
+                annotationList {
+                    annotation("Foo")
+                }
+            }
+
+            it::getArrayDims shouldBe child {
+                it::getArrayDepth shouldBe 2
+
+                dimExpr {
+                    annotationList {
+                        annotation("Bar")
+                    }
+                    int(3)
+                }
+                dimExpr {
+                    int(2)
+                }
+            }
+        }
 
         "(new int[3])[2]" should matchExpr<ASTArrayAccess> {
             child<ASTParenthesizedExpression> {

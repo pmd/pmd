@@ -1764,9 +1764,7 @@ int Modifiers() #AnnotationList(>0):
   )
  )*
  {
-    if (jjtree.nodeCreated()) {
-       jjtree.injectRight();
-    }
+    jjtree.injectRight();
     return modifiers;
  }
 }
@@ -2080,11 +2078,7 @@ void TypeAnnotListNoInject() #AnnotationList(>0):
 void TypeAnnotationList() #void:
 {}
 {
-   TypeAnnotListNoInject() {
-    if (jjtree.nodeCreated()) {
-      jjtree.injectRight();
-    }
-  }
+   TypeAnnotListNoInject() { jjtree.injectRight(); }
 }
 
 void AnnotatedType() #void:

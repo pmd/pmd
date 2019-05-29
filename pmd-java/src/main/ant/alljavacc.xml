@@ -104,6 +104,9 @@
         </replace>
 
         <replace file="${target-package-dir}/JJTJavaParserState.java">
+<!--  This is in openNodeScope.                                      -->
+<!--  If injection is pending, we bump the arity of the opened node. -->
+<!--  When it's closed, it will enclose the injected node.           -->
             <replacetoken><![CDATA[mk = sp;]]></replacetoken>
             <replacevalue><![CDATA[
     mk = sp;
