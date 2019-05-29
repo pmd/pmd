@@ -58,6 +58,32 @@ class ASTEnumConstantTest : ParserTestSpec({
         }
     }
 
+    parserTest("Enum constants should contain their annotations") {
+
+        "enum Foo { @C B, @A@a C }" should matchToplevelType<ASTEnumDeclaration> {
+
+            child<ASTEnumBody> {
+
+                child<ASTEnumConstant> {
+                    annotationList {
+                        annotation("C")
+                    }
+
+                    variableId("B")
+                }
+
+                child<ASTEnumConstant> {
+                    annotationList {
+                        annotation("A")
+                        annotation("a")
+                    }
+
+                    variableId("C")
+                }
+            }
+        }
+    }
+
     parserTest("Enum constants with arguments") {
 
         "enum Foo { B(\"str\") }" should matchToplevelType<ASTEnumDeclaration> {
