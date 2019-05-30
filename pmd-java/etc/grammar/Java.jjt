@@ -1,4 +1,7 @@
 /**
+ * Fix #1848 Local classes should preserve their modifiers
+ * Clément Fournier 05/2019
+ *====================================================================
  * Add support for Java 12 switch expressions and switch rules.
  * Andreas Dangel, Clément Fournier 03/2019
  *====================================================================
