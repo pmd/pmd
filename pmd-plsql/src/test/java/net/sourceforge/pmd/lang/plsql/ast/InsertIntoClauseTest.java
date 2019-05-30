@@ -29,4 +29,12 @@ public class InsertIntoClauseTest extends AbstractPLSQLParserTst {
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
     }
+
+    @Test
+    public void parseInsertIntoWithRecord() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("InsertIntoClauseRecord.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }
