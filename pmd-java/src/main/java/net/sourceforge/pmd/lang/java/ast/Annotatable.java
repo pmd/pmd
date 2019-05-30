@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -21,7 +20,7 @@ public interface Annotatable extends JavaNode {
      * Returns all annotations present on this node.
      */
     default List<ASTAnnotation> getDeclaredAnnotations() {
-        return this.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
+        return this.findChildrenOfType(ASTAnnotation.class);
     }
 
 
