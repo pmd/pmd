@@ -445,6 +445,17 @@ public class JavaParser {
     return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
   }
 
+  private boolean shouldStartStatementInSwitch() {
+    switch (getToken(1).kind) {
+        case _DEFAULT:
+        case CASE:
+        case RBRACE:
+            return false;
+        default:
+            return true;
+    }
+  }
+
   public Map<Integer, String> getSuppressMap() {
     return token_source.getSuppressMap();
   }
@@ -2440,6 +2451,10 @@ void LocalClassDecl() #void:
     // anywhere else in this grammar (and indeed the production Modifiers
     // accepts any modifier explicitly for the purpose of forgiving modifier errors,
     // and reporting them later if needed --see its documentation).
+
+    // In particular, it unfortunately allows local class declarations to start
+    // with a "default" modifier, which introduces an ambiguity with default
+    // switch labels. This is guarded by a custom lookahead around SwitchLabel
     mods=Modifiers() ClassOrInterfaceDeclaration(mods)
 }
 
@@ -2495,7 +2510,11 @@ void SwitchBlock() #void :
             (
                 "->" SwitchLabeledRulePart() (SwitchLabeledRule())*
             |
-                ":" (LOOKAHEAD(2) SwitchLabel() ":")* (BlockStatement())* (SwitchLabeledStatementGroup())*
+                ":" (LOOKAHEAD(2) SwitchLabel() ":")*
+                    // the lookahead is to prevent choosing BlockStatement when the token is "default",
+                    // which could happen as local class declarations accept the "default" modifier.
+                    (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement())*
+                    (SwitchLabeledStatementGroup())*
             )
         )?
     "}"
@@ -2523,7 +2542,10 @@ void SwitchLabeledRulePart() #void:
 void SwitchLabeledStatementGroup() #void:
 {}
 {
-    (LOOKAHEAD(2) SwitchLabel() ":")+ ( BlockStatement() )*
+    (LOOKAHEAD(2) SwitchLabel() ":")+
+        // the lookahead is to prevent choosing BlockStatement when the token is "default",
+        // which could happen as local class declarations accept the "default" modifier.
+        (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
 }
 
 void SwitchLabel() :
