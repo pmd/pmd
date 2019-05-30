@@ -1698,8 +1698,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
     inInterface = false;
 }
 {
-  ( /* See note about this optional final modifier in BlockStatement */
-    ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
+  ( "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
   t=<IDENTIFIER> { checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
@@ -2423,13 +2422,22 @@ void BlockStatement():
 |
   Statement()
 |
-  /*
-  TODO: Seems like we should be discarding the "final"
-  after using it in the lookahead; I added a ["final|abstract"] inside
-  ClassOrInterfaceDeclaration, but that seems like a hack that
-  could break other things...
-  */
-  LOOKAHEAD( (Annotation())* ["final"|"abstract"] "class") (Annotation())* ClassOrInterfaceDeclaration(0)
+  // we don't need to lookahead further here
+  // the ambiguity between start of local class and local variable decl
+  // is already handled in the lookahead guarding LocalVariableDeclaration above.
+  LocalClassDecl()
+}
+
+void LocalClassDecl() #void:
+{int mods = 0;}
+{
+    // this preserves the modifiers of the local class.
+    // it allows for modifiers that are forbidden for local classes,
+    // but anyway we are *not* checking modifiers for incompatibilities
+    // anywhere else in this grammar (and indeed the production Modifiers
+    // accepts any modifier explicitly for the purpose of forgiving modifier errors,
+    // and reporting them later if needed --see its documentation).
+    mods=Modifiers() ClassOrInterfaceDeclaration(mods)
 }
 
 /*
