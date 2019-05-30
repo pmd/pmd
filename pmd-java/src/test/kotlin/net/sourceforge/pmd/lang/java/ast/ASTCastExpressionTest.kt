@@ -57,9 +57,11 @@ class ASTCastExpressionTest : ParserTestSpec({
                 castExpr {
                     it::getCastType shouldBe child<ASTIntersectionType> {
 
+                        it::getDeclaredAnnotations shouldBe emptyList()
+
                         classType("Foo") {
                             // annotations nest on the inner node
-                            annotation("F")
+                            it::getDeclaredAnnotations shouldBe listOf(annotation("F"))
                         }
 
                         classType("Bar")
