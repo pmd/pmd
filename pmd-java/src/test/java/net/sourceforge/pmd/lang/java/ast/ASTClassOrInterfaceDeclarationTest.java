@@ -32,6 +32,9 @@ public class ASTClassOrInterfaceDeclarationTest {
     private static final String LOCAL_CLASS_WITH_MODIFIERS
             = "class Foo { { abstract class Local {} } }";
 
+    private static final String LOCAL_CLASS_WITH_MIXED_MODIFIER_ANNOTATIONS
+            = "class Foo { { final @F class Local {} } }";
+
     private static final String LOCAL_CHILDREN_ARE_NOT_ALWAYS_LOCAL
             = "class Foo { { class Local { class Nested {} void bar() {class Local2 {}}}}}";
 
@@ -65,6 +68,17 @@ public class ASTClassOrInterfaceDeclarationTest {
         assertFalse("Local class false-positive", classes.get(0).isLocal());
         assertTrue("Local class false-negative", classes.get(1).isLocal());
         assertTrue("Local class should preserve its modifiers", classes.get(1).isAbstract());
+    }
+
+
+    @Test
+    public void testLocalClassWithMixedModifiers() {
+        List<ASTClassOrInterfaceDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, LOCAL_CLASS_WITH_MIXED_MODIFIER_ANNOTATIONS);
+        assertTrue(classes.size() == 2);
+
+        assertFalse("Local class false-positive", classes.get(0).isLocal());
+        assertTrue("Local class false-negative", classes.get(1).isLocal());
+        assertTrue("Local class should preserve its modifiers", classes.get(1).isFinal());
     }
 
 
