@@ -239,4 +239,31 @@ public class Outer {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1845 Regression in MethodReturnsInternalArray not handling enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public enum MethodReturnsInternalArrayCaseEnum {
+    ONE("One"),
+    TWO("Two", "Three");
+
+    private String[] titles;
+
+    MethodReturnsInternalArrayCaseEnum(String... titles) {
+        this.titles = Arrays.copyOf(titles, titles.length);
+    }
+
+    public String[] getTitles() {
+        return titles.clone();
+    }
+
+    @Override
+    public String toString() {
+        return titles[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
