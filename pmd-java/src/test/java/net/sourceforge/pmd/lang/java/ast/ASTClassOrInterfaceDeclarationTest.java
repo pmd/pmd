@@ -29,6 +29,9 @@ public class ASTClassOrInterfaceDeclarationTest {
     private static final String LOCAL_CLASS_IN_INITIALIZER
             = "class Foo { { class Local {} } }";
 
+    private static final String LOCAL_CLASS_WITH_MODIFIERS
+            = "class Foo { { abstract class Local {} } }";
+
     private static final String LOCAL_CHILDREN_ARE_NOT_ALWAYS_LOCAL
             = "class Foo { { class Local { class Nested {} void bar() {class Local2 {}}}}}";
 
@@ -50,6 +53,33 @@ public class ASTClassOrInterfaceDeclarationTest {
 
         assertFalse("Local class false-positive", classes.get(0).isLocal());
         assertTrue("Local class false-negative", classes.get(1).isLocal());
+    }
+
+
+
+    @Test
+    public void testLocalAbstractClass() {
+        List<ASTClassOrInterfaceDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, LOCAL_CLASS_WITH_MODIFIERS);
+        assertTrue(classes.size() == 2);
+
+        assertFalse("Local class false-positive", classes.get(0).isLocal());
+        assertTrue("Local class false-negative", classes.get(1).isLocal());
+        assertTrue("Local class should preserve its modifiers", classes.get(1).isAbstract());
+    }
+
+
+
+    @Test
+    public void testLocalClassVisibility() {
+        List<ASTClassOrInterfaceDeclaration> classes = ParserTstUtil.getOrderedNodes(ASTClassOrInterfaceDeclaration.class, LOCAL_CLASS_WITH_MODIFIERS);
+        assertTrue(classes.size() == 2);
+
+        assertFalse("Local class false-positive", classes.get(0).isLocal());
+        assertTrue("Local class false-negative", classes.get(1).isLocal());
+        assertFalse("Local class is not public", classes.get(1).isPublic());
+        assertFalse("Local class is not private", classes.get(1).isPrivate());
+        assertFalse("Local class is not protected", classes.get(1).isProtected());
+        assertFalse("Local class is not package-private", classes.get(1).isPackagePrivate());
     }
 
 

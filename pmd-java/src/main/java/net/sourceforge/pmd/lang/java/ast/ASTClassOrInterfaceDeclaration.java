@@ -55,6 +55,10 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return visitor.visit(this, data);
     }
 
+    @Override
+    public boolean isPackagePrivate() {
+        return super.isPackagePrivate() && !isLocal();
+    }
 
     /**
      * Returns true if the class is declared inside a block other
