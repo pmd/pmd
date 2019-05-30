@@ -2,9 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
 
 package net.sourceforge.pmd.lang.java.ast
 
@@ -39,14 +36,17 @@ class ASTClassOrInterfaceDeclTest : ParserTestSpec({
             }
 
             """
-               @F abstract class Local {
+               @F abstract @C class Local {
 
                }
             """ should parseAs {
 
                 child<ASTBlockStatement> {
                     classDecl(simpleName = "Local") {
-                        annotation("F")
+                        it::getDeclaredAnnotations shouldBe listOf(
+                                annotation("F"),
+                                annotation("C")
+                        )
 
                         it::isAbstract shouldBe true
                         it::isFinal shouldBe false
