@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
