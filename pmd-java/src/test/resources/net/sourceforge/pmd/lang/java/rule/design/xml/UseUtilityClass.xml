@@ -360,4 +360,21 @@ public class FooLocal extends ThreadLocal<Integer> {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1094 [java] UseUtilityClass should be LombokAware</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class MyUtil {
+    private final static int CONSTANT = 5;
+
+    public static int addSomething(int in) {
+        return in + CONSTANT;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
