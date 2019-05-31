@@ -207,7 +207,36 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
-   <rule ref="category/apex/codestyle.xml/VariableNamingConventions" message="{0} variable {1} should begin with {2}">
+
+   <!-- NAMING -->
+   <rule ref="category/apex/codestyle.xml/FieldNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/FormalParameterNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/LocalVariableNamingConventions">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/PropertyNamingConventions">
       <priority>3</priority>
       <properties>
          <!-- relevant for Code Climate output only -->

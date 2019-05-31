@@ -220,4 +220,23 @@ public class MethodReturnsInternalArrayCase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description> #1738 MethodReturnsInternalArray in inner classes</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Outer {
+
+	public static class Inner {
+		private int[] arr2;
+
+		public int[] getArr2() {
+			return arr2;
+		}
+
+	}
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

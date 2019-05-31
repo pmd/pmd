@@ -52,6 +52,7 @@ TOKEN : /* SEPARATORS */
 |   < COMMA: "," >
 |   < DOT: "." >
 |   < COLON: ":" >
+|   < BACKTICK: "`" >
 }
 
 

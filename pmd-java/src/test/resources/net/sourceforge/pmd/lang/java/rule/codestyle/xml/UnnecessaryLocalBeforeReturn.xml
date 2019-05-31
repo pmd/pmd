@@ -247,4 +247,21 @@ public class UnnecessaryLocalBeforeReturnFP {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1804 [java] NPE with fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class ObjectCreator {
+
+    private static final String A = ""; 
+    private static final String B = "" + A; // the existence of this line causes the NPE.
+
+    public Object create() {
+        final Object o = new Object(A);
+        return o;
+    }   
+}
+        ]]></code>
+    </test-code>
 </test-data>

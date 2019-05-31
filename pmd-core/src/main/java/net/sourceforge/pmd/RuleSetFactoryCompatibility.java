@@ -65,8 +65,7 @@ public class RuleSetFactoryCompatibility {
         // PMD 5.6.0
         addFilterRuleRenamed("java", "design", "AvoidConstantsInterface", "ConstantsInInterface");
         // unused/UnusedModifier moved AND renamed, order is important!
-        addFilterRuleMoved("java", "unusedcode", "unnecessary", "UnusedModifier");
-        addFilterRuleRenamed("java", "unnecessary", "UnusedModifier", "UnnecessaryModifier");
+        addFilterRuleMovedAndRenamed("java", "unusedcode", "UnusedModifier", "unnecessary", "UnnecessaryModifier");
 
         // PMD 6.0.0
         addFilterRuleMoved("java", "controversial", "unnecessary", "UnnecessaryParentheses");
@@ -79,9 +78,13 @@ public class RuleSetFactoryCompatibility {
         addFilterRuleRenamed("java", "unnecessary", "UnnecessaryFinalModifier", "UnnecessaryModifier");
         addFilterRuleRenamed("java", "empty", "EmptyStaticInitializer", "EmptyInitializer");
         // GuardLogStatementJavaUtil moved and renamed...
-        addFilterRuleMoved("java", "logging-java", "logging-jakarta-commons", "GuardLogStatementJavaUtil");
-        addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardLogStatementJavaUtil", "GuardLogStatement");
+        addFilterRuleMovedAndRenamed("java", "logging-java", "GuardLogStatementJavaUtil", "logging-jakarta-commons", "GuardLogStatement");
         addFilterRuleRenamed("java", "logging-jakarta-commons", "GuardDebugLogging", "GuardLogStatement");
+    }
+
+    void addFilterRuleMovedAndRenamed(String language, String oldRuleset, String oldName, String newRuleset, String newName) {
+        filters.add(RuleSetFilter.ruleMoved(language, oldRuleset, newRuleset, oldName));
+        filters.add(RuleSetFilter.ruleRenamedMoved(language, newRuleset, oldName, newName));
     }
 
     void addFilterRuleRenamed(String language, String ruleset, String oldName, String newName) {
@@ -172,11 +175,15 @@ public class RuleSetFactoryCompatibility {
         }
 
         public static RuleSetFilter ruleRenamed(String language, String ruleset, String oldName, String newName) {
-            String base = "rulesets/" + language + "/" + ruleset + ".xml/";
-            RuleSetFilter filter = new RuleSetFilter(base + oldName, base + newName, "The rule \"" + oldName
-                    + "\" has been renamed to \"" + newName + "\". Please change your ruleset!");
+            RuleSetFilter filter = ruleRenamedMoved(language, ruleset, oldName, newName);
             filter.setExclusionPattern(oldName, newName);
             return filter;
+        }
+
+        public static RuleSetFilter ruleRenamedMoved(String language, String ruleset, String oldName, String newName) {
+            String base = "rulesets/" + language + "/" + ruleset + ".xml/";
+            return new RuleSetFilter(base + oldName, base + newName, "The rule \"" + oldName
+                    + "\" has been renamed to \"" + newName + "\". Please change your ruleset!");
         }
 
         public static RuleSetFilter ruleMoved(String language, String oldRuleset, String newRuleset, String ruleName) {

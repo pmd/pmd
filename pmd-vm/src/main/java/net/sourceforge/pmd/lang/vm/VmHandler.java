@@ -38,6 +38,7 @@ public class VmHandler extends AbstractLanguageVersionHandler {
         return new VmParser(parserOptions);
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
