@@ -1606,16 +1606,26 @@ ASTCompilationUnit CompilationUnit() :
 {
   [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ( EmptyStatement() )* ]
   ( ImportDeclaration() ( EmptyStatement() )* )*
-  ( LOOKAHEAD(2) TypeDeclaration() ( EmptyStatement() )* )*
-  [ LOOKAHEAD({isKeyword("open") || isKeyword("module") || getToken(1).kind == AT}) ModuleDeclaration() ( EmptyStatement() )* ]
+  // the module decl lookahead needs to be before the type declaration branch,
+  // looking for annotations + "open" | "module" will fail faster if it's *not*
+  // a module (most common case)
+  [ LOOKAHEAD(ModuleDeclLahead()) ModuleDeclaration() ( EmptyStatement() )* ]
+  ( TypeDeclaration() ( EmptyStatement() )* )*
   ( < "\u001a" > )?
-  ( < "~[]" > )?
+  ( < "~[]" > )? // what's this for? Do you mean ( < ~[] > )*, i.e. "any character"?
   <EOF>
+  {
+     jjtThis.setComments(token_source.comments);
+     return jjtThis;
+  }
+}
+
+private void ModuleDeclLahead() #void:
+{}
 {
- jjtThis.setComments(token_source.comments);
- return jjtThis;
+  (Annotation())* LOOKAHEAD({isKeyword("open") || isKeyword("module")}) <IDENTIFIER>
 }
-}
+
 
 void PackageDeclaration() :
 {}

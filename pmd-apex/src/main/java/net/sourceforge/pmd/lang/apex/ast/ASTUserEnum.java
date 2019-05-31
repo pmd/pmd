@@ -19,7 +19,8 @@ public class ASTUserEnum extends ApexRootNode<UserEnum> {
 
     @Override
     public String getImage() {
-        return node.getClass().getName();
+        String apexName = node.getDefiningType().getApexName();
+        return apexName.substring(apexName.lastIndexOf('.') + 1);
     }
 
     public ASTModifierNode getModifiers() {

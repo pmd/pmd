@@ -939,7 +939,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private String getXmlTreeCode() {
-        if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
+        if (codeEditorPane.getText() != null && !codeEditorPane.getText().trim().isEmpty()) {
             Node cu = getCompilationUnit();
             return getXmlTreeCode(cu);
         }

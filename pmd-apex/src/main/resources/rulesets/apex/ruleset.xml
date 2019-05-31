@@ -23,7 +23,15 @@
    <rule ref="rulesets/apex/quickstart.xml/ClassNamingConventions" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/MethodNamingConventions" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/MethodWithSameNameAsEnclosingClass" deprecated="true" />
-   <rule ref="rulesets/apex/quickstart.xml/VariableNamingConventions" deprecated="true" />
+   <rule ref="category/apex/codestyle.xml/VariableNamingConventions" deprecated="true" message="{0} variable {1} should begin with {2}">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Style" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
    <rule ref="rulesets/apex/quickstart.xml/ApexUnitTestClassShouldHaveAsserts" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/ApexSharingViolations" deprecated="true" />

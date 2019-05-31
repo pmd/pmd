@@ -115,6 +115,66 @@ public class Foo {
         <code-ref id="nested-class-with-default-access-modifier"/>
     </test-code>
 
+    <code-fragment id="top-level-annotations-with-default-access-modifier"><![CDATA[
+@interface Bar {}
+
+public @interface Foo {}
+
+@SomeAnnotation
+@interface Baz {}
+
+@VisibleForTesting
+@interface Foobar {}
+
+/* default */ @interface FoobarWithComment {}
+    ]]></code-fragment>
+    <test-code>
+        <description>Top-level annotations with default access modifier</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-annotations-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-enums-with-default-access-modifier"><![CDATA[
+enum Bar {}
+
+public enum Foo {}
+
+@SomeAnnotation
+enum Baz {}
+
+@VisibleForTesting
+enum Foobar {}
+
+/* default */ enum FoobarWithComment {}
+    ]]></code-fragment>
+    <test-code>
+        <description>Top-level enums with default access modifier</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-enums-with-default-access-modifier"/>
+    </test-code>
+
+    <code-fragment id="top-level-classes-with-default-access-modifier"><![CDATA[
+class Bar {}
+
+public class Foo {}
+
+@SomeAnnotation
+class Baz {}
+
+@VisibleForTesting
+class Foobar {}
+
+/* default */ class FoobarWithComment {}
+    ]]></code-fragment>
+    <test-code>
+        <description>Top-level classes with default access modifier</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,6</expected-linenumbers>
+        <code-ref id="top-level-classes-with-default-access-modifier"/>
+    </test-code>
+
     <code-fragment id="own-regex-to-default-access-modifier-rule"><![CDATA[
 public class Foo {
 	/* default */ final String stringValue = "stringValue";

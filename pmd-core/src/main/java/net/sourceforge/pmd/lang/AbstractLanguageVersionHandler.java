@@ -52,6 +52,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
         return VisitorStarter.DUMMY;
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return VisitorStarter.DUMMY;
