@@ -5,9 +5,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
  * An array access expression.
  *

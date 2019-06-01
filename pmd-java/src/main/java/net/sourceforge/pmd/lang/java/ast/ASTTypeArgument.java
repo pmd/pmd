@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a single type argument in a {@linkplain ASTTypeArguments type arguments list}.
  *

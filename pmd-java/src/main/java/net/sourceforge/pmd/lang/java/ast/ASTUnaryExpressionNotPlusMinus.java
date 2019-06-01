@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a boolean negation or bitwise inverse operation.
  * This has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}

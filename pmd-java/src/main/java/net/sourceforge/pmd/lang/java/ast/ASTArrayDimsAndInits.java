@@ -8,7 +8,6 @@ package net.sourceforge.pmd.lang.java.ast;
  * @deprecated Replaced by {@link ASTArrayAllocationDims}
  */
 @Deprecated
-
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
 
     private int arrayDepth;

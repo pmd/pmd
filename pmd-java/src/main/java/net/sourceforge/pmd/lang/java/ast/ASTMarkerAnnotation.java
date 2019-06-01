@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an annotation with no declared member, e.g. {@code @Override}.
  *

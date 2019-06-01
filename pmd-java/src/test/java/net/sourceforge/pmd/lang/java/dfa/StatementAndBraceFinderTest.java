@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;

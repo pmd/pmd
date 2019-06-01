@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a multiplication, division, or modulo operation on
  * two or more values. This has a precedence greater than {@link ASTAdditiveExpression},

@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 
 /**
  * The "this" expression. Related to the {@link ASTSuperExpression "super"} pseudo-expression.

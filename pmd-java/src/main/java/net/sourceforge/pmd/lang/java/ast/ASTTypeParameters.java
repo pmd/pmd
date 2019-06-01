@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 
 /**
  * Represents a list of type parameters.

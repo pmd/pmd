@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an identity test between two values or more values.
  * This has a precedence greater than {@link ASTAndExpression},

@@ -32,7 +32,7 @@ public final class ASTBlockStatement extends AbstractJavaNode {
      * @return the result of
      *     containsDescendantOfType(ASTAllocationExpression.class)
      */
-    public final boolean isAllocation() {
+    public boolean isAllocation() {
         return hasDescendantOfType(ASTAllocationExpression.class);
     }
 }

@@ -50,7 +50,7 @@ public final class ASTThrowStatement extends AbstractJavaNode {
      * @return the image of the first ASTClassOrInterfaceType node found or
      *     <code>null</code>
      */
-    public final String getFirstClassOrInterfaceTypeImage() {
+    public String getFirstClassOrInterfaceTypeImage() {
         final ASTClassOrInterfaceType t = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         return t == null ? null : t.getImage();
     }
