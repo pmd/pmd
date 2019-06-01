@@ -12,6 +12,11 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ *
+ * @deprecated This class will be removed with PMD 7. The rule designer is a better way to inspect nodes.
+ */
+@Deprecated
 public class DumpFacade extends JspParserVisitorAdapter {
 
     private PrintWriter writer;

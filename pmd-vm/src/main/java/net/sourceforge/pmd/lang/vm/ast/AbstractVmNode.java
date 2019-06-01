@@ -151,7 +151,9 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      * children.
      *
      * @param prefix
+     * @deprecated This method will be removed with PMD 7. The rule designer is a better way to inspect nodes.
      */
+    @Deprecated
     public void dump(final String prefix, final boolean recurse, final Writer writer) {
         final PrintWriter printWriter = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
         printWriter.println(toString(prefix));

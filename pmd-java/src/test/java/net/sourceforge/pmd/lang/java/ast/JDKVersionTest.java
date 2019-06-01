@@ -263,6 +263,11 @@ public class JDKVersionTest {
         parseJava9(loadSource("jdk9_module_info.java"));
     }
 
+    @Test
+    public void testAnnotatedModule() {
+        parseJava9(loadSource("jdk9_module_info_with_annot.java"));
+    }
+
     @Test(expected = ParseException.class)
     public final void jdk9TryWithResourcesInJava8() {
         parseJava18(loadSource("jdk9_try_with_resources.java"));

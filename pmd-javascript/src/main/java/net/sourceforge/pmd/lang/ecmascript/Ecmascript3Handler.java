@@ -43,6 +43,7 @@ public class Ecmascript3Handler extends AbstractLanguageVersionHandler {
         return new Ecmascript3Parser(parserOptions);
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
