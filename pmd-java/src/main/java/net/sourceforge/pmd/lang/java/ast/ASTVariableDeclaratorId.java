@@ -42,7 +42,9 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
     private VariableNameDeclaration nameDeclaration;
     private boolean explicitReceiverParameter = false;
 
-    ASTVariableDeclaratorId(int id) {
+    @InternalApi
+    @Deprecated
+    public ASTVariableDeclaratorId(int id) {
         super(id);
     }
 

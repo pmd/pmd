@@ -25,7 +25,9 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
 
     private boolean isVarargs;
 
-    ASTFormalParameter(int id) {
+    @InternalApi
+    @Deprecated
+    public ASTFormalParameter(int id) {
         super(id);
     }
 
