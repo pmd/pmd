@@ -377,4 +377,56 @@ public class MyUtil {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Inner class in abstract class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    private static class Inner {
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in abstract class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Outer {
+    private static class Inner {
+        private static int answer;
+        public static int getInt() { return answer; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Inner class in interface false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Outer {
+    private static class Inner {
+        public static int getInt() { return 42; }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class in sub-class false-negative</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Outer extends Object {
+    private static class Inner {
+        public static boolean isYes(int a) {
+            return a != 0;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -38,14 +38,16 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceBody decl, Object data) {
+        Object result = super.visit(decl, data);
+
         if (decl.jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) decl.jjtGetParent();
             if (parent.isAbstract() || parent.isInterface() || parent.getSuperClassTypeNode() != null) {
-                return data;
+                return result;
             }
 
             if (hasLombokNoArgsConstructor(parent)) {
-                return data;
+                return result;
             }
 
             int i = decl.jjtGetNumChildren();
@@ -92,7 +94,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
                 addViolation(data, decl);
             }
         }
-        return super.visit(decl, data);
+        return result;
     }
 
     private boolean hasLombokNoArgsConstructor(ASTClassOrInterfaceDeclaration parent) {
