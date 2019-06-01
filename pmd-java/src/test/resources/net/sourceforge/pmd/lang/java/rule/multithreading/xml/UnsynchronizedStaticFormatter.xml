@@ -197,6 +197,38 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#1815 static synchronized, OK if allowMethodLevelSynchronization</description>
+        <rule-property name="allowMethodLevelSynchronization">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    static synchronized void bar() {
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1815 static synchronized, Not OK if allowMethodLevelSynchronization</description>
+        <rule-property name="allowMethodLevelSynchronization">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    synchronized void bar() { // should be static
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#1815 static synchronized, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -206,6 +238,23 @@ public class Foo {
     private static final SimpleDateFormat sdf = new SimpleDateFormat();
     static void bar() {
         synchronized(sdf) {
+            sdf.format();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1815 static synchronized, Not OK</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    static void bar() {
+        synchronized(Foo.class) { // not synchronized on sdf
             sdf.format();
         }
     }
