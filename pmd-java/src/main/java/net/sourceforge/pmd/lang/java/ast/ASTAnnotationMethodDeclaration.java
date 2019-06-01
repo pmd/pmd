@@ -20,7 +20,6 @@ public class ASTAnnotationMethodDeclaration extends AbstractMethodLikeNode {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -32,7 +31,3 @@ public class ASTAnnotationMethodDeclaration extends AbstractMethodLikeNode {
         return MethodLikeKind.METHOD;
     }
 }
-/*
- * JavaCC - OriginalChecksum=f6dd440446f8aa5c9c191ae760080ee0 (do not edit this
- * line)
- */

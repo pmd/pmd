@@ -28,7 +28,6 @@ public class ASTLambdaExpression extends AbstractMethodLikeNode {
     }
 
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -39,7 +38,3 @@ public class ASTLambdaExpression extends AbstractMethodLikeNode {
         return MethodLikeKind.LAMBDA;
     }
 }
-/*
- * JavaCC - OriginalChecksum=e706de031abe9a22c368b7cb52802f1b (do not edit this
- * line)
- */

@@ -20,13 +20,8 @@ public class ASTResourceSpecification extends AbstractJavaNode {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 }
-/*
- * JavaCC - OriginalChecksum=d495bcf34ff0f86f77e48f66b9c52e4d (do not edit this
- * line)
- */

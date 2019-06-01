@@ -22,7 +22,6 @@ public class ASTModuleDeclaration extends AbstractJavaNode {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -38,4 +37,3 @@ public class ASTModuleDeclaration extends AbstractJavaNode {
         return open;
     }
 }
-/* JavaCC - OriginalChecksum=752bbec72a6d0d96c4c69a2d08c73614 (do not edit this line) */

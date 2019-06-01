@@ -32,7 +32,6 @@ public class ASTModuleDirective extends AbstractJavaNode {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -58,7 +57,3 @@ public class ASTModuleDirective extends AbstractJavaNode {
         return requiresModifier == null ? null : requiresModifier.name();
     }
 }
-/*
- * JavaCC - OriginalChecksum=93c74930e5df0269e81ce18b4efa6378 (do not edit this
- * line)
- */

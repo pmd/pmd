@@ -20,7 +20,6 @@ public class ASTResource extends ASTFormalParameter {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -29,7 +28,3 @@ public class ASTResource extends ASTFormalParameter {
     // TODO Should we deprecate all methods from ASTFormalParameter?
 
 }
-/*
- * JavaCC - OriginalChecksum=92734fc70bba91fd9422150dbf87d5c4 (do not edit this
- * line)
- */

@@ -30,9 +30,6 @@ public class ASTClassOrInterfaceBody extends AbstractJavaNode {
         super(p, id);
     }
 
-    /**
-     * Accept the visitor.
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

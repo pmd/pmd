@@ -25,4 +25,3 @@ public class ASTSwitchExpression extends AbstractJavaTypeNode {
         return visitor.visit(this, data);
     }
 }
-/* JavaCC - OriginalChecksum=8b1747ca53f66203ee212a3699a9a2f3 (do not edit this line) */
