@@ -12,15 +12,11 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
 
     private int modifiers;
 
-    @Deprecated
-    @InternalApi
-    public AbstractJavaAccessNode(int i) {
+    AbstractJavaAccessNode(int i) {
         super(i);
     }
 
-    @Deprecated
-    @InternalApi
-    public AbstractJavaAccessNode(JavaParser parser, int i) {
+    AbstractJavaAccessNode(JavaParser parser, int i) {
         super(parser, i);
     }
 
@@ -29,10 +25,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return this.modifiers;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setModifiers(int modifiers) {
+    void setModifiers(int modifiers) {
         this.modifiers = modifiers;
     }
 
@@ -43,7 +36,6 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
 
     @InternalApi
     @Deprecated
-    @Override
     public void setPublic(boolean isPublic) {
         setModifier(isPublic, PUBLIC);
     }
@@ -53,10 +45,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PROTECTED);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setProtected(boolean isProtected) {
+    void setProtected(boolean isProtected) {
         setModifier(isProtected, PROTECTED);
     }
 
@@ -65,10 +54,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PRIVATE);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setPrivate(boolean isPrivate) {
+    void setPrivate(boolean isPrivate) {
         setModifier(isPrivate, PRIVATE);
     }
 
@@ -77,10 +63,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(ABSTRACT);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setAbstract(boolean isAbstract) {
+    void setAbstract(boolean isAbstract) {
         setModifier(isAbstract, ABSTRACT);
     }
 
@@ -89,10 +72,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(STATIC);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setStatic(boolean isStatic) {
+    void setStatic(boolean isStatic) {
         setModifier(isStatic, STATIC);
     }
 
@@ -101,10 +81,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(FINAL);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setFinal(boolean isFinal) {
+    void setFinal(boolean isFinal) {
         setModifier(isFinal, FINAL);
     }
 
@@ -113,10 +90,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(SYNCHRONIZED);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setSynchronized(boolean isSynchronized) {
+    void setSynchronized(boolean isSynchronized) {
         setModifier(isSynchronized, SYNCHRONIZED);
     }
 
@@ -125,10 +99,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(NATIVE);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setNative(boolean isNative) {
+    void setNative(boolean isNative) {
         setModifier(isNative, NATIVE);
     }
 
@@ -137,10 +108,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(TRANSIENT);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTransient(boolean isTransient) {
+    void setTransient(boolean isTransient) {
         setModifier(isTransient, TRANSIENT);
     }
 
@@ -149,10 +117,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(VOLATILE);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setVolatile(boolean isVolative) {
+    void setVolatile(boolean isVolative) {
         setModifier(isVolative, VOLATILE);
     }
 
@@ -161,10 +126,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(STRICTFP);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setStrictfp(boolean isStrictfp) {
+    void setStrictfp(boolean isStrictfp) {
         setModifier(isStrictfp, STRICTFP);
     }
 
@@ -173,10 +135,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(DEFAULT);
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setDefault(boolean isDefault) {
+    void setDefault(boolean isDefault) {
         setModifier(isDefault, DEFAULT);
     }
 
