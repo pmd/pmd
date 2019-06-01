@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
+// package private
 abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements Annotatable {
 
     AbstractJavaAnnotatableNode(int i) {

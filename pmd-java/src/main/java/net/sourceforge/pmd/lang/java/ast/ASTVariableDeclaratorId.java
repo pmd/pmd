@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -41,11 +42,11 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
     private VariableNameDeclaration nameDeclaration;
     private boolean explicitReceiverParameter = false;
 
-    public ASTVariableDeclaratorId(int id) {
+    ASTVariableDeclaratorId(int id) {
         super(id);
     }
 
-    public ASTVariableDeclaratorId(JavaParser p, int id) {
+    ASTVariableDeclaratorId(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -65,6 +66,8 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
         return nameDeclaration;
     }
 
+    @InternalApi
+    @Deprecated
     public void setNameDeclaration(VariableNameDeclaration decl) {
         nameDeclaration = decl;
     }
@@ -87,6 +90,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
     /**
      * Returns true if the declared variable has an array type.
+     *
      * @deprecated Use {@link #hasArrayType()}
      */
     @Override
@@ -197,6 +201,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
     /**
      * @deprecated Will be made private with 7.0.0
      */
+    @InternalApi
     @Deprecated
     public void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;

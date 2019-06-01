@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -21,6 +22,7 @@ public interface TypeNode extends JavaNode {
     @Nullable
     Class<?> getType();
 
+
     /**
      * Get the TypeDefinition associated with this node. The Class object
      * contained in the TypeDefinition will always be equal to that which
@@ -31,17 +33,23 @@ public interface TypeNode extends JavaNode {
     @Nullable
     JavaTypeDefinition getTypeDefinition();
 
+
     /**
      * Set the TypeDefinition associated with this node.
      *
      * @param type A TypeDefinition object
      */
+    @Deprecated
+    @InternalApi
     void setTypeDefinition(JavaTypeDefinition type);
+
 
     /**
      * Set the Java Class associated with this node.
      *
      * @param type A Java Class
      */
+    @Deprecated
+    @InternalApi
     void setType(Class<?> type);
 }
