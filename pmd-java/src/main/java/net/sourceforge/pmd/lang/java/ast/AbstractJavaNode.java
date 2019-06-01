@@ -16,10 +16,14 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     private Scope scope;
     private Comment comment;
 
+    @InternalApi
+    @Deprecated
     public AbstractJavaNode(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public AbstractJavaNode(JavaParser parser, int id) {
         super(id);
         this.parser = parser;
@@ -68,11 +72,15 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return scope;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setScope(Scope scope) {
         this.scope = scope;
     }
 
+    @InternalApi
+    @Deprecated
     public void comment(Comment theComment) {
         comment = theComment;
     }

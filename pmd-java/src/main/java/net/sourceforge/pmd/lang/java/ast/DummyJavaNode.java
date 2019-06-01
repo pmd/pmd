@@ -14,10 +14,14 @@ import net.sourceforge.pmd.annotation.InternalApi;
 @InternalApi
 public class DummyJavaNode extends AbstractJavaNode {
 
+    @InternalApi
+    @Deprecated
     public DummyJavaNode(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public DummyJavaNode(JavaParser parser, int id) {
         super(parser, id);
     }

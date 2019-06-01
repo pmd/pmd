@@ -16,10 +16,14 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
      */
     protected JavaTypeDefinition typeDefinition;
 
+    @Deprecated
+    @InternalApi
     public AbstractJavaAccessTypeNode(int i) {
         super(i);
     }
 
+    @Deprecated
+    @InternalApi
     public AbstractJavaAccessTypeNode(JavaParser parser, int i) {
         super(parser, i);
     }
@@ -33,6 +37,8 @@ public abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode 
         return null;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setType(Class<?> type) {
         typeDefinition = JavaTypeDefinition.forClass(type);

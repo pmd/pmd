@@ -12,10 +12,14 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
 
     private int modifiers;
 
+    @Deprecated
+    @InternalApi
     public AbstractJavaAccessNode(int i) {
         super(i);
     }
 
+    @Deprecated
+    @InternalApi
     public AbstractJavaAccessNode(JavaParser parser, int i) {
         super(parser, i);
     }

@@ -19,10 +19,14 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
 
     private JavaTypeDefinition typeDefinition;
 
+    @InternalApi
+    @Deprecated
     public AbstractJavaTypeNode(int i) {
         super(i);
     }
 
+    @InternalApi
+    @Deprecated
     public AbstractJavaTypeNode(JavaParser p, int i) {
         super(p, i);
     }
