@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.dfa;
 
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
+import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -73,9 +74,13 @@ public class StatementAndBraceFinderTest {
     public void testOnlyWorksForMethodsAndConstructors() {
         StatementAndBraceFinder sbf = new StatementAndBraceFinder(LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
                 .getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
-        sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
-        sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
-        sbf.buildDataFlowFor(new ASTCompilationUnit(1));
+
+        ASTCompilationUnit astCompilationUnit = parseJava15(TEST1);
+
+        sbf.buildDataFlowFor(astCompilationUnit.getFirstChildOfType(ASTMethodDeclaration.class));
+        // FIXME look at history of this test
+        // sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
+        sbf.buildDataFlowFor(astCompilationUnit);
     }
 
     private static final String TEST1 = "class Foo {" + PMD.EOL + " void bar() {" + PMD.EOL + "  x = 2;" + PMD.EOL

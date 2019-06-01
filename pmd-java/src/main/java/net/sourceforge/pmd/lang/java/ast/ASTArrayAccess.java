@@ -39,7 +39,7 @@ public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPri
         Node firstChild = jjtGetChild(0);
 
         if (firstChild instanceof ASTAmbiguousName) {
-            replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).forceExprContext());
+            replaceChildAt(0, ((ASTAmbiguousName) firstChild).forceExprContext());
         }
     }
 

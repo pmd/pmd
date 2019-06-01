@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.AbstractJavaScope;
 import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
@@ -61,8 +61,8 @@ public class AccessorMethodGenerationRule extends AbstractJavaRule {
         }
     }
 
-    public void analyzeMember(final AbstractJavaAccessNode node, final List<NameOccurrence> occurrences,
-            final ClassScope classScope, final Object data) {
+    public void analyzeMember(final AccessNode node, final List<NameOccurrence> occurrences,
+                              final ClassScope classScope, final Object data) {
         if (!node.isPrivate()) {
             return;
         }
