@@ -4,40 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 @Deprecated
 public class ASTPrimaryPrefix extends AbstractJavaTypeNode {
 
     private boolean usesThisModifier;
     private boolean usesSuperModifier;
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimaryPrefix(int id) {
+    ASTPrimaryPrefix(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimaryPrefix(JavaParser p, int id) {
+    ASTPrimaryPrefix(JavaParser p, int id) {
         super(p, id);
     }
 
-    @InternalApi
-    @Deprecated
-    public void setUsesThisModifier() {
-        usesThisModifier = true;
-    }
 
     public boolean usesThisModifier() {
         return this.usesThisModifier;
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setUsesSuperModifier() {
-        usesSuperModifier = true;
     }
 
     public boolean usesSuperModifier() {

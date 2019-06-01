@@ -201,11 +201,9 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
 
     /**
-     * @deprecated Will be made private with 7.0.0
+     *  FIXME deal with that otherwise
      */
-    @InternalApi
-    @Deprecated
-    public void setExplicitReceiverParameter() {
+    void setExplicitReceiverParameter() {
         explicitReceiverParameter = true;
     }
 

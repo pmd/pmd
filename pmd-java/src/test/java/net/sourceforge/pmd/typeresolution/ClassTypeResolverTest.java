@@ -1767,7 +1767,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
-        List<JavaNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaNode.class, "//ArgumentList");
+        List<JavaNode> expressions = selectNodes(GenericMethodsImplicit.class, JavaNode.class, "//ArgumentList");
 
         List<Variable> variables = new ArrayList<>();
         for (int i = 0; i < 2; ++i) {

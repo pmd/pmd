@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTDefaultValue extends AbstractJavaNode {
 
-public class ASTDefaultValue extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTDefaultValue(int id) {
+    ASTDefaultValue(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTDefaultValue(JavaParser p, int id) {
+    ASTDefaultValue(JavaParser p, int id) {
         super(p, id);
     }
 

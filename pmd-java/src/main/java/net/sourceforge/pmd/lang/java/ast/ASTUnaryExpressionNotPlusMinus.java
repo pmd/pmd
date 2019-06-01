@@ -22,17 +22,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @deprecated Merged into {@link ASTUnaryExpression}
  */
 @Deprecated
-public class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
+public final class ASTUnaryExpressionNotPlusMinus extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTUnaryExpressionNotPlusMinus(int id) {
+    ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTUnaryExpressionNotPlusMinus(JavaParser p, int id) {
+    ASTUnaryExpressionNotPlusMinus(JavaParser p, int id) {
         super(p, id);
     }
 

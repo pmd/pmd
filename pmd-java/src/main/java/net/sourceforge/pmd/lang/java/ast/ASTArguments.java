@@ -4,23 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * @deprecated Replaced by {@link ASTArgumentList}
  */
 @Deprecated
 public class ASTArguments extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTArguments(int id) {
+    ASTArguments(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTArguments(JavaParser p, int id) {
+    ASTArguments(JavaParser p, int id) {
         super(p, id);
     }
 

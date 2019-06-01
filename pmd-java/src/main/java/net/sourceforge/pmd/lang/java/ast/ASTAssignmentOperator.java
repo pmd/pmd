@@ -21,24 +21,14 @@ public class ASTAssignmentOperator extends AbstractJavaNode {
 
     private boolean isCompound;
 
-    @InternalApi
-    @Deprecated
-    public ASTAssignmentOperator(int id) {
+    ASTAssignmentOperator(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAssignmentOperator(JavaParser p, int id) {
+    ASTAssignmentOperator(JavaParser p, int id) {
         super(p, id);
     }
 
-    // TODO this could be determined from the image of the operator, no need to set it in the parser...
-    @InternalApi
-    @Deprecated
-    public void setCompound() {
-        isCompound = true;
-    }
 
     public boolean isCompound() {
         return this.isCompound;

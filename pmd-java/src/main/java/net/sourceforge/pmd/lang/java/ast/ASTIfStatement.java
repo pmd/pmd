@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Represents an {@code if} statement, possibly with an {@code else} statement.
  *
@@ -32,9 +29,7 @@ public final class ASTIfStatement extends AbstractJavaNode {
     }
 
 
-    @InternalApi
-    @Deprecated
-    public void setHasElse() {
+    void setHasElse() {
         this.hasElse = true;
     }
 

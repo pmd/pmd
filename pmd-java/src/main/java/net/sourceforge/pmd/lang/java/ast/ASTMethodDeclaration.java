@@ -27,9 +27,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTMethodDeclaration(JavaParser p, int id) {
+    ASTMethodDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

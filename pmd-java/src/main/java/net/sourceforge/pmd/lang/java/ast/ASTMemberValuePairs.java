@@ -21,18 +21,14 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @deprecated Removed from the tree, added no info
  */
 @Deprecated
-public class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
+public final class ASTMemberValuePairs extends AbstractJavaNode implements Iterable<ASTMemberValuePair> {
 
-    @InternalApi
-    @Deprecated
-    public ASTMemberValuePairs(int id) {
+    ASTMemberValuePairs(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTMemberValuePairs(JavaParser p, int id) {
+    ASTMemberValuePairs(JavaParser p, int id) {
         super(p, id);
     }
 

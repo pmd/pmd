@@ -4,41 +4,24 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 @Deprecated
 public class ASTPrimarySuffix extends AbstractJavaTypeNode {
 
     private boolean isArguments;
     private boolean isArrayDereference;
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimarySuffix(int id) {
+    ASTPrimarySuffix(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPrimarySuffix(JavaParser p, int id) {
+    ASTPrimarySuffix(JavaParser p, int id) {
         super(p, id);
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setIsArrayDereference() {
-        isArrayDereference = true;
     }
 
     public boolean isArrayDereference() {
         return isArrayDereference;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setIsArguments() {
-        this.isArguments = true;
-    }
 
     public boolean isArguments() {
         return this.isArguments;

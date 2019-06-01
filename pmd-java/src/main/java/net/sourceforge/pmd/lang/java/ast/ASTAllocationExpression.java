@@ -16,15 +16,11 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
 
     private JavaTypeQualifiedName qualifiedName;
 
-    @InternalApi
-    @Deprecated
-    public ASTAllocationExpression(int id) {
+    ASTAllocationExpression(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTAllocationExpression(JavaParser p, int id) {
+    ASTAllocationExpression(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -64,12 +60,6 @@ public class ASTAllocationExpression extends AbstractJavaTypeNode implements Jav
     @Override
     public JavaTypeQualifiedName getQualifiedName() {
         return qualifiedName;
-    }
-
-    @InternalApi
-    @Deprecated
-    public void setQualifiedName(JavaTypeQualifiedName qname) {
-        this.qualifiedName = qname;
     }
 
 }

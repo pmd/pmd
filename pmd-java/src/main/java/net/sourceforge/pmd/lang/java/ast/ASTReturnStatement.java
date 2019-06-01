@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTReturnStatement extends AbstractJavaNode {
 
-public class ASTReturnStatement extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTReturnStatement(int id) {
+    ASTReturnStatement(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTReturnStatement(JavaParser p, int id) {
+    ASTReturnStatement(JavaParser p, int id) {
         super(p, id);
     }
 

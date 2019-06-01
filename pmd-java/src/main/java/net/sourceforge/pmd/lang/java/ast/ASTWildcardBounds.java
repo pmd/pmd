@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents a type bound on a wildcard {@linkplain ASTTypeArgument type argument}.
  *
@@ -17,20 +15,16 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @deprecated Replaced by {@link ASTWildcardType}
  */
 @Deprecated
-public class ASTWildcardBounds extends AbstractJavaTypeNode {
+public final class ASTWildcardBounds extends AbstractJavaTypeNode {
 
     private boolean isUpperBound;
 
-    @InternalApi
-    @Deprecated
-    public ASTWildcardBounds(int id) {
+    ASTWildcardBounds(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTWildcardBounds(JavaParser p, int id) {
+    ASTWildcardBounds(JavaParser p, int id) {
         super(p, id);
     }
 

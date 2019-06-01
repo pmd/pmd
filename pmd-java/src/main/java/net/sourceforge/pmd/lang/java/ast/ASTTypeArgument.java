@@ -19,17 +19,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @deprecated Replaced by just an {@link ASTType}
  */
 @Deprecated
-public class ASTTypeArgument extends AbstractJavaTypeNode {
+public final class ASTTypeArgument extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeArgument(int id) {
+    ASTTypeArgument(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeArgument(JavaParser p, int id) {
+    ASTTypeArgument(JavaParser p, int id) {
         super(p, id);
     }
 

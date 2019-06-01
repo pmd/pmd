@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;
@@ -41,9 +39,7 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         return this.containsComment;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setContainsComment() {
+    void setContainsComment() {
         this.containsComment = true;
     }
 
