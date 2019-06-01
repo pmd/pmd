@@ -4,13 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 
-@Deprecated
-@InternalApi
-public abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLikeNode implements ASTMethodOrConstructorDeclaration {
+abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLikeNode implements ASTMethodOrConstructorDeclaration {
 
     private JavaOperationSignature signature;
 

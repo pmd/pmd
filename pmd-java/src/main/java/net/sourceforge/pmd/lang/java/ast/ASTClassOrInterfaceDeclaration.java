@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -26,22 +25,18 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
  * </pre>
  */
-public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
+public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
 
     private boolean isLocal;
     private boolean isLocalComputed; // guard for lazy evaluation of isLocal()
 
     private boolean isInterface;
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceDeclaration(int id) {
+    ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
+    ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -96,9 +91,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return this.isInterface;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setInterface() {
+    void setInterface() {
         this.isInterface = true;
     }
 

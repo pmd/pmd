@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTBreakStatement extends AbstractJavaNode {
 
-public class ASTBreakStatement extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTBreakStatement(int id) {
+    ASTBreakStatement(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTBreakStatement(JavaParser p, int id) {
+    ASTBreakStatement(JavaParser p, int id) {
         super(p, id);
     }
 
