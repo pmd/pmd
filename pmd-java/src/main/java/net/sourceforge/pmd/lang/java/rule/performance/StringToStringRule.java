@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.JavaNameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
@@ -45,7 +45,7 @@ public class StringToStringRule extends AbstractJavaRule {
         return isNotA(qualifier, ASTName.class);
     }
 
-    private boolean isNotA(NameOccurrence qualifier, Class<? extends AbstractJavaNode> type) {
+    private boolean isNotA(NameOccurrence qualifier, Class<? extends JavaNode> type) {
         ScopedNode location = qualifier.getLocation();
         return location == null || !(type.isAssignableFrom(location.getClass()));
     }

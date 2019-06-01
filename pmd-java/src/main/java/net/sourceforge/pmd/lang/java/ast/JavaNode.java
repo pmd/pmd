@@ -83,4 +83,9 @@ public interface JavaNode extends ScopedNode {
     }
 
 
+    /**
+     * FIXME figure that out
+     */
+    Comment comment();
+
 }

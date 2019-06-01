@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -91,11 +90,11 @@ public class UnusedPrivateFieldRule extends AbstractLombokAwareRule {
         List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = body
                 .findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
         List<ASTEnumConstant> enumConstants = body.findChildrenOfType(ASTEnumConstant.class);
-        List<AbstractJavaNode> nodes = new ArrayList<>();
+        List<JavaNode> nodes = new ArrayList<>();
         nodes.addAll(classOrInterfaceBodyDeclarations);
         nodes.addAll(enumConstants);
 
-        for (AbstractJavaNode node : nodes) {
+        for (JavaNode node : nodes) {
             for (ASTPrimarySuffix primarySuffix : node.findDescendantsOfType(ASTPrimarySuffix.class, true)) {
                 if (decl.getImage().equals(primarySuffix.getImage())) {
                     return true; // No violation

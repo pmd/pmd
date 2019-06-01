@@ -56,10 +56,10 @@ public final class ASTConstructorCall extends AbstractJavaTypeNode implements AS
          *       ...
          *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
          */
-        AbstractJavaNode firstChild = (AbstractJavaNode) jjtGetChild(0);
+        JavaNode firstChild = (JavaNode) jjtGetChild(0);
 
         if (firstChild instanceof ASTAmbiguousName) {
-            replaceChildAt(0, (AbstractJavaNode) ((ASTAmbiguousName) firstChild).forceExprContext());
+            replaceChildAt(0, ((ASTAmbiguousName) firstChild).forceExprContext());
         }
     }
 

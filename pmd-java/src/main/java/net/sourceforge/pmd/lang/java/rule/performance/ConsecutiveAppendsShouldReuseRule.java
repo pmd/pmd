@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
@@ -125,7 +125,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         return null;
     }
 
-    private boolean isAStringBuilderBuffer(AbstractJavaNode node, String name) {
+    private boolean isAStringBuilderBuffer(JavaNode node, String name) {
         Map<VariableNameDeclaration, List<NameOccurrence>> declarations = node.getScope()
                 .getDeclarations(VariableNameDeclaration.class);
         for (VariableNameDeclaration decl : declarations.keySet()) {

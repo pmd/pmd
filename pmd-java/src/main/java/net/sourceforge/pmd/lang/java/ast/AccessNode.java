@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 /**
  * This interface captures Java access modifiers.
  */
-public interface AccessNode extends Node {
+public interface AccessNode extends JavaNode {
 
     int PUBLIC = 0x0001;
     int PROTECTED = 0x0002;

@@ -113,6 +113,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     }
 
 
+    @Override
     public Comment comment() {
         return comment;
     }
@@ -250,7 +251,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     // assumes that the child has the same text bounds
     // as the old one. Used to replace an ambiguous name
     // with an unambiguous representation
-    void replaceChildAt(int idx, AbstractJavaNode newChild) {
+    void replaceChildAt(int idx, JavaNode newChild) {
 
         // parent of the old child must not be reset to null
         // as chances are we're reusing it as a child of the

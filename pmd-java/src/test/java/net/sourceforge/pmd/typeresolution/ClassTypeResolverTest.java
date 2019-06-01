@@ -65,6 +65,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
@@ -1766,7 +1767,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodInitialConstraints() throws NoSuchMethodException, JaxenException {
-        List<AbstractJavaNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaNode.class, "//ArgumentList");
+        List<JavaNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaNode.class, "//ArgumentList");
 
         List<Variable> variables = new ArrayList<>();
         for (int i = 0; i < 2; ++i) {

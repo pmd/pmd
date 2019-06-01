@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -272,7 +271,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
-    private void cont(AbstractJavaNode node) {
+    private void cont(JavaNode node) {
         super.visit(node, null);
         scopes.pop();
     }
