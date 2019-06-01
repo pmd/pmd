@@ -10,8 +10,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -68,10 +69,17 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                 continue;
             }
 
-            ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
-            if (method != null && (!method.isSynchronized() || !method.isStatic())) {
-                addViolation(data, n);
+            ASTSynchronizedStatement syncStatement = n.getFirstParentOfType(ASTSynchronizedStatement.class);
+            if (syncStatement != null) {
+                ASTExpression expression = syncStatement.getFirstChildOfType(ASTExpression.class);
+                if (expression != null) {
+                    ASTName name = expression.getFirstDescendantOfType(ASTName.class);
+                    if (name != null && name.hasImageEqualTo(var.getVariableName())) {
+                        continue;
+                    }
+                }
             }
+            addViolation(data, n);
         }
         return data;
     }
