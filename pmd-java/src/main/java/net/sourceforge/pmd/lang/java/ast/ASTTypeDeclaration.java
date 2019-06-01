@@ -5,19 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTTypeDeclaration extends AbstractJavaTypeNode implements CanSuppressWarnings {
+public final class ASTTypeDeclaration extends AbstractJavaTypeNode implements CanSuppressWarnings {
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeDeclaration(int id) {
+    ASTTypeDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeDeclaration(JavaParser p, int id) {
+    ASTTypeDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

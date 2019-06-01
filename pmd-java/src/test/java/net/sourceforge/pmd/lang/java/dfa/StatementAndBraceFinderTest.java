@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -77,6 +78,8 @@ public class StatementAndBraceFinderTest {
         ASTCompilationUnit astCompilationUnit = parseJava15(TEST1);
 
         sbf.buildDataFlowFor(astCompilationUnit.getFirstChildOfType(ASTMethodDeclaration.class));
+        // FIXME look at history of this test
+        // sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
         sbf.buildDataFlowFor(astCompilationUnit);
     }
 

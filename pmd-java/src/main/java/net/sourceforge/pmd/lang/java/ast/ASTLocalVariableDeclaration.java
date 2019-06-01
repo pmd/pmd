@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
 
 /**
@@ -25,17 +24,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
+public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
 
-    @InternalApi
-    @Deprecated
-    public ASTLocalVariableDeclaration(int id) {
+    ASTLocalVariableDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTLocalVariableDeclaration(JavaParser p, int id) {
+    ASTLocalVariableDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

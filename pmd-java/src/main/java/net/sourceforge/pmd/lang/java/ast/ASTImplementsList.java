@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 
 /**
  * Represents the {@code implements} clause of a class declaration.
@@ -17,17 +15,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *                ( "," (TypeAnnotation)* ClassOrInterfaceType )*
  * </pre>
  */
-public class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTImplementsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
 
-    @InternalApi
-    @Deprecated
-    public ASTImplementsList(int id) {
+    ASTImplementsList(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTImplementsList(JavaParser p, int id) {
+    ASTImplementsList(JavaParser p, int id) {
         super(p, id);
     }
 

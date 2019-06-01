@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  *
  * </pre>
  */
-public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
+public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration implements DFAGraphMethod {
 
 
     @InternalApi

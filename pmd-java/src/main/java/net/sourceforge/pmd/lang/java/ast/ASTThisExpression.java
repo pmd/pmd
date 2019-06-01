@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * </pre>
  */
 public final class ASTThisExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LeftRecursiveNode {
+
     ASTThisExpression(int id) {
         super(id);
     }

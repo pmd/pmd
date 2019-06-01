@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTResourceSpecification extends AbstractJavaNode {
 
-public class ASTResourceSpecification extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTResourceSpecification(int id) {
+    ASTResourceSpecification(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTResourceSpecification(JavaParser p, int id) {
+    ASTResourceSpecification(JavaParser p, int id) {
         super(p, id);
     }
 

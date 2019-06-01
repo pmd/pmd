@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 
 /**
  * Try statement node.
@@ -17,17 +15,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTTryStatement extends AbstractJavaNode {
+public final class ASTTryStatement extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTTryStatement(int id) {
+    ASTTryStatement(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTryStatement(JavaParser p, int id) {
+    ASTTryStatement(JavaParser p, int id) {
         super(p, id);
     }
 

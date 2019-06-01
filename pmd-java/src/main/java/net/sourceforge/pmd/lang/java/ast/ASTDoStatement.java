@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Represents a {@code do ... while} statement.
  *
@@ -17,18 +14,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTDoStatement extends AbstractJavaNode {
+public final class ASTDoStatement extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTDoStatement(int id) {
+    ASTDoStatement(int id) {
         super(id);
     }
 
-
-    @InternalApi
-    @Deprecated
-    public ASTDoStatement(JavaParser p, int id) {
+    ASTDoStatement(JavaParser p, int id) {
         super(p, id);
     }
 

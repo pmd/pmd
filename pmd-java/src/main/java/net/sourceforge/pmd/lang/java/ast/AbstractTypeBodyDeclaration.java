@@ -22,8 +22,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  * @since 6.2.0
  */
-@Deprecated
-@InternalApi
 abstract class AbstractTypeBodyDeclaration extends AbstractJavaNode implements ASTAnyTypeBodyDeclaration {
 
     private DeclarationKind kind;

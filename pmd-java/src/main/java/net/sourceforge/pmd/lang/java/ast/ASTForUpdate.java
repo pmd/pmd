@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Update clause of a {@linkplain ASTForStatement for statement}.
  *
@@ -16,18 +13,14 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTForUpdate extends AbstractJavaNode {
+public final class ASTForUpdate extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTForUpdate(int id) {
+    ASTForUpdate(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTForUpdate(JavaParser p, int id) {
+    ASTForUpdate(JavaParser p, int id) {
         super(p, id);
     }
 

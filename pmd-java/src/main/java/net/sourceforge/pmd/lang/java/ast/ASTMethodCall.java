@@ -21,8 +21,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
-
-
     ASTMethodCall(int id) {
         super(id);
     }

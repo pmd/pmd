@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Represents a {@code while} statement.
  *
@@ -16,18 +13,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTWhileStatement extends AbstractJavaNode {
+public final class ASTWhileStatement extends AbstractJavaNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTWhileStatement(int id) {
+    ASTWhileStatement(int id) {
         super(id);
     }
 
-
-    @InternalApi
-    @Deprecated
-    public ASTWhileStatement(JavaParser p, int id) {
+    ASTWhileStatement(JavaParser p, int id) {
         super(p, id);
     }
 

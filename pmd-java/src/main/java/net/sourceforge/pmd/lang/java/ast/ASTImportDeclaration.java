@@ -24,21 +24,17 @@ import net.sourceforge.pmd.annotation.InternalApi;
 // for static imports of a method?
 // I don't think we can work out a spec without surprising corner cases, and #1207 will abstract
 // things away anyway, so I think we should make it a regular node
-public class ASTImportDeclaration extends AbstractJavaTypeNode {
+public final class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     private boolean isImportOnDemand;
     private boolean isStatic;
     private Package pkg;
 
-    @InternalApi
-    @Deprecated
-    public ASTImportDeclaration(int id) {
+    ASTImportDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTImportDeclaration(JavaParser p, int id) {
+    ASTImportDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

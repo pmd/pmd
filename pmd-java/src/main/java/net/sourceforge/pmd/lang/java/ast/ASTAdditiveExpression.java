@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 /**
  * Represents an addition operation on two or more values, or string concatenation.
  * This has a precedence greater than {@link ASTShiftExpression}, and lower
@@ -34,8 +32,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * </table>
  *
  */
-public class ASTAdditiveExpression extends AbstractLrBinaryExpr {
-
+public final class ASTAdditiveExpression extends AbstractLrBinaryExpr {
 
     ASTAdditiveExpression(int id) {
         super(id);

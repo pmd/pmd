@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 
@@ -23,16 +22,12 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public class ASTVariableDeclarator extends AbstractJavaTypeNode {
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclarator(int id) {
+    ASTVariableDeclarator(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclarator(JavaParser p, int id) {
+    ASTVariableDeclarator(JavaParser p, int id) {
         super(p, id);
     }
 

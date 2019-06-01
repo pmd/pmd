@@ -10,7 +10,7 @@ import java.util.List;
 import net.sourceforge.pmd.annotation.InternalApi;
 
 
-public class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
+public final class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
 
     @InternalApi
     @Deprecated
@@ -18,9 +18,7 @@ public class ASTFormalParameters extends AbstractJavaNode implements Iterable<AS
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTFormalParameters(JavaParser p, int id) {
+    ASTFormalParameters(JavaParser p, int id) {
         super(p, id);
     }
 

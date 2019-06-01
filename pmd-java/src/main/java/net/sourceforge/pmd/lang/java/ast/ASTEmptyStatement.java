@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTEmptyStatement extends AbstractJavaNode {
 
-public class ASTEmptyStatement extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTEmptyStatement(int id) {
+    ASTEmptyStatement(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTEmptyStatement(JavaParser p, int id) {
+    ASTEmptyStatement(JavaParser p, int id) {
         super(p, id);
     }
 

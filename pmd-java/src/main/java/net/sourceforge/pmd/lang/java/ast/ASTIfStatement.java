@@ -17,21 +17,17 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTIfStatement extends AbstractJavaNode {
+public final class ASTIfStatement extends AbstractJavaNode {
 
     private boolean hasElse;
 
 
-    @InternalApi
-    @Deprecated
-    public ASTIfStatement(int id) {
+    ASTIfStatement(int id) {
         super(id);
     }
 
 
-    @InternalApi
-    @Deprecated
-    public ASTIfStatement(JavaParser p, int id) {
+    ASTIfStatement(JavaParser p, int id) {
         super(p, id);
     }
 

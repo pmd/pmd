@@ -5,19 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.annotation.InternalApi;
 
-public class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
+public final class ASTClassOrInterfaceBodyDeclaration extends AbstractTypeBodyDeclaration implements CanSuppressWarnings, ASTAnyTypeBodyDeclaration {
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(int id) {
+    ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
+    ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -36,20 +35,16 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration>, Iterable<ASTVariableDeclaratorId> {
+public final class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements Dimensionable, SignedNode<ASTFieldDeclaration>, Iterable<ASTVariableDeclaratorId> {
 
     private JavaFieldSignature signature;
 
 
-    @InternalApi
-    @Deprecated
-    public ASTFieldDeclaration(int id) {
+    ASTFieldDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTFieldDeclaration(JavaParser p, int id) {
+    ASTFieldDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

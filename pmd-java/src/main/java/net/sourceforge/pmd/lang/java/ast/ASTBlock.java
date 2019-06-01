@@ -4,21 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-public class ASTBlock extends AbstractJavaNode {
+public final class ASTBlock extends AbstractJavaNode {
 
     private boolean containsComment;
 
-    @InternalApi
-    @Deprecated
-    public ASTBlock(int id) {
+    ASTBlock(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTBlock(JavaParser p, int id) {
+    ASTBlock(JavaParser p, int id) {
         super(p, id);
     }
 
@@ -38,9 +32,7 @@ public class ASTBlock extends AbstractJavaNode {
         return this.containsComment;
     }
 
-    @InternalApi
-    @Deprecated
-    public void setContainsComment() {
+    void setContainsComment() {
         this.containsComment = true;
     }
 

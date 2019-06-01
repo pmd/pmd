@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTLabeledStatement extends AbstractJavaNode {
 
-public class ASTLabeledStatement extends AbstractJavaNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTLabeledStatement(int id) {
+    ASTLabeledStatement(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTLabeledStatement(JavaParser p, int id) {
+    ASTLabeledStatement(JavaParser p, int id) {
         super(p, id);
     }
 

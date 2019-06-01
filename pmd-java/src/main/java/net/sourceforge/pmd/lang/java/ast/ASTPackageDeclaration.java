@@ -4,19 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
 
-public class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
-
-    @InternalApi
-    @Deprecated
-    public ASTPackageDeclaration(int id) {
+    ASTPackageDeclaration(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTPackageDeclaration(JavaParser p, int id) {
+    ASTPackageDeclaration(JavaParser p, int id) {
         super(p, id);
     }
 

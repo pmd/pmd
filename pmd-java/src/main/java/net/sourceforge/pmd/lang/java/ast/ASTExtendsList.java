@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
 
 /**
  * Represents the {@code extends} clause of a class or interface declaration.
@@ -19,17 +17,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * ExtendsList ::= "extends" {@link ASTType Type} ( "," {@link ASTType Type} )*
  * </pre>
  */
-public class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
+public final class ASTExtendsList extends AbstractJavaNode implements Iterable<ASTClassOrInterfaceType> {
 
-    @InternalApi
-    @Deprecated
-    public ASTExtendsList(int id) {
+    ASTExtendsList(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTExtendsList(JavaParser p, int id) {
+    ASTExtendsList(JavaParser p, int id) {
         super(p, id);
     }
 

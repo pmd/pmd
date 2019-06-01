@@ -19,17 +19,13 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * </pre>
  */
-public class ASTTypeParameters extends AbstractJavaNode implements Iterable<ASTTypeParameter> {
+public final class ASTTypeParameters extends AbstractJavaNode implements Iterable<ASTTypeParameter> {
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeParameters(int id) {
+    ASTTypeParameters(int id) {
         super(id);
     }
 
-    @InternalApi
-    @Deprecated
-    public ASTTypeParameters(JavaParser p, int id) {
+    ASTTypeParameters(JavaParser p, int id) {
         super(p, id);
     }
 

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode {
+public final class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode {
 
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
