@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessTypeNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.CommentUtil;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
@@ -61,10 +62,11 @@ public abstract class AbstractCommentRule extends AbstractJavaRule {
     }
 
     protected void assignCommentsToDeclarations(ASTCompilationUnit cUnit) {
+        // FIXME make that a processing stage!
 
         SortedMap<Integer, Node> itemsByLineNumber = orderedCommentsAndDeclarations(cUnit);
         FormalComment lastComment = null;
-        AbstractJavaAccessNode lastNode = null;
+        AccessNode lastNode = null;
 
         for (Entry<Integer, Node> entry : itemsByLineNumber.entrySet()) {
             Node value = entry.getValue();

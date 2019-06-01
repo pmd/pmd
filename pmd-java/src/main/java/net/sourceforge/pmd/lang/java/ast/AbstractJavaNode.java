@@ -6,25 +6,25 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
     private Comment comment;
 
-
-    public AbstractJavaNode(int id) {
+    AbstractJavaNode(int id) {
         super(id);
     }
 
-
-    public AbstractJavaNode(JavaParser parser, int id) {
+    AbstractJavaNode(JavaParser parser, int id) {
         super(id);
         this.parser = parser;
     }
@@ -96,18 +96,21 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return scope;
     }
 
-
+    @InternalApi
+    @Deprecated
     @Override
     public void setScope(Scope scope) {
         this.scope = scope;
     }
 
-
+    @InternalApi
+    @Deprecated
     public void comment(Comment theComment) {
         comment = theComment;
     }
 
 
+    @Override
     public Comment comment() {
         return comment;
     }
@@ -245,7 +248,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     // assumes that the child has the same text bounds
     // as the old one. Used to replace an ambiguous name
     // with an unambiguous representation
-    void replaceChildAt(int idx, AbstractJavaNode newChild) {
+    void replaceChildAt(int idx, JavaNode newChild) {
 
         // parent of the old child must not be reset to null
         // as chances are we're reusing it as a child of the
@@ -256,7 +259,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
 
         children[idx] = newChild;
     }
-
 
     @Override
     public final String getXPathNodeName() {

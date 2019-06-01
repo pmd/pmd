@@ -33,7 +33,7 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode
         // If any of its left children are also AdditiveExpressions with the same operator,
         // we adopt their children to flatten the node
 
-        AbstractJavaNode first = (AbstractJavaNode) jjtGetChild(0);
+        JavaNode first = (JavaNode) jjtGetChild(0);
         // they could be of different types, but the getOp check ensures
         // they are of the same type
         if (first instanceof AbstractLrBinaryExpr && ((AbstractLrBinaryExpr) first).getOp() == getOp()) {

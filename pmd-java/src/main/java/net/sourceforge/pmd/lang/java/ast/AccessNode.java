@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 /**
  * This interface captures Java access modifiers.
  */
-public interface AccessNode extends Node {
+public interface AccessNode extends JavaNode {
 
     int PUBLIC = 0x0001;
     int PROTECTED = 0x0002;
@@ -24,57 +22,49 @@ public interface AccessNode extends Node {
     int STRICTFP = 0x1000;
     int DEFAULT = 0x2000;
 
+
     int getModifiers();
 
-    void setModifiers(int modifiers);
 
     boolean isPublic();
 
-    void setPublic(boolean isPublic);
+
 
     boolean isProtected();
 
-    void setProtected(boolean isProtected);
 
     boolean isPrivate();
 
-    void setPrivate(boolean isPrivate);
 
     boolean isAbstract();
 
-    void setAbstract(boolean isAbstract);
+
 
     boolean isStatic();
 
-    void setStatic(boolean isStatic);
 
     boolean isFinal();
 
-    void setFinal(boolean isFinal);
+
 
     boolean isSynchronized();
 
-    void setSynchronized(boolean isSynchronized);
+
 
     boolean isNative();
 
-    void setNative(boolean isNative);
 
     boolean isTransient();
 
-    void setTransient(boolean isTransient);
 
     boolean isVolatile();
 
-    void setVolatile(boolean isVolatile);
 
     boolean isStrictfp();
 
-    void setStrictfp(boolean isStrictfp);
 
     boolean isPackagePrivate();
 
-    void setDefault(boolean isDefault);
 
     boolean isDefault();
 }

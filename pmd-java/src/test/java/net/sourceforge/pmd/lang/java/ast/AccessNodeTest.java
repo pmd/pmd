@@ -34,7 +34,7 @@ public class AccessNodeTest {
 
     @Test
     public void testStatic() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not static.", node.isStatic());
         node.setStatic(true);
         assertTrue("Node set to static, not static.", node.isStatic());
@@ -42,7 +42,7 @@ public class AccessNodeTest {
 
     @Test
     public void testPublic() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not public.", node.isPublic());
         node.setPublic(true);
         assertTrue("Node set to public, not public.", node.isPublic());
@@ -50,7 +50,7 @@ public class AccessNodeTest {
 
     @Test
     public void testProtected() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not protected.", node.isProtected());
         node.setProtected(true);
         assertTrue("Node set to protected, not protected.", node.isProtected());
@@ -58,7 +58,7 @@ public class AccessNodeTest {
 
     @Test
     public void testPrivate() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not private.", node.isPrivate());
         node.setPrivate(true);
         assertTrue("Node set to private, not private.", node.isPrivate());
@@ -66,7 +66,7 @@ public class AccessNodeTest {
 
     @Test
     public void testFinal() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not final.", node.isFinal());
         node.setFinal(true);
         assertTrue("Node set to final, not final.", node.isFinal());
@@ -74,7 +74,7 @@ public class AccessNodeTest {
 
     @Test
     public void testSynchronized() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not synchronized.", node.isSynchronized());
         node.setSynchronized(true);
         assertTrue("Node set to synchronized, not synchronized.", node.isSynchronized());
@@ -82,7 +82,7 @@ public class AccessNodeTest {
 
     @Test
     public void testVolatile() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not volatile.", node.isVolatile());
         node.setVolatile(true);
         assertTrue("Node set to volatile, not volatile.", node.isVolatile());
@@ -90,7 +90,7 @@ public class AccessNodeTest {
 
     @Test
     public void testTransient() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not transient.", node.isTransient());
         node.setTransient(true);
         assertTrue("Node set to transient, not transient.", node.isTransient());
@@ -98,7 +98,7 @@ public class AccessNodeTest {
 
     @Test
     public void testNative() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not native.", node.isNative());
         node.setNative(true);
         assertTrue("Node set to native, not native.", node.isNative());
@@ -106,7 +106,7 @@ public class AccessNodeTest {
 
     @Test
     public void testAbstract() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not abstract.", node.isAbstract());
         node.setAbstract(true);
         assertTrue("Node set to abstract, not abstract.", node.isAbstract());
@@ -114,7 +114,7 @@ public class AccessNodeTest {
 
     @Test
     public void testStrict() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not strict.", node.isStrictfp());
         node.setStrictfp(true);
         assertTrue("Node set to strict, not strict.", node.isStrictfp());
@@ -122,7 +122,7 @@ public class AccessNodeTest {
 
     @Test
     public void testPackagePrivate() {
-        AccessNode node = new MyAccessNode(1);
+        AbstractJavaAccessNode node = new MyAccessNode(1);
         assertTrue("Node should default to package private.", node.isPackagePrivate());
         node.setPrivate(true);
         assertFalse("Node set to private, still package private.", node.isPackagePrivate());

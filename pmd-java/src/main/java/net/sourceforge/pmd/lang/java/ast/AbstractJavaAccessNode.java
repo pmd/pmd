@@ -4,15 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode implements AccessNode {
 
     private int modifiers;
 
-    public AbstractJavaAccessNode(int i) {
+    AbstractJavaAccessNode(int i) {
         super(i);
     }
 
-    public AbstractJavaAccessNode(JavaParser parser, int i) {
+    AbstractJavaAccessNode(JavaParser parser, int i) {
         super(parser, i);
     }
 
@@ -21,8 +25,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return this.modifiers;
     }
 
-    @Override
-    public void setModifiers(int modifiers) {
+    void setModifiers(int modifiers) {
         this.modifiers = modifiers;
     }
 
@@ -31,7 +34,8 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PUBLIC);
     }
 
-    @Override
+    @InternalApi
+    @Deprecated
     public void setPublic(boolean isPublic) {
         setModifier(isPublic, PUBLIC);
     }
@@ -41,8 +45,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PROTECTED);
     }
 
-    @Override
-    public void setProtected(boolean isProtected) {
+    void setProtected(boolean isProtected) {
         setModifier(isProtected, PROTECTED);
     }
 
@@ -51,8 +54,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PRIVATE);
     }
 
-    @Override
-    public void setPrivate(boolean isPrivate) {
+    void setPrivate(boolean isPrivate) {
         setModifier(isPrivate, PRIVATE);
     }
 
@@ -61,8 +63,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(ABSTRACT);
     }
 
-    @Override
-    public void setAbstract(boolean isAbstract) {
+    void setAbstract(boolean isAbstract) {
         setModifier(isAbstract, ABSTRACT);
     }
 
@@ -71,8 +72,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(STATIC);
     }
 
-    @Override
-    public void setStatic(boolean isStatic) {
+    void setStatic(boolean isStatic) {
         setModifier(isStatic, STATIC);
     }
 
@@ -81,8 +81,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(FINAL);
     }
 
-    @Override
-    public void setFinal(boolean isFinal) {
+    void setFinal(boolean isFinal) {
         setModifier(isFinal, FINAL);
     }
 
@@ -91,8 +90,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(SYNCHRONIZED);
     }
 
-    @Override
-    public void setSynchronized(boolean isSynchronized) {
+    void setSynchronized(boolean isSynchronized) {
         setModifier(isSynchronized, SYNCHRONIZED);
     }
 
@@ -101,8 +99,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(NATIVE);
     }
 
-    @Override
-    public void setNative(boolean isNative) {
+    void setNative(boolean isNative) {
         setModifier(isNative, NATIVE);
     }
 
@@ -111,8 +108,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(TRANSIENT);
     }
 
-    @Override
-    public void setTransient(boolean isTransient) {
+    void setTransient(boolean isTransient) {
         setModifier(isTransient, TRANSIENT);
     }
 
@@ -121,8 +117,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(VOLATILE);
     }
 
-    @Override
-    public void setVolatile(boolean isVolative) {
+    void setVolatile(boolean isVolative) {
         setModifier(isVolative, VOLATILE);
     }
 
@@ -131,8 +126,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(STRICTFP);
     }
 
-    @Override
-    public void setStrictfp(boolean isStrictfp) {
+    void setStrictfp(boolean isStrictfp) {
         setModifier(isStrictfp, STRICTFP);
     }
 
@@ -141,8 +135,7 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(DEFAULT);
     }
 
-    @Override
-    public void setDefault(boolean isDefault) {
+    void setDefault(boolean isDefault) {
         setModifier(isDefault, DEFAULT);
     }
 
@@ -150,6 +143,8 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return (modifiers & mask) == mask;
     }
 
+    @InternalApi
+    @Deprecated
     private void setModifier(boolean enable, int mask) {
         if (enable) {
             this.modifiers |= mask;

@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 
 
-public abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLikeNode implements ASTMethodOrConstructorDeclaration {
+abstract class AbstractMethodOrConstructorDeclaration extends AbstractMethodLikeNode implements ASTMethodOrConstructorDeclaration {
 
     private JavaOperationSignature signature;
 

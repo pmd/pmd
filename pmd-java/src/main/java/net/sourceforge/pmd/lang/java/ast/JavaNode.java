@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
@@ -62,6 +64,8 @@ public interface JavaNode extends ScopedNode {
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
 
+    @InternalApi
+    @Deprecated
     void setScope(Scope scope);
 
 
@@ -78,5 +82,10 @@ public interface JavaNode extends ScopedNode {
         return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
     }
 
+
+    /**
+     * FIXME figure that out
+     */
+    Comment comment();
 
 }
