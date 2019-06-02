@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 
 /**
  * The "super" keyword. Technically not an expression but it's easier to analyse that way.
