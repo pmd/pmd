@@ -19,7 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  *
  */
-public final class ASTEnumBody extends AbstractJavaNode {
+public final class ASTEnumBody extends AbstractJavaNode implements ASTTypeBody {
 
     ASTEnumBody(int id) {
         super(id);
