@@ -58,20 +58,13 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
 
 
     @Override
-    public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.forClass(type);
-    }
-
-
-    @Override
     @Nullable
     public JavaTypeDefinition getTypeDefinition() {
         return typeDefinition;
     }
 
 
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+    void setTypeDefinition(JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;
     }
 

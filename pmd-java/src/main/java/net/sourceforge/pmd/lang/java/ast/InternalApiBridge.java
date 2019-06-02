@@ -53,6 +53,8 @@ public final class InternalApiBridge {
             ((AbstractJavaTypeNode) node).setTypeDefinition(definition);
         } else if (node instanceof AbstractJavaAccessTypeNode) {
             ((AbstractJavaAccessTypeNode) node).setTypeDefinition(definition);
+        } else if (node instanceof ASTLambdaExpression) {
+            ((ASTLambdaExpression) node).setTypeDefinition(definition);
         }
     }
 
