@@ -236,7 +236,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         String opname = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-        node.setQualifiedName(contextOperationQName(opname, false));
+        InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return super.visit(node, data);
     }
 
@@ -244,7 +244,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         String opname = getOperationName(classNames.head(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-        node.setQualifiedName(contextOperationQName(opname, false));
+        InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return super.visit(node, data);
     }
 
@@ -305,7 +305,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         String opname = "lambda$" + findLambdaScopeNameSegment(node)
                 + "$" + lambdaCounters.peek().getAndIncrement();
 
-        node.setQualifiedName(contextOperationQName(opname, true));
+        InternalApiBridge.setQname(node, contextOperationQName(opname, true));
         return super.visit(node, data);
     }
 

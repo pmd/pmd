@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.Scope;
@@ -34,6 +35,10 @@ public final class InternalApiBridge {
         ((AbstractAnyTypeDeclaration) declaration).setQualifiedName(qualifiedName);
     }
 
+    public static void setQname(MethodLikeNode node, JavaOperationQualifiedName qualifiedName) {
+        ((AbstractMethodLikeNode) node).setQualifiedName(qualifiedName);
+    }
+
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {
         if (node instanceof AbstractJavaTypeNode) {
             ((AbstractJavaTypeNode) node).setTypeDefinition(definition);
@@ -41,5 +46,6 @@ public final class InternalApiBridge {
             ((AbstractJavaAccessTypeNode) node).setTypeDefinition(definition);
         }
     }
+
 
 }
