@@ -129,21 +129,4 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode {
     }
 
 
-    /**
-     * Noop, the type of this node is defined by the type
-     * of the declarator id.
-     */
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition type) {
-        // see javadoc
-    }
-
-    /**
-     * Noop, the type of this node is defined by the type
-     * of the declarator id.
-     */
-    @Override
-    public void setType(Class<?> type) {
-        // see javadoc
-    }
 }

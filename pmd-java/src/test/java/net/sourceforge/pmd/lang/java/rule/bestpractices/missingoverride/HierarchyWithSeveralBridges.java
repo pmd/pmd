@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
 public abstract class HierarchyWithSeveralBridges<T extends Node> {
 
@@ -19,7 +20,7 @@ public abstract class HierarchyWithSeveralBridges<T extends Node> {
         abstract void foo(T node);
     }
 
-    public abstract static class SubclassTwo<T extends AbstractJavaTypeNode> extends SubclassOne<T> {
+    public abstract static class SubclassTwo<T extends TypeNode> extends SubclassOne<T> {
         @Override
         void foo(T node) {
 

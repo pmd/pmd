@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode implements TypeNode {
@@ -31,22 +30,12 @@ abstract class AbstractJavaAccessTypeNode extends AbstractJavaAccessNode impleme
         return null;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setType(Class<?> type) {
-        typeDefinition = JavaTypeDefinition.forClass(type);
-    }
-
     @Override
     public JavaTypeDefinition getTypeDefinition() {
         return typeDefinition;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTypeDefinition(JavaTypeDefinition typeDefinition) {
+    void setTypeDefinition(JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;
     }
 }
