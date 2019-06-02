@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 /**
@@ -26,6 +27,10 @@ public final class InternalApiBridge {
 
     public static void setModifier(AccessNode node, int modifier) {
         ((AbstractJavaAccessNode) node).setModifier(true, modifier);
+    }
+
+    public static void setQname(ASTAnyTypeDeclaration declaration, JavaTypeQualifiedName qualifiedName) {
+        ((AbstractAnyTypeDeclaration) declaration).setQualifiedName(qualifiedName);
     }
 
 }

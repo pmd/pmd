@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -210,7 +210,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
         updateClassContext(node.getImage(), localIndex);
 
-        ((AbstractAnyTypeDeclaration) node).setQualifiedName(contextClassQName());
+        InternalApiBridge.setQname(node, contextClassQName());
 
         super.visit(node, data);
 
