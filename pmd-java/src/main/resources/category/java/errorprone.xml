@@ -2505,10 +2505,11 @@ confusing.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//Initializer[@Static='false']
+//Initializer[@Static=false()][not(ancestor::*[3][self::AllocationExpression or self::EnumConstant])]
 ]]>
                 </value>
             </property>
