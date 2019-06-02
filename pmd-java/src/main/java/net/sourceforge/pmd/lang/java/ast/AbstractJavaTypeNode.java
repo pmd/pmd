@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -19,15 +18,11 @@ abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode
 
     private JavaTypeDefinition typeDefinition;
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(int i) {
+    AbstractJavaTypeNode(int i) {
         super(i);
     }
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(JavaParser p, int i) {
+    AbstractJavaTypeNode(JavaParser p, int i) {
         super(p, i);
     }
 
