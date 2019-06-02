@@ -20,5 +20,9 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).setScope(scope);
     }
 
+    public static void setComment(JavaNode node, Comment comment) {
+        ((AbstractJavaNode) node).comment(comment);
+    }
+
 
 }

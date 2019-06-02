@@ -6,15 +6,12 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
-@Deprecated
-@InternalApi
-public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
+abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
@@ -103,9 +100,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         this.scope = scope;
     }
 
-    @InternalApi
-    @Deprecated
-    public void comment(Comment theComment) {
+    void comment(Comment theComment) {
         comment = theComment;
     }
 
