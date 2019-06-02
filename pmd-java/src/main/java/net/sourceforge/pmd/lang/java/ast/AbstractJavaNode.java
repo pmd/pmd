@@ -99,10 +99,7 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return scope;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setScope(Scope scope) {
+    void setScope(Scope scope) {
         this.scope = scope;
     }
 
