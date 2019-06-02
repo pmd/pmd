@@ -34,103 +34,103 @@ public class AccessNodeTest {
 
     @Test
     public void testStatic() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not static.", node.isStatic());
-        node.setStatic(true);
+        InternalApiBridge.setModifier(node, AccessNode.STATIC);
         assertTrue("Node set to static, not static.", node.isStatic());
     }
 
     @Test
     public void testPublic() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not public.", node.isPublic());
-        node.setPublic(true);
+        InternalApiBridge.setModifier(node, AccessNode.PUBLIC);
         assertTrue("Node set to public, not public.", node.isPublic());
     }
 
     @Test
     public void testProtected() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not protected.", node.isProtected());
-        node.setProtected(true);
+        InternalApiBridge.setModifier(node, AccessNode.PROTECTED);
         assertTrue("Node set to protected, not protected.", node.isProtected());
     }
 
     @Test
     public void testPrivate() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not private.", node.isPrivate());
-        node.setPrivate(true);
+        InternalApiBridge.setModifier(node, AccessNode.PRIVATE);
         assertTrue("Node set to private, not private.", node.isPrivate());
     }
 
     @Test
     public void testFinal() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not final.", node.isFinal());
-        node.setFinal(true);
+        InternalApiBridge.setModifier(node, AccessNode.FINAL);
         assertTrue("Node set to final, not final.", node.isFinal());
     }
 
     @Test
     public void testSynchronized() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not synchronized.", node.isSynchronized());
-        node.setSynchronized(true);
+        InternalApiBridge.setModifier(node, AccessNode.SYNCHRONIZED);
         assertTrue("Node set to synchronized, not synchronized.", node.isSynchronized());
     }
 
     @Test
     public void testVolatile() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not volatile.", node.isVolatile());
-        node.setVolatile(true);
+        InternalApiBridge.setModifier(node, AccessNode.VOLATILE);
         assertTrue("Node set to volatile, not volatile.", node.isVolatile());
     }
 
     @Test
     public void testTransient() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not transient.", node.isTransient());
-        node.setTransient(true);
+        InternalApiBridge.setModifier(node, AccessNode.TRANSIENT);
         assertTrue("Node set to transient, not transient.", node.isTransient());
     }
 
     @Test
     public void testNative() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not native.", node.isNative());
-        node.setNative(true);
+        InternalApiBridge.setModifier(node, AccessNode.NATIVE);
         assertTrue("Node set to native, not native.", node.isNative());
     }
 
     @Test
     public void testAbstract() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not abstract.", node.isAbstract());
-        node.setAbstract(true);
+        InternalApiBridge.setModifier(node, AccessNode.ABSTRACT);
         assertTrue("Node set to abstract, not abstract.", node.isAbstract());
     }
 
     @Test
     public void testStrict() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertFalse("Node should default to not strict.", node.isStrictfp());
-        node.setStrictfp(true);
+        InternalApiBridge.setModifier(node, AccessNode.STRICTFP);
         assertTrue("Node set to strict, not strict.", node.isStrictfp());
     }
 
     @Test
     public void testPackagePrivate() {
-        AbstractJavaAccessNode node = new MyAccessNode(1);
+        AccessNode node = new MyAccessNode(1);
         assertTrue("Node should default to package private.", node.isPackagePrivate());
-        node.setPrivate(true);
+        InternalApiBridge.setModifier(node, AccessNode.PRIVATE);
         assertFalse("Node set to private, still package private.", node.isPackagePrivate());
         node = new MyAccessNode(1);
-        node.setPublic(true);
+        InternalApiBridge.setModifier(node, AccessNode.PUBLIC);
         assertFalse("Node set to public, still package private.", node.isPackagePrivate());
         node = new MyAccessNode(1);
-        node.setProtected(true);
+        InternalApiBridge.setModifier(node, AccessNode.PROTECTED);
         assertFalse("Node set to protected, still package private.", node.isPackagePrivate());
     }
 }

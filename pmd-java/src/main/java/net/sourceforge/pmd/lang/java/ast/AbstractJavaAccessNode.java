@@ -4,11 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-@Deprecated
-@InternalApi
-public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode implements AccessNode {
+abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode implements AccessNode {
 
     private int modifiers;
 
@@ -34,19 +30,9 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PUBLIC);
     }
 
-    @InternalApi
-    @Deprecated
-    public void setPublic(boolean isPublic) {
-        setModifier(isPublic, PUBLIC);
-    }
-
     @Override
     public boolean isProtected() {
         return isModifier(PROTECTED);
-    }
-
-    void setProtected(boolean isProtected) {
-        setModifier(isProtected, PROTECTED);
     }
 
     @Override
@@ -54,35 +40,26 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(PRIVATE);
     }
 
-    void setPrivate(boolean isPrivate) {
-        setModifier(isPrivate, PRIVATE);
-    }
 
     @Override
     public boolean isAbstract() {
         return isModifier(ABSTRACT);
     }
 
-    void setAbstract(boolean isAbstract) {
-        setModifier(isAbstract, ABSTRACT);
-    }
 
     @Override
     public boolean isStatic() {
         return isModifier(STATIC);
     }
 
-    void setStatic(boolean isStatic) {
-        setModifier(isStatic, STATIC);
-    }
 
     @Override
     public boolean isFinal() {
         return isModifier(FINAL);
     }
 
-    void setFinal(boolean isFinal) {
-        setModifier(isFinal, FINAL);
+    void setFinal(boolean enable) {
+        setModifier(enable, FINAL);
     }
 
     @Override
@@ -90,62 +67,42 @@ public abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode
         return isModifier(SYNCHRONIZED);
     }
 
-    void setSynchronized(boolean isSynchronized) {
-        setModifier(isSynchronized, SYNCHRONIZED);
-    }
 
     @Override
     public boolean isNative() {
         return isModifier(NATIVE);
     }
 
-    void setNative(boolean isNative) {
-        setModifier(isNative, NATIVE);
-    }
 
     @Override
     public boolean isTransient() {
         return isModifier(TRANSIENT);
     }
 
-    void setTransient(boolean isTransient) {
-        setModifier(isTransient, TRANSIENT);
-    }
 
     @Override
     public boolean isVolatile() {
         return isModifier(VOLATILE);
     }
 
-    void setVolatile(boolean isVolative) {
-        setModifier(isVolative, VOLATILE);
-    }
 
     @Override
     public boolean isStrictfp() {
         return isModifier(STRICTFP);
     }
 
-    void setStrictfp(boolean isStrictfp) {
-        setModifier(isStrictfp, STRICTFP);
-    }
 
     @Override
     public boolean isDefault() {
         return isModifier(DEFAULT);
     }
 
-    void setDefault(boolean isDefault) {
-        setModifier(isDefault, DEFAULT);
-    }
 
     private boolean isModifier(int mask) {
         return (modifiers & mask) == mask;
     }
 
-    @InternalApi
-    @Deprecated
-    private void setModifier(boolean enable, int mask) {
+    void setModifier(boolean enable, int mask) {
         if (enable) {
             this.modifiers |= mask;
         } else {

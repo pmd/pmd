@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * This interface captures Java access modifiers.
  */
-public interface AccessNode extends JavaNode {
+public interface AccessNode extends Annotatable {
 
     int PUBLIC = 0x0001;
     int PROTECTED = 0x0002;

@@ -24,5 +24,8 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).comment(comment);
     }
 
+    public static void setModifier(AccessNode node, int modifier) {
+        ((AbstractJavaAccessNode) node).setModifier(true, modifier);
+    }
 
 }

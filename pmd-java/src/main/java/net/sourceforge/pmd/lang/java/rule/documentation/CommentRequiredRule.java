@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
@@ -134,7 +134,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     }
 
 
-    private void checkMethodOrConstructorComment(AbstractJavaAccessNode decl, Object data) {
+    private void checkMethodOrConstructorComment(AccessNode decl, Object data) {
         if (decl.isPublic()) {
             checkCommentMeetsRequirement(data, decl, PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
         } else if (decl.isProtected()) {

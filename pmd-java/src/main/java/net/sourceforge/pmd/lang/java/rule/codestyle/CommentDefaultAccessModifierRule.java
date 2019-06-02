@@ -21,8 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -120,9 +119,8 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         return super.visit(decl, data);
     }
 
-    private boolean shouldReport(final AbstractJavaAccessNode decl) {
-        final AbstractAnyTypeDeclaration parentClassOrInterface = decl
-                .getFirstParentOfType(AbstractAnyTypeDeclaration.class);
+    private boolean shouldReport(final AccessNode decl) {
+        final ASTAnyTypeDeclaration parentClassOrInterface = decl.getFirstParentOfType(ASTAnyTypeDeclaration.class);
 
         boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
 
@@ -130,7 +128,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
         return isConcreteClass && shouldReportTypeDeclaration(decl);
     }
 
-    private boolean shouldReportTypeDeclaration(final AbstractJavaAccessNode decl) {
+    private boolean shouldReportTypeDeclaration(final AccessNode decl) {
         // check if the class/method/field has a default access
         // modifier
         return decl.isPackagePrivate()
