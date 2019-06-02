@@ -76,16 +76,16 @@ class ASTLiteralTest : ParserTestSpec({
         }
     }
 
+    // TODO move out, those are not literals. I kept them here so as not to interfere with #1855
+
     parserTest("Class literals") {
 
         "void.class" should matchExpr<ASTClassLiteral> {
-            it::isClassLiteral shouldBe true
             it::isVoid shouldBe true
             it.typeNode shouldBe null
         }
 
         "Integer.class" should matchExpr<ASTClassLiteral> {
-            it::isClassLiteral shouldBe true
             it::isVoid shouldBe false
 
             it.typeNode shouldBe child<ASTClassOrInterfaceType> {}

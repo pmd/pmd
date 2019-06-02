@@ -8,7 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A class literal.
+ * A class literal. Class literals are {@linkplain ASTPrimaryExpression primary expressions},
+ * but not proper {@linkplain ASTLiteral literals}, since they are represented by several tokens.
  *
  * <pre class="grammar">
  *
@@ -16,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTClassLiteral extends AbstractJavaTypeNode implements ASTLiteral {
+public final class ASTClassLiteral extends AbstractJavaTypeNode implements ASTPrimaryExpression {
     ASTClassLiteral(int id) {
         super(id);
     }

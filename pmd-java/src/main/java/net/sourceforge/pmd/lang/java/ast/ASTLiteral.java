@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A literal. This interface is implemented by several nodes.
+ * A lexical literal. This is an expression that is represented by exactly
+ * one token. This interface is implemented by several nodes.
  *
  * <pre class="grammar">
  *
@@ -14,7 +15,6 @@ package net.sourceforge.pmd.lang.java.ast;
  *           | {@link ASTCharLiteral CharLiteral}
  *           | {@link ASTBooleanLiteral BooleanLiteral}
  *           | {@link ASTNullLiteral NullLiteral}
- *           | {@link ASTClassLiteral ClassLiteral}
  *
  * </pre>
  */
@@ -41,14 +41,6 @@ public interface ASTLiteral extends ASTPrimaryExpression {
      */
     default boolean isNullLiteral() {
         return this instanceof ASTNullLiteral;
-    }
-
-
-    /**
-     * Returns true if this is a {@linkplain ASTNullLiteral class literal}.
-     */
-    default boolean isClassLiteral() {
-        return this instanceof ASTClassLiteral;
     }
 
 
