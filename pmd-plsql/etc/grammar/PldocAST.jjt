@@ -1172,9 +1172,9 @@ void RestOfStatement() #void :
     [ WhereClause() ]
     [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
-    
+
     (LOOKAHEAD(2) ( SubqueryOperation() ) Subquery() )*
-    
+
     [ OrderByClause() ]
     [ RowLimitingClause() ]
 }
@@ -3682,7 +3682,7 @@ ASTView View()  :
   ["(" ViewColumn() ("," ViewColumn())* ")"]
   //### OF ... WITH OBJECT IDENTIFIER...
   <AS>
-  [ SqlStatement(null,";") | "(" Subquery() ")"]
+  [ SqlStatement(null,";") | "(" Subquery() ")" [ SubqueryRestrictionClause() ] ]
   (";" | "/")
 
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
