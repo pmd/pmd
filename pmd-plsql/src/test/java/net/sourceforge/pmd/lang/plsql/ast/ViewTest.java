@@ -21,4 +21,12 @@ public class ViewTest extends AbstractPLSQLParserTst {
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
     }
+
+    @Test
+    public void parseCreateView() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("CreateViewSubquery.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }

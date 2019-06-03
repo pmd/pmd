@@ -3682,7 +3682,7 @@ ASTView View()  :
   ["(" ViewColumn() ("," ViewColumn())* ")"]
   //### OF ... WITH OBJECT IDENTIFIER...
   <AS>
-  SqlStatement(null,";")
+  [ SqlStatement(null,";") | "(" Subquery() ")"]
   (";" | "/")
 
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
