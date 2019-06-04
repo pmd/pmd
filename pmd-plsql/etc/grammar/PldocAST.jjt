@@ -3625,7 +3625,6 @@ ASTAccessibleByClause AccessibleByClause() :
 
 // SRT *
 ASTTable Table()  :
-
 {
 }
 {
@@ -3635,11 +3634,275 @@ ASTTable Table()  :
   [ "(" ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ) ("," ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ))* ")" ]
   [LOOKAHEAD(4) <ON> <COMMIT> (<DROP> | <PRESERVE>) <DEFINITION>]
   [LOOKAHEAD(4) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>]
-  //### [physicalProperties()]
+  [LOOKAHEAD(2) PhysicalProperties()]
   //### [tableProperties()]
   [";"]
 
       { return jjtThis ; }
+}
+
+ASTPhysicalProperties PhysicalProperties()  :
+{}
+{
+	( [ DeferredSegmentCreation() ]
+          ( SegmentAttributesClause() [ TableCompression() ] [ InmemoryTableClause() ] [ IlmClause() ]
+          | <ORGANIZATION> ( <HEAP>    [SegmentAttributesClause()] HeapOrganizedTableClause()
+                           | <INDEX>   [SegmentAttributesClause()] IndexOrganizedTableClause()
+                           | <EXTERNAL> ExternalTableClause() ) )
+	| <CLUSTER> <IDENTIFIER> "(" Column() ( "," Column() )* ")" )
+	  { return jjtThis ; }
+}
+
+ASTHeapOrganizedTableClause HeapOrganizedTableClause()  :
+{}
+{
+     [ TableCompression() ]
+     [ InmemoryTableClause() ]
+     [ IlmClause() ]
+	  { return jjtThis ; }
+}
+
+ASTIndexOrganizedTableClause IndexOrganizedTableClause()  :
+{}
+{
+     ( ( "MAPPING" <TABLE> | "NOMAPPING" ) //mapping_table_clauses
+     | "PCTTHRESHOLD" NumericLiteral()
+     | ( <COMPRESS> [  NumericLiteral() ] | <NOCOMPRESS> ) //prefix_compression
+     )*
+     [ <INCLUDING> Column() ] "OVERFLOW" [ SegmentAttributesClause() ] //index_org_overflow_clause
+	  { return jjtThis ; }
+}
+
+ASTExternalTableClause ExternalTableClause()  :
+{}
+{
+     "(" [ <TYPE> ( "ORACLE_LOADER" | "ORACLE_DATAPUMP" ) ] ExternalDataProperties() ")"
+     [ "REJECT" <LIMIT> ( NumericLiteral() | "UNLIMITED" ) ]
+	  { return jjtThis ; }
+}
+
+void TableCompression() #void:
+{}
+{
+     <COMPRESS>
+     | <ROW> "STORE" <COMPRESS> [ "BASIC" | "ADVANCED" ]
+     | <COLUMN> "STORE" <COMPRESS> [ <FOR> ( "QUERY" | "ARCHIVE" ) [ "LOW" | "HIGH" ] ]
+       [ [<NO>] <ROW> <LEVEL> "LOCKING" ]
+     | <NOCOMPRESS>
+}
+
+void InmemoryTableClause() #void:
+{}
+{
+     ( "INMEMORY"
+          [ InmemoryMemCompress() ]
+          [ "PRIORITY" ( <NONE> | "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" ) ] //inmemory_priority
+          [ "DISTRIBUTE" [ "AUTO" | <BY> ( <ROWID> <RANGE> | <PARTITION> | "SUBPARTITION" ) ] ] //inmemory_distribute
+          [ [ "DUPLICATE" ] <ALL> | <NO> "DUPLICATE" ] //inmemory_duplicate
+          ( "INMEMORY" [ InmemoryMemCompress() ] | <NO> "INMEMORY" ) ( Column() ("," Column())* )*
+     | <NO> "INMEMORY" )
+}
+
+void IlmClause() #void:
+{}
+{
+     "ILM"
+     ( <ADD> "POLICY" ( IlmCompressionPolicy() | IlmTieringPolicy()
+      )
+     | ( <DELETE> | <ENABLE> | <DISABLE> ) "POLICY" <IDENTIFIER>
+     | "DELETE_ALL" | "ENABLE_ALL" | "DISABLE_ALL"
+     )
+}
+
+void IlmCompressionPolicy() #void:
+{}
+{
+     ( TableCompression() ( "SEGMENT" | <GROUP> )
+       ( <AFTER> IlmTimePeriod() <OF> ( ( <NO> ( "ACCESS" | "MODIFICATION" ) ) | "CREATION" )
+       | <ON> <IDENTIFIER> )
+     | LOOKAHEAD(5) <ROW> "STORE" <COMPRESS> "ADVANCED" <ROW> <AFTER> IlmTimePeriod() <OF> <NO> "MODIFICATION" )
+}
+
+void IlmTieringPolicy() #void:
+{}
+{
+     "TIER" <TO> <IDENTIFIER>
+     ( [ "SEGMENT" | <GROUP> ] [ <ON> <IDENTIFIER> ] )
+     | ( <READ> <ONLY> [ "SEGMENT" | <GROUP> ]
+       ( <AFTER> IlmTimePeriod() <OF> ( ( <NO> ( "ACCESS" | "MODIFICATION" ) ) | "CREATION" )
+       | <ON> <IDENTIFIER> ) )
+}
+
+void IlmTimePeriod() #void:
+{}
+{
+     NumericLiteral() ( ( <DAY> | "DAYS" ) | ( <MONTH> | "MONTHS" ) | ( <YEAR> | "YEARS" ) )
+}
+
+void InmemoryMemCompress() #void:
+{}
+{
+     "MEMCOMPRESS" <FOR> ( "DML" | "QUERY" [ "LOW" | "HIGH" ] | "CAPACITY" [ "LOW" | "HIGH" ] ) | <NO> "MEMCOMPRESS"
+}
+
+void ExternalDataProperties() #void:
+{}
+{
+     <_DEFAULT> <DIRECTORY> <IDENTIFIER> [ "ACCESS" <PARAMETERS> (
+     "("
+          [RecordFormatInfoClause()]
+          [FieldDefinitions()]
+          //column_transforms
+          [ <COLUMN> "TRANSFORMS" "(" Transform() ("," Transform())* ")"]
+     ")"
+     | <USING> <CLOB> Subquery() ) ]
+     "LOCATION" "(" [ <IDENTIFIER> ":" ] StringLiteral() ("," [ <IDENTIFIER> ":" ] StringLiteral())* ")"
+}
+
+void RecordFormatInfoClause() #void:
+{}
+{
+     "RECORDS" ( ( "FIXED" | <VARIABLE> ) NumericLiteral()
+               | "DELIMITED" <BY> ( "NEWLINE" | StringLiteral() | <CHARACTER_LITERAL> ) )
+     ( ( "CHARACTERSET" | <LANGUAGE> | "TERRITORY" )
+     ( StringLiteral() | <IDENTIFIER> ) //https://docs.oracle.com/cd/B19306_01/server.102/b14215/img_text/et_string.htm
+     | <DATA> <IS> ( "LITTLE" | "BIG" ) "ENDIAN"
+     | "BYTEORDERMARK" ( <CHECK> | "NOCHECK" )
+     | <STRING> <SIZE> "ARE" <IN> ( "BYTES" | "CHARACTERS" )
+     | "LOAD" <WHEN> Condition()
+     | ( "NOBADFILE" | "BADFILE" [ <IDENTIFIER> ":" ] StringLiteral() )
+     | ( "NODISCARDFILE" | "DISCARDFILE" [ <IDENTIFIER> ":" ] StringLiteral() )
+     | ( "NOLOGFILE" | "LOGFILE" [ <IDENTIFIER> ":" ] StringLiteral() )
+     | ( "READSIZE" | "DATE_CACHE" | "SKIP" ) NumericLiteral()
+     )*
+}
+
+void FieldDefinitions() #void:
+{}
+{
+     "FIELDS"
+     [DelimSpec()]
+     [TrimSpec()]
+     [ "MISSING" "FIELD" <VALUES> "ARE" <NULL> ]
+     [ "REJECT" <ROWS> <WITH> <ALL> <NULL> "FIELDS" ]
+     //field_list
+     [ "("
+     <IDENTIFIER> [ PosSpecClause() ] [ DatatypeSpec() ] [ ( "DEFAULTIF" | <NULLIF> ) Condition() ]
+     (","  (<IDENTIFIER> [ PosSpecClause() ] [ DatatypeSpec() ] [ ( "DEFAULTIF" | <NULLIF> ) Condition() ] ) )*
+     ")" ]
+}
+
+void DelimSpec() #void:
+{}
+{
+     ( "ENCLOSED" <BY> ( <QUOTED_LITERAL> | <CHARACTER_LITERAL> ) [ <AND> ( <QUOTED_LITERAL> | <CHARACTER_LITERAL> ) ]
+     | "TERMINATED" <BY> ( ( <QUOTED_LITERAL> | <CHARACTER_LITERAL> ) | "WHITESPACE" ) [ [ "OPTIONALLY" ]
+       "ENCLOSED" <BY> ( <QUOTED_LITERAL> | <CHARACTER_LITERAL> ) [ <AND> ( <QUOTED_LITERAL> | <CHARACTER_LITERAL> ) ] ] )
+}
+
+void TrimSpec() #void:
+{}
+{
+     ( "LRTRIM" | "NOTRIM" | "LTRIM" | "RTRIM" | "LDRTRIM" )
+}
+
+void PosSpecClause() #void:
+{}
+{
+     [ "POSITION" ] "(" ["*"] [ [ "+" | "-" ] NumericLiteral() ]
+                          ( ":" [ "+" | "-" ] NumericLiteral() | <IDENTIFIER> ) ")"
+}
+
+void DatatypeSpec() #void:
+{}
+{
+     ( [ "UNSIGNED" ] <INTEGER> [ <EXTERNAL> ] [ "(" NumericLiteral() ")" ] [ DelimSpec() ]
+     | ( <DECIMAL> | "ZONED" ) [ <EXTERNAL> [ "(" NumericLiteral() ")" ] [ DelimSpec() ]
+                               | "(" NumericLiteral() [ "," NumericLiteral() ] ")" ]
+     | "ORACLE_DATE"
+     | "ORACLE_NUMBER" [ "COUNTED" ]
+     | <FLOAT> [ <EXTERNAL> ] [ "(" NumericLiteral() ")" ] [ DelimSpec() ]
+     | <DOUBLE>
+     | "BINARY_FLOAT" [ <EXTERNAL> ] [ "(" NumericLiteral() ")" ] [ DelimSpec() ]
+     | "BINARY_DOUBLE"
+     | <RAW> [ "(" NumericLiteral() ")" ]
+     | <CHAR> [ "(" NumericLiteral() ")" ] [ DelimSpec() ] [ TrimSpec() ]
+                 //DateFormatSpec()
+                 [["DATE_FORMAT"]
+                 (( <DATE>
+                 | <TIME> [<WITH> (<TIME> <ZONE>|"TIMEZONE")]
+                 | <TIMESTAMP> [<WITH> [<LOCAL>] (<TIME> <ZONE>|"TIMEZONE")] ) "MASK" <QUOTED_LITERAL>
+                 | <INTERVAL> ( "YEAR_TO_MONTH" | "DAY_TO_SECOND" ))]
+     | ( <VARCHAR> | "VARRAW" | "VARCHARC" | "VARRAWC" ) "(" [ NumericLiteral() "," ] NumericLiteral() ")"
+     )
+}
+
+void Transform() #void:
+{}
+{
+     <IDENTIFIER> <FROM>
+     ( <NULL>
+     | <CONSTANT> StringLiteral()
+     | "CONCAT" "(" ( <IDENTIFIER> | <CONSTANT> StringLiteral() ) ( "," ( <IDENTIFIER> | <CONSTANT> StringLiteral() ) )* ")"
+     | "LOBFILE" "(" ( <IDENTIFIER> | <CONSTANT> StringLiteral() ":" ) ( "," ( <IDENTIFIER> | <CONSTANT> StringLiteral() ":" ) )* ")"
+     //lobfile_attr_list
+     (<FROM> "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" | <CLOB> | <BLOB> | "CHARACTERSET" "=" <IDENTIFIER> )*
+     )
+}
+
+void SegmentAttributesClause() #void:
+{}
+{
+     ( PhysicalAttributesClause()
+     | "TABLESPACE" <IDENTIFIER>
+     | ( "LOGGING" | "NOLOGGING" | "FILESYSTEM_LIKE_LOGGING" ) // logging_clause
+     )+
+}
+
+void PhysicalAttributesClause() #void:
+{}
+{
+     ( <PCTFREE> NumericLiteral()
+     | "PCTUSED" NumericLiteral()
+     | "INITRANS" NumericLiteral()
+     | StorageClause() )+ //*
+}
+
+void StorageClause() #void:
+{}
+{
+     "STORAGE" "("
+     ( "INITIAL" SizeClause()
+     | <NEXT> SizeClause()
+     | "MINEXTENTS" NumericLiteral()
+     | "MAXEXTENTS" ( NumericLiteral() | "UNLIMITED")
+     | MaxSizeClause()
+     | "PCTINCREASE" NumericLiteral()
+     | "FREELISTS" NumericLiteral()
+     | "FREELIST" "GROUPS" NumericLiteral()
+     | "OPTIMAL" [ SizeClause() | <NULL> ]
+     | "BUFFER_POOL" [ "KEEP" | "RECYCLE" | <_DEFAULT> ]
+     | "FLASH_CACHE" [ "KEEP" | <NONE> | <_DEFAULT> ]
+     | "ENCRYPT"
+     )+ ")"
+}
+
+void DeferredSegmentCreation() #void:
+{}
+{
+	 "SEGMENT" "CREATIION" ( <IMMEDIATE> | "DEFERRED" )
+}
+
+void MaxSizeClause() #void:
+{}
+{
+     "MAXSIZE" ( "UNLIMITED" | SizeClause() )
+}
+
+void SizeClause() #void:
+{}
+{
+     NumericLiteral() [ "K" | "M" | "G" | "T" | "P" | "E" ]
 }
 
 ASTTableColumn TableColumn()  :
@@ -5110,6 +5373,15 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 (
  "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 "OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
+// Byte Multiple Abrevation
+ "K" | "M" | "G" | "T" | "P" | "E" |
+// Organized Tables
+ "STORAGE" | "INITIAL" | "GROUPS" | "KEEP" | "MINEXTENTS" | "MAXEXTENTS" | "OPTIMAL" | "PCTINCREASE" | "RECYCLE" |
+ "BUFFER_POOL" | "ENCRYPT" | "FREELISTS" | "FREELIST" | "MAPPING" | "NOMAPPING" |
+ "LOGGING" | "NOLOGGING" | "FILESYSTEM_LIKE_LOGGING" | "TABLESPACE" |
+ "ARCHIVE" | "LOW" | "HIGH" | "QUERY" | "STORE" | "POLICY" | "AUTO" | "DML" |
+ "MAXSIZE" | "PCTTHRESHOLD" | "POSITION" | "DEFERRED" | "SEGMENT" | "PCTUSED" | "INITRANS" |
+ "ACCESS" | "LTRIM" | "BINARY_DOUBLE" | "BINARY_FLOAT" | "LOCATION" | "LOGFILE" | "SKIP" | "WHITESPACE" |
 <FALSE>
  | <TRUE>
  | <A>
