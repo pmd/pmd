@@ -31,6 +31,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java-bestpractices
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
 *   plsql
+    *   [#1828](https://github.com/pmd/pmd/issues/1828): \[plsql] Parentheses stopped working
     *   [#1850](https://github.com/pmd/pmd/issues/1850): \[plsql] Parsing errors with INSERT using returning or records and TRIM expression
 
 ### API Changes
