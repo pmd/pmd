@@ -24,12 +24,21 @@ This is a {{ site.pmd.release_type }} release.
     default fields, that are annotated with the Lombok experimental annotation `@Delegate`. This can be
     customized with the property `ignoredAnnotations`.
 
+*   The Java rules {% rule "java/multithreading/UnsynchronizedStaticFormatter" %} and
+    {% rule "java/multithreading/UnsynchronizedStaticDateFormatter" %} (`java-multithreading`)
+    now prefer synchronized blocks by default. They will raise a violation, if the synchronization is implemented
+    on the method level. To allow the old behavior, the new property `allowMethodLevelSynchronization` can
+    be enabled.
+
 ### Fixed Issues
 
 *   java
     *   [#1848](https://github.com/pmd/pmd/issues/1848): \[java] Local classes should preserve their modifiers
 *   java-bestpractices
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
+*   java-multithreading
+    *   [#1814](https://github.com/pmd/pmd/issues/1814): \[java] UnsynchronizedStaticFormatter documentation and implementation wrong
+    *   [#1815](https://github.com/pmd/pmd/issues/1815): \[java] False negative in UnsynchronizedStaticFormatter
 *   plsql
     *   [#1828](https://github.com/pmd/pmd/issues/1828): \[plsql] Parentheses stopped working
     *   [#1850](https://github.com/pmd/pmd/issues/1850): \[plsql] Parsing errors with INSERT using returning or records and TRIM expression
@@ -64,6 +73,7 @@ of deprecations.
 
 *   [#1792](https://github.com/pmd/pmd/pull/1792): \[java] Added lombok.experimental to AbstractLombokAwareRule - [jakivey32](https://github.com/jakivey32)
 *   [#1808](https://github.com/pmd/pmd/pull/1808): \[plsql] Fix PL/SQL Syntax errors - [kabroxiko](https://github.com/kabroxiko)
+*   [#1829](https://github.com/pmd/pmd/pull/1829): \[java] Fix false negative in UnsynchronizedStaticFormatter - [Srinivasan Venkatachalam](https://github.com/Srini1993)
 
 {% endtocmaker %}
 

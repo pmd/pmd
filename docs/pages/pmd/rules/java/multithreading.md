@@ -307,7 +307,7 @@ public class Foo {
     void bar() {
         sdf.format(); // poor, no thread-safety
     }
-    synchronized void foo() {
+    static synchronized void foo() {
         sdf.format(); // preferred
     }
 }
@@ -339,7 +339,7 @@ public class Foo {
     void bar() {
         sdf.format(); // poor, no thread-safety
     }
-    synchronized void foo() {
+    static synchronized void foo() {
         sdf.format(); // preferred
     }
 }
