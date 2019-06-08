@@ -123,10 +123,58 @@
             </replacevalue>
         </replace>
 
+        <replace token=" Token " value=" net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+        <replace token="(Token " value="(net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+        <replace token=" Token(" value=" net.sourceforge.pmd.lang.ast.impl.JavaccToken(">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+        <replace token=";Token " value=";net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+
+        <replace file="${target-package-dir}/JavaParserTokenManager.java">
+            <replacetoken><![CDATA[t = JavaTokenUtils.newToken(jjmatchedKind, curTokenImage);
+
+   t.beginLine = beginLine;
+   t.endLine = endLine;
+   t.beginColumn = beginColumn;
+   t.endColumn = endColumn;]]></replacetoken>
+            <replacevalue>
+                <![CDATA[t = JavaTokenUtils.newToken(jjmatchedKind, curTokenImage, beginLine, endLine, beginColumn, endColumn);]]></replacevalue>
+        </replace>
+
+        <replaceregexp file="${target-package-dir}/JavaParserTokenManager.java" flags="s">
+            <regexp pattern="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken.*?}" />
+            <substitution
+                    expression="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken() {return JavaTokenUtils.newToken(jjmatchedKind, input_stream);}"/>
+        </replaceregexp>
+
+
+        <replace token=".image" value=".getImage()">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+        <replace token=".beginLine" value=".getBeginLine()">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+        <replace token=".beginColumn" value=".getBeginColumn()">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
+
 
         <replace file="${target-package-dir}/JavaParserTokenManager.java"
-                 token="class JavaParserTokenManager"
-                 value="class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
+                 token="public class JavaParserTokenManager"
+                 value="import net.sourceforge.pmd.lang.ast.impl.JavaccToken; public class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
         <replace file="${target-package-dir}/JavaParser.java"
                  token="throw new Error"
                  value="throw new RuntimeException" />
@@ -176,81 +224,10 @@ public interface" />
 public class]]></replacevalue>
         </replace>
 
-        <replace file="${target-package-dir}/Token.java">
-            <replacetoken><![CDATA[      default : return new Token(ofKind, image);
-    }
-  }
-]]></replacetoken>
-            <replacevalue><![CDATA[      case JavaParserConstants.RUNSIGNEDSHIFT :
-      case JavaParserConstants.RSIGNEDSHIFT :
-      case JavaParserConstants.GT:
-        return new GTToken(ofKind, image);
-      default : return new Token(ofKind, image);
-    }
-  }
-
-  public static final class GTToken extends Token {
-    public int realKind = JavaParserConstants.GT;
-    public GTToken(int ofKind, String image) {
-       super(ofKind, image);
-    }
-  }
-]]></replacevalue>
-        </replace>
-
-        <replace file="${target-package-dir}/Token.java">
-            <replacetoken>public class Token implements java.io.Serializable</replacetoken>
-            <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
-
-public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
-        </replace>
-
-        <!--Add implementation methods of GenericToken-->
-        <replace file="${target-package-dir}/Token.java">
-            <replacetoken>public Token specialToken;</replacetoken>
-            <replacevalue><![CDATA[public Token specialToken;
-
-  @Override
-  public GenericToken getNext() {
-    return next;
-  }
-
-  @Override
-  public GenericToken getPreviousComment() {
-    return specialToken;
-  }
-
-  @Override
-  public String getImage() {
-    return image;
-  }
-
-  @Override
-  public int getBeginLine() {
-    return beginLine;
-  }
-
-  @Override
-  public int getEndLine() {
-    return endLine;
-  }
-
-  @Override
-  public int getBeginColumn() {
-    return beginColumn;
-  }
-
-  @Override
-  public int getEndColumn() {
-    return endColumn;
-  }
-
-]]></replacevalue>
-        </replace>
-
         <delete>
             <fileset dir="${target-package-dir}">
                 <include name="AST*.java" />
+                <include name="Token.java"/>
             </fileset>
         </delete>
     </target>

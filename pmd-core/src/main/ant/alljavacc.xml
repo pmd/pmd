@@ -56,13 +56,23 @@
                 javacchome="${javacc-home.path}" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
                  token="net.sourceforge.pmd.lang.ast.dummy"
-                 value="net.sourceforge.pmd.lang.ast" />
+                 value="net.sourceforge.pmd.lang.ast.impl" />
         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-                 token="class JavaCharStream"
-                 value="class JavaCharStream implements CharStream" />
-        <move overwrite="true"
+                 token="JavaCharStream"
+                 value="JavaCharStreamBase"/>
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="class JavaCharStreamBase"
+                 value="abstract class JavaCharStreamBase implements net.sourceforge.pmd.lang.ast.CharStream" />
+        <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="char c;"
+                 value="char c; beforeReadChar();" />
+         <replace file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
+                 token="/** Read a character. */"
+                 value="protected void beforeReadChar() { }" />
+
+       <move overwrite="true"
               file="${target}/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java"
-              tofile="${target}/net/sourceforge/pmd/lang/ast/JavaCharStream.java" />
+              tofile="${target}/net/sourceforge/pmd/lang/ast/impl/JavaCharStreamBase.java" />
 
         <!-- Generate ASCII w/o Unicode Escapes CharStream implementation -->
         <javacc usercharstream="false"

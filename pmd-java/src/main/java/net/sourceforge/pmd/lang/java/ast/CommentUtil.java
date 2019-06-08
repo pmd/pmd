@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
 import net.sourceforge.pmd.lang.java.javadoc.JavadocTag;
 
 /**
@@ -147,7 +148,7 @@ public final class CommentUtil {
     @Deprecated // will be removed with PMD 7.0.0
     public static List<String> multiLinesIn(String comment) {
         // temporary createa a Multiline Comment Node
-        Token t = new Token();
+        JavaccToken t = new JavaccToken();
         t.image = comment;
         MultiLineComment node = new MultiLineComment(t);
         return Arrays.asList(Comment.NEWLINES_PATTERN.split(node.getFilteredComment()));

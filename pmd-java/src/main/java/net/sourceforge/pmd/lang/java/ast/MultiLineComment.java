@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.GenericToken;
+
 public class MultiLineComment extends Comment {
 
-    public MultiLineComment(Token t) {
+    public MultiLineComment(GenericToken t) {
         super(t);
     }
 

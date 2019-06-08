@@ -35,6 +35,16 @@ public class AntlrToken implements GenericToken {
     }
 
     @Override
+    public int getStartDocumentOffset() {
+        return token.getStartIndex();
+    }
+
+    @Override
+    public int getEndDocumentOffset() {
+        return token.getStopIndex();
+    }
+
+    @Override
     public GenericToken getPreviousComment() {
         return previousComment;
     }

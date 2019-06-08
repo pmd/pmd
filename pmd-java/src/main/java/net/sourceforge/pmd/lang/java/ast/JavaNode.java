@@ -86,6 +86,9 @@ public interface JavaNode extends ScopedNode {
     JavaNode jjtGetParent();
 
 
+    ASTCompilationUnit getRoot();
+
+
     GenericToken jjtGetFirstToken();
 
 
@@ -107,6 +110,16 @@ public interface JavaNode extends ScopedNode {
     default ASTAnyTypeDeclaration getEnclosingType() {
         return getFirstParentOfType(ASTAnyTypeDeclaration.class);
     }
+
+
+
+    int getStartOffset();
+
+
+    int getEndOffset();
+
+
+    CharSequence getText();
 
 
     /**

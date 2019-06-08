@@ -16,12 +16,12 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.MultiLineComment;
-import net.sourceforge.pmd.lang.java.ast.Token;
 
 public class AbstractCommentRuleTest {
 
@@ -33,7 +33,7 @@ public class AbstractCommentRuleTest {
      */
     @Test
     public void testFilteredCommentIn() {
-        Token token = new Token();
+        JavaccToken token = new JavaccToken();
         token.image = "/* multi line comment with blank lines\n\n\n */";
 
         String filtered = testSubject.filteredCommentIn(new MultiLineComment(token));
