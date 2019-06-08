@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -45,6 +47,14 @@ public class SingularFieldRule extends AbstractLombokAwareRule {
     public SingularFieldRule() {
         definePropertyDescriptor(CHECK_INNER_CLASSES);
         definePropertyDescriptor(DISALLOW_NOT_ASSIGNMENT);
+    }
+
+    @Override
+    protected Collection<String> defaultSuppressionAnnotations() {
+        Collection<String> defaultValues = new ArrayList<>();
+        defaultValues.addAll(super.defaultSuppressionAnnotations());
+        defaultValues.add("lombok.experimental.Delegate");
+        return defaultValues;
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
