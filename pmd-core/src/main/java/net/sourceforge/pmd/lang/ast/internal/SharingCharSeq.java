@@ -16,7 +16,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @author Clément Fournier
  */
-public final class SharingCharSeq implements CharSequence {
+public final class SharingCharSeq implements RichCharSequence {
+
+    private static final SharingCharSeq EMPTY = new SharingCharSeq(new char[0], 0, 0);
 
     private final char[] value;
     private final int offset;
@@ -44,15 +46,23 @@ public final class SharingCharSeq implements CharSequence {
     @Override
     public char charAt(int index) {
         if (index < 0 || index >= count) {
-            throw new StringIndexOutOfBoundsException("Index out of bounds: " + index + " not in [0," + count + "[");
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index + " not in [0," + count + "[");
         }
 
         return value[offset + index];
     }
 
     @Override
-    public CharSequence subSequence(int start, int end) {
-        return new SharingCharSeq(value, offset + start, end - start);
+    public SharingCharSeq subSequence(int start, int end) {
+        if (start < 0 || end > count || start > end) {
+            throw new IndexOutOfBoundsException("Invalid range: [" + start + "," + end + "[ not in [0," + count + "[");
+        }
+        return start == end ? EMPTY : new SharingCharSeq(value, offset + start, end - start);
+    }
+
+    @Override
+    public SharingCharSeq subSequence(int start) {
+        return subSequence(start, count);
     }
 
     @NonNull
