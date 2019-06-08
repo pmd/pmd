@@ -293,7 +293,7 @@ public static Foo getFoo() {
 
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.
+synchronized on block level.
 
 This rule has been deprecated in favor of the rule {% rule UnsynchronizedStaticFormatter %}.
 
@@ -307,15 +307,32 @@ public class Foo {
     void bar() {
         sdf.format(); // poor, no thread-safety
     }
-    static synchronized void foo() {
-        sdf.format(); // preferred
+    void foo() {
+        synchronized (sdf) { // preferred
+            sdf.format();
+        }
     }
 }
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowMethodLevelSynchronization|false|If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.|no|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter">
+    <properties>
+        <property name="allowMethodLevelSynchronization" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UnsynchronizedStaticFormatter
@@ -327,7 +344,7 @@ public class Foo {
 Instances of `java.text.Format` are generally not synchronized.
 Sun recommends using separate format instances for each thread.
 If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.
+synchronized on block level.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticFormatterRule.java)
 
@@ -339,15 +356,32 @@ public class Foo {
     void bar() {
         sdf.format(); // poor, no thread-safety
     }
-    static synchronized void foo() {
-        sdf.format(); // preferred
+    void foo() {
+        synchronized (sdf) { // preferred
+            sdf.format();
+        }
     }
 }
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowMethodLevelSynchronization|false|If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.|no|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter">
+    <properties>
+        <property name="allowMethodLevelSynchronization" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UseConcurrentHashMap

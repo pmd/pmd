@@ -1779,7 +1779,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| lombok.experimental.Delegate|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |checkInnerClasses|false|Check inner classes|no|
 |disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
 
@@ -1792,7 +1792,7 @@ public class Foo {
 ``` xml
 <rule ref="category/java/design.xml/SingularField">
     <properties>
-        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor" />
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|lombok.experimental.Delegate" />
         <property name="checkInnerClasses" value="false" />
         <property name="disallowNotAssignment" value="false" />
     </properties>
