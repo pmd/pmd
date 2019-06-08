@@ -11,6 +11,7 @@ import java.util.List;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
@@ -24,12 +25,19 @@ public interface Node {
     /**
      * This method is called after the node has been made the current node. It
      * indicates that child nodes can now be added to it.
+     *
+     * @deprecated This is JJTree-specific and will be removed from this interface
      */
+    @Deprecated
     void jjtOpen();
+
 
     /**
      * This method is called after all the child nodes have been added.
+     *
+     * @deprecated This is JJTree-specific and will be removed from this interface
      */
+    @Deprecated
     void jjtClose();
 
 
@@ -37,7 +45,10 @@ public interface Node {
      * Sets the parent of this node.
      *
      * @param parent The parent
+     *
+     * @deprecated This is JJTree-specific and will be removed from this interface
      */
+    @Deprecated
     void jjtSetParent(Node parent);
 
 
@@ -55,7 +66,10 @@ public interface Node {
      *
      * @param child The child to add
      * @param index The index to which the child will be added
+     *
+     * @deprecated This is JJTree-specific and will be removed from this interface
      */
+    @Deprecated
     void jjtAddChild(Node child, int index);
 
     /**
@@ -64,7 +78,10 @@ public interface Node {
      *
      * @param index
      *            the child index
+     *
+     * @deprecated This is JJTree-specific and will be removed from this interface
      */
+    @Deprecated
     void jjtSetChildIndex(int index);
 
 
@@ -90,6 +107,11 @@ public interface Node {
      */
     int jjtGetNumChildren();
 
+
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this interface
+     */
+    @Deprecated
     int jjtGetId();
 
 
@@ -100,6 +122,12 @@ public interface Node {
      */
     String getImage();
 
+
+    /**
+     * @deprecated This is internal API.
+     */
+    @InternalApi
+    @Deprecated
     void setImage(String image);
 
     /**
@@ -118,8 +146,18 @@ public interface Node {
     // FIXME should not be inclusive
     int getEndColumn();
 
+
+    /**
+     * @deprecated This is Java-specific and will be removed from this interface
+     */
+    @Deprecated
     DataFlowNode getDataFlowNode();
 
+
+    /**
+     * @deprecated This is Java-specific and will be removed from this interface
+     */
+    @Deprecated
     void setDataFlowNode(DataFlowNode dataFlowNode);
 
 
@@ -260,7 +298,11 @@ public interface Node {
      *            the expression to check
      * @return List of all matching nodes. Returns an empty list if none found.
      * @throws JaxenException if the xpath is incorrect or fails altogether
+     *
+     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
+     *             support for this method.
      */
+    @Deprecated
     List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 
     /**
@@ -269,7 +311,11 @@ public interface Node {
      * @param xpathString
      *            the expression to check
      * @return true if there is a match
+     *
+     * @deprecated This is very inefficient and should not be used in new code. PMD 7.0.0 will remove
+     *             support for this method.
      */
+    @Deprecated
     boolean hasDescendantMatchingXPath(String xpathString);
 
     /**

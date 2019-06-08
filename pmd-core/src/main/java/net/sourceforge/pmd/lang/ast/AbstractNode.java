@@ -39,9 +39,25 @@ public abstract class AbstractNode implements Node {
     protected int id;
 
     private String image;
+    /**
+     * @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens.
+     */
+    @Deprecated
     protected int beginLine = -1;
+    /**
+     * @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens.
+     */
+    @Deprecated
     protected int endLine;
+    /**
+     * @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens.
+     */
+    @Deprecated
     protected int beginColumn = -1;
+    /**
+     * @deprecated This will be removed to delegate to the tokens for nodes that are backed by tokens.
+     */
+    @Deprecated
     protected int endColumn;
     private DataFlowNode dataFlowNode;
     private Object userData;
@@ -144,6 +160,10 @@ public abstract class AbstractNode implements Node {
         return beginLine;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     */
+    @Deprecated
     public void testingOnlySetBeginLine(int i) {
         this.beginLine = i;
     }
@@ -161,6 +181,10 @@ public abstract class AbstractNode implements Node {
         }
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     */
+    @Deprecated
     public void testingOnlySetBeginColumn(final int i) {
         this.beginColumn = i;
     }
@@ -170,6 +194,10 @@ public abstract class AbstractNode implements Node {
         return endLine;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     */
+    @Deprecated
     public void testingOnlySetEndLine(final int i) {
         this.endLine = i;
     }
@@ -179,6 +207,10 @@ public abstract class AbstractNode implements Node {
         return endColumn;
     }
 
+    /**
+     * @deprecated This will be removed with 7.0.0 to delegate to the tokens.
+     */
+    @Deprecated
     public void testingOnlySetEndColumn(final int i) {
         this.endColumn = i;
     }
@@ -431,18 +463,28 @@ public abstract class AbstractNode implements Node {
         this.userData = userData;
     }
 
+    // TODO should we deprecate this too?
     public GenericToken jjtGetFirstToken() {
         return firstToken;
     }
 
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this superclass.
+     */
+    @Deprecated
     public void jjtSetFirstToken(final GenericToken token) {
         this.firstToken = token;
     }
 
+    // TODO should we deprecate this too?
     public GenericToken jjtGetLastToken() {
         return lastToken;
     }
 
+    /**
+     * @deprecated This is JJTree-specific and will be removed from this superclass.
+     */
+    @Deprecated
     public void jjtSetLastToken(final GenericToken token) {
         this.lastToken = token;
     }
@@ -477,7 +519,7 @@ public abstract class AbstractNode implements Node {
      * <p>This default implementation adds compatibility with the previous
      * way to get the xpath node name, which used {@link Object#toString()}.
      * <p>
-     * <p>Please override it. It may be removed in a future major version.
+     * <p>Please override it. It will be removed in version 7.0.0.
      */
     @Override
     // @Deprecated // FUTURE 7.0.0 make abstract
