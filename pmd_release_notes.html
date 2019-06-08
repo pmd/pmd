@@ -1286,12 +1286,51 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_bestpractices.html#unusedprivatefield"><code class="highlighter-rouge">UnusedPrivateField</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) now ignores by
+default fields, that are annotated with the Lombok experimental annotation <code class="highlighter-rouge">@Delegate</code>. This can be
+customized with the property <code class="highlighter-rouge">ignoredAnnotations</code>.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_design.html#singularfield"><code class="highlighter-rouge">SingularField</code></a> (<code class="highlighter-rouge">java-design</code>) now ignores by
+default fields, that are annotated with the Lombok experimental annotation <code class="highlighter-rouge">@Delegate</code>. This can be
+customized with the property <code class="highlighter-rouge">ignoredAnnotations</code>.</p>
+  </li>
+  <li>
+    <p>The Java rules <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="highlighter-rouge">UnsynchronizedStaticFormatter</code></a> and
+<a href="pmd_rules_java_multithreading.html#unsynchronizedstaticdateformatter"><code class="highlighter-rouge">UnsynchronizedStaticDateFormatter</code></a> (<code class="highlighter-rouge">java-multithreading</code>)
+now prefer synchronized blocks by default. They will raise a violation, if the synchronization is implemented
+on the method level. To allow the old behavior, the new property <code class="highlighter-rouge">allowMethodLevelSynchronization</code> can
+be enabled.</p>
+  </li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1848">#1848</a>: [java] Local classes should preserve their modifiers</li>
+    </ul>
+  </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1703">#1703</a>: [java] UnusedPrivateField on member annotated with lombok @Delegate</li>
+    </ul>
+  </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1814">#1814</a>: [java] UnsynchronizedStaticFormatter documentation and implementation wrong</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1815">#1815</a>: [java] False negative in UnsynchronizedStaticFormatter</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1828">#1828</a>: [plsql] Parentheses stopped working</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1850">#1850</a>: [plsql] Parsing errors with INSERT using returning or records and TRIM expression</li>
     </ul>
   </li>
 </ul>
@@ -1326,6 +1365,12 @@ of deprecations.</p>
 
 <h3 id="external-contributions">External Contributions</h3>
 
+<ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1792">#1792</a>: [java] Added lombok.experimental to AbstractLombokAwareRule - <a href="https://github.com/jakivey32">jakivey32</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1808">#1808</a>: [plsql] Fix PL/SQL Syntax errors - <a href="https://github.com/kabroxiko">kabroxiko</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1829">#1829</a>: [java] Fix false negative in UnsynchronizedStaticFormatter - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
+</ul>
+
 
 
     <div class="tags">
@@ -1342,7 +1387,7 @@ of deprecations.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 7, 2019 <br />
+ Site last generated: Jun 8, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

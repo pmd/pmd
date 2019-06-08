@@ -1565,7 +1565,7 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 
 <p>SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.</p>
+synchronized on block level.</p>
 
 <p>This rule has been deprecated in favor of the rule <a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter"><code class="highlighter-rouge">UnsynchronizedStaticFormatter</code></a>.</p>
 
@@ -1578,14 +1578,45 @@ synchronized either on method or block level.</p>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
     <span class="o">}</span>
-    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// preferred</span>
+    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sdf</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// preferred</span>
+            <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span>
+        <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowMethodLevelSynchronization</td>
+      <td>false</td>
+      <td>If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticDateFormatter"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowMethodLevelSynchronization"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</h2>
@@ -1597,7 +1628,7 @@ synchronized either on method or block level.</p>
 <p>Instances of <code class="highlighter-rouge">java.text.Format</code> are generally not synchronized.
 Sun recommends using separate format instances for each thread.
 If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.</p>
+synchronized on block level.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticFormatterRule.java">net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule</a></p>
 
@@ -1608,14 +1639,45 @@ synchronized either on method or block level.</p>
     <span class="kt">void</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// poor, no thread-safety</span>
     <span class="o">}</span>
-    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span> <span class="c1">// preferred</span>
+    <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">sdf</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// preferred</span>
+            <span class="n">sdf</span><span class="o">.</span><span class="na">format</span><span class="o">();</span>
+        <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowMethodLevelSynchronization</td>
+      <td>false</td>
+      <td>If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.</td>
+      <td>no</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticFormatter"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/UnsynchronizedStaticFormatter"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowMethodLevelSynchronization"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="useconcurrenthashmap">UseConcurrentHashMap</h2>
@@ -1702,7 +1764,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 7, 2019 <br />
+ Site last generated: Jun 8, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
