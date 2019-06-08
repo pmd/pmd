@@ -27,6 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Various fixes for INSERT INTO with records, implicit cursor attributes
+ * and trim expression.
+ *
+ * Hugo Araya Nash 05/2019
+ *====================================================================
  * Added support for XMLTABLE, XMLEXISTS, XMLCAST, XMLQUERY, CAST, XMLFOREST
  * and XMLELEMENT
  *
@@ -1536,11 +1541,14 @@ ASTSimpleExpression SimpleExpression() :
         ( "*" | Column() ) { sb.append(token.image); }
  |
     // Named Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/named-cursor-attribute.html#GUID-CD8D8415-FF19-4D81-99BA-7825FD40CC96
+    // Implicit Cursor: https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/implicit-cursor-attribute.html#GUID-5A938EE7-E8D2-468C-B60F-81898F110BE1
     LOOKAHEAD(3)
         Column() { sb.append(token.image); } "%" ( LOOKAHEAD({isKeyword("isopen")}) KEYWORD("ISOPEN")
                      | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
                      | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
                      | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
+                     | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT")
+                     | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS")
                      ) { sb.append('%').append(token.image); }
  |
     LOOKAHEAD(2)
@@ -2268,7 +2276,7 @@ ASTInsertStatement InsertStatement() :
 ASTSingleTableInsert SingleTableInsert() :
 {}
 {
-    InsertIntoClause() ( ValuesClause() | Subquery() )
+    InsertIntoClause() ( ValuesClause() [ ReturningClause() ] | Subquery() )
     { return jjtThis; }
 }
 
@@ -2282,7 +2290,12 @@ ASTInsertIntoClause InsertIntoClause() :
 ASTValuesClause ValuesClause() :
 {}
 {
-    <VALUES> "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
+    <VALUES>
+    (
+        "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
+    |
+        ID() // that's a record variable name
+    )
     { return jjtThis; }
 }
 ASTMultiTableInsert MultiTableInsert() :
@@ -2903,12 +2916,14 @@ ASTTrimExpression TrimExpression() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-	"(" { sb.append("(");}
-	 [ ( <LEADING> | <TRAILING> | <BOTH> ){ sb.append(" "); sb.append(token.toString()); }  ]
-	 [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-	 ( <FROM>  )  { sb.append(token.image);}
-	 simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	")" { sb.append(")");}
+    "(" { sb.append("(");}
+     [ LOOKAHEAD(2)
+        [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
+        [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
+        ( <FROM> ) { sb.append(" ").append(token.image); }
+     ]
+     simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
+    ")" { sb.append(")");}
   )
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
