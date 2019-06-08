@@ -352,7 +352,11 @@ public interface Node {
 
     /**
      * Remove the current node from its parent.
+     *
+     * @deprecated This is internal API and will be removed from this interface with 7.0.0
      */
+    @Deprecated
+    @InternalApi
     void remove();
 
     /**
@@ -361,7 +365,11 @@ public interface Node {
      *
      * @param childIndex
      *          The index of the child to be removed
+     *
+     * @deprecated This is internal API and will be removed from this interface with 7.0.0
      */
+    @Deprecated
+    @InternalApi
     void removeChildAtIndex(int childIndex);
 
 
