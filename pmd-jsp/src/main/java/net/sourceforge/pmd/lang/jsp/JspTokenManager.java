@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.jsp;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
+import net.sourceforge.pmd.lang.ast.impl.JavaCharStream;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserTokenManager;
 
 /**

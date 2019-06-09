@@ -29,12 +29,6 @@ public interface GenericToken {
     String getImage();
 
 
-    // TODO implement everywhere by generalizing the use of JavaccToken
-    int getStartDocumentOffset();
-
-
-    int getEndDocumentOffset();
-
     /**
      * Gets the line where the token's region begins
      * @return a non-negative integer containing the begin line

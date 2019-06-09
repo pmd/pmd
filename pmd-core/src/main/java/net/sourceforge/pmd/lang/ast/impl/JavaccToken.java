@@ -131,12 +131,11 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
         return image.toString();
     }
 
-    @Override
+    // TODO move up to GenericToken, generalize the use of this class JavaccToken
     public int getStartDocumentOffset() {
         return startOffset;
     }
 
-    @Override
     public int getEndDocumentOffset() {
         return endOffset;
     }

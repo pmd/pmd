@@ -23,13 +23,17 @@ public class JavaCharStream extends JavaCharStreamBase {
 
     private int[] startOffsets;
 
-    private JavaCharStream(String fulltext) {
+    public JavaCharStream(String fulltext) {
         super(new StringReader(fulltext));
         this.seq = new SharingCharSeq(fulltext);
         this.startOffsets = new int[bufsize];
         maxNextCharInd = seq.length();
 
         nextCharBuf = null; // the char buf is emulated by the TokenisedCharseq and isn't needed
+    }
+
+    public JavaCharStream(Reader toDump) {
+        this(toString(toDump));
     }
 
     protected void ExpandBuff(boolean wrapAround) {
@@ -49,7 +53,9 @@ public class JavaCharStream extends JavaCharStreamBase {
 
     @Override
     protected void beforeReadChar() {
-        startOffsets[bufpos + 1] = nextCharInd + 1;
+        if (bufpos + 1 < available) {
+            startOffsets[bufpos + 1] = nextCharInd + 1;
+        }
     }
 
 
@@ -99,14 +105,11 @@ public class JavaCharStream extends JavaCharStreamBase {
         throw new IllegalStateException("Buffer shouldn't be refilled");
     }
 
-    public static JavaCharStream createStream(Reader dstream) {
-        String fullText;
-        try {
-            fullText = IOUtils.toString(dstream);
-            dstream.close();
+    private static String toString(Reader dstream) {
+        try (Reader r = dstream) {
+            return IOUtils.toString(r);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new JavaCharStream(fullText);
     }
 }

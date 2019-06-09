@@ -17,7 +17,7 @@ public class JavaTokenManager implements TokenManager {
     private final JavaParserTokenManager tokenManager;
 
     public JavaTokenManager(Reader source) {
-        tokenManager = new JavaParserTokenManager(JavaCharStream.createStream(source));
+        tokenManager = new JavaParserTokenManager(new JavaCharStream(source));
     }
 
     @Override
