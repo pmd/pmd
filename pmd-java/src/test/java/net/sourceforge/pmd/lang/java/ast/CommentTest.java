@@ -98,8 +98,7 @@ public class CommentTest {
     }
 
     private String filter(String comment) {
-        JavaccToken t = new JavaccToken();
-        t.image = comment;
+        JavaccToken t = new JavaccToken(comment);
         Comment node = new Comment(t) {
             @Override
             public String getXPathNodeName() {

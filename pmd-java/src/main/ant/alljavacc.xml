@@ -123,6 +123,10 @@
             </replacevalue>
         </replace>
 
+        <replace token="new Token()" value="net.sourceforge.pmd.lang.ast.impl.JavaccToken.undefined()">
+            <fileset dir="${target-package-dir}"/>
+        </replace>
+
         <replace token=" Token " value=" net.sourceforge.pmd.lang.ast.impl.JavaccToken ">
             <fileset dir="${target-package-dir}"/>
         </replace>

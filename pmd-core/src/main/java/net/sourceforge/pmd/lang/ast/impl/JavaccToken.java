@@ -37,8 +37,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  */
 public class JavaccToken implements GenericToken, java.io.Serializable {
 
-    public static final JavaccToken UNDEFINED = new JavaccToken();
-
     /**
      * The version identifier for this Serializable class.
      * Increment only if the <i>serialized</i> form of the
@@ -51,7 +49,7 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
      * system is determined by JavaCCParser, and a table of these numbers is
      * stored in the file ...Constants.java.
      */
-    public int kind;
+    public final int kind;
     /**
      * A reference to the next regular (non-special) token from the input
      * stream.  If this is the last token from the input stream, or if the
@@ -75,28 +73,26 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
      */
     public JavaccToken specialToken;
 
-    /**
-     * The string image of the token.
-     *
-     * @deprecated Make me private, currently public for some tests that create tokens themselves
-     */
-    @Deprecated
-    public CharSequence image;
-    private int startOffset;
-    private int endOffset;
+    private final CharSequence image;
+    private final int startOffset;
+    private final int endOffset;
     /** The line number of the first character of this Token. */
-    private int beginLine;
+    private final int beginLine;
     /** The column number of the first character of this Token. */
-    private int beginColumn;
+    private final int beginColumn;
     /** The line number of the last character of this Token. */
-    private int endLine;
+    private final int endLine;
     /** The column number of the last character of this Token. */
-    private int endColumn;
+    private final int endColumn;
 
-    /**
-     * No-argument constructor
-     */
-    public JavaccToken() {}
+    /** {@link #undefined()} */
+    private JavaccToken() {
+        this(null);
+    }
+
+    public JavaccToken(String image) {
+        this(-1, image, -1, -1, -1, -1, -1, -1);
+    }
 
     /**
      * Constructs a new token for the specified Image and Kind.
@@ -168,8 +164,13 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
     /**
      * Returns the image.
      */
+    @Override
     public String toString() {
         return image.toString();
+    }
+
+    public static JavaccToken undefined() {
+        return new JavaccToken();
     }
 
 }

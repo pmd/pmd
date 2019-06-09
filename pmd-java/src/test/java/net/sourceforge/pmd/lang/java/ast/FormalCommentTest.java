@@ -23,8 +23,7 @@ public class FormalCommentTest {
                 + "    boolean supports(N node);\n"
                 + "";
 
-        JavaccToken token = new JavaccToken();
-        token.image = comment;
+        JavaccToken token = new JavaccToken(comment);
         FormalComment commentNode = new FormalComment(token);
 
         Assert.assertEquals(2, commentNode.jjtGetNumChildren());

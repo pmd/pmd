@@ -148,8 +148,7 @@ public final class CommentUtil {
     @Deprecated // will be removed with PMD 7.0.0
     public static List<String> multiLinesIn(String comment) {
         // temporary createa a Multiline Comment Node
-        JavaccToken t = new JavaccToken();
-        t.image = comment;
+        JavaccToken t = new JavaccToken(comment);
         MultiLineComment node = new MultiLineComment(t);
         return Arrays.asList(Comment.NEWLINES_PATTERN.split(node.getFilteredComment()));
     }

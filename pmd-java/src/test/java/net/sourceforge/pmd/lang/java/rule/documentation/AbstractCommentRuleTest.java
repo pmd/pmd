@@ -33,13 +33,12 @@ public class AbstractCommentRuleTest {
      */
     @Test
     public void testFilteredCommentIn() {
-        JavaccToken token = new JavaccToken();
-        token.image = "/* multi line comment with blank lines\n\n\n */";
+        JavaccToken token = new JavaccToken("/* multi line comment with blank lines\n\n\n */");
 
         String filtered = testSubject.filteredCommentIn(new MultiLineComment(token));
         assertEquals("multi line comment with blank lines", filtered);
 
-        token.image = "/** a formal comment with blank lines\n\n\n */";
+        token = new JavaccToken("/** a formal comment with blank lines\n\n\n */");
         filtered = testSubject.filteredCommentIn(new FormalComment(token));
         assertEquals("a formal comment with blank lines", filtered);
     }
