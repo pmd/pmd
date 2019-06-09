@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.ast.impl;
 
 import java.util.regex.Pattern;
@@ -13,6 +9,12 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.CharSequenceUtils;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * A {@link CharSequence} with convenience methods to make the interface
+ * similar to a {@link String}. This is incentive to not convert the
+ * sequence to a string when equivalent methods exist which would not
+ * force the creation of a {@link String}.
+ */
 public interface RichCharSequence extends CharSequence {
 
     @Override
@@ -93,5 +95,31 @@ public interface RichCharSequence extends CharSequence {
     default boolean matches(String regex) {
         return Pattern.matches(regex, this);
     }
+
+    // TODO test
+    //   there are surely off-by-ones somewhere
+
+    /** Returns the column number at the given position. */
+    default int getColumnNumberAt(int posExclusive) {
+        int prevLf = lastIndexOf('\n', posExclusive);
+        return prevLf < 0 ? posExclusive : length() - prevLf;
+    }
+
+
+    /** Returns the line number at the given position. */
+    default int getLineNumberAt(int posExclusive) {
+        if (posExclusive >= length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        int l = 1;
+        for (int i = 0; i < posExclusive; i++) {
+            char c = charAt(i);
+            if (c == '\n') {
+                l++;
+            }
+        }
+        return l;
+    }
+
 
 }

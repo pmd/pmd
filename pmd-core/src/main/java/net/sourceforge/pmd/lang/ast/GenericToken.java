@@ -26,7 +26,22 @@ public interface GenericToken {
      * Gets the token's text.
      * @return the token's text
      */
+    // TODO Should we use CharSequence here?
     String getImage();
+
+    // TODO these default implementations are here for compatibility because
+    //  the functionality is only used in pmd-java for now, though it could
+    //  be ported. I prefer doing this as changing all the GenericToken in
+    //  pmd-java to JavaccToken
+
+    default int getStartInDocument() {
+        return -1;
+    }
+
+
+    default int getEndInDocument() {
+        return -1;
+    }
 
 
     /**

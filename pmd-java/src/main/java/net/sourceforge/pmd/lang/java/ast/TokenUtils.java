@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
 
 /**
  * PRIVATE FOR NOW, find out what is useful to move to the interface
@@ -18,12 +19,15 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  */
 final class TokenUtils {
 
+    // we use JavaccToken to avoid using getBeginLine and getEndLine,
+    // which are now slower.
+
     /**
      * Assumes no two tokens overlap, and that the two tokens are from
      * the same document.
      */
     private static final Comparator<GenericToken> TOKEN_POS_COMPARATOR
-        = Comparator.comparing(GenericToken::getBeginLine).thenComparing(GenericToken::getBeginColumn);
+        = Comparator.comparingInt(GenericToken::getStartInDocument);
 
     private TokenUtils() {
 
@@ -34,11 +38,12 @@ final class TokenUtils {
     }
 
     public static boolean isBefore(GenericToken t1, GenericToken t2) {
-        return compare(t1, t2) < 0;
+        return t1.getStartInDocument() < t2.getStartInDocument();
     }
 
     public static boolean isAfter(GenericToken t1, GenericToken t2) {
-        return compare(t1, t2) > 0;
+        return t1.getStartInDocument() > t2.getStartInDocument();
+
     }
 
 

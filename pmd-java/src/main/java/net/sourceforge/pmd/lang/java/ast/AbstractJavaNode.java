@@ -33,6 +33,17 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         this.parser = parser;
     }
 
+
+    @Override
+    public void jjtSetFirstToken(GenericToken token) {
+        super.firstToken = token;
+    }
+
+    @Override
+    public void jjtSetLastToken(GenericToken token) {
+        super.lastToken = token;
+    }
+
     @Override
     public int getBeginLine() {
         return jjtGetFirstToken().getBeginLine();
@@ -118,12 +129,12 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     @Override
     public int getStartOffset() {
-        return ((JavaccToken) jjtGetFirstToken()).getStartDocumentOffset();
+        return ((JavaccToken) jjtGetFirstToken()).getStartInDocument();
     }
 
     @Override
     public int getEndOffset() {
-        return ((JavaccToken) jjtGetLastToken()).getEndDocumentOffset();
+        return ((JavaccToken) jjtGetLastToken()).getEndInDocument();
     }
 
 

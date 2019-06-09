@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
+import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 
 final class JavaTokenUtils {
 
@@ -29,10 +30,7 @@ final class JavaTokenUtils {
                 ">",
                 jcs.getStartOffset(),
                 jcs.getEndOffset(),
-                jcs.getBeginColumn(),
-                jcs.getEndColumn(),
-                jcs.getBeginLine(),
-                jcs.getEndLine()
+                jcs.getTokenDocument()
             );
         default:
             return new JavaccToken(
@@ -40,10 +38,7 @@ final class JavaTokenUtils {
                 image == null ? charStream.GetImage() : image,
                 jcs.getStartOffset(),
                 jcs.getEndOffset(),
-                jcs.getBeginColumn(),
-                jcs.getEndColumn(),
-                jcs.getBeginLine(),
-                jcs.getEndLine()
+                jcs.getTokenDocument()
             );
         }
     }
@@ -55,8 +50,8 @@ final class JavaTokenUtils {
         /**
          * Constructs a new token for the specified Image and Kind.
          */
-        public GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, int beginColumn, int endColumn, int beginLine, int endLine) {
-            super(kind, image, startOffset, endOffset, beginColumn, endColumn, beginLine, endLine);
+        public GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, TokenDocument doc) {
+            super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }
 

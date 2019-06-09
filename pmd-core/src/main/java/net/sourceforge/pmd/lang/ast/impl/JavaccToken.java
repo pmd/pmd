@@ -2,14 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.ast.impl;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -19,8 +11,8 @@ import net.sourceforge.pmd.lang.ast.RootNode;
  * A generic token implementation for JavaCC parsers. Will probably help
  * remove those duplicated implementations that all have the same name.
  *
- * <p>I think the only thing important here is {@link #getStartDocumentOffset()}
- * and {@link #getEndDocumentOffset()}. The begin/end line/column can very probably
+ * <p>I think the only thing important here is {@link #getStartInDocument()}
+ * and {@link #getEndInDocument()}. The begin/end line/column can very probably
  * be removed from the token instances to make them lighter, which doesn't
  * prevent them from being retrieved on-demand using the original text.
  *
@@ -76,14 +68,7 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
     private final CharSequence image;
     private final int startOffset;
     private final int endOffset;
-    /** The line number of the first character of this Token. */
-    private final int beginLine;
-    /** The column number of the first character of this Token. */
-    private final int beginColumn;
-    /** The line number of the last character of this Token. */
-    private final int endLine;
-    /** The column number of the last character of this Token. */
-    private final int endColumn;
+    private final TokenDocument document;
 
     /** {@link #undefined()} */
     private JavaccToken() {
@@ -91,7 +76,7 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
     }
 
     public JavaccToken(String image) {
-        this(-1, image, -1, -1, -1, -1, -1, -1);
+        this(-1, image, -1, -1, null);
     }
 
     /**
@@ -101,18 +86,12 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
                        CharSequence image,
                        int startOffset,
                        int endOffset,
-                       int beginColumn,
-                       int endColumn,
-                       int beginLine,
-                       int endLine) {
+                       TokenDocument document) {
         this.kind = kind;
         this.image = image;
         this.startOffset = startOffset;
         this.endOffset = endOffset;
-        this.beginColumn = beginColumn;
-        this.endColumn = endColumn;
-        this.beginLine = beginLine;
-        this.endLine = endLine;
+        this.document = document;
     }
 
 
@@ -132,32 +111,34 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
     }
 
     // TODO move up to GenericToken, generalize the use of this class JavaccToken
-    public int getStartDocumentOffset() {
+    @Override
+    public int getStartInDocument() {
         return startOffset;
     }
 
-    public int getEndDocumentOffset() {
+    @Override
+    public int getEndInDocument() {
         return endOffset;
     }
 
     @Override
     public int getBeginLine() {
-        return beginLine;
+        return document == null ? -1 : document.getFullText().getLineNumberAt(startOffset);
     }
 
     @Override
     public int getEndLine() {
-        return endLine;
+        return document == null ? -1 : document.getFullText().getLineNumberAt(endOffset);
     }
 
     @Override
     public int getBeginColumn() {
-        return beginColumn;
+        return document == null ? -1 : document.getFullText().getColumnNumberAt(startOffset);
     }
 
     @Override
     public int getEndColumn() {
-        return endColumn;
+        return document == null ? -1 : document.getFullText().getColumnNumberAt(endOffset);
     }
 
     /**
