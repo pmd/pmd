@@ -14,6 +14,12 @@ import org.apache.commons.lang3.StringUtils;
  * similar to a {@link String}. This is incentive to not convert the
  * sequence to a string when equivalent methods exist which would not
  * force the creation of a {@link String}.
+ *
+ * <p>Also, contrary to {@link CharSequence}, the contract of {@link Object#equals(Object)}
+ * is refined to mean that any {@link RichCharSequence} must be equatable
+ * to another {@link RichCharSequence} implementation, making this type
+ * suitable for use as keys of a map for example.
+ *
  */
 public interface RichCharSequence extends CharSequence {
 
@@ -94,6 +100,23 @@ public interface RichCharSequence extends CharSequence {
     /** @see Pattern#matches(String, CharSequence) */
     default boolean matches(String regex) {
         return Pattern.matches(regex, this);
+    }
+
+    /**
+     * Compares this sequence to the argument, following the contract
+     * of {@link StringUtils#equals(CharSequence, CharSequence)}.
+     *
+     * <p>Note that {@link Object#equals(Object)} only considers {@link RichCharSequence}
+     * of the same type, for symmetry, which for example would fail with
+     * {@link String}.
+     */
+    default boolean equalsSeq(CharSequence other) {
+        return StringUtils.equals(this, other);
+    }
+
+    /** @see StringUtils#equalsIgnoreCase(CharSequence, CharSequence)*/
+    default boolean equalsIgnoreCase(CharSequence other) {
+        return StringUtils.equalsIgnoreCase(this, other);
     }
 
     // TODO test

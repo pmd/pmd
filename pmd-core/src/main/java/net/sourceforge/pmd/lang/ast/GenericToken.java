@@ -23,10 +23,8 @@ public interface GenericToken {
     GenericToken getPreviousComment();
 
     /**
-     * Gets the token's text.
-     * @return the token's text
+     * Returns the token's text.
      */
-    // TODO Should we use CharSequence here?
     String getImage();
 
     // TODO these default implementations are here for compatibility because

@@ -4,8 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
-import java.util.Objects;
-
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -20,6 +19,7 @@ public final class SharingCharSeq implements RichCharSequence {
 
     private static final SharingCharSeq EMPTY = new SharingCharSeq(new char[0], 0, 0);
 
+    /** If this is null, then {@link #myStr} is never null. */
     private final char[] value;
     private final int offset;
     private final int count;
@@ -27,7 +27,7 @@ public final class SharingCharSeq implements RichCharSequence {
     private String myStr = null;
 
     public SharingCharSeq(String str) {
-        this(str.toCharArray(), 0, str.length());
+        this(null, -1, str.length());
         myStr = str;
     }
 
@@ -45,6 +45,10 @@ public final class SharingCharSeq implements RichCharSequence {
 
     @Override
     public char charAt(int index) {
+        if (value == null) {
+            return myStr.charAt(index);
+        }
+
         if (index < 0 || index >= count) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index + " not in [0," + count + "[");
         }
@@ -78,7 +82,18 @@ public final class SharingCharSeq implements RichCharSequence {
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        if (myStr != null) {
+            // shortcut
+            return myStr.hashCode();
+        }
+        // don't compute the toString within the hashcode, hopefully
+        // the chars differ early on
+
+        int h = 0;
+        for (int i = 0; i < count; ++i) {
+            h = 31 * h + value[offset + i];
+        }
+        return h;
     }
 
     @Override
@@ -86,10 +101,10 @@ public final class SharingCharSeq implements RichCharSequence {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof RichCharSequence)) {
             return false;
         }
-        SharingCharSeq that = (SharingCharSeq) o;
-        return Objects.equals(toString(), that.toString());
+
+        return StringUtils.equals(this, (RichCharSequence) o);
     }
 }
