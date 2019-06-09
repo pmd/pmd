@@ -24,17 +24,26 @@ public final class SharingCharSeq implements RichCharSequence {
     private final int offset;
     private final int count;
 
-    private String myStr = null;
+    private String myStr;
 
     public SharingCharSeq(String str) {
-        this(null, -1, str.length());
-        myStr = str;
+        this(str, 0, str.length());
     }
 
-    public SharingCharSeq(char[] value, int offset, int count) {
+    // those are for subsequences
+
+    private SharingCharSeq(String str, int offset, int count) {
+        this.myStr = str;
+        this.offset = offset;
+        this.count = count;
+        this.value = null;
+    }
+
+    private SharingCharSeq(char[] value, int offset, int count) {
         this.value = value;
         this.offset = offset;
         this.count = count;
+        this.myStr = null;
     }
 
 
@@ -45,15 +54,12 @@ public final class SharingCharSeq implements RichCharSequence {
 
     @Override
     public char charAt(int index) {
-        if (value == null) {
-            return myStr.charAt(index);
-        }
 
         if (index < 0 || index >= count) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index + " not in [0," + count + "[");
         }
 
-        return value[offset + index];
+        return value == null ? myStr.charAt(offset + index) : value[offset + index];
     }
 
     @Override
@@ -61,7 +67,9 @@ public final class SharingCharSeq implements RichCharSequence {
         if (start < 0 || end > count || start > end) {
             throw new IndexOutOfBoundsException("Invalid range: [" + start + "," + end + "[ not in [0," + count + "[");
         }
-        return start == end ? EMPTY : new SharingCharSeq(value, offset + start, end - start);
+        return start == end ? EMPTY
+                            : value == null ? new SharingCharSeq(myStr, offset + start, end - start)
+                                            : new SharingCharSeq(value, offset + start, end - start);
     }
 
     @Override
