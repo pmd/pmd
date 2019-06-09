@@ -20,12 +20,14 @@ public class JavaCharStream extends JavaCharStreamBase {
 
     // full text with nothing escaped and all
     private final SharingCharSeq seq;
+    private final TokenDocument document;
 
     private int[] startOffsets;
 
     public JavaCharStream(String fulltext) {
         super(new StringReader(fulltext));
         this.seq = new SharingCharSeq(fulltext);
+        this.document = new TokenDocument(seq);
         this.startOffsets = new int[bufsize];
         maxNextCharInd = seq.length();
 
@@ -36,6 +38,7 @@ public class JavaCharStream extends JavaCharStreamBase {
         this(toString(toDump));
     }
 
+    @Override
     protected void ExpandBuff(boolean wrapAround) {
         int[] newStartOffsets = new int[bufsize + 2048];
 
@@ -71,8 +74,8 @@ public class JavaCharStream extends JavaCharStreamBase {
         }
     }
 
-    public RichCharSequence getFullText() {
-        return seq;
+    public TokenDocument getTokenDocument() {
+        return document;
     }
 
     @Override

@@ -1551,7 +1551,7 @@ ASTCompilationUnit CompilationUnit() :
   <EOF>
   {
      jjtThis.setComments(token_source.comments);
-     jjtThis.setFileText(((net.sourceforge.pmd.lang.ast.impl.JavaCharStream) token_source.input_stream).getFullText());
+     jjtThis.setTokenDocument(((net.sourceforge.pmd.lang.ast.impl.JavaCharStream) token_source.input_stream).getTokenDocument());
      return jjtThis;
   }
 }

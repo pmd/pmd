@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.RichCharSequence;
+import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
@@ -24,6 +25,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     private List<Comment> comments;
     private Map<Integer, String> noPmdComments = Collections.emptyMap();
     private RichCharSequence fileText;
+    private TokenDocument tokenDocument;
 
     ASTCompilationUnit(int id) {
         super(id);
@@ -43,12 +45,12 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
 
     @Override
     public RichCharSequence getText() {
-        return fileText;
+        return tokenDocument.getFullText();
     }
 
 
-    void setFileText(RichCharSequence fileText) {
-        this.fileText = fileText;
+    void setTokenDocument(TokenDocument document) {
+        this.tokenDocument = document;
     }
 
     @Override
