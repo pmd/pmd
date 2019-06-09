@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.impl.RichCharSequence;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -85,10 +86,6 @@ public interface JavaNode extends ScopedNode {
     @Override
     JavaNode jjtGetParent();
 
-
-    ASTCompilationUnit getRoot();
-
-
     GenericToken jjtGetFirstToken();
 
 
@@ -119,7 +116,7 @@ public interface JavaNode extends ScopedNode {
     int getEndOffset();
 
 
-    CharSequence getText();
+    RichCharSequence getText();
 
 
     /**

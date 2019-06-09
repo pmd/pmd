@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.RichCharSequence;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
@@ -20,7 +21,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     private JSymbolTable symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
-    private CharSequence text;
+    private RichCharSequence text;
 
     AbstractJavaNode(int id) {
         super(id);
@@ -107,7 +108,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
 
     @Override
-    public CharSequence getText() {
+    public RichCharSequence getText() {
         if (text == null) {
             text = getRoot().getText().subSequence(getStartOffset(), getEndOffset());
         }

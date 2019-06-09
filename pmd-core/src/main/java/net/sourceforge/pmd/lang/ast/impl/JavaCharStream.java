@@ -10,8 +10,6 @@ import java.io.StringReader;
 
 import org.apache.commons.io.IOUtils;
 
-import net.sourceforge.pmd.lang.ast.internal.SharingCharSeq;
-
 /**
  * This stream buffers the whole file in memory before parsing,
  * and shares the char array between all tokens.
@@ -67,7 +65,7 @@ public class JavaCharStream extends JavaCharStreamBase {
         }
     }
 
-    public SharingCharSeq getFullText() {
+    public RichCharSequence getFullText() {
         return seq;
     }
 

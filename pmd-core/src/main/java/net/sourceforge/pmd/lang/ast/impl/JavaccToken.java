@@ -13,18 +13,38 @@
 package net.sourceforge.pmd.lang.ast.impl;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
+ * A generic token implementation for JavaCC parsers. Will probably help
+ * remove those duplicated implementations that all have the same name.
+ *
+ * <p>I think the only thing important here is {@link #getStartDocumentOffset()}
+ * and {@link #getEndDocumentOffset()}. The begin/end line/column can very probably
+ * be removed from the token instances to make them lighter, which doesn't
+ * prevent them from being retrieved on-demand using the original text.
+ *
+ * <p>To make that easy we should probably link tokens to an underlying
+ * "token document", which would be the list of all tokens in the file,
+ * with the original (shared) full text. That would be available from
+ * the {@link RootNode} instances. That representation could be shared
+ * with CPD as well.
+ *
+ * TODO remove those four fields and fetch the begin/end line
+ *   dynamically from the underlying text.
+ *
  * @author Clément Fournier
  */
 public class JavaccToken implements GenericToken, java.io.Serializable {
+
+    public static final JavaccToken UNDEFINED = new JavaccToken();
 
     /**
      * The version identifier for this Serializable class.
      * Increment only if the <i>serialized</i> form of the
      * class changes.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4L;
 
     /**
      * An integer that describes the kind of this token.  This numbering

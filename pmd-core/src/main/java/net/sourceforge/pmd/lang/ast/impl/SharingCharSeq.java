@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.internal;
+package net.sourceforge.pmd.lang.ast.impl;
 
 import java.util.Objects;
 
@@ -53,7 +53,7 @@ public final class SharingCharSeq implements RichCharSequence {
     }
 
     @Override
-    public SharingCharSeq subSequence(int start, int end) {
+    public RichCharSequence subSequence(int start, int end) {
         if (start < 0 || end > count || start > end) {
             throw new IndexOutOfBoundsException("Invalid range: [" + start + "," + end + "[ not in [0," + count + "[");
         }
@@ -61,7 +61,7 @@ public final class SharingCharSeq implements RichCharSequence {
     }
 
     @Override
-    public SharingCharSeq subSequence(int start) {
+    public RichCharSequence subSequence(int start) {
         return subSequence(start, count);
     }
 

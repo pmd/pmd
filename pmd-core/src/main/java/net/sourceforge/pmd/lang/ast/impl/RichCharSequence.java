@@ -2,14 +2,28 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.internal;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.ast.impl;
 
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.CharSequenceUtils;
 import org.apache.commons.lang3.StringUtils;
 
-interface RichCharSequence extends CharSequence {
+public interface RichCharSequence extends CharSequence {
+
+    @Override
+    RichCharSequence subSequence(int start, int end);
+
+
+    /** @see CharSequenceUtils#subSequence(CharSequence, int) */
+    default RichCharSequence subSequence(int start) {
+        return subSequence(start, length());
+    }
+
 
     /** @see StringUtils#indexOf(CharSequence, int) */
     default int indexOf(int searchChar) {
@@ -74,13 +88,6 @@ interface RichCharSequence extends CharSequence {
     default boolean startsWith(CharSequence prefix) {
         return StringUtils.startsWith(this, prefix);
     }
-
-
-    /** @see CharSequenceUtils#subSequence(CharSequence, int) */
-    default CharSequence subSequence(int start) {
-        return subSequence(start, length());
-    }
-
 
     /** @see Pattern#matches(String, CharSequence) */
     default boolean matches(String regex) {
