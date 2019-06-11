@@ -15,7 +15,7 @@ final class JavaTokenUtils {
 
     }
 
-    public static JavaccToken newToken(int kind, CharStream charStream) {
+    static JavaccToken newToken(int kind, CharStream charStream) {
         JavaCharStream jcs = (JavaCharStream) charStream;
 
         String image = JavaParserTokenManager.jjstrLiteralImages[kind];
@@ -43,14 +43,14 @@ final class JavaTokenUtils {
         }
     }
 
-    public static final class GTToken extends JavaccToken {
+    static final class GTToken extends JavaccToken {
 
-        public int realKind;
+        final int realKind;
 
         /**
          * Constructs a new token for the specified Image and Kind.
          */
-        public GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, TokenDocument doc) {
+        GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, TokenDocument doc) {
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }

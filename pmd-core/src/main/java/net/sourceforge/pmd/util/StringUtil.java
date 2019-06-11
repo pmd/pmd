@@ -71,7 +71,7 @@ public final class StringUtil {
                         // the CR is assumed to be on the same line as the LF
                         return l;
                     }
-                    curOffset++; // jump to after the \n
+                    curOffset++; // SUPPRESS CHECKSTYLE jump to after the \n
                 }
                 l++;
             }

@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
 
 /**
  * PRIVATE FOR NOW, find out what is useful to move to the interface
