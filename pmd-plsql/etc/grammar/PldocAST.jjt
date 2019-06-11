@@ -3648,7 +3648,7 @@ ASTTable Table()  :
   <TABLE> ObjectNameDeclaration()
   [ <SHARING> "=" ( <METADATA> | <DATA> | <EXTENDED> <DATA> | <NONE> ) ]
   //object_table
-  ( <OF> Datatype() |
+  ( <OF> Datatype() [ [ <NOT> ] KEYWORD("SUBSTITUTABLE") <AT> <ALL> KEYWORD("LEVELS") ]|
   //relational_table
   [ "(" ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ) ("," ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ))* ")" ]
   [LOOKAHEAD(4) <ON> <COMMIT> (<DROP> | <PRESERVE>) <DEFINITION>]
@@ -3736,7 +3736,8 @@ ASTView View()  :
   ["(" ViewColumn() ("," ViewColumn())* ")"]
   //### OF ... WITH OBJECT IDENTIFIER...
   <AS>
-  SqlStatement(null,";")
+  [ SqlStatement(null,";") | "(" Subquery() ")"]
+  [<WITH> ( <READ> <ONLY> | <CHECK> <OPTION> ) [ <CONSTRAINT> <IDENTIFIER> ]]
   (";" | "/")
 
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
