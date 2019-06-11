@@ -1177,9 +1177,9 @@ void RestOfStatement() #void :
     [ WhereClause() ]
     [ HierarchicalQueryClause() ]
     [ GroupByClause() ]
-    
+
     (LOOKAHEAD(2) ( SubqueryOperation() ) Subquery() )*
-    
+
     [ OrderByClause() ]
     [ RowLimitingClause() ]
 }
@@ -3647,11 +3647,15 @@ ASTTable Table()  :
   <CREATE> [ ( <GLOBAL> | <PRIVATE> ) <TEMPORARY> | <SHARDED> | <DUPLICATED> ]
   <TABLE> ObjectNameDeclaration()
   [ <SHARING> "=" ( <METADATA> | <DATA> | <EXTENDED> <DATA> | <NONE> ) ]
+  //object_table
+  ( <OF> Datatype() |
+  //relational_table
   [ "(" ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ) ("," ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ))* ")" ]
   [LOOKAHEAD(4) <ON> <COMMIT> (<DROP> | <PRESERVE>) <DEFINITION>]
-  [LOOKAHEAD(4) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>]
-  //### [physicalProperties()]
-  //### [tableProperties()]
+  [LOOKAHEAD(4) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>] )
+  //### [PhysicalProperties()]
+  //### [TableProperties()]
+  Skip2NextOccurrence(";")
   [";"]
 
       { return jjtThis ; }
@@ -3661,8 +3665,28 @@ ASTTableColumn TableColumn()  :
 {
 }
 {
-  ID() Datatype() [<_DEFAULT> Expression()] [[<NOT> ] <NULL>]
+  ID() Datatype()
+  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(2) FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
+    | LOOKAHEAD(2) <GENERATED> [ ( <BY> <_DEFAULT> [ <ON> <NULL>] | KEYWORD("ALWAYS")) ]
+                               <AS> KEYWORD("IDENTITY") ) ]
+  (LOOKAHEAD(1) InlineConstraint())*
       { return jjtThis ; }
+}
+
+ASTInlineConstraint InlineConstraint() :
+{}
+{
+    [ <CONSTRAINT> ID() ]
+    ( [<NOT>] <NULL>
+    | <UNIQUE>  { jjtThis.setType(ConstraintType.UNIQUE); }
+    | <PRIMARY> { jjtThis.setType(ConstraintType.PRIMARY); } <KEY>
+    | <CHECK>   { jjtThis.setType(ConstraintType.CHECK); } "(" Condition() ")"
+    | <WITH> <ROWID>
+    | <SCOPE> <IS> [ LOOKAHEAD(2) TableName() "." ] Column()
+    | ReferencesClause()
+    )
+    (ConstraintState())*
+    { return jjtThis; }
 }
 
 ASTOutOfLineConstraint OutOfLineConstraint() :
@@ -3672,16 +3696,31 @@ ASTOutOfLineConstraint OutOfLineConstraint() :
     (   <UNIQUE> { jjtThis.setType(ConstraintType.UNIQUE); } "(" ID() ("," ID())* ")"
       | <PRIMARY> { jjtThis.setType(ConstraintType.PRIMARY); } <KEY> "(" ID() ("," ID())* ")"
       | <FOREIGN> { jjtThis.setType(ConstraintType.FOREIGN); } <KEY> "(" ID() ("," ID())* ")" ReferencesClause()
-      | <CHECK> { jjtThis.setType(ConstraintType.CHECK); } "(" Statement() ")"
+      | <CHECK> { jjtThis.setType(ConstraintType.CHECK); } "(" Condition() ")"
     )
+    (ConstraintState())*
     { return jjtThis; }
+}
+
+void ConstraintState() #void:
+{}
+{
+    ( <USING> <INDEX>
+        ( LOOKAHEAD(2) <IDENTIFIER>
+        | LOOKAHEAD(2) "(" <CREATE> <UNIQUE> <INDEX> <IDENTIFIER> <ON> TableName() "(" Column() ("," Column())* ")" ")"
+        | LOOKAHEAD(2) ( <PCTFREE> NumericLiteral()
+                       | <IDENTIFIER> ( <IDENTIFIER> | Skip2NextTerminator("(",")") ) )* )
+    | <INITIALLY> (<IMMEDIATE>|<DEFERRED>)
+    | <DEFERRABLE>
+    | <ENABLE>
+    | <DISABLE> )
 }
 
 ASTReferencesClause ReferencesClause() :
 {}
 {
     <REFERENCES> ObjectNameDeclaration()
-    [ "(" ID() ( LOOKAHEAD(2) "," ID())* ]
+    [ "(" ID() ( LOOKAHEAD(2) "," ID() )* ")" ]
     [ <ON> <DELETE> ( <CASCADE> | <SET> <NULL> ) ]
     { return jjtThis; }
 }
@@ -4836,7 +4875,12 @@ TOKEN [IGNORE_CASE]:
 <FOREACHROW: "FOR EACH ROW"> |
 <REFERENCING: "REFERENCING"> |
 <OLD: "OLD"> |
-<PARENT: "PARENT">
+<PARENT: "PARENT"> |
+<GENERATED: "GENERATED"> |
+<SCOPE: "SCOPE"> |
+<INITIALLY: "INITIALLY"> |
+<DEFERRABLE: "DEFERRABLE"> |
+<DEFERRED: "DEFERRED">
 
 | <CC_IF: "$IF">
 | <CC_THEN: "$THEN">
@@ -5315,8 +5359,8 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <DECLARE>
 //| <DECREMENT>
 //| <DECRYPT>
-//| <DEFERRABLE>
-//| <DEFERRED>
+| <DEFERRABLE>
+| <DEFERRED>
 | <DEFINE>// SQL*Plus command
 //| <DEFINED>
 | <DEFINER>
@@ -5431,7 +5475,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <G>
 //| <GATHER_PLAN_STATISTICS>
 //| <GBY_CONC_ROLLUP>
-//| <GENERATED>
+| <GENERATED>
 | <GLOBAL>
 //| <GLOBAL_NAME>
 //| <GLOBAL_TOPIC_ENABLED>
@@ -5498,7 +5542,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <INFORMATIONAL>
 //| <INITIAL>
 //| <INITIALIZED>
-//| <INITIALLY>
+| <INITIALLY>
 //| <INITRANS>
 //| <INLINE>
 //| <INLINE_XMLTYPE_NT>
@@ -5958,7 +6002,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <SCHEMA>
 //| <SCN>
 //| <SCN_ASCENDING>
-//| <SCOPE>
+| <SCOPE>
 //| <SD_ALL>
 //| <SD_INHIBIT>
 //| <SD_SHOW>

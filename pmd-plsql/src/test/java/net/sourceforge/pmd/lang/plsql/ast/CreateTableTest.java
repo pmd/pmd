@@ -21,4 +21,12 @@ public class CreateTableTest extends AbstractPLSQLParserTst {
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
     }
+
+    @Test
+    public void parseCreateOrganizedTable() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("CreateOrganizedTable.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }
