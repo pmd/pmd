@@ -81,23 +81,46 @@ public final class StringUtil {
 
     /**
      * Returns the (1-based) column number at the given index.
-     * This is an index n such that,
+     * Like with {@link #lineNumberAt(CharSequence, int)}, line terminators
+     * are by convention taken to be part of the line they end,
+     * and not the new line they start. Each character has width 1,
+     * regardless of its
      *
      * <pre>
      *
-     *     columnNumberAt(*, 0)       = 0
+     *     columnNumberAt("a\nb", 0)  = 1
      *     columnNumberAt("a\nb", 1)  = 2
-     *     columnNumberAt("a\nb", 2)  = 2
-     *     columnNumberAt("a\nb", 3)  = 2
+     *     columnNumberAt("a\nb", 2)  = 1
+     *
+     *     columnNumberAt("a\r\n", 2)  = 3
+     *
+     *     columnNumberAt("a\nb", 3)  = -1
      *
      * </pre>
      *
      * @param charSeq         Char sequence
      * @param offsetInclusive Offset in the sequence
      */
-    public static int columnNumberAt(CharSequence charSeq, int offsetInclusive) {
-        int prevLf = StringUtils.lastIndexOf(charSeq, '\n', offsetInclusive);
-        return prevLf < 0 ? offsetInclusive : charSeq.length() - prevLf;
+    public static int columnNumberAt(CharSequence charSeq, final int offsetInclusive) {
+        if (offsetInclusive >= charSeq.length() || offsetInclusive < 0) {
+            return -1;
+        }
+
+        int col = 0;
+        char next = 0;
+        for (int i = offsetInclusive; i >= 0; i--) {
+            char c = charSeq.charAt(i);
+
+            if (offsetInclusive != i) {
+                if (c == '\n' || c == '\r' && next != '\n') {
+                    return col;
+                }
+            }
+
+            col++;
+            next = c;
+        }
+        return col;
     }
 
     /**

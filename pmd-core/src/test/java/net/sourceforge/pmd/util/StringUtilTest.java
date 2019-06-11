@@ -53,6 +53,27 @@ public class StringUtilTest {
     }
 
     @Test
+    public void testColumnNumber() {
+        assertEquals(-1, StringUtil.columnNumberAt("f\rah\nb", -1));
+        assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 0));
+        assertEquals(2, StringUtil.columnNumberAt("f\rah\nb", 1));
+        assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 2));
+        assertEquals(2, StringUtil.columnNumberAt("f\rah\nb", 3));
+        assertEquals(3, StringUtil.columnNumberAt("f\rah\nb", 4));
+        assertEquals(1, StringUtil.columnNumberAt("f\rah\nb", 5));
+        assertEquals(-1, StringUtil.columnNumberAt("f\rah\nb", 6));
+    }
+
+    @Test
+    public void testColumnNumberCrLf() {
+        assertEquals(-1, StringUtil.columnNumberAt("f\r\nb", -1));
+        assertEquals(1, StringUtil.columnNumberAt("f\r\nb", 0));
+        assertEquals(2, StringUtil.columnNumberAt("f\r\nb", 1));
+        assertEquals(3, StringUtil.columnNumberAt("f\r\nb", 2));
+        assertEquals(1, StringUtil.columnNumberAt("f\r\nb", 3));
+    }
+
+    @Test
     public void testLineNumberTrailing() {
         assertEquals(1, StringUtil.lineNumberAt("\n", 0));
         assertEquals(2, StringUtil.lineNumberAt("\n", 1));

@@ -96,12 +96,7 @@ public class JavaCharStream extends JavaCharStreamBase {
         return seq.charAt(nextCharInd);
     }
 
-
-    @Override
-    public String GetImage() {
-        // TODO GetImage should return a CharSequence based on the current shared sequence
-        return super.GetImage();
-    }
+    // TODO GetImage should return a CharSequence based on the current shared sequence
 
     @Override
     protected void FillBuff() {
