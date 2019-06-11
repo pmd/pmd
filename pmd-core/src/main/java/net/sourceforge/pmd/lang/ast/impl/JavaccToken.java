@@ -53,8 +53,8 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
     public JavaccToken specialToken;
 
     private final CharSequence image;
-    private final int startOffset;
-    private final int endOffset;
+    private final int startInclusive;
+    private final int endExclusive;
     private final TokenDocument document;
 
     /** {@link #undefined()} */
@@ -71,13 +71,13 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
      */
     public JavaccToken(int kind,
                        CharSequence image,
-                       int startOffset,
-                       int endOffset,
+                       int startInclusive,
+                       int endExclusive,
                        TokenDocument document) {
         this.kind = kind;
         this.image = image;
-        this.startOffset = startOffset;
-        this.endOffset = endOffset;
+        this.startInclusive = startInclusive;
+        this.endExclusive = endExclusive;
         this.document = document;
     }
 
@@ -99,32 +99,32 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
 
     @Override
     public int getStartInDocument() {
-        return startOffset;
+        return startInclusive;
     }
 
     @Override
     public int getEndInDocument() {
-        return endOffset;
+        return endExclusive;
     }
 
     @Override
     public int getBeginLine() {
-        return document == null ? -1 : document.getFullText().getLineNumberAt(startOffset);
+        return document == null ? -1 : document.getFullText().getLineNumberAt(startInclusive);
     }
 
     @Override
     public int getEndLine() {
-        return document == null ? -1 : document.getFullText().getLineNumberAt(endOffset);
+        return document == null ? -1 : document.getFullText().getLineNumberAt(endExclusive - 1);
     }
 
     @Override
     public int getBeginColumn() {
-        return document == null ? -1 : document.getFullText().getColumnNumberAt(startOffset);
+        return document == null ? -1 : document.getFullText().getColumnNumberAt(startInclusive);
     }
 
     @Override
     public int getEndColumn() {
-        return document == null ? -1 : document.getFullText().getColumnNumberAt(endOffset);
+        return document == null ? -1 : document.getFullText().getColumnNumberAt(endExclusive - 1);
     }
 
     /**

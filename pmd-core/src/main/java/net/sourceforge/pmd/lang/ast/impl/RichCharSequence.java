@@ -123,14 +123,14 @@ public interface RichCharSequence extends CharSequence {
 
 
     /** Returns the column number at the given position. */
-    default int getColumnNumberAt(int posExclusive) {
-        return StringUtil.columnNumberAt(this, posExclusive);
+    default int getColumnNumberAt(int posInclusive) {
+        return StringUtil.columnNumberAt(this, posInclusive);
     }
 
 
     /** Returns the line number at the given position. */
-    default int getLineNumberAt(int posExclusive) {
-        return StringUtil.lineNumberAt(this, posExclusive);
+    default int getLineNumberAt(int posInclusive) {
+        return StringUtil.lineNumberAt(this, posInclusive);
     }
 
 

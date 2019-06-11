@@ -30,12 +30,30 @@ public final class StringUtil {
     private StringUtil() {
     }
 
-    public static int lineNumberAt(CharSequence charSeq, int offsetExclusive) {
-        if (offsetExclusive > charSeq.length()) {
+    /**
+     * Returns the (1-based) line number at the given index.
+     *
+     * <pre>
+     *
+     *     lineNumberAt(*, 0)       = 1
+     *     lineNumberAt("a\nb", 1)  = 2
+     *     lineNumberAt("a\nb", 2)  = 2
+     *     lineNumberAt("a\nb", 3)  = 2
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence
+     */
+    public static int lineNumberAt(CharSequence charSeq, int offsetInclusive) {
+        if (offsetInclusive > charSeq.length() - 1) {
             throw new IndexOutOfBoundsException();
         }
+        if (offsetInclusive <= 0) {
+            return 1;
+        }
         int l = 1;
-        for (int i = 0; i < offsetExclusive; i++) {
+        for (int i = 0; i <= offsetInclusive; i++) {
             char c = charSeq.charAt(i);
             if (c == '\n') {
                 l++;
