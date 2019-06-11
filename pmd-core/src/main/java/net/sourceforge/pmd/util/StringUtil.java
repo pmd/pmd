@@ -30,6 +30,25 @@ public final class StringUtil {
     private StringUtil() {
     }
 
+    public static int lineNumberAt(CharSequence charSeq, int offsetExclusive) {
+        if (offsetExclusive > charSeq.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        int l = 1;
+        for (int i = 0; i < offsetExclusive; i++) {
+            char c = charSeq.charAt(i);
+            if (c == '\n') {
+                l++;
+            }
+        }
+        return l;
+    }
+
+    public static int columnNumberAt(CharSequence charSeq, int offsetInclusive) {
+        int prevLf = StringUtils.lastIndexOf(charSeq, '\n', offsetInclusive);
+        return prevLf < 0 ? offsetInclusive : charSeq.length() - prevLf;
+    }
+
     /**
      * Formats a double to a percentage, keeping {@code numDecimal} decimal places.
      *

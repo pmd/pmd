@@ -4,14 +4,21 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link CharSequence} implemented with the (value, offset, count) representation,
  * meaning it shares the underlying char array to allocate sub-sequences.
  * This is advantageous to represent a tokenized file, as we share the
  * char array for the whole file and only change the bounds for each token.
+ *
+ * <p>{@link Object#toString()} may be called to get a reference to a string
+ * that doesn't hold a strong reference to the underlying char array,
+ * hence not preventing its garbage collection.
  *
  * @author Clément Fournier
  */
@@ -24,21 +31,18 @@ public final class SharingCharSeq implements RichCharSequence {
     private final int offset;
     private final int count;
 
+    @Nullable
     private String myStr;
 
-    public SharingCharSeq(String str) {
-        this(str, 0, str.length());
+    public SharingCharSeq(@NonNull String str) {
+        this.myStr = Objects.requireNonNull(str, "String value cannot be null!");
+        this.offset = 0;
+        this.count = str.length();
+        this.value = str.toCharArray();
     }
 
-    // those are for subsequences
 
-    private SharingCharSeq(String str, int offset, int count) {
-        this.myStr = str;
-        this.offset = offset;
-        this.count = count;
-        this.value = null;
-    }
-
+    // this is for a subsequence
     private SharingCharSeq(char[] value, int offset, int count) {
         this.value = value;
         this.offset = offset;
@@ -54,12 +58,11 @@ public final class SharingCharSeq implements RichCharSequence {
 
     @Override
     public char charAt(int index) {
-
         if (index < 0 || index >= count) {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index + " not in [0," + count + "[");
         }
 
-        return value == null ? myStr.charAt(offset + index) : value[offset + index];
+        return value[offset + index];
     }
 
     @Override
@@ -67,14 +70,9 @@ public final class SharingCharSeq implements RichCharSequence {
         if (start < 0 || end > count || start > end) {
             throw new IndexOutOfBoundsException("Invalid range: [" + start + "," + end + "[ not in [0," + count + "[");
         }
-        return start == end ? EMPTY
-                            : value == null ? new SharingCharSeq(myStr, offset + start, end - start)
-                                            : new SharingCharSeq(value, offset + start, end - start);
-    }
 
-    @Override
-    public RichCharSequence subSequence(int start) {
-        return subSequence(start, count);
+        int len = end - start;
+        return len == 0 ? EMPTY : new SharingCharSeq(value, offset + start, len);
     }
 
     @NonNull
@@ -90,18 +88,7 @@ public final class SharingCharSeq implements RichCharSequence {
 
     @Override
     public int hashCode() {
-        if (myStr != null) {
-            // shortcut
-            return myStr.hashCode();
-        }
-        // don't compute the toString within the hashcode, hopefully
-        // the chars differ early on
-
-        int h = 0;
-        for (int i = 0; i < count; ++i) {
-            h = 31 * h + value[offset + i];
-        }
-        return h;
+        return toString().hashCode();
     }
 
     @Override

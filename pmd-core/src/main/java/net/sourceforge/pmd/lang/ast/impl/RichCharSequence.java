@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.CharSequenceUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.util.StringUtil;
+
 /**
  * A {@link CharSequence} with convenience methods to make the interface
  * similar to a {@link String}. This is incentive to not convert the
@@ -119,29 +121,16 @@ public interface RichCharSequence extends CharSequence {
         return StringUtils.equalsIgnoreCase(this, other);
     }
 
-    // TODO test
-    //   there are surely off-by-ones somewhere
 
     /** Returns the column number at the given position. */
     default int getColumnNumberAt(int posExclusive) {
-        int prevLf = lastIndexOf('\n', posExclusive);
-        return prevLf < 0 ? posExclusive : length() - prevLf;
+        return StringUtil.columnNumberAt(this, posExclusive);
     }
 
 
     /** Returns the line number at the given position. */
     default int getLineNumberAt(int posExclusive) {
-        if (posExclusive >= length()) {
-            throw new IndexOutOfBoundsException();
-        }
-        int l = 1;
-        for (int i = 0; i < posExclusive; i++) {
-            char c = charAt(i);
-            if (c == '\n') {
-                l++;
-            }
-        }
-        return l;
+        return StringUtil.lineNumberAt(this, posExclusive);
     }
 
 
