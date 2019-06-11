@@ -8,40 +8,42 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 public class ASTInlineConstraint extends net.sourceforge.pmd.lang.plsql.ast.AbstractPLSQLNode {
-  private ConstraintType type;
+    private ConstraintType type;
 
-  public ASTInlineConstraint(int id) {
-    super(id);
-  }
+    public ASTInlineConstraint(int id) {
+        super(id);
+    }
 
-  public ASTInlineConstraint(PLSQLParser p, int id) {
-    super(p, id);
-  }
+    public ASTInlineConstraint(PLSQLParser p, int id) {
+        super(p, id);
+    }
 
-  void setType(ConstraintType type) {
-    this.type = type;
-  }
+    void setType(ConstraintType type) {
+        this.type = type;
+    }
 
-  public ConstraintType getType() {
-    return type;
-  }
+    public ConstraintType getType() {
+        return type;
+    }
 
-  public boolean isUnique() {
-    return type == ConstraintType.UNIQUE;
-  }
+    public boolean isUnique() {
+        return type == ConstraintType.UNIQUE;
+    }
 
-  public boolean isPrimaryKey() {
-    return type == ConstraintType.PRIMARY;
-  }
+    public boolean isPrimaryKey() {
+        return type == ConstraintType.PRIMARY;
+    }
 
-  public boolean isCheck() {
-    return type == ConstraintType.CHECK;
-  }
+    public boolean isCheck() {
+        return type == ConstraintType.CHECK;
+    }
 
-  /** Accept the visitor. **/
-  @Override
-  public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor.
+     **/
+    @Override
+    public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }
 /* JavaCC - OriginalChecksum=6100a18102b66b39df188afb7c4dcf8a (do not edit this line) */
