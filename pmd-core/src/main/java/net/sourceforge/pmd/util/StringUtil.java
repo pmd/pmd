@@ -32,36 +32,69 @@ public final class StringUtil {
 
     /**
      * Returns the (1-based) line number at the given index.
+     * Line terminators (\r, \n) are assumed to be on the line they *end*
+     * and not on the following line.
      *
      * <pre>
      *
-     *     lineNumberAt(*, 0)       = 1
-     *     lineNumberAt("a\nb", 1)  = 2
+     *     lineNumberAt("a\nb", 0)  = 1
+     *     lineNumberAt("a\nb", 1)  = 1
      *     lineNumberAt("a\nb", 2)  = 2
      *     lineNumberAt("a\nb", 3)  = 2
+     *     lineNumberAt("a\nb", 4)  = -1
      *
      * </pre>
      *
      * @param charSeq         Char sequence
-     * @param offsetInclusive Offset in the sequence
+     * @param offsetInclusive Offset in the sequence at which to stop.
      */
     public static int lineNumberAt(CharSequence charSeq, int offsetInclusive) {
-        if (offsetInclusive > charSeq.length() - 1) {
-            throw new IndexOutOfBoundsException();
+        int len = charSeq.length();
+
+        if (offsetInclusive > len || offsetInclusive < 0) {
+            return -1;
         }
-        if (offsetInclusive <= 0) {
-            return 1;
-        }
+
         int l = 1;
-        for (int i = 0; i <= offsetInclusive; i++) {
-            char c = charSeq.charAt(i);
+        for (int curOffset = 0; curOffset < offsetInclusive; curOffset++) {
+            // if we end up outside the string, then the line is undefined
+            if (curOffset >= len) {
+                return -1;
+            }
+
+            char c = charSeq.charAt(curOffset);
             if (c == '\n') {
+                l++;
+            } else if (c == '\r') {
+                if (curOffset + 1 < len && charSeq.charAt(curOffset + 1) == '\n') {
+                    if (curOffset == offsetInclusive - 1) {
+                        // the CR is assumed to be on the same line as the LF
+                        return l;
+                    }
+                    curOffset++; // jump to after the \n
+                }
                 l++;
             }
         }
         return l;
     }
 
+    /**
+     * Returns the (1-based) column number at the given index.
+     * This is an index n such that,
+     *
+     * <pre>
+     *
+     *     columnNumberAt(*, 0)       = 0
+     *     columnNumberAt("a\nb", 1)  = 2
+     *     columnNumberAt("a\nb", 2)  = 2
+     *     columnNumberAt("a\nb", 3)  = 2
+     *
+     * </pre>
+     *
+     * @param charSeq         Char sequence
+     * @param offsetInclusive Offset in the sequence
+     */
     public static int columnNumberAt(CharSequence charSeq, int offsetInclusive) {
         int prevLf = StringUtils.lastIndexOf(charSeq, '\n', offsetInclusive);
         return prevLf < 0 ? offsetInclusive : charSeq.length() - prevLf;
