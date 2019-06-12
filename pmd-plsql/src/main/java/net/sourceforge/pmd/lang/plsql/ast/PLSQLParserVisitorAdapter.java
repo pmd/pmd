@@ -427,6 +427,11 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     }
 
     @Override
+    public Object visit(ASTExtractExpression node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
         return visit((PLSQLNode) node, data);
     }
