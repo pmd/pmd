@@ -266,4 +266,50 @@ public enum MethodReturnsInternalArrayCaseEnum {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Inner interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface OuterInterface {
+       interface InnerInterface {
+            String method();
+       }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Retention;
+
+public final class I {
+    private I(){
+    }
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface Inner {}
+}
+        ]]>
+        </code>
+    </test-code>
+    
+    <test-code>
+        <description>Top-level annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TopLevelAnnotation {
+
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
