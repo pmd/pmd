@@ -312,4 +312,70 @@ public @interface TopLevelAnnotation {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Enum that returns array instead of copy</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum MethodReturnsInternalArrayCaseEnum {
+    ONE("One"),
+    TWO("Two", "Three");
+
+    private String[] titles;
+
+    MethodReturnsInternalArrayCaseEnum(String... titles) {
+        this.titles = titles;
+    }
+
+    public String[] getTitles() {
+        return titles;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner enum that returns array instead of copy</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+
+    public enum InnerEnum {
+        INNER_ENUM("first", "second");
+        private String[] titles;
+
+        InnerEnum(String... titles) {
+            this.titles = titles;
+        }
+
+        public String[] getTitles() {
+            return titles;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner enum that returns array instead of copy</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public class OuterClass {
+
+    public enum InnerEnum {
+        INNER_ENUM("first", "second");
+        private String[] titles;
+
+        InnerEnum(String... titles) {
+            this.titles = titles;
+        }
+
+        public String[] getTitles() {
+            return Arrays.copyOf(titles, titles.length);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
