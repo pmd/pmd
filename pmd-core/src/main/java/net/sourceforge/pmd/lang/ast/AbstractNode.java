@@ -29,13 +29,20 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
  * Base class for all implementations of the Node interface.
+ *
+ * <p>Please use the {@link Node} interface wherever possible and
+ * not this class, unless you're compelled to do so.
+ *
+ * <p>Note that nearly all methods of the {@link Node} interface
+ * will have default implementations with PMD 7.0.0, so that it
+ * will not be necessary to extend this class directly.
  */
 public abstract class AbstractNode implements Node {
 
     private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
 
     /**
-     * @deprecated Use {@link #jjtGetParent()}
+     * @deprecated Use {@link #getParent()}
      */
     @Deprecated
     protected Node parent;
@@ -126,10 +133,7 @@ public abstract class AbstractNode implements Node {
         return parent;
     }
 
-    /**
-     * Returns the parent of this node, or null if this is the {@linkplain RootNode root}
-     * of the tree.
-     */
+    @Override
     public Node getParent() {
         return jjtGetParent();
     }
@@ -168,11 +172,7 @@ public abstract class AbstractNode implements Node {
     }
 
 
-    /**
-     * Returns the index of this node in the parent's children. If this
-     * node is a {@linkplain RootNode root node}, returns -1.
-     */
-    // TODO move up to Node
+    @Override
     public int getIndexInParent() {
         return jjtGetChildIndex();
     }
@@ -182,18 +182,12 @@ public abstract class AbstractNode implements Node {
         return children[index];
     }
 
-    /**
-     * Returns the child of this node at the given index.
-     *
-     * @throws IndexOutOfBoundsException if the index is negative or greater than {@link #getNumChildren()}.
-     */
-    // TODO move up to Node
+    @Override
     public Node getChild(final int index) {
-        if (index < 0 || children.length <= index) {
-            // we could return null though.
+        if (children == null) {
             throw new IndexOutOfBoundsException();
         }
-        return jjtGetChild(index);
+        return children[index];
     }
 
     @Override
@@ -201,10 +195,7 @@ public abstract class AbstractNode implements Node {
         return children == null ? 0 : children.length;
     }
 
-    /**
-     * Returns the number of children of this node.
-     */
-    // TODO move up to Node
+    @Override
     public int getNumChildren() {
         return jjtGetNumChildren();
     }
