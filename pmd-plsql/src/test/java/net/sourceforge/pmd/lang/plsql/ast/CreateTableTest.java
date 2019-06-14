@@ -20,6 +20,11 @@ public class CreateTableTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
+
+        // 5th column of first table statement has a inline constraint of type check
+        ASTTableColumn columnStatus = input.findChildrenOfType(ASTTable.class).get(0).findChildrenOfType(ASTTableColumn.class).get(4);
+        Assert.assertEquals("status", columnStatus.getFirstChildOfType(ASTID.class).getImage());
+        Assert.assertEquals(ConstraintType.CHECK, columnStatus.getFirstChildOfType(ASTInlineConstraint.class).getType());
     }
 
     @Test
