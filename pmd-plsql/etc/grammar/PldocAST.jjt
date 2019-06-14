@@ -3147,19 +3147,35 @@ ASTUnaryExpression UnaryExpression(boolean isUnarySign) #UnaryExpression(>1) :
  }
 }
 
+ASTExtractExpression ExtractExpression() :
+{}
+{
+    <EXTRACT> "("
+        ( <MONTH> | <YEAR> | <DAY> |<HOUR> | <MINUTE> | <SECOND>
+        | <TIMEZONE_HOUR> | <TIMEZONE_MINUTE>
+        | <TIMEZONE_REGION> | <TIMEZONE_ABBR> )
+    <FROM>
+        (LOOKAHEAD(2) FunctionCall()
+        |LOOKAHEAD(2) DateTimeLiteral()
+        |LOOKAHEAD(1) Name() ) ")"
+    { return jjtThis ; }
+}
+
 ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus(>1) :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-  (<NOT>) {sb.append(" NOT "); }
-  (simpleNode = UnaryExpression(false) ) { sb.append(simpleNode.getImage()); }
+    <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
-   (simpleNode = IsNullCondition() ) {sb.append(simpleNode.getImage()); }
-  )
+    LOOKAHEAD(2) simpleNode = ExtractExpression()
+  |
+    LOOKAHEAD(2) simpleNode = IsNullCondition()
+  ) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
+
 ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
 { PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {

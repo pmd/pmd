@@ -517,6 +517,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PLSQLPar
     }
 
     @Override
+    public Object visit(ASTExtractExpression node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
         return visit((PLSQLNode) node, data);
     }
