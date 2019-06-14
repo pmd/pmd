@@ -3648,7 +3648,7 @@ ASTTable Table()  :
   <TABLE> ObjectNameDeclaration()
   [ <SHARING> "=" ( <METADATA> | <DATA> | <EXTENDED> <DATA> | <NONE> ) ]
   //object_table
-  ( <OF> Datatype() [ [ <NOT> ] KEYWORD("SUBSTITUTABLE") <AT> <ALL> KEYWORD("LEVELS") ]|
+  ( <OF> Datatype() [ [ <NOT> ] <SUBSTITUTABLE> <AT> <ALL> KEYWORD("LEVELS") ]|
   //relational_table
   [ "(" ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ) ("," ( LOOKAHEAD(2) OutOfLineConstraint() | TableColumn() ))* ")" ]
   [LOOKAHEAD(4) <ON> <COMMIT> (<DROP> | <PRESERVE>) <DEFINITION>]
@@ -5586,7 +5586,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 | <LENGTH>
 //| <LESS>
 | <LEVEL>
-//| <LEVELS>
 | <LIBRARY>
 //| <LIKE_EXPAND>
 | <LIKE2>
