@@ -14,6 +14,10 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PLSQL Grammar Updates
+
+The CREATE VIEW statement now supports subquery views.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/bestpractices/UnusedPrivateField" %} (`java-bestpractices`) now ignores by
@@ -74,6 +78,7 @@ of deprecations.
 *   [#1792](https://github.com/pmd/pmd/pull/1792): \[java] Added lombok.experimental to AbstractLombokAwareRule - [jakivey32](https://github.com/jakivey32)
 *   [#1808](https://github.com/pmd/pmd/pull/1808): \[plsql] Fix PL/SQL Syntax errors - [kabroxiko](https://github.com/kabroxiko)
 *   [#1829](https://github.com/pmd/pmd/pull/1829): \[java] Fix false negative in UnsynchronizedStaticFormatter - [Srinivasan Venkatachalam](https://github.com/Srini1993)
+*   [#1864](https://github.com/pmd/pmd/pull/1864): \[plsql] Add support for Subquery Views - [kabroxiko](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 
