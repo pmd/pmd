@@ -4,19 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
+@Deprecated
+@InternalApi
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
     private Scope scope;
     private Comment comment;
 
+    @InternalApi
+    @Deprecated
     public AbstractJavaNode(int id) {
         super(id);
     }
 
+    @InternalApi
+    @Deprecated
     public AbstractJavaNode(JavaParser parser, int id) {
         super(id);
         this.parser = parser;
@@ -42,17 +49,11 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         endColumn = parser.token.endColumn;
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
         if (children != null) {
@@ -71,11 +72,15 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         return scope;
     }
 
+    @InternalApi
+    @Deprecated
     @Override
     public void setScope(Scope scope) {
         this.scope = scope;
     }
 
+    @InternalApi
+    @Deprecated
     public void comment(Comment theComment) {
         comment = theComment;
     }
@@ -83,7 +88,6 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
     public Comment comment() {
         return comment;
     }
-
 
 
     @Override

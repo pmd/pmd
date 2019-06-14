@@ -1,4 +1,7 @@
 /**
+ * Fix #1848 Local classes should preserve their modifiers
+ * Clément Fournier 05/2019
+ *====================================================================
  * Add support for Java 12 switch expressions and switch rules.
  * Andreas Dangel, Clément Fournier 03/2019
  *====================================================================
@@ -440,6 +443,17 @@ public class JavaParser {
    */
   private boolean isKeyword(String keyword) {
     return getToken(1).kind == IDENTIFIER && getToken(1).image.equals(keyword);
+  }
+
+  private boolean shouldStartStatementInSwitch() {
+    switch (getToken(1).kind) {
+        case _DEFAULT:
+        case CASE:
+        case RBRACE:
+            return false;
+        default:
+            return true;
+    }
   }
 
   public Map<Integer, String> getSuppressMap() {
@@ -1698,8 +1712,7 @@ void ClassOrInterfaceDeclaration(int modifiers):
     inInterface = false;
 }
 {
-  ( /* See note about this optional final modifier in BlockStatement */
-    ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
+  ( "class" | "interface" { jjtThis.setInterface(); inInterface = true; } )
   t=<IDENTIFIER> { checkForBadTypeIdentifierUsage(t.image); jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
@@ -2423,13 +2436,26 @@ void BlockStatement():
 |
   Statement()
 |
-  /*
-  TODO: Seems like we should be discarding the "final"
-  after using it in the lookahead; I added a ["final|abstract"] inside
-  ClassOrInterfaceDeclaration, but that seems like a hack that
-  could break other things...
-  */
-  LOOKAHEAD( (Annotation())* ["final"|"abstract"] "class") (Annotation())* ClassOrInterfaceDeclaration(0)
+  // we don't need to lookahead further here
+  // the ambiguity between start of local class and local variable decl
+  // is already handled in the lookahead guarding LocalVariableDeclaration above.
+  LocalClassDecl()
+}
+
+void LocalClassDecl() #void:
+{int mods = 0;}
+{
+    // this preserves the modifiers of the local class.
+    // it allows for modifiers that are forbidden for local classes,
+    // but anyway we are *not* checking modifiers for incompatibilities
+    // anywhere else in this grammar (and indeed the production Modifiers
+    // accepts any modifier explicitly for the purpose of forgiving modifier errors,
+    // and reporting them later if needed --see its documentation).
+
+    // In particular, it unfortunately allows local class declarations to start
+    // with a "default" modifier, which introduces an ambiguity with default
+    // switch labels. This is guarded by a custom lookahead around SwitchLabel
+    mods=Modifiers() ClassOrInterfaceDeclaration(mods)
 }
 
 /*
@@ -2484,7 +2510,11 @@ void SwitchBlock() #void :
             (
                 "->" SwitchLabeledRulePart() (SwitchLabeledRule())*
             |
-                ":" (LOOKAHEAD(2) SwitchLabel() ":")* (BlockStatement())* (SwitchLabeledStatementGroup())*
+                ":" (LOOKAHEAD(2) SwitchLabel() ":")*
+                    // the lookahead is to prevent choosing BlockStatement when the token is "default",
+                    // which could happen as local class declarations accept the "default" modifier.
+                    (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement())*
+                    (SwitchLabeledStatementGroup())*
             )
         )?
     "}"
@@ -2512,7 +2542,10 @@ void SwitchLabeledRulePart() #void:
 void SwitchLabeledStatementGroup() #void:
 {}
 {
-    (LOOKAHEAD(2) SwitchLabel() ":")+ ( BlockStatement() )*
+    (LOOKAHEAD(2) SwitchLabel() ":")+
+        // the lookahead is to prevent choosing BlockStatement when the token is "default",
+        // which could happen as local class declarations accept the "default" modifier.
+        (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
 }
 
 void SwitchLabel() :
