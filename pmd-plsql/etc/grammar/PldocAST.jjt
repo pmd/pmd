@@ -3736,8 +3736,8 @@ ASTView View()  :
   ["(" ViewColumn() ("," ViewColumn())* ")"]
   //### OF ... WITH OBJECT IDENTIFIER...
   <AS>
-  [ SqlStatement(null,";") | "(" Subquery() ")"]
-  [<WITH> ( <READ> <ONLY> | <CHECK> <OPTION> ) [ <CONSTRAINT> <IDENTIFIER> ]]
+  Subquery()
+  [ SubqueryRestrictionClause() ]
   (";" | "/")
 
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
