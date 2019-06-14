@@ -192,10 +192,10 @@ then the violation will be suppressed. Note that the query shouldn't be finding
 the violation nodes to suppress, but rather, finding a non-empty sequence of nodes
 when evaluated with the violation node as a context node.
 
-The XPath version used by those queries is XPath 1.0, so it doesn't support e.g.
-regex tests. This will be updated with PMD 7.0.0.
+The XPath version used by those queries is XPath 1.0, so it doesn't support various XPath 2.0
+features. This will be updated with PMD 7.0.0.
 
-For example, to suppress reporting specifically typed parameters which are unused:
+For example, to suppress reporting specifically "String" parameters which are unused:
 
 ```xml
 <rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
@@ -214,7 +214,13 @@ Another example, to suppress violations occurring in classes whose name contains
 <property name="violationSuppressXPath" value="./ancestor::ClassOrInterfaceDeclaration[contains(@Image, 'Bean')]"/>
 ```
 
-Note here the used of the `./ancestor::` axis instead of `//`. The latter would match
+You can also use regex for string comparison. The next example suppresses violations in classes ending with `Bean`:
+```xml
+<property name="violationSuppressXPath" value="./ancestor::ClassOrInterfaceDeclaration[matches(@Image, '^.*Bean$')]"/>
+```
+
+
+Note here the usage of the `./ancestor::` axis instead of `//`. The latter would match
 any ClassOrInterfaceDeclaration in the file, while the former matches only class
 declaration nodes that *enclose the violation node*, which is usually what you'd want.
 
