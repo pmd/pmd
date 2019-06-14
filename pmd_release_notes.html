@@ -1286,6 +1286,12 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="plsql-grammar-updates">PLSQL Grammar Updates</h4>
+
+<p>The grammar has been updated to support Inline Constraints in CREATE TABLE statements. Additionally, the
+CREATE TABLE statement may now be followed by physical properties and table properties. However, these
+properties are skipped over during parsing.</p>
+
 <h4 id="modified-rules">Modified Rules</h4>
 
 <ul>
@@ -1369,6 +1375,7 @@ of deprecations.</p>
   <li><a href="https://github.com/pmd/pmd/pull/1792">#1792</a>: [java] Added lombok.experimental to AbstractLombokAwareRule - <a href="https://github.com/jakivey32">jakivey32</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1808">#1808</a>: [plsql] Fix PL/SQL Syntax errors - <a href="https://github.com/kabroxiko">kabroxiko</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1829">#1829</a>: [java] Fix false negative in UnsynchronizedStaticFormatter - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1863">#1863</a>: [plsql] Add Table InlineConstraint - <a href="https://github.com/kabroxiko">kabroxiko</a></li>
 </ul>
 
 
@@ -1387,7 +1394,7 @@ of deprecations.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 8, 2019 <br />
+ Site last generated: Jun 14, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
