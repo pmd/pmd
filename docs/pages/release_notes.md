@@ -14,6 +14,11 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### PLSQL Grammar Updates
+
+The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
+datetime field.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/bestpractices/UnusedPrivateField" %} (`java-bestpractices`) now ignores by
@@ -74,6 +79,7 @@ of deprecations.
 *   [#1792](https://github.com/pmd/pmd/pull/1792): \[java] Added lombok.experimental to AbstractLombokAwareRule - [jakivey32](https://github.com/jakivey32)
 *   [#1808](https://github.com/pmd/pmd/pull/1808): \[plsql] Fix PL/SQL Syntax errors - [kabroxiko](https://github.com/kabroxiko)
 *   [#1829](https://github.com/pmd/pmd/pull/1829): \[java] Fix false negative in UnsynchronizedStaticFormatter - [Srinivasan Venkatachalam](https://github.com/Srini1993)
+*   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [kabroxiko](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 
