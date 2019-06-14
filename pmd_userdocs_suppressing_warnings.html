@@ -1455,10 +1455,15 @@ of no use.</p>
 <h3 id="the-property-violationsuppressxpath">The property <code class="highlighter-rouge">violationSuppressXPath</code></h3>
 
 <p>This property defines an XPath query to be executed <em>using the
-violation node as the starting point</em>.  If the XPath query matches anything,
-then the violation will be suppressed.</p>
+violation node as the context node</em>.  If the XPath query matches anything,
+then the violation will be suppressed. Note that the query shouldn’t be finding
+the violation nodes to suppress, but rather, finding a non-empty sequence of nodes
+when evaluated with the violation node as a context node.</p>
 
-<p>For example, to suppress reporting specifically typed parameters which are unused:</p>
+<p>The XPath version used by those queries is XPath 1.0, so it doesn’t support various XPath 2.0
+features. This will be updated with PMD 7.0.0.</p>
+
+<p>For example, to suppress reporting specifically “String” parameters which are unused:</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"rulesets/java/unusedcode.xml/UnusedFormalParameter"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;properties&gt;</span>
@@ -1466,6 +1471,22 @@ then the violation will be suppressed.</p>
   <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
+
+<p>Note the use of <code class="highlighter-rouge">.</code> to refer to the context node. Using <code class="highlighter-rouge">//</code> at the start of the
+expression should be avoided, as it would test all nodes in the file, and suppress
+more violations than expected.</p>
+
+<p>Another example, to suppress violations occurring in classes whose name contains <code class="highlighter-rouge">Bean</code>:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">"./ancestor::ClassOrInterfaceDeclaration[contains(@Image, 'Bean')]"</span><span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>You can also use regex for string comparison. The next example suppresses violations in classes ending with <code class="highlighter-rouge">Bean</code>:</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"violationSuppressXPath"</span> <span class="na">value=</span><span class="s">"./ancestor::ClassOrInterfaceDeclaration[matches(@Image, '^.*Bean$')]"</span><span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>Note here the usage of the <code class="highlighter-rouge">./ancestor::</code> axis instead of <code class="highlighter-rouge">//</code>. The latter would match
+any ClassOrInterfaceDeclaration in the file, while the former matches only class
+declaration nodes that <em>enclose the violation node</em>, which is usually what you’d want.</p>
 
 <p>Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
