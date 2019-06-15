@@ -35,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 *  [#1658](https://github.com/pmd/pmd/pull/1658/): \[core] Node support for Antlr-based languages
+*   [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini)
 
 {% endtocmaker %}
 
