@@ -47,21 +47,6 @@ public final class ASTConstructorCall extends AbstractJavaTypeNode implements AS
         visitor.visit(this, data);
     }
 
-    @Override
-    public void jjtClose() {
-        super.jjtClose();
-
-        /* JLS:
-         *  A name is syntactically classified as an ExpressionName in these contexts:
-         *       ...
-         *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
-         */
-        JavaNode firstChild = (JavaNode) jjtGetChild(0);
-
-        if (firstChild instanceof ASTAmbiguousName) {
-            replaceChildAt(0, ((ASTAmbiguousName) firstChild).forceExprContext());
-        }
-    }
 
     /**
      * Returns true if this expression begins with a primary expression.

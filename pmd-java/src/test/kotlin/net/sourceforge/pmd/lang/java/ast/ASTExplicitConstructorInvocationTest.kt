@@ -147,11 +147,62 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
             }
         }
 
+        "public TabbedPaneLayout() { MetalTabbedPaneUI.this.super(); }" should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTExplicitConstructorInvocation> {
+                it::isThis shouldBe false
+                it::isSuper shouldBe true
+                it::isQualified shouldBe true
+                it::getExplicitTypeArguments shouldBe null
+                it::getArgumentCount shouldBe 0
+
+                it::getLhsExpression shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
+
+
+                it::getArgumentsList shouldBe child { }
+            }
+        }
+
         // An explicit constructor invocation statement in a constructor body may not refer to any instance
         // variables or instance methods or inner classes declared in this class or any superclass, or use
         // this or super in any expression; otherwise, a compile-time error occurs.
 
         // so we don't test those
+    }
+
+    parserTest("Arguments of invocations") {
+
+        """
+		WebSocketReceivePublisher() {
+			super(AbstractListenerWebSocketSession.this.getLogPrefix());
+		}
+        """ should matchDeclaration<ASTConstructorDeclaration> {
+
+            child<ASTFormalParameters> { }
+
+            child<ASTExplicitConstructorInvocation> {
+                it::isThis shouldBe false
+                it::isSuper shouldBe true
+                it::isQualified shouldBe false
+                it::getArgumentCount shouldBe 1
+
+                it::getExplicitTypeArguments shouldBe null
+                it::getLhsExpression shouldBe null
+
+                it::getArgumentsList shouldBe child {
+                    child<ASTMethodCall> {
+                        child<ASTThisExpression> {
+                            classType("AbstractListenerWebSocketSession")
+                        }
+                        it::getArguments shouldBe child {}
+                    }
+                }
+            }
+        }
+
+
     }
 
     parserTest("Neg tests, not explicit invocations") {

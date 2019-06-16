@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * @author Clément Fournier
@@ -10,13 +11,25 @@ class ASTSuperExpressionTest : ParserTestSpec({
 
     parserTest("Unqualified super") {
 
-        "super" should matchExpr<ASTSuperExpression> { }
-
         "super.foo()" should matchExpr<ASTMethodCall> {
             it::getLhsExpression shouldBe child<ASTSuperExpression> {}
 
             it::getArguments shouldBe child {  }
 
+        }
+
+    }
+
+    parserTest("Neg cases") {
+        inContext(ExpressionParsingCtx) {
+            // single super should be followed by either
+            // a method call, field access, or method reference
+            "super" shouldNot parse()
+
+            // type arguments and annots are disallowed on the qualifier
+            "T.B<C>.super::foo" shouldNot parse()
+            "T.B<C>.super.foo()" shouldNot parse()
+            "T.@F B.super.foo()" shouldNot parse()
         }
 
     }

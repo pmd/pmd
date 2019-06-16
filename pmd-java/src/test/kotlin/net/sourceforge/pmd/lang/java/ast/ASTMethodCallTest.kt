@@ -78,6 +78,29 @@ class ASTMethodCallTest : ParserTestSpec({
                 child<ASTLambdaExpression>(ignoreChildren = true) {}
             }
         }
+
+        "foo.bar(foo::bar).foreach(System.out::println)" should matchExpr<ASTMethodCall> {
+
+            it::getMethodName shouldBe "foreach"
+
+            it::getLhsExpression shouldBe child<ASTMethodCall> {
+
+                it::getMethodName shouldBe "bar"
+                it::getImage shouldBe "bar"
+
+                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
+                    it::getImage shouldBe "foo"
+                }
+
+                it::getArguments shouldBe child {
+                    child<ASTMethodReference>(ignoreChildren = true) {}
+                }
+            }
+
+            it::getArguments shouldBe child {
+                child<ASTMethodReference>(ignoreChildren = true) {}
+            }
+        }
     }
 
 })

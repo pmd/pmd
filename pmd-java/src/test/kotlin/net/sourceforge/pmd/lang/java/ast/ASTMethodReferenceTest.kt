@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -31,13 +33,11 @@ class ASTMethodReferenceTest : ParserTestSpec({
             it::getMethodName shouldBe "foo"
             it::isConstructorReference shouldBe false
             it::getTypeArguments shouldBe null
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe null
 
-            val lhs = child<ASTAmbiguousName> {
-                it::getImage shouldBe "foobar.b"
-            }
+            it::getAmbiguousLhs shouldBe ambiguousName("foobar.b")
 
-            it::getLhsExpression shouldBe lhs
-            it::getLhsType shouldBe lhs
         }
 
         "foobar.b::<B>foo" should matchExpr<ASTMethodReference> {
@@ -45,13 +45,10 @@ class ASTMethodReferenceTest : ParserTestSpec({
             it::getImage shouldBe "foo"
             it::getMethodName shouldBe "foo"
             it::isConstructorReference shouldBe false
+            it::getLhsExpression shouldBe null
+            it::getLhsType shouldBe null
 
-            val lhs = child<ASTAmbiguousName> {
-                it::getImage shouldBe "foobar.b"
-            }
-
-            it::getLhsExpression shouldBe lhs
-            it::getLhsType shouldBe lhs
+            it::getAmbiguousLhs shouldBe ambiguousName("foobar.b")
 
             it::getTypeArguments shouldBe child {
                 unspecifiedChild()
@@ -83,111 +80,117 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 }
             }
         }
+
+        "java.util.Map<String, String>.Entry<String, String>::foo" should matchExpr<ASTMethodReference> {
+
+            it::getMethodName shouldBe "foo"
+            it::getLhsType shouldBe classType("Entry") // ignore the rest
+        }
+
+        inContext(ExpressionParsingCtx) {
+
+            "super::foo" should parseAs {
+                methodRef("foo") {
+                    it::getLhsType shouldBe null
+                    it::getLhsExpression shouldBe child<ASTSuperExpression> {
+
+                    }
+                }
+            }
+
+            "T.B.super::foo" should parseAs {
+                methodRef("foo") {
+                    it::getLhsType shouldBe null
+                    it::getLhsExpression shouldBe child<ASTSuperExpression> {
+                        it::getQualifier shouldBe classType("B") {
+                            ambiguousName("T")
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    parserTest("Neg tests") {
+
+        inContext(ExpressionParsingCtx) {
+
+            "foo::bar::bar" shouldNot parse()
+            "foo::bar.foo()" shouldNot parse()
+            "foo::bar.foo" shouldNot parse()
+
+        }
+
     }
 
     parserTest("Constructor reference") {
 
-        "foobar.b::new" should matchExpr<ASTMethodReference> {
+        inContext(ExpressionParsingCtx) {
 
-            it::getImage shouldBe "new"
-            it::getMethodName shouldBe null
-            it::isConstructorReference shouldBe true
-            it::getTypeArguments shouldBe null
+            "foobar.b::new" should parseAs {
+                constructorRef {
+                    it::getTypeArguments shouldBe null
 
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
-                it::getImage shouldBe "b"
-                it::getTypeImage shouldBe "foobar.b"
-
-                it::getAmbiguousLhs shouldBe child<ASTAmbiguousName> {
-                    it::getName shouldBe "foobar"
-                }
-            }
-
-        }
-
-
-        "foobar.b<B>::new" should matchExpr<ASTMethodReference> {
-
-            it::getImage shouldBe "new"
-            it::getMethodName shouldBe null
-            it::isConstructorReference shouldBe true
-            it::getTypeArguments shouldBe null
-
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "foobar.b"
-                it::getImage shouldBe "b"
-
-                it::getAmbiguousLhs shouldBe child {
-                    it::getName shouldBe "foobar"
-                    it::getTypeImage shouldBe "foobar"
-                }
-
-
-                it::getTypeArguments shouldBe child {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "B"
+                    classType("b") {
+                        it::getAmbiguousLhs shouldBe ambiguousName("foobar")
                     }
                 }
             }
-        }
 
-        "int[]::new" should matchExpr<ASTMethodReference> {
+            "foobar.b<B>::new" should parseAs {
+                constructorRef {
+                    it::getTypeArguments shouldBe null
 
-            it::getImage shouldBe "new"
-            it::getMethodName shouldBe null
-            it::isConstructorReference shouldBe true
-            it::getTypeArguments shouldBe null
-
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe child<ASTArrayType> {
-                it::getTypeImage shouldBe "int"
-
-                it::getElementType shouldBe child<ASTPrimitiveType> {
-                    it::getTypeImage shouldBe "int"
-                }
-
-                it::getDimensions shouldBe child {
-                    child<ASTArrayTypeDim> {}
-                }
-            }
-        }
-
-        "ArrayList<String>::new" should matchExpr<ASTMethodReference> {
-
-            it::getImage shouldBe "new"
-            it::getMethodName shouldBe null
-            it::isConstructorReference shouldBe true
-            it::getTypeArguments shouldBe null
-
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "ArrayList"
-
-                it::getTypeArguments shouldBe child {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "String"
+                    classType("b") {
+                        it::getAmbiguousLhs shouldBe ambiguousName("foobar")
+                        it::getTypeArguments shouldBe typeArgList {
+                            classType("B")
+                        }
                     }
                 }
             }
-        }
 
-        "ArrayList::<String>new" should matchExpr<ASTMethodReference> {
+            "int[]::new" should parseAs {
+                constructorRef {
+                    it::getTypeArguments shouldBe null
 
-            it::getImage shouldBe "new"
-            it::getMethodName shouldBe null
-            it::isConstructorReference shouldBe true
-
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
-                it::getTypeImage shouldBe "ArrayList"
-                it::getTypeArguments shouldBe null
+                    arrayType {
+                        primitiveType(INT)
+                        it::getDimensions shouldBe child {
+                            arrayDim()
+                        }
+                    }
+                }
             }
 
-            it::getTypeArguments shouldBe child {
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "String"
+            "Class<?>[]::new" should parseAs {
+                constructorRef {
+                    it::getTypeArguments shouldBe null
+
+                    arrayType {
+                        classType("Class") {
+                            typeArgList {
+                                child<ASTWildcardType> { }
+                            }
+                        }
+                        it::getDimensions shouldBe child {
+                            arrayDim()
+                        }
+                    }
+                }
+            }
+
+            "ArrayList::<String>new" should parseAs {
+                constructorRef {
+                    val lhs = classType("ArrayList")
+
+                    it::getTypeArguments shouldBe typeArgList {
+                        classType("String")
+                    }
+
+                    lhs
                 }
             }
         }
