@@ -1284,6 +1284,40 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p>Runs a set of static code analysis rules on some source code files and generates a list of problems found.</p>
 
+<h3 id="installation">Installation</h3>
+
+<p>Before you can use the <code class="highlighter-rouge">pmd</code> task in your ant <code class="highlighter-rouge">build.xml</code> file, you need to install PMD and its libraries into
+ant’s classpath, as described in <a href="https://ant.apache.org/manual/install.html#optionalTasks">Optional Tasks</a>.</p>
+
+<p>First you need to download PMD’s binary distribution zip file.
+Then you can either copy all “*.jar” files from PMD’s lib folder into one of ANT’s library folders
+(<code class="highlighter-rouge">ANT_HOME/lib</code>, <code class="highlighter-rouge">${user.home}/.ant/lib</code>) or using the <code class="highlighter-rouge">-lib</code> command line parameter.</p>
+
+<p>However, the preferred way is to define a <code class="highlighter-rouge">&lt;classpath&gt;</code> for pmd itself and use this classpath when
+adding the PMD Task. Assuming, you have extracted the PMD zip file to <code class="highlighter-rouge">/home/joe/pmd-bin-6.16.0</code>,
+then you can make use of the PMD Task like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"&gt;
+    &lt;classpath&gt;
+        &lt;fileset dir="/home/joe/pmd-bin-6.16.0/lib"&gt;
+            &lt;include name="*.jar"/&gt;
+        &lt;/fileset&gt;
+    &lt;/classpath&gt;
+&lt;/taskdef&gt;
+</code></pre></div></div>
+
+<p>Alternatively, a path can be defined and used via <code class="highlighter-rouge">classpathref</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
+    &lt;fileset dir="/home/joe/pmd-bin-6.16.0/lib"&gt;
+        &lt;include name="*.jar"/&gt;
+    &lt;/fileset&gt;
+&lt;/path&gt;
+&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" /&gt;
+</code></pre></div></div>
+
+<p>The examples below won’t repeat this taskdef element, as this is always required.</p>
+
 <h3 id="parameters">Parameters</h3>
 
 <table>
@@ -1362,7 +1396,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     </tr>
 </table>
 
-<p><code class="highlighter-rouge">formatter</code> nested element - specifies the format of and the files to which the report is written.</p>
+<p><code class="highlighter-rouge">formatter</code> nested element - specifies the format of and the files to which the report is written. You can
+configure multiple formatters.</p>
 
 <table>
 <tr><th>Name</th><th>Values</th></tr>
@@ -1389,34 +1424,33 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
        <dt>encoding</dt>
        <dd>Specifies the encoding to be used in the generated report (only honored when used with `toFile`). When rendering `toConsole` PMD will automatically detect the terminal's encoding and use it, unless the output is being redirected / piped, in which case `file.encoding` is used. See example below.</dd>
        <dt>linkPrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
        <dt>linePrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html#102">this</a>).  See example below.</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html#L375">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
        </dl>
    </td>
 </tr>
 </table>
 
-<p><code class="highlighter-rouge">classpath</code> nested element - useful for specifying custom rule. More details on the <code class="highlighter-rouge">classpath</code>
-element are in the Ant documentation <a href="http://ant.apache.org/manual/using.html#path">here</a> and there’s
+<p><code class="highlighter-rouge">classpath</code> nested element - useful for specifying custom rules. More details on the <code class="highlighter-rouge">classpath</code>
+element are in the Ant documentation for <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a> and there’s
 an example below.</p>
 
-<p><code class="highlighter-rouge">auxclasspath</code> nested element - extra classpath used for Type Resolution rules.</p>
+<p><code class="highlighter-rouge">auxclasspath</code> nested element - extra classpath used for type resolution. Some rules make use of type resolution
+in order to avoid false positives. The <code class="highlighter-rouge">auxclasspath</code> is configured also with <a href="https://ant.apache.org/manual/using.html#path">path-like structures</a>. It should contain the compiled classes of the project that is being analyzed and all the compile time
+dependencies.</p>
 
 <p><code class="highlighter-rouge">sourceLanguage</code> nested element - specify which language (Java, Ecmascript, XML,…)
-and the associated version (1.5, 1.6,…)</p>
+and the associated version (1.5, 1.6,…). This element is optional. The language is determined by file extension
+automatically and the latest language version is used.</p>
 
-<p><code class="highlighter-rouge">ruleset</code> nested element - another way to specify rulesets.  Here’s an example:</p>
+<p><code class="highlighter-rouge">ruleset</code> nested element - another way to specify rulesets. You can specify multiple elements. Here’s an example:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
     &lt;pmd shortFilenames="true"&gt;
-        &lt;sourceLanguage name="java" version="1.6"/&gt;
         &lt;ruleset&gt;rulesets/java/design.xml&lt;/ruleset&gt;
         &lt;ruleset&gt;java-basic&lt;/ruleset&gt;
-        &lt;formatter type="html" toFile="pmd_report.html"&gt;
-            &lt;param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/&gt;
-        &lt;/formatter&gt;
         &lt;fileset dir="/usr/local/j2sdk1.4.1_01/src/"&gt;
             &lt;include name="java/lang/*.java"/&gt;
         &lt;/fileset&gt;
@@ -1424,12 +1458,24 @@ and the associated version (1.5, 1.6,…)</p>
 &lt;/target&gt;
 </code></pre></div></div>
 
+<p><code class="highlighter-rouge">fileset</code> nested element - specify the actual java source files, that PMD should analyze. You can use multiple
+fileset elements. See <a href="https://ant.apache.org/manual/Types/fileset.html">FileSet</a> for the syntax and usage.</p>
+
 <h3 id="language-version-selection">Language version selection</h3>
 
-<p>The specific version of a language to be used for parsing is selected via the <code class="highlighter-rouge">sourceLanguage</code>
+<p>PMD selects the language automatically using the file extension. If multiple versions of a language are
+supported, PMD uses the latest version as default. This is currently the case for Java only, which has
+support for multiple versions.</p>
+
+<p>If a languages supports multiple versions, you can select a specific version here, so that e.g. rules, that only apply
+to specific versions, are not executed. E.g. the rule <a href="pmd_rules_java_bestpractices.html#usetrywithresources"><code class="highlighter-rouge">UseTryWithResources</code></a> only makes
+sense with Java 1.7 and later. If your project uses Java 1.5, then you should configure the <code class="highlighter-rouge">sourceLanguage</code>
+accordingly and this rule won’t be executed.</p>
+
+<p>The specific version of a language to be used is selected via the <code class="highlighter-rouge">sourceLanguage</code>
 nested element. Possible values are:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;sourceLanguage name="apex" version=""/&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;sourceLanguage name="apex" version="45"/&gt;
 &lt;sourceLanguage name="ecmascript" version="3"/&gt;
 &lt;sourceLanguage name="java" version="1.3"/&gt;
 &lt;sourceLanguage name="java" version="1.4"/&gt;
@@ -1438,6 +1484,9 @@ nested element. Possible values are:</p>
 &lt;sourceLanguage name="java" version="1.7"/&gt;
 &lt;sourceLanguage name="java" version="1.8"/&gt;
 &lt;sourceLanguage name="java" version="9"/&gt;
+&lt;sourceLanguage name="java" version="10"/&gt;
+&lt;sourceLanguage name="java" version="11"/&gt;
+&lt;sourceLanguage name="java" version="12"/&gt; &lt;!-- this is the default --&gt;
 &lt;sourceLanguage name="jsp" version=""/&gt;
 &lt;sourceLanguage name="pom" version=""/&gt;
 &lt;sourceLanguage name="plsql" version=""/&gt;
@@ -1453,24 +1502,23 @@ nested element. Possible values are:</p>
 which you can use to transform the XML report into nifty HTML.  To do this,
 make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;formatter type="xml" toFile="${tempbuild}/$report_pmd.xml"&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;formatter type="xml" toFile="${tempbuild}/report_pmd.xml"&gt;
     &lt;param name="encoding" value="UTF-8" /&gt; &lt;!-- enforce UTF-8 encoding for the XML --&gt;
 &lt;/formatter&gt;
 </code></pre></div></div>
 
 <p>Then, after the end of the PMD task, do this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;xslt in="${tempbuild}/$report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/$report_pmd.html" /&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;xslt in="${tempbuild}/report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/report_pmd.html" /&gt;
 </code></pre></div></div>
 
 <h3 id="examples">Examples</h3>
 
+<h4 id="one-ruleset">One ruleset</h4>
+
 <p>Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
-
-&lt;target name="pmd"&gt;
-    &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;pmd rulesetfiles="java-imports" cacheLocation="build/pmd/pmd.cache"&gt;
         &lt;formatter type="html" toFile="pmd_report.html" toConsole="true"/&gt;
         &lt;fileset dir="C:\j2sdk1.4.1_01\src\java\lang\"&gt;
@@ -1480,12 +1528,11 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 &lt;/target&gt;
 </code></pre></div></div>
 
+<h4 id="multiple-rulesets">Multiple rulesets</h4>
+
 <p>Running multiple rulesets to produce an XML report with the same analysis cache</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
-
-&lt;target name="pmd"&gt;
-    &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode" cacheLocation="build/pmd/pmd.cache"&gt;
         &lt;formatter type="xml" toFile="c:\pmd_report.xml"/&gt;
         &lt;fileset dir="C:\j2sdk1.4.1_01\src\java\lang\"&gt;
@@ -1495,9 +1542,19 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 &lt;/target&gt;
 </code></pre></div></div>
 
-<p>Using a custom renderer</p>
+<h4 id="custom-renderer">Custom renderer</h4>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
+<p>Using a custom renderer. For this to work, you need to add you custom renderer to the classpath of PMD. This
+need to be configured when defining the task:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
+    &lt;fileset dir="/home/joe/pmd-bin-6.16.0/lib"&gt;
+        &lt;include name="*.jar"/&gt;
+    &lt;/fileset&gt;
+    &lt;!-- the custom renderer is expected to be in /home/joe/pmd-addons/com/company/MyRenderer.class --&gt;
+    &lt;pathelement location="/home/joe/pmd-addons" /&gt;
+&lt;/path&gt;
+&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" /&gt;
 
 &lt;target name="pmd"&gt;
     &lt;pmd rulesetfiles="rulesets/java/design.xml"&gt;
@@ -1509,28 +1566,58 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 &lt;/target&gt;
 </code></pre></div></div>
 
-<p>Using a classpath reference in the taskdef</p>
+<h4 id="full-example-with-auxclasspath">Full example with auxclasspath</h4>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
-    &lt;pathelement location="${build}"/&gt;
-    &lt;fileset dir="/path/to/my/pmd/lib/"&gt;
-        &lt;include name="*.jar"/&gt;
-    &lt;/fileset&gt;
-&lt;/path&gt;
+<p>Full build file example using the correct auxclasspath configuration.
+Your project needs to be compiled first which happens in the target “compile”:</p>
 
-&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/&gt;
-
-&lt;target name="pmd"&gt;
-      &lt;pmd rulesetfiles="rulesets/java/design.xml"&gt;
-          &lt;formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/&gt;
-          &lt;fileset dir="/path/to/java/src"&gt;
-              &lt;include name="**/*.java"/&gt;
-          &lt;/fileset&gt;
-      &lt;/pmd&gt;
-&lt;/target&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;project name="MyProject" default="pmd" basedir="."&gt;
+    &lt;property name="src" location="src"/&gt;
+    &lt;property name="build" location="build"/&gt;
+    &lt;path id="project.dependencies"&gt;
+        &lt;pathelement location="lib/third-party.jar"/&gt;
+        &lt;pathelement location="lib/xyz.jar"/&gt;
+    &lt;/path&gt;
+    &lt;path id="pmd.classpath"&gt;
+        &lt;fileset dir="/home/joe/pmd-bin-6.16.0/lib"&gt;
+            &lt;include name="*.jar"/&gt;
+        &lt;/fileset&gt;
+    &lt;/path&gt;
+    &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" /&gt;
+    
+    &lt;target name="init"&gt;
+        &lt;mkdir dir="${build}"/&gt;
+    &lt;/target&gt;
+    
+    &lt;target name="compile" depends="init"&gt;
+        &lt;javac srcdir="${src}" destdir="${build}" classpathref="project.dependencies"
+            source="1.8" target="1.8" /&gt;
+    &lt;/target&gt;
+    
+    &lt;target name="pmd" depends="compile"&gt;
+        &lt;pmd cacheLocation="${build}/pmd.cache"&gt;
+            &lt;auxclasspath&gt;
+                &lt;pathelement location="${build}"/&gt;
+                &lt;path refid="project.dependencies"/&gt;
+            &lt;/auxclasspath&gt;
+            &lt;ruleset&gt;rulesets/java/quickstart.xml&lt;/ruleset&gt;
+            &lt;formatter type="html" toFile="${build}/pmd_report.html"/&gt;
+            &lt;sourceLanguage name="java" version="1.8"/&gt;
+            &lt;fileset dir="${src}"&gt;
+                &lt;include name="**/*.java"/&gt;
+            &lt;/fileset&gt;
+        &lt;/pmd&gt;
+    &lt;/target&gt;
+    
+    &lt;target name="clean"&gt;
+        &lt;delete dir="${build}"/&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
 </code></pre></div></div>
 
-<p>Getting verbose output</p>
+<p>You can run pmd then with <code class="highlighter-rouge">ant pmd</code>.</p>
+
+<h4 id="getting-verbose-output">Getting verbose output</h4>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tom@hal bin]$ ant -v pmd
 Apache Ant version 1.6.2 compiled on July 16 2004
@@ -1564,28 +1651,16 @@ Total time: 2 seconds
 [tom@hal bin]$
 </code></pre></div></div>
 
-<p>An HTML report with the “linkPrefix” gizmo</p>
+<h4 id="html-report-with-linkprefix">HTML report with linkPrefix</h4>
+
+<p>An HTML report with the “linkPrefix” and “linePrefix” properties:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
     &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
     &lt;pmd rulesetfiles="java-basic" shortFilenames="true"&gt;
         &lt;formatter type="html" toFile="pmd_report.html"&gt;
-            &lt;param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/&gt;
-        &lt;/formatter&gt;
-        &lt;fileset dir="/usr/local/j2sdk1.4.1_01/src/"&gt;
-            &lt;include name="java/lang/*.java"/&gt;
-        &lt;/fileset&gt;
-    &lt;/pmd&gt;
-&lt;/target&gt;
-</code></pre></div></div>
-
-<p>An HTML report with the “linePrefix” gizmo</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;target name="pmd"&gt;
-    &lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/&gt;
-        &lt;pmd rulesetfiles="java-basic" shortFilenames="true"&gt;
-        &lt;formatter type="html" toFile="pmd_report.html"&gt;
-            &lt;param name="linePrefix" value=".line"/&gt;
+            &lt;param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/&gt;
+            &lt;param name="linePrefix" value="L"/&gt;
         &lt;/formatter&gt;
         &lt;fileset dir="/usr/local/j2sdk1.4.1_01/src/"&gt;
             &lt;include name="java/lang/*.java"/&gt;
@@ -1641,7 +1716,7 @@ To prevent this from happening, increase the maximum memory usable by ant using 
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 14, 2019 <br />
+ Site last generated: Jun 17, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
