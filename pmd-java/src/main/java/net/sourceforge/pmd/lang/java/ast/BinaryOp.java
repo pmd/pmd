@@ -41,7 +41,9 @@ public enum BinaryOp {
 
     // shift
     LEFT_SHIFT("<<"),
+    /** Token {@code >> } */
     RIGHT_SHIFT(">>"),
+    /** Token {@code >>>} */
     UNSIGNED_RIGHT_SHIFT(">>>"),
 
     // additive

@@ -31,8 +31,8 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>3, Inside synchronized, OK</description>
-        <expected-problems>0</expected-problems>
+        <description>3, Instance synchronized, Not OK - see #1815</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.text.SimpleDateFormat;
 
@@ -61,8 +61,8 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description>5, Use DateFormat, ok</description>
-        <expected-problems>0</expected-problems>
+        <description>5, Use DateFormat with instance Synchronized, not ok</description>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.text.DateFormat;
 
@@ -70,6 +70,22 @@ public class Foo {
     private static final DateFormat sdf = new DateFormat();
     synchronized void bar() {
         sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>5a, Use DateFormat with synchronized block, ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.DateFormat;
+
+public class Foo {
+    private static final DateFormat sdf = new DateFormat();
+    void bar() {
+        synchronized(sdf) {
+            sdf.format();
+        }
     }
 }
      ]]></code>
@@ -104,5 +120,52 @@ public class Test {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1815 static synchronized, Not OK</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    synchronized void bar() { // not static
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1815 static synchronized, also Not OK</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    static synchronized void bar() { // not a synchronized blocks
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1815 static synchronized, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    static void bar() {
+        synchronized(sdf) {
+            sdf.format();
+        }
+    }
+}
+     ]]></code>
     </test-code>
 </test-data>

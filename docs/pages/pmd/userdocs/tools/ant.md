@@ -14,6 +14,38 @@ author: >
 
 Runs a set of static code analysis rules on some source code files and generates a list of problems found.
 
+### Installation
+
+Before you can use the `pmd` task in your ant `build.xml` file, you need to install PMD and its libraries into
+ant's classpath, as described in [Optional Tasks](https://ant.apache.org/manual/install.html#optionalTasks).
+
+First you need to download PMD's binary distribution zip file.
+Then you can either copy all "*.jar" files from PMD's lib folder into one of ANT's library folders
+(`ANT_HOME/lib`, `${user.home}/.ant/lib`) or using the `-lib` command line parameter.
+
+However, the preferred way is to define a `<classpath>` for pmd itself and use this classpath when
+adding the PMD Task. Assuming, you have extracted the PMD zip file to `/home/joe/pmd-bin-{{site.pmd.version}}`,
+then you can make use of the PMD Task like this:
+
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+        <classpath>
+            <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
+
+Alternatively, a path can be defined and used via `classpathref`:
+
+    <path id="pmd.classpath">
+        <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+
+The examples below won't repeat this taskdef element, as this is always required.
+
 ### Parameters
 
 <table>
@@ -93,7 +125,8 @@ Runs a set of static code analysis rules on some source code files and generates
 </table>
 
 
-`formatter` nested element - specifies the format of and the files to which the report is written.
+`formatter` nested element - specifies the format of and the files to which the report is written. You can
+configure multiple formatters.
 
 <table>
 <tr><th>Name</th><th>Values</th></tr>
@@ -120,47 +153,58 @@ Runs a set of static code analysis rules on some source code files and generates
        <dt>encoding</dt>
        <dd>Specifies the encoding to be used in the generated report (only honored when used with `toFile`). When rendering `toConsole` PMD will automatically detect the terminal's encoding and use it, unless the output is being redirected / piped, in which case `file.encoding` is used. See example below.</dd>
        <dt>linkPrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html">this</a>).  See example below.</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
        <dt>linePrefix</dt>
-       <dd>Used for linking to online HTMLized source (like <a href="xref/net/sourceforge/pmd/PMD.html#102">this</a>).  See example below.</dd>
+       <dd>Used for linking to online HTMLized source (like <a href="https://maven.apache.org/plugins/maven-pmd-plugin/xref/org/apache/maven/plugins/pmd/PmdReport.html#L375">this</a>).  See example below. Note, this only works with [maven-jxr-plugin](https://maven.apache.org/jxr/maven-jxr-plugin/index.html).</dd>
        </dl>
    </td>
 </tr>
 </table>
 
 
-`classpath` nested element - useful for specifying custom rule. More details on the `classpath`
-element are in the Ant documentation [here](http://ant.apache.org/manual/using.html#path) and there's
+`classpath` nested element - useful for specifying custom rules. More details on the `classpath`
+element are in the Ant documentation for [path-like structures](https://ant.apache.org/manual/using.html#path) and there's
 an example below.
 
-`auxclasspath` nested element - extra classpath used for Type Resolution rules.
+`auxclasspath` nested element - extra classpath used for type resolution. Some rules make use of type resolution
+in order to avoid false positives. The `auxclasspath` is configured also with [path-like structures](https://ant.apache.org/manual/using.html#path). It should contain the compiled classes of the project that is being analyzed and all the compile time
+dependencies.
 
 `sourceLanguage` nested element - specify which language (Java, Ecmascript, XML,...)
-and the associated version (1.5, 1.6,...)
+and the associated version (1.5, 1.6,...). This element is optional. The language is determined by file extension
+automatically and the latest language version is used.
 
-`ruleset` nested element - another way to specify rulesets.  Here's an example:
+`ruleset` nested element - another way to specify rulesets. You can specify multiple elements. Here's an example:
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd shortFilenames="true">
-            <sourceLanguage name="java" version="1.6"/>
             <ruleset>rulesets/java/design.xml</ruleset>
             <ruleset>java-basic</ruleset>
-            <formatter type="html" toFile="pmd_report.html">
-                <param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/>
-            </formatter>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>
             </fileset>
         </pmd>
     </target>
 
+`fileset` nested element - specify the actual java source files, that PMD should analyze. You can use multiple
+fileset elements. See [FileSet](https://ant.apache.org/manual/Types/fileset.html) for the syntax and usage.
+
 ### Language version selection
 
-The specific version of a language to be used for parsing is selected via the `sourceLanguage`
+PMD selects the language automatically using the file extension. If multiple versions of a language are
+supported, PMD uses the latest version as default. This is currently the case for Java only, which has
+support for multiple versions.
+
+If a languages supports multiple versions, you can select a specific version here, so that e.g. rules, that only apply
+to specific versions, are not executed. E.g. the rule {% rule "java/bestpractices/UseTryWithResources" %} only makes
+sense with Java 1.7 and later. If your project uses Java 1.5, then you should configure the `sourceLanguage`
+accordingly and this rule won't be executed.
+
+The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Possible values are:
 
-    <sourceLanguage name="apex" version=""/>
+    <sourceLanguage name="apex" version="45"/>
     <sourceLanguage name="ecmascript" version="3"/>
     <sourceLanguage name="java" version="1.3"/>
     <sourceLanguage name="java" version="1.4"/>
@@ -169,6 +213,9 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="1.7"/>
     <sourceLanguage name="java" version="1.8"/>
     <sourceLanguage name="java" version="9"/>
+    <sourceLanguage name="java" version="10"/>
+    <sourceLanguage name="java" version="11"/>
+    <sourceLanguage name="java" version="12"/> <!-- this is the default -->
     <sourceLanguage name="jsp" version=""/>
     <sourceLanguage name="pom" version=""/>
     <sourceLanguage name="plsql" version=""/>
@@ -183,22 +230,21 @@ Several folks (most recently, Wouter Zelle) have written XSLT scripts
 which you can use to transform the XML report into nifty HTML.  To do this,
 make sure you use the XML formatter in the PMD task invocation, i.e.:
 
-    <formatter type="xml" toFile="${tempbuild}/$report_pmd.xml">
+    <formatter type="xml" toFile="${tempbuild}/report_pmd.xml">
         <param name="encoding" value="UTF-8" /> <!-- enforce UTF-8 encoding for the XML -->
     </formatter>
 
 Then, after the end of the PMD task, do this:
 
-    <xslt in="${tempbuild}/$report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/$report_pmd.html" />
+    <xslt in="${tempbuild}/report_pmd.xml" style="${pmdConfig}/wz-pmd-report.xslt" out="${pmdOutput}/report_pmd.html" />
 
 ### Examples
 
+#### One ruleset
+
 Running one ruleset to produce a HTML report (and printing the report to the console as well) using a file cache
 
-    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-
     <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd rulesetfiles="java-imports" cacheLocation="build/pmd/pmd.cache">
             <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
@@ -207,12 +253,11 @@ Running one ruleset to produce a HTML report (and printing the report to the con
         </pmd>
     </target>
 
+#### Multiple rulesets
+
 Running multiple rulesets to produce an XML report with the same analysis cache
 
-    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-
     <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd rulesetfiles="rulesets/java/imports.xml,java-unusedcode" cacheLocation="build/pmd/pmd.cache">
             <formatter type="xml" toFile="c:\pmd_report.xml"/>
             <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
@@ -221,9 +266,19 @@ Running multiple rulesets to produce an XML report with the same analysis cache
         </pmd>
     </target>
 
-Using a custom renderer
+#### Custom renderer
 
-    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+Using a custom renderer. For this to work, you need to add you custom renderer to the classpath of PMD. This
+need to be configured when defining the task:
+
+    <path id="pmd.classpath">
+        <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
+            <include name="*.jar"/>
+        </fileset>
+        <!-- the custom renderer is expected to be in /home/joe/pmd-addons/com/company/MyRenderer.class -->
+        <pathelement location="/home/joe/pmd-addons" />
+    </path>
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
 
     <target name="pmd">
         <pmd rulesetfiles="rulesets/java/design.xml">
@@ -234,27 +289,57 @@ Using a custom renderer
         </pmd>
     </target>
 
-Using a classpath reference in the taskdef
+#### Full example with auxclasspath
 
-    <path id="pmd.classpath">
-        <pathelement location="${build}"/>
-        <fileset dir="/path/to/my/pmd/lib/">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
+Full build file example using the correct auxclasspath configuration.
+Your project needs to be compiled first which happens in the target "compile":
 
-    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
+    <project name="MyProject" default="pmd" basedir=".">
+        <property name="src" location="src"/>
+        <property name="build" location="build"/>
+        <path id="project.dependencies">
+            <pathelement location="lib/third-party.jar"/>
+            <pathelement location="lib/xyz.jar"/>
+        </path>
+        <path id="pmd.classpath">
+            <fileset dir="/home/joe/pmd-bin-{{site.pmd.version}}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+        
+        <target name="init">
+            <mkdir dir="${build}"/>
+        </target>
+        
+        <target name="compile" depends="init">
+            <javac srcdir="${src}" destdir="${build}" classpathref="project.dependencies"
+                source="1.8" target="1.8" />
+        </target>
+        
+        <target name="pmd" depends="compile">
+            <pmd cacheLocation="${build}/pmd.cache">
+                <auxclasspath>
+                    <pathelement location="${build}"/>
+                    <path refid="project.dependencies"/>
+                </auxclasspath>
+                <ruleset>rulesets/java/quickstart.xml</ruleset>
+                <formatter type="html" toFile="${build}/pmd_report.html"/>
+                <sourceLanguage name="java" version="1.8"/>
+                <fileset dir="${src}">
+                    <include name="**/*.java"/>
+                </fileset>
+            </pmd>
+        </target>
+        
+        <target name="clean">
+            <delete dir="${build}"/>
+        </target>
+    </project>
 
-    <target name="pmd">
-          <pmd rulesetfiles="rulesets/java/design.xml">
-              <formatter type="net.sourceforge.pmd.renderers.HTMLRenderer" toFile="foo.html"/>
-              <fileset dir="/path/to/java/src">
-                  <include name="**/*.java"/>
-              </fileset>
-          </pmd>
-    </target>
+You can run pmd then with `ant pmd`.
 
-Getting verbose output
+#### Getting verbose output
 
     [tom@hal bin]$ ant -v pmd
     Apache Ant version 1.6.2 compiled on July 16 2004
@@ -287,27 +372,16 @@ Getting verbose output
     Total time: 2 seconds
     [tom@hal bin]$
 
-An HTML report with the "linkPrefix" gizmo
+#### HTML report with linkPrefix
+
+An HTML report with the "linkPrefix" and "linePrefix" properties:
 
     <target name="pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
         <pmd rulesetfiles="java-basic" shortFilenames="true">
             <formatter type="html" toFile="pmd_report.html">
-                <param name="linkPrefix" value="http://pmd.sourceforge.net/xref/"/>
-            </formatter>
-            <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
-                <include name="java/lang/*.java"/>
-            </fileset>
-        </pmd>
-    </target>
-
-An HTML report with the "linePrefix" gizmo
-
-    <target name="pmd">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-            <pmd rulesetfiles="java-basic" shortFilenames="true">
-            <formatter type="html" toFile="pmd_report.html">
-                <param name="linePrefix" value=".line"/>
+                <param name="linkPrefix" value="https://maven.apache.org/plugins/maven-pmd-plugin/xref/"/>
+                <param name="linePrefix" value="L"/>
             </formatter>
             <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
                 <include name="java/lang/*.java"/>

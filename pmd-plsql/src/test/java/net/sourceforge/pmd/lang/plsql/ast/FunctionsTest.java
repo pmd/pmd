@@ -22,4 +22,11 @@ public class FunctionsTest extends AbstractPLSQLParserTst {
         Assert.assertNotNull(input);
     }
 
+    @Test
+    public void parseSelectExtractExpression() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("ExtractExpressions.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
 }

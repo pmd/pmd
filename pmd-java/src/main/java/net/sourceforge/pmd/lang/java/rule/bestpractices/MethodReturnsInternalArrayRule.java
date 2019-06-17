@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.jaxen.JaxenException;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -46,7 +46,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
             return data;
         }
         List<ASTReturnStatement> returns = method.findDescendantsOfType(ASTReturnStatement.class);
-        ASTClassOrInterfaceDeclaration td = method.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTAnyTypeDeclaration td = method.getFirstParentOfType(ASTAnyTypeDeclaration.class);
         for (ASTReturnStatement ret : returns) {
             final String vn = getReturnedVariableName(ret);
             if (!isField(vn, td)) {
@@ -111,7 +111,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
         return false;
     }
 
-    private boolean isEmptyArray(String varName, AbstractNode typeDeclaration) {
+    private boolean isEmptyArray(String varName, ASTAnyTypeDeclaration typeDeclaration) {
         final List<ASTFieldDeclaration> fds = typeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class);
         if (fds != null) {
             for (ASTFieldDeclaration fd : fds) {
