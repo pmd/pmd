@@ -36,6 +36,20 @@ class ASTShiftExpressionTest : ParserTestSpec({
             child<ASTNumericLiteral> {}
         }
 
+        // this is a corner case whereby < width > matches type arguments
+        "i < width >> 1" should matchExpr<ASTRelationalExpression> {
+            it::getOp shouldBe BinaryOp.LT
+
+            variableRef("i")
+
+            child<ASTShiftExpression> {
+                it::getOp shouldBe BinaryOp.RIGHT_SHIFT
+
+                variableRef("width")
+                int(1)
+            }
+        }
+
     }
 
     parserTest("Changing operators should push a new node") {

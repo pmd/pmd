@@ -685,4 +685,20 @@ public class Source {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1703 SingularField: False-positive with @Delegate</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate private String bar;
+
+    public void set(String s) {
+        bar = s;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

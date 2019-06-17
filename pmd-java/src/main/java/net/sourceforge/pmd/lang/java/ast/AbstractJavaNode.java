@@ -66,9 +66,6 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
 
-    /**
-     * Accept the visitor. *
-     */
     @Override
     public Object childrenAccept(JavaParserVisitor visitor, Object data) {
         for (Node child : children) {

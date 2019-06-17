@@ -517,6 +517,21 @@ public class JavaParser {
        }
   }
 
+  // make the top node a child of the second node on the stack
+  private void injectTop() {
+       AbstractJavaNode top = (AbstractJavaNode) jjtree.popNode();
+       AbstractJavaNode prev = (AbstractJavaNode) jjtree.peekNode();
+       prev.jjtAddChild(top, prev.jjtGetNumChildren());
+       prev.jjtSetLastToken(top.jjtGetLastToken());
+  }
+
+  /**
+     * Keeps track during tree construction, whether we are currently building an
+     * explicit constructor invocation. Then the PrimaryExpression that may prefix
+     * a qualified super constructor call may not consume "super" tokens.
+     */
+    private boolean inExplicitConstructorInvoc = false;
+
 }
 PARSER_END(JavaParser)
 
@@ -1971,12 +1986,13 @@ Token t;}
 }
 
 void ExplicitConstructorInvocation() :
-{}
+{inExplicitConstructorInvoc = true;}
 {
    // We may only lookahead one token here, because:
    // * "this" or "super" can't appear in the primary expression in case of
    //   qualified super call (last branch), or else compile error, so if we
    //   see one of them, then the rest is necessarily the arguments
+   //   But: "this" may appear if it's qualified!
    // * No primary expression may start with "<", meaning we can use it to
    //   know we're looking forward to type arguments
   ( LOOKAHEAD("<")      TypeArguments() ( "this" | "super" {jjtThis.setIsSuper();} )
@@ -1984,6 +2000,8 @@ void ExplicitConstructorInvocation() :
   | LOOKAHEAD("super")  "super"                            {jjtThis.setIsSuper();}
   | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
   )
+  // reset this before parsing the arguments list
+  {inExplicitConstructorInvoc = false;}
   ArgumentList() ";"
 }
 
@@ -2114,7 +2132,8 @@ void ClassOrInterfaceType() #void:
    be sure that the last segment is a type name.
   */
 
-  ( AmbiguousName() [ TypeArguments() ]) #ClassOrInterfaceType(>1)
+  AmbiguousName()
+  [ TypeArguments() #ClassOrInterfaceType(2) ]
   {
     // At this point the first ClassOrInterfaceType may be on top of the stack,
     // but its image is not set. If it is on the stack we need to shrink the bounds
@@ -2135,18 +2154,19 @@ void ClassOrInterfaceType() #void:
     executes a loop. That scheme preserves the position of type arguments and annotations.
     See #1150.
   */
-  ( LOOKAHEAD(2)
-      (
-        "."
-        (TypeAnnotation())*
-        <IDENTIFIER> { jjtThis.setImage(getToken(0).getImage()); }
-        {jjtree.extendLeft();} // We'll enclose the previous segment
-        [ LOOKAHEAD( "<" ) TypeArguments() ]
-      ) #ClassOrInterfaceType
-  )*
+  (  LOOKAHEAD(2) "." ClassTypeSegment() )*
   { forceTypeContext(); }
 }
 
+private void ClassTypeSegment() #ClassOrInterfaceType:
+{}
+{
+     TypeAnnotationList()
+     <IDENTIFIER>
+     // We'll enclose the previous segment
+     { setLastTokenImage(jjtThis);  jjtree.extendLeft();}
+     [ TypeArguments() ]
+}
 
 void TypeArguments():
 {}
@@ -2208,11 +2228,6 @@ void ResultType() :
    "void" | AnnotatedType()
 }
 
-void TypeOrVoid() #void:
-{}
-{
-  "void" | Type()
-}
 
 // TODO rename to ThrowsClause
 void NameList() :
@@ -2238,14 +2253,6 @@ void Expression() #AssignmentExpression(>1):
  * a primary expression.  Consider adding a semantic predicate to work
  * around this.
  */
- // It also allows lambda expressions in many more contexts as allowed by the JLS.
- // Lambda expressions are not a PrimaryExpression in the JLS, instead they're
- // separated from the AssignmentExpression production. Their use is restricted
- // to method and constructor argument, cast operand, and the RHS of assignments.
- // https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
- //
- // To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
- // as a workaround.
 {AssignmentOp op = null;}
 {
   ConditionalExpression()
@@ -2261,12 +2268,10 @@ AssignmentOp AssignmentOperator() #void:
     {return AssignmentOp.fromImage(getToken(0).getImage());}
 }
 
-// TODO Setting isTernary is unnecessary, since the node is only pushed on the stack if there is at least one child,
-// ie if it's a ternary
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ LOOKAHEAD(2) "?" Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [ "?" Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() #ConditionalOrExpression(>1):
@@ -2401,10 +2406,10 @@ void MultiplicativeExprTail() #MultiplicativeExpression:
   }
   UnaryExpression()
 }
-void UnaryExpression() #UnaryExpression((jjtn000.getImage() != null)):
+void UnaryExpression() #void:
 {}
 {
-  ("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()
+    (("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()) #UnaryExpression
   | PreIncrementExpression()
   | PreDecrementExpression()
   | UnaryExpressionNotPlusMinus()
@@ -2422,10 +2427,10 @@ void PreDecrementExpression() :
   "--" PrimaryExpression()
 }
 
-void UnaryExpressionNotPlusMinus() #UnaryExpression((jjtn000.getImage() != null)):
+void UnaryExpressionNotPlusMinus() #void:
 {}
 {
- ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
+ (( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");}) UnaryExpression()) #UnaryExpression
  // There's no separate production for CastExpression, because that would force
  // us to repeat the lookahead
  // Those lookaheads are quite expensive, they're run to disambiguate between
@@ -2470,99 +2475,162 @@ void SwitchExpression() :
  * A PrimaryPrefix corresponds to an unqualified primary expression,
  * e.g "new Foo()". Then, if any, suffixes of the form e.g. ".method()",
  * ".field" or "::ref" are added, each time enclosing the previous node.
+ * Iteration stops after the first method reference, or we can't continue.
  *
  * The resulting subtree looks left-recursive, but the parsing is iterative.
  */
 void PrimaryExpression() #void :
 {}
 {
-  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead()) PrimarySuffix() )* {forceExprContext();}
+  // the lookahead here stops iteration after the first method reference,
+  // because nothing can be chained after a method reference.
+  PrimaryPrefix() ( LOOKAHEAD(SuffixLAhead(), {!(jjtree.peekNode() instanceof ASTMethodReference)}) PrimarySuffix() )* {forceExprContext();}
 }
 
 /*
   Expressions that may be present at the start of a primary expression.
-
-  TODO some lookaheads can be simplified if we're ok with loosing some strictness
-
  */
 void PrimaryPrefix() #void :
 {Token t;}
 {
   Literal()
 | "this"                                  #ThisExpression
-| "super"                                 #SuperExpression
-// todo we can probably simplify the lambda lookaheads
-| LOOKAHEAD( <IDENTIFIER> "->", {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")" "->" , {!inSwitchLabel} ) LambdaExpression()
-| LOOKAHEAD( LambdaParameterList() "->", {!inSwitchLabel} ) LambdaExpression()
-| ("(" Expression() ")")                  #ParenthesizedExpression
+| "super"                                 #SuperExpression(true)
+    ("." MemberSelector() | MethodReference())
 | UnqualifiedAllocationExpr()
-| LOOKAHEAD( TypeOrVoid() "." "class" )
-    (TypeOrVoid() "." "class") #ClassLiteral
-| LOOKAHEAD( ReferenceType() "::" [TypeArguments()] "new" )
-    ReferenceType() MethodReference()
-// not a constructor reference, and is just a sequence of identifiers: could be an expression or a type
-| LOOKAHEAD( Name() "::"  )
-    AmbiguousName() MethodReference()
-// we know it's not just a sequence of identifiers, so if
-// ReferenceType matches, there are type parameters or annots,
-// which means we shouldn't parse as an ambiguous name otherwise
-// we choke on the type parameters
-| LOOKAHEAD( ReferenceType() "::" )
-    ReferenceType() MethodReference()
-| AmbiguousName() [ LOOKAHEAD("." "super" ".")
-       // The LHS of this or super is necessarily a type name, ie ambiguous
-       // Having this here instead of in PrimarySuffix makes the grammar more
-       // restrictive and also allows ExplicitConstructorInvocation to be parsed
-       "." "super"  #SuperExpression(1) MemberSelector()
-  ]
+| ("void" "." "class")                    #ClassLiteral
+| (PrimitiveType() [ Dims() ] )           #ArrayType(>1)
+    (
+       MethodReference()
+     | "." "class"                        #ClassLiteral(1)
+    )
+
+| LOOKAHEAD(LambdaLahead()) LambdaExpression()
+
+| ("(" Expression() ")")                  #ParenthesizedExpression
+// If it is an ambiguous name, then we may go on
+// into the next step, which is less restricted
+// than PrimarySuffix
+| AmbiguousName() [ LOOKAHEAD(Step2Lahead()) PrimaryStep2() ]
 }
 
-/**
- * Productions that may be present after a PrimaryPrefix. The way this is written makes for a nice tree,
- * but also allows many invalid things to be written (which is fine because we parse compilable code).
- * E.g. this allows `foo().this::bar[0].this`
- *
- * Not all PrimaryPrefix expressions are here, eg
- */
-void PrimarySuffix() #void :
+// This describes the cases where the PrimaryPrefix may fall
+// into PrimaryStep2, after seeing an AmbiguousName. Notice
+// that type arguments is still possible, as well as annotations
+// ("@") before an annotated array type, or qualified "this".
+// If we are in an explicit constructor invocation, then super is disallowed.
+private void Step2Lahead() #void:
 {}
 {
-  MethodReference()
-| ArgumentList()                    #MethodCall(2)
-| ("[" Expression() "]")            #ArrayAccess(2)
-// all the following start with a "."
-| LOOKAHEAD(2) "." "this"           #ThisExpression(1)
-| LOOKAHEAD(2) QualifiedAllocationExpr()
-| LOOKAHEAD("." [TypeArguments()] <IDENTIFIER>) MemberSelector() // more complex method call patterns
+   "::" | "(" | "@" | "["
+   // the type arguments must be followed by what may complete a class type + method ref
+   // otherwise we choke on eg `i < w >> 1`, because `< w >` matches type arguments
+   | TypeArguments() ("[" | "." | "@" | "::")
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." ("class" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new" | "this") // not super in this case
 }
 
 private void SuffixLAhead() #void:
 {}
 {
-    // not "super", otherwise runs into conflicts with ExplicitConstructorInvocation
-      "." ("new" | "this" | [ TypeArguments() ] <IDENTIFIER>)
-    | "::"
-    | "["
-    | "("
+   // this is simpler than the step 2 lookahead
+   "::" | "["
+   | LOOKAHEAD({!inExplicitConstructorInvoc}) "."
+   | LOOKAHEAD({inExplicitConstructorInvoc}) "." (<IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new") // not super or this in this case
 }
 
+
+// Step right after the *first* ambiguous name if any.
+// Then we have more options than a primary suffix,
+// we can still expect to have some class type and a
+// class literal, or some type arguments and a method reference
+void PrimaryStep2() #void:
+{}
+{
+      // If we find type parameters, then we can only expect a method reference
+      // class literals or qualifiers to static member access/call may not be parameterised
+      {forceTypeContext();} TypeArguments() {injectTop();} ( "." ClassTypeSegment() )* [ Dims() #ArrayType(2) ] MethodReference()
+    | MethodReference()
+    | ArgumentList()                          #MethodCall(2)
+    | "." (
+          {forceTypeContext();} "class"       #ClassLiteral(1)
+          // qualified this or super
+        | {forceTypeContext();} "this"        #ThisExpression(1)
+        | {forceTypeContext();} "super"       #SuperExpression(1)
+            // here we force the super to be followed by something,
+            // "super" alone is not a valid expression
+            ("." MemberSelector() | MethodReference())
+        | MemberSelector()
+    )
+    // catches the case where the ambig name is the start of an array type
+    | LOOKAHEAD("@" | "[" "]") {forceTypeContext();} Dims() #ArrayType(2)  (MethodReference() | "." "class" #ClassLiteral(1))
+    // and here, the array expr in an array access
+    | {forceExprContext();} "[" Expression() "]"            #ArrayAccess(2)
+}
+
+/**
+ * Productions that may be present after a PrimaryPrefix. Basically
+ * allows for call chains. We loop on this production in PrimaryExpression.
+ */
+void PrimarySuffix() #void :
+{}
+{
+  MethodReference()
+| {forceExprContext();} "[" Expression() "]"              #ArrayAccess(2)
+| "." MemberSelector()
+}
+
+/**
+ * Part of a primary suffix that immediately follows a dot. Also
+ * part of step 2.
+ */
 void MemberSelector() #void :
 {}
 {
+  /* JLS §6.5.1:
+   *  A name is syntactically classified as an ExpressionName [...] as the
+   * qualifying expression in a qualified class instance creation expression (§15.9)*
+   */
+  {forceExprContext();} QualifiedAllocationExpr()
   // if there are type arguments, this is a method call
-  LOOKAHEAD(2) ("." {jjtree.extendLeft();} TypeArguments() <IDENTIFIER> {setLastTokenImage (jjtThis) ;} ArgumentList())  #MethodCall
-| LOOKAHEAD(3) ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                    #MethodCall
-|              ("." {jjtree.extendLeft();} <IDENTIFIER> {setLastTokenImage(jjtThis);})                                   #FieldAccess
+|              (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
+| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                   #MethodCall(2)
+|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                  #FieldAccess(1)
 }
 
 void MethodReference(): // LHS is injected
 {checkForBadMethodReferenceUsage();}
 {
   "::" {jjtree.extendLeft();}
-  [TypeArguments()] ( "new" | <IDENTIFIER>) {setLastTokenImage(jjtThis);}
+  [TypeArguments()]
+  ( "new" | <IDENTIFIER> ) {setLastTokenImage(jjtThis);}
+  {/* empty, to set the image before jjtClose */}
 }
 
+// This factorises the lookahead for a lambda expression
+// It's necessary because in all contexts a lambda may appear in,
+// the arguments could be interpreted as a variable reference,
+// or the start of a parenthesized expression
+private void LambdaLahead() #void :
+{}
+{
+  LOOKAHEAD({!inSwitchLabel})
+(
+  <IDENTIFIER>
+| "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")"
+| LambdaParameterList()
+)
+"->"
+}
+
+// Lambda expressions are not a PrimaryExpression in the JLS, instead they're
+// separated from the AssignmentExpression production. Their use is restricted
+// to method and constructor call argument, cast operand, the RHS of assignments,
+// and the tail of a ternary expression
+// https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.27
+//
+// To prevent LambdaExpressions in switch labels, the field #inSwitchLabel is used
+// as a workaround.
 void LambdaExpression():
 { checkForBadLambdaUsage(); }
 {
@@ -2653,7 +2721,6 @@ void ArgumentList() :
 void QualifiedAllocationExpr() #ConstructorCall:
 {}
 {
-   "."
    "new"
    {jjtree.extendLeft();}
    [ TypeArguments() ]
@@ -2733,11 +2800,8 @@ void ArrayDimExpr() #void:
 void Statement() :
 {}
 {
-  LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
-| LOOKAHEAD(2) LabeledStatement()
-| Block()
+  Block()
 | EmptyStatement()
-| StatementExpression() ";"
 | SwitchStatement()
 | IfStatement()
 | WhileStatement()
@@ -2749,6 +2813,12 @@ void Statement() :
 | ThrowStatement()
 | SynchronizedStatement()
 | TryStatement()
+// testing the hard cases last optimises the code gen
+// all the previous cases are trivial for the parser
+// because they start with a different token
+| LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD(2) LabeledStatement()
+| StatementExpression() ";"
 }
 
 void LabeledStatement() :

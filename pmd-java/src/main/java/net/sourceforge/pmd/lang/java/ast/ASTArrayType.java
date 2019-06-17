@@ -14,7 +14,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTArrayType extends AbstractJavaTypeNode implements ASTReferenceType {
+public final class ASTArrayType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
     ASTArrayType(int id) {
         super(id);
     }

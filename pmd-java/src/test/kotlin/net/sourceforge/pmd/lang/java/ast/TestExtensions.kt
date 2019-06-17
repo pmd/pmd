@@ -137,6 +137,12 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
         }
 
 
+fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
+        child<ASTArrayType>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
+
 fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType) =
         child<ASTPrimitiveType> {
             it::getModelConstant shouldBe type
@@ -153,6 +159,13 @@ fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStri
         child<ASTStringLiteral> {
             it::getImage shouldBe image
             contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.classLiteral(contents: ValuedNodeSpec<ASTClassLiteral, ASTType?>) =
+        child<ASTClassLiteral> {
+            val tn = it.typeNode
+            it::isVoid shouldBe (tn == null)
+            it::getTypeNode shouldBe contents()
         }
 
 
@@ -191,6 +204,23 @@ fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSp
         child<ASTMultiplicativeExpression> {
             it::getOp shouldBe op
             assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference>) =
+        child<ASTMethodReference> {
+            it::getMethodName shouldBe methodName
+            it::isConstructorReference shouldBe false
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTReferenceType>) =
+        child<ASTMethodReference> {
+            it::getMethodName shouldBe null
+            it::getImage shouldBe "new"
+            it::isConstructorReference shouldBe true
+            it::getLhsExpression shouldBe null
+            it::getAmbiguousLhs shouldBe null
+            it::getLhsType shouldBe assertions()
         }
 
 private val EmptyAssertions: NodeSpec<out Node> = {}
