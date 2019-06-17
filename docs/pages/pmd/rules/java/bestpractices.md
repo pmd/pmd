@@ -1758,7 +1758,7 @@ preserved.
 ][
     pmd-java:typeIs('java.lang.AutoCloseable')
     or
-    ../../PrimarySuffix/Arguments//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
+    ../../PrimarySuffix/Arguments[@ArgumentCount = 1]//PrimaryPrefix[pmd-java:typeIs('java.lang.AutoCloseable')]
 ]]
 ```
 
