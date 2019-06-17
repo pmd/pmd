@@ -41,6 +41,9 @@ datetime field.
     on the method level. To allow the old behavior, the new property `allowMethodLevelSynchronization` can
     be enabled.
 
+*   The Java rule {% rule "java/design/UseUtilityClass" %} (`java-design`) has a new property `ignoredAnnotations`.
+    By default, classes that are annotated with Lombok's `@UtilityClass` are ignored now.
+
 ### Fixed Issues
 
 *   java
@@ -48,6 +51,8 @@ datetime field.
 *   java-bestpractices
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
     *   [#1845](https://github.com/pmd/pmd/issues/1845): \[java] Regression in MethodReturnsInternalArray not handling enums
+*   java-design
+    *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
 *   java-multithreading
     *   [#1814](https://github.com/pmd/pmd/issues/1814): \[java] UnsynchronizedStaticFormatter documentation and implementation wrong
     *   [#1815](https://github.com/pmd/pmd/issues/1815): \[java] False negative in UnsynchronizedStaticFormatter
