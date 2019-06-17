@@ -18,9 +18,7 @@ import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
@@ -31,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeBody;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
@@ -176,7 +175,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
 
             if (count == 0) {
                 // look if the message is defined in a field
-                final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfAnyType(ASTClassOrInterfaceBody.class, ASTEnumBody.class)
+                final List<ASTFieldDeclaration> fieldlist = node.getFirstParentOfType(ASTTypeBody.class)
                         .findDescendantsOfType(ASTFieldDeclaration.class);
                 // only look for ASTVariableDeclarator that are Fields
                 final List<ASTVariableDeclarator> fields = new ArrayList<>(fieldlist.size());

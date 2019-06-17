@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.typeresolution;
 
+import static net.sourceforge.pmd.lang.java.ast.InternalApiBridge.setTypeDefinition;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getApplicableMethods;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.getBestMethodReturnType;
 import static net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution.isMemberVisibleFromClass;
@@ -85,6 +86,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -222,7 +224,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         ASTName importedType = (ASTName) node.jjtGetChild(0);
 
         if (importedType.getType() != null) {
-            node.setType(importedType.getType());
+            setTypeDefinition(node, JavaTypeDefinition.forClass(importedType.getType()));
         } else {
             populateType(node, importedType.getImage());
         }
@@ -267,7 +269,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 boundGenerics[i] = ((TypeNode) typeArguments.jjtGetChild(i)).getTypeDefinition();
             }
 
-            node.setTypeDefinition(JavaTypeDefinition.forClass(node.getType(), boundGenerics));
+            setTypeDefinition(node, JavaTypeDefinition.forClass(node.getType(), boundGenerics));
         }
 
         return data;
@@ -283,7 +285,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         JavaTypeDefinition def = element.getTypeDefinition();
         if (def != null) {
-            node.setTypeDefinition(def.withDimensions(node.getArrayDepth()));
+            setTypeDefinition(node, def.withDimensions(node.getArrayDepth()));
         }
 
         return data;
@@ -388,7 +390,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             // Carry over the type (including generics) from the declaration
             JavaTypeDefinition nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getTypeDefinition();
             if (nodeType != null) {
-                node.setTypeDefinition(nodeType);
+                setTypeDefinition(node, nodeType);
                 return super.visit(node, data);
             }
         }
@@ -410,7 +412,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
 
         if (previousType != null) {
-            node.setTypeDefinition(previousType);
+            setTypeDefinition(node, previousType);
         }
 
         return super.visit(node, data);
@@ -627,7 +629,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             return super.visit(node, data);
         } else if (node.isEnumConstant()) {
             Class<?> enumClass = getEnclosingTypeDeclarationClass(node);
-            node.setTypeDefinition(JavaTypeDefinition.forClass(enumClass));
+            setTypeDefinition(node, JavaTypeDefinition.forClass(enumClass));
             return data;
         }
 
@@ -636,7 +638,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
         if (baseType != null) {
             // add the dimensions specific to the declarator id
-            node.setTypeDefinition(baseType.withDimensions(node.getArrayDepth()));
+            setTypeDefinition(node, baseType.withDimensions(node.getArrayDepth()));
         }
         return super.visit(node, data);
     }
@@ -646,11 +648,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // assign this type to VariableDeclarator and VariableDeclaratorId
         TypeNode var = node.getFirstChildOfType(ASTVariableDeclarator.class);
         if (var != null) {
-            var.setTypeDefinition(typeDefinition);
+            setTypeDefinition(var, typeDefinition);
             var = var.getFirstChildOfType(ASTVariableDeclaratorId.class);
         }
         if (var != null) {
-            var.setTypeDefinition(typeDefinition);
+            setTypeDefinition(var, typeDefinition);
         }
     }
 
@@ -712,7 +714,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             ASTExpression initializer = node.getFirstChildOfType(ASTExpression.class);
 
             if (node.getVariableDeclaratorId() != null) {
-                node.getVariableDeclaratorId().setTypeDefinition(initializer.getTypeDefinition());
+                setTypeDefinition(node.getVariableDeclaratorId(), initializer.getTypeDefinition());
             }
         }
         return data;
@@ -881,13 +883,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                if (currentChild.jjtGetLastToken().toString().equals("this")) {
         //
         //                    if (previousChild != null) { // Qualified 'this' expression
-        //                        currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+        //                        setTypeDefinition(currentChild, previousChild.getTypeDefinition());
         //                    } else { // simple 'this' expression
         //                        ASTClassOrInterfaceDeclaration typeDeclaration
         //                                = currentChild.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         //
         //                        if (typeDeclaration != null) {
-        //                            currentChild.setTypeDefinition(typeDeclaration.getTypeDefinition());
+        //                            setTypeDefinition(currentChild, typeDeclaration.getTypeDefinition());
         //                        }
         //                    }
         //
@@ -898,14 +900,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                        // anonymous classes can't have qualified super expression, thus
         //                        // getSuperClassTypeDefinition's second argumet isn't null, but we are not
         //                        // looking for enclosing super types
-        //                        currentChild.setTypeDefinition(
+        //                        setTypeDefinition(currentChild,
         //                                getSuperClassTypeDefinition(currentChild, previousChild.getType()));
         //                    } else { // simple 'super' expression
-        //                        currentChild.setTypeDefinition(getSuperClassTypeDefinition(currentChild, null));
+        //                        setTypeDefinition(currentChild, getSuperClassTypeDefinition(currentChild, null));
         //                    }
         //
         //                } else if (currentChild.getFirstChildOfType(ASTArguments.class) != null) {
-        //                    currentChild.setTypeDefinition(previousChild.getTypeDefinition());
+        //                    setTypeDefinition(currentChild, previousChild.getTypeDefinition());
         //                } else if (previousChild != null && previousChild.getType() != null) {
         //                    String currentChildImage = currentChild.getImage();
         //                    if (currentChildImage == null) {
@@ -925,10 +927,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //                                                                        currentChildImage,
         //                                                                        typeArguments, methodArgsArity, accessingClass);
         //
-        //                        currentChild.setTypeDefinition(getBestMethodReturnType(previousChild.getTypeDefinition(),
+        //                        setTypeDefinition(currentChild, getBestMethodReturnType(previousChild.getTypeDefinition(),
         //                                                                               methods, astArgumentList));
         //                    } else { // field
-        //                        currentChild.setTypeDefinition(getFieldType(previousChild.getTypeDefinition(),
+        //                        setTypeDefinition(currentChild, getFieldType(previousChild.getTypeDefinition(),
         //                                                                    currentChildImage, accessingClass));
         //                    }
         //                }
@@ -946,7 +948,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         //            previousChild = currentChild;
         //        }
         //
-        //        primaryNode.setTypeDefinition(primaryNodeType);
+        //        setTypeDefinition(primaryNode, primaryNodeType);
         //
         //        return data;
     }
@@ -1030,7 +1032,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTTypeArgument node, Object data) {
         if (node.jjtGetNumChildren() == 0) { // if type argument is '?'
-            node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_WILDCARD, Object.class));
+            setTypeDefinition(node, JavaTypeDefinition.forClass(UPPER_WILDCARD, Object.class));
         } else {
             super.visit(node, data);
             rollupTypeUnary(node);
@@ -1046,9 +1048,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         JavaTypeDefinition childType = node.getTypeBoundNode().getTypeDefinition();
 
         if (node.isLowerBound()) {
-            node.setTypeDefinition(JavaTypeDefinition.forClass(LOWER_WILDCARD, childType));
+            setTypeDefinition(node, JavaTypeDefinition.forClass(LOWER_WILDCARD, childType));
         } else { // upper bound
-            node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_WILDCARD, childType));
+            setTypeDefinition(node, JavaTypeDefinition.forClass(UPPER_WILDCARD, childType));
         }
 
         return data;
@@ -1067,7 +1069,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 boundGenerics[i++] = arg.getTypeDefinition();
             }
 
-            parent.setTypeDefinition(JavaTypeDefinition.forClass(parent.getType(), boundGenerics));
+            setTypeDefinition(parent, JavaTypeDefinition.forClass(parent.getType(), boundGenerics));
         }
 
         return data;
@@ -1084,7 +1086,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             bounds[i++] = bound.getTypeDefinition();
         }
 
-        node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
+        setTypeDefinition(node, JavaTypeDefinition.forClass(UPPER_BOUND, bounds));
 
         return super.visit(node, data);
     }
@@ -1092,12 +1094,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTTypeParameter node, Object data) {
         if (!node.hasTypeBound()) { // type parameter doesn't have declared upper bounds
-            node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
+            setTypeDefinition(node, JavaTypeDefinition.forClass(UPPER_BOUND, Object.class));
         } else {
             super.visit(node, data);
             rollupTypeUnary(node);
             if (node.getTypeDefinition() != null && !node.getTypeDefinition().isUpperBound()) {
-                node.setTypeDefinition(JavaTypeDefinition.forClass(UPPER_BOUND, node.getTypeDefinition()));
+                setTypeDefinition(node, JavaTypeDefinition.forClass(UPPER_BOUND, node.getTypeDefinition()));
             }
         }
 
@@ -1147,7 +1149,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (dims != null) {
             final JavaTypeDefinition elementType = ((TypeNode) node.jjtGetChild(0)).getTypeDefinition();
             if (elementType != null) {
-                node.setTypeDefinition(elementType.withDimensions(dims.getArrayDepth()));
+                setTypeDefinition(node, elementType.withDimensions(dims.getArrayDepth()));
             }
         } else {
             rollupTypeUnary(node);
@@ -1202,7 +1204,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
 
-        node.setTypeDefinition(type);
+        setTypeDefinition(node, type);
         return data;
     }
 
@@ -1216,7 +1218,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             if (node.isVarargs()) {
                 // The type of the formal parameter is defined in terms of the type
                 // of the declarator ID
-                node.getVariableDeclaratorId().setTypeDefinition(varType.withDimensions(1));
+                setTypeDefinition(node.getVariableDeclaratorId(), varType.withDimensions(1));
             }
         }
         return data;
@@ -1232,7 +1234,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         name.jjtSetParent(node);
         visit(name, data);
         if (name.getTypeDefinition() != null) {
-            node.setTypeDefinition(name.getTypeDefinition());
+            setTypeDefinition(node, name.getTypeDefinition());
         }
         return data;
     }
@@ -1243,7 +1245,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (typeNode.jjtGetNumChildren() >= 1) {
             Node child = typeNode.jjtGetChild(0);
             if (child instanceof TypeNode) {
-                typeNode.setTypeDefinition(((TypeNode) child).getTypeDefinition());
+                setTypeDefinition(typeNode, ((TypeNode) child).getTypeDefinition());
             }
         }
     }
@@ -1261,7 +1263,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                             || "char".equals(type.getName())) {
                         populateType(typeNode, "int");
                     } else {
-                        typeNode.setType(((TypeNode) child).getType());
+                        InternalApiBridge.setTypeDefinition(typeNode, ((TypeNode) child).getTypeDefinition());
                     }
                 }
             }
@@ -1373,12 +1375,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (myType == null) {
             ASTTypeParameter parameter = getTypeParameterDeclaration(node, className);
             if (parameter != null) {
-                node.setTypeDefinition(parameter.getTypeDefinition());
+                setTypeDefinition(node, parameter.getTypeDefinition());
             }
         } else {
             JavaTypeDefinition def = JavaTypeDefinition.forClass(myType);
             if (def != null) {
-                node.setTypeDefinition(def.withDimensions(arrayDimens));
+                setTypeDefinition(node, def.withDimensions(arrayDimens));
             }
         }
     }
@@ -1520,7 +1522,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 
     private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
-        node.setType(pmdClassLoader.loadClass(className));
+        setTypeDefinition(node, JavaTypeDefinition.forClass(pmdClassLoader.loadClass(className)));
         importedClasses.putAll(pmdClassLoader.getImportedClasses(className));
     }
 }

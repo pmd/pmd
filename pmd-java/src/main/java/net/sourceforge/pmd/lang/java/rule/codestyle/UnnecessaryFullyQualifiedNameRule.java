@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 
@@ -102,7 +102,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private void checkImports(AbstractJavaTypeNode node, Object data) {
+    private void checkImports(TypeNode node, Object data) {
         String name = node.getImage();
         List<ASTImportDeclaration> matches = new ArrayList<>();
 
@@ -211,12 +211,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return result;
     }
 
-    private boolean isSamePackage(AbstractJavaTypeNode node) {
+    private boolean isSamePackage(TypeNode node) {
         String name = node.getImage();
         return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
     }
     
-    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
+    private boolean isJavaLangImplicit(TypeNode node) {
         String name = node.getImage();
         boolean isJavaLang = name != null && name.startsWith("java.lang.");
 
@@ -232,7 +232,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
+    private boolean isAvoidingConflict(final TypeNode node, final String name,
             final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {

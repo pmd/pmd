@@ -176,14 +176,4 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         // see javadoc
     }
 
-    /**
-     * Noop, the type of this node is defined by the type
-     * of the declarator id.
-     */
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setType(Class<?> type) {
-        // see javadoc
-    }
 }

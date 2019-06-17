@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -34,22 +33,4 @@ public interface TypeNode extends JavaNode {
     JavaTypeDefinition getTypeDefinition();
 
 
-    /**
-     * Set the TypeDefinition associated with this node.
-     *
-     * @param type A TypeDefinition object
-     */
-    @Deprecated
-    @InternalApi
-    void setTypeDefinition(JavaTypeDefinition type);
-
-
-    /**
-     * Set the Java Class associated with this node.
-     *
-     * @param type A Java Class
-     */
-    @Deprecated
-    @InternalApi
-    void setType(Class<?> type);
 }

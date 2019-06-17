@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.typeresolution.testdata.java8.SuperClass;
 import net.sourceforge.pmd.typeresolution.testdata.java8.SuperExpression;
 import net.sourceforge.pmd.typeresolution.testdata.java8.ThisExpression;
@@ -52,9 +52,9 @@ public class ClassTypeResolverJava8Test {
     public void testSuperExpression() throws JaxenException {
         ASTCompilationUnit acu = parseAndTypeResolveForClass18(SuperExpression.class);
 
-        List<AbstractJavaTypeNode> expressions = convertList(
+        List<TypeNode> expressions = convertList(
                 acu.findChildNodesWithXPath("//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix"),
-                AbstractJavaTypeNode.class);
+                TypeNode.class);
 
         int index = 0;
 

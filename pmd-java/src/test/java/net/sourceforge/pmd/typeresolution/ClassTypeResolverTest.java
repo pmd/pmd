@@ -63,7 +63,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -724,7 +723,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testSuperExpression() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(SuperExpression.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(SuperExpression.class, TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix");
 
         int index = 0;
@@ -896,7 +895,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccess.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccess.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -931,7 +930,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessNested() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessNested.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessNested.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -963,7 +962,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessShadow() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessShadow.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessShadow.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -997,7 +996,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessSuper() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessSuper.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessSuper.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1054,7 +1053,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testBoundsGenericFieldAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericBounds.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessGenericBounds.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1090,7 +1089,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testParameterGenericFieldAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericParameter.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessGenericParameter.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1118,7 +1117,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testSimpleGenericFieldAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericSimple.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessGenericSimple.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1178,7 +1177,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testRawGenericFieldAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericRaw.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessGenericRaw.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1249,7 +1248,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testPrimarySimpleGenericFieldAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessPrimaryGenericSimple.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessPrimaryGenericSimple.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1301,7 +1300,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessGenericNested() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessGenericNested.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessGenericNested.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1321,7 +1320,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testFieldAccessStatic() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(FieldAccessStatic.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(FieldAccessStatic.class, TypeNode.class,
                                                              "//StatementExpression/PrimaryExpression");
 
         int index = 0;
@@ -1366,7 +1365,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodPotentialApplicability() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodPotentialApplicability.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(MethodPotentialApplicability.class, TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1408,7 +1407,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodAccessibility() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodAccessibility.class, AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(MethodAccessibility.class, TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1430,7 +1429,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodFirstPhase() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodFirstPhase.class, "1.8", AbstractJavaTypeNode.class,
+        List<TypeNode> expressions = selectNodes(MethodFirstPhase.class, "1.8", TypeNode.class,
                                                              "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
@@ -1458,7 +1457,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodMostSpecific() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodMostSpecific.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(MethodMostSpecific.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1484,7 +1483,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodSecondPhase() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodSecondPhase.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(MethodSecondPhase.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1521,7 +1520,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodThirdPhase() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodThirdPhase.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(MethodThirdPhase.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1549,7 +1548,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodStaticAccess() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodStaticAccess.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(MethodStaticAccess.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1580,7 +1579,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodGenericExplicit() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(MethodGenericExplicit.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(MethodGenericExplicit.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1596,23 +1595,23 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testGenericArrays() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(GenericsArrays.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(GenericsArrays.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
         // List<String> var = Arrays.asList(params);
-        AbstractJavaTypeNode expression = expressions.get(index++);
+        TypeNode expression = expressions.get(index++);
         // TODO : Type inference is still incomplete, we fail to detect the return type of the method
         //assertEquals(List.class, expression.getTypeDefinition().getType());
         //assertEquals(String.class, expression.getTypeDefinition().getGenericType(0).getType());
 
         // List<String> var2 = Arrays.<String>asList(params);
-        AbstractJavaTypeNode expression2 = expressions.get(index++);
+        TypeNode expression2 = expressions.get(index++);
         assertEquals(List.class, expression2.getTypeDefinition().getType());
         assertEquals(String.class, expression2.getTypeDefinition().getGenericType(0).getType());
 
         // List<String[]> var3 = Arrays.<String[]>asList(params);
-        AbstractJavaTypeNode expression3 = expressions.get(index++);
+        TypeNode expression3 = expressions.get(index++);
         assertEquals(List.class, expression3.getTypeDefinition().getType());
         assertEquals(String[].class, expression3.getTypeDefinition().getGenericType(0).getType());
 
@@ -1623,7 +1622,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodTypeInference() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(GenericMethodsImplicit.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(GenericMethodsImplicit.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1639,7 +1638,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodTypeInferenceVarargsZeroArity() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(VarargsZeroArity.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(VarargsZeroArity.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 
@@ -1656,7 +1655,7 @@ public class ClassTypeResolverTest {
 
     @Test
     public void testMethodTypeInferenceVarargsAsFixedArity() throws JaxenException {
-        List<AbstractJavaTypeNode> expressions = selectNodes(VarargsAsFixedArity.class, AbstractJavaTypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
+        List<TypeNode> expressions = selectNodes(VarargsAsFixedArity.class, TypeNode.class, "//VariableInitializer/Expression/PrimaryExpression");
 
         int index = 0;
 

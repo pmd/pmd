@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.lang.java.ast.AbstractAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.JavaQualifiableNode;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -210,7 +210,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
         updateClassContext(node.getImage(), localIndex);
 
-        ((AbstractAnyTypeDeclaration) node).setQualifiedName(contextClassQName());
+        InternalApiBridge.setQname(node, contextClassQName());
 
         super.visit(node, data);
 
@@ -236,7 +236,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         String opname = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-        node.setQualifiedName(contextOperationQName(opname, false));
+        InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return super.visit(node, data);
     }
 
@@ -244,7 +244,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         String opname = getOperationName(classNames.head(), node.getFirstDescendantOfType(ASTFormalParameters.class));
-        node.setQualifiedName(contextOperationQName(opname, false));
+        InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return super.visit(node, data);
     }
 
@@ -305,7 +305,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
         String opname = "lambda$" + findLambdaScopeNameSegment(node)
                 + "$" + lambdaCounters.peek().getAndIncrement();
 
-        node.setQualifiedName(contextOperationQName(opname, true));
+        InternalApiBridge.setQname(node, contextOperationQName(opname, true));
         return super.visit(node, data);
     }
 

@@ -34,6 +34,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserTreeConstants;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
@@ -296,15 +298,13 @@ public class ClassScope extends AbstractJavaScope {
     private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName,
             final String... parameterTypes) {
         ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(JavaParserTreeConstants.JJTMETHODDECLARATION);
-        methodDeclaration.setPublic(true);
-        methodDeclaration.setScope(this);
+        InternalApiBridge.setModifier(methodDeclaration, AccessNode.PUBLIC);
+        InternalApiBridge.setScope(methodDeclaration, this);
 
         ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(JavaParserTreeConstants.JJTMETHODDECLARATOR);
         methodDeclarator.setImage(methodName);
-        methodDeclarator.setScope(this);
 
         ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
-        formalParameters.setScope(this);
 
         methodDeclaration.jjtAddChild(methodDeclarator, 0);
         methodDeclarator.jjtSetParent(methodDeclaration);

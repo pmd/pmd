@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
@@ -15,21 +14,15 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * @see AbstractJavaNode
  * @see TypeNode
  */
-@Deprecated
-@InternalApi
-public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
+abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
     private JavaTypeDefinition typeDefinition;
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(int i) {
+    AbstractJavaTypeNode(int i) {
         super(i);
     }
 
-    @InternalApi
-    @Deprecated
-    public AbstractJavaTypeNode(JavaParser p, int i) {
+    AbstractJavaTypeNode(JavaParser p, int i) {
         super(p, i);
     }
 
@@ -39,23 +32,13 @@ public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements T
         return typeDefinition == null ? null : typeDefinition.getType();
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setType(@Nullable Class<?> type) {
-        typeDefinition = JavaTypeDefinition.forClass(type);
-    }
-
     @Override
     @Nullable
     public JavaTypeDefinition getTypeDefinition() {
         return typeDefinition;
     }
 
-    @InternalApi
-    @Deprecated
-    @Override
-    public void setTypeDefinition(@Nullable JavaTypeDefinition typeDefinition) {
+    void setTypeDefinition(@Nullable JavaTypeDefinition typeDefinition) {
         this.typeDefinition = typeDefinition;
     }
 }
