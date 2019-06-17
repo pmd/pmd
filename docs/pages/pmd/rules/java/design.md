@@ -2141,8 +2141,23 @@ public class MaybeAUtility {
 }
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.experimental.UtilityClass|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/UseUtilityClass" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/UseUtilityClass">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.experimental.UtilityClass" />
+    </properties>
+</rule>
 ```
 
