@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -38,7 +38,7 @@ public abstract class AbstractSunSecureRule extends AbstractJavaRule {
      * @return <code>true</code> if there is a field in the type declaration
      *         named varName, <code>false</code> in other case
      */
-    protected final boolean isField(String varName, AbstractNode typeDeclaration) {
+    protected final boolean isField(String varName, ASTAnyTypeDeclaration typeDeclaration) {
         final List<ASTFieldDeclaration> fds = typeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class);
         if (fds != null) {
             for (ASTFieldDeclaration fd : fds) {

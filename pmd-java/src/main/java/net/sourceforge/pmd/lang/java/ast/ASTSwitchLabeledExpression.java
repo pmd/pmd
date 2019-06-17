@@ -4,14 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 
 public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
+    @Deprecated
+    @InternalApi
     ASTSwitchLabeledExpression(int id) {
         super(id);
     }
 
+    @Deprecated
+    @InternalApi
     ASTSwitchLabeledExpression(JavaParser p, int id) {
         super(p, id);
     }

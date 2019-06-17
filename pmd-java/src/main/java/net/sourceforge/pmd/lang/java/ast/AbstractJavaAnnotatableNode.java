@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
+// package private
 abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements Annotatable {
 
     AbstractJavaAnnotatableNode(int i) {

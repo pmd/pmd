@@ -19,4 +19,11 @@ public class CursorAttributesTest extends AbstractPLSQLParserTst {
         Assert.assertEquals("TestSearch%notfound", exp.getImage());
     }
 
+    @Test
+    public void parseImplicitCursorAttributeBulkExceptions() {
+        String code = loadTestResource("CursorAttributesBulkExceptions.pls");
+        ASTInput input = parsePLSQL(code);
+        Assert.assertNotNull(input);
+    }
+
 }

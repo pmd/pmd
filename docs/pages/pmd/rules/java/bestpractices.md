@@ -1468,7 +1468,7 @@ public class Something {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| java.lang.Deprecated \| javafx.fxml.FXML|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| java.lang.Deprecated \| javafx.fxml.FXML \| lombok.experimental.Delegate|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -1479,7 +1479,7 @@ public class Something {
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedPrivateField">
     <properties>
-        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|java.lang.Deprecated|javafx.fxml.FXML" />
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|java.lang.Deprecated|javafx.fxml.FXML|lombok.experimental.Delegate" />
     </properties>
 </rule>
 ```
