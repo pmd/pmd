@@ -59,4 +59,15 @@ final class AstImplUtil {
         Node child = javaNode.jjtGetChild(idx);
         return type.isInstance(child) ? type.cast(child) : null;
     }
+
+
+    static void bumpParenDepth(ASTExpression expression) {
+        if (expression instanceof AbstractJavaExpr) {
+            ((AbstractJavaExpr) expression).bumpParenDepth();
+        } else if (expression instanceof ASTLambdaExpression) {
+            ((ASTLambdaExpression) expression).bumpParenDepth();
+        } else {
+            throw new IllegalStateException(expression.getClass() + " doesn't have parenDepth attribute!");
+        }
+    }
 }

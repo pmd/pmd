@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTAssignmentExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTAssignmentExpression extends AbstractJavaExpr implements ASTExpression {
 
     private AssignmentOp operator;
 

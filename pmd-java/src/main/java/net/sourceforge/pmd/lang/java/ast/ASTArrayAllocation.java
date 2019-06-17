@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTArrayAllocation extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPrimaryExpression {
 
 
     ASTArrayAllocation(int id) {

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType;
 /**
  * A numeric literal of any type (double, int, long, float, etc).
  */
-public final class ASTNumericLiteral extends AbstractJavaTypeNode implements ASTLiteral {
+public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiteral {
 
     /**
      * True if this is an integral literal, ie int OR long,

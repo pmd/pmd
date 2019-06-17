@@ -47,4 +47,35 @@ public interface ASTExpression extends JavaNode, TypeNode, ASTMemberValue {
         return true;
     }
 
+
+    /**
+     * Returns the number of parenthesis levels around this expression.
+     * If this method returns 0, then no parentheses are present.
+     *
+     * <p>E.g. the expression {@code (a + b)} is parsed as an AdditiveExpression
+     * whose parenthesisDepth is 1, and in {@code ((a + b))} it's 2.
+     *
+     * <p>This is to avoid the parentheses interfering with analysis.
+     * Parentheses already influence parsing by breaking the natural
+     * precedence of operators. It would mostly hide false positives
+     * to make a ParenthesizedExpr node, because it would make semantically
+     * equivalent nodes have a very different representation.
+     *
+     * <p>On the other hand, when a rule explicitly cares about parentheses,
+     * then this attribute may be used to find out whether parentheses
+     * were mentioned, so no information is lost.
+     */
+    default int getParenthesisDepth() {
+        return 0;
+    }
+
+
+    /**
+     * Returns true if this expression has at least one level of parentheses.
+     * The specific depth can be fetched with {@link #getParenthesisDepth()}.
+     */
+    default boolean isParenthesized() {
+        return getParenthesisDepth() > 0;
+    }
+
 }

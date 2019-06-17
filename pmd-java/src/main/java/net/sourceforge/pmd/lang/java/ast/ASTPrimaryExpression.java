@@ -17,7 +17,6 @@ package net.sourceforge.pmd.lang.java.ast;
  *                     | {@linkplain ASTArrayAllocation ArrayAllocation}
  *                     | {@linkplain ASTArrayAccess ArrayAccess}
  *                     | {@linkplain ASTVariableReference VariableReference}
- *                     | {@linkplain ASTParenthesizedExpression ParenthesizedExpression}
  *                     | {@linkplain ASTMethodReference MethodReference}
  *                     | {@linkplain ASTThisExpression ThisExpression}
  *                     | {@linkplain ASTSuperExpression SuperExpression}

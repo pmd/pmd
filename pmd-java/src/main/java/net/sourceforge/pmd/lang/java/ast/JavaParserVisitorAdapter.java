@@ -226,12 +226,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     @Override
-    public Object visit(ASTParenthesizedExpression node, Object data) {
-        return visit((ASTPrimaryExpression) node, data);
-    }
-
-
-    @Override
     public Object visit(ASTMethodReference node, Object data) {
         return visit((ASTPrimaryExpression) node, data);
     }

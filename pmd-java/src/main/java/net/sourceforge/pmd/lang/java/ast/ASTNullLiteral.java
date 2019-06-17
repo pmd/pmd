@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTNullLiteral extends AbstractJavaTypeNode implements ASTLiteral {
+public final class ASTNullLiteral extends AbstractLiteral implements ASTLiteral {
     ASTNullLiteral(int id) {
         super(id);
     }

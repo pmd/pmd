@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * </pre>
  */
-public final class ASTUnaryExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTUnaryExpression extends AbstractJavaExpr implements ASTExpression {
 
     private UnaryOp operator;
 

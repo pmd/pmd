@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTClassLiteral extends AbstractJavaTypeNode implements ASTLiteral, LeftRecursiveNode {
+public final class ASTClassLiteral extends AbstractLiteral implements ASTLiteral, LeftRecursiveNode {
     ASTClassLiteral(int id) {
         super(id);
     }

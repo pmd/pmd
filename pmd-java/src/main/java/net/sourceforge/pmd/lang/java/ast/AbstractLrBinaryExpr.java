@@ -11,7 +11,7 @@ import java.util.Iterator;
  *
  * @author Clément Fournier
  */
-abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode
+abstract class AbstractLrBinaryExpr extends AbstractJavaExpr
     implements ASTExpression, LeftRecursiveNode, Iterable<ASTExpression> {
 
     private BinaryOp operator;
