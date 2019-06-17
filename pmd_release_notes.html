@@ -1317,6 +1317,10 @@ now prefer synchronized blocks by default. They will raise a violation, if the s
 on the method level. To allow the old behavior, the new property <code class="highlighter-rouge">allowMethodLevelSynchronization</code> can
 be enabled.</p>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_design.html#useutilityclass"><code class="highlighter-rouge">UseUtilityClass</code></a> (<code class="highlighter-rouge">java-design</code>) has a new property <code class="highlighter-rouge">ignoredAnnotations</code>.
+By default, classes that are annotated with Lombok’s <code class="highlighter-rouge">@UtilityClass</code> are ignored now.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1331,6 +1335,11 @@ be enabled.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1703">#1703</a>: [java] UnusedPrivateField on member annotated with lombok @Delegate</li>
       <li><a href="https://github.com/pmd/pmd/issues/1845">#1845</a>: [java] Regression in MethodReturnsInternalArray not handling enums</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1094">#1094</a>: [java] UseUtilityClass should be LombokAware</li>
     </ul>
   </li>
   <li>java-multithreading
