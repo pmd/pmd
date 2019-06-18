@@ -1,6 +1,6 @@
 /**
  * Nest annotations inside the node they apply to. The node TypeBound is 
- * removed.
+ * removed. Fix InstanceofExpression with annotated type.
  * Clément Fournier 06/2019
  *====================================================================
  * Change expression, type and annotation grammar to remove unnecessary nodes,
@@ -2372,7 +2372,7 @@ void EqualityExprTail() #EqualityExpression:
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() ]
+  RelationalExpression() [ LOOKAHEAD(2) "instanceof" AnnotatedRefType() ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):
