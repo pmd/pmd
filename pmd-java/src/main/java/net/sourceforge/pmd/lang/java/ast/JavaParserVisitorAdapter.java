@@ -241,6 +241,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTPrimaryExpression) node, data);
     }
 
+    @Override
+    public Object visit(ASTClassLiteral node, Object data) {
+        return visit((ASTPrimaryExpression) node, data);
+    }
+
     public Object visit(ASTLiteral node, Object data) {
         return visit((ASTPrimaryExpression) node, data);
     }
@@ -267,11 +272,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Override
     public Object visit(ASTCharLiteral node, Object data) {
-        return visit((ASTLiteral) node, data);
-    }
-
-    @Override
-    public Object visit(ASTClassLiteral node, Object data) {
         return visit((ASTLiteral) node, data);
     }
 

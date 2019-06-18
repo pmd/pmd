@@ -82,7 +82,6 @@ private val javaImplicitAssertions: Assertions<Node> = {
     if (it is ASTLiteral) {
         it::isNumericLiteral shouldBe (it is ASTNumericLiteral)
         it::isCharLiteral shouldBe (it is ASTCharLiteral)
-        it::isClassLiteral shouldBe (it is ASTClassLiteral)
         it::isStringLiteral shouldBe (it is ASTStringLiteral)
         it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
         it::isNullLiteral shouldBe (it is ASTNullLiteral)
