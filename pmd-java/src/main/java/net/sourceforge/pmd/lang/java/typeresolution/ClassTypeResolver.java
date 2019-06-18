@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -1130,8 +1131,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             populateType(node, "java.lang.String");
         } else if (node.isBooleanLiteral()) {
             populateType(node, "boolean");
-        } else if (node.isClassLiteral()) {
-            populateType(node, "java.lang.Class");
         } else if (node.isNullLiteral()) {
             // no explicit type
         } else {
@@ -1140,6 +1139,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
+    @Override
+    public Object visit(ASTClassLiteral node, Object data) {
+        // TODO the type of a class literal is generic
+        populateType(node, "java.lang.Class");
+        return super.visit(node, data);
+    }
 
     @Override
     public Object visit(ASTAllocationExpression node, Object data) {
