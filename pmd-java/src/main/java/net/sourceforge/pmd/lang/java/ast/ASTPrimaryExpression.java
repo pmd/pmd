@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * <pre class="grammar">
  *
  * PrimaryExpression ::= {@linkplain ASTLiteral Literal}
- *                     | {@link ASTClassLiteral ClassLiteral}
+ *                     | {@linkplain ASTClassLiteral ClassLiteral}
  *                     | {@linkplain ASTMethodCall MethodCall}
  *                     | {@linkplain ASTFieldAccess FieldAccess}
  *                     | {@linkplain ASTConstructorCall ConstructorCall}
