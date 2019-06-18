@@ -1,4 +1,8 @@
 /**
+ * Nest annotations inside the node they apply to. The node TypeBound is 
+ * removed.
+ * Clément Fournier 06/2019
+ *====================================================================
  * Change expression, type and annotation grammar to remove unnecessary nodes,
  * eliminate some inconsistencies, and most importantly have an expressive tree
  * for primary expressions. Expressions and types now appear to be left-recursive.
