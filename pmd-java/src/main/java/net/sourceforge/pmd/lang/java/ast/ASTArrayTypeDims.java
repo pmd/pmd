@@ -21,7 +21,7 @@ import java.util.Iterator;
  *
  * <pre class="grammar">
  *
- * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}*
+ * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}+
  *
  * </pre>
  */
