@@ -39,6 +39,7 @@ upload_docs() {
 
 upload_javadocs() {
     upload_javadoc_module pmd-core
+    upload_javadoc_module pmd-java
 }
 
 upload_javadoc_module() {
@@ -46,7 +47,7 @@ upload_javadoc_module() {
     pushd $module/target
     scp "${module}-${VERSION}-javadoc.jar" pmd@pmd-code.org:/docs.pmd-code.org/
     ssh pmd@pmd-code.org "cd /docs.pmd-code.org && mkdir -p pmd-doc-${VERSION}/apidocs/${module} && \
-            unzip -qo -d pmd-doc-${VERSION}/apidocs/pmd-core pmd-core-7.0.0-SNAPSHOT-javadoc.jar && \
+            unzip -qo -d pmd-doc-${VERSION}/apidocs/${module} ${module}-${VERSION}-javadoc.jar && \
             rm ${module}-${VERSION}-javadoc.jar"
     log_info "JavaDoc for $module uploaded: https://docs.pmd-code.org/pmd-doc-${VERSION}/apidocs/${module}/"
     popd
