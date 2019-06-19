@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * Lhs        ::= {@link ASTPrimaryExpression PrimaryExpression} | {@link ASTClassOrInterfaceType ClassName} | {@link ASTAmbiguousName AmbiguousName}
  * </pre>
  */
-public final class ASTMethodCall extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
     ASTMethodCall(int id) {
         super(id);

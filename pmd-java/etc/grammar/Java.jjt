@@ -2507,7 +2507,7 @@ void PrimaryPrefix() #void :
 
 | LOOKAHEAD(LambdaLahead()) LambdaExpression()
 
-| ("(" Expression() ")")                  #ParenthesizedExpression
+| "(" Expression() ")" { AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode()); }
 // If it is an ambiguous name, then we may go on
 // into the next step, which is less restricted
 // than PrimarySuffix

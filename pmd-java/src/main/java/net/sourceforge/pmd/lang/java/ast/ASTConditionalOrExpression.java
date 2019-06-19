@@ -18,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTConditionalOrExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTConditionalOrExpression extends AbstractJavaExpr implements ASTExpression {
     ASTConditionalOrExpression(int id) {
         super(id);
     }

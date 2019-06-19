@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTThisExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, LeftRecursiveNode {
+public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrimaryExpression, LeftRecursiveNode {
 
     ASTThisExpression(int id) {
         super(id);

@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 public final class ASTLambdaExpression extends AbstractMethodLikeNode implements ASTExpression {
 
     private JavaTypeDefinition typeDefinition;
-
+    private int parenDepth;
 
     ASTLambdaExpression(int id) {
         super(id);
@@ -47,8 +47,16 @@ public final class ASTLambdaExpression extends AbstractMethodLikeNode implements
         return !isBlockBody();
     }
 
-    // TODO these are copied from AbstractJavaTypeNode because it's easier to extend abstractMethodLikeNode
+    // TODO MethodLikeNode should be removed, and this class extend AbstractJavaExpr
 
+    void bumpParenDepth() {
+        parenDepth++;
+    }
+
+    @Override
+    public int getParenthesisDepth() {
+        return parenDepth;
+    }
 
     @Override
     @Nullable

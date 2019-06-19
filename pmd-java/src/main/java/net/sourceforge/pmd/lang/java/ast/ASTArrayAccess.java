@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaTypeNode implements ASTPrimaryExpression, LeftRecursiveNode {
+public final class ASTArrayAccess extends AbstractJavaExpr implements ASTPrimaryExpression, LeftRecursiveNode {
     ASTArrayAccess(int id) {
         super(id);
     }
