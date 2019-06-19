@@ -467,6 +467,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                                 <version>${ant.version}</version>
                             </additionalDependency>
                         </additionalDependencies>
+                        <excludePackageNames>*.internal</excludePackageNames>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -1080,6 +1081,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                                         <classifier>lib</classifier>
                                     </additionalDependency>
                                 </additionalDependencies>
+                                <excludePackageNames>*.internal</excludePackageNames>
                             </configuration>
                         </plugin>
                     </plugins>
