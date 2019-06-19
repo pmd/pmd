@@ -3167,6 +3167,8 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
   (
     <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
+    LOOKAHEAD(2) simpleNode = DateTimeLiteral()
+  |
     LOOKAHEAD(2) simpleNode = ExtractExpression()
   |
     LOOKAHEAD(2) simpleNode = IsNullCondition()
@@ -3656,7 +3658,6 @@ ASTAccessibleByClause AccessibleByClause() :
 
 // SRT *
 ASTTable Table()  :
-
 {
 }
 {
