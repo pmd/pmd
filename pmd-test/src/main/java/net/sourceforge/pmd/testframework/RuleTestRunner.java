@@ -37,14 +37,14 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentHashMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final RuleTst instance;
 
-    /* default */ RuleTestRunner(Class<? extends RuleTst> testClass) throws InitializationError {
+    /* default */ RuleTestRunner(final Class<? extends RuleTst> testClass) throws InitializationError {
         super(testClass);
         instance = createTestClass();
         instance.setUp();
     }
 
     @Override
-    protected Description describeChild(TestDescriptor testCase) {
+    protected Description describeChild(final TestDescriptor testCase) {
         Description description = testDescriptions.get(testCase);
         if (description == null) {
             description = Description.createTestDescription(getTestClass().getJavaClass(),
@@ -67,12 +67,12 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
 
     @Override
     protected List<TestDescriptor> getChildren() {
-        List<Rule> rules = new ArrayList<>(instance.getRules());
+        final List<Rule> rules = new ArrayList<>(instance.getRules());
         rules.sort(Comparator.comparing(Rule::getName));
 
-        List<TestDescriptor> tests = new LinkedList<>();
-        for (Rule r : rules) {
-            TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
+        final List<TestDescriptor> tests = new LinkedList<>();
+        for (final Rule r : rules) {
+            final TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
             Collections.addAll(tests, ruleTests);
         }
 
@@ -82,14 +82,14 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private RuleTst createTestClass() throws InitializationError {
         try {
             return (RuleTst) getTestClass().getOnlyConstructor().newInstance();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new InitializationError(e);
         }
     }
 
     @Override
-    protected void runChild(TestDescriptor testCase, RunNotifier notifier) {
-        Description description = describeChild(testCase);
+    protected void runChild(final TestDescriptor testCase, final RunNotifier notifier) {
+        final Description description = describeChild(testCase);
         if (isIgnored(testCase)) {
             notifier.fireTestIgnored(description);
         } else {
@@ -116,24 +116,24 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
         return statement;
     }
 
-    private Statement withBefores(Statement statement) {
-        List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(Before.class);
+    private Statement withBefores(final Statement statement) {
+        final List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(Before.class);
         return befores.isEmpty() ? statement : new RunBefores(statement, befores, instance);
     }
 
-    private Statement withAfters(Statement statement) {
-        List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
+    private Statement withAfters(final Statement statement) {
+        final List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, instance);
     }
 
     private Statement withRules(final TestDescriptor testCase, Statement statement) {
-        List<TestRule> testRules =
+        final List<TestRule> testRules =
             getTestClass().getAnnotatedFieldValues(instance, org.junit.Rule.class, TestRule.class);
         return testRules.isEmpty() ? statement : new RunRules(statement, testRules, describeChild(testCase));
     }
 
     @Override
-    protected boolean isIgnored(TestDescriptor child) {
+    protected boolean isIgnored(final TestDescriptor child) {
         return TestDescriptor.inRegressionTestMode() && !child.isRegressionTest();
     }
 }
