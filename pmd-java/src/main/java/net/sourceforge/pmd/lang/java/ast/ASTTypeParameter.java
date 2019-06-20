@@ -22,7 +22,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.4">JLS</a>
  */
-public final class ASTTypeParameter extends AbstractJavaTypeNode {
+public final class ASTTypeParameter extends AbstractJavaTypeNode implements Annotatable {
 
     ASTTypeParameter(int id) {
         super(id);
