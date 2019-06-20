@@ -28,8 +28,8 @@ import org.junit.runners.model.Statement;
 import net.sourceforge.pmd.Rule;
 
 /**
- * A JUnit Runner, that executes all declared rule tests in the class.
- * It supports Before and After methods as well as TestRules.
+ * A JUnit Runner, that executes all declared rule tests in the class. It supports Before and After methods as well as
+ * TestRules.
  *
  * @author Andreas Dangel
  */
@@ -37,7 +37,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentHashMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final RuleTst instance;
 
-    public RuleTestRunner(Class<? extends RuleTst> testClass) throws InitializationError {
+    /* default */ RuleTestRunner(Class<? extends RuleTst> testClass) throws InitializationError {
         super(testClass);
         instance = createTestClass();
         instance.setUp();
@@ -49,8 +49,8 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
         if (description == null) {
             description = Description.createTestDescription(getTestClass().getJavaClass(),
                 testCase.getRule().getName() + "::"
-                        + testCase.getNumberInDocument() + " "
-                        + testCase.getDescription().replaceAll("\n|\r", " "));
+                    + testCase.getNumberInDocument() + " "
+                    + testCase.getDescription().replaceAll("\n|\r", " "));
             testDescriptions.putIfAbsent(testCase, description);
         }
         return description;
@@ -58,9 +58,10 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
 
     /**
      * Checks whether this test class has additionally unit test methods.
+     *
      * @return true if there is at least one unit test method.
      */
-    public boolean hasUnitTests() {
+    /* default */ boolean hasUnitTests() {
         return !getTestClass().getAnnotatedMethods(Test.class).isEmpty();
     }
 
@@ -97,8 +98,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     }
 
     /**
-     * Executes the actual test case. If there are Before, After, or TestRules present,
-     * they are executed accordingly.
+     * Executes the actual test case. If there are Before, After, or TestRules present, they are executed accordingly.
      *
      * @param testCase the PMD rule test case to be executed
      * @return a single statement which includes any rules, if present.
@@ -106,7 +106,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private Statement ruleTestBlock(final TestDescriptor testCase) {
         Statement statement = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 instance.runTest(testCase);
             }
         };
@@ -127,7 +127,8 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     }
 
     private Statement withRules(final TestDescriptor testCase, Statement statement) {
-        List<TestRule> testRules = getTestClass().getAnnotatedFieldValues(instance, org.junit.Rule.class, TestRule.class);
+        List<TestRule> testRules =
+            getTestClass().getAnnotatedFieldValues(instance, org.junit.Rule.class, TestRule.class);
         return testRules.isEmpty() ? statement : new RunRules(statement, testRules, describeChild(testCase));
     }
 
