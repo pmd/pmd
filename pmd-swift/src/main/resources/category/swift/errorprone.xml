@@ -22,8 +22,8 @@
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
-//TypeCastingOperatorContext[@Text = 'as!']
+<![CDATA[
+//TypeCastingOperatorContext[starts-with(@Image,'as!')]
 ]]>
                 </value>
             </property>
@@ -43,8 +43,8 @@
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
-//TryOperatorContext[@Text = 'try!']
+<![CDATA[
+//TryOperatorContext[@Image='try!']
 ]]>
                 </value>
             </property>

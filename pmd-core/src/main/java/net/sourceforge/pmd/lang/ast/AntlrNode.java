@@ -47,11 +47,6 @@ public interface AntlrNode extends Node {
     }
 
     @Override
-    default String getImage() {
-        throw new UnsupportedOperationException("Out of scope for antlr current implementations");
-    }
-
-    @Override
     default void setImage(final String image) {
         throw new UnsupportedOperationException("Out of scope for antlr current implementations");
     }

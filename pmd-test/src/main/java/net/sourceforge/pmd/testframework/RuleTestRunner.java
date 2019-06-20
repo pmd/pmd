@@ -67,19 +67,12 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     @Override
     protected List<TestDescriptor> getChildren() {
         List<Rule> rules = new ArrayList<>(instance.getRules());
-        Collections.sort(rules, new Comparator<Rule>() {
-            @Override
-            public int compare(Rule o1, Rule o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        rules.sort(Comparator.comparing(Rule::getName));
 
         List<TestDescriptor> tests = new LinkedList<>();
         for (Rule r : rules) {
             TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
-            for (TestDescriptor t : ruleTests) {
-                tests.add(t);
-            }
+            Collections.addAll(tests, ruleTests);
         }
 
         return tests;
