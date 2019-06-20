@@ -482,4 +482,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1792 Immutable field should still be detected with @Delegate</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.experimental.Delegate;
+
+public class Foo {
+    @Delegate
+    private String x;
+
+    public Foo() {
+        x = "bar";
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

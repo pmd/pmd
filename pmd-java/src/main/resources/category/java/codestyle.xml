@@ -402,7 +402,7 @@ public class Éléphant {}
           message="Missing commented default access modifier"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier">
         <description>
-To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier
+To avoid mistakes if we want that an Annotation, Class, Enum, Method, Constructor or Field have a default access modifier
 we must add a comment at the beginning of it's declaration.
 By default the comment must be `/* default */` or `/* package */`, if you want another, you have to provide a regular expression.
 This rule ignores by default all cases that have a @VisibleForTesting annotation. Use the
@@ -1350,17 +1350,18 @@ public class Foo {
     <rule name="NoPackage"
           language="java"
           since="3.3"
-          message="All classes and interfaces must belong to a named package"
+          message="All classes, interfaces, enums and annotations must belong to a named package"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#nopackage">
         <description>
-Detects when a class or interface does not have a package definition.
+Detects when a class, interface, enum or annotation does not have a package definition.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
-                <value>//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]</value>
+                <value>/CompilationUnit[not(./PackageDeclaration)]/TypeDeclaration[1]</value>
             </property>
+            <property name="version" value="2.0"/>
         </properties>
         <example>
 <![CDATA[
@@ -2112,6 +2113,39 @@ public class Foo {
         final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="UseShortArrayInitializer"
+        language="java"
+        since="6.15.0"
+        message="Array initialization can be written shorter"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useshortarrayinitializer">
+        <description>
+<![CDATA[
+When declaring and initializing array fields or variables, it is not necessary to explicitly create a new array
+using `new`. Instead one can simply define the initial content of the array as a expression in curly braces.
+
+E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 };`.
+]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//VariableDeclarator
+    [VariableDeclaratorId[@ArrayType = true() and @TypeInferred = false()]]
+    [VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ArrayDimsAndInits/ArrayInitializer]
+                ]]></value>
+            </property>
+            <property name="version" value="2.0"/>
+        </properties>
+        <example>
+<![CDATA[
+Foo[] x = new Foo[] { ... }; // Overly verbose
+Foo[] x = { ... }; //Equivalent to above line
 ]]>
         </example>
     </rule>

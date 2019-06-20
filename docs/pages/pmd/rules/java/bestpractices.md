@@ -806,7 +806,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//MethodDeclarator[@Image[fn:matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
+//MethodDeclarator[@Image[matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
            pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -815,7 +815,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         or pmd-java:typeIs('org.testng.annotations.Test')
     ]]
-    [count(..//PrimaryPrefix/Name[@Image[fn:matches(.,'^assert')]]) > $maximumAsserts]
+    [count(..//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
 ```
 
 **Example(s):**
@@ -1468,7 +1468,7 @@ public class Something {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| java.lang.Deprecated \| javafx.fxml.FXML|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| java.lang.Deprecated \| javafx.fxml.FXML \| lombok.experimental.Delegate|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -1479,7 +1479,7 @@ public class Something {
 ``` xml
 <rule ref="category/java/bestpractices.xml/UnusedPrivateField">
     <properties>
-        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|java.lang.Deprecated|javafx.fxml.FXML" />
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|java.lang.Deprecated|javafx.fxml.FXML|lombok.experimental.Delegate" />
     </properties>
 </rule>
 ```

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql;
 
-import java.io.Writer;
-
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Parser;
@@ -16,8 +14,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
-import net.sourceforge.pmd.lang.plsql.ast.DumpFacade;
-import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.dfa.DFAPLSQLGraphRule;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
@@ -73,16 +69,6 @@ public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
             @Override
             public void start(Node rootNode) {
                 new SymbolFacade().initializeWith((ASTInput) rootNode);
-            }
-        };
-    }
-
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (PLSQLNode) rootNode);
             }
         };
     }

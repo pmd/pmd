@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+@Deprecated
 public class VariableNamingConventionsRule extends AbstractApexRule {
 
     private boolean checkMembers;

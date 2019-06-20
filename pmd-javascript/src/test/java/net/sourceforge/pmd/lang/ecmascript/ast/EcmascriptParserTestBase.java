@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 
 import net.sourceforge.pmd.lang.ecmascript.EcmascriptParserOptions;
 
@@ -25,11 +24,4 @@ public abstract class EcmascriptParserTestBase {
         return (ASTAstRoot) parser.parse(sourceCode);
     }
 
-    public String dump(EcmascriptNode<?> node) {
-        DumpFacade dumpFacade = new DumpFacade();
-        StringWriter writer = new StringWriter();
-        dumpFacade.initializeWith(writer, "", true, node);
-        dumpFacade.visit(node, "");
-        return writer.toString();
-    }
 }

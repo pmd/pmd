@@ -26,6 +26,7 @@ import java.io.Writer;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  *
@@ -115,11 +116,10 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
 
     @Override
     public Object childrenAccept(final VmParserVisitor visitor, final Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((VmNode) children[i]).jjtAccept(visitor, data);
-            }
+        for (Node child : children) {
+            ((VmNode) child).jjtAccept(visitor, data);
         }
+
         return data;
     }
 
@@ -151,13 +151,15 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      * children.
      *
      * @param prefix
+     * @deprecated This method will be removed with PMD 7. The rule designer is a better way to inspect nodes.
      */
+    @Deprecated
     public void dump(final String prefix, final boolean recurse, final Writer writer) {
         final PrintWriter printWriter = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
         printWriter.println(toString(prefix));
-        if (children != null && recurse) {
-            for (int i = 0; i < children.length; ++i) {
-                final AbstractVmNode n = (AbstractVmNode) children[i];
+        if (recurse) {
+            for (Node child : children) {
+                final AbstractVmNode n = (AbstractVmNode) child;
                 if (n != null) {
                     n.dump(prefix + " ", recurse, printWriter);
                 }

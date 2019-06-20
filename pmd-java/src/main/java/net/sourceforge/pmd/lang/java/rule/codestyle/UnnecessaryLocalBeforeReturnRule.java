@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 
@@ -115,7 +114,13 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
             final ASTReturnStatement rtn) {
         final ASTVariableInitializer initializer = variableDeclaration.getAccessNodeParent()
                 .getFirstDescendantOfType(ASTVariableInitializer.class);
+        
         if (initializer != null) {
+            // Get the block statements for each, so we can compare apples to apples
+            final ASTBlockStatement initializerStmt = variableDeclaration.getAccessNodeParent()
+                    .getFirstParentOfType(ASTBlockStatement.class);
+            final ASTBlockStatement rtnStmt = rtn.getFirstParentOfType(ASTBlockStatement.class);
+            
             final List<ASTName> referencedNames = initializer.findDescendantsOfType(ASTName.class);
             for (final ASTName refName : referencedNames) {
                 // TODO : Shouldn't the scope allow us to search for a var name occurrences directly, moving up through parent scopes?
@@ -128,9 +133,10 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
                         if (entry.getKey().getName().equals(refName.getImage())) {
                             // Variable found! Check usage locations
                             for (final NameOccurrence occ : entry.getValue()) {
-                                final ScopedNode location = occ.getLocation();
+                                final ASTBlockStatement location = occ.getLocation().getFirstParentOfType(ASTBlockStatement.class);
+                                
                                 // Is it used after initializing our "unnecessary" local but before the return statement?
-                                if (isAfter(location, initializer) && isAfter(rtn, location)) {
+                                if (location != null && isAfter(location, initializerStmt) && isAfter(rtnStmt, location)) {
                                     return true;
                                 }
                             }

@@ -53,4 +53,16 @@ public class PythonTokenizerTest extends AbstractTokenizerTest {
         TokenEntry.getEOF();
         assertEquals(3, tokens.size()); // 3 tokens: "import" + "logging" + EOF
     }
+
+    @Test
+    public void testBackticks() throws IOException {
+        SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader("test = 'hello'" + PMD.EOL
+                + "quoted = `test`" + PMD.EOL
+                + "print quoted" + PMD.EOL
+        ));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(sourceCode, tokens); // should not result in parse error
+        TokenEntry.getEOF();
+        assertEquals(3, tokens.getTokens().get(tokens.getTokens().size() - 2).getBeginLine());
+    }
 }

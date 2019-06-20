@@ -5,6 +5,257 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 26-May-2019 - 6.15.0
+
+The PMD team is pleased to announce PMD 6.15.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Enhanced Matlab support](#enhanced-matlab-support)
+    * [Enhanced C++ support](#enhanced-c++-support)
+    * [New Rules](#new-rules)
+    * [Modified Rules](#modified-rules)
+    * [Deprecated Rules](#deprecated-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For removal](#for-removal)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Enhanced Matlab support
+
+Thanks to the contributions from [Maikel Steneker](https://github.com/maikelsteneker) CPD for Matlab can
+now parse Matlab programs which use the question mark operator to specify access to
+class members:
+
+```
+classdef Class1
+properties (SetAccess = ?Class2)
+```
+
+CPD also understands now double quoted strings, which are supported since version R2017a of Matlab:
+
+```
+str = "This is a string"
+```
+
+#### Enhanced C++ support
+
+CPD now supports digit separators in C++ (language module "cpp"). This is a C++14 feature.
+
+Example: `auto integer_literal = 1'000'000;`
+
+The single quotes can be used to add some structure to large numbers.
+
+CPD also parses raw string literals now correctly (see [#1784](https://github.com/pmd/pmd/issues/1784)).
+
+#### New Rules
+
+*   The new Apex rule [`FieldNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions) (`apex-codestyle`) checks the naming
+    conventions for field declarations. By default this rule uses the standard Apex naming convention (Camel case),
+    but it can be configured through properties.
+
+*   The new Apex rule [`FormalParameterNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions) (`apex-codestyle`) checks the
+    naming conventions for formal parameters of methods. By default this rule uses the standard Apex naming
+    convention (Camel case), but it can be configured through properties.
+
+*   The new Apex rule [`LocalVariableNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions) (`apex-codestyle`) checks the
+    naming conventions for local variable declarations. By default this rule uses the standard Apex naming
+    convention (Camel case), but it can be configured through properties.
+
+*   The new Apex rule [`PropertyNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions) (`apex-codestyle`) checks the naming
+    conventions for property declarations. By default this rule uses the standard Apex naming convention (Camel case),
+    but it can be configured through properties.
+
+*   The new Java rule [`UseShortArrayInitializer`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_codestyle.html#useshortarrayinitializer) (`java-codestyle`) searches for
+    array initialization expressions, which can be written shorter.
+
+#### Modified Rules
+
+*   The Apex rule [`ClassNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#classnamingconventions) (`apex-codestyle`) can now be configured
+    using various properties for the specific kind of type declarations (e.g. class, interface, enum).
+    As before, this rule uses by default the standard Apex naming convention (Pascal case).
+
+*   The Apex rule [`MethodNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#methodnamingconventions) (`apex-codestyle`) can now be configured
+    using various properties to differenciate e.g. static methods and test methods.
+    As before, this rule uses by default the standard Apex naming convention (Camel case).
+
+*   The Java rule [`FieldNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_codestyle.html#fieldnamingconventions) (`java-codestyle`) now by default ignores
+    the field `serialPersistentFields`. Since this is a field which needs to have this special name, no
+    field naming conventions can be applied here. It is excluded the same way like `serialVersionUID` via the
+    property `exclusions`.
+
+*   The Java rule [`CommentRequired`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_documentation.html#commentrequired) (`java-documentation`) has a new property
+    `serialPersistentFieldsCommentRequired` with the default value "Ignored". This means that from now
+    on comments for the field `serialPersistentFields` are not required anymore. You can change the property
+    to restore the old behavior.
+
+*   The Java rule [`ProperLogger`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger) (`java-errorprone`) has two new properties
+    to configure the logger class (e.g. "org.slf4j.Logger") and the logger name of the special case,
+    when the logger is not static. The name of the static logger variable was already configurable.
+    The new property "loggerClass" allows to use this rule for different logging frameworks.
+    This rule covers all the cases of the now deprecated rule [`LoggerIsNotStaticFinal`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal).
+
+*   The Java rule [`CommentDefaultAccessModifier`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier) (`java-codestyle`) now reports also
+    missing comments for top-level classes and annotations, that are package-private.
+
+#### Deprecated Rules
+
+*   The Apex rule [`VariableNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#variablenamingconventions) (`apex-codestyle`) has been deprecated and
+    will be removed with PMD 7.0.0. The rule is replaced by the more general rules
+    [`FieldNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#fieldnamingconventions),
+    [`FormalParameterNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#formalparameternamingconventions),
+    [`LocalVariableNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#localvariablenamingconventions), and
+    [`PropertyNamingConventions`](https://pmd.github.io/pmd-6.15.0/pmd_rules_apex_codestyle.html#propertynamingconventions).
+
+*   The Java rule [`LoggerIsNotStaticFinal`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#loggerisnotstaticfinal) (`java-errorprone`) has been deprecated
+    and will be removed with PMD 7.0.0. The rule is replaced by [`ProperLogger`](https://pmd.github.io/pmd-6.15.0/pmd_rules_java_errorprone.html#properlogger).
+
+### Fixed Issues
+
+*   apex
+    *   [#1321](https://github.com/pmd/pmd/issues/1321): \[apex] Should VariableNamingConventions require properties to start with a lowercase letter?
+    *   [#1783](https://github.com/pmd/pmd/issues/1783): \[apex] comments on constructor not recognized when the Class has inner class
+*   cpp
+    *   [#1784](https://github.com/pmd/pmd/issues/1784): \[cpp] Improve support for raw string literals
+*   dart
+    *   [#1809](https://github.com/pmd/pmd/issues/1809): \[dart] \[cpd] Parse error with escape sequences
+*   java
+    *   [#1842](https://github.com/pmd/pmd/issues/1842): \[java] Annotated module declarations cause parse error
+*   java-bestpractices
+    *   [#1738](https://github.com/pmd/pmd/issues/1738): \[java] MethodReturnsInternalArray does not work in inner classes
+*   java-codestyle
+    *   [#1495](https://github.com/pmd/pmd/issues/1495): \[java] Rule to detect overly verbose array initializiation
+    *   [#1684](https://github.com/pmd/pmd/issues/1684): \[java] Properly whitelist serialPersistentFields
+    *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
+*   python
+    *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
+*   matlab
+    *   [#1830](https://github.com/pmd/pmd/issues/1830): \[matlab] \[cpd] Parse error with comments
+    *   [#1793](https://github.com/pmd/pmd/issues/1793): \[java] CommentDefaultAccessModifier not working for classes
+
+### API Changes
+
+#### Deprecated APIs
+
+##### For removal
+
+*   The `DumpFacades` in all languages, that could be used to transform a AST into a textual representation,
+    will be removed with PMD 7. The rule designer is a better way to inspect nodes.
+    *   [`net.sourceforge.pmd.lang.apex.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.15.0/net/sourceforge/pmd/lang/apex/ast/DumpFacade.html#)
+    *   [`net.sourceforge.pmd.lang.java.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.15.0/net/sourceforge/pmd/lang/java/ast/DumpFacade.html#)
+    *   [`net.sourceforge.pmd.lang.ecmascript.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-javascript/6.15.0/net/sourceforge/pmd/lang/ecmascript/ast/DumpFacade.html#)
+    *   [`net.sourceforge.pmd.lang.jsp.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-jsp/6.15.0/net/sourceforge/pmd/lang/jsp/ast/DumpFacade.html#)
+    *   [`net.sourceforge.pmd.lang.plsql.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-plsql/6.15.0/net/sourceforge/pmd/lang/plsql/ast/DumpFacade.html#)
+    *   [`net.sourceforge.pmd.lang.vf.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-visualforce/6.15.0/net/sourceforge/pmd/lang/vf/ast/DumpFacade.html#)
+    *   [`net.sourceforge.pmd.lang.vm.ast.AbstractVmNode#dump`](https://javadoc.io/page/net.sourceforge.pmd/pmd-vm/6.15.0/net/sourceforge/pmd/lang/vm/ast/AbstractVmNode.html#dump(String,boolean,Writer))
+    *   [`net.sourceforge.pmd.lang.xml.ast.DumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-xml/6.15.0/net/sourceforge/pmd/lang/xml/ast/DumpFacade.html#)
+*   The method [`LanguageVersionHandler#getDumpFacade`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.15.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#getDumpFacade(Writer,String,boolean)) will be
+    removed as well. It is deprecated, along with all its implementations in the subclasses of [`LanguageVersionHandler`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.15.0/net/sourceforge/pmd/lang/LanguageVersionHandler.html#).
+
+### External Contributions
+
+*   [#1647](https://github.com/pmd/pmd/pull/1647): \[java] Rule to detect overly verbose array initialization - [Victor](https://github.com/IDoCodingStuffs)
+*   [#1762](https://github.com/pmd/pmd/pull/1762): \[java] LoggerIsNotStaticFinal and ProperLogger - make class-name configurable - [Ivo Šmíd](https://github.com/bedla)
+*   [#1798](https://github.com/pmd/pmd/pull/1798): \[java] Make CommentDefaultAccessModifier work for top-level classes - [Boris Petrov](https://github.com/boris-petrov)
+*   [#1799](https://github.com/pmd/pmd/pull/1799): \[java] MethodReturnsInternalArray does not work in inner classes - Fixed #1738 - [Srinivasan Venkatachalam](https://github.com/Srini1993)
+*   [#1802](https://github.com/pmd/pmd/pull/1802): \[python] \[cpd] Add support for Python 2 backticks - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1803](https://github.com/pmd/pmd/pull/1803): \[dart] \[cpd] Dart escape sequences - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1807](https://github.com/pmd/pmd/pull/1807): \[ci] Fix missing local branch issues when executing pmd-regression-tester - [BBG](https://github.com/djydewang)
+*   [#1813](https://github.com/pmd/pmd/pull/1813): \[matlab] \[cpd] Matlab comments - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1816](https://github.com/pmd/pmd/pull/1816): \[apex] Fix ApexDoc handling with inner classes - [Jeff Hube](https://github.com/jeffhube)
+*   [#1817](https://github.com/pmd/pmd/pull/1817): \[apex] Add configurable naming convention rules - [Jeff Hube](https://github.com/jeffhube)
+*   [#1819](https://github.com/pmd/pmd/pull/1819): \[cpp] \[cpd] Add support for digit separators - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1820](https://github.com/pmd/pmd/pull/1820): \[cpp] \[cpd] Improve support for raw string literals - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1821](https://github.com/pmd/pmd/pull/1821): \[matlab] \[cpd] Matlab question mark token - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1822](https://github.com/pmd/pmd/pull/1822): \[matlab] \[cpd] Double quoted string - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1837](https://github.com/pmd/pmd/pull/1837): \[core] Minor performance improvements - [Michael Hausegger](https://github.com/TheRealHaui)
+*   [#1838](https://github.com/pmd/pmd/pull/1838): \[dart] [cpd] Improved string tokenization - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1840](https://github.com/pmd/pmd/pull/1840): \[java] Whitelist serialPersistentFields - [Marcel Härle](https://github.com/marcelhaerle)
+
+## 28-April-2019 - 6.14.0
+
+The PMD team is pleased to announce PMD 6.14.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Dart support](#dart-support)
+    * [Updated PMD Designer](#updated-pmd-designer)
+* [Modified Rules](#modified-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Dart support
+
+Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker), and built on top of the ongoing efforts to fully support Antlr-based languages,
+PMD now has CPD support for [Dart](https://www.dartlang.org/).
+
+Being based on a proper Antlr grammar, CPD can:
+*   ignore comments
+*   ignore imports / libraries
+*   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/blob/6.14.0/CHANGELOG.md).
+
+### Modified Rules
+
+*   The Java rule [`AssignmentToNonFinalStatic`](https://pmd.github.io/pmd-6.14.0/pmd_rules_java_errorprone.html#assignmenttononfinalstatic) (`java-errorprone`) will now report on each
+    assignment made within a constructor rather than on the field declaration. This makes it easier for developers to
+    find the offending statements.
+
+*   The Java rule [`NoPackage`](https://pmd.github.io/pmd-6.14.0/pmd_rules_java_codestyle.html#nopackage) (`java-codestyle`) will now report additionally enums
+    and annotations that do not have a package declaration.
+
+### Fixed Issues
+
+*   all
+    *   [#1515](https://github.com/pmd/pmd/issues/1515): \[core] Module pmd-lang-test is missing javadoc artifact
+    *   [#1788](https://github.com/pmd/pmd/issues/1788): \[cpd] \[core] Use better `ClassLoader` for `ServiceLoader` in `LanguageFactory`
+    *   [#1794](https://github.com/pmd/pmd/issues/1794): \[core] Ruleset Compatibility fails with excluding rules
+*   go
+    *   [#1751](https://github.com/pmd/pmd/issues/1751): \[go] Parsing errors encountered with escaped backslash
+*   java
+    *   [#1532](https://github.com/pmd/pmd/issues/1532): \[java] NPE with incomplete auxclasspath
+    *   [#1691](https://github.com/pmd/pmd/issues/1691): \[java] Possible Data Race in JavaTypeDefinitionSimple.getGenericType
+    *   [#1729](https://github.com/pmd/pmd/issues/1729): \[java] JavaRuleViolation loses information in `className` field when class has package-private access level
+*   java-bestpractices
+    *   [#1190](https://github.com/pmd/pmd/issues/1190): \[java] UnusedLocalVariable/UnusedPrivateField false-positive 
+    *   [#1720](https://github.com/pmd/pmd/issues/1720): \[java] UnusedImports false positive for Javadoc link with array type
+*   java-codestyle
+    *   [#1755](https://github.com/pmd/pmd/issues/1775): \[java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines
+    *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
+*   java-design
+    *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
+
+### API Changes
+
+No changes.
+
+### External Contributions
+
+*   [#1745](https://github.com/pmd/pmd/pull/1745): \[doc] Fixed some errors in docs - [0xflotus](https://github.com/0xflotus)
+*   [#1746](https://github.com/pmd/pmd/pull/1746): \[java] Update rule to prevent UnusedImport when using JavaDoc with array type - [itaigilo](https://github.com/itaigilo)
+*   [#1752](https://github.com/pmd/pmd/pull/1752): \[java] UseObjectForClearerAPI Only For Public - [Björn Kautler](https://github.com/Vampire)
+*   [#1761](https://github.com/pmd/pmd/pull/1761): \[dart] \[cpd] Added CPD support for Dart - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1776](https://github.com/pmd/pmd/pull/1776): \[java] Show more detailed message when can't resolve field type - [Andrey Fomin](https://github.com/andrey-fomin)
+*   [#1781](https://github.com/pmd/pmd/pull/1781): \[java] Location change in AssignmentToNonFinalStatic - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1789](https://github.com/pmd/pmd/pull/1789): \[cpd] \[core] Use current classloader instead of Thread's classloader - [Andreas Schmid](https://github.com/aaschmid)
+*   [#1791](https://github.com/pmd/pmd/pull/1791): \[dart] \[cpd] Dart escaped string - [Maikel Steneker](https://github.com/maikelsteneker)
+
 ## 31-March-2019 - 6.13.0
 
 The PMD team is pleased to announce PMD 6.13.0.

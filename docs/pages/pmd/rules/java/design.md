@@ -464,7 +464,7 @@ details on the calculation, see the documentation of the [Cyclo metric](pmd_java
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity &gt;= 10.
-Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+Additionally, classes with many methods of moderate complexity get reported as well once the total of their
 methods' complexities reaches 80, even if none of the methods was directly reported.
 
 Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
@@ -1779,7 +1779,7 @@ public class Foo {
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| lombok.experimental.Delegate|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |checkInnerClasses|false|Check inner classes|no|
 |disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
 
@@ -1792,7 +1792,7 @@ public class Foo {
 ``` xml
 <rule ref="category/java/design.xml/SingularField">
     <properties>
-        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor" />
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|lombok.experimental.Delegate" />
         <property name="checkInnerClasses" value="false" />
         <property name="disallowNotAssignment" value="false" />
     </properties>
@@ -2141,8 +2141,23 @@ public class MaybeAUtility {
 }
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.experimental.UtilityClass|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/UseUtilityClass" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/UseUtilityClass">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.experimental.UtilityClass" />
+    </properties>
+</rule>
 ```
 

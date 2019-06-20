@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex;
 
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
-import net.sourceforge.pmd.lang.apex.ast.DumpFacade;
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetricsComputer;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexClassMetricKey;
 import net.sourceforge.pmd.lang.apex.metrics.api.ApexOperationMetricKey;
@@ -56,11 +54,6 @@ public class ApexHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new ApexParser(parserOptions);
-    }
-
-    @Override
-    public VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse) {
-        return rootNode -> new DumpFacade().initializeWith(writer, prefix, recurse, (ApexNode<?>) rootNode);
     }
 
 

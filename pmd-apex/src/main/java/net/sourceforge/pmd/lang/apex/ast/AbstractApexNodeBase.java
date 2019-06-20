@@ -38,13 +38,12 @@ public abstract class AbstractApexNodeBase extends AbstractNode {
      * Accept the visitor. *
      */
     public Object childrenAccept(ApexParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                // we know that the children here are all ApexNodes
-                AbstractApexNodeBase apexNode = (AbstractApexNodeBase) children[i];
-                apexNode.jjtAccept(visitor, data);
-            }
+        for (int i = 0; i < children.length; ++i) {
+            // we know that the children here are all ApexNodes
+            AbstractApexNodeBase apexNode = (AbstractApexNodeBase) children[i];
+            apexNode.jjtAccept(visitor, data);
         }
+
         return data;
     }
 
