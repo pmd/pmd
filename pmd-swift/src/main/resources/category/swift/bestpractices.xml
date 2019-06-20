@@ -19,4 +19,15 @@ Rules which enforce generally accepted best practices.
         </description>
         <priority>2</priority>
     </rule>
+
+    <rule name="UnavailableFunction"
+          since="7.0"
+          message="Unimplemented functions should be marked as unavailable."
+          class="net.sourceforge.pmd.lang.swift.rule.bestpractices.UnavailableFunctionRule"
+          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#unavailablefunctionrule">
+        <description>
+            Unimplemented functions should be marked as unavailable.
+        </description>
+        <priority>2</priority>
+    </rule>
 </ruleset>
