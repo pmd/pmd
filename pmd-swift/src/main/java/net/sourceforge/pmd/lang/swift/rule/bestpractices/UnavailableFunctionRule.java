@@ -22,7 +22,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
             }
         }
 
-        return super.visitFunctionDeclaration(ctx);
+        return null;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
             }
         }
 
-        return super.visitInitializerDeclaration(ctx);
+        return null;
     }
 
     private Boolean shouldIncludeUnavailableModifier(final SwiftParser.CodeBlockContext ctx) {
