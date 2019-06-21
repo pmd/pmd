@@ -1,6 +1,11 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 
 import java.util.List;
+
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
 
@@ -16,7 +21,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
         }
 
         if (shouldIncludeUnavailableModifier(ctx.functionBody().codeBlock())) {
-            SwiftParser.AttributesContext attributes = ctx.functionHead().attributes();
+            final SwiftParser.AttributesContext attributes = ctx.functionHead().attributes();
             if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                 addViolation(data, ctx);
             }
@@ -32,7 +37,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
         }
 
         if (shouldIncludeUnavailableModifier(ctx.initializerBody().codeBlock())) {
-            SwiftParser.AttributesContext attributes = ctx.initializerHead().attributes();
+            final SwiftParser.AttributesContext attributes = ctx.initializerHead().attributes();
             if (attributes == null || !hasUnavailableModifier(attributes.attribute())) {
                 addViolation(data, ctx);
             }
@@ -46,7 +51,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
             return false;
         }
 
-        List<SwiftParser.StatementContext> statements = ctx.statements().statement();
+        final List<SwiftParser.StatementContext> statements = ctx.statements().statement();
 
         return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getStart().getText());
     }

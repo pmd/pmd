@@ -12,10 +12,12 @@ folder: pmd/rules
 {% include callout.html content="Rules which enforce generally accepted best practices." %}
 
 *   [ProhibitedInterfaceBuilder](pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder): Creating views using Interface Builder should be avoided.
+*   [UnavailableFunction](pmd_rules_swift_bestpractices.html#unavailablefunction): Unimplemented functions should be marked as unavailable.
 
 ## Error Prone
 
 {% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
 
+*   [ForceCast](pmd_rules_swift_errorprone.html#forcecast): Force casts should be avoided.
 *   [ForceTry](pmd_rules_swift_errorprone.html#forcetry): Force tries should be avoided.
 
