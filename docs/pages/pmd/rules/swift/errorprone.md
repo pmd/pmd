@@ -15,7 +15,8 @@ language: Swift
 
 **Priority:** Medium (3)
 
-Force casts should be avoided.
+Force casts should be avoided. This may lead to a crash if it's not used carefully.
+For example assuming a JSON property has a given type, or your reused Cell has a certain contract.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -33,7 +34,7 @@ Force casts should be avoided.
 
 **Priority:** Medium (3)
 
-Force tries should be avoided.
+Force tries should be avoided. If the code being wrapped happens to raise and exception, our application will crash.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath

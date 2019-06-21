@@ -13,9 +13,11 @@ language: Swift
 
 **Since:** PMD 7.0
 
-**Priority:** Medium High (2)
+**Priority:** Medium Low (4)
 
 Creating views using Interface Builder should be avoided.
+Defining views by code allows the compiler to detect issues that otherwise will be runtime errors.
+It's difficult to review the auto-generated code and allow concurrent modifications of those files.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.swift.rule.bestpractices.ProhibitedInterfaceBuilderRule](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/ProhibitedInterfaceBuilderRule.java)
 
@@ -30,7 +32,10 @@ Creating views using Interface Builder should be avoided.
 
 **Priority:** Medium (3)
 
-Unimplemented functions should be marked as unavailable.
+Due to Objective-C and Swift interoperability some functions are often required to be implemented but
+aren't really needed. Is extremely common that the sole implementation of the functions consist of throwing
+a fatal error. Marking this functions as unavailable prevents them from being executed while still making
+the compiler happy.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.swift.rule.bestpractices.UnavailableFunctionRule](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/UnavailableFunctionRule.java)
 
