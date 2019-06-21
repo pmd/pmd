@@ -23,10 +23,11 @@
             <property name="xpath">
                 <value>
                     <![CDATA[
-//TypeCastingOperatorContext[@Text = 'as!']
+//TypeCastingOperatorContext[starts-with(@Text,'as!')]
 ]]>
                 </value>
             </property>
+            <property name="version" value="2.0"/>
         </properties>
     </rule>
 
@@ -43,8 +44,8 @@
         <properties>
             <property name="xpath">
                 <value>
-                    <![CDATA[
-//TryOperatorContext[@Text = 'try!']
+<![CDATA[
+//TryOperatorContext[@Text='try!']
 ]]>
                 </value>
             </property>
