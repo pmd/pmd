@@ -16,7 +16,8 @@
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcecast">
         <description>
-            Force casts should be avoided.
+            Force casts should be avoided. This may lead to a crash if it's not used carefully.
+            For example assuming a JSON property has a given type, or your reused Cell has a certain contract.
         </description>
         <priority>3</priority>
         <properties>
@@ -38,7 +39,7 @@
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcetry">
         <description>
-            Force tries should be avoided.
+            Force tries should be avoided. If the code being wrapped happens to raise and exception, our application will crash.
         </description>
         <priority>3</priority>
         <properties>

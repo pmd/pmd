@@ -16,6 +16,8 @@ Rules which enforce generally accepted best practices.
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder">
         <description>
             Creating views using Interface Builder should be avoided.
+            Defining views by code allows the compiler to detect issues that otherwise will be runtime errors.
+            It's difficult to review the auto-generated code and allow concurrent modifications of those files.
         </description>
         <priority>2</priority>
     </rule>
