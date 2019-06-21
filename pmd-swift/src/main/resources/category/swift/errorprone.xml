@@ -9,6 +9,28 @@
         Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
     </description>
 
+    <rule name="ForceCast"
+          language="swift"
+          since="7.0"
+          message="Force casts should be avoided."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_errorprone.html#forcecast">
+        <description>
+            Force casts should be avoided.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//TypeCastingOperatorContext[starts-with(@Text,'as!')]
+]]>
+                </value>
+            </property>
+            <property name="version" value="2.0"/>
+        </properties>
+    </rule>
+
     <rule name="ForceTry"
           language="swift"
           since="7.0"
