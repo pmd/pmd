@@ -23,7 +23,7 @@
             <property name="xpath">
                 <value>
 <![CDATA[
-//TryOperatorContext[@Image='try!']
+//TryOperatorContext[@Text='try!']
 ]]>
                 </value>
             </property>

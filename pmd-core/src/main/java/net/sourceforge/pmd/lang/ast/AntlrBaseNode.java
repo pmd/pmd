@@ -91,11 +91,6 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     }
 
     @Override
-    public String getImage() {
-        return getText();
-    }
-
-    @Override
     public int jjtGetNumChildren() {
         return children == null ? 0 : children.size();
     }
