@@ -893,4 +893,25 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>closed with try-with-resources</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class Foo {
+    public int bar() {
+        InputStream inputStream = getInputStreamFromSomewhere();
+        if (inputStream != null) {
+            try (InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8")) {
+                char c = reader.read();
+                return c;
+            }
+        }
+        return -1;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

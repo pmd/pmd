@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -157,10 +158,12 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (var.hasInitializer()) {
                     // figure out the runtime type. If the variable is initialized, take the type from there
                     TypeNode runtimeType = var.getInitializer().getFirstChildOfType(ASTExpression.class);
-                    if (runtimeType != null && !isAllowedResourceType(runtimeType)) {
-                        ids.put(var.getVariableId(), runtimeType);
+                    if (runtimeType != null && runtimeType.getType() != null) {
+                        type = runtimeType;
                     }
-                } else {
+                }
+
+                if (!isAllowedResourceType(type)) {
                     ids.put(var.getVariableId(), type);
                 }
             }
@@ -357,6 +360,15 @@ public class CloseResourceRule extends AbstractJavaRule {
                 }
                 if (closed) {
                     break;
+                }
+            } else if (t.isTryWithResources()) {
+                // maybe the variable is used as a resource
+                List<ASTName> names = t.getFirstChildOfType(ASTResourceSpecification.class).findDescendantsOfType(ASTName.class);
+                for (ASTName potentialUsage : names) {
+                    if (potentialUsage.hasImageEqualTo(variableToClose)) {
+                        closed = true;
+                        break;
+                    }
                 }
             }
         }
