@@ -814,4 +814,83 @@ public class CloseResourceTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>ByteArrayOutputStream and StringWriter do not need closing</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.OutputStream;
+
+public class CloseResourceWithExceptions {
+    public void bar() {
+        /*ByteArray*/OutputStream buffer = new ByteArrayOutputStream();
+        try {
+            buffer.write(new byte[] {1, 2, 3});
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] result = buffer.toByteArray();
+        return result;
+    }
+
+    public String baz() {
+        StringWriter writer = new StringWriter();
+        writer.write("Test");
+        return writer.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>A custom StringWriter does need closing</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.CustomStringWriter;
+
+public class CloseResourceWithExceptions {
+    public void bar() {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try {
+            buffer.write(new byte[] {1, 2, 3});
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] result = buffer.toByteArray();
+        return result;
+    }
+
+    public String baz() {
+        StringWriter writer = new CustomStringWriter();
+        writer.write("Test");
+        return writer.toString();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>connection not closed, should have failed - missing import</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+// without the import
+//import java.sql.*;
+// type resolution doesn't work, so the rule falls back to simple names
+public class Foo {
+ void bar() {
+  Connection c = pool.getConnection();
+  try {
+  } catch (Exception e) {
+  }
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

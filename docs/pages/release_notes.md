@@ -47,7 +47,8 @@ datetime field.
 *   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now by default searches
     for any unclosed `java.io.Closable` resource. This includes now the standard `java.io.*Stream` classes.
     Previously only SQL-related resources were considered by this rule. The types can still be configured
-    via the `types` property.
+    via the `types` property. Some resources do not need to be closed (e.g. `ByteArrayOutputStream`). These
+    exceptions can be configured via the new property `allowedResourceTypes`.
 
 ### Fixed Issues
 
