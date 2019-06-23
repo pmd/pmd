@@ -1809,13 +1809,8 @@ void FromClauseEntry() #void :
 {}
 {
  (
-     LOOKAHEAD(TableReferenceInJoin()
-              ([<INNER>] <JOIN> | <CROSS> | <NATURAL> | <PARTITION> | <FULL> | <LEFT> | <RIGHT> ))
-              JoinClause()
- |
-     // using lookahead to avoid misinterpreting the token after the identifier
-     // as a table alias rather than as a keyword
-     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
+     LOOKAHEAD([ LOOKAHEAD(2) SchemaName() "." ] TableName()
+               [<IDENTIFIER>] (<PARTITION>|<NATURAL>|<OUTER>|[<INNER>] <JOIN>|<LEFT>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
  |
      LOOKAHEAD(<IDENTIFIER> "(", {isKeyword("XMLTABLE")}) XMLTable() [ LOOKAHEAD(2) TableAlias() ]
  |
@@ -1959,7 +1954,6 @@ ASTTableReference TableReferenceInJoin() #TableReference :
     [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
         && getToken(1).kind != CROSS
         && getToken(1).kind != ON
-        && getToken(1).kind != USING
         && getToken(1).kind != PARTITION
         && getToken(1).kind != RIGHT
         && getToken(1).kind != FULL})
