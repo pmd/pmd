@@ -7,8 +7,12 @@ BEGIN
 
 select *
 from dual
-where (dummy = X or 1 = 2)
+where (dummy <= X or 1 = 2)
 and 1=1;
+
+select *
+FROM dual
+WHERE (dummy, 'X') in (select dummy, 'X' from dual);
 
 END;
 /

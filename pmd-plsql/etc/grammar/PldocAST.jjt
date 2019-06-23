@@ -1332,9 +1332,6 @@ void Condition2() #void :
 {}
 {
  (
-    // a IS OF Type condition that starts with a function...
-    LOOKAHEAD(FunctionCall() <IS> [<NOT>] <OF>) IsOfTypeCondition()
- |
     LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
  |
     LOOKAHEAD(<EXISTS>) ExistsCondition()
@@ -1351,7 +1348,7 @@ void Condition2() #void :
  |
     LOOKAHEAD(BetweenCondition()) BetweenCondition()
  |
-    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>) IsNullCondition()
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>) IsNullCondition()
  |
     LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
@@ -1445,7 +1442,11 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+   LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+ |
+   LOOKAHEAD(3) "(" (LOOKAHEAD(2) ComparisonCondition() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+                    | LOOKAHEAD(2) CompoundCondition()) ")"
+     (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
    LOOKAHEAD(1) <NOT> { jjtThis.setType(token.getImage()); } Condition()
  |
@@ -1547,8 +1548,8 @@ ASTSimpleExpression SimpleExpression() :
                      | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
                      | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
                      | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
-                     | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT")
-                     | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS")
+                     | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT") "(" (Name()|NumericLiteral()) ")"
+                     | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS") ["(" (Name()|NumericLiteral()) ")"] "." Name()
                      ) { sb.append('%').append(token.image); }
  |
     LOOKAHEAD(2)
@@ -1581,12 +1582,12 @@ ASTFunctionCall FunctionCall() :
     (
         LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.image)}) "(" Expression() <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
+      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")" ["." FunctionCall()]
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.image)}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.image)}) XMLElement()
       | Arguments()
-    )
+    ) ["." Name()]
 
     {
         jjtThis.setImage(name.getImage());
@@ -2809,10 +2810,10 @@ ASTExpression Expression() :
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment()) {sb.append(simpleNode.getImage());  }
-	| (simpleNode = ConditionalOrExpression() )  {sb.append(simpleNode.getImage()); }
-	| (simpleNode = CompilationExpression() )  {sb.append(simpleNode.getImage()); }
-	)
+  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment())
+	| (simpleNode = ConditionalOrExpression() )
+	| (simpleNode = CompilationExpression() )
+	) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }
@@ -2989,14 +2990,15 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
 	  (
-	   simpleNode = RelationalExpression()
+	    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) (simpleNode = IsOfTypeCondition())
+      |
+	    simpleNode = RelationalExpression()
 	  ) {sb.append(simpleNode.getImage());}
 	  (
 	   ( ("=" ) {sb.append(" = ");}
 	   | ("!" "=" ) {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");}
-           )
+	   | (<IS>) {sb.append(" IS ");})
 	   (
 	   simpleNode = RelationalExpression()
 	   ) {sb.append(simpleNode.getImage());}
@@ -3167,9 +3169,11 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
   (
     <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
+    LOOKAHEAD(2) simpleNode = CaseExpression()
+  |
     LOOKAHEAD(2) simpleNode = ExtractExpression()
   |
-    LOOKAHEAD(2) simpleNode = IsNullCondition()
+    LOOKAHEAD(2) simpleNode = PrimaryPrefix()
   ) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
@@ -3177,25 +3181,14 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
 }
 
 ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
-{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
+{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder(); }
 {
-  (
-    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>)
-    (
-		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
-	)
-    |
-	(
-		simpleNode = IsOfTypeCondition()
-	)
-	{
-		sb.append(simpleNode.getImage());
-	}
-  )
+  simpleNode = PrimaryPrefix() { sb.append(simpleNode.getImage()); }
+  <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
   {
     jjtThis.setImage(sb.toString());
 	return jjtThis;
- }
+  }
 }
 
 ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
@@ -3540,7 +3533,7 @@ ASTArgument Argument() :
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
 	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ]
-        (Expression() )
+        (SqlExpression())
 	//Allow Using CharacterSet suffix clause
 	[
 	   ( <USING>  )
@@ -3682,7 +3675,7 @@ ASTTableColumn TableColumn()  :
 }
 {
   ID() Datatype()
-  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(2) FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
+  [ ( <_DEFAULT> [ <ON> <NULL> ] PrimaryPrefix()
     | LOOKAHEAD(2) <GENERATED> [ ( <BY> <_DEFAULT> [ <ON> <NULL>] | KEYWORD("ALWAYS")) ]
                                <AS> KEYWORD("IDENTITY") ) ]
   (LOOKAHEAD(1) InlineConstraint())*
