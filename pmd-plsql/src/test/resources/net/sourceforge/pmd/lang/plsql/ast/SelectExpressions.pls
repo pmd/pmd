@@ -80,5 +80,28 @@ SELECT CASE
         INTO my_result
         FROM DUAL;
 
+SELECT CASE WHEN EXISTS(SELECT *
+                        FROM DUAL
+                        WHERE 1 = 1)
+            THEN 1
+            ELSE 0
+       END isExists
+       INTO VAL
+       FROM dual;
+
+SELECT CASE WHEN EXISTS(SELECT *
+                        FROM DUAL)
+            THEN 1
+            ELSE 0
+       END isExists
+       INTO VAL
+       FROM dual;
+
+SELECT CASE
+          WHEN f1(x) IS NULL THEN 1
+          ELSE 0
+       END isExists
+       INTO VAL
+       FROM dual;
 END;
 /

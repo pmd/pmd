@@ -2870,24 +2870,14 @@ ASTAssignment Assignment() :
 }
 
 ASTCaseExpression CaseExpression() :
-{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{}
 {
-  (
-	thisToken = <CASE> { sb.append(thisToken.image);}
-	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )?
-          ( thisToken = <WHEN> { sb.append("  "); sb.append(thisToken.image); }
-	        simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	     thisToken = <THEN>  { sb.append(" "); sb.append(thisToken.image); }
-	          Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	   )+
-	  [ thisToken = <ELSE> { sb.append(" "); sb.append(thisToken.image);}
-	        Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	  ]
-	  thisToken = <END> { sb.append(" "); sb.append(thisToken.image);}
-  )
- {
- jjtThis.setImage(sb.toString()); return jjtThis;
- }
+	<CASE>
+	   ( Expression() ( <WHEN> Expression() <THEN> Expression() )+
+	   |              ( <WHEN> Condition()  <THEN> Expression() )+ )
+	   [ <ELSE>  Expression() ]
+	<END>
+    { return jjtThis; }
 }
 
 /*
