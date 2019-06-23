@@ -1809,7 +1809,9 @@ void FromClauseEntry() #void :
 {}
 {
  (
-     LOOKAHEAD(JoinClause()) JoinClause()
+     LOOKAHEAD(TableReferenceInJoin()
+              ([<INNER>] <JOIN> | <CROSS> | <NATURAL> | <PARTITION> | <FULL> | <LEFT> | <RIGHT> ))
+              JoinClause()
  |
      // using lookahead to avoid misinterpreting the token after the identifier
      // as a table alias rather than as a keyword
@@ -1957,6 +1959,7 @@ ASTTableReference TableReferenceInJoin() #TableReference :
     [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
         && getToken(1).kind != CROSS
         && getToken(1).kind != ON
+        && getToken(1).kind != USING
         && getToken(1).kind != PARTITION
         && getToken(1).kind != RIGHT
         && getToken(1).kind != FULL})
@@ -2002,18 +2005,12 @@ ASTInnerCrossJoinClause InnerCrossJoinClause() :
 {}
 {
   (
-    [ <INNER> ] <JOIN> TableReferenceInJoin()
-    (
-        <ON> ConditionalOrExpression()
-    |
-        <USING> "(" Column() ("," Column() )* ")"
-    )
+    [<INNER>] <JOIN> TableReferenceInJoin()
+    (<ON> ConditionalOrExpression()
+    |<USING> "(" Column() ("," Column() )* ")")
   |
-    (
-        <CROSS> { jjtThis.setCross(true); }
-    |
-        <NATURAL> { jjtThis.setNatural(true); } [ <INNER> ]
-    )
+    (<CROSS> { jjtThis.setCross(true); }
+    |<NATURAL> { jjtThis.setNatural(true); } [<INNER>] )
     <JOIN> TableReferenceInJoin()
   )
   { return jjtThis; }
