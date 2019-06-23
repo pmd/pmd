@@ -6,6 +6,22 @@ author: Tom Copeland <tom@infoether.org>
 
 ## Sites/Articles about PMD
 
+
+### Salesforce / Apex Language Module
+
+*   June 2019 - Pluralsight Course about leveraging PMD usage for Salesforce by [Robert Sösemann](https://github.com/rsoesemann) (Apex Language Module Contributor) [Play by Play: Automated Code Analysis in Salesforce - a Tools Deep-Dive](https://www.pluralsight.com/courses/play-by-play-automated-code-analysis-in-salesforce)
+
+*   June 2018 - Salesforce Way Podcast with [Robert Sösemann](https://github.com/rsoesemann) [Static Code Analysis with PMD for Apex](https://salesforceway.com/podcast/podcast/static-code-analysis-with-pmd-for-apex/)
+
+* January 2018 - [Webinar: How to contribute Apex rules to PMD with Robert Sösemann](https://www.youtube.com/watch?v=7_Ex9WWS_3Q)
+
+*   August 2017 - Webinar about how to use PMD with The Welkin Suite Salesforce IDE - Author [Robert Sösemann](https://github.com/rsoesemann) - [Improving your Apex Code Quality with PMD in The Welkin Suite](https://www.youtube.com/watch?v=Ypyiy5b6huc)
+
+*   November 2016 - Recording of [Robert Sösemann](https://github.com/rsoesemann)'s Session at Salesforce Dreamforce Conference about enforcing Clean Code in the Salesforce world using PMD and other tools [Clean Apex Code with Automatic Code Metrics](https://www.youtube.com/watch?v=bW7m6y6bEug)
+
+
+### Other Language Modules
+
 *   February 2012 - Romain Pelisse's lightning talk at FOSDEM 2012 about "PMD5: What can it do for you?".
     [Video recording is available](http://video.fosdem.org/2012/lightningtalks/PMD5.webm).
 
