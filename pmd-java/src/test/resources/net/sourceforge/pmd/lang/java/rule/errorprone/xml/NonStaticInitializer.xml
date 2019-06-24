@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test-data
-    xmlns="http://pmd.sourceforge.net/rule-tests"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
         <description>bad</description>
         <expected-problems>1</expected-problems>
@@ -22,7 +21,6 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
 
     <test-code>
         <description>Allowed in anonymous classes</description>
@@ -72,6 +70,30 @@ public enum Foo {
 
 	{ setCycleDuration(Duration.millis(1200)); }
 
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Flag in nested local class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+       public Animation getStatusTransition() {
+          return new Transition() {
+
+            {
+                setCycleDuration(Duration.millis(1200));
+                class ImInAnon {{}} // should be flagged
+            }
+
+            @Override
+            protected void interpolate(double frac) {
+               // magic
+            }
+        };
+     }
 }
         ]]></code>
     </test-code>
