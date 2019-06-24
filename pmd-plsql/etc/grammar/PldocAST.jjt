@@ -2386,7 +2386,7 @@ ASTUpdateSetClause UpdateSetClause() :
         (
           ( "(" ( [ LOOKAHEAD(2) TableName() "." ] Column() (",")? )+ ")" "=" "(" Subquery() ")" )
           |
-          ( [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )
+          ( [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(2) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )
         )
         (",")?
       )+
