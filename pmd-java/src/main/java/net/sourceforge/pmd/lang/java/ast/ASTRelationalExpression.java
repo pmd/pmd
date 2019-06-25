@@ -18,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTRelationalExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTRelationalExpression extends AbstractJavaExpr implements ASTExpression {
 
     private BinaryOp op;
 

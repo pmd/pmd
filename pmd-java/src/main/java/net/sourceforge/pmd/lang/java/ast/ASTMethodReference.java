@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *                   | ({@link ASTClassOrInterfaceType TypeName} ".")? {@link ASTSuperExpression "super"} :: {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
  * </pre>
  */
-public final class ASTMethodReference extends AbstractJavaTypeNode implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
     ASTMethodReference(int id) {
         super(id);

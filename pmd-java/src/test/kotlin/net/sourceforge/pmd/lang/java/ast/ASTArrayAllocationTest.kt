@@ -77,9 +77,9 @@ class ASTArrayAllocationTest : ParserTestSpec({
         }
 
         "(new int[3])[2]" should matchExpr<ASTArrayAccess> {
-            child<ASTParenthesizedExpression> {
+            parenthesized {
 
-                it::getWrappedExpression shouldBe child<ASTArrayAllocation> {
+                child<ASTArrayAllocation> {
 
                     it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
                         it::getTypeImage shouldBe "int"

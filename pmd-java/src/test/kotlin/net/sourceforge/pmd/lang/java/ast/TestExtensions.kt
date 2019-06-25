@@ -75,9 +75,11 @@ fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, otherAssertions: NodeSpec
             otherAssertions()
         }
 
-fun TreeNodeWrapper<Node, *>.parenthesized(inside: ValuedNodeSpec<ASTParenthesizedExpression, ASTExpression>) =
-        child<ASTParenthesizedExpression> {
-            it::getWrappedExpression shouldBe inside()
+// this isn't a node anymore
+fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: Int = 1, inside: ValuedNodeSpec<T, R>): R =
+        inside().also {
+            it::isParenthesized shouldBe true
+            it::getParenthesisDepth shouldBe depth
         }
 
 

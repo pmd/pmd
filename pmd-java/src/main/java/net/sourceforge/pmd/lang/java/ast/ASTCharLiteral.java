@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  * in the source, but JavaCC performs its own unescaping and some escapes may be lost. At the
  * very least it has delimiters. {@link #getUnescapedValue()} allows to recover the actual runtime value.
  */
-public final class ASTCharLiteral extends AbstractJavaTypeNode implements ASTLiteral {
+public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral {
 
 
     ASTCharLiteral(int id) {

@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTPreIncrementExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTPreIncrementExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTPreIncrementExpression(int id) {
         super(id);

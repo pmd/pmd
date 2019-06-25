@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTCastExpression extends AbstractJavaTypeNode implements ASTExpression {
+public final class ASTCastExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTCastExpression(int id) {
         super(id);

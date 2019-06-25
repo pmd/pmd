@@ -62,7 +62,7 @@ import java.util.function.Function;
  * information. A second pass on the AST after building the symbol tables
  * would allow us to remove all the remaining ambiguous names.
  */
-public final class ASTAmbiguousName extends AbstractJavaTypeNode implements ASTReferenceType, ASTPrimaryExpression {
+public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTReferenceType, ASTPrimaryExpression {
 
     ASTAmbiguousName(int id) {
         super(id);

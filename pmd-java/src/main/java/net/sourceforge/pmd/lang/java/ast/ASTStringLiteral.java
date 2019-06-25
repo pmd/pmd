@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  * At the very least it has delimiters. {@link #getUnescapedValue()} allows to recover
  * the actual runtime value.
  */
-public final class ASTStringLiteral extends AbstractJavaTypeNode implements ASTLiteral {
+public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
 
 
     ASTStringLiteral(int id) {

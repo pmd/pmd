@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTVariableReference extends AbstractJavaTypeNode implements ASTPrimaryExpression {
+public final class ASTVariableReference extends AbstractJavaExpr implements ASTPrimaryExpression {
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.

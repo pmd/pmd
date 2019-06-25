@@ -11,7 +11,7 @@ import java.util.Iterator;
  *
  * @author Clément Fournier
  */
-abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode
+abstract class AbstractLrBinaryExpr extends AbstractJavaExpr
     implements ASTExpression, LeftRecursiveNode, Iterable<ASTExpression> {
 
     private BinaryOp operator;
@@ -36,7 +36,9 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaTypeNode
         JavaNode first = (JavaNode) jjtGetChild(0);
         // they could be of different types, but the getOp check ensures
         // they are of the same type
-        if (first instanceof AbstractLrBinaryExpr && ((AbstractLrBinaryExpr) first).getOp() == getOp()) {
+        if (first instanceof AbstractLrBinaryExpr
+            && ((AbstractLrBinaryExpr) first).getOp() == getOp()
+            && !((AbstractLrBinaryExpr) first).isParenthesized()) {
             flatten(0);
         }
     }

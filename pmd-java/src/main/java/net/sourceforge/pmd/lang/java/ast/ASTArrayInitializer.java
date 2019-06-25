@@ -22,7 +22,7 @@ import java.util.Iterator;
  * </pre>
  *
  */
-public final class ASTArrayInitializer extends AbstractJavaTypeNode implements ASTExpression, Iterable<ASTExpression> {
+public final class ASTArrayInitializer extends AbstractJavaExpr implements ASTExpression, Iterable<ASTExpression> {
 
     ASTArrayInitializer(int id) {
         super(id);
