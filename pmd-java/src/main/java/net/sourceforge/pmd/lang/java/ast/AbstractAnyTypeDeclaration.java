@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Abstract class for type declarations nodes.
  */
-abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration {
+abstract class AbstractAnyTypeDeclaration extends AbstractJavaAccessTypeNode implements ASTAnyTypeDeclaration, LeftRecursiveNode {
 
     private JavaTypeQualifiedName qualifiedName;
 
