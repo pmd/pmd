@@ -206,7 +206,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     @Override
-    public Object visit(ASTVariableReference node, Object data) {
+    public Object visit(ASTVariableAccess node, Object data) {
         return visit((ASTPrimaryExpression) node, data);
     }
 

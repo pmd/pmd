@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre class="grammar">
  *
- * AssignableExpr ::= {@link ASTVariableReference VariableReference}
+ * AssignableExpr ::= {@link ASTVariableAccess VariableReference}
  *                  | {@link ASTFieldAccess FieldAccess}
  *                  | {@link ASTArrayAccess ArrayAccess}
  *

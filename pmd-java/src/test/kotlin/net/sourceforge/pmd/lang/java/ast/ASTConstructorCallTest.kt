@@ -14,7 +14,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                child<ASTVariableReference> { }
+                child<ASTVariableAccess> { }
             }
         }
 
@@ -79,14 +79,14 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                child<ASTVariableReference> { }
+                child<ASTVariableAccess> { }
             }
         }
 
         // and here a variable reference
         "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
 
-            it::getLhsExpression shouldBe child<ASTVariableReference> {
+            it::getLhsExpression shouldBe child<ASTVariableAccess> {
                 it::getVariableName shouldBe "a"
             }
 
@@ -96,7 +96,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                child<ASTVariableReference> { }
+                child<ASTVariableAccess> { }
             }
         }
     }

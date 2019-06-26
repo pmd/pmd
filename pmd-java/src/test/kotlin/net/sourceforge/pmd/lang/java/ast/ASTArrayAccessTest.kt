@@ -30,7 +30,7 @@ class ASTArrayAccessTest : ParserTestSpec({
 
         "b[0]" should matchExpr<ASTArrayAccess> {
 
-            it::getLhsExpression shouldBe child<ASTVariableReference> {
+            it::getLhsExpression shouldBe child<ASTVariableAccess> {
                 it::getVariableName shouldBe "b"
             }
 
