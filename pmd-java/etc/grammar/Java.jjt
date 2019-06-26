@@ -2410,21 +2410,16 @@ void UnaryExpression() #void:
 {}
 {
     (("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()) #UnaryExpression
-  | PreIncrementExpression()
-  | PreDecrementExpression()
+  | PrefixIncrementExpression()
   | UnaryExpressionNotPlusMinus()
 }
 
-void PreIncrementExpression() :
+void PrefixIncrementExpression() #IncrementExpression:
 {}
 {
-  "++" PrimaryExpression()
-}
-
-void PreDecrementExpression() :
-{}
-{
-  "--" PrimaryExpression()
+  ( "++" {jjtThis.setOp(IncrementOp.INCREMENT);} | "--" {jjtThis.setOp(IncrementOp.DECREMENT);} )
+  { jjtThis.setPrefix(); }
+  PrimaryExpression()
 }
 
 void UnaryExpressionNotPlusMinus() #void:
@@ -2455,10 +2450,11 @@ private void UnaryExprNotPmStart() #void:
    | "void" | PrimitiveType()
 }
 
-void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
+void PostfixExpression() #void:
 {}
 {
-  PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
+
+  PrimaryExpression() [ ("++" {jjtThis.setOp(IncrementOp.INCREMENT);} | "--" {jjtThis.setOp(IncrementOp.DECREMENT);}) #IncrementExpression(1) ]
 }
 
 
@@ -2895,9 +2891,7 @@ void EmptyStatement() :
 void StatementExpression() :
 {AssignmentOp op = null;}
 {
-  PreIncrementExpression()
-|
-  PreDecrementExpression()
+  PrefixIncrementExpression()
 |
   // using PostfixExpression here allows us to skip the part of the production tree
   // between Expression() and PostfixExpression()

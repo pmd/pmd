@@ -14,6 +14,6 @@ public enum AccessType {
     /** The value of the variable is read. */
     READ,
 
-    /** The value is written-to, possibly being read before or after. */
+    /** The value is written to, possibly being read before or after. */
     WRITE
 }

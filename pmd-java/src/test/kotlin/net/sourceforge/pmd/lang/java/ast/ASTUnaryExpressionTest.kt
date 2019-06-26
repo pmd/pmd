@@ -4,6 +4,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.AccessType.READ
 import net.sourceforge.pmd.lang.java.ast.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
+import net.sourceforge.pmd.lang.java.ast.IncrementOp.*
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
 
@@ -118,7 +119,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             }
 
             "(p)++" should parseAs {
-                postfixExpr(INCREMENT) {
+                postfixMutation(INCREMENT) {
                     parenthesized {
                         variableRef("p", WRITE)
                     }
@@ -130,7 +131,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
             "i+++i" should parseAs {
                 additiveExpr(ADD) {
-                    postfixExpr(INCREMENT) {
+                    postfixMutation(INCREMENT) {
                         variableRef("i", WRITE)
                     }
                     variableRef("i", READ)
@@ -169,7 +170,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                             castExpr {
                                 primitiveType(type)
 
-                                unaryExpr(INCREMENT) {
+                                prefixMutation(INCREMENT) {
                                     variableRef("q", WRITE)
                                 }
                             }
@@ -179,7 +180,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                             castExpr {
                                 primitiveType(type)
 
-                                unaryExpr(DECREMENT) {
+                                prefixMutation(DECREMENT) {
                                     variableRef("q", WRITE)
                                 }
                             }
@@ -197,8 +198,8 @@ class ASTUnaryExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "!!true" should parseAs {
-                unaryExpr(UnaryOp.BOOLEAN_NOT) {
-                    unaryExpr(UnaryOp.BOOLEAN_NOT) {
+                unaryExpr(BOOLEAN_NOT) {
+                    unaryExpr(BOOLEAN_NOT) {
                         boolean(true)
                     }
                 }

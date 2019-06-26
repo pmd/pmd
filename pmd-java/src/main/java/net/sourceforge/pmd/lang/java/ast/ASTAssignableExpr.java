@@ -29,17 +29,17 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
 
     /**
      * Returns how this expression is accessed in the enclosing expression.
+     * If this expression occurs as the left-hand-side of an {@linkplain ASTAssignmentExpression assignment},
+     * or as the target of an {@linkplain ASTIncrementExpression increment or decrement expression},
+     * this method returns {@link AccessType#WRITE}. Otherwise the value is just {@linkplain AccessType#READ read}.
      */
     @NonNull
     default AccessType getAccessType() {
 
         Node parent = this.jjtGetParent();
 
-        boolean isIncOrDec = parent instanceof ASTPreDecrementExpression
-            || parent instanceof ASTPreIncrementExpression
-            || parent instanceof ASTPostfixExpression;
-
-        if (isIncOrDec || jjtGetChildIndex() == 0 && parent instanceof ASTAssignmentExpression) {
+        if (parent instanceof ASTIncrementExpression
+            || jjtGetChildIndex() == 0 && parent instanceof ASTAssignmentExpression) {
             return AccessType.WRITE;
         }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -13,28 +13,25 @@ import java.util.Map;
 
 
 /**
- * A unary operator for {@link ASTUnaryExpression}.
+ * An increment operator for {@link ASTIncrementExpression IncrementExpression}.
  *
  * <pre class="grammar">
  *
- * UnaryOp ::= "+" | "-" | "~" | "!"
+ * UnaryOp ::= "++" | "--"
  *
  * </pre>
  *
  * @see BinaryOp
  * @see AssignmentOp
+ * @see UnaryOp
  */
-public enum UnaryOp {
-    /** "+" */
-    UNARY_PLUS("+"),
-    /** "-" */
-    UNARY_MINUS("-"),
-    /** "~" */
-    BITWISE_INVERSE("~"),
-    /** "!" */
-    BOOLEAN_NOT("!");
+public enum IncrementOp {
+    /** "++" */
+    INCREMENT("++"),
+    /** "--" */
+    DECREMENT("--");
 
-    private static final Map<String, UnaryOp> LOOKUP =
+    private static final Map<String, IncrementOp> LOOKUP =
         Arrays.stream(values())
               .collect(
                   collectingAndThen(
@@ -46,7 +43,7 @@ public enum UnaryOp {
     private final String code;
 
 
-    UnaryOp(String code) {
+    IncrementOp(String code) {
         this.code = code;
     }
 
@@ -57,7 +54,7 @@ public enum UnaryOp {
 
 
     // parser only for now
-    static UnaryOp fromImage(String image) {
+    static IncrementOp fromImage(String image) {
         return LOOKUP.get(image);
     }
 }

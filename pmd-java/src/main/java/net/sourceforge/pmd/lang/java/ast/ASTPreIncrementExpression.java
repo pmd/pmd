@@ -14,7 +14,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * PreIncrementExpression ::= "++" {@linkplain ASTPrimaryExpression PrimaryExpression}
  *
  * </pre>
+ *
+ * @deprecated Merged into {@link ASTIncrementExpression IncrementExpression}
  */
+@Deprecated
 public final class ASTPreIncrementExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTPreIncrementExpression(int id) {

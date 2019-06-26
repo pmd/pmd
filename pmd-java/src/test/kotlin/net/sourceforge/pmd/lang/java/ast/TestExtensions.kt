@@ -91,23 +91,23 @@ fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: 
 
 
 fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, out ASTExpression>.() -> ASTExpression): ASTExpression =
-        when (op) {
-            UnaryOp.INCREMENT -> child<ASTPreIncrementExpression> {
-                baseExpr()
-            }
-            UnaryOp.DECREMENT -> child<ASTPreDecrementExpression> {
-                baseExpr()
-            }
-            else -> child<ASTUnaryExpression> {
-                it::getOp shouldBe op
-                it::getBaseExpression shouldBe baseExpr()
-            }
+        child<ASTUnaryExpression> {
+            it::getOp shouldBe op
+            it::getBaseExpression shouldBe baseExpr()
         }
 
 
-fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp, baseExpr: ValuedNodeSpec<ASTPostfixExpression, ASTPrimaryExpression>) =
-        child<ASTPostfixExpression> {
+fun TreeNodeWrapper<Node, *>.postfixMutation(op: IncrementOp, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
+        incrementExpr(op, isPrefix = false, baseExpr = baseExpr)
+
+fun TreeNodeWrapper<Node, *>.prefixMutation(op: IncrementOp, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
+        incrementExpr(op, isPrefix = true, baseExpr = baseExpr)
+
+fun TreeNodeWrapper<Node, *>.incrementExpr(op: IncrementOp, isPrefix: Boolean, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
+        child<ASTIncrementExpression> {
             it::getOp shouldBe op
+            it::isPostfix shouldBe !isPrefix
+            it::isPrefix shouldBe isPrefix
             it::getBaseExpression shouldBe baseExpr()
         }
 

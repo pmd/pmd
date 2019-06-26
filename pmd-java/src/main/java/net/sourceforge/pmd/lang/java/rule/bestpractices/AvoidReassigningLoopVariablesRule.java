@@ -26,11 +26,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -140,26 +138,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
      */
     private void checkIncrementAndDecrement(Object data, Set<String> loopVariables, ASTStatement loopBody, IgnoreFlags... ignoreFlags) {
 
-        // foo ++ and foo --
-        for (ASTPostfixExpression expression : loopBody.findDescendantsOfType(ASTPostfixExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
-                continue;
-            }
-
-            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
-        }
-
-        // ++ foo
-        for (ASTPreIncrementExpression expression : loopBody.findDescendantsOfType(ASTPreIncrementExpression.class)) {
-            if (ignoreNode(expression, loopBody, ignoreFlags)) {
-                continue;
-            }
-
-            checkVariable(data, loopVariables, singleVariableName(expression.getFirstDescendantOfType(ASTPrimaryExpression.class)));
-        }
-
-        // -- foo
-        for (ASTPreDecrementExpression expression : loopBody.findDescendantsOfType(ASTPreDecrementExpression.class)) {
+        for (ASTIncrementExpression expression : loopBody.findDescendantsOfType(ASTIncrementExpression.class)) {
             if (ignoreNode(expression, loopBody, ignoreFlags)) {
                 continue;
             }

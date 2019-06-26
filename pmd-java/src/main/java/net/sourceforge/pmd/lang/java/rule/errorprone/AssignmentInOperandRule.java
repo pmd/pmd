@@ -12,9 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -63,8 +61,7 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
                         && !getProperty(ALLOW_FOR_DESCRIPTOR))
                 && (node.hasDescendantOfType(ASTAssignmentOperator.class)
                         || !getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
-                                && (((AbstractNode) node).hasDescendantOfAnyType(ASTPreIncrementExpression.class,
-                                                                                 ASTPreDecrementExpression.class, ASTPostfixExpression.class)))) {
+                                && (((AbstractNode) node).hasDescendantOfAnyType(ASTIncrementExpression.class)))) {
 
             addViolation(data, node);
             return data;

@@ -11,14 +11,12 @@ import java.util.Objects;
  * Represents a unary prefix operation on a value.
  * This has a precedence greater than {@link ASTMultiplicativeExpression}.
  *
- * <p>UnaryExpression has the same precedence as {@linkplain ASTPreIncrementExpression PreIncrementExpression},
- * {@linkplain ASTPreDecrementExpression PreDecrementExpression}, and {@linkplain ASTCastExpression CastExpression}.
+ * <p>UnaryExpression has the same precedence as the prefix forms of {@linkplain ASTIncrementExpression IncrementExpression},
+ * and {@linkplain ASTCastExpression CastExpression}.
  *
  * <p>Note that the child of this node is not necessarily a UnaryExpression,
  * rather, it can be an expression with an operator precedence greater or equal
  * to a UnaryExpression.
- *
- * <p>TODO it would be sensible to merge {@link ASTPreDecrementExpression} and {@link ASTPreIncrementExpression}.
  *
  * <pre class="grammar">
  *

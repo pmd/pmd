@@ -14,7 +14,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * PostfixExpression ::= {@linkplain ASTPrimaryExpression PrimaryExpression} ( "++" | "--" )
  *
  * </pre>
+ *
+ * @deprecated Merged into {@link ASTIncrementExpression IncrementExpression}
  */
+@Deprecated
 public final class ASTPostfixExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTPostfixExpression(int id) {
