@@ -70,6 +70,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode {
      * Returns the full name of the import. For on-demand imports, this is the name without
      * the final dot and asterisk.
      */
+    // TODO @NoAttribute the image
     public String getImportedName() {
         return getImage();
     }

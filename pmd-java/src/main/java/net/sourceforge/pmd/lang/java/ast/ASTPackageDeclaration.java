@@ -4,6 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
+ * Since 7.0, there is no {@linkplain ASTName Name} node anymore. Use
+ * {@link #getPackageNameImage()} instead.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * PackageDeclaration ::= "package" Name ";"
+ *
+ * </pre>
+ *
+ */
 public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
 
     ASTPackageDeclaration(int id) {
@@ -25,7 +38,12 @@ public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
         visitor.visit(this, data);
     }
 
-
+    /**
+     * Returns the name of the package.
+     *
+     * @since 4.2
+     */
+    // TODO @NoAttribute the Image.
     public String getPackageNameImage() {
         return getImage();
     }
