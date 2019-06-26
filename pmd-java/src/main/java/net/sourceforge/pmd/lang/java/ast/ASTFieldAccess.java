@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *               |  {@link ASTAmbiguousName AmbiguousName} "." &lt;IDENTIFIER&gt;
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, ASTQualifiableExpression, LeftRecursiveNode {
     ASTFieldAccess(int id) {
         super(id);
     }

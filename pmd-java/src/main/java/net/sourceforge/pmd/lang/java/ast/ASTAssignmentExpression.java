@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * Expression ::= {@linkplain ASTPrimaryExpression ConditionalExpression} ( {@link AssignmentOp} AssignmentExpression )?
+ * AssignmentExpression ::= {@link ASTAssignableExpr AssignableExpr} {@link AssignmentOp} {@link ASTExpression Expression}
  *
  * </pre>
  */
@@ -33,8 +33,8 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements A
     }
 
 
-    public ASTPrimaryExpression getLeftHandSide() {
-        return (ASTPrimaryExpression) jjtGetChild(0);
+    public ASTAssignableExpr getLeftHandSide() {
+        return (ASTAssignableExpr) jjtGetChild(0);
     }
 
 
