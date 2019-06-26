@@ -252,8 +252,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
                     if (importDeclaration.isImportOnDemand()) {
                         // We need type resolution to make sure there is a
                         // conflicting method
-                        if (importDeclaration.getType() != null) {
-                            for (final Method m : importDeclaration.getType().getMethods()) {
+                        // TODO we need a symbol table
+
+                        // This was edited during the grammar updating process, because
+                        // ImportDeclaration is not a TypeNode anymore, and there is no Name anymore.
+                        // If tests are failing, refer to the history of this file to get the
+                        // previously working version.
+
+                        Class<?> importedType = importDeclaration.getRoot().getClassTypeResolver().loadClass(importDeclaration.getImportedName());
+                        if (importedType != null) {
+                            for (final Method m : importedType.getMethods()) {
                                 if (m.getName().equals(methodCalled)) {
                                     return true;
                                 }

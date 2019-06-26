@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
@@ -79,8 +81,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return null;
     }
 
-    public static boolean isQualifiedName(Node node) {
-        return node.getImage().indexOf('.') != -1;
+    public static boolean isQualifiedName(@Nullable String node) {
+        return node != null && node.indexOf('.') != -1;
     }
 
     public static boolean importsPackage(ASTCompilationUnit node, String packageName) {
