@@ -72,7 +72,26 @@ class ASTCastExpressionTest : ParserTestSpec({
 
             }
 
-            "(@F Foo & @B Bar) obj" shouldNot parse()
+            "(@F Foo & @B@C Bar) obj" should parseAs {
+
+                castExpr {
+                    it::getCastType shouldBe child<ASTIntersectionType> {
+
+                        it::getDeclaredAnnotations shouldBe emptyList()
+
+                        classType("Foo") {
+                            // annotations nest on the inner node
+                            it::getDeclaredAnnotations shouldBe listOf(annotation("F"))
+                        }
+
+                        classType("Bar") {
+                            it::getDeclaredAnnotations shouldBe listOf(annotation("B"), annotation("C"))
+                        }
+                    }
+
+                    unspecifiedChild()
+                }
+            }
         }
     }
 

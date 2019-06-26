@@ -195,4 +195,20 @@ class ASTMethodReferenceTest : ParserTestSpec({
             }
         }
     }
+
+    parserTest("Type annotations") {
+
+        inContext(ExpressionParsingCtx) {
+
+            "@Vernal Date::getDay" should parseAs {
+                methodRef(methodName = "getDay") {
+                    classType("Date") {
+                        annotation("Vernal")
+                    }
+
+                    it::getTypeArguments shouldBe null
+                }
+            }
+        }
+    }
 })

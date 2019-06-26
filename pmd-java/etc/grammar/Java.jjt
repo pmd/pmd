@@ -1,6 +1,7 @@
 /**
  * Nest annotations inside the node they apply to. The node TypeBound is 
- * removed. Fix InstanceofExpression with annotated type.
+ * removed. Allow type annotations on InstanceofExpression, MethodReference
+ * and bounds of an IntersectionType.
  * Clément Fournier 06/2019
  *====================================================================
  * Change expression, type and annotation grammar to remove unnecessary nodes,
@@ -1977,6 +1978,9 @@ void FormalParameter() :
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
    Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
+   // TODO there may be annotations before the "..." of the varargs
+   //  the ... is treated analogously to a pair of brackets
+   //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
@@ -2052,8 +2056,7 @@ Dims:
 void IntersectionType(boolean inCast) #IntersectionType(isIntersection):
 {boolean isIntersection=false;}
 {
-  // Only the first type may be annotated
-  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} ClassOrInterfaceType() )*
+  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} AnnotatedClassOrInterfaceType() )*
 }
 
 void AnnotationList() #void:
@@ -2550,6 +2553,10 @@ void PrimaryPrefix() #void :
        MethodReference()
      | "." "class"                        #ClassLiteral(1)
     )
+
+// If annotations start the expression, it's necessarily a method or ctor reference
+// This is because types in class literals or in qualified super/this may not be annotated
+| LOOKAHEAD({getToken(1).kind == AT}) AnnotatedRefType() MethodReference()
 
 | LOOKAHEAD(LambdaLahead()) LambdaExpression()
 

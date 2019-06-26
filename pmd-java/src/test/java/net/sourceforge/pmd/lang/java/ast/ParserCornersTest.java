@@ -115,6 +115,12 @@ public class ParserCornersTest {
                 cu.findChildNodesWithXPath("//FormalParameter[@ExplicitReceiverParameter='false']").size());
     }
 
+    @Test
+    public void testTypeAnnotations() {
+        String test18 = readAsString("/net/sourceforge/pmd/ast/FullTypeAnnotations.java");
+        parseJava18(test18);
+    }
+
     /**
      * Test for https://sourceforge.net/p/pmd/bugs/1333/
      */
