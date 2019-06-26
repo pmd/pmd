@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre class="grammar">
  *
- * AssignableExpr ::= {@link ASTVariableAccess VariableReference}
+ * AssignableExpr ::= {@link ASTVariableAccess VariableAccess}
  *                  | {@link ASTFieldAccess FieldAccess}
  *                  | {@link ASTArrayAccess ArrayAccess}
  *
@@ -46,4 +46,16 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
         return AccessType.READ;
     }
 
+
+    /**
+     * Represents the type of access of an {@linkplain ASTAssignableExpr assignable expression}.
+     */
+    enum AccessType {
+
+        /** The value of the variable is read. */
+        READ,
+
+        /** The value is written to, possibly being read before or after. */
+        WRITE
+    }
 }

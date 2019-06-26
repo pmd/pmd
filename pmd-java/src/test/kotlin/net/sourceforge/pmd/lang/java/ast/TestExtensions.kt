@@ -64,7 +64,7 @@ fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: NodeSpec<AST
         }
 
 
-fun TreeNodeWrapper<Node, *>.variableRef(name: String, accessType: AccessType? = null, otherAssertions: (ASTVariableAccess) -> Unit = {}) =
+fun TreeNodeWrapper<Node, *>.variableRef(name: String, accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: (ASTVariableAccess) -> Unit = {}) =
         child<ASTVariableAccess> {
             it::getVariableName shouldBe name
             if (accessType != null) {
@@ -72,7 +72,7 @@ fun TreeNodeWrapper<Node, *>.variableRef(name: String, accessType: AccessType? =
             }
             otherAssertions(it)
         }
-fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: AccessType? = null, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
         child<ASTFieldAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getFieldName shouldBe name
             if (accessType != null) {

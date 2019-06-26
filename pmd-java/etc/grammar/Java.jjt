@@ -398,7 +398,7 @@ public class JavaParser {
   }
   private void checkForBadConciseTryWithResourcesUsage() {
     Node top = jjtree.peekNode();
-    if (!(top instanceof ASTFieldAccess || top instanceof ASTVariableReference)) {
+    if (!(top instanceof ASTFieldAccess || top instanceof ASTVariableAccess)) {
       throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
     }
 

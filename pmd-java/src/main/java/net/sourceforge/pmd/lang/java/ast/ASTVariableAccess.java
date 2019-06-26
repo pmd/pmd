@@ -11,7 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * VariableReference ::= &lt;IDENTIFIER&gt;
+ * VariableAccess ::= &lt;IDENTIFIER&gt;
  *
  * </pre>
  */
