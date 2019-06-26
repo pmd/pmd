@@ -550,48 +550,6 @@ public class Foo extends Error { }
         </example>
     </rule>
 
-
-    <rule name="DoubleBraceInitialization"
-          language="java"
-          since="6.16.0"
-          message="Double-brace initialization should be avoided"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#doublebraceinitialization">
-        <description>
-            Double brace initialisation is a pattern to initialise eg collections concisely. But it implicitly
-            generates a new .class file, and the object holds a strong reference to the enclosing object. For those
-            reasons, it is preferable to initialize the object normally, even though it's verbose.
-
-            This rule counts any anonymous class which only has a single initializer as an instance of double-brace
-            initialization. There is currently no way to find out whether a method called in the initializer is not
-            accessible from outside the anonymous class, and those legit cases should be suppressed for the time being.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="version" value="2.0" />
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//AllocationExpression/ClassOrInterfaceBody[count(*)=1]/*/Initializer[@Static=false()]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-            // this is double-brace initialization
-            return new ArrayList<String>(){{addAll("a","b","c");}};
-
-            // the better way is to not create an anonymous class:
-            List<String> a = new ArrayList<>();
-            a.addAll("a","b","c");
-            return a;
-
-            ]]>
-        </example>
-    </rule>
-
-
     <rule name="ExceptionAsFlowControl"
           since="1.8"
           message="Avoid using exceptions as flow control."
