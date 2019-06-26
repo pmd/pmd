@@ -108,6 +108,8 @@ fun TreeNodeWrapper<Node, *>.incrementExpr(op: IncrementOp, isPrefix: Boolean, b
             it::getOp shouldBe op
             it::isPostfix shouldBe !isPrefix
             it::isPrefix shouldBe isPrefix
+            it::isDecrement shouldBe (op == IncrementOp.DECREMENT)
+            it::isIncrement shouldBe (op == IncrementOp.INCREMENT)
             it::getBaseExpression shouldBe baseExpr()
         }
 

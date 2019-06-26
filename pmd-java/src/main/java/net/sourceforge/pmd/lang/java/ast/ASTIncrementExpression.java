@@ -26,7 +26,7 @@ package net.sourceforge.pmd.lang.java.ast;
 public final class ASTIncrementExpression extends AbstractJavaExpr implements ASTExpression, LeftRecursiveNode {
 
     private boolean isPrefix;
-    private IncrementOp myOp;
+    private boolean isIncrement;
 
     ASTIncrementExpression(int id) {
         super(id);
@@ -52,8 +52,9 @@ public final class ASTIncrementExpression extends AbstractJavaExpr implements AS
         this.isPrefix = true;
     }
 
-    void setOp(IncrementOp op) {
-        this.myOp = op;
+
+    void setIncrement() {
+        this.isIncrement = true;
     }
 
     /**
@@ -74,15 +75,30 @@ public final class ASTIncrementExpression extends AbstractJavaExpr implements AS
      * Returns the operator of this expression.
      */
     public IncrementOp getOp() {
-        return myOp;
+        return isIncrement ? IncrementOp.INCREMENT : IncrementOp.DECREMENT;
     }
 
     /**
      * Returns the name of the operator.
      */
     public String getOpName() {
-        return myOp.name();
+        return getOp().name();
     }
+
+    /**
+     * Returns true if this is an increment expression ({@link #getOp()} is {@link IncrementOp#INCREMENT}).
+     */
+    public boolean isIncrement() {
+        return isIncrement;
+    }
+
+    /**
+     * Returns true if this is a decrement expression ({@link #getOp()} is {@link IncrementOp#DECREMENT}).
+     */
+    public boolean isDecrement() {
+        return !isIncrement;
+    }
+
 
     /**
      * Returns the expression assigned by this expression.

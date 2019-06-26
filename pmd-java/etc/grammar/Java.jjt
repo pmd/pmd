@@ -2417,7 +2417,7 @@ void UnaryExpression() #void:
 void PrefixIncrementExpression() #IncrementExpression:
 {}
 {
-  ( "++" {jjtThis.setOp(IncrementOp.INCREMENT);} | "--" {jjtThis.setOp(IncrementOp.DECREMENT);} )
+  ( "++" {jjtThis.setIncrement();} | "--" )
   { jjtThis.setPrefix(); }
   PrimaryExpression()
 }
@@ -2454,7 +2454,7 @@ void PostfixExpression() #void:
 {}
 {
 
-  PrimaryExpression() [ ("++" {jjtThis.setOp(IncrementOp.INCREMENT);} | "--" {jjtThis.setOp(IncrementOp.DECREMENT);}) #IncrementExpression(1) ]
+  PrimaryExpression() [ ("++" {jjtThis.setIncrement();} | "--") #IncrementExpression(1) ]
 }
 
 
