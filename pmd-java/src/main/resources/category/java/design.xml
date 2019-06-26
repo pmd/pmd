@@ -563,7 +563,8 @@ public class Foo extends Error { }
             reasons, it is preferable to initialize the object normally, even though it's verbose.
 
             This rule counts any anonymous class which only has a single initializer as an instance of double-brace
-            initialization.
+            initialization. There is currently no way to find out whether a method called in the initializer is not
+            accessible from outside the anonymous class, and those legit cases should be suppressed for the time being.
         </description>
         <priority>3</priority>
         <properties>
@@ -571,7 +572,7 @@ public class Foo extends Error { }
             <property name="xpath">
                 <value>
                     <![CDATA[
-//AllocationExpression/ClassOrInterfaceBody[count(*)=1]/Initializer[@Static=false()]
+//AllocationExpression/ClassOrInterfaceBody[count(*)=1]/*/Initializer[@Static=false()]
 ]]>
                 </value>
             </property>
