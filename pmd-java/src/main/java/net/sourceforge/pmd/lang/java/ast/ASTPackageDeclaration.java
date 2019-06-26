@@ -43,8 +43,13 @@ public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
      *
      * @since 4.2
      */
-    // TODO @NoAttribute the Image.
     public String getPackageNameImage() {
-        return getImage();
+        return super.getImage();
+    }
+
+    @Override
+    public String getImage() {
+        // the image was null before 7.0, best keep it that way
+        return null;
     }
 }
