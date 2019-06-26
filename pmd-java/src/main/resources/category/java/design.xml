@@ -553,10 +553,10 @@ public class Foo extends Error { }
 
     <rule name="DoubleBraceInitialization"
           language="java"
-          since="1.5"
+          since="6.16.0"
           message="Double-brace initialization should be avoided"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#nonstaticinitializer">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#doublebraceinitialization">
         <description>
             Double brace initialisation is a pattern to initialise eg collections concisely. But it implicitly
             generates a new .class file, and the object holds a strong reference to the enclosing object. For those
