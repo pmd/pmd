@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -28,6 +30,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
     /**
      * Returns how this expression is accessed in the enclosing expression.
      */
+    @NonNull
     default AccessType getAccessType() {
 
         Node parent = this.jjtGetParent();

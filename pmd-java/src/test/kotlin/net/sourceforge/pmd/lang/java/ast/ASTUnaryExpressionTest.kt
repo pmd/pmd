@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
+import net.sourceforge.pmd.lang.java.ast.AccessType.READ
+import net.sourceforge.pmd.lang.java.ast.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
@@ -88,9 +90,9 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "(p)+q" should parseAs {
                 additiveExpr(ADD) {
                     parenthesized {
-                        variableRef("p")
+                        variableRef("p", READ)
                     }
-                    variableRef("q")
+                    variableRef("q", READ)
                 }
             }
 
@@ -100,7 +102,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     classType("p")
 
                     unaryExpr(BITWISE_INVERSE) {
-                        variableRef("q")
+                        variableRef("q", READ)
                     }
                 }
             }
@@ -110,7 +112,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     classType("p")
 
                     unaryExpr(BOOLEAN_NOT) {
-                        variableRef("q")
+                        variableRef("q", READ)
                     }
                 }
             }
@@ -118,7 +120,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "(p)++" should parseAs {
                 postfixExpr(INCREMENT) {
                     parenthesized {
-                        variableRef("p")
+                        variableRef("p", WRITE)
                     }
                 }
             }
@@ -129,9 +131,9 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "i+++i" should parseAs {
                 additiveExpr(ADD) {
                     postfixExpr(INCREMENT) {
-                        variableRef("i")
+                        variableRef("i", WRITE)
                     }
-                    variableRef("i")
+                    variableRef("i", READ)
                 }
             }
 
@@ -148,7 +150,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 unaryExpr(UNARY_PLUS) {
-                                    variableRef("q")
+                                    variableRef("q", READ)
                                 }
                             }
                         }
@@ -158,7 +160,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 unaryExpr(UNARY_MINUS) {
-                                    variableRef("q")
+                                    variableRef("q", READ)
                                 }
                             }
                         }
@@ -168,7 +170,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 unaryExpr(INCREMENT) {
-                                    variableRef("q")
+                                    variableRef("q", WRITE)
                                 }
                             }
                         }
@@ -178,7 +180,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 unaryExpr(DECREMENT) {
-                                    variableRef("q")
+                                    variableRef("q", WRITE)
                                 }
                             }
                         }

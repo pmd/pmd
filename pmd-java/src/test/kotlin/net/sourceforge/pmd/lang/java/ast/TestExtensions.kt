@@ -64,14 +64,21 @@ fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: NodeSpec<AST
         }
 
 
-fun TreeNodeWrapper<Node, *>.variableRef(name: String, otherAssertions: (ASTVariableReference) -> Unit = {}) =
+fun TreeNodeWrapper<Node, *>.variableRef(name: String, accessType: AccessType? = null, otherAssertions: (ASTVariableReference) -> Unit = {}) =
         child<ASTVariableReference> {
             it::getVariableName shouldBe name
+            if (accessType != null) {
+                it::getAccessType shouldBe accessType
+            }
             otherAssertions(it)
         }
-fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: AccessType? = null, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
         child<ASTFieldAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getFieldName shouldBe name
+            if (accessType != null) {
+                it::getAccessType shouldBe accessType
+            }
+
             otherAssertions()
         }
 
@@ -186,6 +193,12 @@ fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: ValuedNodeS
 
 fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<ASTAdditiveExpression>) =
         child<ASTAdditiveExpression> {
+            it::getOp shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSpec<ASTAssignmentExpression> = EmptyAssertions) =
+        child<ASTAssignmentExpression>(ignoreChildren = assertions == EmptyAssertions) {
             it::getOp shouldBe op
             assertions()
         }
