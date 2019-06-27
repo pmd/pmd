@@ -1809,11 +1809,8 @@ void FromClauseEntry() #void :
 {}
 {
  (
-     LOOKAHEAD(JoinClause()) JoinClause()
- |
-     // using lookahead to avoid misinterpreting the token after the identifier
-     // as a table alias rather than as a keyword
-     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
+     LOOKAHEAD([ SchemaName() "." ] TableName() [<IDENTIFIER>]
+               (<PARTITION>|<NATURAL>|<OUTER>|<INNER>|<JOIN>|<LEFT>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
  |
      LOOKAHEAD(<IDENTIFIER> "(", {isKeyword("XMLTABLE")}) XMLTable() [ LOOKAHEAD(2) TableAlias() ]
  |
@@ -1954,12 +1951,25 @@ ASTTableReference TableReferenceInJoin() #TableReference :
 {
     QueryTableExpression()
 
-    [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
-        && getToken(1).kind != CROSS
-        && getToken(1).kind != ON
+    [ LOOKAHEAD(1, ID(), {
+        // ON / USING might follow a table reference inside a inner cross join
+           getToken(1).kind != ON
+        && getToken(1).kind != USING
+
+        // PARTITION might follow a table reference inside a outer join
+        // or it might precede a outer join
         && getToken(1).kind != PARTITION
+
+        // join clauses can be repeated
+        && getToken(1).kind != INNER
+        && getToken(1).kind != JOIN
+        && getToken(1).kind != CROSS
+        && getToken(1).kind != NATURAL
+        && getToken(1).kind != FULL
+        && getToken(1).kind != LEFT
         && getToken(1).kind != RIGHT
-        && getToken(1).kind != FULL})
+        && getToken(1).kind != OUTER
+        })
 
         TableAlias() ]
 
@@ -2002,18 +2012,12 @@ ASTInnerCrossJoinClause InnerCrossJoinClause() :
 {}
 {
   (
-    [ <INNER> ] <JOIN> TableReferenceInJoin()
-    (
-        <ON> ConditionalOrExpression()
-    |
-        <USING> "(" Column() ("," Column() )* ")"
-    )
+    [<INNER>] <JOIN> TableReferenceInJoin()
+    (<ON> ConditionalOrExpression()
+    |<USING> "(" Column() ("," Column() )* ")")
   |
-    (
-        <CROSS> { jjtThis.setCross(true); }
-    |
-        <NATURAL> { jjtThis.setNatural(true); } [ <INNER> ]
-    )
+    (<CROSS> { jjtThis.setCross(true); }
+    |<NATURAL> { jjtThis.setNatural(true); } [<INNER>] )
     <JOIN> TableReferenceInJoin()
   )
   { return jjtThis; }
