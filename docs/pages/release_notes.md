@@ -46,6 +46,8 @@ datetime field.
 
 ### Fixed Issues
 
+*   apex
+    *   [#1664](https://github.com/pmd/pmd/issues/1664): \[apex] False positive ApexSharingViolationsRule, unsupported Apex feature
 *   java
     *   [#1848](https://github.com/pmd/pmd/issues/1848): \[java] Local classes should preserve their modifiers
 *   java-bestpractices
