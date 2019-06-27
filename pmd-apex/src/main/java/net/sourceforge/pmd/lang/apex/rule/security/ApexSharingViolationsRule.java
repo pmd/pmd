@@ -96,7 +96,8 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
      * @return
      */
     private boolean isSharingPresent(ASTUserClass node) {
-        return node.getModifiers().isWithoutSharing() || node.getModifiers().isWithSharing();
+        return node.getModifiers().isWithoutSharing() || node.getModifiers().isWithSharing()
+                || node.getModifiers().isInheritedSharing();
     }
 
 }
