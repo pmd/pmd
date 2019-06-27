@@ -328,20 +328,5 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return null;
     }
 
-    @Deprecated
-    public Object visit(ASTPostfixExpression node, Object data) {
-        return null;
-    }
-
-    @Deprecated
-    public Object visit(ASTPreIncrementExpression node, Object data) {
-        return null;
-    }
-
-    @Deprecated
-    public Object visit(ASTPreDecrementExpression node, Object data) {
-        return null;
-    }
-
 
 }

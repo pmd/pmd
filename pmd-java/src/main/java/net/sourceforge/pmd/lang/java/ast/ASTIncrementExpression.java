@@ -8,9 +8,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * Represents an increment or decrement operation on a variable. This represents
  * both the postfix and prefix forms.
  *
- * <p>This node merges the previous {@link ASTPostfixExpression PostfixExpression}
- * and {@link ASTPreDecrementExpression PreDecrementExpression}, and
- * {@link ASTPreIncrementExpression PreIncrementExpression}.
+ * <p>Since 7.0, this node replaces the nodes PostfixExpression, PreDecrementExpression,
+ * and PreIncrementExpression.
  *
  * <p>In prefix form, this has the same precedence as {@linkplain ASTUnaryExpression UnaryExpression}.
  * In postfix form, this has a precedence greater as {@linkplain ASTUnaryExpression UnaryExpression},

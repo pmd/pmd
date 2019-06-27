@@ -19,9 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -163,19 +160,5 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     }
 
 
-    @Deprecated
-    public Object visit(ASTPostfixExpression node, Object data) {
-        return null;
-    }
-
-    @Deprecated
-    public Object visit(ASTPreIncrementExpression node, Object data) {
-        return null;
-    }
-
-    @Deprecated
-    public Object visit(ASTPreDecrementExpression node, Object data) {
-        return null;
-    }
 
 }
