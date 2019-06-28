@@ -27,7 +27,7 @@ datetime field.
 
 #### New Rules
 
-*   The Java rule {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpracticces`)
+*   The Java rule {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`)
     detects non static initializers in anonymous classes also known as "double brace initialization".
     This can be problematic, since a new class file is generated and object holds a strong reference
     to the surrounding class.
@@ -53,7 +53,7 @@ datetime field.
 
 *   The Java rule {% rule "java/errorprone/NonStaticInitializer" %} (`java-errorprone`) does not report
     non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
-    {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpracticces`).
+    {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`).
 
 ### Fixed Issues
 
