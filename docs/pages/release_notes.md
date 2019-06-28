@@ -34,6 +34,8 @@ The CASE expression can now be properly used within SELECT statements.
     This can be problematic, since a new class file is generated and object holds a strong reference
     to the surrounding class.
 
+Table aliases are now supported when specifying columns in INSERT INTO clauses.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/bestpractices/UnusedPrivateField" %} (`java-bestpractices`) now ignores by
@@ -120,6 +122,7 @@ of deprecations.
 *   [#1883](https://github.com/pmd/pmd/pull/1883): \[plsql] Fix #1873 Expression list not working - [Hugo Araya Nash](https://github.com/kabroxiko)
 *   [#1884](https://github.com/pmd/pmd/pull/1884): \[plsql] fix #1878 Support explicit INNER word for INNER JOIN - [Hugo Araya Nash](https://github.com/kabroxiko)
 *   [#1885](https://github.com/pmd/pmd/pull/1885): \[plsql] Correct case expression - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1886](https://github.com/pmd/pmd/pull/1886): \[plsql] Support table alias for Insert Clause - [Hugo Araya Nash](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 

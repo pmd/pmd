@@ -2289,7 +2289,14 @@ ASTSingleTableInsert SingleTableInsert() :
 ASTInsertIntoClause InsertIntoClause() :
 {}
 {
-    <INTO> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ] [ LOOKAHEAD(2) "(" Column() ( "," Column() )* ")" ]
+    <INTO> DMLTableExpressionClause()
+    [ LOOKAHEAD(2) TableAlias() ]
+    [
+        LOOKAHEAD(2) "("
+              [ LOOKAHEAD(2) TableName() "." ] Column()
+        ( "," [ LOOKAHEAD(2) TableName() "." ] Column() )*
+        ")"
+    ]
     { return jjtThis; }
 }
 
