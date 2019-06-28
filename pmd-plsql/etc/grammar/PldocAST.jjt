@@ -1548,8 +1548,8 @@ ASTSimpleExpression SimpleExpression() :
                      | LOOKAHEAD({isKeyword("found")}) KEYWORD("FOUND")
                      | LOOKAHEAD({isKeyword("notfound")}) KEYWORD("NOTFOUND")
                      | LOOKAHEAD({isKeyword("rowcount")}) KEYWORD("ROWCOUNT")
-                     | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT") "(" (Name()|NumericLiteral()) ")"
-                     | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS") ["(" (Name()|NumericLiteral()) ")"] "." Name()
+                     | LOOKAHEAD({isKeyword("bulk_rowcount")}) KEYWORD("BULK_ROWCOUNT")
+                     | LOOKAHEAD({isKeyword("bulk_exceptions")}) KEYWORD("BULK_EXCEPTIONS")
                      ) { sb.append('%').append(token.image); }
  |
     LOOKAHEAD(2)
@@ -1582,12 +1582,12 @@ ASTFunctionCall FunctionCall() :
     (
         LOOKAHEAD({"TRIM".equalsIgnoreCase(token.image)}) TrimExpression()
       | LOOKAHEAD({"XMLCAST".equalsIgnoreCase(token.image)}) "(" Expression() <AS> Datatype() ")"
-      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")" ["." FunctionCall()]
+      | LOOKAHEAD({"XMLQUERY".equalsIgnoreCase(token.image)}) "(" StringLiteral() [ LOOKAHEAD({isKeyword("PASSING")}) XMLPassingClause() ] <RETURNING> KEYWORD("CONTENT") [ <NULL> <ON> <EMPTY> ] ")"
       | LOOKAHEAD({"CAST".equalsIgnoreCase(token.image)}) "(" ( <MULTISET> "(" Subquery() ")" | Expression() ) <AS> Datatype() ")"
       | LOOKAHEAD({"XMLFOREST".equalsIgnoreCase(token.image)}) "(" SqlExpression() [ <AS> ID() ] ( "," SqlExpression() [ <AS> ID() ] )* ")"
       | LOOKAHEAD({"XMLELEMENT".equalsIgnoreCase(token.image)}) XMLElement()
       | Arguments()
-    ) ["." Name()]
+    )
 
     {
         jjtThis.setImage(name.getImage());
@@ -2990,8 +2990,6 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
 	  (
-	    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) (simpleNode = IsOfTypeCondition())
-      |
 	    simpleNode = RelationalExpression()
 	  ) {sb.append(simpleNode.getImage());}
 	  (
@@ -3169,11 +3167,9 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
   (
     <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
-    LOOKAHEAD(2) simpleNode = CaseExpression()
-  |
     LOOKAHEAD(2) simpleNode = ExtractExpression()
   |
-    LOOKAHEAD(2) simpleNode = PrimaryPrefix()
+    LOOKAHEAD(2) simpleNode = IsNullCondition()
   ) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
@@ -3181,10 +3177,21 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
 }
 
 ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
-{ PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder(); }
+{ PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {
-  simpleNode = PrimaryPrefix() { sb.append(simpleNode.getImage()); }
-  <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
+  (
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>)
+    (
+        (name = PrimaryExpression() #Name) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
+    )
+    |
+    (
+        simpleNode = IsOfTypeCondition()
+    )
+    {
+        sb.append(simpleNode.getImage());
+    }
+  )
   {
     jjtThis.setImage(sb.toString());
 	return jjtThis;
@@ -3533,7 +3540,7 @@ ASTArgument Argument() :
 {
 	//[LOOKAHEAD(2) UnqualifiedID() "=>"] Expression()
 	[LOOKAHEAD(2) (simpleNode = UnqualifiedID())  ("=>" | <AS> )  ]
-        (SqlExpression())
+        (Expression() )
 	//Allow Using CharacterSet suffix clause
 	[
 	   ( <USING>  )
@@ -3675,7 +3682,7 @@ ASTTableColumn TableColumn()  :
 }
 {
   ID() Datatype()
-  [ ( <_DEFAULT> [ <ON> <NULL> ] PrimaryPrefix()
+  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(FunctionName() "(") FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
     | LOOKAHEAD(2) <GENERATED> [ ( <BY> <_DEFAULT> [ <ON> <NULL>] | KEYWORD("ALWAYS")) ]
                                <AS> KEYWORD("IDENTITY") ) ]
   (LOOKAHEAD(1) InlineConstraint())*
