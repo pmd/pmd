@@ -23,7 +23,7 @@ properties are skipped over during parsing.
 The CREATE VIEW statement now supports subquery views.
 
 The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
-datetime field.
+datetime field. Also date time literals are parsed now correctly.
 
 #### Modified Rules
 
@@ -96,6 +96,7 @@ of deprecations.
 *   [#1864](https://github.com/pmd/pmd/pull/1864): \[plsql] Add support for Subquery Views - [kabroxiko](https://github.com/kabroxiko)
 *   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [kabroxiko](https://github.com/kabroxiko)
 *   [#1874](https://github.com/pmd/pmd/pull/1874): \[plsql] Add parenthesis equation support for Update - [kabroxiko](https://github.com/kabroxiko)
+*   [#1876](https://github.com/pmd/pmd/pull/1876): \[plsql] Datetime support for queries - [Hugo Araya Nash](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 
