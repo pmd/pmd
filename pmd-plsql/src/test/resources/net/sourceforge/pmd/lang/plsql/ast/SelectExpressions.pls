@@ -63,6 +63,11 @@ SELECT listagg(e.email,',') within group (order by e.email )INTO
 SELECT listagg(asap_func_loc_number,'; ') within group (order by 1)
     INTO my_record
     FROM company_asap_func_locs
+    WHERE cmp_id = cmp_id_in;
+
+SELECT listagg(asap_func_loc_number,'; ') within group (order by 1)
+    INTO my_record
+    FROM company_asap_func_locs
     WHERE cmp_id = cmp_id_in
     AND   function_call() is null;
 

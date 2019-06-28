@@ -1320,9 +1320,7 @@ ASTCondition Condition() :
 {}
 {
  (
-    LOOKAHEAD(4) CompoundCondition()
- |
-    LOOKAHEAD(4) Condition2()
+    CompoundCondition()
  )
     { return jjtThis; }
 }
@@ -1442,13 +1440,12 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-   LOOKAHEAD(3) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
- |
-   LOOKAHEAD(3) "(" (LOOKAHEAD(2) ComparisonCondition() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
-                    | LOOKAHEAD(2) CompoundCondition()) ")"
-     (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
- |
    LOOKAHEAD(1) <NOT> { jjtThis.setType(token.getImage()); } Condition()
+ |
+   // this might be a expression list
+   LOOKAHEAD("(" SqlExpression() ",") Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+ |
+   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
     Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  )

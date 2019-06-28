@@ -7,6 +7,11 @@ BEGIN
 
 select *
 from dual
+where (dummy = X or 1 = 2)
+and 1=1;
+
+select *
+from dual
 where (dummy <= X or 1 = 2)
 and 1=1;
 
