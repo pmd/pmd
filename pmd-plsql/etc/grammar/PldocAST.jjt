@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Various fixes for expression lists, join clauses
+ *
+ * Hugo Araya Nash 06/2019
+ *====================================================================
  * Various fixes for INSERT INTO with records, implicit cursor attributes
  * and trim expression.
  *
