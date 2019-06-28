@@ -25,6 +25,13 @@ The CREATE VIEW statement now supports subquery views.
 The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
 datetime field.
 
+#### New Rules
+
+*   The Java rule {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpracticces`)
+    detects non static initializers in anonymous classes also known as "double brace initialization".
+    This can be problematic, since a new class file is generated and object holds a strong reference
+    to the surrounding class.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/bestpractices/UnusedPrivateField" %} (`java-bestpractices`) now ignores by
@@ -44,6 +51,10 @@ datetime field.
 *   The Java rule {% rule "java/design/UseUtilityClass" %} (`java-design`) has a new property `ignoredAnnotations`.
     By default, classes that are annotated with Lombok's `@UtilityClass` are ignored now.
 
+*   The Java rule {% rule "java/errorprone/NonStaticInitializer" %} (`java-errorprone`) does not report
+    non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
+    {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpracticces`).
+
 ### Fixed Issues
 
 *   java
@@ -51,6 +62,7 @@ datetime field.
 *   java-bestpractices
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
     *   [#1845](https://github.com/pmd/pmd/issues/1845): \[java] Regression in MethodReturnsInternalArray not handling enums
+    *   [#1854](https://github.com/pmd/pmd/issues/1854): \[java] Rule to check for double brace initialisation
 *   java-design
     *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
 *   java-multithreading
