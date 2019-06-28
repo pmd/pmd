@@ -3167,8 +3167,6 @@ ASTUnaryExpressionNotPlusMinus UnaryExpressionNotPlusMinus() #UnaryExpressionNot
   (
     <NOT> {sb.append(" NOT "); } simpleNode = UnaryExpression(false)
   |
-    LOOKAHEAD(2) simpleNode = DateTimeLiteral()
-  |
     LOOKAHEAD(2) simpleNode = ExtractExpression()
   |
     LOOKAHEAD(2) simpleNode = IsNullCondition()
@@ -3260,8 +3258,8 @@ ASTPrimaryPrefix PrimaryPrefix() :
 | LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
-| LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
+| LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
 | ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
 | SelectStatement()
 | LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
