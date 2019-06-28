@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
- * Various fixes for expression lists, join clauses
+ * Various fixes for expression lists, join clauses, case expression
  *
  * Hugo Araya Nash 06/2019
  *====================================================================
