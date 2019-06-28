@@ -1297,6 +1297,15 @@ properties are skipped over during parsing.</p>
 <p>The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
 datetime field.</p>
 
+<h4 id="new-rules">New Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#doublebraceinitialization"><code class="highlighter-rouge">DoubleBraceInitialization</code></a> (<code class="highlighter-rouge">java-bestpractices</code>)
+detects non static initializers in anonymous classes also known as “double brace initialization”.
+This can be problematic, since a new class file is generated and object holds a strong reference
+to the surrounding class.</li>
+</ul>
+
 <h4 id="modified-rules">Modified Rules</h4>
 
 <ul>
@@ -1321,6 +1330,11 @@ be enabled.</p>
     <p>The Java rule <a href="pmd_rules_java_design.html#useutilityclass"><code class="highlighter-rouge">UseUtilityClass</code></a> (<code class="highlighter-rouge">java-design</code>) has a new property <code class="highlighter-rouge">ignoredAnnotations</code>.
 By default, classes that are annotated with Lombok’s <code class="highlighter-rouge">@UtilityClass</code> are ignored now.</p>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#nonstaticinitializer"><code class="highlighter-rouge">NonStaticInitializer</code></a> (<code class="highlighter-rouge">java-errorprone</code>) does not report
+non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
+<a href="pmd_rules_java_bestpractices.html#doublebraceinitialization"><code class="highlighter-rouge">DoubleBraceInitialization</code></a> (<code class="highlighter-rouge">java-bestpractices</code>).</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1340,11 +1354,17 @@ By default, classes that are annotated with Lombok’s <code class="highlighter-
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1703">#1703</a>: [java] UnusedPrivateField on member annotated with lombok @Delegate</li>
       <li><a href="https://github.com/pmd/pmd/issues/1845">#1845</a>: [java] Regression in MethodReturnsInternalArray not handling enums</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1854">#1854</a>: [java] Rule to check for double brace initialisation</li>
     </ul>
   </li>
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1094">#1094</a>: [java] UseUtilityClass should be LombokAware</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1853">#1853</a>: [java] False positive for NonStaticInitializer in anonymous class</li>
     </ul>
   </li>
   <li>java-multithreading

@@ -3999,7 +3999,7 @@ invoking the constructor).  While this is a valid language construct, it is rare
 confusing.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Initializer</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Initializer</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">false</span><span class="p">()][</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="o">*</span><span class="p">[</span><span class="m">3</span><span class="p">][</span><span class="kn">self::</span><span class="nt">AllocationExpression</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">self::</span><span class="nt">EnumConstant</span><span class="p">])]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
