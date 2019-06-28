@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java
     *   [#1848](https://github.com/pmd/pmd/issues/1848): \[java] Local classes should preserve their modifiers
+*   java-errorprone
+    *   [#1853](https://github.com/pmd/pmd/issues/1853): \[java] False positive for NonStaticInitializer in anonymous class
 
 ### API Changes
 
