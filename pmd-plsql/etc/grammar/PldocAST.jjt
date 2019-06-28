@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
- * Various fixes for expression lists, join clauses
+ * Various fixes for expression lists, join clauses, case expression
  *
  * Hugo Araya Nash 06/2019
  *====================================================================
@@ -2870,24 +2870,14 @@ ASTAssignment Assignment() :
 }
 
 ASTCaseExpression CaseExpression() :
-{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{}
 {
-  (
-	thisToken = <CASE> { sb.append(thisToken.image);}
-	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )?
-          ( thisToken = <WHEN> { sb.append("  "); sb.append(thisToken.image); }
-	        simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	     thisToken = <THEN>  { sb.append(" "); sb.append(thisToken.image); }
-	          Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	   )+
-	  [ thisToken = <ELSE> { sb.append(" "); sb.append(thisToken.image);}
-	        Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	  ]
-	  thisToken = <END> { sb.append(" "); sb.append(thisToken.image);}
-  )
- {
- jjtThis.setImage(sb.toString()); return jjtThis;
- }
+	<CASE>
+	   ( Expression() ( <WHEN> Expression() <THEN> Expression() )+
+	   |              ( <WHEN> Condition()  <THEN> Expression() )+ )
+	   [ <ELSE>  Expression() ]
+	<END>
+    { return jjtThis; }
 }
 
 /*
@@ -3260,7 +3250,7 @@ ASTPrimaryPrefix PrimaryPrefix() :
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
   LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
-| LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
+| LOOKAHEAD(<CASE>) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 | LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }

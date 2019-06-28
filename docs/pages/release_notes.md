@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### PLSQL Grammar Updates
 
-The grammar has been updated to support Inline Constraints in CREATE TABLE statements. Additionally, the
+The grammar has been updated to support inline constraints in CREATE TABLE statements. Additionally, the
 CREATE TABLE statement may now be followed by physical properties and table properties. However, these
 properties are skipped over during parsing.
 
@@ -24,6 +24,8 @@ The CREATE VIEW statement now supports subquery views.
 
 The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
 datetime field. Also date time literals are parsed now correctly.
+
+The CASE expression can now be properly used within SELECT statements.
 
 #### New Rules
 
@@ -117,6 +119,7 @@ of deprecations.
 *   [#1876](https://github.com/pmd/pmd/pull/1876): \[plsql] Datetime support for queries - [Hugo Araya Nash](https://github.com/kabroxiko)
 *   [#1883](https://github.com/pmd/pmd/pull/1883): \[plsql] Fix #1873 Expression list not working - [Hugo Araya Nash](https://github.com/kabroxiko)
 *   [#1884](https://github.com/pmd/pmd/pull/1884): \[plsql] fix #1878 Support explicit INNER word for INNER JOIN - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1885](https://github.com/pmd/pmd/pull/1885): \[plsql] Correct case expression - [Hugo Araya Nash](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 
