@@ -54,6 +54,10 @@ SELECT department_id "Dept", hire_date "Date", last_name "Name",
   INTO some_record
   FROM employees
   WHERE hire_date < '01-SEP-2003'
+  AND   hire_date > timestamp '2001-01-01 00:00:00'
+  AND   hire_date < sysdate - interval '50' minute
+  AND   hire_date < sysdate - interval '5' year
+  AND   hire_date < sysdate - interval '3' month
   ORDER BY "Dept", "Date", "Name";
 
 SELECT listagg(e.email,',') within group (order by e.email )INTO
