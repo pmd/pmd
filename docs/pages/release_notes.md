@@ -25,6 +25,8 @@ The CREATE VIEW statement now supports subquery views.
 The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
 datetime field.
 
+Table aliases are now supported when specifying columns in INSERT INTO clauses.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/bestpractices/UnusedPrivateField" %} (`java-bestpractices`) now ignores by
@@ -96,6 +98,7 @@ of deprecations.
 *   [#1864](https://github.com/pmd/pmd/pull/1864): \[plsql] Add support for Subquery Views - [kabroxiko](https://github.com/kabroxiko)
 *   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [kabroxiko](https://github.com/kabroxiko)
 *   [#1874](https://github.com/pmd/pmd/pull/1874): \[plsql] Add parenthesis equation support for Update - [kabroxiko](https://github.com/kabroxiko)
+*   [#1886](https://github.com/pmd/pmd/pull/1886): \[plsql] Support table alias for Insert Clause - [Hugo Araya Nash](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 
