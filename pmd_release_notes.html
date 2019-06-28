@@ -1288,14 +1288,16 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h4 id="plsql-grammar-updates">PLSQL Grammar Updates</h4>
 
-<p>The grammar has been updated to support Inline Constraints in CREATE TABLE statements. Additionally, the
+<p>The grammar has been updated to support inline constraints in CREATE TABLE statements. Additionally, the
 CREATE TABLE statement may now be followed by physical properties and table properties. However, these
 properties are skipped over during parsing.</p>
 
 <p>The CREATE VIEW statement now supports subquery views.</p>
 
 <p>The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
-datetime field.</p>
+datetime field. Also date time literals are parsed now correctly.</p>
+
+<p>The CASE expression can now be properly used within SELECT statements.</p>
 
 <h4 id="new-rules">New Rules</h4>
 
@@ -1305,6 +1307,8 @@ detects non static initializers in anonymous classes also known as “double bra
 This can be problematic, since a new class file is generated and object holds a strong reference
 to the surrounding class.</li>
 </ul>
+
+<p>Table aliases are now supported when specifying columns in INSERT INTO clauses.</p>
 
 <h4 id="modified-rules">Modified Rules</h4>
 
@@ -1422,8 +1426,11 @@ of deprecations.</p>
   <li><a href="https://github.com/pmd/pmd/pull/1864">#1864</a>: [plsql] Add support for Subquery Views - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1865">#1865</a>: [plsql] Add Support for Extract Expression - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1874">#1874</a>: [plsql] Add parenthesis equation support for Update - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1876">#1876</a>: [plsql] Datetime support for queries - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1883">#1883</a>: [plsql] Fix #1873 Expression list not working - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1884">#1884</a>: [plsql] fix #1878 Support explicit INNER word for INNER JOIN - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1885">#1885</a>: [plsql] Correct case expression - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1886">#1886</a>: [plsql] Support table alias for Insert Clause - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
 </ul>
 
 
