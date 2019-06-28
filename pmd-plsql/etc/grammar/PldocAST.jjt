@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Various fixes for expression lists, join clauses
+ *
+ * Hugo Araya Nash 06/2019
+ *====================================================================
  * Various fixes for INSERT INTO with records, implicit cursor attributes
  * and trim expression.
  *
@@ -1320,9 +1324,7 @@ ASTCondition Condition() :
 {}
 {
  (
-    LOOKAHEAD(4) CompoundCondition()
- |
-    LOOKAHEAD(4) Condition2()
+    CompoundCondition()
  )
     { return jjtThis; }
 }
@@ -1332,9 +1334,6 @@ void Condition2() #void :
 {}
 {
  (
-    // a IS OF Type condition that starts with a function...
-    LOOKAHEAD(FunctionCall() <IS> [<NOT>] <OF>) IsOfTypeCondition()
- |
     LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
  |
     LOOKAHEAD(<EXISTS>) ExistsCondition()
@@ -1351,7 +1350,7 @@ void Condition2() #void :
  |
     LOOKAHEAD(BetweenCondition()) BetweenCondition()
  |
-    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>) IsNullCondition()
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>) IsNullCondition()
  |
     LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
@@ -1445,9 +1444,12 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
- |
    LOOKAHEAD(1) <NOT> { jjtThis.setType(token.getImage()); } Condition()
+ |
+   // this might be a expression list
+   LOOKAHEAD("(" SqlExpression() ",") Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+ |
+   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
     Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  )
@@ -2813,10 +2815,10 @@ ASTExpression Expression() :
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment()) {sb.append(simpleNode.getImage());  }
-	| (simpleNode = ConditionalOrExpression() )  {sb.append(simpleNode.getImage()); }
-	| (simpleNode = CompilationExpression() )  {sb.append(simpleNode.getImage()); }
-	)
+  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment())
+	| (simpleNode = ConditionalOrExpression() )
+	| (simpleNode = CompilationExpression() )
+	) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }
@@ -2993,14 +2995,13 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
 	  (
-	   simpleNode = RelationalExpression()
+	    simpleNode = RelationalExpression()
 	  ) {sb.append(simpleNode.getImage());}
 	  (
 	   ( ("=" ) {sb.append(" = ");}
 	   | ("!" "=" ) {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");}
-           )
+	   | (<IS>) {sb.append(" IS ");})
 	   (
 	   simpleNode = RelationalExpression()
 	   ) {sb.append(simpleNode.getImage());}
@@ -3184,22 +3185,22 @@ ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
 { PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {
   (
-    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>)
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>)
     (
-		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
-	)
+        (name = PrimaryExpression() #Name) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
+    )
     |
-	(
-		simpleNode = IsOfTypeCondition()
-	)
-	{
-		sb.append(simpleNode.getImage());
-	}
+    (
+        simpleNode = IsOfTypeCondition()
+    )
+    {
+        sb.append(simpleNode.getImage());
+    }
   )
   {
     jjtThis.setImage(sb.toString());
 	return jjtThis;
- }
+  }
 }
 
 ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
@@ -3686,7 +3687,7 @@ ASTTableColumn TableColumn()  :
 }
 {
   ID() Datatype()
-  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(2) FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
+  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(FunctionName() "(") FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
     | LOOKAHEAD(2) <GENERATED> [ ( <BY> <_DEFAULT> [ <ON> <NULL>] | KEYWORD("ALWAYS")) ]
                                <AS> KEYWORD("IDENTITY") ) ]
   (LOOKAHEAD(1) InlineConstraint())*
