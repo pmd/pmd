@@ -3,16 +3,9 @@
 --
 
 BEGIN
-SELECT times.time_id, product, quantity
-INTO r_record
-FROM inventory 
-   RIGHT OUTER JOIN times ON (times.time_id = inventory.time_id) 
-   ORDER BY  2,1;
-END;
-
 SELECT d.department_id, e.last_name
-   FROM departments d RIGHT OUTER JOIN employees e
+   FROM departments d LEFT OUTER JOIN employees e
    ON d.department_id = e.department_id
    ORDER BY d.department_id, e.last_name;
-
+END;
 /

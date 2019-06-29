@@ -2718,7 +2718,7 @@ confusing.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//Initializer[@Static='false']
+//Initializer[@Static=false()][not(ancestor::*[3][self::AllocationExpression or self::EnumConstant])]
 ```
 
 **Example(s):**

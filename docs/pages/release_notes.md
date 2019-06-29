@@ -16,14 +16,25 @@ This is a {{ site.pmd.release_type }} release.
 
 #### PLSQL Grammar Updates
 
-The grammar has been updated to support Inline Constraints in CREATE TABLE statements. Additionally, the
+The grammar has been updated to support inline constraints in CREATE TABLE statements. Additionally, the
 CREATE TABLE statement may now be followed by physical properties and table properties. However, these
 properties are skipped over during parsing.
 
 The CREATE VIEW statement now supports subquery views.
 
 The EXTRACT function can now be parsed correctly. It is used to extract values from a specified
-datetime field.
+datetime field. Also date time literals are parsed now correctly.
+
+The CASE expression can now be properly used within SELECT statements.
+
+#### New Rules
+
+*   The Java rule {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`)
+    detects non static initializers in anonymous classes also known as "double brace initialization".
+    This can be problematic, since a new class file is generated and object holds a strong reference
+    to the surrounding class.
+
+Table aliases are now supported when specifying columns in INSERT INTO clauses.
 
 #### Modified Rules
 
@@ -44,6 +55,10 @@ datetime field.
 *   The Java rule {% rule "java/design/UseUtilityClass" %} (`java-design`) has a new property `ignoredAnnotations`.
     By default, classes that are annotated with Lombok's `@UtilityClass` are ignored now.
 
+*   The Java rule {% rule "java/errorprone/NonStaticInitializer" %} (`java-errorprone`) does not report
+    non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
+    {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`).
+
 *   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now by default searches
     for any unclosed `java.lang.AutoCloseable` resource. This includes now the standard `java.io.*Stream` classes.
     Previously only SQL-related resources were considered by this rule. The types can still be configured
@@ -52,23 +67,30 @@ datetime field.
     In order to restore the old behaviour, just remove the type `java.lang.AutoCloseable` from the `types`
     property and keep the remaining SQL-related classes.
 
+
 ### Fixed Issues
 
+*   apex
+    *   [#1664](https://github.com/pmd/pmd/issues/1664): \[apex] False positive ApexSharingViolationsRule, unsupported Apex feature
 *   java
     *   [#1848](https://github.com/pmd/pmd/issues/1848): \[java] Local classes should preserve their modifiers
 *   java-bestpractices
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
     *   [#1845](https://github.com/pmd/pmd/issues/1845): \[java] Regression in MethodReturnsInternalArray not handling enums
+    *   [#1854](https://github.com/pmd/pmd/issues/1854): \[java] Rule to check for double brace initialisation
 *   java-design
     *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
 *   java-errorprone
     *   [#1000](https://github.com/pmd/pmd/issues/1000): \[java] The rule CloseResource should deal with IO stream as default
+    *   [#1853](https://github.com/pmd/pmd/issues/1853): \[java] False positive for NonStaticInitializer in anonymous class
 *   java-multithreading
     *   [#1814](https://github.com/pmd/pmd/issues/1814): \[java] UnsynchronizedStaticFormatter documentation and implementation wrong
     *   [#1815](https://github.com/pmd/pmd/issues/1815): \[java] False negative in UnsynchronizedStaticFormatter
 *   plsql
     *   [#1828](https://github.com/pmd/pmd/issues/1828): \[plsql] Parentheses stopped working
     *   [#1850](https://github.com/pmd/pmd/issues/1850): \[plsql] Parsing errors with INSERT using returning or records and TRIM expression
+    *   [#1873](https://github.com/pmd/pmd/issues/1873): \[plsql] Expression list not working
+    *   [#1878](https://github.com/pmd/pmd/issues/1878): \[pslql] ParseException when parsing USING
 
 ### API Changes
 
@@ -99,12 +121,18 @@ of deprecations.
 ### External Contributions
 
 *   [#1792](https://github.com/pmd/pmd/pull/1792): \[java] Added lombok.experimental to AbstractLombokAwareRule - [jakivey32](https://github.com/jakivey32)
-*   [#1808](https://github.com/pmd/pmd/pull/1808): \[plsql] Fix PL/SQL Syntax errors - [kabroxiko](https://github.com/kabroxiko)
+*   [#1808](https://github.com/pmd/pmd/pull/1808): \[plsql] Fix PL/SQL Syntax errors - [Hugo Araya Nash](https://github.com/kabroxiko)
 *   [#1829](https://github.com/pmd/pmd/pull/1829): \[java] Fix false negative in UnsynchronizedStaticFormatter - [Srinivasan Venkatachalam](https://github.com/Srini1993)
 *   [#1847](https://github.com/pmd/pmd/pull/1847): \[java] Regression in MethodReturnsInternalArray not handling enums - [Artem](https://github.com/KroArtem)
-*   [#1863](https://github.com/pmd/pmd/pull/1863): \[plsql] Add Table InlineConstraint - [kabroxiko](https://github.com/kabroxiko)
-*   [#1864](https://github.com/pmd/pmd/pull/1864): \[plsql] Add support for Subquery Views - [kabroxiko](https://github.com/kabroxiko)
-*   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [kabroxiko](https://github.com/kabroxiko)
+*   [#1863](https://github.com/pmd/pmd/pull/1863): \[plsql] Add Table InlineConstraint - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1864](https://github.com/pmd/pmd/pull/1864): \[plsql] Add support for Subquery Views - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1874](https://github.com/pmd/pmd/pull/1874): \[plsql] Add parenthesis equation support for Update - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1876](https://github.com/pmd/pmd/pull/1876): \[plsql] Datetime support for queries - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1883](https://github.com/pmd/pmd/pull/1883): \[plsql] Fix #1873 Expression list not working - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1884](https://github.com/pmd/pmd/pull/1884): \[plsql] fix #1878 Support explicit INNER word for INNER JOIN - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1885](https://github.com/pmd/pmd/pull/1885): \[plsql] Correct case expression - [Hugo Araya Nash](https://github.com/kabroxiko)
+*   [#1886](https://github.com/pmd/pmd/pull/1886): \[plsql] Support table alias for Insert Clause - [Hugo Araya Nash](https://github.com/kabroxiko)
 
 {% endtocmaker %}
 
