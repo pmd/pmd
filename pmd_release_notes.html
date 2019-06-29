@@ -1299,16 +1299,20 @@ datetime field. Also date time literals are parsed now correctly.</p>
 
 <p>The CASE expression can now be properly used within SELECT statements.</p>
 
+<p>Table aliases are now supported when specifying columns in INSERT INTO clauses.</p>
+
 <h4 id="new-rules">New Rules</h4>
 
 <ul>
-  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#doublebraceinitialization"><code class="highlighter-rouge">DoubleBraceInitialization</code></a> (<code class="highlighter-rouge">java-bestpractices</code>)
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_bestpractices.html#doublebraceinitialization"><code class="highlighter-rouge">DoubleBraceInitialization</code></a> (<code class="highlighter-rouge">java-bestpractices</code>)
 detects non static initializers in anonymous classes also known as “double brace initialization”.
 This can be problematic, since a new class file is generated and object holds a strong reference
-to the surrounding class.</li>
-</ul>
+to the surrounding class.</p>
 
-<p>Table aliases are now supported when specifying columns in INSERT INTO clauses.</p>
+    <p>Note: This rule is also part of the Java quickstart ruleset (<code class="highlighter-rouge">rulesets/java/quickstart.xml</code>).</p>
+  </li>
+</ul>
 
 <h4 id="modified-rules">Modified Rules</h4>
 
@@ -1449,7 +1453,7 @@ of deprecations.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 28, 2019 <br />
+ Site last generated: Jun 29, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
