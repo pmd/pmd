@@ -61,7 +61,7 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
 
 *   The Java rule {% rule "java/codestyle/CommentDefaultAccessModifier" %) (`java-codestyle`) was enhanced
     in the last version 6.15.0 to check also top-level types by default. This created many new violations.
-    Missing the access modifier for top-level types is not so criticial, since it only decreases the visibility
+    Missing the access modifier for top-level types is not so critical, since it only decreases the visibility
     of the type.
     The default behaviour has been restored. If you want to enable the check for top-level types, you can
     use the new property `checkTopLevelTypes`.
