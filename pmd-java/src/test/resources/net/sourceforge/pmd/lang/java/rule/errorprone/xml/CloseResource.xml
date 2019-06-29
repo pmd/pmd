@@ -881,7 +881,6 @@ public class CloseResourceWithExceptions {
 
     <test-code>
         <description>connection not closed, should have failed - missing import</description>
-        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 // without the import
@@ -969,6 +968,39 @@ public class CloseResourceJMS {
             return session;
         }
         return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CloseResource for closable - ignored if the types do not contain AutoClosable</description>
+        <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceTest {
+    public static void main(String[] args) {
+        InputStream in = null;
+        OutputStream in2 = null;
+        try {
+            in = new FileInputStream(new File("/tmp/foo"));
+            in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void bar() {
+        InputStream file = new FileInputStream(new File("/tmp/foo"));
+        try {
+            int c = file.in();
+        } catch (IOException e) {
+            // handle exception
+        } finally {
+            // TODO: close file
+        }
     }
 }
         ]]></code>
