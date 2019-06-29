@@ -75,7 +75,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
             stringListProperty("types")
                     .desc("Affected types")
-                    .defaultValues("java.lang.AutoCloseable")
+                    .defaultValues("java.lang.AutoCloseable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
                     .delim(',').build();
 
     private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
@@ -155,8 +155,9 @@ public class CloseResourceRule extends AbstractJavaRule {
             if (type != null && isResourceTypeOrSubtype(type)) {
                 if (var.hasInitializer()) {
                     // figure out the runtime type. If the variable is initialized, take the type from there
-                    TypeNode runtimeType = var.getInitializer().getFirstChildOfType(ASTExpression.class);
-                    if (runtimeType != null && runtimeType.getType() != null) {
+                    ASTExpression expression = var.getInitializer().getFirstChildOfType(ASTExpression.class);
+                    TypeNode runtimeType = expression;
+                    if (!isMethodCall(expression) && runtimeType != null && runtimeType.getType() != null) {
                         type = runtimeType;
                     }
                 }
@@ -173,6 +174,13 @@ public class CloseResourceRule extends AbstractJavaRule {
             ensureClosed((ASTLocalVariableDeclaration) variableId.jjtGetParent().jjtGetParent(), variableId,
                     entry.getValue(), data);
         }
+    }
+
+    private boolean isMethodCall(ASTExpression expression) {
+        return expression != null
+             && expression.jjtGetNumChildren() > 0
+             && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
+             && !expression.jjtGetChild(0).findChildrenOfType(ASTPrimarySuffix.class).isEmpty();
     }
 
     private boolean isResourceTypeOrSubtype(TypeNode refType) {
@@ -388,9 +396,12 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         // if all is not well, complain
         if (!closed) {
+            ASTLocalVariableDeclaration localVarDecl = id.getFirstParentOfType(ASTLocalVariableDeclaration.class);
             Class<?> typeClass = type.getType();
             if (typeClass != null) {
                 addViolation(data, id, typeClass.getSimpleName());
+            } else if (localVarDecl != null && localVarDecl.getTypeNode() != null) {
+                addViolation(data, id, localVarDecl.getTypeNode().getTypeImage());
             } else {
                 addViolation(data, id, id.getVariableName());
             }

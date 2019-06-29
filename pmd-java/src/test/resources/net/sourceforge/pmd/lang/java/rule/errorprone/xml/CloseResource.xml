@@ -918,4 +918,59 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Correctly determine the type with method calls</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this Connection object are closed after use</message>
+            <message>Ensure that resources like this PreparedStatement object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.sql.*;
+
+public class CloseResourceSQL {
+    public void run() {
+        try {
+            Connection con = DataSourceUtils.getConnection(ds);
+            PreparedStatement ps = con.prepareStatement("some SQL statement");
+            DataSourceUtils.applyTransactionTimeout(ps, ds);
+        } catch (SQLException ex) {
+            throw new RuntimeException("", ex);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JMS Connections without auxclasspath</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this Connection object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+// javax.jms.* is not on the (aux)classpath during unit tests
+import javax.jms.Connection;
+import javax.jms.Session;
+
+public class CloseResourceJMS {
+    public void run() {
+        Session session = resourceFactory.getSession(resourceHolder);
+        if (session != null) {
+            if (startConnection) {
+                Connection con = resourceFactory.getConnection(resourceHolder);
+                if (con != null) {
+                    con.start();
+                }
+            }
+            return session;
+        }
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
