@@ -1816,7 +1816,7 @@ void FromClauseEntry() #void :
  |
      LOOKAHEAD(<IDENTIFIER> "(", {isKeyword("XMLTABLE")}) XMLTable() [ LOOKAHEAD(2) TableAlias() ]
  |
-     LOOKAHEAD(3) TableReference()
+     LOOKAHEAD(3) (TableReference() (JoinClausePart())*) #JoinClause(>1)
  |
      "(" JoinClause() ")"
  )
@@ -2000,14 +2000,18 @@ ASTJoinClause JoinClause() :
 {}
 {
     TableReferenceInJoin()
-    (
+    (JoinClausePart())+
+    { return jjtThis; }
+}
+
+void JoinClausePart() #void :
+{}
+{
         LOOKAHEAD(2) InnerCrossJoinClause()
     |
         LOOKAHEAD(2) OuterJoinClause()
     |
         LOOKAHEAD(2) CrossOuterApplyClause()
-    )+
-    { return jjtThis; }
 }
 
 ASTInnerCrossJoinClause InnerCrossJoinClause() :

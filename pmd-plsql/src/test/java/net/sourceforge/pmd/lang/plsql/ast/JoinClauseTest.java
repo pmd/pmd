@@ -82,9 +82,14 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         List<ASTOuterJoinClause> joins = input.findDescendantsOfType(ASTOuterJoinClause.class);
-        Assert.assertEquals(1, joins.size());
+        Assert.assertEquals(2, joins.size());
         ASTOuterJoinType type = joins.get(0).getFirstChildOfType(ASTOuterJoinType.class);
         Assert.assertEquals(ASTOuterJoinType.Type.LEFT, type.getType());
+
+        List<ASTSelectStatement> selects = input.findDescendantsOfType(ASTSelectStatement.class);
+        Assert.assertEquals(2, selects.size());
+        Assert.assertTrue(selects.get(0).getFromClause().jjtGetChild(0) instanceof ASTJoinClause);
+        Assert.assertTrue(selects.get(1).getFromClause().jjtGetChild(0) instanceof ASTJoinClause);
     }
 
     @Test

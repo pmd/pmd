@@ -83,6 +83,7 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     *   [#1850](https://github.com/pmd/pmd/issues/1850): \[plsql] Parsing errors with INSERT using returning or records and TRIM expression
     *   [#1873](https://github.com/pmd/pmd/issues/1873): \[plsql] Expression list not working
     *   [#1878](https://github.com/pmd/pmd/issues/1878): \[pslql] ParseException when parsing USING
+    *   [#1879](https://github.com/pmd/pmd/issues/1879): \[pslql] ParseException when parsing LEFT JOIN
 
 ### API Changes
 
