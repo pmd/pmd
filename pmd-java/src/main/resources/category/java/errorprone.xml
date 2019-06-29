@@ -1009,11 +1009,16 @@ public class MyClass implements Cloneable{
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#closeresource">
         <description>
 Ensure that resources (like `java.sql.Connection`, `java.sql.Statement`, and `java.sql.ResultSet` objects
-and any subtype of `java.io.Closeable`) are always closed after use.
+and any subtype of `java.lang.AutoCloseable`) are always closed after use.
 Failing to do so might result in resource leaks.
 
-Note: It suffices to configure the super type, e.g. `java.io.Closable`, so that this rule automatically triggers
-on any subtype (e.g. `java.io.FileInputStream`).
+Note: It suffices to configure the super type, e.g. `java.lang.AutoClosable`, so that this rule automatically triggers
+on any subtype (e.g. `java.io.FileInputStream`). Additionally specifying `java.sql.Connection` helps in detecting
+the types, if the type resolution / auxclasspath is not correctly setup.
+
+Note: Since PMD 6.16.0 the default value for the property `types` contains `java.lang.AutoCloseable` and detects
+now cases where the standard `java.io.*Stream` classes are involved. In order to restore the old behaviour,
+just remove "AutoCloseable" from the types.
         </description>
         <priority>3</priority>
         <example>
