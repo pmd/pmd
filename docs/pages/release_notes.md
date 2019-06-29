@@ -59,6 +59,13 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
     {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`).
 
+*   The Java rule {% rule "java/codestyle/CommentDefaultAccessModifier" %) (`java-codestyle`) was enhanced
+    in the last version 6.15.0 to check also top-level types by default. This created many new violations.
+    Missing the access modifier for top-level types is not so criticial, since it only decreases the visibility
+    of the type.
+    The default behaviour has been restored. If you want to enable the check for top-level types, you can
+    use the new property `checkTopLevelTypes`.
+
 ### Fixed Issues
 
 *   apex
@@ -69,6 +76,8 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
     *   [#1845](https://github.com/pmd/pmd/issues/1845): \[java] Regression in MethodReturnsInternalArray not handling enums
     *   [#1854](https://github.com/pmd/pmd/issues/1854): \[java] Rule to check for double brace initialisation
+*   java-codestyle
+    *   [#1880](https://github.com/pmd/pmd/issues/1880): \[java] CommentDefaultAccessModifier should be configurable for top-level classes
 *   java-design
     *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
 *   java-errorprone
