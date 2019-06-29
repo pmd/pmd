@@ -18,6 +18,7 @@ import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
@@ -160,6 +161,14 @@ public class CloseResourceRule extends AbstractJavaRule {
                     if (!isMethodCall(expression) && runtimeType != null && runtimeType.getType() != null) {
                         type = runtimeType;
                     }
+
+                    // consider cases, when the streams are chained
+                    // assumes, that the underlaying stream is always the first argument in the
+                    // constructor call.
+                    ASTExpression firstArgument = getAllocationFirstArgument(expression);
+                    if (firstArgument != null) {
+                        type = firstArgument;
+                    }
                 }
 
                 if (!isAllowedResourceType(type)) {
@@ -176,11 +185,22 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
     }
 
+    private ASTExpression getAllocationFirstArgument(ASTExpression expression) {
+        List<ASTAllocationExpression> allocations = expression.findDescendantsOfType(ASTAllocationExpression.class);
+        if (!allocations.isEmpty()) {
+            ASTArgumentList argumentList = allocations.get(allocations.size() - 1).getFirstDescendantOfType(ASTArgumentList.class);
+            if (argumentList != null) {
+                return argumentList.getFirstChildOfType(ASTExpression.class);
+            }
+        }
+        return null;
+    }
+
     private boolean isMethodCall(ASTExpression expression) {
         return expression != null
              && expression.jjtGetNumChildren() > 0
              && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
-             && !expression.jjtGetChild(0).findChildrenOfType(ASTPrimarySuffix.class).isEmpty();
+             && expression.jjtGetChild(0).getFirstChildOfType(ASTPrimarySuffix.class) != null;
     }
 
     private boolean isResourceTypeOrSubtype(TypeNode refType) {

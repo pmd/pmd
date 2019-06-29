@@ -1005,4 +1005,40 @@ public class CloseResourceTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>PrintWriter based on StringWriter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourcePrintWriter {
+    public String run1() {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        pw.println("Foo");
+        String result = sw.toString();
+        return result;
+    }
+
+    public String run2() {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+
+        pw.println("Foo");
+        String result = sw.toString();
+        return result;
+    }
+
+    public String run3() {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(new BufferedWriter(sw));
+
+        pw.println("Foo");
+        return sw.toString();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
