@@ -92,10 +92,24 @@ public class Fo$o {  // not a recommended name
     <rule name="AvoidFinalLocalVariable"
           language="java"
           since="4.1"
+          deprecated="true"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="Avoid using final local variables, turn them into fields"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidfinallocalvariable">
-        <description><![CDATA[Avoid using final local variables, turn them into fields. Note that this is a controversial rule which is merely useful to enforce a certain code style (which is contradictory to good coding practices in most of the cases it's applied to) and avoid local literals being declared in a scope smaller than the class. The rule is destined to be moved to the "controversial" ruleset again or removed alltogether, but not until 7.0.0, see https://github.com/pmd/pmd/issues/811 for the discussion about that.]]></description>
+        <description>
+Avoid using final local variables, turn them into fields.
+
+Note that this is a controversial rule which is merely useful to enforce a certain code style
+(which is contradictory to good coding practices in most of the cases it's applied to) and
+avoid local literals being declared in a scope smaller than the class.
+
+Also note, that this rule is the opposite of {% rule "java/codestyle/LocalVariableCouldBeFinal" %}.
+Having both rules enabled results in contradictory violations being reported.
+
+This rule is deprecated and will be removed with PMD 7.0.0. There is no replacement planned.
+If the goal is to avoid defining constants in a scope smaller than the class, then the rule
+{% rule "java/errorprone/AvoidDuplicateLiterals" %} should be used instead.
+        </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
