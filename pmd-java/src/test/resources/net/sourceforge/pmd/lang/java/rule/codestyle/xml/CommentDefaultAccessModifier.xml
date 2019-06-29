@@ -354,4 +354,25 @@ public class Foo {
             </expected-messages>
         <code-ref id="constructor-with-default-access-modifier-rule"/>
     </test-code>
+
+    <test-code>
+        <description>Nested classes inside interfaces</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface MyInterface {
+    class MyNestedClass {} // this is always implicitly public static
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested classes inside enum</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum MyEnum {
+    FOO;
+    class MyNestedClass {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

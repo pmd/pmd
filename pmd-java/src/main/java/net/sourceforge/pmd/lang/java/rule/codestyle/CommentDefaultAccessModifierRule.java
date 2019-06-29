@@ -108,7 +108,7 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
 
     @Override
     public Object visit(final ASTClassOrInterfaceDeclaration decl, final Object data) {
-        if (decl.isNested() && shouldReportTypeDeclaration(decl)) { // check for nested classes
+        if (decl.isNested() && shouldReport(decl)) { // check for nested classes
             addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "nested class"));
         } else if (!decl.isNested() && shouldReportTypeDeclaration(decl)) { // and for top-level ones
             addViolationWithMessage(data, decl, String.format(MESSAGE, decl.getImage(), "top-level class"));
