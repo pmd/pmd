@@ -27,6 +27,10 @@ public class Foo {
         <description>connection not closed, should have failed</description>
         <rule-property name="types">java.sql.Connection,java.sql.Statement,java.sql.ResultSet</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this Connection object are closed after use</message>
+        </expected-messages>
         <code><![CDATA[
 import java.sql.*;
 public class Foo {

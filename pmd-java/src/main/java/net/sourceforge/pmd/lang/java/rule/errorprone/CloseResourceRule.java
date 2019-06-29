@@ -110,8 +110,6 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
         if (getProperty(TYPES_DESCRIPTOR) != null) {
             types.addAll(getProperty(TYPES_DESCRIPTOR));
-        }
-        if (getProperty(TYPES_DESCRIPTOR) != null) {
             for (String type : getProperty(TYPES_DESCRIPTOR)) {
                 simpleTypes.add(toSimpleType(type));
             }
@@ -392,7 +390,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         if (!closed) {
             Class<?> typeClass = type.getType();
             if (typeClass != null) {
-                addViolation(data, id, typeClass.getName());
+                addViolation(data, id, typeClass.getSimpleName());
             } else {
                 addViolation(data, id, id.getVariableName());
             }
