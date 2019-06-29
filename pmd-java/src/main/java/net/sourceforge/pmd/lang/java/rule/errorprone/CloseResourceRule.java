@@ -42,7 +42,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -187,10 +189,25 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private ASTExpression getAllocationFirstArgument(ASTExpression expression) {
         List<ASTAllocationExpression> allocations = expression.findDescendantsOfType(ASTAllocationExpression.class);
+        ASTExpression firstArgument = null;
+
         if (!allocations.isEmpty()) {
             ASTArgumentList argumentList = allocations.get(allocations.size() - 1).getFirstDescendantOfType(ASTArgumentList.class);
             if (argumentList != null) {
-                return argumentList.getFirstChildOfType(ASTExpression.class);
+                firstArgument = argumentList.getFirstChildOfType(ASTExpression.class);
+            }
+        }
+
+        // the argument must not be a literal, it needs to be a Name referring to a variable
+        if (firstArgument != null && firstArgument.getFirstDescendantOfType(ASTName.class) != null) {
+            ASTName name = firstArgument.getFirstDescendantOfType(ASTName.class);
+
+            Map<VariableNameDeclaration, List<NameOccurrence>> vars = firstArgument.getScope()
+                    .getDeclarations(VariableNameDeclaration.class);
+            for (VariableNameDeclaration nameDecl : vars.keySet()) {
+                if (nameDecl.getName().equals(name.getImage())) {
+                    return firstArgument;
+                }
             }
         }
         return null;

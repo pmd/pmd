@@ -1041,4 +1041,29 @@ public class CloseResourcePrintWriter {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Correctly determine the type for the message</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this FileInputStream object are closed after use</message>
+            <message>Ensure that resources like this Scanner object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.*;
+import java.util.Scanner;
+
+public class CloseResourceCase {
+    public void run() {
+        try {
+            FileInputStream in = new FileInputStream("MyFile.txt");
+            Scanner input = new Scanner(System.in, "utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
