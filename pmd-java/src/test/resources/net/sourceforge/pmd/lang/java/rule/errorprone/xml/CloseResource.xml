@@ -1044,11 +1044,12 @@ public class CloseResourcePrintWriter {
 
     <test-code>
         <description>Correctly determine the type for the message</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>7,8</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,8,10</expected-linenumbers>
         <expected-messages>
             <message>Ensure that resources like this FileInputStream object are closed after use</message>
             <message>Ensure that resources like this Scanner object are closed after use</message>
+            <message>Ensure that resources like this FileInputStream object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
 import java.io.*;
@@ -1059,6 +1060,8 @@ public class CloseResourceCase {
         try {
             FileInputStream in = new FileInputStream("MyFile.txt");
             Scanner input = new Scanner(System.in, "utf-8");
+            String file = "MyFile.txt";
+            FileInputStream in2 = new FileInputStream(file);
         } catch (Exception e) {
             e.printStackTrace();
         }

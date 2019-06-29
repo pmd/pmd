@@ -205,7 +205,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             Map<VariableNameDeclaration, List<NameOccurrence>> vars = firstArgument.getScope()
                     .getDeclarations(VariableNameDeclaration.class);
             for (VariableNameDeclaration nameDecl : vars.keySet()) {
-                if (nameDecl.getName().equals(name.getImage())) {
+                if (nameDecl.getName().equals(name.getImage()) && isResourceTypeOrSubtype(firstArgument)) {
                     return firstArgument;
                 }
             }
