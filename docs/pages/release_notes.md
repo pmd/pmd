@@ -27,14 +27,16 @@ datetime field. Also date time literals are parsed now correctly.
 
 The CASE expression can now be properly used within SELECT statements.
 
+Table aliases are now supported when specifying columns in INSERT INTO clauses.
+
 #### New Rules
 
 *   The Java rule {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`)
     detects non static initializers in anonymous classes also known as "double brace initialization".
     This can be problematic, since a new class file is generated and object holds a strong reference
     to the surrounding class.
-
-Table aliases are now supported when specifying columns in INSERT INTO clauses.
+    
+    Note: This rule is also part of the Java quickstart ruleset (`rulesets/java/quickstart.xml`).
 
 #### Modified Rules
 
