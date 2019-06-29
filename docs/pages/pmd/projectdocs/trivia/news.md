@@ -20,7 +20,9 @@ author: Tom Copeland <tom@infoether.org>
 *   November 2016 - Recording of [Robert Sösemann](https://github.com/rsoesemann)'s Session at Salesforce Dreamforce Conference about enforcing Clean Code in the Salesforce world using PMD and other tools [Clean Apex Code with Automatic Code Metrics](https://www.youtube.com/watch?v=bW7m6y6bEug)
 
 
-### Other Language Modules
+### PMD in general and other Language Modules
+
+*   May 2019 - [Code quality assurance with PMD – An extensible static code analyser for Java and other languages](https://www.datarespons.com/code-quality-assurance-with-pmd/)
 
 *   February 2012 - Romain Pelisse's lightning talk at FOSDEM 2012 about "PMD5: What can it do for you?".
     [Video recording is available](http://video.fosdem.org/2012/lightningtalks/PMD5.webm).
