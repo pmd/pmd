@@ -1286,6 +1286,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
+
+<p>This PMD release ships a new version of the pmd-designer.
+For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.16.0">PMD Designer Changelog</a>.</p>
+
 <h4 id="plsql-grammar-updates">PLSQL Grammar Updates</h4>
 
 <p>The grammar has been updated to support inline constraints in CREATE TABLE statements. Additionally, the
@@ -1343,6 +1348,25 @@ By default, classes that are annotated with Lombok’s <code class="highlighter-
 non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
 <a href="pmd_rules_java_bestpractices.html#doublebraceinitialization"><code class="highlighter-rouge">DoubleBraceInitialization</code></a> (<code class="highlighter-rouge">java-bestpractices</code>).</p>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_codestyle.html#commentdefaultaccessmodifier"><code class="highlighter-rouge">CommentDefaultAccessModifier</code></a> (<code class="highlighter-rouge">java-errorprone</code>) now by default searches
+for any unclosed <code class="highlighter-rouge">java.lang.AutoCloseable</code> resource. This includes now the standard <code class="highlighter-rouge">java.io.*Stream</code> classes.
+Previously only SQL-related resources were considered by this rule. The types can still be configured
+via the <code class="highlighter-rouge">types</code> property. Some resources do not need to be closed (e.g. <code class="highlighter-rouge">ByteArrayOutputStream</code>). These
+exceptions can be configured via the new property <code class="highlighter-rouge">allowedResourceTypes</code>.
+In order to restore the old behaviour, just remove the type <code class="highlighter-rouge">java.lang.AutoCloseable</code> from the <code class="highlighter-rouge">types</code>
+property and keep the remaining SQL-related classes.</p>
+  </li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_codestyle.html#avoidfinallocalvariable"><code class="highlighter-rouge">AvoidFinalLocalVariable</code></a> (<code class="highlighter-rouge">java-codestyle</code>) has been deprecated
+and will be removed with PMD 7.0.0. The rule is controversial and also contradicts other existing
+rules such as <a href="pmd_rules_java_codestyle.html#localvariablecouldbefinal"><code class="highlighter-rouge">LocalVariableCouldBeFinal</code></a>. If the goal is to avoid defining
+constants in a scope smaller than the class, then the rule <a href="pmd_rules_java_errorprone.html#avoidduplicateliterals"><code class="highlighter-rouge">AvoidDuplicateLiterals</code></a>
+should be used instead.</li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1365,6 +1389,12 @@ non static initializers in anonymous classes anymore. For this use case, there i
       <li><a href="https://github.com/pmd/pmd/issues/1854">#1854</a>: [java] Rule to check for double brace initialisation</li>
     </ul>
   </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1612">#1612</a>: [java] Deprecate AvoidFinalLocalVariable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1880">#1880</a>: [java] CommentDefaultAccessModifier should be configurable for top-level classes</li>
+    </ul>
+  </li>
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1094">#1094</a>: [java] UseUtilityClass should be LombokAware</li>
@@ -1372,6 +1402,7 @@ non static initializers in anonymous classes anymore. For this use case, there i
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1000">#1000</a>: [java] The rule CloseResource should deal with IO stream as default</li>
       <li><a href="https://github.com/pmd/pmd/issues/1853">#1853</a>: [java] False positive for NonStaticInitializer in anonymous class</li>
     </ul>
   </li>
@@ -1423,6 +1454,7 @@ of deprecations.</p>
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1482">#1482</a>: [java] Explain the existence of AvoidFinalLocalVariable in it’s description - <a href="https://github.com/krichter722">Karl-Philipp Richter</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1792">#1792</a>: [java] Added lombok.experimental to AbstractLombokAwareRule - <a href="https://github.com/jakivey32">jakivey32</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1808">#1808</a>: [plsql] Fix PL/SQL Syntax errors - <a href="https://github.com/kabroxiko">Hugo Araya Nash</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1829">#1829</a>: [java] Fix false negative in UnsynchronizedStaticFormatter - <a href="https://github.com/Srini1993">Srinivasan Venkatachalam</a></li>
@@ -1454,7 +1486,7 @@ of deprecations.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 29, 2019 <br />
+ Site last generated: Jun 30, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

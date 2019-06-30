@@ -1419,11 +1419,24 @@ Classes with solely static members are ignored, refer to <a href="pmd_rules_java
 
 <h2 id="avoidfinallocalvariable">AvoidFinalLocalVariable</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.1</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Avoid using final local variables, turn them into fields.</p>
+
+<p>Note that this is a controversial rule which is merely useful to enforce a certain code style
+(which is contradictory to good coding practices in most of the cases it’s applied to) and
+avoid local literals being declared in a scope smaller than the class.</p>
+
+<p>Also note, that this rule is the opposite of <a href="pmd_rules_java_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a>.
+Having both rules enabled results in contradictory violations being reported.</p>
+
+<p>This rule is deprecated and will be removed with PMD 7.0.0. There is no replacement planned.
+If the goal is to avoid defining constants in a scope smaller than the class, then the rule
+<a href="pmd_rules_java_codestyle.html#quot"><code class="highlighter-rouge">quot</code></a> should be used instead.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="w">
@@ -1851,6 +1864,12 @@ property "ignoredAnnotations" to customize the recognized annotations.</p>
       <td>Regular expression</td>
       <td>no</td>
     </tr>
+    <tr>
+      <td>checkTopLevelTypes</td>
+      <td>false</td>
+      <td>Check for default access modifier in top-level classes, annotations, and enums</td>
+      <td>no</td>
+    </tr>
   </tbody>
 </table>
 
@@ -1863,6 +1882,7 @@ property "ignoredAnnotations" to customize the recognized annotations.</p>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoredAnnotations"</span> <span class="na">value=</span><span class="s">"com.google.common.annotations.VisibleForTesting|android.support.annotation.VisibleForTesting"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"regex"</span> <span class="na">value=</span><span class="s">"\/\*\s+(default|package)\s+\*\/"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkTopLevelTypes"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -4409,7 +4429,7 @@ by the rule <a href="pmd_rules_java_codestyle.html#controlstatementbraces"><code
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jun 29, 2019 <br />
+ Site last generated: Jun 30, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
