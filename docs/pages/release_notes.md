@@ -61,6 +61,14 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
     {% rule "java/bestpractices/DoubleBraceInitialization" %} (`java-bestpractices`).
 
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/codestyle/AvoidFinalLocalVariable" %} (`java-codestyle`) has been deprecated
+    and will be removed with PMD 7.0.0. The rule is controversial and also contradicts other existing
+    rules such as {% rule "java/codestyle/LocalVariableCouldBeFinal" %}. If the goal is to avoid defining
+    constants in a scope smaller than the class, then the rule {% rule "java/errorprone/AvoidDuplicateLiterals" %}
+    should be used instead.
+
 ### Fixed Issues
 
 *   apex
@@ -71,6 +79,8 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     *   [#1703](https://github.com/pmd/pmd/issues/1703): \[java] UnusedPrivateField on member annotated with lombok @Delegate
     *   [#1845](https://github.com/pmd/pmd/issues/1845): \[java] Regression in MethodReturnsInternalArray not handling enums
     *   [#1854](https://github.com/pmd/pmd/issues/1854): \[java] Rule to check for double brace initialisation
+*   java-codestyle
+    *   [#1612](https://github.com/pmd/pmd/issues/1612): \[java] Deprecate AvoidFinalLocalVariable
 *   java-design
     *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
 *   java-errorprone
@@ -113,6 +123,7 @@ of deprecations.
 
 ### External Contributions
 
+*   [#1482](https://github.com/pmd/pmd/pull/1482): \[java] Explain the existence of AvoidFinalLocalVariable in it's description - [Karl-Philipp Richter](https://github.com/krichter722)
 *   [#1792](https://github.com/pmd/pmd/pull/1792): \[java] Added lombok.experimental to AbstractLombokAwareRule - [jakivey32](https://github.com/jakivey32)
 *   [#1808](https://github.com/pmd/pmd/pull/1808): \[plsql] Fix PL/SQL Syntax errors - [Hugo Araya Nash](https://github.com/kabroxiko)
 *   [#1829](https://github.com/pmd/pmd/pull/1829): \[java] Fix false negative in UnsynchronizedStaticFormatter - [Srinivasan Venkatachalam](https://github.com/Srini1993)
