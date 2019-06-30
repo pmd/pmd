@@ -126,11 +126,24 @@ public class Fo$o {  // not a recommended name
 
 ## AvoidFinalLocalVariable
 
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
 **Since:** PMD 4.1
 
 **Priority:** Medium (3)
 
 Avoid using final local variables, turn them into fields.
+
+Note that this is a controversial rule which is merely useful to enforce a certain code style
+(which is contradictory to good coding practices in most of the cases it's applied to) and
+avoid local literals being declared in a scope smaller than the class.
+
+Also note, that this rule is the opposite of {% rule &quot;java/codestyle/LocalVariableCouldBeFinal&quot; %}.
+Having both rules enabled results in contradictory violations being reported.
+
+This rule is deprecated and will be removed with PMD 7.0.0. There is no replacement planned.
+If the goal is to avoid defining constants in a scope smaller than the class, then the rule
+{% rule &quot;java/errorprone/AvoidDuplicateLiterals&quot; %} should be used instead.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -512,6 +525,7 @@ public class Foo {
 |----|-------------|-----------|-----------|
 |ignoredAnnotations|com.google.common.annotations.VisibleForTesting \| android.support.annotation.VisibleForTesting|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |regex|\\/\\\*\\s+(default\|package)\\s+\\\*\\/|Regular expression|no|
+|checkTopLevelTypes|false|Check for default access modifier in top-level classes, annotations, and enums|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -524,6 +538,7 @@ public class Foo {
     <properties>
         <property name="ignoredAnnotations" value="com.google.common.annotations.VisibleForTesting|android.support.annotation.VisibleForTesting" />
         <property name="regex" value="\/\*\s+(default|package)\s+\*\/" />
+        <property name="checkTopLevelTypes" value="false" />
     </properties>
 </rule>
 ```

@@ -1163,7 +1163,17 @@ public class MyClass implements Cloneable{
 
 **Priority:** Medium (3)
 
-Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
+Ensure that resources (like `java.sql.Connection`, `java.sql.Statement`, and `java.sql.ResultSet` objects
+and any subtype of `java.lang.AutoCloseable`) are always closed after use.
+Failing to do so might result in resource leaks.
+
+Note: It suffices to configure the super type, e.g. `java.lang.AutoClosable`, so that this rule automatically triggers
+on any subtype (e.g. `java.io.FileInputStream`). Additionally specifying `java.sql.Connection` helps in detecting
+the types, if the type resolution / auxclasspath is not correctly setup.
+
+Note: Since PMD 6.16.0 the default value for the property `types` contains `java.lang.AutoCloseable` and detects
+now cases where the standard `java.io.*Stream` classes are involved. In order to restore the old behaviour,
+just remove &quot;AutoCloseable&quot; from the types.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CloseResourceRule.java)
 
@@ -1171,17 +1181,28 @@ Ensure that resources (like Connection, Statement, and ResultSet objects) are al
 
 ``` java
 public class Bar {
-  public void foo() {
-    Connection c = pool.getConnection();
-    try {
-      // do stuff
-    } catch (SQLException ex) {
-     // handle exception
-    } finally {
-      // oops, should close the connection using 'close'!
-      // c.close();
+    public void withSQL() {
+        Connection c = pool.getConnection();
+        try {
+            // do stuff
+        } catch (SQLException ex) {
+           // handle exception
+        } finally {
+            // oops, should close the connection using 'close'!
+            // c.close();
+        }
     }
-  }
+
+    public void withFile() {
+        InputStream file = new FileInputStream(new File("/tmp/foo"));
+        try {
+            int c = file.in();
+        } catch (IOException e) {
+            // handle exception
+        } finally {
+            // TODO: close file
+        }
+    }
 }
 ```
 
@@ -1190,8 +1211,9 @@ public class Bar {
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
 |closeTargets||Methods which may close this resource|yes. Delimiter is ','.|
-|types|java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
+|types|java.lang.AutoCloseable , java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
 |closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
+|allowedResourceTypes|java.io.ByteArrayOutputStream \| java.io.StringWriter|Exact class names that do not need to be closed|yes. Delimiter is '\|'.|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -1203,8 +1225,9 @@ public class Bar {
 <rule ref="category/java/errorprone.xml/CloseResource">
     <properties>
         <property name="closeTargets" value="" />
-        <property name="types" value="java.sql.Connection,java.sql.Statement,java.sql.ResultSet" />
+        <property name="types" value="java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet" />
         <property name="closeAsDefaultTarget" value="true" />
+        <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream|java.io.StringWriter" />
     </properties>
 </rule>
 ```
