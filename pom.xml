@@ -285,7 +285,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <pmd.build-tools.version>3</pmd.build-tools.version>
 
-        <pmd-designer.version>6.14.0</pmd-designer.version>
+        <pmd-designer.version>6.16.0</pmd-designer.version>
     </properties>
 
     <build>
