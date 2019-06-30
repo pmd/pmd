@@ -69,6 +69,14 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     The default behaviour has been restored. If you want to enable the check for top-level types, you can
     use the new property `checkTopLevelTypes`.
 
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now by default searches
+    for any unclosed `java.lang.AutoCloseable` resource. This includes now the standard `java.io.*Stream` classes.
+    Previously only SQL-related resources were considered by this rule. The types can still be configured
+    via the `types` property. Some resources do not need to be closed (e.g. `ByteArrayOutputStream`). These
+    exceptions can be configured via the new property `allowedResourceTypes`.
+    In order to restore the old behaviour, just remove the type `java.lang.AutoCloseable` from the `types`
+    property and keep the remaining SQL-related classes.
+
 #### Deprecated Rules
 
 *   The Java rule {% rule "java/codestyle/AvoidFinalLocalVariable" %} (`java-codestyle`) has been deprecated
@@ -93,6 +101,7 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
 *   java-design
     *   [#1094](https://github.com/pmd/pmd/issues/1094): \[java] UseUtilityClass should be LombokAware
 *   java-errorprone
+    *   [#1000](https://github.com/pmd/pmd/issues/1000): \[java] The rule CloseResource should deal with IO stream as default
     *   [#1853](https://github.com/pmd/pmd/issues/1853): \[java] False positive for NonStaticInitializer in anonymous class
 *   java-multithreading
     *   [#1814](https://github.com/pmd/pmd/issues/1814): \[java] UnsynchronizedStaticFormatter documentation and implementation wrong

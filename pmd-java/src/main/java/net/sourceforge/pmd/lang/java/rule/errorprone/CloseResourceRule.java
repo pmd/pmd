@@ -8,19 +8,23 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jaxen.JaxenException;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -29,13 +33,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -69,37 +78,45 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
             stringListProperty("types")
                     .desc("Affected types")
-                    .defaultValues("java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
+                    .defaultValues("java.lang.AutoCloseable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
                     .delim(',').build();
 
     private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
             booleanProperty("closeAsDefaultTarget")
                     .desc("Consider 'close' as a target by default").defaultValue(true).build();
 
+    private static final PropertyDescriptor<List<String>> ALLOWED_RESOURCE_TYPES =
+            stringListProperty("allowedResourceTypes")
+            .desc("Exact class names that do not need to be closed")
+            .defaultValues("java.io.ByteArrayOutputStream", "java.io.StringWriter")
+            .build();
+
 
     public CloseResourceRule() {
         definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
         definePropertyDescriptor(TYPES_DESCRIPTOR);
         definePropertyDescriptor(USE_CLOSE_AS_DEFAULT_TARGET);
+        definePropertyDescriptor(ALLOWED_RESOURCE_TYPES);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
-        if (closeTargets.isEmpty() && getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
+    public void start(RuleContext ctx) {
+        closeTargets.clear();
+        simpleTypes.clear();
+        types.clear();
+
+        if (getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
             closeTargets.addAll(getProperty(CLOSE_TARGETS_DESCRIPTOR));
         }
         if (getProperty(USE_CLOSE_AS_DEFAULT_TARGET) && !closeTargets.contains("close")) {
             closeTargets.add("close");
         }
-        if (types.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
+        if (getProperty(TYPES_DESCRIPTOR) != null) {
             types.addAll(getProperty(TYPES_DESCRIPTOR));
-        }
-        if (simpleTypes.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
             for (String type : getProperty(TYPES_DESCRIPTOR)) {
                 simpleTypes.add(toSimpleType(type));
             }
         }
-        return super.visit(node, data);
     }
 
     private static String toSimpleType(String fullyQualifiedClassName) {
@@ -124,34 +141,118 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private void checkForResources(Node node, Object data) {
-        List<ASTLocalVariableDeclaration> vars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
-        List<ASTVariableDeclaratorId> ids = new ArrayList<>();
+        List<ASTLocalVariableDeclaration> localVars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
+        List<ASTVariableDeclarator> vars = new ArrayList<>();
+        Map<ASTVariableDeclaratorId, TypeNode> ids = new HashMap<>();
+
+        // find all variable declarators
+        for (ASTLocalVariableDeclaration localVar : localVars) {
+            vars.addAll(localVar.findChildrenOfType(ASTVariableDeclarator.class));
+        }
 
         // find all variable references to Connection objects
-        for (ASTLocalVariableDeclaration var : vars) {
-            ASTType type = var.getTypeNode();
+        for (ASTVariableDeclarator var : vars) {
+            // get the type of the local var declaration
+            TypeNode type = ((ASTLocalVariableDeclaration) var.jjtGetParent()).getTypeNode();
 
-            if (type != null && type.jjtGetChild(0) instanceof ASTReferenceType) {
-                ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
-                if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
-
-                    if (clazz.getType() != null && types.contains(clazz.getType().getName())
-                            || clazz.getType() == null && simpleTypes.contains(toSimpleType(clazz.getImage()))
-                                    && !clazz.isReferenceToClassSameCompilationUnit()
-                            || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
-
-                        ASTVariableDeclaratorId id = var.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
-                        ids.add(id);
+            if (type != null && isResourceTypeOrSubtype(type)) {
+                if (var.hasInitializer()) {
+                    // figure out the runtime type. If the variable is initialized, take the type from there
+                    ASTExpression expression = var.getInitializer().getFirstChildOfType(ASTExpression.class);
+                    TypeNode runtimeType = expression;
+                    if (!isMethodCall(expression) && runtimeType != null && runtimeType.getType() != null) {
+                        type = runtimeType;
                     }
+
+                    // consider cases, when the streams are chained
+                    // assumes, that the underlaying stream is always the first argument in the
+                    // constructor call.
+                    ASTExpression firstArgument = getAllocationFirstArgument(expression);
+                    if (firstArgument != null) {
+                        type = firstArgument;
+                    }
+                }
+
+                if (!isAllowedResourceType(type)) {
+                    ids.put(var.getVariableId(), type);
                 }
             }
         }
 
         // if there are connections, ensure each is closed.
-        for (ASTVariableDeclaratorId x : ids) {
-            ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
+        for (Map.Entry<ASTVariableDeclaratorId, TypeNode> entry : ids.entrySet()) {
+            ASTVariableDeclaratorId variableId = entry.getKey();
+            ensureClosed((ASTLocalVariableDeclaration) variableId.jjtGetParent().jjtGetParent(), variableId,
+                    entry.getValue(), data);
         }
+    }
+
+    private ASTExpression getAllocationFirstArgument(ASTExpression expression) {
+        List<ASTAllocationExpression> allocations = expression.findDescendantsOfType(ASTAllocationExpression.class);
+        ASTExpression firstArgument = null;
+
+        if (!allocations.isEmpty()) {
+            ASTArgumentList argumentList = allocations.get(allocations.size() - 1).getFirstDescendantOfType(ASTArgumentList.class);
+            if (argumentList != null) {
+                firstArgument = argumentList.getFirstChildOfType(ASTExpression.class);
+            }
+        }
+
+        // the argument must not be a literal, it needs to be a Name referring to a variable
+        if (firstArgument != null && firstArgument.getFirstDescendantOfType(ASTName.class) != null) {
+            ASTName name = firstArgument.getFirstDescendantOfType(ASTName.class);
+
+            Map<VariableNameDeclaration, List<NameOccurrence>> vars = firstArgument.getScope()
+                    .getDeclarations(VariableNameDeclaration.class);
+            for (VariableNameDeclaration nameDecl : vars.keySet()) {
+                if (nameDecl.getName().equals(name.getImage()) && isResourceTypeOrSubtype(firstArgument)) {
+                    return firstArgument;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isMethodCall(ASTExpression expression) {
+        return expression != null
+             && expression.jjtGetNumChildren() > 0
+             && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
+             && expression.jjtGetChild(0).getFirstChildOfType(ASTPrimarySuffix.class) != null;
+    }
+
+    private boolean isResourceTypeOrSubtype(TypeNode refType) {
+        if (refType.getType() != null) {
+            for (String type : types) {
+                if (TypeHelper.isA(refType, type)) {
+                    return true;
+                }
+            }
+        } else if (refType.jjtGetChild(0) instanceof ASTReferenceType) {
+            // no type information (probably missing auxclasspath) - use simple types
+            ASTReferenceType ref = (ASTReferenceType) refType.jjtGetChild(0);
+            if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
+                if (simpleTypes.contains(toSimpleType(clazz.getImage())) && !clazz.isReferenceToClassSameCompilationUnit()
+                        || types.contains(clazz.getImage()) && !clazz.isReferenceToClassSameCompilationUnit()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isAllowedResourceType(TypeNode refType) {
+        List<String> allowedResourceTypes = getProperty(ALLOWED_RESOURCE_TYPES);
+        if (refType.getType() != null && allowedResourceTypes != null) {
+            for (String type : allowedResourceTypes) {
+                // the check here must be a exact type match, since subclasses may override close()
+                // and actually require closing
+                if (TypeHelper.isExactlyA(refType, type)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean hasNullInitializer(ASTLocalVariableDeclaration var) {
@@ -168,7 +269,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         return false;
     }
 
-    private void ensureClosed(ASTLocalVariableDeclaration var, ASTVariableDeclaratorId id, Object data) {
+    private void ensureClosed(ASTLocalVariableDeclaration var, ASTVariableDeclaratorId id, TypeNode type, Object data) {
         // What are the chances of a Connection being instantiated in a
         // for-loop init block? Anyway, I'm lazy!
         String variableToClose = id.getImage();
@@ -303,6 +404,15 @@ public class CloseResourceRule extends AbstractJavaRule {
                 if (closed) {
                     break;
                 }
+            } else if (t.isTryWithResources()) {
+                // maybe the variable is used as a resource
+                List<ASTName> names = t.getFirstChildOfType(ASTResourceSpecification.class).findDescendantsOfType(ASTName.class);
+                for (ASTName potentialUsage : names) {
+                    if (potentialUsage.hasImageEqualTo(variableToClose)) {
+                        closed = true;
+                        break;
+                    }
+                }
             }
         }
 
@@ -323,10 +433,15 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         // if all is not well, complain
         if (!closed) {
-            ASTType type = var.getFirstChildOfType(ASTType.class);
-            ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
-            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
-            addViolation(data, id, clazz.getImage());
+            ASTLocalVariableDeclaration localVarDecl = id.getFirstParentOfType(ASTLocalVariableDeclaration.class);
+            Class<?> typeClass = type.getType();
+            if (typeClass != null) {
+                addViolation(data, id, typeClass.getSimpleName());
+            } else if (localVarDecl != null && localVarDecl.getTypeNode() != null) {
+                addViolation(data, id, localVarDecl.getTypeNode().getTypeImage());
+            } else {
+                addViolation(data, id, id.getVariableName());
+            }
         }
     }
 
