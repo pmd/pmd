@@ -79,7 +79,15 @@ Table aliases are now supported when specifying columns in INSERT INTO clauses.
     non static initializers in anonymous classes anymore. For this use case, there is a new rule now:
     [`DoubleBraceInitialization`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_bestpractices.html#doublebraceinitialization) (`java-bestpractices`).
 
-*   The Java rule [`CommentDefaultAccessModifier`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier) (`java-errorprone`) now by default searches
+*   The Java rule [`CommentDefaultAccessModifier`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_codestyle.html#commentdefaultaccessmodifier) (`java-codestyle`) was enhanced
+    in the last version 6.15.0 to check also top-level types by default. This created many new violations.
+    Missing the access modifier for top-level types is not so critical, since it only decreases the visibility
+    of the type.
+    
+    The default behaviour has been restored. If you want to enable the check for top-level types, you can
+    use the new property `checkTopLevelTypes`.
+
+*   The Java rule [`CloseResource`](https://pmd.github.io/pmd-6.16.0/pmd_rules_java_errorprone.html#closeresource) (`java-errorprone`) now by default searches
     for any unclosed `java.lang.AutoCloseable` resource. This includes now the standard `java.io.*Stream` classes.
     Previously only SQL-related resources were considered by this rule. The types can still be configured
     via the `types` property. Some resources do not need to be closed (e.g. `ByteArrayOutputStream`). These
