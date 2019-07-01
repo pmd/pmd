@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -18,17 +16,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * <pre class="grammar">
  *
- * EnumDeclaration ::= EnumModifier*
+ * EnumDeclaration ::= {@link ASTModifierList ModifierList}
  *                     "enum"
  *                     &lt;IDENTIFIER&gt;
  *                     {@linkplain ASTImplementsList ImplementsList}?
  *                     {@link ASTEnumBody EnumBody}
- *
- *
- *
- * EnumModifier ::= "public" | "private"  | "protected"
- *                | "strictfp" | "static"
- *                | {@linkplain ASTAnnotation Annotation}
  *
  * </pre>
  */
@@ -56,16 +48,8 @@ public final class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {
         return TypeKind.ENUM;
     }
 
-    /**
-     * Returns the enum constants declared by this enum.
-     */
-    public List<ASTEnumConstant> getConstants() {
-        return getFirstChildOfType(ASTEnumBody.class).findChildrenOfType(ASTEnumConstant.class);
-    }
-
     @Override
-    public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
-        return getFirstChildOfType(ASTEnumBody.class)
-            .findChildrenOfType(ASTAnyTypeBodyDeclaration.class);
+    public ASTEnumBody getBody() {
+        return (ASTEnumBody) getLastChild();
     }
 }

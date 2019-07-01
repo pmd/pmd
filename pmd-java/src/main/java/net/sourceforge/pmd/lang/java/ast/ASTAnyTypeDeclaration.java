@@ -4,22 +4,32 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 
 
 /**
- * Groups enum, class, annotation and interface declarations.
- *
- * @author Clément Fournier
+ * Groups enum, class, annotation and interface declarations under a common
+ * supertype.
  */
-public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, JavaNode {
+public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, FinalizableNode {
+
+
+    /**
+     * @deprecated Use {@link #getBinaryName()}
+     */
+    @Override
+    @Deprecated
+    JavaTypeQualifiedName getQualifiedName();
+
 
 
     /**
@@ -47,6 +57,15 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
     // @NotNull
     String getBinaryName();
 
+    /**
+     * Returns true if this is an abstract type. Interfaces and annotations
+     * types are implicitly abstract.
+     */
+    @Override
+    default boolean isAbstract() {
+        return hasModifiers(ABSTRACT);
+    }
+
 
     /**
      * Finds the type kind of this declaration.
@@ -60,20 +79,30 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
 
 
     /**
+     * Returns the enum constants declared by this enum. If this is not
+     * an enum declaration, returns an empty stream.
+     */
+    default NodeStream<ASTEnumConstant> getEnumConstants() {
+        return getFirstChildOfType(ASTEnumBody.class).children(ASTEnumConstant.class);
+    }
+
+
+    /**
      * Retrieves the member declarations (fields, methods, classes, etc.) from the body of this type declaration.
      *
      * @return The member declarations declared in this type declaration
      */
-    List<ASTAnyTypeBodyDeclaration> getDeclarations();
+    default List<ASTAnyTypeBodyDeclaration> getDeclarations() {
+        return getBody().children(ASTAnyTypeBodyDeclaration.class).toList();
+    }
 
 
     /**
-     * @deprecated Use {@link #getBinaryName()}
+     * Returns the body of this type declaration.
      */
-    @Override
-    @Deprecated
-    JavaTypeQualifiedName getQualifiedName();
-
+    default ASTTypeBody getBody() {
+        return (ASTTypeBody) getLastChild();
+    }
 
     default List<ASTTypeParameter> getTypeParameters() {
         ASTTypeParameters parameters = getFirstChildOfType(ASTTypeParameters.class);
@@ -85,20 +114,63 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
     }
 
     /**
-     * Returns true if this type declaration is nested inside an interface, class or annotation.
+     * Returns true if this type declaration is nested inside an interface,
+     * class or annotation.
      */
     default boolean isNested() {
-        return getParent() instanceof ASTClassOrInterfaceBodyDeclaration
-            || getParent() instanceof ASTAnnotationTypeMemberDeclaration;
+        return getParent() instanceof ASTAnyTypeBodyDeclaration;
     }
 
 
     /**
-     * Returns true if this is a local class declaration.
+     * Returns true if the class is declared inside a block other
+     * than the body of another class, or the top level. Anonymous
+     * classes are not considered local. Only class declarations
+     * can be local. Local classes cannot be static.
      */
     default boolean isLocal() {
         return getParent() instanceof ASTLocalClassStatement;
     }
+
+
+
+    /**
+     * Returns true if this type is declared at the top-level of a file.
+     */
+    default boolean isTopLevel() {
+        return getParent() instanceof ASTTypeDeclaration;
+    }
+
+
+    /**
+     * Returns true if this is an {@linkplain ASTAnonymousClassDeclaration anonymous class declaration}.
+     */
+    default boolean isAnonymous() {
+        return this instanceof ASTAnonymousClassDeclaration;
+    }
+
+
+    /**
+     * Returns true if this is an {@linkplain ASTEnumDeclaration enum class declaration}.
+     */
+    default boolean isEnum() {
+        return this instanceof ASTEnumDeclaration;
+    }
+
+    /**
+     * Returns true if this is an interface type declaration (including
+     * annotation types). This is consistent with {@link Class#isInterface()}.
+     */
+    default boolean isInterface() {
+        return false;
+    }
+
+
+    /** Returns true if this is an {@linkplain ASTAnnotationTypeDeclaration annotation type declaration}. */
+    default boolean isAnnotation() {
+        return this instanceof ASTAnnotationTypeDeclaration;
+    }
+
 
 
     /**
@@ -125,27 +197,7 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
      */
     @Deprecated
     enum TypeKind {
-        CLASS, INTERFACE, ENUM, ANNOTATION;
-
-
-        public String getPrintableName() {
-            return name().toLowerCase(Locale.ROOT);
-        }
-
-
-        public static TypeKind ofClass(Class<?> clazz) {
-
-            if (clazz.isInterface()) {
-                return INTERFACE;
-            } else if (clazz.isEnum()) {
-                return ENUM;
-            } else if (clazz.isAnnotation()) {
-                return ANNOTATION;
-            } else {
-                return CLASS;
-            }
-
-        }
+        CLASS, INTERFACE, ENUM, ANNOTATION
     }
 
 }

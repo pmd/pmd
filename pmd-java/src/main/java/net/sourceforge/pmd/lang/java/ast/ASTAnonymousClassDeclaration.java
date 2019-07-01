@@ -4,23 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
-
-
 /**
- * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation expression}
+ * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
+ * expression}
  * or in an {@linkplain ASTEnumConstant enum constant declaration}.
  *
  *
  * <pre class="grammar">
  *
- * AnonymousClassDeclaration ::= {@link ASTClassOrInterfaceBody}
+ * AnonymousClassDeclaration ::= {@link ASTModifierList EmptyModifierList} {@link ASTClassOrInterfaceBody}
  *
  * </pre>
  */
-public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode implements JavaQualifiableNode {
-
-    private JavaTypeQualifiedName qualifiedName;
+public final class ASTAnonymousClassDeclaration extends AbstractAnyTypeDeclaration {
 
 
     ASTAnonymousClassDeclaration(int id) {
@@ -35,6 +31,11 @@ public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode imp
 
 
     @Override
+    public Visibility getVisibility() {
+        return Visibility.V_ANONYMOUS;
+    }
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -45,27 +46,8 @@ public final class ASTAnonymousClassDeclaration extends AbstractJavaTypeNode imp
         visitor.visit(this, data);
     }
 
-
-    /**
-     * Returns the body of the anonymous class.
-     */
-    public ASTClassOrInterfaceBody getBody() {
-        return (ASTClassOrInterfaceBody) getChild(0);
-    }
-
-
-    /**
-     * Returns the qualified name of the anonymous class
-     * declared by this node.
-     */
     @Override
-    public JavaTypeQualifiedName getQualifiedName() {
-        return qualifiedName;
+    public TypeKind getTypeKind() {
+        return TypeKind.CLASS;
     }
-
-
-    public void setQualifiedName(JavaTypeQualifiedName qname) {
-        this.qualifiedName = qname;
-    }
-
 }

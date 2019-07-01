@@ -20,6 +20,8 @@ class ASTStatementsTest : ParserTestSpec({
                 foreachLoop {
 
                     it::getVariableId shouldBe fromChild<ASTLocalVariableDeclaration, ASTVariableDeclaratorId> {
+                        it::getModifiers shouldBe modifiers {}
+
                         it::getTypeNode shouldBe classType("Integer")
                         fromChild<ASTVariableDeclarator, ASTVariableDeclaratorId> {
                             variableId("i")
@@ -43,7 +45,9 @@ class ASTStatementsTest : ParserTestSpec({
                 foreachLoop {
 
                     localVarDecl {
-                        annotation("Nullable")
+                        it::getModifiers shouldBe modifiers {
+                            annotation("Nullable")
+                        }
                         classType("Integer")
                         variableDeclarator("i")
                     }

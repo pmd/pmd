@@ -4,6 +4,7 @@ import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
 import io.kotlintest.Matcher
 import io.kotlintest.Result
+import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.matchers.string.shouldContain
 import io.kotlintest.shouldThrow
 import net.sourceforge.pmd.lang.ast.Node
@@ -101,6 +102,13 @@ private val javaImplicitAssertions: Assertions<Node> = {
         assert(it.numChildren > 0) {
             "Expected at least one child for $it"
         }
+    }
+
+    if (it is AccessNode) run {
+        it.modifiers.effectiveModifiers.shouldContainAll(it.modifiers.explicitModifiers)
+        it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.PUBLIC, JModifier.PRIVATE, JModifier.PROTECTED)
+        it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.FINAL, JModifier.ABSTRACT)
+        it.modifiers.effectiveModifiers.shouldContainAtMostOneOf(JModifier.DEFAULT, JModifier.ABSTRACT)
     }
 
 }

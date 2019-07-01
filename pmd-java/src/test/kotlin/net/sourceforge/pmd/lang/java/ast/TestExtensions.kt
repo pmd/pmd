@@ -1,9 +1,13 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
+import io.kotlintest.Matcher
+import io.kotlintest.Result
+import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.haveSize
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.should
+import io.kotlintest.shouldNotBe
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.NodeSpec
@@ -14,6 +18,31 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
+
+fun <T, C : Collection<T>> C?.shouldContainAtMostOneOf(vararg expected: T) {
+    this shouldNotBe null
+    assert(this!!.intersect(setOf(expected)).size <= 1) {
+        "$this should contain exactly one of ${expected.toSet()}"
+    }
+}
+
+
+fun haveModifier(mod: JModifier): Matcher<AccessNode> = object : Matcher<AccessNode> {
+    override fun test(value: AccessNode): Result =
+            Result(value.hasModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
+}
+
+fun haveExplicitModifier(mod: JModifier): Matcher<AccessNode> = object : Matcher<AccessNode> {
+    override fun test(value: AccessNode): Result {
+        return Result(value.hasExplicitModifiers(mod), "Expected $value to have modifier $mod", "Expected $value to not have modifier $mod")
+    }
+}
+
+fun haveVisibility(vis: AccessNode.Visibility): Matcher<AccessNode> = object : Matcher<AccessNode> {
+    override fun test(value: AccessNode): Result =
+            Result(value.visibility == vis, "Expected $value to have visibility $vis", "Expected $value to not have visibility $vis")
+}
+
 
 infix fun <T, U : T> Optional<T>.shouldBePresent(any: U) {
     ::isPresent shouldBe true
@@ -49,6 +78,19 @@ fun String.addArticle() = when (this[0].toLowerCase()) {
     else -> "a $this"
 }
 
+
+fun TreeNodeWrapper<Node, *>.modifiers(spec: ValuedNodeSpec<ASTModifierList, Unit> = EmptyAssertions) =
+        child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
+
+fun TreeNodeWrapper<Node, *>.localVarModifiers(spec: ValuedNodeSpec<ASTModifierList, Unit> = EmptyAssertions) =
+        child<ASTModifierList>(ignoreChildren = spec == EmptyAssertions) {
+
+            // at most "final"
+            (it.explicitModifiers - JModifier.FINAL).shouldBeEmpty()
+            (it.effectiveModifiers - JModifier.FINAL).shouldBeEmpty()
+
+            spec()
+        }
 
 fun TreeNodeWrapper<Node, *>.annotation(spec: ValuedNodeSpec<ASTAnnotation, Unit> = EmptyAssertions) =
         child(ignoreChildren = spec == EmptyAssertions, nodeSpec = spec)
@@ -87,6 +129,16 @@ fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<
         child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getVariableName shouldBe name
             otherAssertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.simpleLambdaParam(name: String, otherAssertions: NodeSpec<ASTVariableDeclaratorId> = EmptyAssertions) =
+        child<ASTLambdaParameter> {
+            it::getModifiers shouldBe modifiers {  }
+
+            child<ASTVariableDeclaratorId>(ignoreChildren = otherAssertions == EmptyAssertions) {
+                it::getVariableName shouldBe name
+                otherAssertions()
+            }
         }
 
 fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: NodeSpec<ASTVariableDeclarator> = EmptyAssertions) =
@@ -569,6 +621,6 @@ fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<
         }
 
 fun TreeNodeWrapper<Node, *>.typeBody(contents: NodeSpec<ASTTypeBody> = EmptyAssertions) =
-        child<ASTTypeBody> {
+        child<ASTTypeBody>(ignoreChildren = contents == EmptyAssertions) {
             contents()
         }

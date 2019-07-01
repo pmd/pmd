@@ -33,7 +33,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
@@ -296,7 +295,7 @@ public class ClassScope extends AbstractJavaScope {
     private MethodNameDeclaration createBuiltInMethodDeclaration(final String methodName,
             final String... parameterTypes) {
         ASTMethodDeclaration methodDeclaration = new ASTMethodDeclaration(0);
-        InternalApiBridge.setModifier(methodDeclaration, AccessNode.PUBLIC);
+        // InternalApiBridge.setModifier(methodDeclaration, JModifier.PUBLIC);
         InternalApiBridge.setScope(methodDeclaration, this);
 
         methodDeclaration.setImage(methodName);

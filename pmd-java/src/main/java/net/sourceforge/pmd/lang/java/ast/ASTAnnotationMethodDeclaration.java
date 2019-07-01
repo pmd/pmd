@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
  *     enclosing type is an annotation.
  */
 @Deprecated
-public final class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode {
+public final class ASTAnnotationMethodDeclaration extends AbstractJavaNode implements AccessNode {
 
     ASTAnnotationMethodDeclaration(int id) {
         super(id);

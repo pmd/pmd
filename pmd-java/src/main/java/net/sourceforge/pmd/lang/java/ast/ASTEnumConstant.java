@@ -11,14 +11,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * EnumConstant ::= {@link ASTAnnotation Annotation}* {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
+ * EnumConstant ::= {@link ASTModifierList AnnotationList} {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
 public final class ASTEnumConstant extends AbstractJavaNode
     implements Annotatable,
+               AccessNode,
                InternalInterfaces.VariableIdOwner {
-
 
     ASTEnumConstant(int id) {
         super(id);

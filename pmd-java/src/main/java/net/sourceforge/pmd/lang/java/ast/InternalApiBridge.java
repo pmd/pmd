@@ -40,25 +40,23 @@ public final class InternalApiBridge {
         ((AbstractJavaNode) node).comment(comment);
     }
 
-    public static void setModifier(AccessNode node, int modifier) {
-        ((AbstractJavaAccessNode) node).setModifier(true, modifier);
-    }
-
     public static void setQname(ASTAnyTypeDeclaration declaration, JavaTypeQualifiedName qualifiedName) {
         ((AbstractAnyTypeDeclaration) declaration).setQualifiedName(qualifiedName);
     }
 
     public static void setQname(MethodLikeNode node, JavaOperationQualifiedName qualifiedName) {
-        ((AbstractMethodLikeNode) node).setQualifiedName(qualifiedName);
+        if (node instanceof ASTLambdaExpression) {
+            ((ASTLambdaExpression) node).setQualifiedName(qualifiedName);
+        } else if (node instanceof AbstractMethodOrConstructorDeclaration) {
+            ((AbstractMethodOrConstructorDeclaration) node).setQualifiedName(qualifiedName);
+        }
     }
 
     public static void setTypeDefinition(TypeNode node, JavaTypeDefinition definition) {
         if (node instanceof AbstractJavaTypeNode) {
             ((AbstractJavaTypeNode) node).setTypeDefinition(definition);
-        } else if (node instanceof AbstractJavaAccessTypeNode) {
-            ((AbstractJavaAccessTypeNode) node).setTypeDefinition(definition);
-        } else if (node instanceof ASTLambdaExpression) {
-            ((ASTLambdaExpression) node).setTypeDefinition(definition);
+        } else if (node instanceof AbstractAnyTypeDeclaration) {
+            ((AbstractAnyTypeDeclaration) node).setTypeDefinition(definition);
         }
     }
 

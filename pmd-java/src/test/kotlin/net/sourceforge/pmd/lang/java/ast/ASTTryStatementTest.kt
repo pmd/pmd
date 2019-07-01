@@ -24,7 +24,11 @@ class ASTTryStatementTest : ParserTestSpec({
                     it::getStableName shouldBe "a"
 
                     it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
-                        it::isFinal shouldBe false
+                        it::getModifiers shouldBe localVarModifiers {
+                            it::getExplicitModifiers shouldBe emptySet()
+                            it::getEffectiveModifiers shouldBe setOf(JModifier.FINAL)
+                        }
+
                         classType("Foo")
                         fromChild<ASTVariableDeclarator, ASTExpression> {
                             variableId("a")
@@ -45,7 +49,10 @@ class ASTTryStatementTest : ParserTestSpec({
                     it::getStableName shouldBe "a"
 
                     it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
-                        it::isFinal shouldBe true
+                        it::getModifiers shouldBe localVarModifiers {
+                            it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
+                            it::getEffectiveModifiers shouldBe setOf(JModifier.FINAL)
+                        }
                         classType("Foo")
                         fromChild<ASTVariableDeclarator, ASTExpression> {
                             variableId("a")

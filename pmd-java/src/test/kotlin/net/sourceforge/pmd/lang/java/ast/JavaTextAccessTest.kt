@@ -25,6 +25,10 @@ class JavaTextAccessTest : ParserTestSpec({
 
                 it.textStr shouldBe "int a = ((3));"
 
+                modifiers {
+                    it.textStr shouldBe ""
+                }
+
                 primitiveType(INT) {
                     it.textStr shouldBe "int"
                 }
@@ -40,6 +44,10 @@ class JavaTextAccessTest : ParserTestSpec({
             "int a = ((a)).f;" should matchStmt<ASTLocalVariableDeclaration> {
 
                 it.textStr shouldBe "int a = ((a)).f;"
+
+                modifiers {
+                    it.textStr shouldBe ""
+                }
 
                 primitiveType(INT) {
                     it.textStr shouldBe "int"
@@ -61,6 +69,10 @@ class JavaTextAccessTest : ParserTestSpec({
             "int a = ((1 + 2) + f);" should matchStmt<ASTLocalVariableDeclaration> {
 
                 it.textStr shouldBe "int a = ((1 + 2) + f);"
+
+                modifiers {
+                    it.textStr shouldBe ""
+                }
 
                 primitiveType(INT) {
                     it.textStr shouldBe "int"

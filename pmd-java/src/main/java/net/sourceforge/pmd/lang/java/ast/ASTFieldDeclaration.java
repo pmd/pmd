@@ -15,30 +15,20 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaFieldSignature;
  * types (see {@link ASTVariableDeclaratorId#getType()}). The nodes
  * corresponding to the declared variables are accessible through {@link #iterator()}.
  *
- * <p>{@link AccessNode} methods take into account the syntactic context of the
- * declaration, e.g. {@link #isPublic()} will always return true if the field is
- * declared inside an interface, regardless of whether the {@code public} modifier
- * was specified or not. If you want to know whether the modifier was explicitly
- * stated, use e.g {@link #isSyntacticallyPublic()}.
- *
  * <pre class="grammar">
  *
- * FieldDeclaration ::= FieldModifier* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )* ";"
- *
- * FieldModifier ::= "public" | "static"    | "protected" | "private"
- *                 | "final"  | "transient" | "volatile"
- *                 | {@linkplain ASTAnnotation Annotation}
+ * FieldDeclaration ::= {@link ASTModifierList ModifierList} {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )* ";"
  *
  * </pre>
  */
-public final class ASTFieldDeclaration extends AbstractJavaAccessNode
+public final class ASTFieldDeclaration extends AbstractJavaNode
     implements SignedNode<ASTFieldDeclaration>,
                Iterable<ASTVariableDeclaratorId>,
                LeftRecursiveNode,
+               AccessNode,
                InternalInterfaces.MultiVariableIdOwner {
 
     private JavaFieldSignature signature;
-
 
     ASTFieldDeclaration(int id) {
         super(id);
@@ -53,86 +43,6 @@ public final class ASTFieldDeclaration extends AbstractJavaAccessNode
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-
-    public boolean isSyntacticallyPublic() {
-        return super.isPublic();
-    }
-
-    @Override
-    public boolean isPublic() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return true;
-        }
-        return super.isPublic();
-    }
-
-    public boolean isSyntacticallyStatic() {
-        return super.isStatic();
-    }
-
-    @Override
-    public boolean isStatic() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return true;
-        }
-        return super.isStatic();
-    }
-
-    public boolean isSyntacticallyFinal() {
-        return super.isFinal();
-    }
-
-    @Override
-    public boolean isFinal() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return true;
-        }
-        return super.isFinal();
-    }
-
-    @Override
-    public boolean isPrivate() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return false;
-        }
-        return super.isPrivate();
-    }
-
-    @Override
-    public boolean isPackagePrivate() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return false;
-        }
-        return super.isPackagePrivate();
-    }
-
-    @Override
-    public boolean isProtected() {
-        if (isAnnotationMember() || isInterfaceMember()) {
-            return false;
-        }
-        return super.isProtected();
-    }
-
-    public boolean isAnnotationMember() {
-        return getNthParent(2) instanceof ASTAnnotationTypeBody;
-    }
-
-    public boolean isInterfaceMember() {
-        if (getNthParent(2) instanceof ASTEnumBody) {
-            return false;
-        }
-        ASTClassOrInterfaceBody classOrInterfaceBody = getFirstParentOfType(ASTClassOrInterfaceBody.class);
-        if (classOrInterfaceBody == null || classOrInterfaceBody.isAnonymousInnerClass()) {
-            return false;
-        }
-        if (classOrInterfaceBody.getParent() instanceof ASTClassOrInterfaceDeclaration) {
-            ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) classOrInterfaceBody.getParent();
-            return n.isInterface();
-        }
-        return false;
     }
 
     /**

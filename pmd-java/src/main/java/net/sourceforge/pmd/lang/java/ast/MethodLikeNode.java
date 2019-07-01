@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  *     Ultimately this supertype is not useful and can go away.
  */
 @Deprecated
-public interface MethodLikeNode extends AccessNode, JavaQualifiableNode, JavaNode {
+public interface MethodLikeNode extends JavaQualifiableNode, JavaNode {
 
     /**
      * Returns a token indicating whether this node is a lambda

@@ -15,14 +15,15 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * LocalVariableDeclaration ::= ( "final" | {@linkplain ASTAnnotation Annotation} )* {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
+ * LocalVariableDeclaration ::= {@link ASTModifierList LocalVarModifierList} {@linkplain ASTType Type} {@linkplain ASTVariableDeclarator VariableDeclarator} ( "," {@linkplain ASTVariableDeclarator VariableDeclarator} )*
  *
  * </pre>
  */
 // TODO extend AbstractStatement
-public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode
+public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     implements Iterable<ASTVariableDeclaratorId>,
                ASTStatement,
+               FinalizableNode,
                InternalInterfaces.MultiVariableIdOwner {
 
     ASTLocalVariableDeclaration(int id) {
@@ -40,16 +41,9 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode
         visitor.visit(this, data);
     }
 
-
-    /**
-     * Returns true if the local variables declared by this statement
-     * are final.
-     */
     @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
-    public boolean isFinal() {
-        // TODO unimplement AccessNode, this causes compilation errors because of our current symbol table
-        return super.isFinal();
+    public Visibility getVisibility() {
+        return Visibility.V_LOCAL;
     }
 
     /**

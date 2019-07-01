@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * PackageDeclaration ::= "package" Name ";"
+ * PackageDeclaration ::= {@link ASTModifierList AnnotationList} "package" Name ";"
  *
  * </pre>
  *

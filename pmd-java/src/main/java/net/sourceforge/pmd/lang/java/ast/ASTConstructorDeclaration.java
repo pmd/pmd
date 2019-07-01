@@ -12,17 +12,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * <pre class="grammar">
  *
- * ConstructorDeclaration ::= ConstructorModifier*
+ * ConstructorDeclaration ::= {@link ASTModifierList ModifierList}
  *                            {@link ASTTypeParameters TypeParameters}?
  *                            &lt;IDENTIFIER&gt;
  *                            {@link ASTFormalParameters FormalParameters}
  *                            ({@link ASTThrowsList ThrowsList})?
  *                            {@link ASTBlock Block}
- *
- *
- * ConstructorModifier ::= "public" | "private"  | "protected"
- *                       | {@linkplain ASTAnnotation Annotation}
- *
  *
  * </pre>
  */

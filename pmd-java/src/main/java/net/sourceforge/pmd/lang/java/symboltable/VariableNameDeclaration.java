@@ -78,11 +78,11 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
 
     public AccessNode getAccessNodeParent() {
         if (node.getParent() instanceof ASTFormalParameter) {
-            return (AccessNode) node.getParent();
+            return (ASTFormalParameter) node.getParent();
         } else if (node.getParent() instanceof ASTLambdaParameter) {
-            return (AccessNode) node.getParent().getParent().getParent();
+            return (ASTLambdaParameter) node.getParent();
         } else if (node.getParent() instanceof ASTEnumConstant) {
-            return (AccessNode) node.getParent().getParent().getParent();
+            return (ASTEnumConstant) node.getParent();
         } else if (node.getParent() instanceof ASTCatchParameter) {
             return (AccessNode) node.getParent();
         }

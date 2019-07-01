@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration.TypeKind;
 import net.sourceforge.pmd.lang.java.metrics.AbstractJavaClassMetric;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSigMask;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature.Role;
@@ -19,12 +18,6 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
  * @since 6.0.0
  */
 public class WocMetric extends AbstractJavaClassMetric {
-
-    @Override
-    public boolean supports(ASTAnyTypeDeclaration node) {
-        return node.getTypeKind() == TypeKind.CLASS;
-    }
-
 
     @Override
     public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {

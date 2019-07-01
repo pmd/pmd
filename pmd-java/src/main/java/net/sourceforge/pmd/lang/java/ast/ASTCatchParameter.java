@@ -13,11 +13,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * <pre class="grammar">
  *
- * CatchParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * CatchParameter ::= {@link ASTModifierList LocalVarModifierList} {@link ASTType Type} {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
  */
-public final class ASTCatchParameter extends AbstractJavaAccessNode implements InternalInterfaces.VariableIdOwner {
+public final class ASTCatchParameter extends AbstractJavaNode
+    implements InternalInterfaces.VariableIdOwner,
+               FinalizableNode {
 
     ASTCatchParameter(int id) {
         super(id);

@@ -15,29 +15,18 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * <pre class="grammar">
  *
- * LambdaParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* ( "var" | {@link ASTType Type} ) {@link ASTVariableDeclaratorId VariableDeclaratorId}
- *                   | {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * LambdaParameter ::= {@link ASTModifierList LocalVarModifierList} ( "var" | {@link ASTType Type} ) {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ *                   | {@link ASTModifierList EmptyModifierList} {@link ASTVariableDeclaratorId VariableDeclaratorId}
  *
  * </pre>
  */
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
-    implements InternalInterfaces.VariableIdOwner {
-
-    private boolean isFinal;
+    implements InternalInterfaces.VariableIdOwner,
+               FinalizableNode {
 
     ASTLambdaParameter(int id) {
         super(id);
     }
-
-
-    void setFinal(boolean aFinal) {
-        isFinal = aFinal;
-    }
-
-    public boolean isFinal() {
-        return isFinal;
-    }
-
 
     /**
      * If true, this formal parameter represents one without explicit types.

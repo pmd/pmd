@@ -20,6 +20,8 @@ class ASTFieldDeclarationTest : ParserTestSpec({
             "int x @A@B[];" should parseAs {
                 fieldDecl {
 
+                    it::getModifiers shouldBe modifiers { }
+
                     it::isPublic shouldBe false
                     it::isSyntacticallyPublic shouldBe false
                     it::isPackagePrivate shouldBe true
@@ -56,12 +58,13 @@ class ASTFieldDeclarationTest : ParserTestSpec({
             "@A int x[] = { 2 };" should parseAs {
                 fieldDecl {
 
+                    it::getModifiers shouldBe modifiers {
+                        it::getExplicitModifiers shouldBe emptySet()
+                        it::getEffectiveModifiers shouldBe setOf(JModifier.PUBLIC, JModifier.STATIC, JModifier.FINAL)
 
-                    it::isPublic shouldBe true
-                    it::isSyntacticallyPublic shouldBe false
+                        annotation("A")
+                    }
 
-
-                    annotation("A")
                     primitiveType(INT)
 
                     varDeclarator {
