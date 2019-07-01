@@ -488,12 +488,12 @@ accessible from outside the anonymous class, and those legit cases should be sup
 
 ``` java
 // this is double-brace initialization
-            return new ArrayList<String>(){{addAll("a","b","c");}};
+return new ArrayList<String>(){%raw%}{{ addAll("a","b","c"); }};{%endraw%}
 
-                    // the better way is to not create an anonymous class:
-                    List<String> a=new ArrayList<>();
-                    a.addAll("a","b","c");
-                    return a;
+// the better way is to not create an anonymous class:
+List<String> a = new ArrayList<>();
+a.addAll("a","b","c");
+return a;
 ```
 
 **Use this rule by referencing it:**
