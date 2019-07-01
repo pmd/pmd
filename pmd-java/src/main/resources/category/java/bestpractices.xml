@@ -424,16 +424,15 @@ public class Foo {
                 </value>
             </property>
         </properties>
-        <example>
-<![CDATA[
-            // this is double-brace initialization
-            return new ArrayList<String>(){{addAll("a","b","c");}};
+        <example><![CDATA[
+// this is double-brace initialization
+return new ArrayList<String>(){%raw%}{{ addAll("a","b","c"); }};{%endraw%}
 
-                    // the better way is to not create an anonymous class:
-                    List<String> a=new ArrayList<>();
-                    a.addAll("a","b","c");
-                    return a;
-            ]]>
+// the better way is to not create an anonymous class:
+List<String> a = new ArrayList<>();
+a.addAll("a","b","c");
+return a;
+]]>
         </example>
     </rule>
 
