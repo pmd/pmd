@@ -9,9 +9,14 @@ import java.util.List;
 
 /**
  * Try statement node.
+ *
+ *
  * <pre class="grammar">
  *
- * TryStatement ::= "try" ( ResourceSpecification )? Block ( CatchStatement )* [ FinallyStatement ]
+ * TryStatement ::= "try" {@link ASTResourceList ResourceSpecification}?
+ *                  {@link ASTBlock Block}
+ *                  {@link ASTCatchStatement CatchStatement}*
+ *                  {@link ASTFinallyStatement FinallyStatement}?
  *
  * </pre>
  */
@@ -43,7 +48,7 @@ public final class ASTTryStatement extends AbstractJavaNode {
      * has a ResourceSpecification child node.
      */
     public boolean isTryWithResources() {
-        return getFirstChildOfType(ASTResourceSpecification.class) != null;
+        return jjtGetChild(0) instanceof ASTResourceList;
     }
 
 

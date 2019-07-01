@@ -144,8 +144,8 @@ public class Java10Test {
         List<ASTResource> resources = compilationUnit.findDescendantsOfType(ASTResource.class);
         assertEquals(1, resources.size());
 
-        assertNull(resources.get(0).getTypeNode());
-        ASTVariableDeclaratorId varId = resources.get(0).getVariableDeclaratorId();
+        assertNull(resources.get(0).asLocalVariableDeclaration().getTypeNode());
+        ASTVariableDeclaratorId varId = resources.get(0).asLocalVariableDeclaration().iterator().next();
         assertSame("type should be FileInputStream", FileInputStream.class, varId.getType());
     }
 

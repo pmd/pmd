@@ -1,4 +1,8 @@
 /**
+ * Make Resources #void, rename ResourceSpecification to ResourceList,
+ * put a LocalVariableDeclaration node inside Resource.
+ * Clément Fournier 07/2019
+ *====================================================================
  * Change expression, type and annotation grammar to remove unnecessary nodes,
  * eliminate some inconsistencies, and most importantly have an expressive tree
  * for primary expressions. Expressions and types now appear to be left-recursive.
@@ -3071,27 +3075,27 @@ void TryStatement() :
   [ FinallyStatement() ]
 }
 
-void ResourceSpecification() :
+void ResourceSpecification() #ResourceList:
 {}
 {
     {checkForBadTryWithResourcesUsage();}
 	"("
 	Resources()
-	(LOOKAHEAD(2) ";")?
+	(LOOKAHEAD(2) ";" {jjtThis.setTrailingSemi();})?
 	")"	
 }
 
-void Resources() :
+void Resources() #void:
 {}
 {
 	Resource() (LOOKAHEAD(2) ";" Resource())*
 }
 
-void Resource() :
+void Resource():
 {}
 {
    LOOKAHEAD(("final" | Annotation())* LocalVariableType() VariableDeclaratorId() "=" )
-     ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclaratorId() "=" Expression() )
+     ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclarator() ) #LocalVariableDeclaration
    |
    PrimaryExpression() {checkForBadConciseTryWithResourcesUsage(); } {}
 }

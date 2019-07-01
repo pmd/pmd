@@ -23,32 +23,40 @@ class ASTTryStatementTest : ParserTestSpec({
 
         "try (Foo a = 2){}" should matchStmt<ASTTryStatement> {
 
-            child<ASTResourceSpecification> {
-                child<ASTResources> {
-                    child<ASTResource> {
-                        child<ASTClassOrInterfaceType> {}
-                        child<ASTVariableDeclaratorId> {}
-                        child<ASTNumericLiteral> {}
+            child<ASTResourceList> {
+                child<ASTResource> {
+                    it::isConciseResource shouldBe false
+                    it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
+                        it::isFinal shouldBe false
+                        classType("Foo")
+                        fromChild<ASTVariableDeclarator, ASTExpression> {
+                            variableId("a")
+                            int(2)
+                        }
                     }
                 }
             }
-            child<ASTBlock> {}
+
+            block()
         }
 
         "try (final Foo a = 2){}" should matchStmt<ASTTryStatement> {
 
-            child<ASTResourceSpecification> {
-                child<ASTResources> {
-                    child<ASTResource> {
+            child<ASTResourceList> {
+                child<ASTResource> {
+                    it::isConciseResource shouldBe false
+                    it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                         it::isFinal shouldBe true
-                        child<ASTClassOrInterfaceType> {}
-                        child<ASTVariableDeclaratorId> {}
-                        child<ASTNumericLiteral> {}
+                        classType("Foo")
+                        fromChild<ASTVariableDeclarator, ASTExpression> {
+                            variableId("a")
+                            int(2)
+                        }
                     }
                 }
             }
 
-            child<ASTBlock> {}
+            block()
         }
 
     }
@@ -57,35 +65,45 @@ class ASTTryStatementTest : ParserTestSpec({
 
         "try (a){}" should matchStmt<ASTTryStatement> {
 
-            child<ASTResourceSpecification> {
-                child<ASTResources> {
-                    child<ASTResource> {
-                        child<ASTVariableReference> {}
-                    }
+            child<ASTResourceList> {
+                child<ASTResource> {
+                    it::isConciseResource shouldBe true
+                    it::getInitializer shouldBe variableRef("a")
                 }
+                it::hasTrailingSemiColon shouldBe false
             }
 
+            block()
+        }
 
-            child<ASTBlock> {}
 
+        "try (a;){}" should matchStmt<ASTTryStatement> {
+
+            child<ASTResourceList> {
+                child<ASTResource> {
+                    it::isConciseResource shouldBe true
+                    it::getInitializer shouldBe variableRef("a")
+                }
+                it::hasTrailingSemiColon shouldBe true
+            }
+
+            block()
         }
 
 
         "try (a.b){}" should matchStmt<ASTTryStatement> {
 
-            child<ASTResourceSpecification> {
-                child<ASTResources> {
-                    child<ASTResource> {
-                        child<ASTFieldAccess> {
-                            child<ASTAmbiguousName> {
-
-                            }
-                        }
+            child<ASTResourceList> {
+                child<ASTResource> {
+                    it::isConciseResource shouldBe true
+                    it::getInitializer shouldBe fieldAccess("b") {
+                        ambiguousName("a")
                     }
                 }
+
             }
 
-            child<ASTBlock> {}
+            block()
         }
 
 

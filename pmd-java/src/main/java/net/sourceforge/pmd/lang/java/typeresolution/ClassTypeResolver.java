@@ -71,7 +71,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -705,21 +704,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
-    @Override
-    public Object visit(ASTResource node, Object data) {
-        super.visit(node, data);
-        // resolve "var" types: the type of the initializer expression
-        ASTType type = node.getTypeNode();
-        if (type == null) {
-            // no type node -> type is inferred
-            ASTExpression initializer = node.getFirstChildOfType(ASTExpression.class);
-
-            if (node.getVariableDeclaratorId() != null) {
-                setTypeDefinition(node.getVariableDeclaratorId(), initializer.getTypeDefinition());
-            }
-        }
-        return data;
-    }
 
     @Override
     public Object visit(ASTPrimitiveType node, Object data) {
