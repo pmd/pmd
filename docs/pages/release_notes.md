@@ -17,6 +17,7 @@ This is a {{ site.pmd.release_type }} release.
 ### Fixed Issues
 
 *   doc
+    *   [#1896](https://github.com/pmd/pmd/issues/1896): \[doc] Error in changelog 6.16.0 due to not properly closed rule tag
     *   [#1906](https://github.com/pmd/pmd/issues/1906): \[doc] Broken link for adding own CPD languages
 
 ### API Changes

@@ -51,6 +51,19 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>check-rule-tags</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>verify</phase>
+                        <configuration>
+                            <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
+                            <arguments>
+                                <argument>${project.basedir}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
