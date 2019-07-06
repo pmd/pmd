@@ -181,7 +181,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 *   [plsql](pmd_rules_plsql.html)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
-*   [xml and xsl](/pmd_rules_xml.html)
+*   [xml and xsl](pmd_rules_xml.html)
 
 
 ## Available Report Formats
