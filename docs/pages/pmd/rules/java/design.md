@@ -1245,7 +1245,7 @@ public class Foo extends Bar {
 This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
 of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
 statements. For more details on the calculation, see the documentation of
-the [NCSS metric](/pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
+the [NCSS metric](pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NcssCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssCountRule.java)
 
@@ -1426,7 +1426,7 @@ The NPath complexity of a method is the number of acyclic execution paths throug
 While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
 full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
 it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
+documentation of the [NPath metric](pmd_java_metrics_index.html#npath-complexity-npath).
 
 A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.

@@ -22,7 +22,7 @@ sidebar: pmd_sidebar
 
 ### Installation
 
-PMD is distributed as a zip archive, which includes both [PMD](#running-pmd-via-command-line) and [CPD](/pmd_userdocs_cpd.html). 
+PMD is distributed as a zip archive, which includes both [PMD](#running-pmd-via-command-line) and [CPD](pmd_userdocs_cpd.html). 
 You can download the latest binary distribution from [the github releases page](https://github.com/pmd/pmd/releases).
 
 Unzip it into any directory, optionally add the `bin` subdirectory in your `PATH`, and you're good to go!         
