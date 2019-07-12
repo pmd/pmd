@@ -2899,12 +2899,12 @@ void BlockStatement():
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
 |
-  Statement()
+  // we need to lookahead until the "class" token,
+  // because a method ref may be annotated
+  // -> so Expression, and hence Statement, may start with "@"
+  LOOKAHEAD(Modifiers() "class") LocalClassDecl()
 |
-  // we don't need to lookahead further here
-  // the ambiguity between start of local class and local variable decl
-  // is already handled in the lookahead guarding LocalVariableDeclaration above.
-  LocalClassDecl()
+  Statement()
 }
 
 void LocalClassDecl() #void:
