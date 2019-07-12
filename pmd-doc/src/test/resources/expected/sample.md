@@ -50,6 +50,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 **Example(s):**
 
 ``` java
+{%raw%}
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -59,6 +60,7 @@ public class JumbledIncrementerRule1 {
         }
     }
 }
+{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -123,6 +125,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 **Example(s):**
 
 ``` java
+{%raw%}
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -132,6 +135,7 @@ public class JumbledIncrementerRule1 {
         }
     }
 }
+{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -162,6 +166,7 @@ Third paragraph.
 **Example(s):**
 
 ``` java
+{%raw%}
 public class Bar {      // poor, missing a hashcode() method
     public boolean equals(Object o) {
       // do some comparison
@@ -182,6 +187,14 @@ public class Foo {      // perfect, both methods provided
       // return some hash value
     }
 }
+
+// A sample with double braces (#1898)
+public class Foo {
+    public List<String> bar() {
+        return new ArrayList<String>(){{ addAll("a","b","c"); }};
+    }
+}
+{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -214,6 +227,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 **Example(s):**
 
 ``` java
+{%raw%}
 public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
@@ -223,6 +237,7 @@ public class JumbledIncrementerRule1 {
         }
     }
 }
+{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -312,6 +327,7 @@ if (0 > 1 && 0 < 1) {
 **Example(s):**
 
 ``` java
+{%raw%}
 public class Bar {
     public boolean foo() {
       if (0 < 1) { // less-than should not be escaped in markdown
@@ -320,6 +336,7 @@ public class Bar {
     }
     // <script>alert('XSS');</script>
 }
+{%endraw%}
 ```
 
 **This rule has the following properties:**
