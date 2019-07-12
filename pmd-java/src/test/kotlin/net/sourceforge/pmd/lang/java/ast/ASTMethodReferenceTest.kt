@@ -209,6 +209,21 @@ class ASTMethodReferenceTest : ParserTestSpec({
                     it::getTypeArguments shouldBe null
                 }
             }
+
+            // annotated method ref in cast ctx (lookahead trickery)
+            "(Foo) @Vernal Date::getDay" should parseAs {
+                castExpr {
+                    classType("Foo")
+
+                    methodRef(methodName = "getDay") {
+                        classType("Date") {
+                            annotation("Vernal")
+                        }
+
+                        it::getTypeArguments shouldBe null
+                    }
+                }
+            }
         }
     }
 })
