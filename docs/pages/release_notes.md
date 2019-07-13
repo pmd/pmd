@@ -14,6 +14,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Lua support
+
+Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker), and built on top of the ongoing efforts to fully support Antlr-based languages,
+PMD now has CPD support for [Lua](https://www.lua.org/).
+
+Being based on a proper Antlr grammar, CPD can:
+*   ignore comments
+*   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+
 ### Fixed Issues
 
 *   doc
@@ -26,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 ### External Contributions
 
 *   [#1908](https://github.com/pmd/pmd/pull/1908): \[doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - [crunsk](https://github.com/crunsk)
+*   [#1892](https://github.com/pmd/pmd/pull/1892): \[lua] \[cpd] Added CPD support for Lua - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
