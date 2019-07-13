@@ -14,6 +14,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Lua support
+
+Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker), and built on top of the ongoing efforts to fully support Antlr-based languages,
+PMD now has CPD support for [Lua](https://www.lua.org/).
+
+Being based on a proper Antlr grammar, CPD can:
+*   ignore comments
+*   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
+
 #### PLSQL Grammar Updates
 
 The grammar has been updated to support Inline Constraints in CREATE TABLE statements. Additionally, the
@@ -100,6 +109,7 @@ of deprecations.
 *   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [kabroxiko](https://github.com/kabroxiko)
 *   [#1874](https://github.com/pmd/pmd/pull/1874): \[plsql] Add parenthesis equation support for Update - [kabroxiko](https://github.com/kabroxiko)
 *   [#1884](https://github.com/pmd/pmd/pull/1884): \[plsql] fix #1878 Support explicit INNER word for INNER JOIN - [kabroxiko](https://github.com/kabroxiko)
+*   [#1892](https://github.com/pmd/pmd/pull/1892): \[lua] \[cpd] Added CPD support for Lua - [Maikel Steneker](https://github.com/maikelsteneker)
 
 {% endtocmaker %}
 
