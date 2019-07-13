@@ -1287,7 +1287,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has only two ].</p>
+<p>An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has two ].</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">cdata</span><span class="o">-</span><span class="nt">section</span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">'['</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">ends-with</span><span class="p">(</span><span class="na">@Image</span><span class="p">,</span><span class="s1">']'</span><span class="p">)]</span><span class="w">
@@ -1295,7 +1295,18 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>An extra [ looks like <span class="ni">&amp;lt;</span>!CDATA[[]]<span class="ni">&amp;gt;</span>, and an extra ] looks like <span class="ni">&amp;lt;</span>!CDATA[]]]<span class="ni">&amp;gt;</span>.
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;root&gt;</span>
+    <span class="nt">&lt;child&gt;</span>
+        <span class="cp">&lt;![CDATA[[ character data ]]&gt;</span> - this cdata section is valid, but it contains an
+        additional square bracket at the beginning.
+        It should probably be just <span class="cp">&lt;![CDATA[ character data ]]&gt;</span>.
+    <span class="nt">&lt;/child&gt;</span>
+    <span class="nt">&lt;child&gt;</span>
+        <span class="cp">&lt;![CDATA[ character data ]]]&gt;</span> - this cdata section is valid, but it contains an
+        additional square bracket in the end.
+        It should probably be just <span class="cp">&lt;![CDATA[ character data ]]&gt;</span>.
+    <span class="nt">&lt;/child&gt;</span>
+<span class="nt">&lt;/root&gt;</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
