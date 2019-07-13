@@ -54,6 +54,8 @@ datetime field.
 *   plsql
     *   [#1828](https://github.com/pmd/pmd/issues/1828): \[plsql] Parentheses stopped working
     *   [#1850](https://github.com/pmd/pmd/issues/1850): \[plsql] Parsing errors with INSERT using returning or records and TRIM expression
+*   xml
+    *   [#1666](https://github.com/pmd/pmd/issues/1666): \[xml] wrong cdata rule description and examples
 
 ### API Changes
 
@@ -90,6 +92,7 @@ of deprecations.
 *   [#1863](https://github.com/pmd/pmd/pull/1863): \[plsql] Add Table InlineConstraint - [kabroxiko](https://github.com/kabroxiko)
 *   [#1864](https://github.com/pmd/pmd/pull/1864): \[plsql] Add support for Subquery Views - [kabroxiko](https://github.com/kabroxiko)
 *   [#1865](https://github.com/pmd/pmd/pull/1865): \[plsql] Add Support for Extract Expression - [kabroxiko](https://github.com/kabroxiko)
+*   [#1869](https://github.com/pmd/pmd/pull/1869): \[xml] fix #1666 wrong cdata rule description and examples - [Artem](https://github.com/KroArtem)
 
 {% endtocmaker %}
 
