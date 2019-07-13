@@ -15,7 +15,7 @@ language: XML
 
 **Priority:** Medium (3)
 
-An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has only two ].
+An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, and ends with a ]]&gt; marker, which has two ].
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
@@ -25,7 +25,18 @@ An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and
 **Example(s):**
 
 ``` xml
-An extra [ looks like &lt;!CDATA[[]]&gt;, and an extra ] looks like &lt;!CDATA[]]]&gt;.
+<root>
+    <child>
+        <![CDATA[[ character data ]]> - this cdata section is valid, but it contains an
+        additional square bracket at the beginning.
+        It should probably be just <![CDATA[ character data ]]>.
+    </child>
+    <child>
+        <![CDATA[ character data ]]]> - this cdata section is valid, but it contains an
+        additional square bracket in the end.
+        It should probably be just <![CDATA[ character data ]]>.
+    </child>
+</root>
 ```
 
 **Use this rule by referencing it:**
