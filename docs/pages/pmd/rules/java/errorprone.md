@@ -2628,6 +2628,9 @@ A class that has private constructors and does not have any static methods or fi
     ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
     and
     count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
+    and
+    not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration/
+        ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('org.springframework.beans.factory.annotation.Autowired') or pmd-java:typeIs('javax.inject.Inject')])
   )
   and
   not(.//MethodDeclaration[@Static='true'])
