@@ -11,16 +11,16 @@ import java.util.Iterator;
  * Represents an <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.9">intersection type</a>.
  * Can only occur in the following contexts:
  * <ul>
- *     <li>Inside a {@linkplain ASTTypeParameter TypeParameter}</li>
+ *     <li>As the bound of a {@linkplain ASTTypeParameter TypeParameter}</li>
  *     <li>As the target type of a {@linkplain ASTCastExpression CastExpression}, on Java 8 and above</li>
  * </ul>
  *
- * The type can be a class or interface type, while the additional bounds
+ * The first type can be a class or interface type, while the additional bounds
  * are necessarily interface types.
  *
  * <pre class="grammar">
  *
- * IntersectionType ::= {@link ASTType (AnnotatedType | ClassOrInterfaceType)} ("&amp;" {@link ASTClassOrInterfaceType ClassOrInterfaceType})+
+ * IntersectionType ::= {@link ASTClassOrInterfaceType ClassOrInterfaceType} ("&amp;" {@link ASTClassOrInterfaceType InterfaceType})+
  *
  * </pre>
  */

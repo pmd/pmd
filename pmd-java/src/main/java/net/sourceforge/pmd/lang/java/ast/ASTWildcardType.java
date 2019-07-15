@@ -12,11 +12,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * WildcardType ::= "?" ( ("extends" | "super") {@link ASTType Type})?
+ * WildcardType ::= "?" ( ("extends" | "super") {@link ASTReferenceType ReferenceType} )?
  *
  * </pre>
  */
-public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType {
+public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTReferenceType, LeftRecursiveNode {
 
     private boolean isUpperBound;
 
@@ -49,8 +49,8 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
      * Returns true if this is an upper type bound, e.g.
      * in {@code <? extends Integer>}.
      */
-    public boolean isUpperBound() {
-        return isUpperBound;
+    public boolean hasUpperBound() {
+        return isUpperBound && jjtGetNumChildren() > 0;
     }
 
 
@@ -58,8 +58,8 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
      * Returns true if this is a lower type bound, e.g.
      * in {@code <? super Node>}.
      */
-    public boolean isLowerBound() {
-        return !isUpperBound();
+    public boolean hasLowerBound() {
+        return !isUpperBound && jjtGetNumChildren() > 0;
     }
 
 

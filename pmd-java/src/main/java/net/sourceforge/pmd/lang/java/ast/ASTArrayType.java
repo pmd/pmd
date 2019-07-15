@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
+
 /**
  * Represents an array type.
  *
@@ -24,6 +26,13 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         super(p, id);
     }
 
+    @Override
+    public List<ASTAnnotation> getDeclaredAnnotations() {
+        // an array type's annotations are on its dimensions
+        // any annotations found before the element type apply to the
+        // element type
+        return getDimensions().getLastChild().getDeclaredAnnotations();
+    }
 
     public ASTArrayTypeDims getDimensions() {
         return (ASTArrayTypeDims) jjtGetChild(1);

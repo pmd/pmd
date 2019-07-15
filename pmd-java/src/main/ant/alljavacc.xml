@@ -60,6 +60,7 @@
 
 
         <replace file="${target-package-dir}/JJTJavaParserState.java">
+            <replacefilter token="/*" value="/**"/>
             <replacetoken><![CDATA[  /* Pushes a node on to the stack. */]]></replacetoken>
             <replacevalue>
                 <![CDATA[
@@ -68,14 +69,53 @@
   * If the node is closed, one additional node from the stack will be popped
   * and added to its children. This allows mimicking "left-recursive" nodes,
   * while keeping the parsing iterative.
+  *
+  * This does not affect the stack unless the current jjtThis is closed in
+  * the future.
   */
   public void extendLeft() {
     mk--;
   }
 
+  /**
+   * Peek the nth node from the top of the stack.
+   * peekNode(0) == peekNode()
+   */
+  public Node peekNode(int n) {
+    return nodes.get(nodes.size() - n - 1);
+  }
+
+  public boolean isInjectionPending() {
+    return numPendingInjection > 0;
+  }
+
+  /** If non-zero, then the top "n" nodes of the stack will be injected as the first children of the next
+    * node to be opened. This is not very flexible, but it's enough. The grammar needs to take
+    * care of the order in which nodes are opened in a few places, in most cases this just means using
+    * eg A() B() #N(2) instead of (A() B()) #N, so as not to open N before A.
+    */
+  private int numPendingInjection;
+
+  public void injectRight(int n) {
+       numPendingInjection = n;
+  }
+
   /* Pushes a node on to the stack. */]]>
             </replacevalue>
-            <replacefilter token="/*" value="/**" />
+        </replace>
+
+        <replace file="${target-package-dir}/JJTJavaParserState.java">
+<!--  This is in openNodeScope.                                      -->
+<!--  If injection is pending, we bump the arity of the opened node. -->
+<!--  When it's closed, it will enclose the injected node.           -->
+            <replacetoken><![CDATA[mk = sp;]]></replacetoken>
+            <replacevalue><![CDATA[
+    mk = sp;
+    if (isInjectionPending()) {
+        mk -= numPendingInjection;
+        numPendingInjection = 0;
+    }]]>
+            </replacevalue>
         </replace>
 
 

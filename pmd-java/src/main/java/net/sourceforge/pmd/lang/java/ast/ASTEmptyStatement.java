@@ -4,6 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * An empty statement (useless).
+ *
+ * <pre class="grammar">
+ *
+ * EmptyStatement ::= ";"
+ *
+ * </pre>
+ */
 public final class ASTEmptyStatement extends AbstractJavaNode {
 
     ASTEmptyStatement(int id) {

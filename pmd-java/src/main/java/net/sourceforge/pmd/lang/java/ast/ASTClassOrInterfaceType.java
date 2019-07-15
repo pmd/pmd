@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -22,9 +21,8 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceType ::= &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
- *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName})
- *                          "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ * ClassOrInterfaceType ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
+ *                        | (ClassOrInterfaceType | {@link ASTAmbiguousName AmbiguousName}) "." {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeArguments TypeArguments}?
  *
  * </pre>
  */
@@ -88,14 +86,6 @@ public final class ASTClassOrInterfaceType extends AbstractJavaTypeNode implemen
     @Nullable
     public ASTTypeArguments getTypeArguments() {
         return getFirstChildOfType(ASTTypeArguments.class);
-    }
-
-
-    /**
-     * Gets the annotations defined on this segment.
-     */
-    public List<ASTAnnotation> getAnnotations() {
-        return findChildrenOfType(ASTAnnotation.class);
     }
 
 

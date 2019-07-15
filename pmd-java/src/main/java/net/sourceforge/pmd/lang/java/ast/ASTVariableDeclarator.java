@@ -14,6 +14,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * May be found as a child of {@linkplain ASTFieldDeclaration field declarations} and
  * {@linkplain ASTLocalVariableDeclaration local variable declarations}.
  *
+ * <p>The {@linkplain #getInitializer() initializer} is the only place
+ * {@linkplain ASTArrayInitializer array initializer expressions} can be found.
+ *
  * <pre class="grammar">
  *
  * VariableDeclarator ::= {@linkplain ASTVariableDeclaratorId VariableDeclaratorId} ( "=" {@linkplain ASTExpression Expression} )?
