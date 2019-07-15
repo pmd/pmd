@@ -24,7 +24,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * https://checkerframework.org/jsr308/java-annotation-design.html#type-names
  * is particularly interesting
  */
-public class ParserCornerCases18 {
+public class FullTypeAnnotations {
 
     private String myString;
 
