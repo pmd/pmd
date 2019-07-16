@@ -5,23 +5,25 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
-import java.util.Optional;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
  *
+ * <p>The bound of a type parameter may only be an upper bound ("extends").
+ * The bound is represented by the type node directly. The type node may
+ * be an {@link ASTIntersectionType intersection type}.
+ *
  * <pre class="grammar">
  *
- * TypeParameter ::= {@linkplain ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; {@link ASTTypeBound TypeBound}?
+ * TypeParameter ::= {@link ASTAnnotation Annotation}* &lt;IDENTIFIER&gt; ( "extends" {@link ASTReferenceType Type} )?
  *
  * </pre>
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.4">JLS</a>
  */
-// TODO should implement Annotatable when we use can use Java 8 mixins instead of an abstract class
-public final class ASTTypeParameter extends AbstractJavaTypeNode {
+public final class ASTTypeParameter extends AbstractJavaTypeNode implements Annotatable {
+
     ASTTypeParameter(int id) {
         super(id);
     }
@@ -56,9 +58,7 @@ public final class ASTTypeParameter extends AbstractJavaTypeNode {
      */
     @Nullable
     public ASTType getTypeBoundNode() {
-        return Optional.ofNullable(getFirstChildOfType(ASTTypeBound.class))
-                       .map(it -> it.getFirstChildOfType(ASTType.class))
-                       .orElse(null);
+        return getFirstChildOfType(ASTType.class);
     }
 
 

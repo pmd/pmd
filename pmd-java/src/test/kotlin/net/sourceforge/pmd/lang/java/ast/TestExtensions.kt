@@ -270,3 +270,16 @@ fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =
         child<ASTBooleanLiteral> {
             it::isTrue shouldBe value
         }
+
+
+fun TreeNodeWrapper<Node, *>.classDecl(simpleName: String, assertions: NodeSpec<ASTClassOrInterfaceDeclaration> = EmptyAssertions) =
+        child<ASTClassOrInterfaceDeclaration>(ignoreChildren = assertions == EmptyAssertions) {
+            it::getImage shouldBe simpleName
+
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.classBody(assertions: NodeSpec<ASTClassOrInterfaceBody> = EmptyAssertions) =
+        child<ASTClassOrInterfaceBody>(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }

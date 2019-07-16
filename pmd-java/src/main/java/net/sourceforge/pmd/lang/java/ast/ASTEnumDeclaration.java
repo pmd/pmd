@@ -12,12 +12,24 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Represents an enum declaration. This is a {@linkplain Node#isFindBoundary() find boundary}
  * for tree traversal methods.
  *
+ * <p>An enum declaration is implicitly final <i>unless it contains at
+ * least one enum constant that has a class body</i>. A nested enum type
+ * is implicitly static.
+ *
  * <pre class="grammar">
  *
- * EnumDeclaration ::= "enum"
+ * EnumDeclaration ::= EnumModifier*
+ *                     "enum"
  *                     &lt;IDENTIFIER&gt;
  *                     {@linkplain ASTImplementsList ImplementsList}?
  *                     {@link ASTEnumBody EnumBody}
+ *
+ *
+ *
+ * EnumModifier ::= "public" | "private"  | "protected"
+ *                | "strictfp" | "static"
+ *                | {@linkplain ASTAnnotation Annotation}
+ *
  * </pre>
  */
 public final class ASTEnumDeclaration extends AbstractAnyTypeDeclaration {

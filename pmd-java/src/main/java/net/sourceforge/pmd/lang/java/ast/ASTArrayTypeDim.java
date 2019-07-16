@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public final class ASTArrayTypeDim extends AbstractJavaTypeNode {
+public final class ASTArrayTypeDim extends AbstractJavaTypeNode implements Annotatable {
 
     ASTArrayTypeDim(int id) {
         super(id);

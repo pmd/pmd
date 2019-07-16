@@ -17,7 +17,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public final class ASTPackageDeclaration extends AbstractJavaAnnotatableNode {
+public final class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable {
 
     ASTPackageDeclaration(int id) {
         super(id);

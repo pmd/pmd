@@ -8,12 +8,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 
-    // notes about dsl:
-    // * parserTest generates one test per "should" assertion that
-    //   uses a node matcher, which is nice to know which one failed
-    //   (without explicitly giving them each a specific name)
-    // * the it::isPublic syntax allows including the property name in the error message in case of failure
-
     parserTest("Non-private interfaces members should be public", javaVersions = Earliest..Latest) {
 
         genClassHeader = "interface Bar"
@@ -79,6 +73,62 @@ class ASTMethodDeclarationTest : ParserTestSpec({
         }
 
         // default abstract is an invalid combination of modifiers so we won't encounter it in real analysis
+    }
+
+    parserTest("Throws list") {
+
+        "void bar() throws IOException, java.io.Bar { }" should matchDeclaration<ASTMethodDeclaration> {
+            it::isAbstract shouldBe false
+            it::getMethodName shouldBe "bar"
+            it::getTypeParameters shouldBe null
+            it::isVoid shouldBe true
+
+            it::getResultType shouldBe child {
+                it::getTypeNode shouldBe null
+                it::isVoid shouldBe true
+            }
+
+            it::getMethodDeclarator shouldBe child {
+                it::getParameterCount shouldBe 0
+
+                it::getFormalParameters shouldBe child {
+                    it::getParameterCount shouldBe 0
+                }
+            }
+
+            it::getThrows shouldBe child(ignoreChildren = true) {} //TODO
+
+            it::getBlock shouldBe child {}
+
+        }
+    }
+
+    parserTest("Annotation placement") {
+
+        "@OnDecl <T extends K> @OnType Ret bar() { return; }" should matchDeclaration<ASTMethodDeclaration> {
+
+            annotation("OnDecl")
+
+            typeParamList {
+                typeParam("T") {
+                    classType("K")
+                }
+            }
+
+            child<ASTResultType> {
+                it::isVoid shouldBe false
+
+                classType("Ret") {
+                    annotation("OnType")
+                }
+            }
+
+            child<ASTMethodDeclarator>(ignoreChildren = true) {
+
+            }
+
+            block()
+        }
     }
 
 })

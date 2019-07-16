@@ -23,11 +23,11 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
  *
  * <pre class="grammar">
  *
- * PrimitiveType ::= "boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double"
+ * PrimitiveType ::= {@link ASTAnnotation Annotation}* ("boolean" | "char" | "byte" | "short" | "int" | "long" | "float" | "double")
  *
  * </pre>
  */
-public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType {
+public final class ASTPrimitiveType extends AbstractJavaTypeNode implements ASTType, LeftRecursiveNode {
 
     /**
      * @deprecated Made public for one shady usage in {@link ClassScope}

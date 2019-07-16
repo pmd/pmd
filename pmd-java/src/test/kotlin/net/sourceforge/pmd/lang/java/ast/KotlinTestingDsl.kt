@@ -421,7 +421,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
             override fun retrieveNode(acu: ASTCompilationUnit): ASTAnnotation =
                     acu.getFirstDescendantOfType(ASTCastExpression::class.java)
-                       .getFirstChildOfType(ASTAnnotation::class.java)
+                            .getFirstDescendantOfType(ASTAnnotation::class.java)
         }
 
         object TypeParametersParsingCtx : NodeParsingCtx<ASTTypeParameters>("type parameters") {

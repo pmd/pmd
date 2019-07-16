@@ -26,6 +26,30 @@ class ASTArrayTypeTest : ParserTestSpec({
         }
     }
 
+    parserTest("Annotated array type") {
+        "ArrayTypes[][] @A []" should matchType<ASTArrayType> {
+
+            it::getElementType shouldBe child<ASTClassOrInterfaceType> {
+                it::getTypeImage shouldBe "ArrayTypes"
+                it::getImage shouldBe "ArrayTypes"
+            }
+
+            it::getDeclaredAnnotations shouldBe fromChild<ASTArrayTypeDims, List<ASTAnnotation>> {
+
+                child<ASTArrayTypeDim> {}
+                child<ASTArrayTypeDim> {}
+                fromChild<ASTArrayTypeDim, List<ASTAnnotation>> {
+
+                    val lst = listOf(annotation("A"))
+
+                    it::getDeclaredAnnotations shouldBe lst
+
+                    lst
+                }
+            }
+        }
+    }
+
     parserTest("Multi-Dim Array allocation") {
         "new ArrayTypes[][][] { }" should matchExpr<ASTArrayAllocation> {
 
