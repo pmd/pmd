@@ -11,7 +11,7 @@ folder: pmd/rules
 
 {% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
 
-*   [MistypedCDATASection](pmd_rules_xml_errorprone.html#mistypedcdatasection): An XML CDATA section begins with a &lt;!CDATA[ marker, which has only one [, and ends with a ]]&gt; mar...
+*   [MistypedCDATASection](pmd_rules_xml_errorprone.html#mistypedcdatasection): An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, and ends with a ]]&gt; ma...
 
 ## Additional rulesets
 

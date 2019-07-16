@@ -45,7 +45,7 @@ author: Tom Copeland <tom@infoether.org>
     PMD/CPD analyses of Azureus and Columba.
 
 *   April 2006 - John Ferguson Smart's article "PMD Squashes Code Bugs" on
-    [DevX](http://www.devx.com/Java/Article/31286) discusses PMD and the Eclipse plugin. Lots of screenshots!
+    [DevX](https://web.archive.org/web/20140214143838/http://www.devx.com/Java/Article/31286) discusses PMD and the Eclipse plugin. Lots of screenshots!
 
 *   November 2005 - Mike Clark's article "Staying Out of Code Debt" on
     [StickyMinds](http://www.stickyminds.com/sitewide.asp?Function=edetail&amp;ObjectType=ART&amp;ObjectId=9860&amp;tth=DYN&amp;tt=siteemail&amp;iDyn=2)
@@ -63,7 +63,7 @@ author: Tom Copeland <tom@infoether.org>
     [Doctor Dobb's Journal](http://www.drdobbs.com/benefits-of-the-build/184415286) mentions PMD as a way
     to automate code reviews
 
-*   February 2005 - [Java Is Well-Suited for Open-Source Projects](http://www.eweek.com/c/a/Application-Development/Java-Is-WellSuited-for-OpenSource-Projects/) -
+*   February 2005 - [Java Is Well-Suited for Open-Source Projects](https://webcache.googleusercontent.com/search?q=cache:aEL-9Ncx2RgJ:https://www.eweek.com/development/java-is-well-suited-for-open-source-projects) -
     Peter Coffee's eWeek article on open source, Java, and PMD
 
 *   January 2005 - [Zap bugs with PMD](http://www.ibm.com/developerworks/java/library/j-pmd/) - Elliotte Rusty
