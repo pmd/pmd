@@ -4,7 +4,26 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
+/**
+ * A constructor of a {@linkplain ASTConstructorDeclaration class} or
+ * {@linkplain ASTEnumDeclaration enum} declaration.
+ *
+ * <pre class="grammar">
+ *
+ * ConstructorDeclaration ::= ConstructorModifier*
+ *                            {@link ASTTypeParameters TypeParameters}?
+ *                            &lt;IDENTIFIER&gt;
+ *                            {@link ASTFormalParameters FormalParameters}
+ *                            ("throws" {@link ASTNameList NameList})?
+ *                            {@link ASTBlock Block} TODO there's no Block here for now, just a list of statements
+ *
+ *
+ * ConstructorModifier ::= "public" | "private"  | "protected"
+ *                       | {@linkplain ASTAnnotation Annotation}
+ *
+ *
+ * </pre>
+ */
 public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     private boolean containsComment;

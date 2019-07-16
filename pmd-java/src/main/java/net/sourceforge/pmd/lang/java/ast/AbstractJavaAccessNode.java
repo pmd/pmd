@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-abstract class AbstractJavaAccessNode extends AbstractJavaAnnotatableNode implements AccessNode {
+abstract class AbstractJavaAccessNode extends AbstractJavaNode implements AccessNode {
 
     private int modifiers;
 

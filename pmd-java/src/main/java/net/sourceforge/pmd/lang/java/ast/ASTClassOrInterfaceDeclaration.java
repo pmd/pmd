@@ -17,12 +17,19 @@ import net.sourceforge.pmd.util.CollectionUtil;
  *
  * <pre class="grammar">
  *
- * ClassOrInterfaceDeclaration ::= ( "class" | "interface" )
+ * ClassOrInterfaceDeclaration ::= ClassModifier*
+ *                                 ( "class" | "interface" )
  *                                 &lt;IDENTIFIER&gt;
  *                                 {@linkplain ASTTypeParameters TypeParameters}?
  *                                 {@linkplain ASTExtendsList ExtendsList}?
  *                                 {@linkplain ASTImplementsList ImplementsList}?
  *                                 {@linkplain ASTClassOrInterfaceBody ClassOrInterfaceBody}
+ *
+ *
+ * ClassModifier ::=  "public" | "private"  | "protected"
+ *                  | "final"  | "abstract" | "static" | "strictfp"
+ *                  | {@linkplain ASTAnnotation Annotation}
+ *
  * </pre>
  */
 public final class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {

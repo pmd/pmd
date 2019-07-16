@@ -3,6 +3,11 @@
  * put a LocalVariableDeclaration node inside Resource.
  * Clément Fournier 07/2019
  *====================================================================
+ * Nest annotations inside the node they apply to. The node TypeBound is
+ * removed. Allow type annotations on InstanceofExpression, MethodReference
+ * and bounds of an IntersectionType.
+ * Clément Fournier 06/2019
+ *====================================================================
  * Change expression, type and annotation grammar to remove unnecessary nodes,
  * eliminate some inconsistencies, and most importantly have an expressive tree
  * for primary expressions. Expressions and types now appear to be left-recursive.
@@ -511,17 +516,19 @@ public class JavaParser {
   }
 
   private void forceTypeContext() {
-       Node top = jjtree.peekNode();
+      Node top = jjtree.peekNode();
 
-       if (top instanceof ASTAmbiguousName) {
-           // see doc on the method
-           Node replacement = ((ASTAmbiguousName) top).forceTypeContext();
-           jjtree.popNode();
-           jjtree.pushNode(replacement);
-       }
+      if (top instanceof ASTAmbiguousName) {
+          // see doc on the method
+          Node replacement = ((ASTAmbiguousName) top).forceTypeContext();
+          jjtree.popNode();
+          jjtree.pushNode(replacement);
+      }
   }
 
-  // make the top node a child of the second node on the stack
+
+  // make the top node the last child of the second node on the stack
+  // If the stack ends with ..[A][B], then it becomes ..[A[B]]
   private void injectTop() {
        AbstractJavaNode top = (AbstractJavaNode) jjtree.popNode();
        AbstractJavaNode prev = (AbstractJavaNode) jjtree.peekNode();
@@ -1715,7 +1722,7 @@ private void ModuleDeclLahead() #void:
 void PackageDeclaration() :
 {}
 {
-  ( Annotation() )* "package" Name() ";"
+  AnnotationList() "package" Name() ";"
 }
 
 void ImportDeclaration() :
@@ -1732,6 +1739,7 @@ void ImportDeclaration() :
 int Modifiers() #void:
 {
    int modifiers = 0;
+   int numAnnots = 0;
 }
 {
  (
@@ -1749,10 +1757,11 @@ int Modifiers() #void:
   | "volatile" { modifiers |= AccessNode.VOLATILE; }
   | "strictfp" { modifiers |= AccessNode.STRICTFP; }
   | "default" { modifiers |= AccessNode.DEFAULT; checkForBadDefaultImplementationUsage(); }
-  | Annotation()
+  | Annotation() {numAnnots++;}
   )
  )*
  {
+    jjtree.injectRight(numAnnots);
     return modifiers;
  }
 }
@@ -1836,7 +1845,7 @@ void EnumBody():
 }
 {
    "{"
-   [( Annotation() )* EnumConstant() ( LOOKAHEAD(2) "," ( Annotation() )* EnumConstant() )* ]
+   [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
 	[ "," ]
    [ ";" ( ClassOrInterfaceBodyDeclaration() )* ]
    "}"
@@ -1847,7 +1856,7 @@ void EnumBody():
 void EnumConstant():
 {}
 {
-  VariableDeclaratorId() [ ArgumentList() ] [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
+  AnnotationList() VariableDeclaratorId() [ ArgumentList() ] [ ClassOrInterfaceBody() #AnonymousClassDeclaration ]
 }
 
 void TypeParameters():
@@ -1863,10 +1872,10 @@ void TypeParameter():
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ TypeBound() ]
 }
 
-void TypeBound():
+void TypeBound() #void:
 {}
 {
-   "extends" TypeAnnotationList() IntersectionType(false)
+   "extends" IntersectionType(false)
 }
 
 void ClassOrInterfaceBody():
@@ -1889,7 +1898,7 @@ void ClassOrInterfaceBodyDeclaration():
     | LOOKAHEAD(2) AnnotationTypeDeclaration(modifiers)
   )
 |
-  ";"
+  ";" #EmptyDeclaration
 }
 
 
@@ -1973,6 +1982,9 @@ void FormalParameter() :
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
    Type() ("|" {checkForBadMultipleExceptionsCatching();} Type())*
+   // TODO there may be annotations before the "..." of the varargs
+   //  the ... is treated analogously to a pair of brackets
+   //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
@@ -2048,8 +2060,7 @@ Dims:
 void IntersectionType(boolean inCast) #IntersectionType(isIntersection):
 {boolean isIntersection=false;}
 {
-  // The first type may be annotated, but the annotations are handled outside
-  Type() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} ClassOrInterfaceType() )*
+  AnnotatedType() ( "&" {if (inCast) checkForBadIntersectionTypesInCasts();isIntersection=true;} AnnotatedClassOrInterfaceType() )*
 }
 
 void AnnotationList() #void:
@@ -2057,10 +2068,24 @@ void AnnotationList() #void:
 {
   (Annotation())*
 }
-void TypeAnnotationList() #void:
-{}
+
+int TypeAnnotListNoInject() #void:
+{int num = 0;}
 {
-  (TypeAnnotation())*
+   ( TypeAnnotation() {num++;} )*
+   {
+     return num;
+   }
+}
+
+// Type annotation lists are by default injected in the
+// next node to be opened (most likely a type).
+// Sometimes (array dims), this need not be and TypeAnnotListNoInject
+// should be used.
+void TypeAnnotationList() #void:
+{int size=0;}
+{
+   size=TypeAnnotListNoInject() { jjtree.injectRight(size); }
 }
 
 void AnnotatedType() #void:
@@ -2111,14 +2136,17 @@ void Dims() #ArrayTypeDims:
 void ArrayTypeDim():
 {}
 {
-  (TypeAnnotation())* "[" "]"
+   TypeAnnotListNoInject() "[" "]"
 }
 
 void ReferenceType() #void:
 {}
 {
-    ( PrimitiveType() Dims() )                           #ArrayType
-  | ( ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() ] )   #ArrayType(>1)
+    // We parse it that way because the right injection considers node openings,
+    // which means if we want the annotations to belong to the element type, then
+    // the ArrayType node needs to be opened after eg the PrimitiveType
+    PrimitiveType()                       Dims() #ArrayType(2)
+  | ClassOrInterfaceType() [ LOOKAHEAD(2) Dims() #ArrayType(2) ]
 }
 
 
@@ -2129,26 +2157,47 @@ void ReferenceType() #void:
 void ClassOrInterfaceType() #void:
 {}
 {
-  /*
-   First, gobble up all identifiers until the first type arguments
-   or annotation is found. The name is ambiguous between package or
-   type name unless type arguments are present, in which case we can
-   be sure that the last segment is a type name.
-  */
 
-  AmbiguousName()
-  [ TypeArguments() #ClassOrInterfaceType(2) ]
-  {
-    // At this point the first ClassOrInterfaceType may be on top of the stack,
-    // but its image is not set. If it is on the stack we need to shrink the bounds
-    // of the ambiguous name, or delete it.
-    Node first = jjtree.peekNode();
-    if (!(first instanceof ASTAmbiguousName)) {
-      // then we saw type arguments, so the last segment is definitely a type name
-      ASTAmbiguousName name = (ASTAmbiguousName) first.jjtGetChild(0);
-      name.shrinkOrDeleteInParentSetImage();
-    }
-  }
+  (LOOKAHEAD({jjtree.isInjectionPending()})
+        // Perhaps surprisingly a type annotation binds to the closest segment
+        // So in "@B Map.Entry", "@B" binds to "Map", and Map is required to be a type name.
+        // If the annotation is not applicable to TYPE_USE then it doesn't compile
+
+        // So if there are annotations pending injection here, then they're necessarily
+        // type annotations, since otherwise they would have been consumed in the
+        // annotation list of a declaration.
+
+        // Eg in "public abstract @F int foo();", "@F" is part of the modifier list of the method.
+        // but in "public abstract <T> @F T foo();", "@F" is necessarily a type annotation, and indeed
+        // is in a separate AnnotationList (it follows the type parameters so is not a modifier).
+
+        // To sum it up, if we have annotations pending, then the first segment is necessarily
+        // a type name, otherwise it wouldn't have compiled. So it's not ambiguous and we can
+        // start fresh: "@B Map.Entry" will be unambiguously [[@B Map].Entry]
+
+        (<IDENTIFIER> {setLastTokenImage(jjtThis);} [ TypeArguments() ]) #ClassOrInterfaceType
+  |
+
+
+       // Otherwise, for now we have no clue until the first type arguments
+       // or annotation is found. The name is ambiguous between package or
+       // type name unless type arguments are present, in which case we can
+       // be sure that the last segment is a type name.
+
+      AmbiguousName()
+      [ TypeArguments() #ClassOrInterfaceType(2) ]
+      {
+        // At this point the first ClassOrInterfaceType may be on top of the stack,
+        // but its image is not set. If it is on the stack we need to shrink the bounds
+        // of the ambiguous name, or delete it.
+        Node first = jjtree.peekNode();
+        if (first instanceof ASTClassOrInterfaceType) {
+          // then we saw type arguments, so the last segment is definitely a type name
+          ASTAmbiguousName name = first.getFirstChildOfType(ASTAmbiguousName.class);
+          name.shrinkOrDeleteInParentSetImage();
+        }
+      }
+   )
 
   /*
     Now if there are other segments, either the previous segment specified type
@@ -2158,14 +2207,14 @@ void ClassOrInterfaceType() #void:
     executes a loop. That scheme preserves the position of type arguments and annotations.
     See #1150.
   */
-  (  LOOKAHEAD(2) "." ClassTypeSegment() )*
+  ( LOOKAHEAD(2) "." ClassTypeSegment() )*
   { forceTypeContext(); }
 }
 
 private void ClassTypeSegment() #ClassOrInterfaceType:
 {}
 {
-     TypeAnnotationList()
+     TypeAnnotListNoInject()
      <IDENTIFIER>
      // We'll enclose the previous segment
      { setLastTokenImage(jjtThis);  jjtree.extendLeft();}
@@ -2330,7 +2379,7 @@ void EqualityExprTail() #EqualityExpression:
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" Type() ]
+  RelationalExpression() [ LOOKAHEAD(2) "instanceof" AnnotatedRefType() ]
 }
 
 void RelationalExpression() #RelationalExpression(>1):
@@ -2442,8 +2491,8 @@ void UnaryExpressionNotPlusMinus() #void:
 | LOOKAHEAD("(" TypeAnnotationList() PrimitiveType() ")")
     ("(" AnnotatedType() ")" UnaryExpression())                                         #CastExpression
  // here we avoid looking ahead for a whole unary expression, instead just testing the token after ")"
-| LOOKAHEAD("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExprNotPmStart() )
-    ("(" TypeAnnotationList() IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
+| LOOKAHEAD("(" IntersectionType(true) ")" UnaryExprNotPmStart() )
+    ("(" IntersectionType(true) ")" UnaryExpressionNotPlusMinus()) #CastExpression
 | PostfixExpression()
 | SwitchExpression()
 }
@@ -2454,7 +2503,7 @@ private void UnaryExprNotPmStart() #void:
    //  Condensed FIRST set of UnaryExpressionNotPlusMinus
    //  Avoid looking ahead for a whole UnaryExpressionNotPlusMinus, but just for a token
 
-   "~" | "!" | "(" | "switch" | "new" | "this" | "super" | Literal()
+   "~" | "!" | "(" | "switch" | "new" | "this" | "super" | Literal() | "@"
    | <IDENTIFIER>
    | "void" | PrimitiveType()
 }
@@ -2508,6 +2557,10 @@ void PrimaryPrefix() #void :
        MethodReference()
      | "." "class"                        #ClassLiteral(1)
     )
+
+// If annotations start the expression, it's necessarily a method or ctor reference
+// This is because types in class literals or in qualified super/this may not be annotated
+| LOOKAHEAD({getToken(1).kind == AT}) AnnotatedRefType() MethodReference()
 
 | LOOKAHEAD(LambdaLahead()) LambdaExpression()
 
@@ -2651,12 +2704,16 @@ void LambdaParameterList():
 }
 
 void LambdaParameter():
-{boolean isVarType = false;}
+{
+  boolean isVarType = false;
+  ASTLambdaParameter me = jjtThis;
+  boolean isFinal = false;
+}
 {
     [
-      ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-      isVarType=LambdaParameterType() { jjtThis.setVarType(); }
-      [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+       isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+       isVarType=LambdaParameterType() { jjtThis.setVarType(); }
+       [ "..." {checkForBadVariableArgumentsUsage(); jjtThis.setVarargs();} ]
     ]
     VariableDeclaratorId()
 }
@@ -2728,8 +2785,7 @@ void QualifiedAllocationExpr() #ConstructorCall:
    "new"
    {jjtree.extendLeft();}
    [ TypeArguments() ]
-   TypeAnnotationList()
-   ClassOrInterfaceType()
+   AnnotatedClassOrInterfaceType()
    ArgumentList()
    [
        { boolean inInterfaceOld = inInterface; inInterface = false; /* a anonymous class is not a interface */ }
@@ -2752,7 +2808,7 @@ void UnqualifiedAllocationExpr() #void :
 {
    (
      (
-       "new" [ TypeArguments() ] (TypeAnnotation())*
+       "new" [ TypeArguments() ] TypeAnnotationList()
        (
          PrimitiveType() ArrayDimsAndInits(){isArrayInit=true;}
        |
@@ -2793,7 +2849,7 @@ void ArrayDimsAndInits() #void:
 void ArrayDimExpr() #void:
 {boolean hasExpr=false;}
 {
-  ((TypeAnnotationList() "[" [ Expression() {hasExpr=true;} ] "]") #ArrayDimExpr(hasExpr) ) #ArrayTypeDim(!hasExpr)
+  ((TypeAnnotListNoInject() "[" [ Expression() {hasExpr=true;} ] "]") #ArrayDimExpr(hasExpr) ) #ArrayTypeDim(!hasExpr)
 }
 
 
@@ -2847,12 +2903,12 @@ void BlockStatement():
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
 |
-  Statement()
+  // we need to lookahead until the "class" token,
+  // because a method ref may be annotated
+  // -> so Expression, and hence Statement, may start with "@"
+  LOOKAHEAD(Modifiers() "class") LocalClassDecl()
 |
-  // we don't need to lookahead further here
-  // the ambiguity between start of local class and local variable decl
-  // is already handled in the lookahead guarding LocalVariableDeclaration above.
-  LocalClassDecl()
+  Statement()
 }
 
 void LocalClassDecl() #void:
@@ -2875,15 +2931,22 @@ void LocalClassDecl() #void:
  * See https://docs.oracle.com/javase/specs/jls/se10/html/jls-14.html#jls-14.4
  */
 void LocalVariableDeclaration() :
-{}
+{boolean isFinal = false;}
 {
-  ( "final" {jjtThis.setFinal(true);} | Annotation() )*
+  isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
   LocalVariableType()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
 }
 
-void LocalVariableType() #void :
+private boolean LocalVarModifierList() #void:
+{boolean isFinal = false;}
+{
+    ( "final" {isFinal = true;} | Annotation() )*
+    {return isFinal;}
+}
+
+void LocalVariableType() #void:
 {}
 {
   LOOKAHEAD( { jdkVersion >= 10 && isKeyword("var") } ) <IDENTIFIER>
@@ -3091,13 +3154,16 @@ void Resources() #void:
 	Resource() (LOOKAHEAD(2) ";" Resource())*
 }
 
-void Resource():
-{}
+void Resource() :
+{boolean isFinal = false;}
 {
    LOOKAHEAD(("final" | Annotation())* LocalVariableType() VariableDeclaratorId() "=" )
-     ( ( "final" {jjtThis.setFinal(true);} | Annotation() )* LocalVariableType() VariableDeclarator() ) #LocalVariableDeclaration
+        (
+            isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+            LocalVariableType() VariableDeclarator()
+        ) #LocalVariableDeclaration
    |
-   PrimaryExpression() {checkForBadConciseTryWithResourcesUsage(); } {}
+   PrimaryExpression() {checkForBadConciseTryWithResourcesUsage();} {}
 }
 
 void CatchStatement() :
@@ -3267,7 +3333,7 @@ void AnnotationTypeMemberDeclaration():
    FieldDeclaration(modifiers)
  )
  |
-   ( ";" )
+   ";" #EmptyDeclaration
 }
 
 void AnnotationMethodDeclaration(int modifiers):

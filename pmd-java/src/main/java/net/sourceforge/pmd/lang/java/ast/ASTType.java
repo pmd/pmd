@@ -12,7 +12,10 @@ import net.sourceforge.pmd.annotation.Experimental;
 /**
  * Represents a type reference.
  *
- * <p>Corresponds to the JLS's <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-Type">Type</a>.
+ * <p>Corresponds to the JLS's <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-Type">Type</a>
+ * and <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-UnannType">UnannType</a>
+ * at the same time. In some contexts this can also be an {@linkplain ASTIntersectionType intersection type},
+ * though the JLS has no production for that.
  *
  * <pre class="grammar">
  *
@@ -21,12 +24,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  *
- * Note: it is not exactly the same the "UnannType" defined in JLS.
- *
- * TODO implement {@link Annotatable}. Ideally, any type annotations
- * would be children of this node, not of the parent node.
  */
-public interface ASTType extends TypeNode {
+public interface ASTType extends TypeNode, Annotatable {
+
 
     /**
      * For now this returns the name of the type with all the segments,

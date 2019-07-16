@@ -14,26 +14,26 @@ class ASTCastExpressionTest : ParserTestSpec({
 
     parserTest("Simple cast") {
 
-        "(Foo) obj" should matchExpr<ASTCastExpression> {
+        inContext(ExpressionParsingCtx) {
 
-            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
-
+            "(Foo) obj" should parseAs {
+                castExpr {
+                    it::getCastType shouldBe classType("Foo")
+                    unspecifiedChild()
+                }
             }
 
-            unspecifiedChild()
-        }
-
-        "(@F Foo) obj" should matchExpr<ASTCastExpression> {
-
-            annotation("F")
-
-            it::getCastType shouldBe child<ASTClassOrInterfaceType> {
-
+            "(@F Foo) obj" should parseAs {
+                castExpr {
+                    it::getCastType shouldBe classType("Foo") {
+                        annotation("F")
+                    }
+                    unspecifiedChild()
+                }
             }
-
-            unspecifiedChild()
         }
     }
+
     parserTest("Nested casts") {
 
         inContext(ExpressionParsingCtx) {
@@ -51,26 +51,48 @@ class ASTCastExpressionTest : ParserTestSpec({
 
     parserTest("Test intersection in cast", javaVersions = JavaVersion.J1_8..Latest) {
 
-        "(@F Foo & Bar) obj" should matchExpr<ASTCastExpression> {
+        inContext(ExpressionParsingCtx) {
+            "(@F Foo & Bar) obj" should parseAs {
 
-            annotation("F")
+                castExpr {
+                    it::getCastType shouldBe child<ASTIntersectionType> {
 
-            it::getCastType shouldBe child<ASTIntersectionType> {
+                        it::getDeclaredAnnotations shouldBe emptyList()
 
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "Foo"
-                }
+                        classType("Foo") {
+                            // annotations nest on the inner node
+                            it::getDeclaredAnnotations shouldBe listOf(annotation("F"))
+                        }
 
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "Bar"
+                        classType("Bar")
+                    }
+
+                    unspecifiedChild()
                 }
 
             }
 
-            unspecifiedChild()
-        }
+            "(@F Foo & @B@C Bar) obj" should parseAs {
 
-        "(@F Foo & @B Bar) obj" should notParseIn(ExpressionParsingCtx)
+                castExpr {
+                    it::getCastType shouldBe child<ASTIntersectionType> {
+
+                        it::getDeclaredAnnotations shouldBe emptyList()
+
+                        classType("Foo") {
+                            // annotations nest on the inner node
+                            it::getDeclaredAnnotations shouldBe listOf(annotation("F"))
+                        }
+
+                        classType("Bar") {
+                            it::getDeclaredAnnotations shouldBe listOf(annotation("B"), annotation("C"))
+                        }
+                    }
+
+                    unspecifiedChild()
+                }
+            }
+        }
     }
 
     parserTest("Test intersection ambiguity", javaVersions = Earliest..Latest) {

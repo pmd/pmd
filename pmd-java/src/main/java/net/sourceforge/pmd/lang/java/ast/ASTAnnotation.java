@@ -30,6 +30,16 @@ public interface ASTAnnotation extends TypeNode, ASTMemberValue {
         return getImage();
     }
 
+
+    /**
+     * Returns the simple name of the annotation.
+     */
+    default String getSimpleName() {
+        String[] split = getImage().split("\\.");
+        return split[split.length - 1];
+    }
+
+
     // @formatter:off
     /**
      * Returns true if this annotation suppresses the given rule.
