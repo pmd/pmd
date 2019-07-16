@@ -7,11 +7,8 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;

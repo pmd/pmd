@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTEnumBody;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
