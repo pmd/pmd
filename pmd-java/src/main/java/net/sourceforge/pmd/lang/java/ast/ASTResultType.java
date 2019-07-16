@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Return type of a method. TODO maybe make it implement {@link ASTType}.
+ * Return type of a method. TODO remove, the method declaration could have no type node if it's void
  *
  * <pre class="grammar">
  *

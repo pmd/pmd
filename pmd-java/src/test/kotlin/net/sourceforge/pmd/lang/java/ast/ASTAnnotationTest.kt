@@ -20,12 +20,14 @@ class ASTAnnotationTest : ParserTestSpec({
             "@F" should parseAs {
                 child<ASTMarkerAnnotation> {
                     it::getAnnotationName shouldBe "F"
+                    it::getSimpleName shouldBe "F"
                 }
             }
 
             "@java.lang.Override" should parseAs {
                 child<ASTMarkerAnnotation> {
                     it::getAnnotationName shouldBe "java.lang.Override"
+                    it::getSimpleName shouldBe "Override"
                 }
             }
         }
@@ -39,6 +41,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@F(\"ohio\")" should parseAs {
                 child<ASTSingleMemberAnnotation> {
                     it::getAnnotationName shouldBe "F"
+                    it::getSimpleName shouldBe "F"
 
                     it::getMemberValue shouldBe stringLit("\"ohio\"")
                 }
@@ -47,6 +50,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@org.F({java.lang.Math.PI})" should parseAs {
                 child<ASTSingleMemberAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
+                    it::getSimpleName shouldBe "F"
 
                     it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
                         child<ASTFieldAccess> {
@@ -60,6 +64,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@org.F({@Aha, @Oh})" should parseAs {
                 child<ASTSingleMemberAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
+                    it::getSimpleName shouldBe "F"
 
                     it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
                         annotation("Aha")
@@ -70,6 +75,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@org.F(@Oh)" should parseAs {
                 child<ASTSingleMemberAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
+                    it::getSimpleName shouldBe "F"
 
                     it::getMemberValue shouldBe annotation("Oh")
                 }
@@ -85,6 +91,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@F(a=\"ohio\")" should parseAs {
                 child<ASTNormalAnnotation> {
                     it::getAnnotationName shouldBe "F"
+                    it::getSimpleName shouldBe "F"
 
                     memberValuePair("a") {
                         stringLit("\"ohio\"")
@@ -95,6 +102,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@org.F(a={java.lang.Math.PI}, b=2)" should parseAs {
                 child<ASTNormalAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
+                    it::getSimpleName shouldBe "F"
 
                     memberValuePair("a") {
                         child<ASTMemberValueArrayInitializer> {
@@ -114,6 +122,7 @@ class ASTAnnotationTest : ParserTestSpec({
             "@org.F({@Aha, @Oh})" should parseAs {
                 child<ASTSingleMemberAnnotation> {
                     it::getAnnotationName shouldBe "org.F"
+                    it::getSimpleName shouldBe "F"
 
                     it::getMemberValue shouldBe child<ASTMemberValueArrayInitializer> {
                         annotation("Aha")
@@ -121,6 +130,7 @@ class ASTAnnotationTest : ParserTestSpec({
                     }
                 }
             }
+
 
             """
     @TestAnnotation({@SuppressWarnings({}),

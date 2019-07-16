@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Represents array type dimensions. This node may occur in several contexts:
@@ -25,7 +27,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTArrayTypeDims extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim> {
+public final class ASTArrayTypeDims extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, JSingleChildNode<ASTArrayTypeDim> {
     ASTArrayTypeDims(int id) {
         super(id);
     }
@@ -47,6 +49,22 @@ public final class ASTArrayTypeDims extends AbstractJavaTypeNode implements Iter
         return new NodeChildrenIterator<>(this, ASTArrayTypeDim.class);
     }
 
+    @Override
+    public ASTArrayTypeDim jjtGetChild(int index) {
+        return (ASTArrayTypeDim) super.jjtGetChild(index);
+    }
+
+    @Override
+    @NonNull
+    public ASTArrayTypeDim getLastChild() {
+        return jjtGetChild(jjtGetNumChildren() - 1);
+    }
+
+    @Override
+    @NonNull
+    public ASTArrayTypeDim getFirstChild() {
+        return jjtGetChild(0);
+    }
 
     /**
      * Returns the number of array dimensions of this type.

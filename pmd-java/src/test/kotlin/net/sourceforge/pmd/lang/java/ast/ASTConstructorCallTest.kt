@@ -40,12 +40,10 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getExplicitTypeArguments shouldBe null
 
-            annotation {
-                it::getAnnotationName shouldBe "Lol"
-            }
-
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
+
+                annotation("Lol")
 
                 it::getTypeArguments shouldBe child {
                     unspecifiedChild()
@@ -131,12 +129,10 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getExplicitTypeArguments shouldBe null
 
-            annotation {
-                it::getAnnotationName shouldBe "Lol"
-            }
-
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
+
+                annotation("Lol")
 
                 it::getTypeArguments shouldBe typeArgList()
             }

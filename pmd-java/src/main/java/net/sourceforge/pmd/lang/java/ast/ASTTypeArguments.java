@@ -12,11 +12,11 @@ import java.util.Iterator;
  *
  * <pre class="grammar">
  *
- *  TypeArguments ::= "&lt;" ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} ( "," ({@link ASTAnnotation TypeAnnotation})* {@linkplain ASTReferenceType TypeArgument} )* "&gt;"
+ *  TypeArguments ::= "&lt;" {@linkplain ASTReferenceType TypeArgument} ( "," {@linkplain ASTReferenceType TypeArgument} )* "&gt;"
  *                  | "&lt;" "&gt;"
  * </pre>
  */
-public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType> {
+public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType>, JSingleChildNode<ASTType> {
 
     ASTTypeArguments(int id) {
         super(id);
@@ -37,6 +37,10 @@ public final class ASTTypeArguments extends AbstractJavaNode implements Iterable
         visitor.visit(this, data);
     }
 
+    @Override
+    public ASTType jjtGetChild(int index) {
+        return (ASTType) super.jjtGetChild(index);
+    }
 
     /**
      * Returns true if this is a diamond, that is, the

@@ -9,8 +9,20 @@ import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
-
-public final class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
+/**
+ * A list of {@linkplain ASTFormalParameter formal parameters} in a
+ * method or constructor declaration.
+ *
+ *
+ * <pre class="grammar">
+ *
+ * FormalParameters ::=  "(" ")"
+ *                    |  "(" {@link ASTFormalParameter FormalParameter} ("," {@link ASTFormalParameter FormalParameter})* ")"
+ *
+ * </pre>
+ *
+ */
+public final class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter>, JSingleChildNode<ASTFormalParameter> {
 
     @InternalApi
     @Deprecated
