@@ -87,7 +87,7 @@ public interface JavaNode extends ScopedNode {
 
 
     /**
-     * Returns the root of the file in which this compilation unit is declared.
+     * Returns the root of the file in which this node is declared.
      */
     ASTCompilationUnit getRoot();
 
