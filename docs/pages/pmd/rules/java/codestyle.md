@@ -2400,14 +2400,25 @@ Useless parentheses should be removed.
     count(*)=1 and
     count(./CastExpression)=0 and
     count(./EqualityExpression/MultiplicativeExpression)=0 and
-    count(./ConditionalExpression)=0 and
-    count(./ConditionalOrExpression)=0]
+    count(./EqualityExpression)=0 and
+    count(./AndExpression)=0 and
+    count(./ExclusiveOrExpression)=0 and
+    count(./InclusiveOrExpression)=0 and
+    count(./ConditionalAndExpression)=0 and
+    count(./ConditionalOrExpression)=0 and
+    count(./ConditionalExpression)=0]
 |
 //Expression/ConditionalOrExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and
-    not(./CastExpression) and
-    not(./ConditionalExpression) and
-    not(./EqualityExpression/MultiplicativeExpression)]
+    count(./CastExpression)=0 and
+    count(./EqualityExpression/MultiplicativeExpression)=0 and
+    count(./EqualityExpression)=0 and
+    count(./AndExpression)=0 and
+    count(./ExclusiveOrExpression)=0 and
+    count(./InclusiveOrExpression)=0 and
+    count(./ConditionalAndExpression)=0 and
+    count(./ConditionalOrExpression)=0 and
+    count(./ConditionalExpression)=0]
 |
 //Expression/ConditionalExpression/PrimaryExpression/PrimaryPrefix/Expression[
     count(*)=1 and

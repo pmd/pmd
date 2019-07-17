@@ -129,14 +129,15 @@ public class Foo {
         <description><![CDATA[
 false negatives
      ]]></description>
-        <expected-problems>4</expected-problems>
+        <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class Foo {
    private boolean isSimpleReturn(Node node) {
       return 
-         ( node instanceof ASTReturnStatement ) // rule triggeres here
+         ( node instanceof ASTReturnStatement ) // rule triggers here
          &&
-         ( node.jjtGetNumChildren() == 0 );     // and here
+         ( node.jjtGetNumChildren() == 0 ); // but not here - we consider brackets within ConditionalAndExpression
+                                            // as readability improvement
     }
     public String getLocalName() {
         int colonIndex = name.indexOf(':');
