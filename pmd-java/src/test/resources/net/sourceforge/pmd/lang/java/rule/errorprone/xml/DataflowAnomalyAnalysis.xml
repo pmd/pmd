@@ -137,11 +137,8 @@ public class AssertTest {
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 1</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 1. DU-Anomaly(b)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(b) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -155,11 +152,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(a) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -173,11 +167,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(a) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -191,11 +182,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(a) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -211,11 +199,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 5</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 5. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(a) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -231,11 +216,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 6</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 6. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(a) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -256,11 +238,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 7</description>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 7. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(a) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -278,12 +257,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 9</description>
-        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 9. DU-Anomaly(t1)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(t1) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -296,12 +271,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 12</description>
-        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 12. DU-Anomaly(t1)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(t1) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -316,7 +287,6 @@ class Test{
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 13</description>
-        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Test{
@@ -331,12 +301,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14</description>
-        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14. DU-Anomaly(t1)</description>
         <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message> DU-Anomaly(t1) </message>
-        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
