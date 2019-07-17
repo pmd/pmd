@@ -103,21 +103,21 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                     for (Node temp = name.getLocation(); !(temp.jjtGetParent() instanceof ASTMethodDeclaration) 
                         && !(temp.jjtGetParent() instanceof ASTConstructorDeclaration); temp = temp.jjtGetParent()) {
                         //traverse children nodes to check it has assignment operator as a child 
-                        for (int i = 0; i < temp.jjtGetNumChildren(); i++) {
-                            if (temp.jjtGetChild(i) instanceof ASTAssignmentOperator) {
+                        List<ASTAssignmentOperator> assignmentOperators = temp.findChildrenOfType(ASTAssignmentOperator.class);
+                        if (!assignmentOperators.isEmpty()) {
                                 //if assignment operator is found, add to arraylist(assignments) with the assignment operator and its name
-                                assignments.add(new SimpleEntry(temp.jjtGetChild(i), name));
+                                assignments.add(new SimpleEntry(assignmentOperators.get(0), name));
                                 //change flag
                                 flag = 1;
                                 break checker;    
                             }
-                        }
                     }
                     //if a name is not related to assignment operator, add to arraylist(assignments) with null and its name
                     if (flag == 0) {
                         assignments.add(new SimpleEntry(null, name));
                     }
                 }
+                
                 //swap the arraylist(assignments)'s elements, when it share same assignment operator
                 for (int i = 0; i < assignments.size() - 1; i++) {
                     if (assignments.get(i).getKey() != null 
