@@ -135,4 +135,217 @@ public class AssertTest {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 1</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(b) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int a = 0 ;
+       int b = 0 ;
+       a = a + b ;
+       b = a + b ;
+       }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(a) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int a = 0 ;
+       for(int i = 0 ; i <= 10; i ++){
+           a = a+3;
+       }
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(a) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int[] b = new int[10];
+       for(int a : b){
+           a = a+3;
+       }
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(a) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int a = 0 ;
+       int i = 0 ;
+       while(i < 30){
+           a = a+3;
+           i += 3;
+       }
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 5</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(a) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int a = 0 ;
+       int i = 0 ;
+       do{
+           a = a+3;
+           i += 3;
+       }while(i < 30);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 6</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(a) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int a = 0 ;
+       int i = 0 ;
+       switch(i){
+           case 1 : a = a+1;
+           break;
+           case 2 : a = a+2;
+           break;
+           case 3 : a = a+3;
+           break;
+           default : a = a + 0;
+       }
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 7</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(a) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int a = 0 ;
+       int i = 0 ;
+       switch(i){
+           case 1 : a = a+1;
+           case 2 : a = a+2;
+           case 3 : a = a+3;
+           default : a = a + 0;
+       }
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 9</description>
+        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(t1) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int t1 = 0 ;
+       Test2 test = new Test2() ;
+       t1 = test.simpleTest(t1) ;
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 12</description>
+        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(t1) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int t1 = 0 ;
+       int t2 = 0 ;
+       Test2 test = new Test2();
+       if((t1 = test.simpleTest(t1)) == t2);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 13</description>
+        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int t1 = 0 ;
+
+       Test2 test = new Test2();
+       if( (t1 = test.simpleTest(t1)) == t1);
+   }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14</description>
+        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message> DU-Anomaly(t1) </message>
+        </expected-messages>
+        <code><![CDATA[
+class Test{
+   public static void main(String[] args){
+       int t1 = 0;
+       int t2 = 0;
+       Test2 test = new Test2() ;
+       if( t1 == (t1 = test.simpleTest(t1))) ;
+   }
+}
+        ]]></code>
+    </test-code>
 </test-data>
