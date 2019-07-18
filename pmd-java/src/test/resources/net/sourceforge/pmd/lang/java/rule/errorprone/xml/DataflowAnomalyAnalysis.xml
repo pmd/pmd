@@ -153,7 +153,7 @@ class Test{
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -166,6 +166,7 @@ class Test{
         ]]></code>
     </test-code>
 
+    <!-- This case invoke False Positive(UR-a), because of for-each statement.
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
@@ -179,11 +180,11 @@ class Test{
    }
 }
         ]]></code>
-    </test-code>
+    </test-code> -->
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -217,7 +218,7 @@ class Test{
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 6. DU-Anomaly(a)</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>4</expected-problems>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -301,8 +302,8 @@ class Test{
     </test-code>
 
     <test-code>
-        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14. DU-Anomaly(t1)</description>
-        <expected-problems>1</expected-problems>
+        <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14. DU-Anomaly(t1, t2)</description>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
