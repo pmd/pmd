@@ -1300,11 +1300,22 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1913">#1913</a>: [core] “-help” CLI option ends with status code != 0</li>
+    </ul>
+  </li>
   <li>doc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1896">#1896</a>: [doc] Error in changelog 6.16.0 due to not properly closed rule tag</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1898">#1898</a>: [doc] Incorrect code example for DoubleBraceInitialization in documentation on website</li>
       <li><a href="https://github.com/pmd/pmd/issues/1906">#1906</a>: [doc] Broken link for adding own CPD languages</li>
       <li><a href="https://github.com/pmd/pmd/issues/1909">#1909</a>: [doc] Sample usage example refers to deprecated ruleset “basic.xml” instead of “quickstart.xml”</li>
+    </ul>
+  </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1903">#1903</a>: [java] UnsynchronizedStaticFormatter doesn’t allow block-level synchronization when using allowMethodLevelSynchronization=true</li>
     </ul>
   </li>
   <li>xml
@@ -1322,6 +1333,7 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
   <li><a href="https://github.com/pmd/pmd/pull/1869">#1869</a>: [xml] fix #1666 wrong cdata rule description and examples - <a href="https://github.com/KroArtem">Artem</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1892">#1892</a>: [lua] [cpd] Added CPD support for Lua - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1908">#1908</a>: [doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - <a href="https://github.com/crunsk">crunsk</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1917">#1917</a>: [core] Add ‘no error’ return option, and assign it to the cli when the help command is invoked - <a href="https://github.com/renatoliveira">Renato Oliveira</a></li>
 </ul>
 
 
@@ -1340,7 +1352,7 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 14, 2019 <br />
+ Site last generated: Jul 19, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
