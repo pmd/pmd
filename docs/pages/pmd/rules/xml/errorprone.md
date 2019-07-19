@@ -25,7 +25,7 @@ An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, an
 **Example(s):**
 
 ``` xml
-<root>
+{%raw%}<root>
     <child>
         <![CDATA[[ character data ]]> - this cdata section is valid, but it contains an
         additional square bracket at the beginning.
@@ -36,7 +36,7 @@ An XML CDATA section begins with a &lt;![CDATA[ marker, which has only one [, an
         additional square bracket in the end.
         It should probably be just <![CDATA[ character data ]]>.
     </child>
-</root>
+</root>{%endraw%}
 ```
 
 **Use this rule by referencing it:**

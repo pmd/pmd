@@ -37,8 +37,8 @@ by {% rule java/codestyle/ClassNamingConventions %}.
 **Example(s):**
 
 ``` java
-public abstract class Foo { // should be AbstractFoo
-}
+{%raw%}public abstract class Foo { // should be AbstractFoo
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -75,11 +75,11 @@ Classes with solely static members are ignored, refer to [UseUtilityClassRule](p
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
    // missing constructor
   public void doSomething() { ... }
   public void doOtherThing { ... }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -115,8 +115,8 @@ Avoid using dollar signs in variable/method/class/interface names.
 **Example(s):**
 
 ``` java
-public class Fo$o {  // not a recommended name
-}
+{%raw%}public class Fo$o {  // not a recommended name
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -162,11 +162,11 @@ If the goal is to avoid defining constants in a scope smaller than the class, th
 **Example(s):**
 
 ``` java
-public class MyClass {
+{%raw%}public class MyClass {
     public void foo() {
         final String finalLocalVariable;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -199,18 +199,18 @@ by the more general rule {% rule java/codestyle/FormalParameterNamingConventions
 **Example(s):**
 
 ``` java
-// Not really clear
+{%raw%}// Not really clear
 public class Foo {
   public void bar(
       int inLeftOperand,
       Result outRightOperand) {
       outRightOperand.setValue(inLeftOperand * outRightOperand.getValue());
   }
-}
+}{%endraw%}
 ```
 
 ``` java
-// Far more useful
+{%raw%}// Far more useful
 public class Foo {
   /**
    *
@@ -222,7 +222,7 @@ public class Foo {
         Result rightOperand) {
         rightOperand.setValue(leftOperand * rightOperand.getValue());
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -249,11 +249,11 @@ Clarify your intent by using private or package access modifiers instead.
 **Example(s):**
 
 ``` java
-public final class Bar {
+{%raw%}public final class Bar {
   private int x;
   protected int y;  // bar cannot be subclassed, so is y really private or package visible?
   Bar() {}
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -281,10 +281,10 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 **Example(s):**
 
 ``` java
-public final class Foo {
+{%raw%}public final class Foo {
   private int bar() {}
   protected int baz() {} // Foo cannot be subclassed, and doesn't extend anything, so is baz() really private or package visible?
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -309,7 +309,7 @@ and increases the maintenance burden.
 **Example(s):**
 
 ``` java
-public class SomeJNIClass {
+{%raw%}public class SomeJNIClass {
 
      public SomeJNIClass() {
          System.loadLibrary("nativelib");
@@ -322,7 +322,7 @@ public class SomeJNIClass {
      public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
          System.loadLibrary("nativelib");
      }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -354,9 +354,9 @@ and not(../Annotation//Name[@Image = 'Override'])
 **Example(s):**
 
 ``` java
-public boolean getFoo();            // bad
+{%raw%}public boolean getFoo();            // bad
 public boolean isFoo();             // ok
-public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
+public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -399,7 +399,7 @@ another constructor (such as an overloaded constructor) is called, this rule wil
 **Example(s):**
 
 ``` java
-public class Foo extends Bar{
+{%raw%}public class Foo extends Bar{
   public Foo() {
    // call the constructor of Bar
    super();
@@ -409,7 +409,7 @@ public class Foo extends Bar{
    this();
    // no problem with this
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -436,7 +436,7 @@ and reports utility class names not ending with 'Util'.
 **Example(s):**
 
 ``` java
-// This is Pascal case, the recommended naming convention in Java
+{%raw%}// This is Pascal case, the recommended naming convention in Java
 // Note that the default values of this rule don't allow underscores 
 // or accented characters in type names
 public class FooBar {}
@@ -447,7 +447,7 @@ public class FooBar {}
 public abstract class Thing {}
 
 // This class doesn't respect the convention, and will be flagged
-public class Éléphant {}
+public class Éléphant {}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -497,7 +497,7 @@ property &quot;ignoredAnnotations&quot; to customize the recognized annotations.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     final String stringValue = "some string";
     String getString() {
        return stringValue;
@@ -516,7 +516,7 @@ public class Foo {
 
     /* default */ class NestedFoo {
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -561,9 +561,9 @@ as &quot;does the error case go first?&quot; or &quot;does the common case go fi
 **Example(s):**
 
 ``` java
-boolean bar(int x, int y) {
+{%raw%}boolean bar(int x, int y) {
     return (x != y) ? diff : same;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -628,12 +628,12 @@ and IfElseStmtMustUseBraces.
 **Example(s):**
 
 ``` java
-while (true)    // not recommended
+{%raw%}while (true)    // not recommended
   x++;
 
 while (true) {  // preferred approach
   x++;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -707,7 +707,7 @@ Avoid importing anything from the package 'java.lang'.  These classes are automa
 **Example(s):**
 
 ``` java
-import java.lang.String;    // this is unnecessary
+{%raw%}import java.lang.String;    // this is unnecessary
 
 public class Foo {}
 
@@ -715,7 +715,7 @@ public class Foo {}
 
 import java.lang.*;         // this is bad
 
-public class Foo {}
+public class Foo {}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -736,9 +736,9 @@ Duplicate or overlapping import statements should be avoided.
 **Example(s):**
 
 ``` java
-import java.lang.String;
+{%raw%}import java.lang.String;
 import java.lang.*;
-public class Foo {}
+public class Foo {}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -777,7 +777,7 @@ usage by developers who should be implementing their own versions in the concret
 **Example(s):**
 
 ``` java
-public abstract class ShouldBeAbstract {
+{%raw%}public abstract class ShouldBeAbstract {
     public Object couldBeAbstract() {
         // Should be abstract method ?
         return null;
@@ -785,7 +785,7 @@ public abstract class ShouldBeAbstract {
 
     public void couldBeAbstract() {
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -809,8 +809,8 @@ No need to explicitly extend Object.
 **Example(s):**
 
 ``` java
-public class Foo extends Object {     // not required
-}
+{%raw%}public class Foo extends Object {     // not required
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -831,7 +831,7 @@ Fields should be declared at the top of the class, before any method declaration
 **Example(s):**
 
 ``` java
-public class HelloWorldBean {
+{%raw%}public class HelloWorldBean {
 
   // Field declared before methods / inner classes - OK
   private String _thing;
@@ -842,7 +842,7 @@ public class HelloWorldBean {
 
   // Field declared after methods / inner classes - avoid this
   private String _fieldInWrongLocation;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -887,7 +887,7 @@ convention for constants and enum constants.
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
                 int myField = 1; // This is in camel case, so it's ok
                 int my_Field = 1; // This contains an underscore, it's not ok by default
                                   // but you may allow it, or even require the "my_" prefix
@@ -902,7 +902,7 @@ class Foo {
                 enum AnEnum {
                     ORG, NET, COM; // These use a separate property but are set to ALL_UPPER by default
                 }
-            }
+            }{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -957,11 +957,11 @@ Some for loops can be simplified to while loops, this makes them more concise.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void bar() {
         for (;true;) true; // No Init or Update part, may as well be: while (true)
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -992,8 +992,8 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
 **Example(s):**
 
 ``` java
-for (int i = 0; i < 42; i++)
-   foo();
+{%raw%}for (int i = 0; i < 42; i++)
+   foo();{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1019,7 +1019,7 @@ By default this rule uses the standard Java naming convention (Camel case).
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
 
                 abstract void bar(int myInt); // This is Camel case, so it's ok
 
@@ -1037,7 +1037,7 @@ class Foo {
 
                 }
 
-            }
+            }{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1086,7 +1086,7 @@ Names for references to generic values should be limited to a single uppercase l
 **Example(s):**
 
 ``` java
-public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao {
+{%raw%}public interface GenericDao<E extends BaseModel, K extends Serializable> extends BaseDao {
     // This is ok...
 }
 
@@ -1100,7 +1100,7 @@ public interface GenericDao<e extends BaseModel, K extends Serializable> {
 
 public interface GenericDao<EF extends BaseModel, K extends Serializable> {
    // 'EF' is not ok.
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1125,7 +1125,7 @@ branch.
 **Example(s):**
 
 ``` java
-try {
+{%raw%}try {
     // do something
 } catch (IllegalArgumentException e) {
     throw e;
@@ -1137,7 +1137,7 @@ try {
     // do something
 } catch (IllegalArgumentException | IllegalStateException e) { // This is better
     throw e;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1171,14 +1171,14 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
 **Example(s):**
 
 ``` java
-// this is OK
+{%raw%}// this is OK
 if (foo) x++;
 
    // but this is not
 if (foo)
        x = x+1;
    else
-       x = x-1;
+       x = x-1;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1209,12 +1209,12 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
 **Example(s):**
 
 ``` java
-if (foo)    // not recommended
+{%raw%}if (foo)    // not recommended
     x++;
 
 if (foo) {  // preferred approach
     x++;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1245,7 +1245,7 @@ Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).
 **Example(s):**
 
 ``` java
-public class LinguisticNaming {
+{%raw%}public class LinguisticNaming {
     int isValid;    // the field name indicates a boolean, but it is an int.
     boolean isTrue; // correct type of the field
 
@@ -1281,7 +1281,7 @@ public class LinguisticNaming {
     void grapeToWine() {
         // nothing to return?
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1350,9 +1350,9 @@ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
 **Example(s):**
 
 ``` java
-public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {} // proper name
+{%raw%}public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {} // proper name
 
-public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-standard name
+public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}  // non-standard name{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1386,9 +1386,9 @@ The Local Interface of a Session EJB should be suffixed by 'Local'.
 **Example(s):**
 
 ``` java
-public interface MyLocal extends javax.ejb.EJBLocalObject {}                // proper name
+{%raw%}public interface MyLocal extends javax.ejb.EJBLocalObject {}                // proper name
 
-public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // non-standard name
+public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}    // non-standard name{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1409,12 +1409,12 @@ A local variable assigned only once can be declared final.
 **Example(s):**
 
 ``` java
-public class Bar {
+{%raw%}public class Bar {
     public void foo () {
     String txtA = "a";          // if txtA will not be assigned again it is better to do this:
     final String txtB = "b";
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1455,7 +1455,7 @@ By default this rule uses the standard Java naming convention (Camel case).
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
                 void bar() {
                     int localVariable = 1; // This is in camel case, so it's ok
                     int local_variable = 1; // This will be reported unless you change the regex
@@ -1469,7 +1469,7 @@ class Foo {
                     }
 
                 }
-            }
+            }{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1512,7 +1512,7 @@ Fields, formal arguments, or local variable names that are too long can make the
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     int reallyLongIntName = -3;             // VIOLATION - Field
     public static void main( String argumentsList[] ) { // VIOLATION - Formal
         int otherReallyLongName = -5;       // VIOLATION - Local
@@ -1520,7 +1520,7 @@ public class Something {
              interestingIntIndex < 10;
              interestingIntIndex ++ ) {
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1571,9 +1571,9 @@ The EJB Specification states that any MessageDrivenBean or SessionBean should be
 **Example(s):**
 
 ``` java
-public class SomeBean implements SessionBean{}                  // proper name
+{%raw%}public class SomeBean implements SessionBean{}                  // proper name
 
-public class MissingTheProperSuffix implements SessionBean {}   // non-standard name
+public class MissingTheProperSuffix implements SessionBean {}   // non-standard name{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1594,13 +1594,13 @@ A method argument that is never re-assigned within the method can be declared fi
 **Example(s):**
 
 ``` java
-public void foo1 (String param) {       // do stuff with param never assigning it
+{%raw%}public void foo1 (String param) {       // do stuff with param never assigning it
 
 }
 
 public void foo2 (final String param) { // better, do stuff with param never assigning it
 
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1626,10 +1626,10 @@ By default this rule uses the standard Java naming convention (Camel case).
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void fooStuff() {
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1685,12 +1685,12 @@ by the more general rule
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private int m_foo; // OK
     public void bar(String m_baz) { // Bad
       int m_boz = 42; // Bad
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1714,9 +1714,9 @@ Detects when a class, interface, enum or annotation does not have a package defi
 **Example(s):**
 
 ``` java
-// no package declaration
+{%raw%}// no package declaration
 public class ClassInDefaultPackage {
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1737,14 +1737,14 @@ A method should have only one exit point, and that should be the last statement 
 **Example(s):**
 
 ``` java
-public class OneReturnOnly1 {
+{%raw%}public class OneReturnOnly1 {
   public void foo(int x) {
     if (x > 0) {
       return "hey";   // first exit
     }
     return "hi";    // second exit
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1768,10 +1768,10 @@ Detects when a package definition contains uppercase characters.
 **Example(s):**
 
 ``` java
-package com.MyCompany;  // should be lowercase name
+{%raw%}package com.MyCompany;  // should be lowercase name
 
 public class SomeClass {
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1792,7 +1792,7 @@ Checks for variables that are defined before they might be used. A reference is 
 **Example(s):**
 
 ``` java
-public int getLength(String[] strings) {
+{%raw%}public int getLength(String[] strings) {
 
     int length = 0; // declared prematurely
 
@@ -1803,7 +1803,7 @@ public int getLength(String[] strings) {
     }
 
     return length;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1840,14 +1840,14 @@ Remote Interface of a Session EJB should not have a suffix.
 **Example(s):**
 
 ``` java
-/* Poor Session suffix */
+{%raw%}/* Poor Session suffix */
 public interface BadSuffixSession extends javax.ejb.EJBObject {}
 
 /* Poor EJB suffix */
 public interface BadSuffixEJB extends javax.ejb.EJBObject {}
 
 /* Poor Bean suffix */
-public interface BadSuffixBean extends javax.ejb.EJBObject {}
+public interface BadSuffixBean extends javax.ejb.EJBObject {}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1881,9 +1881,9 @@ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.
 **Example(s):**
 
 ``` java
-public interface MyBeautifulHome extends javax.ejb.EJBHome {}       // proper name
+{%raw%}public interface MyBeautifulHome extends javax.ejb.EJBHome {}       // proper name
 
-public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-standard name
+public interface MissingProperSuffix extends javax.ejb.EJBHome {}   // non-standard name{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1907,8 +1907,8 @@ Short Classnames with fewer than e.g. five characters are not recommended.
 **Example(s):**
 
 ``` java
-public class Foo {
-}
+{%raw%}public class Foo {
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1947,10 +1947,10 @@ Method names that are very short are not helpful to the reader.
 **Example(s):**
 
 ``` java
-public class ShortMethod {
+{%raw%}public class ShortMethod {
     public void a( int i ) { // Violation
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1997,7 +1997,7 @@ Fields, local variables, or parameter names that are very short are not helpful 
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     private int q = 15;                         // field - too short
     public static void main( String as[] ) {    // formal arg - too short
         int r = 20 + q;                         // local var - too short
@@ -2008,7 +2008,7 @@ public class Something {
             r += q;
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2056,12 +2056,12 @@ by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
  // this is bad, since someone could accidentally
  // do PI = 2.71828; which is actually e
  // final double PI = 3.16; is ok
   double PI = 3.16;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2088,11 +2088,11 @@ which class a static member comes from (Sun 1.5 Language Guide).
 **Example(s):**
 
 ``` java
-import static Lennon;
+{%raw%}import static Lennon;
 import static Ringo;
 import static George;
 import static Paul;
-import static Yoko; // Too much !
+import static Yoko; // Too much !{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2128,7 +2128,7 @@ Avoid the use of value in annotations when it's the only element.
 **Example(s):**
 
 ``` java
-@TestClassAnnotation(value = "TEST")
+{%raw%}@TestClassAnnotation(value = "TEST")
 public class Foo {
 
     @TestMemberAnnotation(value = "TEST")
@@ -2154,7 +2154,7 @@ public class Foo {
         int x = 42;
         return;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2177,9 +2177,9 @@ modifier as the declaring class. In an enum type, the default constructor is imp
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   public Foo() {}
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2216,12 +2216,12 @@ which is covered by an import statement is redundant.  Consider using the non-fu
 **Example(s):**
 
 ``` java
-import java.util.List;
+{%raw%}import java.util.List;
 
 public class Foo {
     private java.util.List list1;   // Unnecessary FQN
     private List list2;             // More appropriate given import of 'java.util.List'
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2242,12 +2242,12 @@ Avoid the creation of unnecessary local variables
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
    public int foo() {
      int x = doSomething();
      return x;  // instead, just 'return doSomething();'
    }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2287,7 +2287,7 @@ For historical reasons, modifiers which are implied by the context are accepted 
 **Example(s):**
 
 ``` java
-public @interface Annotation {
+{%raw%}public @interface Annotation {
     public abstract void bar();     // both abstract and public are ignored by the compiler
     public static final int X = 0;  // public, static, and final all ignored
     public static class Bar {}      // public, static ignored
@@ -2304,7 +2304,7 @@ public class Bar {
     public static enum FoorBar {    // static ignored
         FOO;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2325,12 +2325,12 @@ Avoid the use of unnecessary return statements.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar() {
         int x = 42;
         return;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2367,8 +2367,8 @@ which makes the code also more readable.
 **Example(s):**
 
 ``` java
-List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
-List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise
+{%raw%}List<String> strings = new ArrayList<String>(); // unnecessary duplication of type parameters
+List<String> stringsWithDiamond = new ArrayList<>(); // using the diamond operator is more concise{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2445,7 +2445,7 @@ Useless parentheses should be removed.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
 
     private int _bar1;
     private Integer _bar2;
@@ -2454,7 +2454,7 @@ public class Foo {
         _bar1 = Integer.valueOf((n)); // here
         _bar2 = (n); // and here
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2483,7 +2483,7 @@ Reports qualified this usages in the same class.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     final Foo otherFoo = Foo.this;  // use "this" directly
 
     public void doSomething() {
@@ -2506,7 +2506,7 @@ public class Foo {
     private class Foo2 {
         final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2535,8 +2535,8 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
 **Example(s):**
 
 ``` java
-Foo[] x = new Foo[] { ... }; // Overly verbose
-Foo[] x = { ... }; //Equivalent to above line
+{%raw%}Foo[] x = new Foo[] { ... }; // Overly verbose
+Foo[] x = { ... }; //Equivalent to above line{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2588,9 +2588,9 @@ that are misplaced (not making groups of 3 digits) are reported.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private int num = 1000000; // should be 1_000_000
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2635,11 +2635,11 @@ by the more general rules {% rule java/codestyle/FieldNamingConventions %},
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public static final int MY_NUM = 0;
     public String myTest = "";
     DataModule dmTest = new DataModule();
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2707,12 +2707,12 @@ by the rule {% rule java/codestyle/ControlStatementBraces %}.
 **Example(s):**
 
 ``` java
-while (true)    // not recommended
+{%raw%}while (true)    // not recommended
       x++;
       
 while (true) {  // preferred approach
       x++;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**

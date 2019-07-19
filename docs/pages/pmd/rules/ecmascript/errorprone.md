@@ -27,13 +27,13 @@ This rule helps improve code portability due to differences in browser treatment
 **Example(s):**
 
 ``` javascript
-function(arg) {
+{%raw%}function(arg) {
     var obj1 = { a : 1 };   // Ok
     var arr1 = [ 1, 2 ];    // Ok
 
     var obj2 = { a : 1, };  // Syntax error in some browsers!
     var arr2 = [ 1, 2, ];   // Length 2 or 3 depending on the browser!
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -80,7 +80,7 @@ same type. The === operator avoids the casting.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 if (someVar === true) {
   ...
 }
@@ -95,7 +95,7 @@ if (someVar == true) {
 // Bad
 if (someVar != 3) {
   ...
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -120,13 +120,13 @@ precision in a floating point number.  This may result in numeric calculations b
 **Example(s):**
 
 ``` javascript
-var a = 9; // Ok
+{%raw%}var a = 9; // Ok
 var b = 999999999999999; // Ok
 var c = 999999999999999999999; // Not good
 var w = 1.12e-4; // Ok
 var x = 1.12; // Ok
 var y = 1.1234567890123; // Ok
-var z = 1.12345678901234567; // Not good
+var z = 1.12345678901234567; // Not good{%endraw%}
 ```
 
 **Use this rule by referencing it:**

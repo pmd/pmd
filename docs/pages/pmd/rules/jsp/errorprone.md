@@ -31,11 +31,11 @@ and
 **Example(s):**
 
 ``` jsp
-Most browsers should be able to interpret the following headers:
+{%raw%}Most browsers should be able to interpret the following headers:
 
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />{%endraw%}
 ```
 
 **Use this rule by referencing it:**

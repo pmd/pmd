@@ -23,12 +23,12 @@ Hard-wiring these values greatly compromises the security of encrypted data.
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     Blob hardCodedIV = Blob.valueOf('Hardcoded IV 123');
     Blob hardCodedKey = Blob.valueOf('0000000000000000');
     Blob data = Blob.valueOf('Data to be encrypted');
     Blob encrypted = Crypto.encrypt('AES128', hardCodedKey, hardCodedIV, data);
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -59,7 +59,7 @@ privilege and may produce runtime errors. This check forces you to handle such s
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public Contact foo(String status, String ID) {
         Contact c = [SELECT Status__c FROM Contact WHERE Id=:ID];
 
@@ -72,7 +72,7 @@ public class Foo {
         update c;
         return c;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -102,7 +102,7 @@ modification of the database just by accessing a page.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public init() {
         insert data;
     }
@@ -110,7 +110,7 @@ public class Foo {
     public Foo() {
         insert data;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -146,11 +146,11 @@ of private data.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public Foo() {
         Configuration.disableTriggerCRUDSecurity();
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -180,12 +180,12 @@ Checks against accessing endpoints under plain **http**. You should always use
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     void foo() {
         HttpRequest req = new HttpRequest();
         req.setEndpoint('http://localhost:com');
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -215,12 +215,12 @@ redirecting users to phishing sites.
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     String unsafeLocation = ApexPage.getCurrentPage().getParameters.get('url_param');
     PageReference page() {
        return new PageReference(unsafeLocation);
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -250,9 +250,9 @@ forces the developer to take access restrictions into account before modifying o
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     // DML operation here
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -281,11 +281,11 @@ Detects the usage of untrusted / unescaped variables in DML queries.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void test1(String t1) {
         Database.query('SELECT Id FROM Account' + t1);
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -326,13 +326,13 @@ For more information, you can check [this](https://developer.salesforce.com/docs
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void foo(String username, String password) {
         Blob headerValue = Blob.valueOf(username + ':' + password);
         String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
         req.setHeader('Authorization', authorizationHeader);
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -363,9 +363,9 @@ attacks if unescaped.
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     Trigger.new[0].addError(vulnerableHTMLGoesHere, false);
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -395,10 +395,10 @@ to avoid XSS attacks.
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     String unescapedstring = ApexPage.getCurrentPage().getParameters.get('url_param');
     String usedLater = unescapedstring;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**

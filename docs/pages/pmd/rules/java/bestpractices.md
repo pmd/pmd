@@ -32,12 +32,12 @@ directly) a protected constructor can be provided prevent direct instantiation.
 **Example(s):**
 
 ``` java
-public abstract class Foo {
+{%raw%}public abstract class Foo {
   void int method1() { ... }
   void int method2() { ... }
   // consider using abstract methods or removing
   // the abstract modifier and adding protected constructors
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -62,14 +62,14 @@ This turns a private constructor effectively into one with package scope, and is
 **Example(s):**
 
 ``` java
-public class Outer {
+{%raw%}public class Outer {
  void method(){
   Inner ic = new Inner();//Causes generation of accessor class
  }
  public class Inner {
   private Inner(){}
  }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -92,7 +92,7 @@ be avoided by changing the visibility of the field / method from private to pack
 **Example(s):**
 
 ``` java
-public class OuterClass {
+{%raw%}public class OuterClass {
     private int counter;
     /* package */ int id;
 
@@ -105,7 +105,7 @@ public class OuterClass {
             return OuterClass.this.id; // id is package-private, no accessor method needed
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -127,13 +127,13 @@ This prevents future changes from the user from affecting the original array.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private String [] x;
         public void foo (String [] param) {
         // Don't do this, make a copy of the array at least
         this.x=param;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -159,7 +159,7 @@ Avoid printStackTrace(); use a logger call instead.
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
     void bar() {
         try {
             // do something
@@ -167,7 +167,7 @@ class Foo {
             e.printStackTrace();
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -200,7 +200,7 @@ In for-loops, configured by the `forReassign` property:
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   private void foo() {
     for (String s : listOfStrings()) {
       s = s.trim(); // OK, when foreachReassign is "firstOnly" or "allow"
@@ -220,7 +220,7 @@ public class Foo {
       doSomethingWith(i);
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -258,11 +258,11 @@ Reassigning values to incoming parameters is not recommended.  Use temporary loc
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   private void foo(String bar) {
     bar = "something else";
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -287,9 +287,9 @@ if held within objects with long lifetimes.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private StringBuffer buffer;    // potential memory leak as an instance variable;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -311,9 +311,9 @@ Externalizing IP adresses is preferable.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private String ip = "127.0.0.1";     // not recommended
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -350,7 +350,7 @@ If the value return is 'false', it should be handled properly.
 **Example(s):**
 
 ``` java
-Statement stat = conn.createStatement();
+{%raw%}Statement stat = conn.createStatement();
 ResultSet rst = stat.executeQuery("SELECT name FROM person");
 rst.next();     // what if it returns false? bad form
 String firstName = rst.getString(1);
@@ -361,7 +361,7 @@ if (rst.next()) {    // result is properly examined and used
     String firstName = rst.getString(1);
     } else  {
         // handle missing data
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -386,7 +386,7 @@ better placed in classes or enums. See Effective Java, item 19.
 **Example(s):**
 
 ``` java
-public interface ConstantInterface {
+{%raw%}public interface ConstantInterface {
     public static final int CONST1 = 1; // violation, no fields allowed in interface!
     static final int CONST2 = 1;        // violation, no fields allowed in interface!
     final int CONST3 = 1;               // violation, no fields allowed in interface!
@@ -405,7 +405,7 @@ public interface YetAnotherConstantInterface {
     public static final int CONST1 = 1; // no violation
 
     int anyMethod();
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -446,7 +446,7 @@ By convention, the default label should be the last label in a switch statement.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   void bar(int a) {
    switch (a) {
     case 1:  // do something
@@ -457,7 +457,7 @@ public class Foo {
        break;
    }
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -487,13 +487,13 @@ accessible from outside the anonymous class, and those legit cases should be sup
 **Example(s):**
 
 ``` java
-// this is double-brace initialization
-return new ArrayList<String>(){%raw%}{{ addAll("a","b","c"); }};{%endraw%}
+{%raw%}// this is double-brace initialization
+return new ArrayList<String>(){{ addAll("a","b","c"); }};
 
 // the better way is to not create an anonymous class:
 List<String> a = new ArrayList<>();
 a.addAll("a","b","c");
-return a;
+return a;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -519,7 +519,7 @@ element of the list or array left to right.
 **Example(s):**
 
 ``` java
-public class MyClass {
+{%raw%}public class MyClass {
   void loop(List<String> l) {
     for (int i = 0; i < l.size(); i++) { // pre Java 1.5
       System.out.println(l.get(i));
@@ -529,7 +529,7 @@ public class MyClass {
       System.out.println(s);
     }
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -554,9 +554,9 @@ the loop iterates over. By default this rule allows a regular 'for' loop with on
 **Example(s):**
 
 ``` java
-// this will be reported with the default setting of at most one control variable in a for loop
+{%raw%}// this will be reported with the default setting of at most one control variable in a for loop
 for (int i = 0, j = 0; i < 10; i++, j += 2) {
-   foo();
+   foo();{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -593,9 +593,9 @@ otherwise skip the associate String creation and manipulation.
 **Example(s):**
 
 ``` java
-// Add this for performance
+{%raw%}// Add this for performance
     if (log.isDebugEnabled() { ...
-        log.debug("log something" + " and " + "concat strings");
+        log.debug("log something" + " and " + "concat strings");{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -639,7 +639,7 @@ through the @RunWith(Suite.class) annotation.
 **Example(s):**
 
 ``` java
-public class BadExample extends TestCase{
+{%raw%}public class BadExample extends TestCase{
 
     public static Test suite(){
         return new Suite();
@@ -649,7 +649,7 @@ public class BadExample extends TestCase{
 @RunWith(Suite.class)
 @SuiteClasses( { TestOne.class, TestTwo.class })
 public class GoodTest {
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -681,7 +681,7 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
 **Example(s):**
 
 ``` java
-public class MyTest {
+{%raw%}public class MyTest {
     public void tearDown() {
         bad();
     }
@@ -690,7 +690,7 @@ public class MyTest2 {
     @After public void tearDown() {
         good();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -722,7 +722,7 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
 **Example(s):**
 
 ``` java
-public class MyTest {
+{%raw%}public class MyTest {
     public void setUp() {
         bad();
     }
@@ -731,7 +731,7 @@ public class MyTest2 {
     @Before public void setUp() {
         good();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -767,7 +767,7 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
 **Example(s):**
 
 ``` java
-public class MyTest {
+{%raw%}public class MyTest {
     public void testBad() {
         doSomething();
     }
@@ -776,7 +776,7 @@ public class MyTest {
     public void testGood() {
         doSomething();
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -813,14 +813,14 @@ assertEquals(), not the two-argument version.
 **Example(s):**
 
 ``` java
-public class Foo extends TestCase {
+{%raw%}public class Foo extends TestCase {
     public void testSomething() {
         assertEquals("foo", "bar");
         // Use the form:
         // assertEquals("Foo does not equals bar", "foo", "bar");
         // instead
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -857,7 +857,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
 **Example(s):**
 
 ``` java
-public class MyTestCase extends TestCase {
+{%raw%}public class MyTestCase extends TestCase {
     // Ok
     public void testMyCaseWithOneAssert() {
         boolean myVar = false;
@@ -870,7 +870,7 @@ public class MyTestCase extends TestCase {
         assertFalse("myVar should be false", myVar);
         assertEquals("should equals false", false, myVar);
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -907,14 +907,14 @@ with messages provide the developer a clearer idea of what the test does.
 **Example(s):**
 
 ``` java
-public class Foo extends TestCase {
+{%raw%}public class Foo extends TestCase {
    public void testSomething() {
       Bar b = findBar();
    // This is better than having a NullPointerException
    // assertNotNull("bar not found", b);
    b.work();
    }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -935,7 +935,7 @@ In JUnit4, use the @Test(expected) annotation to denote tests that should throw 
 **Example(s):**
 
 ``` java
-public class MyTest {
+{%raw%}public class MyTest {
     @Test
     public void testBad() {
         try {
@@ -949,7 +949,7 @@ public class MyTest {
     public void testGood() {
         doSomething();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -972,7 +972,7 @@ by their interface types (i.e, Set) provides much more flexibility.
 **Example(s):**
 
 ``` java
-import java.util.ArrayList;
+{%raw%}import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Bar {
@@ -989,7 +989,7 @@ public class Bar {
     public Set<SomeType> getFoo() {
         return new HashSet<SomeType>();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1011,13 +1011,13 @@ removed or replaced outside of the object that owns it. It is safer to return a 
 **Example(s):**
 
 ``` java
-public class SecureSystem {
+{%raw%}public class SecureSystem {
     UserData [] ud;
     public UserData [] getUserData() {
         // Don't return directly the internal array, return a copy
         return ud;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1041,12 +1041,12 @@ the method really overrides one, which helps refactoring and clarifies intent.
 **Example(s):**
 
 ``` java
-public class Foo implements Runnable {
+{%raw%}public class Foo implements Runnable {
                 // This method is overridden, and should have an @Override annotation
                 public void run() {
 
                 }
-            }
+            }{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1078,14 +1078,14 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 **Example(s):**
 
 ``` java
-String name;            // separate declarations
+{%raw%}String name;            // separate declarations
 String lastname;
 
 String name, lastname;  // combined declaration, a violation
 
 String name,
        lastname;        // combined declaration on multiple lines, no violation by default.
-                        // Set property strictMode to true to mark this as violation.
+                        // Set property strictMode to true to mark this as violation.{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1138,11 +1138,11 @@ can be avoided, they will just return false.
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
   boolean bar(String x) {
     return x.equalsIgnoreCase("2"); // should be "2".equalsIgnoreCase(x)
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1176,11 +1176,11 @@ can be avoided, they will just return false.
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
   boolean bar(String x) {
     return x.equals("2"); // should be "2".equals(x)
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1203,7 +1203,7 @@ effectively.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void good() {
         try{
             Integer.parseInt("a");
@@ -1223,7 +1223,7 @@ public class Foo {
             throw new Exception(e.getMessage());
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1247,7 +1247,7 @@ Consider replacing Enumeration usages with the newer java.util.Iterator
 **Example(s):**
 
 ``` java
-public class Foo implements Enumeration {
+{%raw%}public class Foo implements Enumeration {
     private int x = 42;
     public boolean hasMoreElements() {
         return true;
@@ -1255,7 +1255,7 @@ public class Foo implements Enumeration {
     public Object nextElement() {
         return String.valueOf(i++);
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1279,11 +1279,11 @@ Consider replacing Hashtable usage with the newer java.util.Map if thread safety
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void bar() {
         Hashtable h = new Hashtable();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1307,11 +1307,11 @@ Consider replacing Vector usages with the newer java.util.ArrayList if expensive
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void bar() {
         Vector v = new Vector();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1335,14 +1335,14 @@ All switch statements should include a default option to catch any unspecified v
 **Example(s):**
 
 ``` java
-public void bar() {
+{%raw%}public void bar() {
     int x = 2;
     switch (x) {
       case 1: int j = 6;
       case 2: int j = 8;
           // missing default: here
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1372,14 +1372,14 @@ will (and by priority) and avoid clogging the Standard out log.
 **Example(s):**
 
 ``` java
-class Foo{
+{%raw%}class Foo{
     Logger log = Logger.getLogger(Foo.class.getName());
     public void testA () {
         System.out.println("Entering test");
         // Better use this
         log.fine("Entering test");
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1400,11 +1400,11 @@ Avoid passing parameters to methods or constructors without actually referencing
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private void bar(String howdy) {
         // howdy is not used
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1441,10 +1441,10 @@ This rule will also find unused on demand imports, i.e. import com.foo.*.
 **Example(s):**
 
 ``` java
-import java.io.File;  // not referenced or required
+{%raw%}import java.io.File;  // not referenced or required
 import java.util.*;   // not referenced or required
 
-public class Foo {}
+public class Foo {}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1465,11 +1465,11 @@ Detects when a local variable is declared and/or assigned, but not used.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void doSomething() {
         int i = 5; // Unused
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1490,14 +1490,14 @@ Detects when a private field is declared and/or assigned a value, but not used.
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     private static int FOO = 2; // Unused
     private int i = 5; // Unused
     private int j = 6;
     public int addOne() {
         return j++;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1533,9 +1533,9 @@ Unused Private Method detects when a private method is declared but is unused.
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     private void foo() {} // unused
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1587,13 +1587,13 @@ This rule detects JUnit assertions in object equality. These assertions should b
 **Example(s):**
 
 ``` java
-public class FooTest extends TestCase {
+{%raw%}public class FooTest extends TestCase {
     void testCode() {
         Object a, b;
         assertTrue(a.equals(b));                    // bad usage
         assertEquals(?a should equals b?, a, b);    // good usage
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1632,7 +1632,7 @@ more specific methods, like assertNull, assertNotNull.
 **Example(s):**
 
 ``` java
-public class FooTest extends TestCase {
+{%raw%}public class FooTest extends TestCase {
     void testCode() {
         Object a = doSomething();
         assertTrue(a==null);    // bad usage
@@ -1640,7 +1640,7 @@ public class FooTest extends TestCase {
         assertTrue(a != null);  // bad usage
         assertNotNull(a);       // good usage
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1679,13 +1679,13 @@ by more specific methods, like assertSame, assertNotSame.
 **Example(s):**
 
 ``` java
-public class FooTest extends TestCase {
+{%raw%}public class FooTest extends TestCase {
     void testCode() {
         Object a, b;
         assertTrue(a == b); // bad usage
         assertSame(a, b);   // good usage
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1715,7 +1715,7 @@ When asserting a value is the same as a literal or Boxed boolean, use assertTrue
 **Example(s):**
 
 ``` java
-public class MyTestCase extends TestCase {
+{%raw%}public class MyTestCase extends TestCase {
     public void testMyCase() {
         boolean myVar = true;
         // Ok
@@ -1729,7 +1729,7 @@ public class MyTestCase extends TestCase {
         // Bad
         assertEquals("myVar is false", Boolean.FALSE, myVar);
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1751,7 +1751,7 @@ Comparing the value of size() to 0 does not convey intent as well as the isEmpty
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void good() {
         List foo = getList();
         if (foo.isEmpty()) {
@@ -1765,7 +1765,7 @@ public class Foo {
             // blah
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1801,7 +1801,7 @@ preserved.
 **Example(s):**
 
 ``` java
-public class TryWithResources {
+{%raw%}public class TryWithResources {
     public void run() {
         InputStream in = null;
         try {
@@ -1822,7 +1822,7 @@ public class TryWithResources {
             int i = in2.read();
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1880,7 +1880,7 @@ having to deal with the creation of an array.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void foo(String s, Object[] args) {
         // Do something here...
     }
@@ -1888,7 +1888,7 @@ public class Foo {
     public void bar(String s, Object... args) {
         // Ahh, varargs tastes much better...
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1919,14 +1919,14 @@ a block `{}` is sufficient.
 **Example(s):**
 
 ``` java
-public class Example {
+{%raw%}public class Example {
   {
     while (true) { } // allowed
     while (false) { } // disallowed
     do { } while (true); // disallowed
     do { } while (false); // disallowed
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
