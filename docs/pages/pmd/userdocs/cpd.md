@@ -199,7 +199,7 @@ Please note that if CPD detects duplicated source code, it will exit with status
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, now code duplications found</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
 <tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
 </table>
