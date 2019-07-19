@@ -26,7 +26,7 @@ import com.beust.jcommander.ParameterException;
 public final class CPDCommandLineInterface {
     private static final Logger LOGGER = Logger.getLogger(CPDCommandLineInterface.class.getName());
 
-    public static final int NO_ERRORS_STATUS = 0;
+    private static final int NO_ERRORS_STATUS = 0;
     private static final int ERROR_STATUS = 1;
     private static final int DUPLICATE_CODE_FOUND = 4;
 
@@ -97,10 +97,10 @@ public final class CPDCommandLineInterface {
                 if (arguments.isFailOnViolation()) {
                     setStatusCodeOrExit(DUPLICATE_CODE_FOUND);
                 } else {
-                    setStatusCodeOrExit(0);
+                    setStatusCodeOrExit(NO_ERRORS_STATUS);
                 }
             } else {
-                setStatusCodeOrExit(0);
+                setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (IOException | RuntimeException e) {
             e.printStackTrace();
