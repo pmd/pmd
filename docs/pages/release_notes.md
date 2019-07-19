@@ -25,6 +25,8 @@ Being based on a proper Antlr grammar, CPD can:
 
 ### Fixed Issues
 
+*   core
+    *   [#1913](https://github.com/pmd/pmd/issues/1913): \[core] "-help" CLI option ends with status code != 0
 *   doc
     *   [#1896](https://github.com/pmd/pmd/issues/1896): \[doc] Error in changelog 6.16.0 due to not properly closed rule tag
     *   [#1898](https://github.com/pmd/pmd/issues/1898): \[doc] Incorrect code example for DoubleBraceInitialization in documentation on website
@@ -40,6 +42,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1869](https://github.com/pmd/pmd/pull/1869): \[xml] fix #1666 wrong cdata rule description and examples - [Artem](https://github.com/KroArtem)
 *   [#1892](https://github.com/pmd/pmd/pull/1892): \[lua] \[cpd] Added CPD support for Lua - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1908](https://github.com/pmd/pmd/pull/1908): \[doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - [crunsk](https://github.com/crunsk)
+*   [#1917](https://github.com/pmd/pmd/pull/1917): \[core] Add 'no error' return option, and assign it to the cli when the help command is invoked - [Renato Oliveira](https://github.com/renatoliveira)
 
 {% endtocmaker %}
 
