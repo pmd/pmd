@@ -426,7 +426,7 @@ public class Foo {
         </properties>
         <example><![CDATA[
 // this is double-brace initialization
-return new ArrayList<String>(){%raw%}{{ addAll("a","b","c"); }};{%endraw%}
+return new ArrayList<String>(){{ addAll("a","b","c"); }};
 
 // the better way is to not create an anonymous class:
 List<String> a = new ArrayList<>();

@@ -27,6 +27,7 @@ Being based on a proper Antlr grammar, CPD can:
 
 *   doc
     *   [#1896](https://github.com/pmd/pmd/issues/1896): \[doc] Error in changelog 6.16.0 due to not properly closed rule tag
+    *   [#1898](https://github.com/pmd/pmd/issues/1898): \[doc] Incorrect code example for DoubleBraceInitialization in documentation on website
     *   [#1906](https://github.com/pmd/pmd/issues/1906): \[doc] Broken link for adding own CPD languages
     *   [#1909](https://github.com/pmd/pmd/issues/1909): \[doc] Sample usage example refers to deprecated ruleset "basic.xml" instead of "quickstart.xml"
 *   xml
