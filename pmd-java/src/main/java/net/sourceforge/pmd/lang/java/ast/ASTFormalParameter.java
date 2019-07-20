@@ -11,16 +11,14 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
 /**
  * Formal parameter node. Used in the {@link ASTFormalParameters}
  * production of {@link ASTMethodDeclarator} to represent a
- * method's formal parameter. Also used in the {@link ASTCatchClause}
- * production to represent the declared exception variable.
- * Also used in LambdaExpressions for the LambdaParameters.
+ * method's formal parameter.
  *
  * <pre class="grammar">
  *
- * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} ( "|" {@link ASTType Type} )* [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
+ * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
  * </pre>
  */
-public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable {
+public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, Annotatable {
 
     private boolean isVarargs;
 
@@ -50,12 +48,12 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
 
     /**
      * If true, this formal parameter represents one without explit types.
-     * This can appear as part of a lambda expression with java11 using "var".
      *
-     * @see ASTVariableDeclaratorId#isTypeInferred()
+     * @deprecated Returns false always, since lambda expressions use {@link ASTLambdaParameter}.
      */
+    @Deprecated
     public boolean isTypeInferred() {
-        return getTypeNode() == null;
+        return false;
     }
 
     @Override

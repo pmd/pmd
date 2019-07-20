@@ -1794,7 +1794,7 @@ void FormalParameter() :
 }
 {
    ( "final" {jjtThis.setFinal(true);} | Annotation() )*
-   Type() ("|" Type())*
+   Type()
    // TODO there may be annotations before the "..." of the varargs
    //  the ... is treated analogously to a pair of brackets
    //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
@@ -2999,7 +2999,7 @@ void UnionType() #UnionType(isUnion):
   // Annotations of the first class type belong to the
   // catch parameter (the variable) because of syntactic ambiguity
   // This is similar to how a local var type works.
-  ClassOrInterfaceType() ( "|" {isUnion=true; checkForBadMultipleExceptionsCatching();} AnnotatedClassOrInterfaceType() )*
+  ClassOrInterfaceType() ( "|" {isUnion=true;} AnnotatedClassOrInterfaceType() )*
 }
 
 void FinallyClause() :
