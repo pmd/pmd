@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.shouldBe
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
@@ -23,11 +22,22 @@ class ASTCatchClauseTest : ParserTestSpec({
         importedTypes += IOException::class.java
 
         "try { } catch (IOException ioe) { }" should matchStmt<ASTTryStatement> {
-            child<ASTBlock> { }
-            child<ASTCatchClause> {
-                it.isMulticatchStatement shouldBe false
+            block()
+            catchClause("ioe") {
+                it::isMulticatchStatement shouldBe false
+                it::getExceptionName shouldBe "ioe"
 
-                unspecifiedChildren(2)
+                var types: List<ASTClassOrInterfaceType>? = null
+
+                catchFormal("ioe") {
+                    types = listOf(classType("IOException"))
+
+                    variableId("ioe")
+                }
+
+                block()
+
+                it::getCaughtExceptionTypeNodes shouldBe types!!
             }
         }
 
@@ -38,32 +48,27 @@ class ASTCatchClauseTest : ParserTestSpec({
         importedTypes += IOException::class.java
 
         "try { } catch (IOException | AssertionError e) { }" should matchStmt<ASTTryStatement> {
-            child<ASTBlock> { }
-            child<ASTCatchClause> {
-                it.isMulticatchStatement shouldBe true
+            block()
+            catchClause("e") {
+                it::isMulticatchStatement shouldBe true
+                it::getExceptionName shouldBe "e"
 
-                val types = fromChild<ASTFormalParameter, List<ASTType>> {
-                    val ioe = child<ASTType>(ignoreChildren = true) {
-                        it.type shouldBe IOException::class.java
+                var types: List<ASTClassOrInterfaceType>? = null
+
+                catchFormal("e") {
+                    unionType {
+                        val t1 = classType("IOException")
+                        val t2 = classType("AssertionError")
+
+                        types = listOf(t1, t2)
+                        it::asList shouldBe types!!
                     }
-
-                    val aerr = child<ASTType>(ignoreChildren = true) {
-                        it.type shouldBe AssertionError::class.java
-                    }
-
-                    child<ASTVariableDeclaratorId> {
-                        it.image shouldBe "e"
-                    }
-
-                    listOf(ioe, aerr)
+                    variableId("e")
                 }
 
-                it.caughtExceptionTypeNodes.shouldContainExactly(types)
-                it.caughtExceptionTypes.shouldContainExactly(types.map { it.type })
+                block()
 
-                it.exceptionName shouldBe "e"
-
-                child<ASTBlock> { }
+                it::getCaughtExceptionTypeNodes shouldBe types!!
             }
         }
 

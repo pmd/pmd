@@ -43,6 +43,9 @@ public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatab
         isFinal = f;
     }
 
+    public String getName() {
+        return getVariableId().getVariableName();
+    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

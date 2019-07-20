@@ -275,17 +275,20 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
      */
     @Nullable
     public ASTType getTypeNode() {
-        if (jjtGetParent() instanceof ASTFormalParameter) {
+        Node parent = jjtGetParent();
+        if (parent instanceof ASTFormalParameter) {
             // ASTResource is a subclass of ASTFormal parameter for now but this will change
             // and this will need to be corrected here, see #998
-            return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
-        } else if (jjtGetParent() instanceof ASTLambdaParameter) {
-            return ((ASTLambdaParameter) jjtGetParent()).getTypeNode();
+            return ((ASTFormalParameter) parent).getTypeNode();
+        } else if (parent instanceof ASTCatchParameter) {
+            return ((ASTCatchParameter) parent).getTypeNode();
+        } else if (parent instanceof ASTLambdaParameter) {
+            return ((ASTLambdaParameter) parent).getTypeNode();
         } else if (isTypeInferred()) {
             // lambda expression with lax types. The type is inferred...
             return null;
         } else {
-            Node n = jjtGetParent().jjtGetParent();
+            Node n = parent.jjtGetParent();
             if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
                 return n.getFirstChildOfType(ASTType.class);
             }

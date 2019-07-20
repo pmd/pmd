@@ -56,6 +56,17 @@ fun TreeNodeWrapper<Node, *>.annotation(name: String, spec: NodeSpec<ASTAnnotati
             spec()
         }
 
+fun TreeNodeWrapper<Node, *>.catchClause(name:String, spec: NodeSpec<ASTCatchClause> = EmptyAssertions) =
+        child<ASTCatchClause> {
+            it::getExceptionName shouldBe name
+            spec()
+        }
+
+fun TreeNodeWrapper<Node, *>.catchFormal(name: String, spec: NodeSpec<ASTCatchParameter> = EmptyAssertions) =
+        child<ASTCatchParameter> {
+            it::getName shouldBe name
+            spec()
+        }
 
 fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumConstant> = EmptyAssertions) =
         child<ASTEnumConstant> {
@@ -267,6 +278,10 @@ fun TreeNodeWrapper<Node, *>.typeParam(name: String, contents: ValuedNodeSpec<AS
 fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<ASTClassOrInterfaceType> = EmptyAssertions) =
         child<ASTClassOrInterfaceType>(ignoreChildren = contents == EmptyAssertions) {
             it::getSimpleName shouldBe simpleName
+            contents()
+        }
+fun TreeNodeWrapper<Node, *>.unionType(contents: NodeSpec<ASTUnionType> = EmptyAssertions) =
+        child<ASTUnionType>(ignoreChildren = contents == EmptyAssertions) {
             contents()
         }
 
