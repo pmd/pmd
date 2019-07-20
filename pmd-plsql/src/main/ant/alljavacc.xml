@@ -67,7 +67,6 @@
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTRegexpLikeCondition.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectIntoStatement.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSelectStatement.java" />
-        <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSimpleExpression.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTSubqueryOperation.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerTimingPointSection.java" />
         <delete file="${target}/net/sourceforge/pmd/lang/plsql/ast/ASTTriggerUnit.java" />

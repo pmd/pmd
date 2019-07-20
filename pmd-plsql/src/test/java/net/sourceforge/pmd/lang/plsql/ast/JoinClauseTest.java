@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -136,14 +135,8 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
         String code = IOUtils.toString(this.getClass().getResourceAsStream("JoinOperator.pls"),
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
-        List<ASTSimpleExpression> expressions = input.findDescendantsOfType(ASTSimpleExpression.class);
-        List<ASTSimpleExpression> expressionsWithJoinOperator = new ArrayList<ASTSimpleExpression>();
-        for (ASTSimpleExpression exp : expressions) {
-            if (exp.hasJoinOperator()) {
-                expressionsWithJoinOperator.add(exp);
-            }
-        }
-        Assert.assertEquals(4, expressionsWithJoinOperator.size());
-        Assert.assertEquals("h.opp_id", expressionsWithJoinOperator.get(3).getImage());
+        List<ASTOuterJoinExpression> expressions = input.findDescendantsOfType(ASTOuterJoinExpression.class);
+        Assert.assertEquals(4, expressions.size());
+        Assert.assertEquals("h.opp_id", expressions.get(3).getImage());
     }
 }

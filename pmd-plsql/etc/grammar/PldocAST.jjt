@@ -1556,11 +1556,24 @@ ASTSimpleExpression SimpleExpression() :
     LOOKAHEAD(2)
         ( "*" | Column() ) { sb.append(token.image); }
  )
- [LOOKAHEAD(3) "(" "+" ")" {jjtThis.setJoinOperator(true);} ] // JoinOperator
  {
     jjtThis.setImage(sb.toString());
     return jjtThis;
  }
+}
+
+ASTOuterJoinExpression OuterJoinExpression() :
+{ StringBuilder sb = new StringBuilder(); }
+{
+    [ LOOKAHEAD(6) SchemaName() { sb.append(token.image); } "." { sb.append(token.image); } ]
+    [ LOOKAHEAD(4) TableName() { sb.append(token.image); } "." { sb.append(token.image); } ]
+    Column() { sb.append(token.image); }
+    "(" "+" ")"
+
+    {
+        jjtThis.setImage(sb.toString());
+        return jjtThis;
+    }
 }
 
 /**
@@ -3259,7 +3272,7 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
-  LOOKAHEAD(ID() ("." ID())* "(" "+" ")") ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
+  LOOKAHEAD(OuterJoinExpression()) ( simpleNode = OuterJoinExpression() ) { sb.append(simpleNode.getImage()); }
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
 | LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
