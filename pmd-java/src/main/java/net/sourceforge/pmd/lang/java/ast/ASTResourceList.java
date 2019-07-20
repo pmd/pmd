@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A list of resources in a {@linkplain ASTTryStatement try-with-resources}.
@@ -15,7 +16,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTResourceList extends AbstractJavaNode implements Iterable<ASTResource> {
+public final class ASTResourceList extends AbstractJavaNode implements Iterable<ASTResource>, JSingleChildNode<ASTResource> {
 
     private boolean trailingSemi;
 
@@ -38,6 +39,11 @@ public final class ASTResourceList extends AbstractJavaNode implements Iterable<
         visitor.visit(this, data);
     }
 
+    @Override
+    public ASTResource jjtGetChild(int index) {
+        return (ASTResource) super.jjtGetChild(index);
+    }
+
     void setTrailingSemi() {
         this.trailingSemi = true;
     }
@@ -54,4 +60,9 @@ public final class ASTResourceList extends AbstractJavaNode implements Iterable<
     public Iterator<ASTResource> iterator() {
         return children(ASTResource.class).iterator();
     }
+
+    public List<ASTResource> asList() {
+        return findChildrenOfType(ASTResource.class);
+    }
+
 }

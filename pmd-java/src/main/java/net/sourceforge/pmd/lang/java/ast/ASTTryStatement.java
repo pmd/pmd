@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
-
 
 /**
  * Try statement node.
@@ -57,13 +55,13 @@ public final class ASTTryStatement extends AbstractStatement {
     }
 
     @Nullable
-    public ASTResourceList getResourceList() {
+    public ASTResourceList getResourceListNode() {
         return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
     }
 
     public List<ASTResource> getResources() {
-        ASTResourceList list = getResourceList();
-        return list == null ? Collections.emptyList() : IteratorUtil.toList(list.iterator());
+        ASTResourceList list = getResourceListNode();
+        return list == null ? Collections.emptyList() : list.asList();
     }
 
 
@@ -88,6 +86,7 @@ public final class ASTTryStatement extends AbstractStatement {
      *
      * @return The finally statement, or null if there is none
      */
+    @Nullable
     public ASTFinallyClause getFinallyClause() {
         return getFirstChildOfType(ASTFinallyClause.class);
     }

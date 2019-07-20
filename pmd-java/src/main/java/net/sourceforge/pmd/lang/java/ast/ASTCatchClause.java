@@ -49,15 +49,28 @@ public final class ASTCatchClause extends AbstractJavaNode {
      * @return True if this node is a multi-catch statement
      */
     public boolean isMulticatchStatement() {
-        return getCaughtExceptionTypeNodes().size() > 1; // the list is parsed multiple times...
+        return getFormal().isMultiCatch();
     }
 
+    /**
+     * Returns the {@linkplain ASTCatchParameter CatchParameter} node.
+     */
+    public ASTCatchParameter getFormal() {
+        return (ASTCatchParameter) jjtGetChild(0);
+    }
+
+    /**
+     * Returns the ID of the declared variable.
+     */
+    public ASTVariableDeclaratorId getVariableId() {
+        return getFormal().getVariableId();
+    }
 
     /**
      * Returns the Block node of this catch branch.
      */
     public ASTBlock getBlock() {
-        return getFirstChildOfType(ASTBlock.class);
+        return (ASTBlock) getLastChild();
     }
 
     /**
@@ -67,7 +80,7 @@ public final class ASTCatchClause extends AbstractJavaNode {
      */
     public List<ASTType> getCaughtExceptionTypeNodes() {
         // maybe cache the list
-        return getFirstChildOfType(ASTFormalParameter.class).findChildrenOfType(ASTType.class);
+        return getFormal().getTypeNode().asList();
     }
 
 
@@ -89,7 +102,7 @@ public final class ASTCatchClause extends AbstractJavaNode {
      * Returns exception name caught by this catch block.
      */
     public String getExceptionName() {
-        return getFirstDescendantOfType(ASTVariableDeclaratorId.class).getImage();
+        return getVariableId().getVariableName();
     }
 
 }

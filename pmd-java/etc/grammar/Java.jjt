@@ -2980,8 +2980,26 @@ void CatchClause() :
 {}
 {
   "catch"
-  "(" FormalParameter() ")"
+  "(" CatchParameter() ")"
   Block()
+}
+
+
+void CatchParameter() :
+{boolean isFinal = false;}
+{
+   isFinal=LocalVarModifierList() UnionType() VariableDeclaratorId()
+}
+
+// Special type for catch formal parameters
+// Eg `IOException | ParseException`
+void UnionType() #UnionType(isUnion):
+{boolean isUnion=false;}
+{
+  // Annotations of the first class type belong to the
+  // catch parameter (the variable) because of syntactic ambiguity
+  // This is similar to how a local var type works.
+  ClassOrInterfaceType() ( "|" {isUnion=true; checkForBadMultipleExceptionsCatching();} AnnotatedClassOrInterfaceType() )*
 }
 
 void FinallyClause() :

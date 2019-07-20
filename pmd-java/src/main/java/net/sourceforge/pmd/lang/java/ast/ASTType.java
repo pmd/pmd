@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -68,6 +71,17 @@ public interface ASTType extends TypeNode, Annotatable {
 
     default boolean isArrayType() {
         return this instanceof ASTArrayType;
+    }
+
+
+    /**
+     * Returns a read-only list of the components of this type.
+     * Returns a singleton containing this type if this is neither
+     * a {@linkplain ASTUnionType union type} or a {@linkplain ASTIntersectionType intersection type}.
+     * In those cases, returns the list of components.
+     */
+    default List<ASTType> asList() {
+        return Collections.singletonList(this);
     }
 
 
