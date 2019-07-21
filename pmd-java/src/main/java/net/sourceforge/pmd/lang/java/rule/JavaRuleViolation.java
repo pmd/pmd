@@ -77,6 +77,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
      *
      * @param node
      */
+    // TODO there's a typo in this method name, and it doesn't need to be public
     public static boolean isSupressed(Node node, Rule rule) {
         boolean result = AnnotationSuppressionUtil.suppresses(node, rule);
 
@@ -96,6 +97,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
     }
 
     private void setClassNameFrom(JavaNode node) {
+        // TODO this can use regular qualified names (those would also consider anon classes)
         String qualifiedName = null;
         for (ASTAnyTypeDeclaration parent : node.getParentsOfType(ASTAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();

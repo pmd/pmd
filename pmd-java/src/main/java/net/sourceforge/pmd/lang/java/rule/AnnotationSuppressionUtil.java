@@ -38,6 +38,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  * <ul>
  * <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
  * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize and MissingSerialVersionUID;
+ * <li>TODO "fallthrough" #1899
  * </ul>
  */
 final class AnnotationSuppressionUtil {
