@@ -88,7 +88,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private static final PropertyDescriptor<List<String>> ALLOWED_RESOURCE_TYPES =
             stringListProperty("allowedResourceTypes")
             .desc("Exact class names that do not need to be closed")
-            .defaultValues("java.io.ByteArrayOutputStream", "java.io.StringWriter")
+            .defaultValues("java.io.ByteArrayOutputStream", "java.io.ByteArrayInputStream", "java.io.StringWriter")
             .build();
 
 
