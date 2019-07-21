@@ -1297,6 +1297,13 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
   <li>honor <a href="pmd_userdocs_cpd.html#suppression">comment-based suppressions</a></li>
 </ul>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> [<code class="highlighter-rouge">java-errorprone</code>] now ignores by default
+<code class="highlighter-rouge">java.io.ByteArrayInputStream</code>. Such streams do not need to be closed.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1311,6 +1318,11 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
       <li><a href="https://github.com/pmd/pmd/issues/1898">#1898</a>: [doc] Incorrect code example for DoubleBraceInitialization in documentation on website</li>
       <li><a href="https://github.com/pmd/pmd/issues/1906">#1906</a>: [doc] Broken link for adding own CPD languages</li>
       <li><a href="https://github.com/pmd/pmd/issues/1909">#1909</a>: [doc] Sample usage example refers to deprecated ruleset “basic.xml” instead of “quickstart.xml”</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1921">#1921</a>: [java] CloseResource false positive with ByteArrayInputStream</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -1352,7 +1364,7 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 19, 2019 <br />
+ Site last generated: Jul 21, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
