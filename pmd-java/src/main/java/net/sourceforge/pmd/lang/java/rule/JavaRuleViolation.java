@@ -18,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -79,17 +78,17 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
      * @param node
      */
     public static boolean isSupressed(Node node, Rule rule) {
-        boolean result = suppresses(node, rule);
+        boolean result = AnnotationSuppressionUtil.suppresses(node, rule);
 
         if (!result && node instanceof ASTCompilationUnit) {
             for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = suppresses(node.jjtGetChild(i), rule);
+                result = AnnotationSuppressionUtil.suppresses(node.jjtGetChild(i), rule);
             }
         }
         if (!result) {
             Node parent = node.jjtGetParent();
             while (!result && parent != null) {
-                result = suppresses(parent, rule);
+                result = AnnotationSuppressionUtil.suppresses(parent, rule);
                 parent = parent.jjtGetParent();
             }
         }
@@ -137,11 +136,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         if (qualifiedName != null) {
             className = qualifiedName;
         }
-    }
-
-    private static boolean suppresses(final Node node, Rule rule) {
-        return node instanceof CanSuppressWarnings
-                && ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(rule);
     }
 
     private String getVariableNames(Iterable<ASTVariableDeclaratorId> iterable) {
