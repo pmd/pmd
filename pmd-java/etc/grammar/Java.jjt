@@ -2999,19 +2999,15 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT() #void:
 {}
 {
-  ( LOOKAHEAD({ getToken(1).kind == GT &&
-                ((JavaTokenUtils.GTToken)getToken(1)).realKind == RUNSIGNEDSHIFT} )
-   ">" ">" ">"
-  )
+    LOOKAHEAD({ JavaTokenUtils.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+    ">" ">" ">"
 }
 
 void RSIGNEDSHIFT() #void:
 {}
 {
-  ( LOOKAHEAD({ getToken(1).kind == GT &&
-                ((JavaTokenUtils.GTToken)getToken(1)).realKind == RSIGNEDSHIFT} )
-  ">" ">"
-  )
+    LOOKAHEAD({ JavaTokenUtils.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+    ">" ">"
 }
 
 /* Annotation syntax follows. */

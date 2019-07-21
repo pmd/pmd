@@ -43,7 +43,11 @@ final class JavaTokenUtils {
         }
     }
 
-    static final class GTToken extends JavaccToken {
+    static int getRealKind(JavaccToken token) {
+        return token instanceof GTToken ? ((GTToken) token).realKind : token.kind;
+    }
+
+    private static final class GTToken extends JavaccToken {
 
         final int realKind;
 
