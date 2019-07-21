@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -43,9 +44,10 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  */
 final class AnnotationSuppressionUtil {
 
-    private static final List<String> UNUSED_RULES
-        = Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter");
-    private static final List<String> SERIAL_RULES = Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID");
+    private static final Set<String> UNUSED_RULES
+        = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter"));
+    private static final Set<String> SERIAL_RULES =
+        new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "MissingSerialVersionUID"));
 
     private AnnotationSuppressionUtil() {
 
