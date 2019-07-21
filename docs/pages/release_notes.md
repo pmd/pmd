@@ -23,6 +23,11 @@ Being based on a proper Antlr grammar, CPD can:
 *   ignore comments
 *   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
+#### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/CloseResource" %} [`java-errorprone`] now ignores by default
+    `java.io.ByteArrayInputStream`. Such streams do not need to be closed.
+
 ### Fixed Issues
 
 *   core
@@ -32,6 +37,8 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1898](https://github.com/pmd/pmd/issues/1898): \[doc] Incorrect code example for DoubleBraceInitialization in documentation on website
     *   [#1906](https://github.com/pmd/pmd/issues/1906): \[doc] Broken link for adding own CPD languages
     *   [#1909](https://github.com/pmd/pmd/issues/1909): \[doc] Sample usage example refers to deprecated ruleset "basic.xml" instead of "quickstart.xml"
+*   java-errorprone
+    *   [#1921](https://github.com/pmd/pmd/issues/1921): \[java] CloseResource false positive with ByteArrayInputStream
 *   java-multithreading
     *   [#1903](https://github.com/pmd/pmd/issues/1903): \[java] UnsynchronizedStaticFormatter doesn't allow block-level synchronization when using allowMethodLevelSynchronization=true
 *   xml
