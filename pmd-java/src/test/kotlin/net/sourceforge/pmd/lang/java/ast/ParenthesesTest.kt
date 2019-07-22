@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsin
 class ParenthesesTest : ParserTestSpec({
 
 
-    parserTest("Class literals") {
+    parserTest("Test parens") {
 
         inContext(StatementParsingCtx) {
             // we use a statement context to avoid the findFirstNodeOnStraightLine skipping parentheses

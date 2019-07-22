@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
@@ -64,17 +64,30 @@ public interface JavaNode extends ScopedNode {
 
     /** Returns the first child of this node, or null if this node has no children. */
     @Nullable
-    default Node getFirstChild() {
+    default JavaNode getFirstChild() {
         return jjtGetNumChildren() > 0 ? jjtGetChild(0) : null;
     }
 
 
     /** Returns the last child of this node, or null if this node has no children. */
     @Nullable
-    default Node getLastChild() {
+    default JavaNode getLastChild() {
         return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
     }
 
+
+    @Override
+    JavaNode jjtGetChild(int index);
+
+
+    @Override
+    JavaNode jjtGetParent();
+
+
+    GenericToken jjtGetFirstToken();
+
+
+    GenericToken jjtGetLastToken();
 
     /**
      * FIXME figure that out

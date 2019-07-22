@@ -63,7 +63,7 @@ final class TokenUtils {
      * @param startHint Token from which to start iterating,
      *                  needed because tokens are not linked to their
      *                  previous token. Must be strictly before the anchor
-     *                  and as close as possible as the expected position of
+     *                  and as close as possible to the expected position of
      *                  the anchor.
      * @param anchor    Anchor from which to apply the shift. The n-th previous
      *                  token will be returned
