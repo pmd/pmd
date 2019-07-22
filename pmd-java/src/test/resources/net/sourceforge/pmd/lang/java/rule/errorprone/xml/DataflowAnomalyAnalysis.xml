@@ -200,7 +200,7 @@ class Test{
         <expected-linenumbers>3,6</expected-linenumbers>
         <expected-messages>
         <message>Found 'DU'-anomaly for variable 'a' (lines '3'-'9').</message>
-        <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'7').</message>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'9').</message>
         </expected-messages>
         <code><![CDATA[
 class Test{
