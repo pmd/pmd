@@ -16,9 +16,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-errorprone
+    *   [#1749](https://github.com/pmd/pmd/issues/1749): \[java] DD False Positive in DataflowAnomalyAnalysis
+
 ### API Changes
 
 ### External Contributions
+
+*   [#1905](https://github.com/pmd/pmd/pull/1905): \[java] DataflowAnomalyAnalysis Rule in right order - [YoonhoChoi96](https://github.com/YoonhoChoi96)
 
 {% endtocmaker %}
 
