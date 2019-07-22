@@ -2540,7 +2540,7 @@ void PrimaryExpression() #void :
   Expressions that may be present at the start of a primary expression.
  */
 void PrimaryPrefix() #void :
-{Token t;}
+{Token savedStart;}
 {
   Literal()
 | "this"                                  #ThisExpression
@@ -2560,7 +2560,14 @@ void PrimaryPrefix() #void :
 
 | LOOKAHEAD(LambdaLahead()) LambdaExpression()
 
-| "(" Expression() ")" { AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode()); }
+// Parenthesized expr, we need to adjust start/end tokens
+| "(" {savedStart = getToken(0);} Expression() ")"
+  {
+    AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode());
+    AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
+    top.jjtSetFirstToken(savedStart);
+    top.jjtSetLastToken(getToken(0));
+  }
 // If it is an ambiguous name, then we may go on
 // into the next step, which is less restricted
 // than PrimarySuffix

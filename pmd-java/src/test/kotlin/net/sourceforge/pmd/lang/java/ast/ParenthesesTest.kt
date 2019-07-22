@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
@@ -46,6 +47,8 @@ class ParenthesesTest : ParserTestSpec({
                     it::getInitializer shouldBe int(3) {
                         it::getParenthesisDepth shouldBe 2
                         it::isParenthesized shouldBe true
+
+                        it.tokenList().map { it.image } shouldBe listOf("(", "(", "3", ")", ")")
                     }
                 }
             }
@@ -60,6 +63,8 @@ class ParenthesesTest : ParserTestSpec({
                         it::getLhsExpression shouldBe variableRef("a") {
                             it::getParenthesisDepth shouldBe 2
                             it::isParenthesized shouldBe true
+
+                            it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ")")
                         }
                     }
                 }
@@ -71,9 +76,13 @@ class ParenthesesTest : ParserTestSpec({
                         it::getParenthesisDepth shouldBe 1
                         it::isParenthesized shouldBe true
 
+                        it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ".", "f", ")")
+
                         it::getLhsExpression shouldBe variableRef("a") {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
+
+                            it.tokenList().map { it.image } shouldBe listOf("(", "a", ")")
                         }
                     }
                 }
@@ -87,15 +96,25 @@ class ParenthesesTest : ParserTestSpec({
                         it::getParenthesisDepth shouldBe 1
                         it::isParenthesized shouldBe true
 
+                        it.tokenList().map { it.image } shouldBe
+                                listOf("(", "(", "1", "+", "2", ")", "+", "f", ")")
+
                         additiveExpr(BinaryOp.ADD) {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
+
+
+                            it.tokenList().map { it.image } shouldBe
+                                    listOf("(", "1", "+", "2", ")")
 
                             int(1)
                             int(2)
                         }
 
-                        variableRef("f")
+                        variableRef("f") {
+                            it::isParenthesized shouldBe false
+                            it::getParenthesisDepth shouldBe 0
+                        }
                     }
                 }
             }
