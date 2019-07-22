@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
+import net.sourceforge.pmd.lang.java.ast.BinaryOp.EQ
+import net.sourceforge.pmd.lang.java.ast.BinaryOp.NE
 
 
 class ASTEqualityExpressionTest : ParserTestSpec({
