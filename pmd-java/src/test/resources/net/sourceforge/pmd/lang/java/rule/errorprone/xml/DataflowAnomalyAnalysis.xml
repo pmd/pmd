@@ -139,6 +139,10 @@ public class AssertTest {
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 1. DU-Anomaly(b)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'b' (lines '6'-'7').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -154,6 +158,11 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 2. DU-Anomaly(a)</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '3'-'7').</message>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '5'-'7').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -166,10 +175,13 @@ class Test{
         ]]></code>
     </test-code>
 
-    <!-- This case invoke False Positive(UR-a), because of for-each statement.
-    <test-code>
+    <test-code regressionTest="false">
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 3. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '5'-'7').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -180,11 +192,16 @@ class Test{
    }
 }
         ]]></code>
-    </test-code> -->
+    </test-code>
 
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 4. DU-Anomaly(a)</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,6</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '3'-'9').</message>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'7').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -202,6 +219,10 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 5. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'9').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -219,6 +240,13 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 6. DU-Anomaly(a)</description>
         <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,8,10,12</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '6'-'14').</message>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '8'-'14').</message>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '10'-'14').</message>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '12'-'14').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -241,6 +269,10 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 7. DU-Anomaly(a)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 'a' (lines '9'-'11').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -260,6 +292,10 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 9. DU-Anomaly(t1)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 't1' (lines '5'-'6').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -274,6 +310,10 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 12. DU-Anomaly(t1)</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 't1' (lines '6'-'7').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
@@ -304,6 +344,11 @@ class Test{
     <test-code>
         <description>#1905 [java] DataflowAnomalyAnalysis Rule in right order : Case 14. DU-Anomaly(t1, t2)</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,6</expected-linenumbers>
+        <expected-messages>
+        <message>Found 'DU'-anomaly for variable 't2' (lines '4'-'7').</message>
+        <message>Found 'DU'-anomaly for variable 't1' (lines '6'-'7').</message>
+        </expected-messages>
         <code><![CDATA[
 class Test{
    public static void main(String[] args){
