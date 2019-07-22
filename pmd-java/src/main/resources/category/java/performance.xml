@@ -114,6 +114,88 @@ public class Test {
         </example>
     </rule>
 
+    <rule name="AvoidConcatInLoop"
+          since="6.17.0"
+          language="java"
+          message="A String is concatenated in a loop. Use StringBuilder.append."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidconcatinloop">
+        <description>A String is built in a loop by concatenation. Problem: Each statement with one or more +-operators creates a hidden temporary StringBuilder, a char[] and a new String object, which all have to be garbage collected. &#13;
+            Solution: Use the StringBuilder append method.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="version" value="1.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodDeclaration//ForStatement//AssignmentOperator[@Image='+='][
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AssignmentOperator[@Image='+=']/
+../PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]
+|
+//MethodDeclaration//ForStatement//StatementExpression[AssignmentOperator/../Expression/AdditiveExpression[
+PrimaryExpression/PrimaryPrefix/Name/attribute::Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+@Image =
+ancestor::MethodDeclaration//ForStatement//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]]
+|
+//MethodDeclaration//WhileStatement//AssignmentOperator[@Image='+='][
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AssignmentOperator[@Image='+=']/
+../PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]
+|
+//MethodDeclaration//WhileStatement//StatementExpression[AssignmentOperator/../Expression/AdditiveExpression[
+PrimaryExpression/PrimaryPrefix/Name/attribute::Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+@Image =
+ancestor::MethodDeclaration//ForStatement//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]]
+	]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class StringStuff {
+   private String bad(String arg) {
+        String log = "";
+        List<String> values = Arrays.asList("tic ", "tac ", "toe ");
+        for (String val : values) {
+            log += val;
+        }
+        return log;
+    }
+
+   private String good(String arg) {
+        StringBuilder sb = new StringBuilder();
+        List<String> values = Arrays.asList("tic ", "tac ", "toe ");
+        for (String val : values) {
+            sb.append(val);
+        }
+        return sb.toString();
+   }
+}
+            ]]>
+        </example>
+    </rule>
+
     <rule name="AvoidFileStream"
           since="6.0.0"
           message="Avoid instantiating FileInputStream, FileOutputStream, FileReader, or FileWriter"
