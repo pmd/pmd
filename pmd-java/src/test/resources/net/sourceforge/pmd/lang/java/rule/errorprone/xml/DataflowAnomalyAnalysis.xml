@@ -360,4 +360,21 @@ class Test{
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1749 DD False Positive in DataflowAnomalyAnalysis</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Found 'DU'-anomaly for variable 'a' (lines '4'-'5').</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+  public void test(){
+    int a = 0;
+    a = a + 3;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
