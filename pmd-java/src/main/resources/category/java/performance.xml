@@ -57,6 +57,58 @@ sb.append('a');     // use this instead
         </example>
     </rule>
 
+    <rule name="AvoidApacheCommonsFileItemNonStreaming"
+          since="6.17.0"
+          language="java"
+          message="Avoid memory intensive FileItem.get and FileItem.getString"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidapachecommonsfileitemnonstreaming">
+        <description>
+            Problem: Use of FileItem.get and FileItem.getString could exhaust memory since they load the entire file into memory&#13;
+            Solution: Use streaming methods and buffering.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="version" value="1.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//PrimaryPrefix/Name
+[ends-with(@Image, '.get') or ends-with(@Image, '.getString')]
+[
+	starts-with(@Image, concat(
+		ancestor::MethodDeclaration//FormalParameter/Type/ReferenceType/ClassOrInterfaceType[typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Image,
+		'.')
+	) or
+	starts-with(@Image, concat(
+		ancestor::MethodDeclaration//LocalVariableDeclaration/Type/ReferenceType/ClassOrInterfaceType[typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Image,
+		'.')
+	) or
+	starts-with(@Image, concat(
+		ancestor::ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Image,
+		'.')
+)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class FileStuff {
+   private String bad(FileItem fileItem) {
+        return fileItem.getString();
+   }
+
+   private InputStream good(FileItem fileItem) {
+        return fileItem.getInputStream();
+   }
+}
+            ]]>
+        </example>
+    </rule>
+
     <rule name="AvoidArrayLoops"
           language="java"
           since="3.5"
@@ -109,6 +161,184 @@ public class Test {
     }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidCalendarDateCreation"
+          since="6.17.0"
+          language="java"
+          message="A Calendar is used to create a Date or DateTime, this is expensive."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidcalendardatecreation">
+        <description>Problem: A Calendar is a heavyweight object and expensive to create. &#13;
+            Solution: Use 'new Date()', Java 8+ java.time.[Local/Zoned]DateTime.now() or joda time '[Local]DateTime.now()'.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="version" value="1.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//PrimaryPrefix[Name[ends-with(@Image, 'Calendar.getInstance')]] [count(../PrimarySuffix) > 2 and ../PrimarySuffix[last()-1][@Image = 'getTime' or @Image='getTimeInMillis']]
+|
+//Block/BlockStatement//Expression/PrimaryExpression/
+PrimaryPrefix/Name[typeIs('java.util.Calendar') and (ends-with(@Image,'.getTime') or ends-with(@Image,'.getTimeInMillis'))]
+|
+//ClassOrInterfaceType[typeIs('org.joda.time.DateTime') or typeIs('org.joda.time.LocalDateTime')][../Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name[ends-with(@Image, 'Calendar.getInstance')]]
+	         ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class DateStuff {
+    private Date bad1() {
+        return Calendar.getInstance().getTime(); // now
+    }
+    private Date good1a() {
+        return new Date(); // now
+    }
+    private LocalDateTime good1b() {
+        return LocalDateTime.now();
+    }
+    private long bad2() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+    private long good2() {
+        return System.currentTimeMillis();
+    }
+}
+            ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidConcatInAppend"
+          since="6.17.0"
+          language="java"
+          message="Concatenation inside append. Use extra append."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidconcatinappend">
+        <description>Concatenation of Strings is used inside an StringBuilder.append argument. Problem: Each statement with one or more +-operators creates a hidden temporary StringBuilder, a char[] and a new String object, which all have to be garbage collected.&#13;
+            Solution: Use an extra fluent append instead of concatenation.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="version" value="1.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodDeclaration/Block/BlockStatement[
+(.//PrimaryExpression/PrimaryPrefix/Name[substring-after(@Image, '.') = 'append']
+or
+.//PrimaryExpression/PrimarySuffix/@Image = 'append')
+and
+.//PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression[1]/AdditiveExpression[@Image='+'
+and (count(PrimaryExpression/PrimaryPrefix/Name) > 0)
+and not(PrimaryExpression/PrimaryPrefix/Name/@Image=
+ancestor::ClassOrInterfaceBody//FieldDeclaration[@Final='true']//VariableDeclaratorId/@Image)
+and not(PrimaryExpression/PrimaryPrefix/Name/@Image=
+ancestor::Block//LocalVariableDeclaration[@Final='true']//VariableDeclaratorId/@Image)
+]]
+	]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class StringStuff {
+   private String bad(String arg) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("arg='" + arg + "'");
+        return sb.toString();
+   }
+
+   private String good(String arg) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("arg='").append(arg).append("'");
+        return sb.toString();
+   }
+}
+            ]]>
+        </example>
+    </rule>
+
+    <rule name="AvoidConcatInLoop"
+          since="6.17.0"
+          language="java"
+          message="A String is concatenated in a loop. Use StringBuilder.append."
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidconcatinloop">
+        <description>A String is built in a loop by concatenation. Problem: Each statement with one or more +-operators creates a hidden temporary StringBuilder, a char[] and a new String object, which all have to be garbage collected. &#13;
+            Solution: Use the StringBuilder append method.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="version" value="1.0"/>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodDeclaration//ForStatement//AssignmentOperator[@Image='+='][
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AssignmentOperator[@Image='+=']/
+../PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]
+|
+//MethodDeclaration//ForStatement//StatementExpression[AssignmentOperator/../Expression/AdditiveExpression[
+PrimaryExpression/PrimaryPrefix/Name/attribute::Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+@Image =
+ancestor::MethodDeclaration//ForStatement//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]]
+|
+//MethodDeclaration//WhileStatement//AssignmentOperator[@Image='+='][
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AssignmentOperator[@Image='+=']/
+../PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]
+|
+//MethodDeclaration//WhileStatement//StatementExpression[AssignmentOperator/../Expression/AdditiveExpression[
+PrimaryExpression/PrimaryPrefix/Name/attribute::Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
+ancestor::MethodDeclaration//ForStatement//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
+and
+@Image =
+ancestor::MethodDeclaration//ForStatement//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image and
+./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
+]]]
+	]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class StringStuff {
+   private String bad(String arg) {
+        String log = "";
+        List<String> values = Arrays.asList("tic ", "tac ", "toe ");
+        for (String val : values) {
+            log += val;
+        }
+        return log;
+    }
+
+   private String good(String arg) {
+        StringBuilder sb = new StringBuilder();
+        List<String> values = Arrays.asList("tic ", "tac ", "toe ");
+        for (String val : values) {
+            sb.append(val);
+        }
+        return sb.toString();
+   }
+}
+            ]]>
         </example>
     </rule>
 
