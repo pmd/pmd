@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.SignedNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
+import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 
 
 /**
@@ -19,6 +20,16 @@ import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
  * @since 5.8.1
  */
 public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, SignedNode<ASTMethodOrConstructorDeclaration> {
+
+
+    /**
+     * Returns the name of the method, or the simple name of the declaring class for
+     * a constructor declaration. This is consistent with the result of
+     * {@link JavaOperationQualifiedName#getOperation()} for {@link #getQualifiedName()}.
+     */
+    String getName();
+
+
     @Override
     JavaOperationSignature getSignature();
 
@@ -48,6 +59,26 @@ public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, Signe
     default ASTBlock getBody() {
         JavaNode last = getLastChild();
         return last instanceof ASTBlock ? (ASTBlock) last : null;
+    }
+
+
+    /**
+     * Returns the type parameter declaration of this node, or null if
+     * there is none.
+     */
+    @Nullable
+    default ASTTypeParameters getTypeParameters() {
+        return getFirstChildOfType(ASTTypeParameters.class);
+    }
+
+
+    /**
+     * Returns the {@code throws} clause of this declaration, or null
+     * if there is none. TODO use ThrowsList instead
+     */
+    @Nullable
+    default ASTNameList getThrows() {
+        return getFirstChildOfType(ASTNameList.class);
     }
 
 

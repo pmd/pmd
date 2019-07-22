@@ -442,7 +442,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
                 """.trimIndent()
 
             override fun retrieveNode(acu: ASTCompilationUnit): ASTTypeParameters =
-                    acu.getFirstDescendantOfType(ASTMethodDeclaration::class.java).typeParameters
+                    acu.getFirstDescendantOfType(ASTMethodDeclaration::class.java).typeParameters!!
         }
 
     }

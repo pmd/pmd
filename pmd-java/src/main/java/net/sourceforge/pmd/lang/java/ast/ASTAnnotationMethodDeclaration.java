@@ -15,6 +15,11 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
     }
 
     @Override
+    public String getName() {
+        return getImage();
+    }
+
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

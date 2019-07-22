@@ -57,6 +57,7 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     /**
      * Returns the simple name of the method.
+     * TODO replace with {@link #getName()}
      */
     public String getMethodName() {
         return getName();
@@ -144,23 +145,9 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getFirstChildOfType(ASTResultType.class);
     }
 
-
-    /**
-     * Returns the exception names listed in the {@code throws} clause
-     * of this method declaration, or null if there are none.
-     */
-    public ASTNameList getThrows() {
-        return getFirstChildOfType(ASTNameList.class);
-    }
-
-
     @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.METHOD;
-    }
-
-    public ASTTypeParameters getTypeParameters() {
-        return getFirstChildOfType(ASTTypeParameters.class);
     }
 
 

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
@@ -37,6 +36,10 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         super(p, id);
     }
 
+    @Override
+    public String getName() {
+        return getImage();
+    }
 
     @Override
     public MethodLikeKind getKind() {
