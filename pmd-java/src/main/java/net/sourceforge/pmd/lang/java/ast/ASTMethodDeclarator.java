@@ -10,15 +10,17 @@ import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 /**
  * Child of an {@link ASTMethodDeclaration}.
  *
- * TODO This is not useful, remove
- *
  * <p>
  *
  * MethodDeclarator ::=  &lt;IDENTIFIER&gt; {@link ASTFormalParameters FormalParameters} ( "[" "]" )*
  *
  * </p>
  *
+ * @deprecated Removed, former children are direct children of {@link ASTMethodDeclaration}.
+ * This is because the node is not even shared with {@link ASTAnnotationMethodDeclaration} and is
+ * really not useful, mostly worked around everywhere.
  */
+@Deprecated
 public final class ASTMethodDeclarator extends AbstractJavaNode {
 
     /**

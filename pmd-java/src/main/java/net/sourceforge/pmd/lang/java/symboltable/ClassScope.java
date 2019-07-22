@@ -301,15 +301,12 @@ public class ClassScope extends AbstractJavaScope {
         InternalApiBridge.setModifier(methodDeclaration, AccessNode.PUBLIC);
         InternalApiBridge.setScope(methodDeclaration, this);
 
-        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(JavaParserTreeConstants.JJTMETHODDECLARATOR);
-        methodDeclarator.setImage(methodName);
+        methodDeclaration.setImage(methodName);
 
         ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
 
-        methodDeclaration.jjtAddChild(methodDeclarator, 0);
-        methodDeclarator.jjtSetParent(methodDeclaration);
-        methodDeclarator.jjtAddChild(formalParameters, 0);
-        formalParameters.jjtSetParent(methodDeclarator);
+        methodDeclaration.jjtAddChild(formalParameters, 0);
+        formalParameters.jjtSetParent(methodDeclaration);
 
         /*
          * jjtAddChild resizes it's child node list according to known indexes.
@@ -338,7 +335,7 @@ public class ClassScope extends AbstractJavaScope {
 
         }
 
-        return new MethodNameDeclaration(methodDeclarator);
+        return new MethodNameDeclaration(methodDeclaration);
     }
 
 

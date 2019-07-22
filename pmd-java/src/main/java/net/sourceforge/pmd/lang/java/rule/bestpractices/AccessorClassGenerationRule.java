@@ -82,8 +82,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                         if (cd.getScope().getEnclosingScope(ClassScope.class) == enclosingScope) {
                             break;
                         }
-    
-                        if (cd.getParameterCount() == callArguments.getArgumentCount()) {
+
+                        if (cd.getArity() == callArguments.getArgumentCount()) {
                             // TODO : Check types
                             addViolation(data, node);
                             break;

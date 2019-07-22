@@ -10,18 +10,19 @@ import java.util.Objects;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
 
-    public MethodNameDeclaration(ASTMethodDeclarator node) {
+    public MethodNameDeclaration(ASTMethodDeclaration node) {
         super(node);
     }
 
     public int getParameterCount() {
-        return ((ASTMethodDeclarator) node).getParameterCount();
+        return getDeclarator().getArity();
     }
 
     public boolean isVarargs() {
@@ -59,8 +60,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return sb.toString();
     }
 
-    public ASTMethodDeclarator getDeclarator() {
-        return (ASTMethodDeclarator) node;
+    public ASTMethodDeclaration getDeclarator() {
+        return (ASTMethodDeclaration) node;
     }
 
     @Override
@@ -123,10 +124,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public int hashCode() {
-        int hash = node.getImage().hashCode() * 31 + ((ASTMethodDeclarator) node).getParameterCount();
+        ASTMethodDeclaration declaration = getDeclarator();
+        int hash = declaration.getName().hashCode() * 31 + declaration.getArity();
 
-        ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        for (ASTFormalParameter myParam : myParams) {
+        for (ASTFormalParameter myParam : declaration.getFormalParameters()) {
             if (!myParam.isTypeInferred()) {
                 String myTypeImg = myParam.getTypeNode().getTypeImage();
                 hash = hash * 31 + myTypeImg.hashCode();

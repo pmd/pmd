@@ -59,13 +59,15 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
      * Returns the simple name of the method.
      */
     public String getMethodName() {
-        return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
+        return getName();
     }
 
-
+    /**
+     * Returns the simple name of the method.
+     */
     @Override
     public String getName() {
-        return getMethodName();
+        return getImage();
     }
 
 
@@ -144,15 +146,6 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
 
     /**
-     * Returns the block defined by this method, or
-     * null if the method is abstract.
-     */
-    public ASTBlock getBlock() {
-        return getFirstChildOfType(ASTBlock.class);
-    }
-
-
-    /**
      * Returns the exception names listed in the {@code throws} clause
      * of this method declaration, or null if there are none.
      */
@@ -170,16 +163,5 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getFirstChildOfType(ASTTypeParameters.class);
     }
 
-    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
-    public ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);
-    }
 
-
-    /**
-     * Returns the method declarator. Never null.
-     */
-    public ASTMethodDeclarator getMethodDeclarator() {
-        return getFirstChildOfType(ASTMethodDeclarator.class);
-    }
 }

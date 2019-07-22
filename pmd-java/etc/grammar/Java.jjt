@@ -1954,24 +1954,21 @@ void ArrayInitializer() :
 void MethodDeclaration(int modifiers) :
 {
     jjtThis.setModifiers(modifiers);
-    { checkForBadPrivateInterfaceMethod(jjtThis); }
+    checkForBadPrivateInterfaceMethod(jjtThis);
 }
 {
   [ TypeParameters() ]
-  ResultType() MethodDeclarator() [ "throws" NameList() ]
-  ( Block() | ";" )
-}
-
-void MethodDeclarator() :
-{Token t;}
-{
-  t=<IDENTIFIER>
-  {
-    checkForBadAssertUsage(t.image, "a method name");
-    checkForBadEnumUsage(t.image, "a method name");
-    jjtThis.setImage( t.image );
+  ResultType()
+  <IDENTIFIER> {
+    String image = getToken(0).getImage();
+    jjtThis.setImage(image);
+    checkForBadAssertUsage(image, "a method name");
+    checkForBadEnumUsage(image, "a method name");
   }
-  FormalParameters() ( "[" "]" )* // TODO use ArrayTypeDims
+  FormalParameters()
+  ( "[" "]" )* // TODO use ArrayTypeDims
+  [ "throws" NameList() ]
+  ( Block() | ";" )
 }
 
 
@@ -2000,10 +1997,10 @@ Token t;}
 {
     [ TypeParameters() ]
    <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ "throws" NameList() ]
-  "{"
+  ("{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
-  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
+  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } } ) #Block
 }
 
 void ExplicitConstructorInvocation() :

@@ -693,7 +693,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                     // constructor with " +
                     // ch.getASTConstructorDeclaration().getParameterCount() + "
                     // params");
-                    int paramCount = ch.getASTConstructorDeclaration().getParameterCount();
+                    int paramCount = ch.getASTConstructorDeclaration().getArity();
                     for (ConstructorInvocation ci : getCurrentEvalPackage().calledConstructors) {
                         if (ci.getArgumentCount() == paramCount) {
                             // match name super / this !?
@@ -831,7 +831,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 // check for each, but only 1 hit
                 ConstructorHolder h2 = innerConstIter.next();
                 if (h2.isDangerous()) {
-                    int matchConstArgCount = h2.getASTConstructorDeclaration().getParameterCount();
+                    int matchConstArgCount = h2.getASTConstructorDeclaration().getArity();
                     List<String> parameterTypes = getMethodDeclaratorParameterTypes(h2.getASTConstructorDeclaration());
                     if (matchConstArgCount == cCount && parameterTypes.equals(calledC.getArgumentTypes())) {
                         ch.setDangerous(true);

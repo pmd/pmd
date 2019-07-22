@@ -333,5 +333,8 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return null;
     }
 
-
+    @Deprecated
+    public Object visit(ASTMethodDeclarator node, Object data) {
+        return null;
+    }
 }

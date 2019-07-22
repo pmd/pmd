@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
  * {@linkplain ASTEnumDeclaration enum} declaration.
@@ -15,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *                            &lt;IDENTIFIER&gt;
  *                            {@link ASTFormalParameters FormalParameters}
  *                            ("throws" {@link ASTNameList NameList})?
- *                            {@link ASTBlock Block} TODO there's no Block here for now, just a list of statements
+ *                            {@link ASTBlock Block}
  *
  *
  * ConstructorModifier ::= "public" | "private"  | "protected"
@@ -25,8 +28,6 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
-
-    private boolean containsComment;
 
     ASTConstructorDeclaration(int id) {
         super(id);
@@ -55,27 +56,12 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
 
 
     public boolean containsComment() {
-        return this.containsComment;
+        return getBody().containsComment();
     }
 
-    void setContainsComment() {
-        this.containsComment = true;
+    @Override
+    public @NonNull ASTBlock getBody() {
+        return (ASTBlock) getLastChild();
     }
 
-    /**
-     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
-     */
-    @Deprecated
-    public ASTFormalParameters getParameters() {
-        return getFormalParameters();
-    }
-
-    public int getParameterCount() {
-        return getFormalParameters().getParameterCount();
-    }
-
-    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
-    public ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTFormalParameters.class);
-    }
 }

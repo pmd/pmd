@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
@@ -125,6 +126,10 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     }
 
 
+    // REMOVE ME
+    // deprecated stuff kept for compatibility with existing visitors, not matched by anything
+
+
     @Deprecated
     public Object visit(ASTPrimaryPrefix node, Object data) {
         return JavaParserVisitor.super.visit(node, data);
@@ -159,6 +164,11 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Deprecated
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTMethodDeclarator node, Object data) {
         return null;
     }
 

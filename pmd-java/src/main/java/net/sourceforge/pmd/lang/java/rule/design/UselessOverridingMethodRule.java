@@ -122,7 +122,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        ASTBlock block = node.getBlock();
+        ASTBlock block = node.getBody();
         if (block == null) {
             return super.visit(node, data);
         }
