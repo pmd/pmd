@@ -20,13 +20,15 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe true
-                it::isSuper shouldBe false
-                it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe true
+                    it::isSuper shouldBe false
+                    it::isQualified shouldBe false
+                    it::getLhsExpression shouldBe null
 
-                it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe child {}
+                }
             }
         }
 
@@ -34,18 +36,20 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe true
-                it::isSuper shouldBe false
-                it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe true
+                    it::isSuper shouldBe false
+                    it::isQualified shouldBe false
+                    it::getLhsExpression shouldBe null
 
 
-                it::getExplicitTypeArguments shouldBe child {
-                    classType("String")
+                    it::getExplicitTypeArguments shouldBe child {
+                        classType("String")
+                    }
+
+                    it::getArgumentsList shouldBe child {}
                 }
-
-                it::getArgumentsList shouldBe child {}
             }
         }
     }
@@ -56,15 +60,17 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
-                it::getExplicitTypeArguments shouldBe null
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe false
+                    it::getLhsExpression shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
 
-                it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe child {}
 
+                }
             }
         }
 
@@ -72,17 +78,19 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe false
+                    it::getLhsExpression shouldBe null
 
-                it::getExplicitTypeArguments shouldBe child {
-                    classType("String")
+                    it::getExplicitTypeArguments shouldBe child {
+                        classType("String")
+                    }
+
+                    it::getArgumentsList shouldBe child {}
                 }
-
-                it::getArgumentsList shouldBe child {}
             }
         }
     }
@@ -94,16 +102,18 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe true
-                it::getArgumentCount shouldBe 0
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe true
+                    it::getArgumentCount shouldBe 0
 
-                it::getExplicitTypeArguments shouldBe null
-                it::getLhsExpression shouldBe variableAccess("o")
+                    it::getExplicitTypeArguments shouldBe null
+                    it::getLhsExpression shouldBe variableAccess("o")
 
-                it::getArgumentsList shouldBe child {}
+                    it::getArgumentsList shouldBe child {}
+                }
             }
         }
 
@@ -111,19 +121,21 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe true
-                it::getArgumentCount shouldBe 0
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe true
+                    it::getArgumentCount shouldBe 0
 
-                it::getLhsExpression shouldBe variableAccess("o")
+                    it::getLhsExpression shouldBe variableAccess("o")
 
-                it::getExplicitTypeArguments shouldBe child {
-                    classType("String")
+                    it::getExplicitTypeArguments shouldBe child {
+                        classType("String")
+                    }
+
+                    it::getArgumentsList shouldBe child { }
                 }
-
-                it::getArgumentsList shouldBe child { }
             }
         }
 
@@ -131,19 +143,21 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe true
-                it::getArgumentCount shouldBe 0
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe true
+                    it::getArgumentCount shouldBe 0
 
-                it::getLhsExpression shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
+                    it::getLhsExpression shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
 
-                it::getExplicitTypeArguments shouldBe child {
-                    classType("String")
+                    it::getExplicitTypeArguments shouldBe child {
+                        classType("String")
+                    }
+
+                    it::getArgumentsList shouldBe child { }
                 }
-
-                it::getArgumentsList shouldBe child { }
             }
         }
 
@@ -151,17 +165,19 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe true
-                it::getExplicitTypeArguments shouldBe null
-                it::getArgumentCount shouldBe 0
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe true
+                    it::getExplicitTypeArguments shouldBe null
+                    it::getArgumentCount shouldBe 0
 
-                it::getLhsExpression shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
+                    it::getLhsExpression shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
 
 
-                it::getArgumentsList shouldBe child { }
+                    it::getArgumentsList shouldBe child { }
+                }
             }
         }
 
@@ -182,21 +198,23 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTExplicitConstructorInvocation> {
-                it::isThis shouldBe false
-                it::isSuper shouldBe true
-                it::isQualified shouldBe false
-                it::getArgumentCount shouldBe 1
+            block {
+                child<ASTExplicitConstructorInvocation> {
+                    it::isThis shouldBe false
+                    it::isSuper shouldBe true
+                    it::isQualified shouldBe false
+                    it::getArgumentCount shouldBe 1
 
-                it::getExplicitTypeArguments shouldBe null
-                it::getLhsExpression shouldBe null
+                    it::getExplicitTypeArguments shouldBe null
+                    it::getLhsExpression shouldBe null
 
-                it::getArgumentsList shouldBe child {
-                    child<ASTMethodCall> {
-                        child<ASTThisExpression> {
-                            classType("AbstractListenerWebSocketSession")
+                    it::getArgumentsList shouldBe child {
+                        child<ASTMethodCall> {
+                            child<ASTThisExpression> {
+                                classType("AbstractListenerWebSocketSession")
+                            }
+                            it::getArguments shouldBe child {}
                         }
-                        it::getArguments shouldBe child {}
                     }
                 }
             }
@@ -212,21 +230,27 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTBlockStatement>(ignoreChildren = true) {}
+            block {
+                child<ASTBlockStatement>(ignoreChildren = true) {}
+            }
         }
 
         "Foo() { super.name = null; }" should matchDeclaration<ASTConstructorDeclaration> {
 
             child<ASTFormalParameters> { }
+            block {
 
-            child<ASTBlockStatement>(ignoreChildren = true) {}
+                child<ASTBlockStatement>(ignoreChildren = true) {}
+            }
         }
 
         "Foo() { super.foo(); }" should matchDeclaration<ASTConstructorDeclaration> {
 
             child<ASTFormalParameters> { }
 
-            child<ASTBlockStatement>(ignoreChildren = true) {}
+            block {
+                child<ASTBlockStatement>(ignoreChildren = true) {}
+            }
         }
 
 
@@ -234,7 +258,9 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
             child<ASTFormalParameters> { }
 
-            child<ASTBlockStatement>(ignoreChildren = true) {}
+            block {
+                child<ASTBlockStatement>(ignoreChildren = true) {}
+            }
         }
 
     }
