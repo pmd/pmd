@@ -58,6 +58,58 @@ sb.append('a');     // use this instead
         </example>
     </rule>
 
+    <rule name="AvoidApacheCommonsFileItemNonStreaming"
+          since="6.17.0"
+          language="java"
+          message="Avoid memory intensive FileItem.get and FileItem.getString"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          typeResolution="true"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#avoidapachecommonsfileitemnonstreaming">
+        <description>
+            Problem: Use of FileItem.get and FileItem.getString could exhaust memory since they load the entire file into memory&#13;
+            Solution: Use streaming methods and buffering.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="version" value="1.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//PrimaryPrefix/Name
+[ends-with(@Image, '.get') or ends-with(@Image, '.getString')]
+[
+	starts-with(@Image, concat(
+		ancestor::MethodDeclaration//FormalParameter/Type/ReferenceType/ClassOrInterfaceType[typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Image,
+		'.')
+	) or
+	starts-with(@Image, concat(
+		ancestor::MethodDeclaration//LocalVariableDeclaration/Type/ReferenceType/ClassOrInterfaceType[typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Image,
+		'.')
+	) or
+	starts-with(@Image, concat(
+		ancestor::ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[typeIs('org.apache.commons.fileupload.FileItem')]/../../..//VariableDeclaratorId/@Image,
+		'.')
+)
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class FileStuff {
+   private String bad(FileItem fileItem) {
+        return fileItem.getString();
+   }
+
+   private InputStream good(FileItem fileItem) {
+        return fileItem.getInputStream();
+   }
+}
+            ]]>
+        </example>
+    </rule>
+
     <rule name="AvoidArrayLoops"
           language="java"
           since="3.5"
