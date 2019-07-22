@@ -109,15 +109,12 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
 
 
 
+    /** Gets the inclusive start offset of this node in the file text. */
     int getStartOffset();
 
 
+    /** Gets the exclusive end offset of this node in the file text. */
     int getEndOffset();
-
-
-    @Override
-    String getText();
-
 
     /**
      * FIXME figure that out

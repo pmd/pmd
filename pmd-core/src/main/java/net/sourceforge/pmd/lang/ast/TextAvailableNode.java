@@ -5,24 +5,30 @@
 package net.sourceforge.pmd.lang.ast;
 
 /**
- * Refinement of {@link Node} for those nodes that can provide access
- * to the source text.
+ * Refinement of {@link Node} for nodes that can provide the underlying
+ * source text.
  *
  * @since 7.0.0
  */
 public interface TextAvailableNode extends Node {
+
+    /*
+      Note for future: I initially implemented a CharSequence that shares
+      the char array for the full file, which seems advantageous, but tbh
+      is out of scope of the first prototype
+
+      Problem with using strings is that I suspect it can be very easy to
+      create significant memory issues without paying attention...
+
+      See 96cedaab24 for the removal commit
+     */
+
 
     /**
      * Returns the original source underlying this node. In particular,
      * for a {@link RootNode}, returns the whole text of the file.
      */
     String getText();
-
-
-    int getStartOffset();
-
-
-    int getEndOffset();
 
 
 }

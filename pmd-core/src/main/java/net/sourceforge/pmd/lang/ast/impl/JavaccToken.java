@@ -11,9 +11,20 @@ import net.sourceforge.pmd.util.StringUtil;
  * A generic token implementation for JavaCC parsers. Will probably help
  * remove those duplicated implementations that all have the same name.
  *
- * <p>TODO replace duplicates over PMD.
+ * <p>Largely has the same interface as the default generated token class.
+ * The main difference is that the position of the token is encoded as
+ * a start and end offset in the source file, instead of a (begin,end)x(line,column)
+ * 4-tuple. This offers two practical advantages:
+ * <ul>
+ * <li>It allows retrieving easily the underlying text of a node (just
+ * need to cut a substring). Other attributes like lines and column bounds
+ * can be derived as well - though this should not be done systematically
+ * because it's quite costly.
+ * <li>It's a bit lighter. Token instances are by far the most numerous
+ * class in a PMD run and this may prove significant.
+ * </ul>
  *
- * @author Clément Fournier
+ * <p>TODO replace duplicates over PMD.
  */
 public class JavaccToken implements GenericToken, java.io.Serializable {
 

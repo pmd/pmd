@@ -12,9 +12,10 @@ import org.apache.commons.io.IOUtils;
 
 /**
  * This stream buffers the whole file in memory before parsing,
- * and shares the char array between all tokens.
- *
- * @author Clément Fournier
+ * and track start/end offsets of tokens. This allows building {@link JavaccToken}.
+ * The buffer is assumed to be composed of only ASCII characters,
+ * and the stream unescapes Unicode escapes. The {@link #getTokenDocument() token document}
+ * stores the original file with escapes and all.
  */
 public class JavaCharStream extends JavaCharStreamBase {
 
@@ -31,7 +32,7 @@ public class JavaCharStream extends JavaCharStreamBase {
         this.startOffsets = new int[bufsize];
         maxNextCharInd = fullText.length();
 
-        nextCharBuf = null; // the char buf is emulated by the TokenisedCharseq and isn't needed
+        nextCharBuf = null;
     }
 
     public JavaCharStream(Reader toDump) {
@@ -61,7 +62,6 @@ public class JavaCharStream extends JavaCharStreamBase {
         }
     }
 
-
     public int getStartOffset() {
         return startOffsets[tokenBegin];
     }
@@ -70,7 +70,7 @@ public class JavaCharStream extends JavaCharStreamBase {
         if (bufpos >= startOffsets.length) {
             return fullText.length();
         } else {
-            return startOffsets[bufpos] + 1;
+            return startOffsets[bufpos] + 1; // + 1 for exclusive
         }
     }
 

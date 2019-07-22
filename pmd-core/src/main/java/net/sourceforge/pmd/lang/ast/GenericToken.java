@@ -32,11 +32,14 @@ public interface GenericToken {
     //  be ported. I prefer doing this as changing all the GenericToken in
     //  pmd-java to JavaccToken
 
+
+    /** Inclusive start offset in the source file text. */
     default int getStartInDocument() {
         return -1;
     }
 
 
+    /** Exclusive end offset in the source file text. */
     default int getEndInDocument() {
         return -1;
     }

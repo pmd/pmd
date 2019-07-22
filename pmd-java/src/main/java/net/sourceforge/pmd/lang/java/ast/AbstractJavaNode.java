@@ -126,6 +126,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         return text;
     }
 
+
     @Override
     public int getStartOffset() {
         return jjtGetFirstToken().getStartInDocument();
@@ -310,5 +311,15 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     @Override
     public String getXPathNodeName() {
         return JavaParserTreeConstants.jjtNodeName[id];
+    }
+
+
+    /**
+     * The toString of Java nodes is only meant for debugging purposes
+     * as it's pretty expensive.
+     */
+    @Override
+    public String toString() {
+        return "|" + getXPathNodeName() + "|" + getStartOffset() + "," + getEndOffset() + "|" + getText();
     }
 }

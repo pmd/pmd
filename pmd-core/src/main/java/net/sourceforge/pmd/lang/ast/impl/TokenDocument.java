@@ -19,6 +19,7 @@ public class TokenDocument {
         this.fullText = fullText;
     }
 
+    /** Returns the original text of the file (without escaping). */
     public String getFullText() {
         return fullText;
     }
