@@ -121,8 +121,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
     /**
      * Returns true if this node declares a formal parameter for a method
-     * declaration or a lambda expression. In particular, returns false
-     * if the node is a receiver parameter (see {@link #isExplicitReceiverParameter()}).
+     * declaration or a lambda expression.
      */
     public boolean isFormalParameter() {
         return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
@@ -198,14 +197,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
         }
 
         throw new IllegalStateException("All cases should be handled");
-    }
-
-
-    /**
-     *  FIXME deal with that otherwise
-     */
-    void setExplicitReceiverParameter() {
-        explicitReceiverParameter = true;
     }
 
 

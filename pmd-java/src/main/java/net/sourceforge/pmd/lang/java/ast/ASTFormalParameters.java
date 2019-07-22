@@ -5,19 +5,22 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * A list of {@linkplain ASTFormalParameter formal parameters} in a
- * method or constructor declaration.
- *
+ * method or constructor declaration. Some formal parameter lists may
+ * feature a {@linkplain ASTReceiverParameter receiver parameter}. That
+ * is not treated as a regular formal parameter, as it does not declare
+ * a variable.
  *
  * <pre class="grammar">
  *
  * FormalParameters ::=  "(" ")"
- *                    |  "(" {@link ASTFormalParameter FormalParameter} ("," {@link ASTFormalParameter FormalParameter})* ")"
+ *                    |  "(" ({@link ASTReceiverParameter ReceiverParameter} | {@link ASTFormalParameter FormalParameter}) ("," {@link ASTFormalParameter FormalParameter})* ")"
  *
  * </pre>
  *
@@ -35,9 +38,7 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
     }
 
     public int getParameterCount() {
-        final List<ASTFormalParameter> parameters = findChildrenOfType(ASTFormalParameter.class);
-        return !parameters.isEmpty() && parameters.get(0).isExplicitReceiverParameter()
-               ? parameters.size() - 1 : parameters.size();
+        return getReceiverParameter() == null ? jjtGetNumChildren() : jjtGetNumChildren() - 1;
     }
 
     @Override
@@ -57,6 +58,14 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
         return (ASTFormalParameter) super.jjtGetChild(index);
     }
 
+    /**
+     * Returns the receiver parameter if it is present, otherwise returns
+     * null.
+     */
+    @Nullable
+    public ASTReceiverParameter getReceiverParameter() {
+        return AstImplUtil.getChildAs(this, 0, ASTReceiverParameter.class);
+    }
 
     @Override
     public Iterator<ASTFormalParameter> iterator() {

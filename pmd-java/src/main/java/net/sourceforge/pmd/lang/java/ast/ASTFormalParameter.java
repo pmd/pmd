@@ -50,20 +50,6 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
 
 
     /**
-     * Returns true if this node is the explicit receiver parameter,
-     * e.g. in
-     *
-     * <pre>
-     * class Foo {
-     *   abstract void foo(@Bar Foo this);
-     * }
-     * </pre>
-     */
-    public boolean isExplicitReceiverParameter() {
-        return getVariableDeclaratorId().isExplicitReceiverParameter();
-    }
-
-    /**
      * If true, this formal parameter represents one without explit types.
      * This can appear as part of a lambda expression with java11 using "var".
      *

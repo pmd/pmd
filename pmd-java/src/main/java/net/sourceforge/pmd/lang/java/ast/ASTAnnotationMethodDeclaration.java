@@ -25,6 +25,10 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
         visitor.visit(this, data);
     }
 
+    @Override
+    public ASTFormalParameters getFormalParameters() {
+        return getFirstChildOfType(ASTFormalParameters.class);
+    }
 
     @Override
     public MethodLikeKind getKind() {

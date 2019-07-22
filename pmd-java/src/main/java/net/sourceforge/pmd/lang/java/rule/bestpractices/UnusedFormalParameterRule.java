@@ -92,7 +92,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
                 VariableNameDeclaration nameDecl = entry.getKey();
 
                 ASTVariableDeclaratorId declNode = nameDecl.getDeclaratorId();
-                if (!declNode.isFormalParameter() || declNode.isExplicitReceiverParameter()) {
+                if (!declNode.isFormalParameter()) {
                     continue;
                 }
 
