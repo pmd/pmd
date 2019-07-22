@@ -15,6 +15,14 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 /**
  * Groups method and constructor declarations under a common type.
  *
+ * <pre class="grammar">
+ *
+ * MethodOrConstructorDeclaration ::= {@link ASTMethodDeclaration MethodDeclaration}
+ *                                  | {@link ASTConstructorDeclaration ConstructorDeclaration}
+ *                                  | {@link ASTAnnotationMethodDeclaration AnnotationMethodDeclaration}
+ *
+ * </pre>
+ *
  * @author Clément Fournier
  * @see MethodLikeNode
  * @since 5.8.1

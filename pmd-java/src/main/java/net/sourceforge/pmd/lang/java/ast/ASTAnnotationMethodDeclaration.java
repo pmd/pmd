@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
 
     ASTAnnotationMethodDeclaration(int id) {
@@ -30,6 +32,13 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
         visitor.visit(this, data);
     }
 
+    /**
+     * Returns the default clause.
+     */
+    @NonNull
+    public ASTDefaultValue getDefaultClause() {
+        return getFirstChildOfType(ASTDefaultValue.class);
+    }
 
     @Override
     public MethodLikeKind getKind() {

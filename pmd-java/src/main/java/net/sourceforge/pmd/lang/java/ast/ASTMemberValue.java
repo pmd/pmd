@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents the value of a member of an annotation.
  * This can appear in a {@linkplain ASTMemberValuePair member-value pair},
- * or in a {@linkplain ASTSingleMemberAnnotation single-member annotation}.
+ * in a {@linkplain ASTSingleMemberAnnotation single-member annotation},
+ * or in the {@linkplain ASTDefaultValue default clause} of an annotation
+ * method.
  *
  * <pre class="grammar">
  *
