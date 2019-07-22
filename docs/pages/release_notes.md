@@ -38,6 +38,7 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1906](https://github.com/pmd/pmd/issues/1906): \[doc] Broken link for adding own CPD languages
     *   [#1909](https://github.com/pmd/pmd/issues/1909): \[doc] Sample usage example refers to deprecated ruleset "basic.xml" instead of "quickstart.xml"
 *   java-errorprone
+    *   [#1749](https://github.com/pmd/pmd/issues/1749): \[java] DD False Positive in DataflowAnomalyAnalysis
     *   [#1921](https://github.com/pmd/pmd/issues/1921): \[java] CloseResource false positive with ByteArrayInputStream
 *   java-multithreading
     *   [#1903](https://github.com/pmd/pmd/issues/1903): \[java] UnsynchronizedStaticFormatter doesn't allow block-level synchronization when using allowMethodLevelSynchronization=true
@@ -50,6 +51,7 @@ Being based on a proper Antlr grammar, CPD can:
 
 *   [#1869](https://github.com/pmd/pmd/pull/1869): \[xml] fix #1666 wrong cdata rule description and examples - [Artem](https://github.com/KroArtem)
 *   [#1892](https://github.com/pmd/pmd/pull/1892): \[lua] \[cpd] Added CPD support for Lua - [Maikel Steneker](https://github.com/maikelsteneker)
+*   [#1905](https://github.com/pmd/pmd/pull/1905): \[java] DataflowAnomalyAnalysis Rule in right order - [YoonhoChoi96](https://github.com/YoonhoChoi96)
 *   [#1908](https://github.com/pmd/pmd/pull/1908): \[doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - [crunsk](https://github.com/crunsk)
 *   [#1917](https://github.com/pmd/pmd/pull/1917): \[core] Add 'no error' return option, and assign it to the cli when the help command is invoked - [Renato Oliveira](https://github.com/renatoliveira)
 
