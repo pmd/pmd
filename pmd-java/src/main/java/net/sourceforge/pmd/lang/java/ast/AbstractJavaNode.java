@@ -21,7 +21,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     private JSymbolTable symbolTable;
     private Comment comment;
     private ASTCompilationUnit root;
-    private RichCharSequence text;
+    private String text;
 
     AbstractJavaNode(int id) {
         super(id);
@@ -119,9 +119,9 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
 
     @Override
-    public RichCharSequence getText() {
+    public String getText() {
         if (text == null) {
-            text = getRoot().getText().subSequence(getStartOffset(), getEndOffset());
+            text = getRoot().getText().substring(getStartOffset(), getEndOffset());
         }
         return text;
     }

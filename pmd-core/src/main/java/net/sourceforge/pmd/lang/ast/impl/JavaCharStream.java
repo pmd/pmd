@@ -19,17 +19,17 @@ import org.apache.commons.io.IOUtils;
 public class JavaCharStream extends JavaCharStreamBase {
 
     // full text with nothing escaped and all
-    private final SharingCharSeq seq;
+    private final String fullText;
     private final TokenDocument document;
 
     private int[] startOffsets;
 
     public JavaCharStream(String fulltext) {
         super(new StringReader(fulltext));
-        this.seq = new SharingCharSeq(fulltext);
-        this.document = new TokenDocument(seq);
+        this.fullText = fulltext;
+        this.document = new TokenDocument(fullText);
         this.startOffsets = new int[bufsize];
-        maxNextCharInd = seq.length();
+        maxNextCharInd = fullText.length();
 
         nextCharBuf = null; // the char buf is emulated by the TokenisedCharseq and isn't needed
     }
@@ -68,7 +68,7 @@ public class JavaCharStream extends JavaCharStreamBase {
 
     public int getEndOffset() {
         if (bufpos >= startOffsets.length) {
-            return seq.length();
+            return fullText.length();
         } else {
             return startOffsets[bufpos] + 1;
         }
@@ -82,7 +82,7 @@ public class JavaCharStream extends JavaCharStreamBase {
     protected char ReadByte() throws IOException {
         ++nextCharInd;
 
-        if (nextCharInd >= seq.length()) {
+        if (nextCharInd >= fullText.length()) {
             if (bufpos != 0) {
                 --bufpos;
                 backup(0);
@@ -93,10 +93,9 @@ public class JavaCharStream extends JavaCharStreamBase {
             throw new IOException();
         }
 
-        return seq.charAt(nextCharInd);
+        return fullText.charAt(nextCharInd);
     }
 
-    // TODO GetImage should return a CharSequence based on the current shared sequence
 
     @Override
     protected void FillBuff() {

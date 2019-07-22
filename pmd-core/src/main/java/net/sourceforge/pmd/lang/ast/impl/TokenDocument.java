@@ -4,20 +4,22 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
- * TODO double link tokens and stuff.
- *
- * @author Clément Fournier
+ * Maybe this can be used to eg double link tokens, provide an identity
+ * for them, idk.
  */
+@Experimental
 public class TokenDocument {
 
-    private final RichCharSequence fullText;
+    private final String fullText;
 
-    public TokenDocument(RichCharSequence fullText) {
+    public TokenDocument(String fullText) {
         this.fullText = fullText;
     }
 
-    public RichCharSequence getFullText() {
+    public String getFullText() {
         return fullText;
     }
 }

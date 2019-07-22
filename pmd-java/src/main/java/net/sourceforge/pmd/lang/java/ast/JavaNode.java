@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.ast.impl.RichCharSequence;
+import net.sourceforge.pmd.lang.ast.TextAvailableNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 /**
  * Root interface for all Nodes of the Java AST.
  */
-public interface JavaNode extends ScopedNode {
+public interface JavaNode extends ScopedNode, TextAvailableNode {
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime type of this Node.
@@ -72,7 +72,6 @@ public interface JavaNode extends ScopedNode {
     }
 
 
-    /** Returns the last child of this node, or null if this node has no children. */
     @Nullable
     default JavaNode getLastChild() {
         return jjtGetNumChildren() > 0 ? jjtGetChild(jjtGetNumChildren() - 1) : null;
@@ -116,7 +115,8 @@ public interface JavaNode extends ScopedNode {
     int getEndOffset();
 
 
-    RichCharSequence getText();
+    @Override
+    String getText();
 
 
     /**

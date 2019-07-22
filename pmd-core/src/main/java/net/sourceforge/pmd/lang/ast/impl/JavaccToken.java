@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.impl;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * A generic token implementation for JavaCC parsers. Will probably help
@@ -109,22 +110,22 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
 
     @Override
     public int getBeginLine() {
-        return document == null ? -1 : document.getFullText().getLineNumberAt(startInclusive);
+        return document == null ? -1 : StringUtil.lineNumberAt(document.getFullText(), startInclusive);
     }
 
     @Override
     public int getEndLine() {
-        return document == null ? -1 : document.getFullText().getLineNumberAt(endExclusive - 1);
+        return document == null ? -1 : StringUtil.lineNumberAt(document.getFullText(), endExclusive - 1);
     }
 
     @Override
     public int getBeginColumn() {
-        return document == null ? -1 : document.getFullText().getColumnNumberAt(startInclusive);
+        return document == null ? -1 : StringUtil.columnNumberAt(document.getFullText(), startInclusive);
     }
 
     @Override
     public int getEndColumn() {
-        return document == null ? -1 : document.getFullText().getColumnNumberAt(endExclusive - 1);
+        return document == null ? -1 : StringUtil.columnNumberAt(document.getFullText(), endExclusive - 1);
     }
 
     /**
