@@ -19,8 +19,10 @@ import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
@@ -80,58 +82,37 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 }
                 undefinitions.add(new VariableAccess(VariableAccess.UNDEFINITION, vnd.getImage()));
 
-                //make arraylist which could store all name occurrences
-                List<NameOccurrence> data = new ArrayList<>();
-
-                //make arraylist which could store sorted name occurrences
-                List<NameOccurrence> order = new ArrayList<>();
-
-                //add all occurrences to arraylist(data)
+                //Map the name occurrences to their assignment expressions, if any
+                List<SimpleEntry<Node, NameOccurrence>> occurrencesWithAssignmentExp = new ArrayList<>();
                 for (NameOccurrence occurrence : entry.getValue()) {
-                    data.add(occurrence);
+                    // find the nearest assignment, if any
+                    Node potentialAssignment = occurrence.getLocation().getFirstParentOfAnyType(ASTStatementExpression.class,
+                                                                                            ASTExpression.class);
+                    while (potentialAssignment != null 
+                            && (potentialAssignment.jjtGetNumChildren() < 2
+                                    || !(potentialAssignment.jjtGetChild(1) instanceof ASTAssignmentOperator))) {
+                        potentialAssignment = potentialAssignment.getFirstParentOfAnyType(ASTStatementExpression.class,
+                                ASTExpression.class);
+                    }
+                    // at this point, potentialAssignment is either a assignment or null
+                    occurrencesWithAssignmentExp.add(new SimpleEntry<>(potentialAssignment, occurrence));
                 }
                 
-                //make arraylist which could store pair structure which is consist of assignment operator and related Name occurrences
-                ArrayList<SimpleEntry<Node, NameOccurrence>> assignments = new ArrayList<>();
+                //The name occurrences are in source code order, the means, the left hand side of
+                //the assignment is first. But this is not the order in which the data flows: first the
+                //right hand side is evaluated before the left hand side is assigned.
+                //Therefore move the name occurrences backwards if they belong to the same assignment expression.
+                for (int i = 0; i < occurrencesWithAssignmentExp.size() - 1; i++) {
+                    SimpleEntry<Node, NameOccurrence> oc = occurrencesWithAssignmentExp.get(i);
+                    SimpleEntry<Node, NameOccurrence> nextOc = occurrencesWithAssignmentExp.get(i + 1);
 
-                //travers all elements which are in arraylist(data)
-                for (NameOccurrence name : data) {
-                    //Make a flag which is for preventing double addition of same name occurrence
-                    int flag = 0;
-                    //traverse parents nodes until it is method declaration or constructor declaration
-                    checker :
-                    for (Node temp = name.getLocation(); !(temp.jjtGetParent() instanceof ASTMethodDeclaration) 
-                        && !(temp.jjtGetParent() instanceof ASTConstructorDeclaration); temp = temp.jjtGetParent()) {
-                        //traverse children nodes to check it has assignment operator as a child 
-                        List<ASTAssignmentOperator> assignmentOperators = temp.findChildrenOfType(ASTAssignmentOperator.class);
-                        if (!assignmentOperators.isEmpty()) {
-                                //if assignment operator is found, add to arraylist(assignments) with the assignment operator and its name
-                                assignments.add(new SimpleEntry(assignmentOperators.get(0), name));
-                                //change flag
-                                flag = 1;
-                                break checker;    
-                            }
-                    }
-                    //if a name is not related to assignment operator, add to arraylist(assignments) with null and its name
-                    if (flag == 0) {
-                        assignments.add(new SimpleEntry(null, name));
+                    if (oc.getKey() != null && oc.getKey().equals(nextOc.getKey())) {
+                        Collections.swap(occurrencesWithAssignmentExp, i, i + 1);
                     }
                 }
-                
-                //swap the arraylist(assignments)'s elements, when it share same assignment operator
-                for (int i = 0; i < assignments.size() - 1; i++) {
-                    if (assignments.get(i).getKey() != null 
-                        && assignments.get(i).getKey().equals(assignments.get(i + 1).getKey())) {
-                        Collections.swap(assignments, i, i + 1);
-                    }
-                }
-                //add sorted element from assignments(arraylist) to order(arraylist) 
-                for (SimpleEntry<Node, NameOccurrence> tempPair : assignments) {
-                    order.add(tempPair.getValue());
-                }
-                //add access to the sorted arraylist
-                for (NameOccurrence orderedOccurrence : order) {
-                    addAccess((JavaNameOccurrence) orderedOccurrence, inode);
+
+                for (SimpleEntry<Node, NameOccurrence> oc : occurrencesWithAssignmentExp) {
+                    addAccess((JavaNameOccurrence) oc.getValue(), inode);
                 }
             }
         }
