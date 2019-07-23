@@ -266,44 +266,16 @@ A String is built in a loop by concatenation. Problem: Each statement with one o
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//MethodDeclaration//ForStatement//AssignmentOperator[@Image='+='][
-ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
-ancestor::MethodDeclaration//ForStatement//AssignmentOperator[@Image='+=']/
-../PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
-]]
-|
-//MethodDeclaration//ForStatement//StatementExpression[AssignmentOperator/../Expression/AdditiveExpression[
-PrimaryExpression/PrimaryPrefix/Name/attribute::Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
-ancestor::MethodDeclaration//ForStatement//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-@Image =
-ancestor::MethodDeclaration//ForStatement//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
-]]]
-|
-//MethodDeclaration//WhileStatement//AssignmentOperator[@Image='+='][
-ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
-ancestor::MethodDeclaration//ForStatement//AssignmentOperator[@Image='+=']/
-../PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
-]]
-|
-//MethodDeclaration//WhileStatement//StatementExpression[AssignmentOperator/../Expression/AdditiveExpression[
-PrimaryExpression/PrimaryPrefix/Name/attribute::Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-ancestor::MethodDeclaration//VariableDeclaratorId[@Image =
-ancestor::MethodDeclaration//ForStatement//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image
-and
-@Image =
-ancestor::MethodDeclaration//ForStatement//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name/attribute::Image and
-./../../Type/ReferenceType/ClassOrInterfaceType[typeIs('java.lang.String')]
-]]]
+(//ForStatement | //WhileStatement | //DoStatement)//AssignmentOperator[
+    (: a += ...;  -- a being a string :)
+    @Image='+=' and preceding-sibling::*[1]/PrimaryPrefix/Name[pmd-java:typeIs('java.lang.String')]
+
+    (: a = ... + a + ...; -- a being a string :)
+    or @Image='=' and following-sibling::*[1]/AdditiveExpression/PrimaryExpression/PrimaryPrefix/Name[
+        pmd-java:typeIs('java.lang.String')
+        and @Image = ancestor::StatementExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
+    ]
+]/.. (: Go up to report on the StatementExpression :)
 ```
 
 **Example(s):**
