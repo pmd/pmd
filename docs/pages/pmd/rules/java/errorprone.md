@@ -2620,31 +2620,39 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 
 A class that has private constructors and does not have any static methods or fields cannot be used.
 
+When one of the private constructors is annotated with one of the annotations, then the class is not considered
+non-instantiatable anymore and no violation will be reported.
+See the property `annotations`.
+
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//ClassOrInterfaceDeclaration[@Nested='false']
+//ClassOrInterfaceDeclaration[@Nested=false()]
 [
   (
+    (: at least one constructor :)
     ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
     and
-    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
+    (: only private constructors :)
+    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private=true()])
     and
-    not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration/
-        ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('org.springframework.beans.factory.annotation.Autowired') or pmd-java:typeIs('javax.inject.Inject')])
+    (: all constructors must not be annotated :)
+    (every $x in $annotations satisfies
+      not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration/
+            ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs($x)]))
   )
   and
-  not(.//MethodDeclaration[@Static='true'])
+  not(.//MethodDeclaration[@Static=true()])
   and
-  not(.//FieldDeclaration[@Private='false'][@Static='true'])
+  not(.//FieldDeclaration[@Private=false()][@Static=true()])
   and
-  not(.//ClassOrInterfaceDeclaration[@Nested='true']
-           [@Public='true']
-           [@Static='true']
-           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']]
+  not(.//ClassOrInterfaceDeclaration[@Nested=true()]
+           [@Public=true()]
+           [@Static=true()]
+           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public=true()]]
            [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-                [@Public='true']
+                [@Public=true()]
                 [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
+                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
                 ]
             ]
         )
@@ -2664,9 +2672,24 @@ public class Foo {
 }{%endraw%}
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|annotations|org.springframework.beans.factory.annotation.Autowired ,  javax.inject.Inject|If a constructor is annotated with one of these annotations, then the class is ignored.|yes. Delimiter is ','.|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass">
+    <properties>
+        <property name="annotations" value="org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject" />
+    </properties>
+</rule>
 ```
 
 ## MoreThanOneLogger
