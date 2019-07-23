@@ -1562,6 +1562,20 @@ ASTSimpleExpression SimpleExpression() :
  }
 }
 
+ASTOuterJoinExpression OuterJoinExpression() :
+{ StringBuilder sb = new StringBuilder(); }
+{
+    [ LOOKAHEAD(6) SchemaName() { sb.append(token.image); } "." { sb.append(token.image); } ]
+    [ LOOKAHEAD(4) TableName() { sb.append(token.image); } "." { sb.append(token.image); } ]
+    Column() { sb.append(token.image); }
+    "(" "+" ")"
+
+    {
+        jjtThis.setImage(sb.toString());
+        return jjtThis;
+    }
+}
+
 /**
  * Built-in function call or a user defined function call.
  * See https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/Functions.html#GUID-D079EFD3-C683-441F-977E-2C9503089982
@@ -3258,8 +3272,9 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
+  LOOKAHEAD(OuterJoinExpression()) ( simpleNode = OuterJoinExpression() ) { sb.append(simpleNode.getImage()); }
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
-  LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
+| LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
 | LOOKAHEAD(<CASE>) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604

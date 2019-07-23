@@ -51,6 +51,8 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1921](https://github.com/pmd/pmd/issues/1921): \[java] CloseResource false positive with ByteArrayInputStream
 *   java-multithreading
     *   [#1903](https://github.com/pmd/pmd/issues/1903): \[java] UnsynchronizedStaticFormatter doesn't allow block-level synchronization when using allowMethodLevelSynchronization=true
+*   plsql
+    *   [#1902](https://github.com/pmd/pmd/issues/1902): \[pslql] ParseException when parsing (+)
 *   xml
     *   [#1666](https://github.com/pmd/pmd/issues/1666): \[xml] wrong cdata rule description and examples
 

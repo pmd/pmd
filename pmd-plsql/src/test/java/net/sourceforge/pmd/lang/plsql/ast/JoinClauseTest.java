@@ -129,4 +129,14 @@ public class JoinClauseTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
     }
+
+    @Test
+    public void testJoinOperator() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("JoinOperator.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        List<ASTOuterJoinExpression> expressions = input.findDescendantsOfType(ASTOuterJoinExpression.class);
+        Assert.assertEquals(4, expressions.size());
+        Assert.assertEquals("h.opp_id", expressions.get(3).getImage());
+    }
 }
