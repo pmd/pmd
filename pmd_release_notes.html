@@ -1300,8 +1300,17 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
 <h4 id="modified-rules">Modified Rules</h4>
 
 <ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> [<code class="highlighter-rouge">java-errorprone</code>] now ignores by default
-<code class="highlighter-rouge">java.io.ByteArrayInputStream</code>. Such streams do not need to be closed.</li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> [<code class="highlighter-rouge">java-errorprone</code>] now ignores by default
+<code class="highlighter-rouge">java.io.ByteArrayInputStream</code>. Such streams do not need to be closed.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass"><code class="highlighter-rouge">MissingStaticMethodInNonInstantiatableClass</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has now
+the new property <code class="highlighter-rouge">annotations</code>.
+When one of the private constructors is annotated with one of the annotations, then the class is not considered
+non-instantiatable anymore and no violation will be reported. By default, Spring’s <code class="highlighter-rouge">@Autowired</code> and
+Java EE’s <code class="highlighter-rouge">@Inject</code> annotations are recognized.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1328,12 +1337,18 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1749">#1749</a>: [java] DD False Positive in DataflowAnomalyAnalysis</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1832">#1832</a>: [java] False positives for MissingStaticMethodInNonInstantiatableClass when DI is used</li>
       <li><a href="https://github.com/pmd/pmd/issues/1921">#1921</a>: [java] CloseResource false positive with ByteArrayInputStream</li>
     </ul>
   </li>
   <li>java-multithreading
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1903">#1903</a>: [java] UnsynchronizedStaticFormatter doesn’t allow block-level synchronization when using allowMethodLevelSynchronization=true</li>
+    </ul>
+  </li>
+  <li>plsql
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1902">#1902</a>: [pslql] ParseException when parsing (+)</li>
     </ul>
   </li>
   <li>xml
@@ -1352,6 +1367,7 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
   <li><a href="https://github.com/pmd/pmd/pull/1892">#1892</a>: [lua] [cpd] Added CPD support for Lua - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1905">#1905</a>: [java] DataflowAnomalyAnalysis Rule in right order - <a href="https://github.com/YoonhoChoi96">YoonhoChoi96</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1908">#1908</a>: [doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - <a href="https://github.com/crunsk">crunsk</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/1916">#1916</a>: [java] Exclude Autowired and Inject for MissingStaticMethodInNonInstantiatableClass - <a href="https://github.com/AnthonyKot">AnthonyKot</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1917">#1917</a>: [core] Add ‘no error’ return option, and assign it to the cli when the help command is invoked - <a href="https://github.com/renatoliveira">Renato Oliveira</a></li>
 </ul>
 
