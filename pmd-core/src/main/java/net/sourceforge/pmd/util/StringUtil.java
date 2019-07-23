@@ -31,22 +31,31 @@ public final class StringUtil {
     }
 
     /**
-     * Returns the (1-based) line number at the given index.
+     * Returns the (1-based) line number of the character at the given index.
      * Line terminators (\r, \n) are assumed to be on the line they *end*
-     * and not on the following line.
+     * and not on the following line. The method also accepts that the given
+     * offset be the length of the string (in which case there's no targeted character),
+     * to get the line number of a character that would be inserted at
+     * the end of the string.
      *
      * <pre>
      *
      *     lineNumberAt("a\nb", 0)  = 1
      *     lineNumberAt("a\nb", 1)  = 1
      *     lineNumberAt("a\nb", 2)  = 2
-     *     lineNumberAt("a\nb", 3)  = 2
+     *     lineNumberAt("a\nb", 3)  = 2  // charAt(3) doesn't exist though
      *     lineNumberAt("a\nb", 4)  = -1
+     *
+     *     lineNumberAt("", 0) = 1
+     *     lineNumberAt("", _) = -1
      *
      * </pre>
      *
      * @param charSeq         Char sequence
-     * @param offsetInclusive Offset in the sequence at which to stop.
+     * @param offsetInclusive Offset in the sequence of the targeted character.
+     *                        May be the length of the sequence.
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the line number
      */
     public static int lineNumberAt(CharSequence charSeq, int offsetInclusive) {
         int len = charSeq.length();
@@ -80,29 +89,34 @@ public final class StringUtil {
     }
 
     /**
-     * Returns the (1-based) column number at the given index.
+     * Returns the (1-based) column number of the character at the given index.
      * Like with {@link #lineNumberAt(CharSequence, int)}, line terminators
      * are by convention taken to be part of the line they end,
-     * and not the new line they start. Each character has width 1,
-     * regardless of its
+     * and not the new line they start. Each character has width 1 (including {@code \t}).
+     * Like with {@link #lineNumberAt(CharSequence, int)}, the method
+     * accepts {@code charSeq.length()} as a valid offset.
      *
      * <pre>
      *
      *     columnNumberAt("a\nb", 0)  = 1
      *     columnNumberAt("a\nb", 1)  = 2
      *     columnNumberAt("a\nb", 2)  = 1
+     *     columnNumberAt("a\nb", 3)  = 2   // charAt(3) doesn't exist though
+     *     columnNumberAt("a\nb", 4)  = -1
      *
      *     columnNumberAt("a\r\n", 2)  = 3
-     *
-     *     columnNumberAt("a\nb", 3)  = -1
      *
      * </pre>
      *
      * @param charSeq         Char sequence
      * @param offsetInclusive Offset in the sequence
+     * @return -1 if the offset is not in {@code [0, length]}, otherwise
+     * the column number
      */
     public static int columnNumberAt(CharSequence charSeq, final int offsetInclusive) {
-        if (offsetInclusive >= charSeq.length() || offsetInclusive < 0) {
+        if (offsetInclusive == charSeq.length()) {
+            return charSeq.length() == 0 ? 1 : 1 + columnNumberAt(charSeq, offsetInclusive - 1);
+        } else if (offsetInclusive > charSeq.length() || offsetInclusive < 0) {
             return -1;
         }
 

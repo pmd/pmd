@@ -20,7 +20,7 @@ public interface TextAvailableNode extends Node {
       Problem with using strings is that I suspect it can be very easy to
       create significant memory issues without paying attention...
 
-      See 96cedaab24 for the removal commit
+      See 159f268596 for the removal commit
      */
 
 
