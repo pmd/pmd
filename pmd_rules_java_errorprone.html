@@ -3915,30 +3915,38 @@ chain needs an own serialVersionUID field. See also <a href="https://stackoverfl
 
 <p>A class that has private constructors and does not have any static methods or fields cannot be used.</p>
 
+<p>When one of the private constructors is annotated with one of the annotations, then the class is not considered
+non-instantiatable anymore and no violation will be reported.
+See the property <code class="highlighter-rouge">annotations</code>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span><span class="p">[</span><span class="w">
   </span><span class="p">(</span><span class="w">
+    </span><span class="c">(: at least one constructor :)</span><span class="w">
     </span><span class="p">.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="w">
     </span><span class="ow">and</span><span class="w">
-    </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">[</span><span class="na">@Private</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="w">
+    </span><span class="c">(: only private constructors :)</span><span class="w">
+    </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">count</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">[</span><span class="na">@Private</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
     </span><span class="ow">and</span><span class="w">
-    </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="o">/</span><span class="w">
-        </span><span class="p">..</span><span class="o">/</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'org.springframework.beans.factory.annotation.Autowired'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'javax.inject.Inject'</span><span class="p">)])</span><span class="w">
+    </span><span class="c">(: all constructors must not be annotated :)</span><span class="w">
+    </span><span class="p">(</span><span class="kr">every</span><span class="w"> </span><span class="nv">$x</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$annotations</span><span class="w"> </span><span class="kr">satisfies</span><span class="w">
+      </span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="o">/</span><span class="w">
+            </span><span class="p">..</span><span class="o">/</span><span class="nt">Annotation</span><span class="o">/</span><span class="nt">MarkerAnnotation</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="nv">$x</span><span class="p">)]))</span><span class="w">
   </span><span class="p">)</span><span class="w">
   </span><span class="ow">and</span><span class="w">
-  </span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="w">
+  </span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
   </span><span class="ow">and</span><span class="w">
-  </span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Private</span><span class="err">=</span><span class="s1">'false'</span><span class="p">][</span><span class="na">@Static</span><span class="err">=</span><span class="s1">'true'</span><span class="p">])</span><span class="w">
+  </span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="na">@Private</span><span class="err">=</span><span class="nf">false</span><span class="p">()][</span><span class="na">@Static</span><span class="err">=</span><span class="nf">true</span><span class="p">()])</span><span class="w">
   </span><span class="ow">and</span><span class="w">
-  </span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]</span><span class="w">
-           </span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]</span><span class="w">
-           </span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]</span><span class="w">
-           </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]]</span><span class="w">
+  </span><span class="ow">not</span><span class="p">(.</span><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="w">
+           </span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="w">
+           </span><span class="p">[</span><span class="na">@Static</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="w">
+           </span><span class="p">[</span><span class="ow">not</span><span class="p">(.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="p">.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">ConstructorDeclaration</span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="nf">true</span><span class="p">()]]</span><span class="w">
            </span><span class="p">[.</span><span class="o">/</span><span class="nt">ClassOrInterfaceBody</span><span class="o">/</span><span class="nt">ClassOrInterfaceBodyDeclaration</span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="w">
-                </span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="s1">'true'</span><span class="p">]</span><span class="w">
+                </span><span class="p">[</span><span class="na">@Public</span><span class="err">=</span><span class="nf">true</span><span class="p">()]</span><span class="w">
                 </span><span class="p">[.</span><span class="o">/</span><span class="nt">ResultType</span><span class="o">/</span><span class="nt">Type</span><span class="o">/</span><span class="nt">ReferenceType</span><span class="o">/</span><span class="nt">ClassOrInterfaceType</span><span class="w">
-                    </span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="s1">'false'</span><span class="p">]</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
+                    </span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="o">//</span><span class="nt">ClassOrInterfaceDeclaration</span><span class="p">[</span><span class="na">@Nested</span><span class="err">=</span><span class="nf">false</span><span class="p">()]</span><span class="err">/</span><span class="na">@Image</span><span class="p">]</span><span class="w">
                 </span><span class="p">]</span><span class="w">
             </span><span class="p">]</span><span class="w">
         </span><span class="p">)</span><span class="w">
@@ -3957,8 +3965,37 @@ chain needs an own serialVersionUID field. See also <a href="https://stackoverfl
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+      <th>Multivalued</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>annotations</td>
+      <td>org.springframework.beans.factory.annotation.Autowired ,  javax.inject.Inject</td>
+      <td>If a constructor is annotated with one of these annotations, then the class is ignored.</td>
+      <td>yes. Delimiter is ‘,’.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/MissingStaticMethodInNonInstantiatableClass"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"annotations"</span> <span class="na">value=</span><span class="s">"org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="morethanonelogger">MoreThanOneLogger</h2>
