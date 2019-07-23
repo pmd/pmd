@@ -28,6 +28,12 @@ Being based on a proper Antlr grammar, CPD can:
 *   The Java rule {% rule "java/errorprone/CloseResource" %} [`java-errorprone`] now ignores by default
     `java.io.ByteArrayInputStream`. Such streams do not need to be closed.
 
+*   The Java rule {% rule "java/errorprone/MissingStaticMethodInNonInstantiatableClass" %} (`java-errorprone`) has now
+    the new property `annotations`.
+    When one of the private constructors is annotated with one of the annotations, then the class is not considered
+    non-instantiatable anymore and no violation will be reported. By default, Spring's `@Autowired` and
+    Java EE's `@Inject` annotations are recognized.
+
 ### Fixed Issues
 
 *   core
@@ -41,6 +47,7 @@ Being based on a proper Antlr grammar, CPD can:
     *   [#1910](https://github.com/pmd/pmd/issues/1910): \[java] ATFD calculation problem
 *   java-errorprone
     *   [#1749](https://github.com/pmd/pmd/issues/1749): \[java] DD False Positive in DataflowAnomalyAnalysis
+    *   [#1832](https://github.com/pmd/pmd/issues/1832): \[java] False positives for MissingStaticMethodInNonInstantiatableClass when DI is used
     *   [#1921](https://github.com/pmd/pmd/issues/1921): \[java] CloseResource false positive with ByteArrayInputStream
 *   java-multithreading
     *   [#1903](https://github.com/pmd/pmd/issues/1903): \[java] UnsynchronizedStaticFormatter doesn't allow block-level synchronization when using allowMethodLevelSynchronization=true
@@ -55,6 +62,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1892](https://github.com/pmd/pmd/pull/1892): \[lua] \[cpd] Added CPD support for Lua - [Maikel Steneker](https://github.com/maikelsteneker)
 *   [#1905](https://github.com/pmd/pmd/pull/1905): \[java] DataflowAnomalyAnalysis Rule in right order - [YoonhoChoi96](https://github.com/YoonhoChoi96)
 *   [#1908](https://github.com/pmd/pmd/pull/1908): \[doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - [crunsk](https://github.com/crunsk)
+*   [#1916](https://github.com/pmd/pmd/pull/1916): \[java] Exclude Autowired and Inject for MissingStaticMethodInNonInstantiatableClass - [AnthonyKot](https://github.com/AnthonyKot)
 *   [#1917](https://github.com/pmd/pmd/pull/1917): \[core] Add 'no error' return option, and assign it to the cli when the help command is invoked - [Renato Oliveira](https://github.com/renatoliveira)
 
 {% endtocmaker %}
