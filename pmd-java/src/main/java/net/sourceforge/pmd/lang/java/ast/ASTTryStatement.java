@@ -13,7 +13,7 @@ import java.util.List;
  *
  * <pre class="grammar">
  *
- * TryStatement ::= "try" {@link ASTResourceList ResourceSpecification}?
+ * TryStatement ::= "try" {@link ASTResourceList ResourceList}?
  *                  {@link ASTBlock Block}
  *                  {@link ASTCatchStatement CatchStatement}*
  *                  {@link ASTFinallyStatement FinallyStatement}?
