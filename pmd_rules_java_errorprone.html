@@ -4949,8 +4949,19 @@ since the result of the operation is a new object. Therefore, ignoring the opera
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids problems with languages that
-have unusual conventions, i.e. Turkish.</p>
+<p>When doing <code class="highlighter-rouge">String::toLowerCase()/toUpperCase()</code> conversions, use an explicit locale argument to specify the case transformation rules.</p>
+
+<p>Using <code class="highlighter-rouge">String::toLowerCase()</code> without arguments implicitly uses <code class="highlighter-rouge">Locale::getDefault()</code>.
+The problem is that the default locale depends on the current JVM setup (and usually on the system in which it is running).
+Using the system default may be exactly what you want (e.g. if you are manipulating strings you got through standard input),
+but it may as well not be the case (e.g. if you are getting the string over the network or a file, and the encoding is well-defined
+and independent of the environment). In the latter case, using the default locale makes the case transformation brittle, as
+it may yield unexpected results on a machine whose locale has other case translation rules. For example, in Turkish, the
+uppercase form of <code class="highlighter-rouge">i</code> is <code class="highlighter-rouge">İ</code> (U+0130, not ASCII) and not <code class="highlighter-rouge">I</code> (U+0049) as in English.</p>
+
+<p>The rule is intended to <em>force</em> developers to think about locales when dealing with strings. By taking a conscious decision about
+the choice of locale at the time of writing, you reduce the risk of surprising behaviour down the line, and communicate your intent
+to future readers.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">PrimaryExpression</span><span class="w">
@@ -4970,20 +4981,20 @@ have unusual conventions, i.e. Turkish.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-    <span class="c1">// BAD</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"list"</span><span class="o">))</span> <span class="o">{</span> <span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// violation - implicitly system-dependent conversion</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="s">"list"</span><span class="o">))</span> <span class="o">{}</span>
 
-    <span class="cm">/*
-     * This will not match "LIST" when in Turkish locale
-     * The above could be
-     * if (x.toLowerCase(Locale.US).equals("list")) { }
-     * or simply
-     * if (x.equalsIgnoreCase("list")) { }
-     */</span>
-    <span class="c1">// GOOD</span>
-    <span class="n">String</span> <span class="n">z</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">EN</span><span class="o">);</span>
-<span class="o">}</span>
+<span class="c1">// The above will not match "LIST" on a system with a Turkish locale.</span>
+<span class="c1">// It could be replaced with</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">US</span><span class="o">).</span><span class="na">equals</span><span class="o">(</span><span class="s">"list"</span><span class="o">))</span> <span class="o">{</span> <span class="o">}</span>
+<span class="c1">// or simply</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">"list"</span><span class="o">))</span> <span class="o">{</span> <span class="o">}</span>
+
+<span class="c1">// ok - system independent conversion</span>
+<span class="n">String</span> <span class="n">z</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">ROOT</span><span class="o">);</span>
+
+<span class="c1">// ok - explicit system-dependent conversion</span>
+<span class="n">String</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">(</span><span class="n">Locale</span><span class="o">.</span><span class="na">getDefault</span><span class="o">());</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -5030,7 +5041,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 23, 2019 <br />
+ Site last generated: Jul 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
