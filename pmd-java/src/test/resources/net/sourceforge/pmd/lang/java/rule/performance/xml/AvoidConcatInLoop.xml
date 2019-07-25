@@ -227,4 +227,47 @@ public class ConcatInLoop {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>violation: concat to String in do-loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+
+    public void bad() {
+        String logStatement = "";
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        int i = 0;
+        do {
+            logStatement = logStatement + values.get(i++) + ", "; // bad
+        } while (i < values.length());
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: concat to String field in loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class ConcatInLoop {
+
+    private String logStatement = "";
+
+    public void bad() {
+        List<String> values = Arrays.asList("tic", "tac", "toe");
+        for (String val : values) {
+            logStatement = logStatement + val + ", "; // bad
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
 </test-data>
