@@ -36,7 +36,7 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="DebugsShouldSpecifyLoggingLevelRule"
+    <rule name="DebugsShouldSpecifyLoggingLevel"
           since="6.17.0"
           message="Debug messages should inform the logging level."
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.DebugsShouldSpecifyLoggingLevelRule"
