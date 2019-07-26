@@ -40,7 +40,7 @@ public class Foo {
           since="6.17.0"
           message="Debug messages should inform the logging level."
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.DebugsShouldSpecifyLoggingLevelRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshouldspecifylogginglevelrule">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshouldspecifylogginglevel">
         <description>
 The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.
 
