@@ -36,6 +36,31 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="DebugsShouldSpecifyLoggingLevelRule"
+          since="6.17.0"
+          message="Debug messages should inform the logging level."
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.DebugsShouldSpecifyLoggingLevelRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#debugsshouldspecifylogginglevelrule">
+        <description>
+The first parameter of System.debug, when using the signature with two parameters, is a LoggingLevel enum.
+
+Having the Logging Level specified provides a cleaner log, and improves readability of it.
+        </description>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void methodATest() {
+        System.debug('Hey this code executed.'); // not good
+        System.debug(LoggingLevel.WARN, 'Hey, something might be wrong.'); // good
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ApexUnitTestClassShouldHaveAsserts"
           since="5.5.1"
           message="Apex unit tests should System.assert() or assertEquals() or assertNotEquals()"
