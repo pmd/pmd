@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex debug statements - System.debug should have two arguments</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+@isTest
+public class Foo {
+    @isTest
+    static void methodATest() {
+        System.debug('I am a bad debug!'); // not good
+        System.debug(LoggingLevel.WARN, 'I am a good warning.') // good
+    }
+}
+		]]></code>
+    </test-code>
+</test-data>
