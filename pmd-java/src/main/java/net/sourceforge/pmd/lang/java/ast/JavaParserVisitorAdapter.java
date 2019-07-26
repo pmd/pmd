@@ -288,10 +288,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTMethodOrConstructorDeclaration) node, data);
     }
 
-    @Override
-    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
-        return visit((ASTMethodOrConstructorDeclaration) node, data);
-    }
 
 
     @Override
@@ -337,4 +333,10 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTMethodDeclarator node, Object data) {
         return null;
     }
+
+    @Deprecated
+    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
+        return null;
+    }
+
 }

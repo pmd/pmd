@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
  *
  * MethodOrConstructorDeclaration ::= {@link ASTMethodDeclaration MethodDeclaration}
  *                                  | {@link ASTConstructorDeclaration ConstructorDeclaration}
- *                                  | {@link ASTAnnotationMethodDeclaration AnnotationMethodDeclaration}
  *
  * </pre>
  *
@@ -53,6 +52,7 @@ public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, Signe
 
     /**
      * Returns the number of formal parameters expected by this declaration.
+     * This excludes any receiver parameter, which is irrelevant to arity.
      */
     default int getArity() {
         return getFormalParameters().getParameterCount();

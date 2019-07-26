@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaProcessingStage;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -129,6 +130,10 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     // REMOVE ME
     // deprecated stuff kept for compatibility with existing visitors, not matched by anything
 
+    @Deprecated
+    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
+        return null;
+    }
 
     @Deprecated
     public Object visit(ASTPrimaryPrefix node, Object data) {

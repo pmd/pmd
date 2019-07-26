@@ -3312,13 +3312,17 @@ void AnnotationTypeMemberDeclaration():
    ";" #EmptyDeclaration
 }
 
-void AnnotationMethodDeclaration(int modifiers):
+void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
 {
   Token t;
   jjtThis.setModifiers(modifiers);
 }
 {
-  Type() t=<IDENTIFIER> "(" ")"  [ DefaultValue() ] ";"
+  Type() #ResultType
+  t=<IDENTIFIER>
+  ("(" ")") #FormalParameters(true)
+  ( "[" "]" )* // TODO use ArrayTypeDims
+  [ DefaultValue() ] ";"
   {
     jjtThis.setImage(t.image);
   }

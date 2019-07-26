@@ -4,22 +4,34 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 
 /**
- * A method declaration, in a class or interface declaration. This cannot
- * be found in {@linkplain ASTAnnotationTypeDeclaration annotation types},
- * which instead have {@linkplain ASTAnnotationMethodDeclaration annotation methods}.
+ * A method declaration, in a class or interface declaration. Since 7.0,
+ * this also represents annotation methods. Annotation methods have a
+ * much more restricted grammar though, in particular:
+ * <ul>
+ * <li>They can't declare a {@linkplain #getThrows() throws clause}
+ * <li>They can't declare {@linkplain #getTypeParameters() type parameters}
+ * <li>Their {@linkplain #getFormalParameters() formal parameters} must be empty
+ * <li>They can't be declared void
+ * <li>They must be abstract
+ * </ul>
+ * They can however declare a {@link #getDefaultClause() default value}.
  *
  * <pre class="grammar">
  *
  * MethodDeclaration ::= MethodModifier*
  *                       {@link ASTTypeParameters TypeParameters}?
  *                       {@link ASTResultType ResultType}
- *                       {@link ASTMethodDeclarator MethodDeclarator}
+ *                       &lt;IDENTIFIER&gt;
+ *                       {@link ASTFormalParameters FormalParameters}
+ *                       ( "[" "]" )*
  *                       ("throws" {@link ASTNameList NameList})?
  *                       ({@link ASTBlock Block} | ";" )
  *
@@ -137,6 +149,15 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getResultType().isVoid();
     }
 
+
+    /**
+     * Returns the default clause, if this is an annotation method declaration
+     * that features one. Otherwise returns null.
+     */
+    @Nullable
+    public ASTDefaultValue getDefaultClause() {
+        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTDefaultValue.class);
+    }
 
     /**
      * Returns the result type node of the method.

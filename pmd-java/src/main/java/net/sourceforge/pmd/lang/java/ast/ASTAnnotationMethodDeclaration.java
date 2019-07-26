@@ -6,7 +6,15 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
+
+/**
+ * @deprecated Represented directly by {@link ASTMethodDeclaration MethodDeclaration}.
+ *     An annotation method is just {@link ASTMethodDeclaration MethodDeclaration} whose
+ *     enclosing type is an annotation.
+ */
+@Deprecated
+public final class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode {
 
     ASTAnnotationMethodDeclaration(int id) {
         super(id);
@@ -16,10 +24,6 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
         super(p, id);
     }
 
-    @Override
-    public String getName() {
-        return getImage();
-    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -40,7 +44,6 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
         return getFirstChildOfType(ASTDefaultValue.class);
     }
 
-    @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.METHOD;
     }

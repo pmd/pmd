@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents the {@code default} value of an {@linkplain ASTAnnotationMethodDeclaration annotation method}.
+ * Represents the {@code default} value of an {@linkplain ASTMethodDeclaration annotation method}.
  *
  * <pre class="grammar">
  *
