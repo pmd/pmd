@@ -31,8 +31,8 @@ Being based on a proper Antlr grammar, CPD can:
 
 #### Modified Rules
 
-*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now ignores by default
-    `java.io.ByteArrayInputStream`. Such streams do not need to be closed.
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) ignores now by default
+    `java.io.ByteArrayInputStream` and `java.io.CharArrayWriter`. Such streams/writers do not need to be closed.
 
 *   The Java rule {% rule "java/errorprone/MissingStaticMethodInNonInstantiatableClass" %} (`java-errorprone`) has now
     the new property `annotations`.
