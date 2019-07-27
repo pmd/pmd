@@ -1213,7 +1213,7 @@ just remove &quot;AutoCloseable&quot; from the types.
 |closeTargets||Methods which may close this resource|yes. Delimiter is ','.|
 |types|java.lang.AutoCloseable , java.sql.Connection , java.sql.Statement , java.sql.ResultSet|Affected types|yes. Delimiter is ','.|
 |closeAsDefaultTarget|true|Consider 'close' as a target by default|no|
-|allowedResourceTypes|java.io.ByteArrayOutputStream \| java.io.ByteArrayInputStream \| java.io.StringWriter|Exact class names that do not need to be closed|yes. Delimiter is '\|'.|
+|allowedResourceTypes|java.io.ByteArrayOutputStream \| java.io.ByteArrayInputStream \| java.io.StringWriter \| java.io.CharArrayWriter|Exact class names that do not need to be closed|yes. Delimiter is '\|'.|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -1227,7 +1227,7 @@ just remove &quot;AutoCloseable&quot; from the types.
         <property name="closeTargets" value="" />
         <property name="types" value="java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet" />
         <property name="closeAsDefaultTarget" value="true" />
-        <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream|java.io.ByteArrayInputStream|java.io.StringWriter" />
+        <property name="allowedResourceTypes" value="java.io.ByteArrayOutputStream|java.io.ByteArrayInputStream|java.io.StringWriter|java.io.CharArrayWriter" />
     </properties>
 </rule>
 ```
