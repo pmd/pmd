@@ -1307,8 +1307,8 @@ PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
 
 <ul>
   <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> (<code class="highlighter-rouge">java-errorprone</code>) now ignores by default
-<code class="highlighter-rouge">java.io.ByteArrayInputStream</code>. Such streams do not need to be closed.</p>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> (<code class="highlighter-rouge">java-errorprone</code>) ignores now by default
+<code class="highlighter-rouge">java.io.ByteArrayInputStream</code> and <code class="highlighter-rouge">java.io.CharArrayWriter</code>. Such streams/writers do not need to be closed.</p>
   </li>
   <li>
     <p>The Java rule <a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass"><code class="highlighter-rouge">MissingStaticMethodInNonInstantiatableClass</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has now
