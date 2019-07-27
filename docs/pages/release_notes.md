@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.17.0).
+It contains a new feature to edit test cases directly within the designer. Any feedback is highly appreciated.
+
 #### Lua support
 
 Thanks to the contribution from [Maikel Steneker](https://github.com/maikelsteneker), and built on top of the ongoing efforts to fully support Antlr-based languages,
@@ -25,7 +31,7 @@ Being based on a proper Antlr grammar, CPD can:
 
 #### Modified Rules
 
-*   The Java rule {% rule "java/errorprone/CloseResource" %} [`java-errorprone`] now ignores by default
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now ignores by default
     `java.io.ByteArrayInputStream`. Such streams do not need to be closed.
 
 *   The Java rule {% rule "java/errorprone/MissingStaticMethodInNonInstantiatableClass" %} (`java-errorprone`) has now
