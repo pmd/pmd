@@ -3414,7 +3414,7 @@ String VoidName() #void:
 // normally by jjtree, but rather by the disambiguation
 // hooks spread across the parser
 //noinspection UnusedProduction
-void VariableReference():
+void VariableAccess():
 {}
 {
    <IDENTIFIER>
