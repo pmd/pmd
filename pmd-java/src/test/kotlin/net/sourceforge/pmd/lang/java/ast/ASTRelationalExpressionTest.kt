@@ -62,8 +62,6 @@ class ASTRelationalExpressionTest : ParserTestSpec({
             }
         }
 
-        "1 < 3 < 4" should notParseIn(ExpressionParsingCtx)
-
     }
 
     parserTest("Relational expressions precedence") {
