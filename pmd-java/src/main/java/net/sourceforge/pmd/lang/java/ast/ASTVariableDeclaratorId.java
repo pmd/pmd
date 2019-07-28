@@ -40,7 +40,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
     private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
-    private boolean explicitReceiverParameter = false;
 
     @InternalApi
     @Deprecated
@@ -197,19 +196,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
         }
 
         throw new IllegalStateException("All cases should be handled");
-    }
-
-
-    /**
-     * Returns true if this node is a receiver parameter for a method or constructor
-     * declaration. The receiver parameter has the name {@code this}, and must be declared
-     * at the beginning of the parameter list. Its only purpose is to annotate
-     * the type of the object on which the method call is issued. It was introduced
-     * in Java 8.
-     */
-    public boolean isExplicitReceiverParameter() {
-        // TODO this could be inferred from the image tbh
-        return explicitReceiverParameter;
     }
 
 
