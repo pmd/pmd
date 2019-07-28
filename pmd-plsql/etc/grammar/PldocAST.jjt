@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Various fixes for expression lists, join clauses, case expression
+ *
+ * Hugo Araya Nash 06/2019
+ *====================================================================
  * Various fixes for INSERT INTO with records, implicit cursor attributes
  * and trim expression.
  *
@@ -1320,9 +1324,7 @@ ASTCondition Condition() :
 {}
 {
  (
-    LOOKAHEAD(4) CompoundCondition()
- |
-    LOOKAHEAD(4) Condition2()
+    CompoundCondition()
  )
     { return jjtThis; }
 }
@@ -1332,9 +1334,6 @@ void Condition2() #void :
 {}
 {
  (
-    // a IS OF Type condition that starts with a function...
-    LOOKAHEAD(FunctionCall() <IS> [<NOT>] <OF>) IsOfTypeCondition()
- |
     LOOKAHEAD(<REGEXP_LIKE>) RegexpLikeCondition()
  |
     LOOKAHEAD(<EXISTS>) ExistsCondition()
@@ -1351,7 +1350,7 @@ void Condition2() #void :
  |
     LOOKAHEAD(BetweenCondition()) BetweenCondition()
  |
-    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>) IsNullCondition()
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>) IsNullCondition()
  |
     LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <OF>) IsOfTypeCondition()
  |
@@ -1445,9 +1444,12 @@ ASTCompoundCondition CompoundCondition() :
 {}
 {
  (
-   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
- |
    LOOKAHEAD(1) <NOT> { jjtThis.setType(token.getImage()); } Condition()
+ |
+   // this might be a expression list
+   LOOKAHEAD("(" SqlExpression() ",") Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
+ |
+   LOOKAHEAD(1) "(" Condition() ")" (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  |
     Condition2() (LOOKAHEAD(2) ( <AND> | <OR> ) { jjtThis.setType(token.getImage()); } Condition() )*
  )
@@ -1558,6 +1560,20 @@ ASTSimpleExpression SimpleExpression() :
     jjtThis.setImage(sb.toString());
     return jjtThis;
  }
+}
+
+ASTOuterJoinExpression OuterJoinExpression() :
+{ StringBuilder sb = new StringBuilder(); }
+{
+    [ LOOKAHEAD(6) SchemaName() { sb.append(token.image); } "." { sb.append(token.image); } ]
+    [ LOOKAHEAD(4) TableName() { sb.append(token.image); } "." { sb.append(token.image); } ]
+    Column() { sb.append(token.image); }
+    "(" "+" ")"
+
+    {
+        jjtThis.setImage(sb.toString());
+        return jjtThis;
+    }
 }
 
 /**
@@ -1809,15 +1825,12 @@ void FromClauseEntry() #void :
 {}
 {
  (
-     LOOKAHEAD(JoinClause()) JoinClause()
- |
-     // using lookahead to avoid misinterpreting the token after the identifier
-     // as a table alias rather than as a keyword
-     LOOKAHEAD(<IDENTIFIER> (<PARTITION>|<NATURAL>|<OUTER>|<JOIN>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
+     LOOKAHEAD([ SchemaName() "." ] TableName() [<IDENTIFIER>]
+               (<PARTITION>|<NATURAL>|<OUTER>|<INNER>|<JOIN>|<LEFT>|<RIGHT>|<CROSS>|<FULL>)) JoinClause()
  |
      LOOKAHEAD(<IDENTIFIER> "(", {isKeyword("XMLTABLE")}) XMLTable() [ LOOKAHEAD(2) TableAlias() ]
  |
-     LOOKAHEAD(3) TableReference()
+     LOOKAHEAD(3) (TableReference() (JoinClausePart())*) #JoinClause(>1)
  |
      "(" JoinClause() ")"
  )
@@ -1954,12 +1967,25 @@ ASTTableReference TableReferenceInJoin() #TableReference :
 {
     QueryTableExpression()
 
-    [ LOOKAHEAD(1, ID(), {getToken(1).kind != NATURAL
-        && getToken(1).kind != CROSS
-        && getToken(1).kind != ON
+    [ LOOKAHEAD(1, ID(), {
+        // ON / USING might follow a table reference inside a inner cross join
+           getToken(1).kind != ON
+        && getToken(1).kind != USING
+
+        // PARTITION might follow a table reference inside a outer join
+        // or it might precede a outer join
         && getToken(1).kind != PARTITION
+
+        // join clauses can be repeated
+        && getToken(1).kind != INNER
+        && getToken(1).kind != JOIN
+        && getToken(1).kind != CROSS
+        && getToken(1).kind != NATURAL
+        && getToken(1).kind != FULL
+        && getToken(1).kind != LEFT
         && getToken(1).kind != RIGHT
-        && getToken(1).kind != FULL})
+        && getToken(1).kind != OUTER
+        })
 
         TableAlias() ]
 
@@ -1988,32 +2014,30 @@ ASTJoinClause JoinClause() :
 {}
 {
     TableReferenceInJoin()
-    (
+    (JoinClausePart())+
+    { return jjtThis; }
+}
+
+void JoinClausePart() #void :
+{}
+{
         LOOKAHEAD(2) InnerCrossJoinClause()
     |
         LOOKAHEAD(2) OuterJoinClause()
     |
         LOOKAHEAD(2) CrossOuterApplyClause()
-    )+
-    { return jjtThis; }
 }
 
 ASTInnerCrossJoinClause InnerCrossJoinClause() :
 {}
 {
   (
-    [ <INNER> ] <JOIN> TableReferenceInJoin()
-    (
-        <ON> ConditionalOrExpression()
-    |
-        <USING> "(" Column() ("," Column() )* ")"
-    )
+    [<INNER>] <JOIN> TableReferenceInJoin()
+    (<ON> ConditionalOrExpression()
+    |<USING> "(" Column() ("," Column() )* ")")
   |
-    (
-        <CROSS> { jjtThis.setCross(true); }
-    |
-        <NATURAL> { jjtThis.setNatural(true); } [ <INNER> ]
-    )
+    (<CROSS> { jjtThis.setCross(true); }
+    |<NATURAL> { jjtThis.setNatural(true); } [<INNER>] )
     <JOIN> TableReferenceInJoin()
   )
   { return jjtThis; }
@@ -2283,7 +2307,14 @@ ASTSingleTableInsert SingleTableInsert() :
 ASTInsertIntoClause InsertIntoClause() :
 {}
 {
-    <INTO> DMLTableExpressionClause() [ LOOKAHEAD(2) TableAlias() ] [ LOOKAHEAD(2) "(" Column() ( "," Column() )* ")" ]
+    <INTO> DMLTableExpressionClause()
+    [ LOOKAHEAD(2) TableAlias() ]
+    [
+        LOOKAHEAD(2) "("
+              [ LOOKAHEAD(2) TableName() "." ] Column()
+        ( "," [ LOOKAHEAD(2) TableName() "." ] Column() )*
+        ")"
+    ]
     { return jjtThis; }
 }
 
@@ -2386,7 +2417,7 @@ ASTUpdateSetClause UpdateSetClause() :
         (
           ( "(" ( [ LOOKAHEAD(2) TableName() "." ] Column() (",")? )+ ")" "=" "(" Subquery() ")" )
           |
-          ( [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )
+          ( [ LOOKAHEAD(2) TableName() "." ] Column() "=" ( LOOKAHEAD(2) "(" Subquery() ")" | Expression() | <_DEFAULT> ) )
         )
         (",")?
       )+
@@ -2809,10 +2840,10 @@ ASTExpression Expression() :
 {
 	// Need syntactic lookahead to discriminate between Assignment and a procedure call
 	(
-  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment()) {sb.append(simpleNode.getImage());  }
-	| (simpleNode = ConditionalOrExpression() )  {sb.append(simpleNode.getImage()); }
-	| (simpleNode = CompilationExpression() )  {sb.append(simpleNode.getImage()); }
-	)
+  	LOOKAHEAD( PrimaryExpression() ":" "=" ) (simpleNode = Assignment())
+	| (simpleNode = ConditionalOrExpression() )
+	| (simpleNode = CompilationExpression() )
+	) {sb.append(simpleNode.getImage()); }
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }
@@ -2864,24 +2895,14 @@ ASTAssignment Assignment() :
 }
 
 ASTCaseExpression CaseExpression() :
-{ Token thisToken;  PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
+{}
 {
-  (
-	thisToken = <CASE> { sb.append(thisToken.image);}
-	( simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }  )?
-          ( thisToken = <WHEN> { sb.append("  "); sb.append(thisToken.image); }
-	        simpleNode = Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	     thisToken = <THEN>  { sb.append(" "); sb.append(thisToken.image); }
-	          Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	   )+
-	  [ thisToken = <ELSE> { sb.append(" "); sb.append(thisToken.image);}
-	        Expression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-	  ]
-	  thisToken = <END> { sb.append(" "); sb.append(thisToken.image);}
-  )
- {
- jjtThis.setImage(sb.toString()); return jjtThis;
- }
+	<CASE>
+	   ( Expression() ( <WHEN> Expression() <THEN> Expression() )+
+	   |              ( <WHEN> Condition()  <THEN> Expression() )+ )
+	   [ <ELSE>  Expression() ]
+	<END>
+    { return jjtThis; }
 }
 
 /*
@@ -2989,14 +3010,13 @@ ASTEqualityExpression EqualityExpression() #EqualityExpression(>1) :
   //RelationalExpression() ( ( "=" | "!=" | "<>" | <IS>) RelationalExpression() )*
   (
 	  (
-	   simpleNode = RelationalExpression()
+	    simpleNode = RelationalExpression()
 	  ) {sb.append(simpleNode.getImage());}
 	  (
 	   ( ("=" ) {sb.append(" = ");}
 	   | ("!" "=" ) {sb.append(" != ");}
 	   // Now unde RelationalExpression | ("<" ">" ) {sb.append(" <> ");}
-	   | (<IS>) {sb.append(" IS ");}
-           )
+	   | (<IS>) {sb.append(" IS ");})
 	   (
 	   simpleNode = RelationalExpression()
 	   ) {sb.append(simpleNode.getImage());}
@@ -3180,22 +3200,22 @@ ASTIsNullCondition IsNullCondition() #IsNullCondition(>1) :  //yanzin
 { PLSQLNode simpleNode = null; PLSQLNode name = null; StringBuilder sb = new StringBuilder(); }
 {
   (
-    LOOKAHEAD(Name() <IS> [<NOT>] <NULL>)
+    LOOKAHEAD(PrimaryExpression() <IS> [<NOT>] <NULL>)
     (
-		(name = Name()) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
-	)
+        (name = PrimaryExpression() #Name) {sb.append(name.getImage());} <IS> {sb.append(" IS");} [<NOT> {sb.append(" NOT");}] <NULL> {sb.append(" NULL");}
+    )
     |
-	(
-		simpleNode = IsOfTypeCondition()
-	)
-	{
-		sb.append(simpleNode.getImage());
-	}
+    (
+        simpleNode = IsOfTypeCondition()
+    )
+    {
+        sb.append(simpleNode.getImage());
+    }
   )
   {
     jjtThis.setImage(sb.toString());
 	return jjtThis;
- }
+  }
 }
 
 ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
@@ -3252,14 +3272,15 @@ ASTPrimaryPrefix PrimaryPrefix() :
 }
 {
 (
+  LOOKAHEAD(OuterJoinExpression()) ( simpleNode = OuterJoinExpression() ) { sb.append(simpleNode.getImage()); }
   // Note: AnalyticClause and WithinClause are only allowed for specific functions, but this grammar allows it for all functions.
-  LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
+| LOOKAHEAD(FunctionName() "(") ( simpleNode = FunctionCall() [ AnalyticClause() ] [ WithinClause() ] ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(MultiSetCondition()) simpleNode = MultiSetCondition()
-| LOOKAHEAD(CaseExpression()) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
+| LOOKAHEAD(<CASE>) ( simpleNode =CaseExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110520
 | LOOKAHEAD(ObjectExpression() ) ( simpleNode = ObjectExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
 //| LOOKAHEAD(LikeExpression()) ( simpleNode = LikeExpression() ) { sb.append(simpleNode.getImage()) ; } //SRT 20110604
-| LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
 | LOOKAHEAD(Literal()) ( simpleNode = Literal() ) { sb.append(simpleNode.getImage()) ; }
+| LOOKAHEAD(SimpleExpression()) ( simpleNode = SimpleExpression() ) { sb.append(simpleNode.getImage()); }
 | ( simpleNode =Name() ) { sb.append(simpleNode.getImage()) ; }
 | SelectStatement()
 | LOOKAHEAD("(" <SELECT>) "(" SelectStatement() ")"
@@ -3656,7 +3677,6 @@ ASTAccessibleByClause AccessibleByClause() :
 
 // SRT *
 ASTTable Table()  :
-
 {
 }
 {
@@ -3682,7 +3702,7 @@ ASTTableColumn TableColumn()  :
 }
 {
   ID() Datatype()
-  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(2) FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
+  [ ( <_DEFAULT> [ <ON> <NULL> ] (LOOKAHEAD(FunctionName() "(") FunctionCall()|LOOKAHEAD(1) UnaryExpression(true))
     | LOOKAHEAD(2) <GENERATED> [ ( <BY> <_DEFAULT> [ <ON> <NULL>] | KEYWORD("ALWAYS")) ]
                                <AS> KEYWORD("IDENTITY") ) ]
   (LOOKAHEAD(1) InlineConstraint())*

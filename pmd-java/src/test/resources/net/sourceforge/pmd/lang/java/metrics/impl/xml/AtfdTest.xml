@@ -188,4 +188,38 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>ATFD without method call chains</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo#bar()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        JFileChooser openDialog = createOpenFileChooser();
+        FileFilter tmp = openDialog.getFileFilter();
+        showStatus("Not a valid file format: " + tmp.getDescription());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ATFD with method call chains</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 2 highest 2.</message>
+            <message>'Foo#bar()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        JFileChooser openDialog = createOpenFileChooser();
+        showStatus("Not a valid file format: " + openDialog.getFileFilter().getDescription());
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
