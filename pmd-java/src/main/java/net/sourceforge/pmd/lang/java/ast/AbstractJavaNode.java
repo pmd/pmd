@@ -16,6 +16,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     protected JavaParser parser;
     private Scope scope;
     private Comment comment;
+    private ASTCompilationUnit root;
 
     AbstractJavaNode(int id) {
         super(id);
@@ -114,6 +115,21 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     @Override
     public Comment comment() {
         return comment;
+    }
+
+    @Override
+    public JavaNode jjtGetParent() {
+        return (JavaNode) super.jjtGetParent();
+    }
+
+    @Override
+    public ASTCompilationUnit getRoot() {
+        // storing a reference on each node ensures that each path is roamed
+        // at most once.
+        if (root == null) {
+            root = jjtGetParent().getRoot();
+        }
+        return root;
     }
 
     /**
