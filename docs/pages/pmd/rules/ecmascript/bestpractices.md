@@ -25,9 +25,9 @@ Avoid using with - it's bad news
 **Example(s):**
 
 ``` javascript
-with (object) {
+{%raw%}with (object) {
     property = 3; // Might be on object, might be on window: who knows.
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -50,7 +50,7 @@ usage is likely a bug, or at best poor style.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 function foo() {
     if (condition1) {
         return true;
@@ -64,7 +64,7 @@ function bar() {
         return;
     }
     return false;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -108,13 +108,13 @@ Global variables can lead to side-effects that are hard to debug.
 **Example(s):**
 
 ``` javascript
-function(arg) {
+{%raw%}function(arg) {
     notDeclaredVariable = 1;    // this will create a global variable and trigger the rule
 
     var someVar = 1;            // this is a local variable, that's ok
 
     window.otherGlobal = 2;     // this will not trigger the rule, although it is a global variable.
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -143,7 +143,7 @@ is better to explicitly scope the variable name to the nearest enclosing scope w
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 function foo() {
     var p = 'clean';
     function() {
@@ -168,7 +168,7 @@ function bar() {
     }();
 
     // 'p' is trashed and has value of 'dirty'!
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -200,9 +200,9 @@ See also: [parseInt()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/R
 **Example(s):**
 
 ``` javascript
-parseInt("010");    // unclear, could be interpreted as 10 or 7 (with a base of 7)
+{%raw%}parseInt("010");    // unclear, could be interpreted as 10 or 7 (with a base of 7)
 
-parseInt("10", 10); // good
+parseInt("10", 10); // good{%endraw%}
 ```
 
 **Use this rule by referencing it:**

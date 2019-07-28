@@ -36,7 +36,7 @@ indicative of the bug where the assignment operator '=' was used instead of the 
 **Example(s):**
 
 ``` javascript
-var x = 2;
+{%raw%}var x = 2;
 // Bad
 if ((x = getX()) == 3) {
     alert('3!');
@@ -44,7 +44,7 @@ if ((x = getX()) == 3) {
 
 function getX() {
     return 3;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -95,14 +95,14 @@ Avoid using 'for' statements without using curly braces.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 for (var i = 0; i < 42; i++) {
     foo();
 }
 
 // Bad
 for (var i = 0; i < 42; i++)
-    foo();
+    foo();{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -128,7 +128,7 @@ Avoid using if..else statements without using curly braces.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 if (foo) {
     x++;
 } else {
@@ -139,7 +139,7 @@ if (foo) {
 if (foo)
     x++;
 else
-    y++;
+    y++;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -163,14 +163,14 @@ Avoid using if statements without using curly braces.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 if (foo) {
     x++;
 }
 
 // Bad
 if (foo)
-    x++;
+    x++;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -197,7 +197,7 @@ See also: <http://eslint.org/docs/rules/no-else-return>
 **Example(s):**
 
 ``` javascript
-// Bad:
+{%raw%}// Bad:
 if (x) {
     return y;
 } else {
@@ -208,7 +208,7 @@ if (x) {
 if (x) {
     return y;
 }
-return z;
+return z;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -238,14 +238,14 @@ be misleading.  Considering removing this unnecessary Block.
 **Example(s):**
 
 ``` javascript
-if (foo) {
+{%raw%}if (foo) {
     // Ok
 }
 if (bar) {
     {
         // Bad
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -269,9 +269,9 @@ Unnecessary parentheses should be removed.
 **Example(s):**
 
 ``` javascript
-var x = 1; // Ok
+{%raw%}var x = 1; // Ok
 var y = (1 + 1); // Ok
-var z = ((1 + 1)); // Bad
+var z = ((1 + 1)); // Bad{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -302,7 +302,7 @@ will never execute.  This is a bug, or extremely poor style.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 function foo() {
    return 1;
 }
@@ -311,7 +311,7 @@ function bar() {
    var x = 1;
    return x;
    x = 2;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -335,14 +335,14 @@ Avoid using 'while' statements without using curly braces.
 **Example(s):**
 
 ``` javascript
-// Ok
+{%raw%}// Ok
 while (true) {
     x++;
 }
 
 // Bad
 while (true)
-    x++;
+    x++;{%endraw%}
 ```
 
 **Use this rule by referencing it:**

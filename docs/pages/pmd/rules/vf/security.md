@@ -22,7 +22,7 @@ Avoid calling VF action upon page load as the action becomes vulnerable to CSRF.
 **Example(s):**
 
 ``` vf
-<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >
+{%raw%}<apex:page controller="AcRestActionsController" action="{!csrfInitMethod}" >{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -43,7 +43,7 @@ Avoid unescaped user controlled content in EL as it results in XSS.
 **Example(s):**
 
 ``` vf
-<apex:outputText value="Potential XSS is {! here }" escape="false" />
+{%raw%}<apex:outputText value="Potential XSS is {! here }" escape="false" />{%endraw%}
 ```
 
 **Use this rule by referencing it:**

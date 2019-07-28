@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.rule.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -38,13 +39,17 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationRule {
 
     private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR = PropertyFactory.regexProperty("regex")
-                                                                                       .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").build();
+            .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").build();
+    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES = PropertyFactory.booleanProperty("checkTopLevelTypes")
+            .desc("Check for default access modifier in top-level classes, annotations, and enums")
+            .defaultValue(false).build();
     private static final String MESSAGE = "To avoid mistakes add a comment "
             + "at the beginning of the %s %s if you want a default access modifier";
     private final Set<Integer> interestingLineNumberComments = new HashSet<>();
 
     public CommentDefaultAccessModifierRule() {
         definePropertyDescriptor(REGEX_DESCRIPTOR);
+        definePropertyDescriptor(TOP_LEVEL_TYPES);
     }
 
     @Override
@@ -120,15 +125,23 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
     }
 
     private boolean shouldReport(final AccessNode decl) {
-        final ASTAnyTypeDeclaration parentClassOrInterface = decl.getFirstParentOfType(ASTAnyTypeDeclaration.class);
+        final ASTAnyTypeDeclaration parentClassOrInterface = decl
+                .getFirstParentOfType(ASTAnyTypeDeclaration.class);
 
         boolean isConcreteClass = parentClassOrInterface.getTypeKind() == ASTAnyTypeDeclaration.TypeKind.CLASS;
 
-        // ignore if it's an Interface / Annotation
-        return isConcreteClass && shouldReportTypeDeclaration(decl);
+        // ignore if it's inside an interface / Annotation
+        return isConcreteClass && isMissingComment(decl);
     }
 
-    private boolean shouldReportTypeDeclaration(final AccessNode decl) {
+    protected boolean hasIgnoredAnnotation(AccessNode node) {
+        if (node instanceof Annotatable) {
+            return hasIgnoredAnnotation((Annotatable) node);
+        }
+        return false;
+    }
+
+    private boolean isMissingComment(AccessNode decl) {
         // check if the class/method/field has a default access
         // modifier
         return decl.isPackagePrivate()
@@ -137,5 +150,13 @@ public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationR
                 && !interestingLineNumberComments.contains(decl.getBeginLine())
                 // that it is not annotated with e.g. @VisibleForTesting
                 && !hasIgnoredAnnotation(decl);
+    }
+
+    private boolean shouldReportTypeDeclaration(ASTAnyTypeDeclaration decl) {
+        // don't report on interfaces
+        return decl.getTypeKind() != ASTAnyTypeDeclaration.TypeKind.INTERFACE
+                && isMissingComment(decl)
+                // either nested or top level and we should check it
+                && (decl.isNested() || getProperty(TOP_LEVEL_TYPES));
     }
 }

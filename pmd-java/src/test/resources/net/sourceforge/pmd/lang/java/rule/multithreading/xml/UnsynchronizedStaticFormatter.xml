@@ -261,4 +261,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#1903 - Block synch is valid even with allowMethodLevelSynchronization</description>
+        <rule-property name="allowMethodLevelSynchronization">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.text.SimpleDateFormat;
+
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    private void bar() {
+        synchronized(sdf) { 
+            sdf.format();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
