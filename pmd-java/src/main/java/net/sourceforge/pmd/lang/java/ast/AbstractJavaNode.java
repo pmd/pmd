@@ -118,11 +118,6 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     @Override
-    public JavaNode jjtGetParent() {
-        return (JavaNode) super.jjtGetParent();
-    }
-
-    @Override
     public ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
         // at most once.
