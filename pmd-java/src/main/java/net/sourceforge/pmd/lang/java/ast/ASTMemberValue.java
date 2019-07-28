@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * MemberValue ::= {@link ASTAnnotation Annotation}
  *               | {@link ASTMemberValueArrayInitializer MemberValueArrayInitializer}
- *               | {@link ASTExpression &lt; any expression, excluding assignment expressions and lambda expressions &gt;}
+ *               | {@link ASTExpression &lt; any constant expression &gt;}
  *
  * </pre>
  */

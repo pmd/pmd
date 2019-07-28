@@ -36,14 +36,6 @@ public final class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode
         visitor.visit(this, data);
     }
 
-    /**
-     * Returns the default clause.
-     */
-    @NonNull
-    public ASTDefaultValue getDefaultClause() {
-        return getFirstChildOfType(ASTDefaultValue.class);
-    }
-
     public MethodLikeKind getKind() {
         return MethodLikeKind.METHOD;
     }

@@ -12,6 +12,14 @@ package net.sourceforge.pmd.lang.java.ast;
  * <p>From 7.0.0 on, this is an interface which all expression nodes
  * implement.
  *
+ * <p>Expressions are required to be constant in some parts of the grammar
+ * (in {@link ASTSwitchLabel SwitchLabel}, {@link ASTAnnotation Annotation},
+ * {@link ASTDefaultValue DefaultValue}). A <i>constant expression</i> is
+ * represented as a normal expression subtree, which does not feature any
+ * {@link ASTMethodReference MethodReference}, {@link ASTLambdaExpression LambdaExpression}
+ * or {@link ASTAssignmentExpression AssignmentExpression}.
+ *
+ *
  * <pre class="grammar">
  *
  * (: In increasing precedence order :)
