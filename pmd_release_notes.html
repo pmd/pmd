@@ -173,7 +173,7 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 6.17.0</li>
+    <li class="sidebarTitle">PMD 6.18.0</li>
     
     
     
@@ -1278,104 +1278,19 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
     
 
-  <h2 id="-july-2019---6170">??-July-2019 - 6.17.0</h2>
+  <h2 id="-august-2019---6180">??-August-2019 - 6.18.0</h2>
 
-<p>The PMD team is pleased to announce PMD 6.17.0.</p>
+<p>The PMD team is pleased to announce PMD 6.18.0.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6.17.0">PMD Designer Changelog</a>.
-It contains a new feature to edit test cases directly within the designer. Any feedback is highly appreciated.</p>
-
-<h4 id="lua-support">Lua support</h4>
-
-<p>Thanks to the contribution from <a href="https://github.com/maikelsteneker">Maikel Steneker</a>, and built on top of the ongoing efforts to fully support Antlr-based languages,
-PMD now has CPD support for <a href="https://www.lua.org/">Lua</a>.</p>
-
-<p>Being based on a proper Antlr grammar, CPD can:</p>
-<ul>
-  <li>ignore comments</li>
-  <li>honor <a href="pmd_userdocs_cpd.html#suppression">comment-based suppressions</a></li>
-</ul>
-
-<h4 id="modified-rules">Modified Rules</h4>
-
-<ul>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> (<code class="highlighter-rouge">java-errorprone</code>) ignores now by default
-<code class="highlighter-rouge">java.io.ByteArrayInputStream</code> and <code class="highlighter-rouge">java.io.CharArrayWriter</code>. Such streams/writers do not need to be closed.</p>
-  </li>
-  <li>
-    <p>The Java rule <a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass"><code class="highlighter-rouge">MissingStaticMethodInNonInstantiatableClass</code></a> (<code class="highlighter-rouge">java-errorprone</code>) has now
-the new property <code class="highlighter-rouge">annotations</code>.
-When one of the private constructors is annotated with one of the annotations, then the class is not considered
-non-instantiatable anymore and no violation will be reported. By default, Spring’s <code class="highlighter-rouge">@Autowired</code> and
-Java EE’s <code class="highlighter-rouge">@Inject</code> annotations are recognized.</p>
-  </li>
-</ul>
-
 <h3 id="fixed-issues">Fixed Issues</h3>
-
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1913">#1913</a>: [core] “-help” CLI option ends with status code != 0</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1896">#1896</a>: [doc] Error in changelog 6.16.0 due to not properly closed rule tag</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1898">#1898</a>: [doc] Incorrect code example for DoubleBraceInitialization in documentation on website</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1906">#1906</a>: [doc] Broken link for adding own CPD languages</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1909">#1909</a>: [doc] Sample usage example refers to deprecated ruleset “basic.xml” instead of “quickstart.xml”</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1910">#1910</a>: [java] ATFD calculation problem</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1749">#1749</a>: [java] DD False Positive in DataflowAnomalyAnalysis</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1832">#1832</a>: [java] False positives for MissingStaticMethodInNonInstantiatableClass when DI is used</li>
-      <li><a href="https://github.com/pmd/pmd/issues/1921">#1921</a>: [java] CloseResource false positive with ByteArrayInputStream</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1903">#1903</a>: [java] UnsynchronizedStaticFormatter doesn’t allow block-level synchronization when using allowMethodLevelSynchronization=true</li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1902">#1902</a>: [pslql] ParseException when parsing (+)</li>
-    </ul>
-  </li>
-  <li>xml
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1666">#1666</a>: [xml] wrong cdata rule description and examples</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="api-changes">API Changes</h3>
 
 <h3 id="external-contributions">External Contributions</h3>
-
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/1869">#1869</a>: [xml] fix #1666 wrong cdata rule description and examples - <a href="https://github.com/KroArtem">Artem</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1892">#1892</a>: [lua] [cpd] Added CPD support for Lua - <a href="https://github.com/maikelsteneker">Maikel Steneker</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1905">#1905</a>: [java] DataflowAnomalyAnalysis Rule in right order - <a href="https://github.com/YoonhoChoi96">YoonhoChoi96</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1908">#1908</a>: [doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - <a href="https://github.com/crunsk">crunsk</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1916">#1916</a>: [java] Exclude Autowired and Inject for MissingStaticMethodInNonInstantiatableClass - <a href="https://github.com/AnthonyKot">AnthonyKot</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/1917">#1917</a>: [core] Add ‘no error’ return option, and assign it to the cli when the help command is invoked - <a href="https://github.com/renatoliveira">Renato Oliveira</a></li>
-</ul>
 
 
 
@@ -1393,7 +1308,7 @@ Java EE’s <code class="highlighter-rouge">@Inject</code> annotations are recog
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Jul 27, 2019 <br />
+ Site last generated: Jul 28, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
