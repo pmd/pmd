@@ -1,9 +1,9 @@
 repository: pmd/pmd
 
 pmd:
-    version: 6.17.0
-    previous_version: 6.16.0
-    date: 28-July-2019
+    version: 6.18.0
+    previous_version: 6.17.0
+    date: ??-August-2019
     release_type: minor
 
 # release types: major, minor, bugfix
