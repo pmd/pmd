@@ -1981,7 +1981,7 @@ void FormalParameter() :
    // TODO there may be annotations before the "..." of the varargs
    //  the ... is treated analogously to a pair of brackets
    //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
-   [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+   [ "..." {checkForBadVariableArgumentsUsage(); jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 
@@ -2761,12 +2761,6 @@ void StringLiteral():
    <STRING_LITERAL> { jjtThis.setImage(getToken(0).getImage()); }
 }
 
-void Arguments() : // TODO remove
-{}
-{
-  ArgumentList()
-}
-
 void ArgumentList() :
 {}
 {
@@ -3001,13 +2995,11 @@ void SwitchLabeledRule() #void :
 void SwitchLabeledRulePart() #void:
 {checkForSwitchRules();}
 {
-    (
-        ( Expression() ";" ) #SwitchLabeledExpression(2)
-      |
-        ( Block() ) #SwitchLabeledBlock(2)
-      |
-        ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
-    )
+    ( Expression() ";" ) #SwitchLabeledExpression(2)
+  |
+    ( Block() ) #SwitchLabeledBlock(2)
+  |
+    ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
 }
 
 // For PMD 7, make this a real node to group the labels + statements
@@ -3025,7 +3017,7 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" (ConditionalExpression()) ({checkForMultipleCaseLabels();} "," (ConditionalExpression()) )*
+  "case" ConditionalExpression() ({checkForMultipleCaseLabels();} "," ConditionalExpression() )*
 |
   "default" {jjtThis.setDefault();}
 )
@@ -3427,7 +3419,7 @@ String VoidName() #void:
 // when they're parsed, so they're not created
 // normally by jjtree, but rather by the disambiguation
 // hooks spread across the parser
-//noinspection JavaCCJccUnusedProduction
+//noinspection UnusedProduction
 void VariableReference():
 {}
 {
