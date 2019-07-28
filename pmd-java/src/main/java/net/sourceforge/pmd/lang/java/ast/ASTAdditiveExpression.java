@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * AdditiveExpression ::= {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
+ * AdditiveExpression ::= {@linkplain ASTAdditiveExpression AdditiveExpression} ( ( "+" | "-" ) {@linkplain ASTMultiplicativeExpression MultiplicativeExpression} )+
  *
  * </pre>
  *

@@ -76,6 +76,7 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
 
 }
 
+// invariants that should be preserved always
 private val javaImplicitAssertions: Assertions<Node> = {
     DefaultMatchingConfig.implicitAssertions(it)
 
@@ -86,6 +87,11 @@ private val javaImplicitAssertions: Assertions<Node> = {
         it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
         it::isNullLiteral shouldBe (it is ASTNullLiteral)
     }
+
+    if (it is ASTExpression) run {
+        it::isParenthesized shouldBe (it.parenthesisDepth > 0)
+    }
+
 }
 
 

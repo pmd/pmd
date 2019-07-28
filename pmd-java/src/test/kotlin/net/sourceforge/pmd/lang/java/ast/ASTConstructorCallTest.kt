@@ -7,6 +7,7 @@ class ASTConstructorCallTest : ParserTestSpec({
     parserTest("Class instance creation") {
 
         "new Foo(a)" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe false
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
@@ -19,6 +20,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         }
 
         "new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe false
 
             it::getExplicitTypeArguments shouldBe child {
                 unspecifiedChild()
@@ -36,6 +38,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         }
 
         "new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe false
 
             it::getExplicitTypeArguments shouldBe null
 
@@ -62,6 +65,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         // hence here it must be a field access
 
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe true
 
             it::getLhsExpression shouldBe child<ASTFieldAccess> {
                 it::getFieldName shouldBe "c"
@@ -83,6 +87,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
         // and here a variable reference
         "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe true
 
             it::getLhsExpression shouldBe child<ASTVariableReference> {
                 it::getVariableName shouldBe "a"
@@ -103,6 +108,7 @@ class ASTConstructorCallTest : ParserTestSpec({
     parserTest("Qualified class instance creation") {
 
         "new O().new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe true
 
             it::getLhsExpression shouldBe child<ASTConstructorCall> {
 
@@ -129,6 +135,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         }
 
         "method().new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
+            it::isQualifiedInstanceCreation shouldBe true
 
             it::getLhsExpression shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "method"

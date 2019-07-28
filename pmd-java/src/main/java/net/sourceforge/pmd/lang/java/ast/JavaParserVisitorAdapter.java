@@ -323,6 +323,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     // deprecated stuff kept for compatibility with existing visitors, not matched by anything
 
     @Deprecated
+    public Object visit(ASTArguments node, Object data) {
+        return null;
+    }
+
+    @Deprecated
     public Object visit(ASTAllocationExpression node, Object data) {
         return null;
     }

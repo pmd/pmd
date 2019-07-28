@@ -6,12 +6,11 @@ package net.sourceforge.pmd.lang.java.ast;
 
 /**
  * Represents a shift expression on a numeric value. This has a precedence greater than {@link
- * ASTRelationalExpression},
- * and lower than {@link ASTAdditiveExpression}.
+ * ASTRelationalExpression}, and lower than {@link ASTAdditiveExpression}.
  *
  * <pre class="grammar">
  *
- * ShiftExpression ::=  {@linkplain ASTShiftExpression AdditiveExpression} ( ( "&lt;&lt;"  | "&gt;&gt;" | "&gt;&gt;&gt;" ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
+ * ShiftExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "&lt;&lt;"  | "&gt;&gt;" | "&gt;&gt;&gt;" ) {@linkplain ASTAdditiveExpression AdditiveExpression} )+
  *
  * </pre>
  *

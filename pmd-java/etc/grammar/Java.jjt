@@ -1985,7 +1985,7 @@ void FormalParameter() :
    // TODO there may be annotations before the "..." of the varargs
    //  the ... is treated analogously to a pair of brackets
    //  the sensible way to parse it would probably be to push an ArrayType with ArrayTypeDim for the "..."
-   [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
+   [ "..." {checkForBadVariableArgumentsUsage(); jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 
@@ -2365,14 +2365,11 @@ void EqualityExpression() #void:
 }
 
 
-void EqualityExprTail() #EqualityExpression:
+void EqualityExprTail() #EqualityExpression(2):
 {}
 {
     ( "==" | "!=" )
-    {
-      jjtThis.setImage(getToken(0).getImage());
-      jjtree.extendLeft();
-    }
+    { setLastTokenImage(jjtThis); }
     InstanceOfExpression()
 }
 
@@ -2382,20 +2379,24 @@ void InstanceOfExpression() #InstanceOfExpression(>1):
   RelationalExpression() [ LOOKAHEAD(2) "instanceof" AnnotatedRefType() ]
 }
 
-void RelationalExpression() #RelationalExpression(>1):
+void RelationalExpression() #void:
 {}
 {
-  ShiftExpression()
-  (
-    ( "<" | ">" | "<=" | ">=" )
-    { jjtThis.setImage(getToken(0).getImage()); }
-    ShiftExpression()
-  )?
-  // There cannot be more than one, because it wouldn't compile
+  // There technically cannot be more than one, because it wouldn't compile
+  // But we give it some leeway to not make the parser too knowledgeable
   // From the JLS:
   // For example, a<b<c parses as (a<b)<c, which is always a compile-time
   // error, because the type of a<b is always boolean and < is not an operator
   // on boolean values.
+  ShiftExpression() (RelationalExprTail())*
+}
+
+void RelationalExprTail() #RelationalExpression(2):
+{}
+{
+    ( "<" | ">" | "<=" | ">=" )
+    { setLastTokenImage(jjtThis); }
+    ShiftExpression()
 }
 
 /**
@@ -2411,16 +2412,13 @@ void ShiftExpression() #void:
 }
 
 
-void ShiftExprTail() #ShiftExpression:
+void ShiftExprTail() #ShiftExpression(2):
 {}
 {
     ( "<<"                     { jjtThis.setImage("<<");}
     | RSIGNEDSHIFT()           { jjtThis.setImage(">>"); }
     | RUNSIGNEDSHIFT()         { jjtThis.setImage(">>>"); }
     )
-    {
-      jjtree.extendLeft();
-    }
     AdditiveExpression()
 }
 
@@ -2431,14 +2429,11 @@ void AdditiveExpression() #void:
   MultiplicativeExpression() (AdditiveExprTail())*
 }
 
-void AdditiveExprTail() #AdditiveExpression:
+void AdditiveExprTail() #AdditiveExpression(2):
 {}
 {
     ( "+" | "-" )
-    {
-      jjtThis.setImage(getToken(0).getImage());
-      jjtree.extendLeft();
-    }
+    { setLastTokenImage(jjtThis); }
     MultiplicativeExpression()
 }
 
@@ -2449,16 +2444,14 @@ void MultiplicativeExpression() #void:
   UnaryExpression() (MultiplicativeExprTail())*
 }
 
-void MultiplicativeExprTail() #MultiplicativeExpression:
+void MultiplicativeExprTail() #MultiplicativeExpression(2):
 {}
 {
   ( "*" | "/" | "%" )
-  {
-    jjtThis.setImage(getToken(0).getImage());
-    jjtree.extendLeft();
-  }
+  { setLastTokenImage(jjtThis); }
   UnaryExpression()
 }
+
 void UnaryExpression() #void:
 {}
 {
@@ -2544,7 +2537,7 @@ void PrimaryExpression() #void :
   Expressions that may be present at the start of a primary expression.
  */
 void PrimaryPrefix() #void :
-{Token t;}
+{Token savedStart;}
 {
   Literal()
 | "this"                                  #ThisExpression
@@ -2564,7 +2557,14 @@ void PrimaryPrefix() #void :
 
 | LOOKAHEAD(LambdaLahead()) LambdaExpression()
 
-| "(" Expression() ")" { AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode()); }
+// Parenthesized expr, we need to adjust start/end tokens
+| "(" {savedStart = getToken(0);} Expression() ")"
+  {
+    AstImplUtil.bumpParenDepth((ASTExpression) jjtree.peekNode());
+    AbstractJavaNode top = (AbstractJavaNode) jjtree.peekNode();
+    top.jjtSetFirstToken(savedStart);
+    top.jjtSetLastToken(getToken(0));
+  }
 // If it is an ambiguous name, then we may go on
 // into the next step, which is less restricted
 // than PrimarySuffix
@@ -2763,12 +2763,6 @@ void StringLiteral():
 {}
 {
    <STRING_LITERAL> { jjtThis.setImage(getToken(0).getImage()); }
-}
-
-void Arguments() : // TODO remove
-{}
-{
-  ArgumentList()
 }
 
 void ArgumentList() :
@@ -3005,13 +2999,11 @@ void SwitchLabeledRule() #void :
 void SwitchLabeledRulePart() #void:
 {checkForSwitchRules();}
 {
-    (
-        ( Expression() ";" ) #SwitchLabeledExpression(2)
-      |
-        ( Block() ) #SwitchLabeledBlock(2)
-      |
-        ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
-    )
+    ( Expression() ";" ) #SwitchLabeledExpression(2)
+  |
+    ( Block() ) #SwitchLabeledBlock(2)
+  |
+    ( ThrowStatement() ) #SwitchLabeledThrowStatement(2)
 }
 
 // For PMD 7, make this a real node to group the labels + statements
@@ -3029,7 +3021,7 @@ void SwitchLabel() :
 {
 { inSwitchLabel = true; }
 (
-  "case" (ConditionalExpression()) ({checkForMultipleCaseLabels();} "," (ConditionalExpression()) )*
+  "case" ConditionalExpression() ({checkForMultipleCaseLabels();} "," ConditionalExpression() )*
 |
   "default" {jjtThis.setDefault();}
 )
@@ -3433,7 +3425,7 @@ String VoidName() #void:
 // when they're parsed, so they're not created
 // normally by jjtree, but rather by the disambiguation
 // hooks spread across the parser
-//noinspection JavaCCJccUnusedProduction
+//noinspection UnusedProduction
 void VariableReference():
 {}
 {

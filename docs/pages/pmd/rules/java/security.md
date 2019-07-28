@@ -22,7 +22,7 @@ Do not use hard coded values for cryptographic operations. Please store keys out
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void good() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");
     }
@@ -30,7 +30,7 @@ public class Foo {
     void bad() {
         SecretKeySpec secretKeySpec = new SecretKeySpec("my secret here".getBytes(), "AES");
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -51,7 +51,7 @@ Do not use hard coded initialization vector in cryptographic operations. Please 
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void good() {
         SecureRandom random = new SecureRandom();
         byte iv[] = new byte[16];
@@ -65,7 +65,7 @@ public class Foo {
     void alsoBad() {
         byte[] iv = "secret iv in here".getBytes();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**

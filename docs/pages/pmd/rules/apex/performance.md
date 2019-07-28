@@ -22,7 +22,7 @@ Avoid DML statements inside loops to avoid hitting the DML governor limit. Inste
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     public void foo() {  
         for (Integer i = 0; i < 151; i++) {
             Account account;
@@ -30,7 +30,7 @@ public class Something {
             insert account;
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -51,13 +51,13 @@ New objects created within loops should be checked to see if they can created ou
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     public static void main( String as[] ) {
         for (Integer i = 0; i < 10; i++) {
             List<Account> accounts = [SELECT Id FROM Account];
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -78,13 +78,13 @@ Sosl calls within loops can cause governor limit exceptions.
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     public static void main( String as[] ) {
         for (Integer i = 0; i < 10; i++) {
             List<List<SObject>> searchList = [FIND 'map*' IN ALL FIELDS RETURNING Account (Id, Name), Contact, Opportunity, Lead];
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
