@@ -62,8 +62,6 @@ Being based on a proper Antlr grammar, CPD can:
 *   xml
     *   [#1666](https://github.com/pmd/pmd/issues/1666): \[xml] wrong cdata rule description and examples
 
-### API Changes
-
 ### External Contributions
 
 *   [#1869](https://github.com/pmd/pmd/pull/1869): \[xml] fix #1666 wrong cdata rule description and examples - [Artem](https://github.com/KroArtem)
