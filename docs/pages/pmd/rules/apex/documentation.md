@@ -32,7 +32,7 @@ Method overrides and tests are both exempted from having ApexDoc.
 **Example(s):**
 
 ``` java
-/**
+{%raw%}/**
  * @description Hello World
  */
 public class HelloWorld {
@@ -41,7 +41,7 @@ public class HelloWorld {
      * @return Bar
      */
     public Object bar() { return null; }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**

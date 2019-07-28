@@ -54,25 +54,58 @@ SELECT department_id "Dept", hire_date "Date", last_name "Name",
   INTO some_record
   FROM employees
   WHERE hire_date < '01-SEP-2003'
+  AND   hire_date > timestamp '2001-01-01 00:00:00'
+  AND   hire_date < sysdate - interval '50' minute
+  AND   hire_date < sysdate - interval '5' year
+  AND   hire_date < sysdate - interval '3' month
   ORDER BY "Dept", "Date", "Name";
 
 SELECT listagg(e.email,',') within group (order by e.email )INTO
                 v_task_resp
             FROM sso_auth_employees e;
 
-select listagg(asap_func_loc_number,'; ') within group (order by 1)
+SELECT listagg(asap_func_loc_number,'; ') within group (order by 1)
     INTO my_record
     FROM company_asap_func_locs
     WHERE cmp_id = cmp_id_in;
+
+SELECT listagg(asap_func_loc_number,'; ') within group (order by 1)
+    INTO my_record
+    FROM company_asap_func_locs
+    WHERE cmp_id = cmp_id_in
+    AND   function_call() is null;
 
 SELECT CASE
             WHEN priv != 'Y' AND my_package.my_function(param1, TO_NUMBER(TO_CHAR(SYSDATE, 'yyyy'))) >= 100 THEN
                  'Y'
                ELSE
                  'N'
-             END
+            END
         INTO my_result
         FROM DUAL;
 
+SELECT CASE WHEN EXISTS(SELECT *
+                        FROM DUAL
+                        WHERE 1 = 1)
+            THEN 1
+            ELSE 0
+       END isExists
+       INTO VAL
+       FROM dual;
+
+SELECT CASE WHEN EXISTS(SELECT *
+                        FROM DUAL)
+            THEN 1
+            ELSE 0
+       END isExists
+       INTO VAL
+       FROM dual;
+
+SELECT CASE
+          WHEN f1(x) IS NULL THEN 1
+          ELSE 0
+       END isExists
+       INTO VAL
+       FROM dual;
 END;
 /

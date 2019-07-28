@@ -1,11 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
+import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatch
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
@@ -26,6 +24,17 @@ fun KCallable<Optional<*>>.shouldBeEmpty() = this shouldMatch {
 infix fun <T, U : T> KCallable<Optional<T>>.shouldBePresent(any: U) = this shouldMatch {
     ::isPresent shouldBe true
     ::get shouldBe any
+}
+
+fun JavaNode.tokenList(): List<GenericToken> {
+    val lst = mutableListOf<GenericToken>()
+    var t = firstToken
+    lst += t
+    while (t != lastToken) {
+        t = t.next
+        lst += t
+    }
+    return lst
 }
 
 fun String.addArticle() = when (this[0].toLowerCase()) {

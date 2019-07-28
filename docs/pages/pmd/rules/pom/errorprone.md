@@ -28,7 +28,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
 **Example(s):**
 
 ``` xml
-<project...>
+{%raw%}<project...>
   ...
   <dependencyManagement>
       ...
@@ -41,7 +41,7 @@ The following types are considered valid: pom, jar, maven-plugin, ejb, war, ear,
     </dependency>
     ...
   </dependencyManagement>
-</project>
+</project>{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -87,13 +87,13 @@ By far the most common problem is the use of ${project.version} in a BOM or pare
 **Example(s):**
 
 ``` xml
-<project...>
+{%raw%}<project...>
   ...
   <dependency>
     ...
     <version>${project.dependency}</version>
   </dependency>
-</project>
+</project>{%endraw%}
 ```
 
 **Use this rule by referencing it:**

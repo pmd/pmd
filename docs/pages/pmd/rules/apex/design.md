@@ -22,7 +22,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar(Integer x, Integer y, Integer z) {
         if (x>y) {
             if (y>z) {
@@ -32,7 +32,7 @@ public class Foo {
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -81,7 +81,7 @@ into subcomponents.
 **Example(s):**
 
 ``` java
-public class Complicated {
+{%raw%}public class Complicated {
   public void example() { // This method has a cyclomatic complexity of 12
     int x = 0, y = 1, z = 2, t = 2;
     boolean a = false, b = true, c = false, d = true;
@@ -103,7 +103,7 @@ public class Complicated {
       }
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -143,7 +143,7 @@ apart the code becomes more managable and ripe for reuse.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar1() {
         // 1000 lines of code
     }
@@ -156,7 +156,7 @@ public class Foo {
     public void barN() {
         // 1000 lines of code
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -193,14 +193,14 @@ same datatype. These situations usually denote the need for new objects to wrap 
 **Example(s):**
 
 ``` java
-// too many arguments liable to be mixed up
+{%raw%}// too many arguments liable to be mixed up
 public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
     // ...
 }
 // preferred approach 
 public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     // ...
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -239,7 +239,7 @@ developed easily.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public String value;
     public Bar something;
     public Variable var;
@@ -249,7 +249,7 @@ public class Foo {
     public void doMoreWork() {}
     public void doWorkAgain() {}
     // [... more more public methods ...]
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -287,7 +287,7 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     //this constructor only has 1 NCSS lines
     public Foo() {
         super();
@@ -297,7 +297,7 @@ public class Foo extends Bar {
 
         super.foo();
 }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -335,7 +335,7 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     //this method only has 1 NCSS lines
     public Integer methd() {
         super.methd();
@@ -344,7 +344,7 @@ public class Foo extends Bar {
 
         return 1;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -382,7 +382,7 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` java
-//this class only has 6 NCSS lines
+{%raw%}//this class only has 6 NCSS lines
 public class Foo extends Bar {
     public Foo() {
         super();
@@ -393,7 +393,7 @@ public class Foo extends Bar {
 
         super.foo();
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -432,7 +432,7 @@ high complexity, and 11+ is very high complexity.
 **Example(s):**
 
 ``` java
-// This has a Cyclomatic Complexity = 12
+{%raw%}// This has a Cyclomatic Complexity = 12
 public class Foo {
 1   public void example() {
 2   if (a == b || (c == d && e == f)) {
@@ -467,7 +467,7 @@ public class Foo {
                 break;
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -509,7 +509,7 @@ city/state/zip fields could park them within a single Address field.
 **Example(s):**
 
 ``` java
-public class Person {
+{%raw%}public class Person {
     // too many separate fields
     int birthYear;
     int birthMonth;
@@ -522,7 +522,7 @@ public class Person {
     // this is more manageable
     Date birthDate;
     BodyMeasurements measurements;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**

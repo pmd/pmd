@@ -26,8 +26,8 @@ The XPath concat() functions accepts as many arguments as required so you can ha
 **Example(s):**
 
 ``` xsl
-<xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
-<xsl:variable name="var" select="concat("Welcome","to you ",$name))">
+{%raw%}<xsl:variable name="var" select="concat("Welcome",concat("to you ",$name))"/>
+<xsl:variable name="var" select="concat("Welcome","to you ",$name))">{%endraw%}
 ```
 
 **Use this rule by referencing it:**

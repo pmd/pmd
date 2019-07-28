@@ -22,7 +22,7 @@ Avoid duplicate import statements inside JSP's.
 **Example(s):**
 
 ``` jsp
-<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
+{%raw%}<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>{%endraw%}
 ```
 
 **Use this rule by referencing it:**

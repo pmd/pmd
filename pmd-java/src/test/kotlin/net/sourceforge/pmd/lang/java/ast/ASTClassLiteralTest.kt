@@ -1,14 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_6
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_7
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**

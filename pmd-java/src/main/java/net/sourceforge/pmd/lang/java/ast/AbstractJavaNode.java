@@ -53,6 +53,15 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         }
     }
 
+    @Override
+    public JavaNode jjtGetParent() {
+        return (JavaNode) super.jjtGetParent();
+    }
+
+    @Override
+    public JavaNode jjtGetChild(int index) {
+        return (JavaNode) super.jjtGetChild(index);
+    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {

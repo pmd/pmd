@@ -27,9 +27,9 @@ By default this rule uses the standard Apex naming convention (Pascal case).
 **Example(s):**
 
 ``` java
-public class FooClass { } // This is in pascal case, so it's ok
+{%raw%}public class FooClass { } // This is in pascal case, so it's ok
 
-public class fooClass { } // This will be reported unless you change the regex
+public class fooClass { } // This will be reported unless you change the regex{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -77,11 +77,11 @@ By default this rule uses the standard Apex naming convention (Camel case).
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     Integer instanceField; // This is in camel case, so it's ok
 
     Integer INSTANCE_FIELD; // This will be reported unless you change the regex
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -132,12 +132,12 @@ from the rest.
 **Example(s):**
 
 ``` java
-for (int i = 0; i < 42; i++) // not recommended
+{%raw%}for (int i = 0; i < 42; i++) // not recommended
     foo();
 
 for (int i = 0; i < 42; i++) { // preferred approach
     foo();
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -163,11 +163,11 @@ By default this rule uses the standard Apex naming convention (Camel case).
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public bar(Integer methodParameter) { } // This is in camel case, so it's ok
 
     public baz(Integer METHOD_PARAMETER) { } // This will be reported unless you change the regex
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -212,14 +212,14 @@ from the rest.
 **Example(s):**
 
 ``` java
-// this is OK
+{%raw%}// this is OK
 if (foo) x++;
 
 // but this is not
 if (foo)
     x = x+1;
 else
-    x = x-1;
+    x = x-1;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -245,12 +245,12 @@ controlled from the rest.
 **Example(s):**
 
 ``` java
-if (foo)    // not recommended
+{%raw%}if (foo)    // not recommended
     x++;
 
 if (foo) {  // preferred approach
     x++;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -276,13 +276,13 @@ By default this rule uses the standard Apex naming convention (Camel case).
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public Foo() {
         Integer localVariable; // This is in camel case, so it's ok
 
         Integer LOCAL_VARIABLE; // This will be reported unless you change the regex
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -325,10 +325,10 @@ By default this rule uses the standard Apex naming convention (Camel case).
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void instanceMethod() { } // This is in camel case, so it's ok
 
-    public void INSTANCE_METHOD() { } // This will be reported unless you change the regex
+    public void INSTANCE_METHOD() { } // This will be reported unless you change the regex{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -379,13 +379,13 @@ can lead to quite messy code. This rule looks for several declarations on the sa
 **Example(s):**
 
 ``` java
-Integer a, b;   // not recommended
+{%raw%}Integer a, b;   // not recommended
 
 Integer a,
         b;      // ok by default, can be flagged setting the strictMode property
 
 Integer a;      // preferred approach
-Integer b;
+Integer b;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -426,11 +426,11 @@ By default this rule uses the standard Apex naming convention (Camel case).
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public Integer instanceProperty { get; set; } // This is in camel case, so it's ok
 
     public Integer INSTANCE_PROPERTY { get; set; } // This will be reported unless you change the regex
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -478,11 +478,11 @@ by the more general rules {% rule &quot;apex/codestyle/FieldNamingConventions&qu
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public static final Integer MY_NUM = 0;
     public String myTest = '';
     DataModule dmTest = new DataModule();
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -543,12 +543,12 @@ controlled from the rest.
 **Example(s):**
 
 ``` java
-while (true)    // not recommended
+{%raw%}while (true)    // not recommended
     x++;
 
 while (true) {  // preferred approach
     x++;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
