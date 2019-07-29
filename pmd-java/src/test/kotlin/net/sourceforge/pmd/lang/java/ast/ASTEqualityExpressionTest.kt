@@ -4,52 +4,33 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.java.ast.BinaryOp.EQ
-import net.sourceforge.pmd.lang.java.ast.BinaryOp.NE
+import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 
 class ASTEqualityExpressionTest : ParserTestSpec({
 
     parserTest("Simple equality expression should be flat") {
 
-        "1 == 2 == 3" should matchExpr<ASTEqualityExpression> {
-            it::getOp shouldBe EQ
-            it::getOperator shouldBe "=="
+        inContext(ExpressionParsingCtx) {
 
-
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 1
-            }
-
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 2
-            }
-
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 3
-            }
-        }
-
-
-        "1 != 2 != 3 * 5" should matchExpr<ASTEqualityExpression> {
-            it::getOp shouldBe NE
-            it::getOperator shouldBe "!="
-
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 1
-            }
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 2
-            }
-            child<ASTMultiplicativeExpression> {
-                it::getOperator shouldBe "*"
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 3
+            "1 == 2 == 3" should parseAs {
+                equalityExpr(EQ) {
+                    int(1)
+                    int(2)
+                    int(3)
                 }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 5
+            }
+
+            "1 != 2 != 3 * 5" should parseAs {
+                equalityExpr(NE) {
+                    int(1)
+                    int(2)
+
+                    multiplicativeExpr(MUL) {
+                        int(3)
+                        int(5)
+                    }
                 }
             }
         }
@@ -57,81 +38,44 @@ class ASTEqualityExpressionTest : ParserTestSpec({
 
     parserTest("Changing operators should push a new node") {
 
-        "1 == 2 != 3" should matchExpr<ASTEqualityExpression> {
-            it::getOp shouldBe NE
-
-            child<ASTEqualityExpression> {
-                it::getOp shouldBe EQ
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 1
-                }
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 2
-                }
-            }
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 3
-            }
-        }
-
-        "1 == 4 == 2 != 3" should matchExpr<ASTEqualityExpression> {
-            it::getOp shouldBe NE
-
-            child<ASTEqualityExpression> {
-                it::getOp shouldBe EQ
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 1
-                }
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 4
-                }
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 2
-                }
-            }
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 3
-            }
-        }
-
-        // ((((1 + 4 + 2) - 3) + 4) - 1)
-        "1 == 4 == 2 != 3 == 4 != 1" should matchExpr<ASTEqualityExpression> {
-            it::getOp shouldBe NE
-
-            child<ASTEqualityExpression> {
-                it::getOp shouldBe EQ
-
-                child<ASTEqualityExpression> {
-                    it::getOp shouldBe NE
-
-                    child<ASTEqualityExpression> {
-                        it::getOp shouldBe EQ
-
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 1
-                        }
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 4
-                        }
-                        child<ASTNumericLiteral> {
-                            it::getValueAsInt shouldBe 2
-                        }
+        inContext(ExpressionParsingCtx) {
+            "1 == 2 != 3" should parseAs {
+                equalityExpr(NE) {
+                    equalityExpr(EQ) {
+                        int(1)
+                        int(2)
                     }
-                    child<ASTNumericLiteral> {
-                        it::getValueAsInt shouldBe 3
-                    }
-                }
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 4
+                    int(3)
                 }
             }
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 1
+
+            "1 == 4 == 2 != 3" should parseAs {
+                equalityExpr(NE) {
+                    equalityExpr(EQ) {
+                        int(1)
+                        int(4)
+                        int(2)
+                    }
+                    int(3)
+                }
+            }
+
+            // ((((1 + 4 + 2) - 3) + 4) - 1)
+            "1 == 4 == 2 != 3 == 4 != 1" should parseAs {
+                equalityExpr(NE) {
+                    equalityExpr(EQ) {
+                        equalityExpr(NE) {
+                            equalityExpr(EQ) {
+                                int(1)
+                                int(4)
+                                int(2)
+                            }
+                            int(3)
+                        }
+                        int(4)
+                    }
+                    int(1)
+                }
             }
         }
     }
