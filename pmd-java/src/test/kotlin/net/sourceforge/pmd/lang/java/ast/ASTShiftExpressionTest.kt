@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -16,90 +16,97 @@ class ASTShiftExpressionTest : ParserTestSpec({
 
     parserTest("Simple shift expressions") {
 
-        "1 >> 2" should matchExpr<ASTShiftExpression> {
-            it::getOp shouldBe BinaryOp.RIGHT_SHIFT
-            child<ASTNumericLiteral> {}
-            child<ASTNumericLiteral> {}
-        }
+        inContext(ExpressionParsingCtx) {
 
-        "1 << 2 << 2" should matchExpr<ASTShiftExpression> {
-            it::getOp shouldBe BinaryOp.LEFT_SHIFT
-            child<ASTNumericLiteral> {}
-            child<ASTNumericLiteral> {}
-            child<ASTNumericLiteral> {}
-        }
+            "1 >> 2" should parseAs {
+                shiftExpr(BinaryOp.RIGHT_SHIFT) {
+                    int(1)
+                    int(2)
+                }
+            }
 
-        "1 >>> 2 >>> 3" should matchExpr<ASTShiftExpression> {
-            it::getOp shouldBe BinaryOp.UNSIGNED_RIGHT_SHIFT
-            child<ASTNumericLiteral> {}
-            child<ASTNumericLiteral> {}
-            child<ASTNumericLiteral> {}
-        }
+            "1 << 2 << 2" should parseAs {
+                shiftExpr(BinaryOp.LEFT_SHIFT) {
+                    int(1)
+                    int(2)
+                    int(2)
+                }
+            }
 
-        // this is a corner case whereby < width > matches type arguments
-        "i < width >> 1" should matchExpr<ASTRelationalExpression> {
-            it::getOp shouldBe BinaryOp.LT
+            "1 >>> 2 >>> 3" should parseAs {
+                shiftExpr(BinaryOp.UNSIGNED_RIGHT_SHIFT) {
+                    int(1)
+                    int(2)
+                    int(3)
+                }
+            }
 
-            variableAccess("i")
-
-            child<ASTShiftExpression> {
-                it::getOp shouldBe BinaryOp.RIGHT_SHIFT
-
-                variableAccess("width")
-                int(1)
+            // this is a corner case whereby < width > matches type arguments
+            "i < width >> 1" should parseAs {
+                compExpr(BinaryOp.LT) {
+                    variableAccess("i")
+                    shiftExpr(BinaryOp.RIGHT_SHIFT) {
+                        variableAccess("width")
+                        int(1)
+                    }
+                }
             }
         }
-
     }
 
     parserTest("Changing operators should push a new node") {
+        inContext(ExpressionParsingCtx) {
 
-        "1 >> 2 << 3" should matchExpr<ASTShiftExpression> {
-            it::getOp shouldBe BinaryOp.LEFT_SHIFT
+            "1 >> 2 << 3" should parseAs {
+                shiftExpr(BinaryOp.LEFT_SHIFT) {
 
-            child<ASTShiftExpression> {
-                it::getOp shouldBe BinaryOp.RIGHT_SHIFT
-                child<ASTNumericLiteral> {}
-                child<ASTNumericLiteral> {}
+                    shiftExpr(BinaryOp.RIGHT_SHIFT) {
+                        int(1)
+                        int(2)
+                    }
+
+                    int(3)
+                }
             }
 
-            child<ASTNumericLiteral> {}
-        }
+            "1 << 2 << 3 >> 4 >> 5" should parseAs {
+                shiftExpr(BinaryOp.RIGHT_SHIFT) {
 
-        "1 << 2 << 3 >> 4 >> 5" should matchExpr<ASTShiftExpression> {
-            it::getOp shouldBe BinaryOp.RIGHT_SHIFT
+                    shiftExpr(BinaryOp.LEFT_SHIFT) {
+                        int(1)
+                        int(2)
+                        int(3)
+                    }
 
-            child<ASTShiftExpression> {
-                it::getOp shouldBe BinaryOp.LEFT_SHIFT
-                child<ASTNumericLiteral> {}
-                child<ASTNumericLiteral> {}
-                child<ASTNumericLiteral> {}
+                    int(4)
+                    int(5)
+                }
             }
-
-            child<ASTNumericLiteral> {}
-            child<ASTNumericLiteral> {}
         }
     }
 
     parserTest("Unary expression precedence") {
+        inContext(ExpressionParsingCtx) {
 
-        "2 >> 2 < 3" should matchExpr<ASTRelationalExpression> {
-
-            child<ASTShiftExpression> {
-                it::getOp shouldBe BinaryOp.RIGHT_SHIFT
-                child<ASTNumericLiteral> {}
-                child<ASTNumericLiteral> {}
+            "2 >> 2 < 3" should parseAs {
+                compExpr(BinaryOp.LT) {
+                    shiftExpr(BinaryOp.RIGHT_SHIFT) {
+                        int(2)
+                        int(2)
+                    }
+                    int(3)
+                }
             }
-            child<ASTNumericLiteral> {}
-        }
 
-        "2 >> 2 + 3" should matchExpr<ASTShiftExpression> {
-            child<ASTNumericLiteral> {}
+            "2 >> 2 + 3" should parseAs {
+                shiftExpr(BinaryOp.RIGHT_SHIFT) {
+                    int(2)
 
-            child<ASTAdditiveExpression> {
-                it::getOp shouldBe BinaryOp.ADD
-                child<ASTNumericLiteral> {}
-                child<ASTNumericLiteral> {}
+                    additiveExpr(BinaryOp.ADD) {
+                        int(2)
+                        int(3)
+                    }
+                }
             }
         }
     }

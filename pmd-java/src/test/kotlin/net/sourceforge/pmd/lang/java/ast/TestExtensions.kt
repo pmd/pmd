@@ -220,6 +220,17 @@ fun TreeNodeWrapper<Node, *>.equalityExpr(op: BinaryOp, assertions: NodeSpec<AST
             assertions()
         }
 
+fun TreeNodeWrapper<Node, *>.shiftExpr(op: BinaryOp, assertions: NodeSpec<ASTShiftExpression>) =
+        child<ASTShiftExpression> {
+            it::getOp shouldBe op
+            assertions()
+        }
+fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTRelationalExpression>) =
+        child<ASTRelationalExpression> {
+            it::getOp shouldBe op
+            assertions()
+        }
+
 fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTAndExpression>) =
         child<ASTAndExpression> {
             assertions()
