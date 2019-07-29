@@ -204,7 +204,7 @@ fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: ValuedNodeS
 
 fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<ASTAdditiveExpression>) =
         child<ASTAdditiveExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 
@@ -216,18 +216,18 @@ fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSp
 
 fun TreeNodeWrapper<Node, *>.equalityExpr(op: BinaryOp, assertions: NodeSpec<ASTEqualityExpression>) =
         child<ASTEqualityExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 
 fun TreeNodeWrapper<Node, *>.shiftExpr(op: BinaryOp, assertions: NodeSpec<ASTShiftExpression>) =
         child<ASTShiftExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTRelationalExpression>) =
         child<ASTRelationalExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 
@@ -244,7 +244,7 @@ fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTAndExpression>) =
 
 fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSpec<ASTMultiplicativeExpression>) =
         child<ASTMultiplicativeExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 
