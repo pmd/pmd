@@ -13,98 +13,81 @@ class ASTRelationalExpressionTest : ParserTestSpec({
 
     parserTest("Relational expressions operator") {
 
-        "b < 3" should matchExpr<ASTRelationalExpression> {
-            it::getOp shouldBe BinaryOp.LT
-
-            variableAccess("b")
-            number()
-        }
-
-
-        "a <= 3" should matchExpr<ASTRelationalExpression> {
-            it::getOp shouldBe BinaryOp.LE
-
-            variableAccess("a")
-            number()
-        }
-
-        "1 > b" should matchExpr<ASTRelationalExpression> {
-            it::getOp shouldBe BinaryOp.GT
-
-            number()
-            variableAccess("b")
-        }
-
-        "1 >= 3" should matchExpr<ASTRelationalExpression> {
-            it::getOp shouldBe BinaryOp.GE
-
-            number()
-            number()
-        }
-    }
-
-
-    parserTest("Relational expressions cannot be nested") {
-
-        "1 < 3" should matchExpr<ASTRelationalExpression> {
-            it::getOp shouldBe BinaryOp.LT
-
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 1
+        inContext(ExpressionParsingCtx) {
+            "b < 3" should parseAs {
+                compExpr(BinaryOp.LT) {
+                    variableAccess("b")
+                    number()
+                }
             }
 
-            child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 3
+
+            "a <= 3" should parseAs {
+                compExpr(BinaryOp.LE) {
+                    variableAccess("a")
+                    number()
+                }
+            }
+
+            "1 > b" should parseAs {
+                compExpr(BinaryOp.GT) {
+                    number()
+                    variableAccess("b")
+                }
+            }
+
+            "1 >= 3" should parseAs {
+                compExpr(BinaryOp.GE) {
+                    int(1)
+                    int(3)
+                }
             }
         }
-
     }
 
     parserTest("Relational expressions precedence") {
+        inContext(ExpressionParsingCtx) {
 
-        "1 < 3 instanceof Boolean" should matchExpr<ASTInstanceOfExpression> {
+            "1 < 3 instanceof Boolean" should parseAs {
 
-            child<ASTRelationalExpression> {
+                instanceOfExpr {
+                    compExpr(BinaryOp.LT) {
+                        int(1)
+                        int(3)
+                    }
 
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 1
-                }
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 3
-                }
-            }
-
-            it::getTypeNode shouldBe child<ASTClassOrInterfaceType>(ignoreChildren = true) {}
-        }
-
-        "1 == 3 < 4" should matchExpr<ASTEqualityExpression> {
-            child<ASTNumericLiteral> {}
-
-            child<ASTRelationalExpression> {
-
-                child<ASTNumericLiteral> {}
-                child<ASTNumericLiteral> {}
-            }
-        }
-
-        "1 < 3 + 4 instanceof Boolean" should matchExpr<ASTInstanceOfExpression> {
-
-            child<ASTRelationalExpression> {
-
-                child<ASTNumericLiteral> {
-                    it::getValueAsInt shouldBe 1
-                }
-
-                child<ASTAdditiveExpression> {
-                    child<ASTNumericLiteral> {}
-                    child<ASTNumericLiteral> {}
+                    it::getTypeNode shouldBe classType("Boolean")
                 }
             }
 
-            it::getTypeNode shouldBe child<ASTClassOrInterfaceType>(ignoreChildren = true) {}
-        }
+            "1 == 3 < 4" should parseAs {
+                equalityExpr(BinaryOp.EQ) {
+                    int(1)
 
+                    compExpr(BinaryOp.LT) {
+                        int(3)
+                        int(4)
+                    }
+                }
+            }
+
+            "1 < 3 + 4 instanceof Boolean" should parseAs {
+
+                instanceOfExpr {
+                    compExpr(BinaryOp.LT) {
+
+                        int(1)
+
+                        additiveExpr(BinaryOp.ADD) {
+                            int(3)
+                            int(4)
+                        }
+                    }
+
+                    it::getTypeNode shouldBe classType("Boolean")
+                }
+            }
+        }
     }
 
 })

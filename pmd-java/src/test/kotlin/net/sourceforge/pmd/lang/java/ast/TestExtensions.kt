@@ -231,6 +231,11 @@ fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTRela
             assertions()
         }
 
+fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInstanceOfExpression>) =
+        child<ASTInstanceOfExpression> {
+            assertions()
+        }
+
 fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTAndExpression>) =
         child<ASTAndExpression> {
             assertions()
