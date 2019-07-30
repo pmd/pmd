@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
