@@ -22,7 +22,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ##### For removal
 
-*   The method {% jdoc java::ast.ASTImportDeclaration#getPackage() %} has been deprecated and
+*   The methods {% jdoc java::ast.ASTImportDeclaration#getImportedNameNode() %} and
+    {% jdoc java::ast.ASTImportDeclaration#getPackage() %} have been deprecated and
     will be removed with PMD 7.0.0.
 
 ### External Contributions
