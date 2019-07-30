@@ -502,4 +502,79 @@ public class SamePackage {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1951 false positive when package name is shadowed by variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package threads;
+
+public class FQNTest {
+  public static void main(String[] args) {
+    Thread[] threads = new Thread[5];
+    int i = threads.length;
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when package name is shadowed by variable (2)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package threads;
+
+public class FQNTest {
+  public static void main(String[] args) {
+    Thread[] threads = new Thread[5];
+    // threads is obscured
+    int i = threads.length.foo;
+  }
+}
+
+class length {
+    static int foo;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False negative when name refers to static field</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+package threads;
+
+public class FQNTest {
+  public static void main(String[] args) {
+    // threads.length is the class
+    int i = threads.length.foo;
+  }
+}
+
+class length {
+    static int foo;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False positive when type name is shadowed by variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+public class FQNTest {
+  public static void main(String[] args) {
+    length length = new length();
+    // the type name 'length' is obscured.
+    // 'length' here may only mean the variable
+    int i = length.foo;
+  }
+}
+
+class length {
+    static int foo;
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
