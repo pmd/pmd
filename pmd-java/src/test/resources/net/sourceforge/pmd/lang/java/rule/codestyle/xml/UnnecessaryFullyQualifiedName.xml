@@ -488,7 +488,7 @@ public class TestArrayType {
 }
         ]]></code>
     </test-code>
-    
+
     <test-code>
         <description>#1199 false negative for same package FQCN</description>
         <expected-problems>1</expected-problems>
@@ -504,7 +504,7 @@ public class SamePackage {
     </test-code>
 
     <test-code>
-        <description>#1951 false positive when package name is shadowed by variable</description>
+        <description>#1951 false positive when package name is obscured by variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package threads;
@@ -519,7 +519,7 @@ public class FQNTest {
     </test-code>
 
     <test-code>
-        <description>False positive when package name is shadowed by variable (2)</description>
+        <description>False positive when package name is obscured by variable (2)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package threads;
@@ -527,7 +527,6 @@ package threads;
 public class FQNTest {
   public static void main(String[] args) {
     Thread[] threads = new Thread[5];
-    // threads is obscured
     int i = threads.length.foo;
   }
 }
@@ -558,7 +557,7 @@ class length {
     </test-code>
 
     <test-code>
-        <description>False positive when type name is shadowed by variable</description>
+        <description>False positive when type name is obscured by variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 
@@ -566,7 +565,6 @@ public class FQNTest {
   public static void main(String[] args) {
     length length = new length();
     // the type name 'length' is obscured.
-    // 'length' here may only mean the variable
     int i = length.foo;
   }
 }

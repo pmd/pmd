@@ -107,12 +107,12 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     }
 
     private void checkImports(TypeNode node, Object data) {
-        String name = node.getImage();
+        final String name = node.getImage();
 
         // variable names shadow everything else
         // If the first segment is a variable, then all
         // the following are field accesses and it's not an FQCN
-        if (isVariable(node)) {
+        if (isVariable(node.getScope(), name)) {
             return;
         }
 
@@ -184,7 +184,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         if (matches.isEmpty()) {
             if (isJavaLangImplicit(node)) {
                 addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
-            } else if (isSamePackage(node)) {
+            } else if (isSamePackage(name)) {
                 addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
             }
         } else {
@@ -223,19 +223,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return result;
     }
 
-    private boolean isVariable(TypeNode node) {
-        String name = node.getImage();
+    private boolean isVariable(Scope scope, String name) {
         String firstSegment = name.substring(0, name.indexOf('.'));
-
-        return isVariableInScope(node.getScope(), firstSegment);
-    }
-
-    private boolean isVariableInScope(Scope scope, String name) {
 
         while (scope != null) {
 
             for (Entry<VariableNameDeclaration, List<NameOccurrence>> entry : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
-                if (entry.getKey().getName().equals(name)) {
+                if (entry.getKey().getName().equals(firstSegment)) {
                     return true;
                 }
             }
@@ -246,9 +240,17 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isSamePackage(TypeNode node) {
-        String name = node.getImage();
-        return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
+    private boolean isSamePackage(String name) {
+        int i = name.lastIndexOf('.');
+        while (i > 0) {
+            name = name.substring(0, i);
+            if (name.equals(currentPackage)) {
+                return true;
+            }
+            i = name.lastIndexOf('.');
+        }
+
+        return false;
     }
 
     private boolean isJavaLangImplicit(TypeNode node) {
