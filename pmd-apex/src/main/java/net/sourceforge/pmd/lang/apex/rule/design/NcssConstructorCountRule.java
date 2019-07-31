@@ -5,36 +5,28 @@
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
-import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for constructors.
  * 
  * @author ported from Java original by Jason Bennett
  */
-public class NcssConstructorCountRule extends AbstractNcssCountRule {
+public class NcssConstructorCountRule extends AbstractNcssCountRule<ASTMethod> {
 
     /**
      * Count constructor declarations. This includes any explicit super() calls.
      */
     public NcssConstructorCountRule() {
         super(ASTMethod.class);
-        setProperty(MINIMUM_DESCRIPTOR, 20d);
     }
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
-        if (node.isConstructor()) {
-            return super.visit(node, data);
-        }
-
-        return NumericConstants.ZERO;
+    protected int defaultReportLevel() {
+        return 20;
     }
 
     @Override
-    public Object[] getViolationParameters(DataPoint point) {
-        // TODO need to put class name or constructor ID in string
-        return new String[] { String.valueOf((int) point.getScore()) };
+    protected boolean isIgnored(ASTMethod node) {
+        return !node.isConstructor();
     }
 }

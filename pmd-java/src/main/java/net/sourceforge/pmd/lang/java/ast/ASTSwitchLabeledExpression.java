@@ -4,12 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
+
 public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTSwitchLabeledRule {
 
+    @Deprecated
+    @InternalApi
     ASTSwitchLabeledExpression(int id) {
         super(id);
     }
 
+    @Deprecated
+    @InternalApi
     ASTSwitchLabeledExpression(JavaParser p, int id) {
         super(p, id);
     }
@@ -17,5 +24,14 @@ public class ASTSwitchLabeledExpression extends AbstractJavaNode implements ASTS
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    @Override
+    public void jjtClose() {
+        super.jjtClose();
+        if (jjtGetNumChildren() > 0) {
+            AbstractNode firstChild = (AbstractNode) jjtGetChild(0);
+            jjtSetFirstToken(firstChild.jjtGetFirstToken());
+        }
     }
 }

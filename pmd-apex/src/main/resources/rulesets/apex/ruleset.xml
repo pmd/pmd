@@ -23,7 +23,9 @@
    <rule ref="rulesets/apex/quickstart.xml/ClassNamingConventions" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/MethodNamingConventions" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/MethodWithSameNameAsEnclosingClass" deprecated="true" />
-   <rule ref="rulesets/apex/quickstart.xml/VariableNamingConventions" deprecated="true" />
+   <rule ref="category/apex/codestyle.xml/VariableNamingConventions" deprecated="true" message="{0} variable {1} should begin with {2}">
+      <priority>3</priority>
+   </rule>
    <rule ref="rulesets/apex/quickstart.xml/ApexUnitTestClassShouldHaveAsserts" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/ApexUnitTestShouldNotUseSeeAllDataTrue" deprecated="true" />
    <rule ref="rulesets/apex/quickstart.xml/ApexSharingViolations" deprecated="true" />

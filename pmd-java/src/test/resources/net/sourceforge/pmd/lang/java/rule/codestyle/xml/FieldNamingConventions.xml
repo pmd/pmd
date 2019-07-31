@@ -194,6 +194,20 @@
     </test-code>
 
     <test-code>
+        <description>Exclude serialPersistentFields by default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo implements Serializable {
+
+                List next;
+
+                private static final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
+
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
         <description>More exclusions can be configured</description>
         <rule-property name="exclusions">m$mangled|serialVersionUID</rule-property>
         <expected-problems>0</expected-problems>

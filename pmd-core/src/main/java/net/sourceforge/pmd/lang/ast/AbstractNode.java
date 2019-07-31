@@ -6,11 +6,9 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -18,10 +16,11 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
  */
 public abstract class AbstractNode implements Node {
 
-    private static final Logger LOG = Logger.getLogger(AbstractNode.class.getName());
+    private static final Node[] EMPTY_ARRAY = new Node[0];
 
     protected Node parent;
-    protected Node[] children;
+    // never null, never contains null elements
+    protected Node[] children = EMPTY_ARRAY;
     protected int childIndex;
     protected int id;
 
@@ -75,15 +74,14 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public void jjtAddChild(final Node child, final int index) {
-        if (children == null) {
-            children = new Node[index + 1];
-        } else if (index >= children.length) {
+        if (index >= children.length) {
             final Node[] newChildren = new Node[index + 1];
             System.arraycopy(children, 0, newChildren, 0, children.length);
             children = newChildren;
         }
         children[index] = child;
         child.jjtSetChildIndex(index);
+        child.jjtSetParent(this);
     }
 
     @Override
@@ -103,7 +101,7 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public int jjtGetNumChildren() {
-        return children == null ? 0 : children.length;
+        return children.length;
     }
 
     @Override
@@ -138,7 +136,7 @@ public abstract class AbstractNode implements Node {
     @Override
     public int getBeginColumn() {
         if (beginColumn == -1) {
-            if (children != null && children.length > 0) {
+            if (children.length > 0) {
                 return children[0].getBeginColumn();
             } else {
                 throw new RuntimeException("Unable to determine beginning line of Node.");
@@ -232,6 +230,8 @@ public abstract class AbstractNode implements Node {
 
     public void jjtSetFirstToken(final GenericToken token) {
         this.firstToken = token;
+        this.beginLine = token.getBeginLine();
+        this.beginColumn = token.getBeginColumn();
     }
 
     public GenericToken jjtGetLastToken() {
@@ -240,6 +240,8 @@ public abstract class AbstractNode implements Node {
 
     public void jjtSetLastToken(final GenericToken token) {
         this.lastToken = token;
+        this.endLine = token.getEndLine();
+        this.endColumn = token.getEndColumn();
     }
 
     @Override
@@ -266,22 +268,9 @@ public abstract class AbstractNode implements Node {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * <p>This default implementation adds compatibility with the previous
-     * way to get the xpath node name, which used {@link Object#toString()}.
-     * <p>
-     * <p>Please override it. It may be removed in a future major version.
-     */
     @Override
-    // @Deprecated // FUTURE 7.0.0 make abstract
-    public String getXPathNodeName() {
-        LOG.warning("getXPathNodeName should be overriden in classes derived from AbstractNode. "
-            + "The implementation is provided for compatibility with existing implementors,"
-            + "but could be declared abstract as soon as release " + PMDVersion.getNextMajorRelease()
-            + ".");
-        return toString();
+    public String toString() {
+        return getXPathNodeName();
     }
 
     @Override

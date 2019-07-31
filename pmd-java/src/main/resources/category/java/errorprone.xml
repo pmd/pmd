@@ -1008,23 +1008,44 @@ public class MyClass implements Cloneable{
           class="net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#closeresource">
         <description>
-Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
+Ensure that resources (like `java.sql.Connection`, `java.sql.Statement`, and `java.sql.ResultSet` objects
+and any subtype of `java.lang.AutoCloseable`) are always closed after use.
+Failing to do so might result in resource leaks.
+
+Note: It suffices to configure the super type, e.g. `java.lang.AutoClosable`, so that this rule automatically triggers
+on any subtype (e.g. `java.io.FileInputStream`). Additionally specifying `java.sql.Connection` helps in detecting
+the types, if the type resolution / auxclasspath is not correctly setup.
+
+Note: Since PMD 6.16.0 the default value for the property `types` contains `java.lang.AutoCloseable` and detects
+now cases where the standard `java.io.*Stream` classes are involved. In order to restore the old behaviour,
+just remove "AutoCloseable" from the types.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 public class Bar {
-  public void foo() {
-    Connection c = pool.getConnection();
-    try {
-      // do stuff
-    } catch (SQLException ex) {
-     // handle exception
-    } finally {
-      // oops, should close the connection using 'close'!
-      // c.close();
+    public void withSQL() {
+        Connection c = pool.getConnection();
+        try {
+            // do stuff
+        } catch (SQLException ex) {
+           // handle exception
+        } finally {
+            // oops, should close the connection using 'close'!
+            // c.close();
+        }
     }
-  }
+
+    public void withFile() {
+        InputStream file = new FileInputStream(new File("/tmp/foo"));
+        try {
+            int c = file.in();
+        } catch (IOException e) {
+            // handle exception
+        } finally {
+            // TODO: close file
+        }
+    }
 }
 ]]>
         </example>
@@ -2180,9 +2201,13 @@ public class Foo extends TestCase {
           since="2.0"
           message="The Logger variable declaration does not contain the static and final modifiers"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#loggerisnotstaticfinal">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"
+          deprecated="true">
         <description>
 In most cases, the Logger reference can be declared as static and final.
+
+This rule is deprecated and will be removed with PMD 7.0.0.
+The rule is replaced by {% rule java/errorprone/ProperLogger %}.
         </description>
         <priority>2</priority>
         <properties>
@@ -2383,32 +2408,45 @@ public class Foo implements java.io.Serializable {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass">
         <description>
 A class that has private constructors and does not have any static methods or fields cannot be used.
+
+When one of the private constructors is annotated with one of the annotations, then the class is not considered
+non-instantiatable anymore and no violation will be reported.
+See the property `annotations`.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="annotations" type="List[String]" delimiter="," value="org.springframework.beans.factory.annotation.Autowired, javax.inject.Inject" description="If a constructor is annotated with one of these annotations, then the class is ignored."/>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested='false']
+//ClassOrInterfaceDeclaration[@Nested=false()]
 [
   (
+    (: at least one constructor :)
     ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
     and
-    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true'])
+    (: only private constructors :)
+    count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private=true()])
+    and
+    (: all constructors must not be annotated :)
+    (every $x in $annotations satisfies
+      not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration/
+            ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs($x)]))
   )
   and
-  not(.//MethodDeclaration[@Static='true'])
+  not(.//MethodDeclaration[@Static=true()])
   and
-  not(.//FieldDeclaration[@Private='false'][@Static='true'])
+  not(.//FieldDeclaration[@Private=false()][@Static=true()])
   and
-  not(.//ClassOrInterfaceDeclaration[@Nested='true']
-           [@Public='true']
-           [@Static='true']
-           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public='true']]
+  not(.//ClassOrInterfaceDeclaration[@Nested=true()]
+           [@Public=true()]
+           [@Static=true()]
+           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public=true()]]
            [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
-                [@Public='true']
+                [@Public=true()]
                 [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested='false']/@Image]
+                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
                 ]
             ]
         )
@@ -2501,10 +2539,11 @@ confusing.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0" />
             <property name="xpath">
                 <value>
 <![CDATA[
-//Initializer[@Static='false']
+//Initializer[@Static=false()][not(ancestor::*[3][self::AllocationExpression or self::EnumConstant])]
 ]]>
                 </value>
             </property>
@@ -2625,31 +2664,50 @@ class Foo{
           since="3.3"
           message="Logger should be defined private static final and have the correct class"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#properlogger">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#properlogger"
+          typeResolution="true">
         <description>
 A logger should normally be defined private static final and be associated with the correct class.
-Private final Log log; is also allowed for rare cases where loggers need to be passed around,
+`private final Log log;` is also allowed for rare cases where loggers need to be passed around,
 with the restriction that the logger needs to be passed into the constructor.
         </description>
         <priority>3</priority>
         <properties>
+            <property name="version" value="2.0"/>
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
- and
- not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
- and
- //ArgumentList//ClassOrInterfaceType[@Image = ancestor::ClassOrInterfaceDeclaration/@Image or @Image = ancestor::EnumDeclaration/@Image])
- and
- not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
- [count(.//VariableInitializer)=0]
- [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
- )]
+//FieldDeclaration
+[.//ClassOrInterfaceType[pmd-java:typeIs($loggerClass)]]
+[
+    (: check modifiers :)
+    (@Private = false() or @Final = false())
+    (: check logger name :)
+    or (@Static and .//VariableDeclaratorId[@Image != $staticLoggerName])
+    or (@Static = false() and .//VariableDeclaratorId[@Image != $loggerName])
+
+    (: check logger argument type matches class or enum name :)
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@Image]
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@Image]
+]
+[not(
+     (: special case - final logger initialized inside constructor :)
+     count(.//VariableInitializer)=0
+     and @Static = false()
+     and
+     ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
+        [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
+        [AssignmentOperator[@Image = '=']]
+        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Image]]
+        [count(.//AllocationExpression)=0]
+  )
+]
 ]]>
                 </value>
             </property>
             <property name="staticLoggerName" type="String" description="Name of the static Logger variable" value="LOG"/>
+            <property name="loggerName" type="String" description="Name of the Logger instance variable" value="log"/>
+            <property name="loggerClass" type="String" description="Class name of the logger" value="Log"/>
         </properties>
         <example>
  <![CDATA[
@@ -3363,8 +3421,19 @@ class Test {
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselocalewithcaseconversions">
         <description>
-When doing String.toLowerCase()/toUpperCase() conversions, use Locales to avoids problems with languages that
-have unusual conventions, i.e. Turkish.
+            When doing `String::toLowerCase()/toUpperCase()` conversions, use an explicit locale argument to specify the case transformation rules.
+
+            Using `String::toLowerCase()` without arguments implicitly uses `Locale::getDefault()`.
+            The problem is that the default locale depends on the current JVM setup (and usually on the system in which it is running).
+            Using the system default may be exactly what you want (e.g. if you are manipulating strings you got through standard input),
+            but it may as well not be the case (e.g. if you are getting the string over the network or a file, and the encoding is well-defined
+            and independent of the environment). In the latter case, using the default locale makes the case transformation brittle, as
+            it may yield unexpected results on a machine whose locale has other case translation rules. For example, in Turkish, the
+            uppercase form of `i` is `İ` (U+0130, not ASCII) and not `I` (U+0049) as in English.
+
+            The rule is intended to *force* developers to think about locales when dealing with strings. By taking a conscious decision about
+            the choice of locale at the time of writing, you reduce the risk of surprising behaviour down the line, and communicate your intent
+            to future readers.
         </description>
         <priority>3</priority>
         <properties>
@@ -3390,20 +3459,20 @@ PrimarySuffix
         </properties>
         <example>
 <![CDATA[
-class Foo {
-    // BAD
-    if (x.toLowerCase().equals("list")) { }
+// violation - implicitly system-dependent conversion
+if (x.toLowerCase().equals("list")) {}
 
-    /*
-     * This will not match "LIST" when in Turkish locale
-     * The above could be
-     * if (x.toLowerCase(Locale.US).equals("list")) { }
-     * or simply
-     * if (x.equalsIgnoreCase("list")) { }
-     */
-    // GOOD
-    String z = a.toLowerCase(Locale.EN);
-}
+// The above will not match "LIST" on a system with a Turkish locale.
+// It could be replaced with
+if (x.toLowerCase(Locale.US).equals("list")) { }
+// or simply
+if (x.equalsIgnoreCase("list")) { }
+
+// ok - system independent conversion
+String z = a.toLowerCase(Locale.ROOT);
+
+// ok - explicit system-dependent conversion
+String z2 = a.toLowerCase(Locale.getDefault());
 ]]>
         </example>
     </rule>

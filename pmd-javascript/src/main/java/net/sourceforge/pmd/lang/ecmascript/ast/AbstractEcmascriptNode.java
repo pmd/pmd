@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.AstNode;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 public abstract class AbstractEcmascriptNode<T extends AstNode> extends AbstractNode implements EcmascriptNode<T> {
@@ -46,14 +47,12 @@ public abstract class AbstractEcmascriptNode<T extends AstNode> extends Abstract
      */
     @Override
     public Object childrenAccept(EcmascriptParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                // we know that the children here
-                // are all EcmascriptNodes
-                @SuppressWarnings("unchecked")
-                EcmascriptNode<T> ecmascriptNode = (EcmascriptNode<T>) children[i];
-                ecmascriptNode.jjtAccept(visitor, data);
-            }
+        for (Node child : children) {
+            // we know that the children here
+            // are all EcmascriptNodes
+            @SuppressWarnings("unchecked")
+            EcmascriptNode<T> ecmascriptNode = (EcmascriptNode<T>) child;
+            ecmascriptNode.jjtAccept(visitor, data);
         }
         return data;
     }

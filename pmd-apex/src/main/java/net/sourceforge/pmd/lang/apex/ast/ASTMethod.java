@@ -70,6 +70,14 @@ public class ASTMethod extends AbstractApexNode<Method> implements ApexQualifiab
         return false;
     }
 
+    /**
+     * Returns true if this is a synthetic class initializer, inserted
+     * by the parser.
+     */
+    public boolean isSynthetic() {
+        return getImage().matches("<clinit>|<init>|clone");
+    }
+
     public boolean isConstructor() {
         return node.getMethodInfo().isConstructor();
     }

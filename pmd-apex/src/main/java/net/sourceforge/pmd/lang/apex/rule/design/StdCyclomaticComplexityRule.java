@@ -137,7 +137,7 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTMethod node, Object data) {
-        if (!node.getImage().matches("<clinit>|<init>|clone")) {
+        if (!node.isSynthetic()) {
             entryStack.push(new Entry());
             super.visit(node, data);
             Entry methodEntry = entryStack.pop();

@@ -26,13 +26,13 @@ through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
 **Example(s):**
 
 ``` jsp
-<HTML><title>bad example><BODY>
+{%raw%}<HTML><title>bad example><BODY>
 <iframe></iframe>
 </BODY> </HTML>
 
 <HTML><title>good example><BODY>
 <iframe src="foo"></iframe>
-</BODY> </HTML>
+</BODY> </HTML>{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -54,11 +54,11 @@ would be interpreted by the browser directly (e.g. &quot;&lt;script&gt;alert('he
 **Example(s):**
 
 ``` jsp
-<%@ page contentType="text/html; charset=UTF-8" %>
+{%raw%}<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 ${expression}                    <!-- don't use this -->
 ${fn:escapeXml(expression)}      <!-- instead, escape it -->
-<c:out value="${expression}" />  <!-- or use c:out -->
+<c:out value="${expression}" />  <!-- or use c:out -->{%endraw%}
 ```
 
 **Use this rule by referencing it:**

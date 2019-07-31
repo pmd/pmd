@@ -33,7 +33,7 @@ public class ApexMetricsComputer extends AbstractMetricsComputer<ASTUserClassOrI
         List<ASTMethod> candidates = node.findChildrenOfType(ASTMethod.class);
         List<ASTMethod> result = new ArrayList<>(candidates);
         for (ASTMethod method : candidates) {
-            if (method.getImage().matches("(<clinit>|<init>|clone)")) {
+            if (method.isSynthetic()) {
                 result.remove(method);
             }
         }

@@ -422,7 +422,7 @@ public class RuleDocGenerator {
                         lines.add("");
                         for (String example : rule.getExamples()) {
                             lines.add("``` " + mapLanguageForHighlighting(languageTersename));
-                            lines.addAll(toLines(StringUtils.stripToEmpty(example)));
+                            lines.addAll(toLines("{%raw%}" + StringUtils.stripToEmpty(example) + "{%endraw%}"));
                             lines.add("```");
                             lines.add("");
                         }

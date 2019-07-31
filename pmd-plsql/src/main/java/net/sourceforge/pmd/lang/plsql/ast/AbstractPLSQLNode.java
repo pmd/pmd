@@ -7,6 +7,7 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.AbstractNode implements PLSQLNode {
@@ -33,7 +34,7 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
 
     @Override
     public void jjtClose() {
-        if (beginLine == -1 && (children == null || children.length == 0)) {
+        if (beginLine == -1 && children.length == 0) {
             beginColumn = parser.token.beginColumn;
         }
         if (beginLine == -1) {
@@ -92,12 +93,10 @@ public abstract class AbstractPLSQLNode extends net.sourceforge.pmd.lang.ast.Abs
 
     public void dump(String prefix) {
         System.out.println(toString(prefix));
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                AbstractPLSQLNode n = (AbstractPLSQLNode) children[i];
-                if (n != null) {
-                    n.dump(prefix + " ");
-                }
+        for (Node child : children) {
+            AbstractPLSQLNode n = (AbstractPLSQLNode) child;
+            if (n != null) {
+                n.dump(prefix + " ");
             }
         }
     }
