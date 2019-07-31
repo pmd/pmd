@@ -66,7 +66,7 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
 
             }
 
-            block()
+            child<ASTBlockStatement>(ignoreChildren = true) {}
         }
     }
 })

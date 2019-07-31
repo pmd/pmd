@@ -25,7 +25,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * </pre>
  *
  */
-public final class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter>, JSingleChildNode<ASTFormalParameter> {
+public final class ASTFormalParameters extends AbstractJavaNode implements Iterable<ASTFormalParameter> {
 
     @InternalApi
     @Deprecated
@@ -52,11 +52,6 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
         visitor.visit(this, data);
     }
 
-
-    @Override
-    public ASTFormalParameter jjtGetChild(int index) {
-        return (ASTFormalParameter) super.jjtGetChild(index);
-    }
 
     /**
      * Returns the receiver parameter if it is present, otherwise returns

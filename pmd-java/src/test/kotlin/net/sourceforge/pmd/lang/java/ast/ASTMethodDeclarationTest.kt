@@ -103,6 +103,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
     parserTest("Receiver parameters") {
 
+        /*
+            Notice the parameterCount is 0 - receiver parameters don't affect arity.
+         */
+
         "void bar(@A Foo this);" should matchDeclaration<ASTMethodDeclaration> {
             it::isAbstract shouldBe false
             it::getMethodName shouldBe "bar"
@@ -115,7 +119,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             }
 
             it::getMethodDeclarator shouldBe child {
-                it::getParameterCount shouldBe 1
+                it::getParameterCount shouldBe 0
 
                 it::getFormalParameters shouldBe child {
                     it::getParameterCount shouldBe 0
