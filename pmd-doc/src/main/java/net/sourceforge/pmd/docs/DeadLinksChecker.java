@@ -49,7 +49,7 @@ public class DeadLinksChecker {
     private static final boolean CHECK_EXTERNAL_LINKS = Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
 
     // Markdown-Link: something in []'s followed by something in ()'s
-    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!?)\\[.*?\\]\\((.*?)\\)");
+    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((.*?)\\)");
 
     // Markdown permalink-header and captions
     private static final Pattern MD_HEADER_PERMALINK = Pattern.compile("permalink:\\s*(.*)");
@@ -113,7 +113,7 @@ public class DeadLinksChecker {
                 linkCheck:
                 while (matcher.find()) {
                     final String linkText = matcher.group();
-                    final boolean isImageLink = !matcher.group(1).isEmpty();
+                    final boolean isImageLink = matcher.group(1) != null;
                     final String linkTarget = matcher.group(2);
                     boolean linkOk;
 
