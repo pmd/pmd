@@ -94,4 +94,11 @@ public interface JavaNode extends ScopedNode {
      */
     Comment comment();
 
+
+    /**
+     * Returns the root of the file in which this node is declared.
+     * @since PMD 7.0.0
+     */
+    ASTCompilationUnit getRoot();
+
 }
