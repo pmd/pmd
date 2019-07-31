@@ -3321,7 +3321,7 @@ void AnnotationMethodDeclaration(int modifiers):
   jjtThis.setModifiers(modifiers);
 }
 {
-  Type() t=<IDENTIFIER> ("(" ")") #FormalParameters  [ DefaultValue() ] ";"
+  Type() t=<IDENTIFIER> "(" ")"  [ DefaultValue() ] ";"
   {
     jjtThis.setImage(t.image);
   }

@@ -74,7 +74,7 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         return getFormalParameters().getParameterCount();
     }
 
-    @Override
+    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
     public ASTFormalParameters getFormalParameters() {
         return getFirstChildOfType(ASTFormalParameters.class);
     }
