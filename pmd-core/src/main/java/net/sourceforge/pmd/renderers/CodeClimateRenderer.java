@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_CATEGORI
 import static net.sourceforge.pmd.renderers.CodeClimateRule.CODECLIMATE_REMEDIATION_MULTIPLIER;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +53,6 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
         while (violations.hasNext()) {

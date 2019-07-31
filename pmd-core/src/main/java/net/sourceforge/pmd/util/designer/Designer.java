@@ -567,11 +567,10 @@ public class Designer implements ClipboardOwner {
                 final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFile(new File("[no filename]." + languageVersion.getLanguage().getExtensions().get(0)));
-                StringReader reader = new StringReader(codeEditorPane.getText());
                 PMDConfiguration config = new PMDConfiguration();
                 config.setDefaultLanguageVersion(languageVersion);
 
-                try {
+                try (StringReader reader = new StringReader(codeEditorPane.getText())) {
                     new SourceCodeProcessor(config).processSourceCode(reader, new RuleSets(rs), ctx);
                     // } catch (PMDException pmde) {
                     // loadTreeData(new ExceptionNode(pmde));

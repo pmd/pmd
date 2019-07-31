@@ -124,6 +124,8 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
 
         final long currentAuxClassPathChecksum;
         if (auxclassPathClassLoader instanceof URLClassLoader) {
+            // we don't want to close our aux classpath loader - we still need it...
+            @SuppressWarnings("PMD.CloseResource")
             final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
             currentAuxClassPathChecksum = computeClassPathHash(urlClassLoader.getURLs());
 

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util.datasource;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -12,7 +13,7 @@ import java.util.zip.ZipFile;
 /**
  * DataSource implementation to read data from an entry in a zip or jar file.
  */
-public class ZipDataSource implements DataSource {
+public class ZipDataSource implements DataSource, Closeable {
     private final ZipFile zipFile;
     private final ZipEntry zipEntry;
 
@@ -69,6 +70,7 @@ public class ZipDataSource implements DataSource {
         if (getClass() != obj.getClass()) {
             return false;
         }
+        @SuppressWarnings("PMD.CloseResource")
         ZipDataSource other = (ZipDataSource) obj;
         if (zipEntry == null) {
             if (other.zipEntry != null) {
@@ -85,5 +87,12 @@ public class ZipDataSource implements DataSource {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (zipFile != null) {
+            zipFile.close();
+        }
     }
 }
