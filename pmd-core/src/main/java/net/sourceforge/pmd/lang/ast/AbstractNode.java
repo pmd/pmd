@@ -285,7 +285,7 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public NodeStream<? extends Node> childrenStream() {
+    public NodeStream<Node> childrenStream() {
         // it's crucial to preserve the invariant that the children
         // array may not contain any null elements
         return children == null ? NodeStream.empty() : () -> Arrays.stream(children);

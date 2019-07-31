@@ -401,9 +401,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
         return flatMap(Node::childrenStream);
     }
 
-    // TODO find boundaries can only be handled if we implement takeWhile/dropWhile
-    // but they were only added in JDK 9
-
 
     /**
      * Returns a node stream containing all the strict descendants of the nodes
@@ -971,7 +968,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return the concatenation of the input streams
      */
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
         return () -> Arrays.stream(streams).flatMap(NodeStream::toStream);
     }

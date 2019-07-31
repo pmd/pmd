@@ -414,13 +414,12 @@ public interface Node {
 
     /**
      * Returns a node stream containing all the children of
-     * this node. The return type uses a wildcard to make it
-     * possible to override it with some more specific type,
-     * for {@link SingleChildNode}.
+     * this node. This method does not provide much type safety,
+     * you'll probably want to use {@link #children(Class)}.
      *
      * @see NodeStream#children(Class)
      */
-    NodeStream<? extends Node> childrenStream();
+    NodeStream<Node> childrenStream();
 
 
     /**
@@ -432,9 +431,6 @@ public interface Node {
      * @see NodeStream#descendants()
      */
     default NodeStream<Node> descendantStream() {
-        // TODO benchmark and select the better implementation
-        // descendantStream may either be implemented with streams (like this) relative to childrenStream
-        // or with a lazy AST traversal. I'd think that the stream implementation is faster.
         return childrenStream().flatMap(Node::treeStream);
     }
 
