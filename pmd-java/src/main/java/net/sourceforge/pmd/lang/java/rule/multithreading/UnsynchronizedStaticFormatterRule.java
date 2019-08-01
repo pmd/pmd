@@ -39,7 +39,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Boolean> ALLOW_METHOD_LEVEL_SYNC =
         PropertyFactory.booleanProperty("allowMethodLevelSynchronization")
-            .desc("If true, method level synchronization is allowed as well as synchronized block. Otherwise"
+            .setDescription("If true, method level synchronization is allowed as well as synchronized block. Otherwise"
                 + " only synchronized blocks are allowed.")
             .defaultValue(false)
             .build();

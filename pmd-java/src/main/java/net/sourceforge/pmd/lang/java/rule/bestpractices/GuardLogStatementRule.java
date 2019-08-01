@@ -60,7 +60,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
      */
     private static final PropertyDescriptor<List<String>> LOG_LEVELS =
             stringListProperty("logLevels")
-                    .desc("LogLevels to guard")
+                    .setDescription("LogLevels to guard")
                     .defaultValues("trace", "debug", "info", "warn", "error",
                                    "log", "finest", "finer", "fine", "info", "warning", "severe")
                     .delim(',')
@@ -68,7 +68,7 @@ public class GuardLogStatementRule extends AbstractJavaRule implements Rule {
 
     private static final PropertyDescriptor<List<String>> GUARD_METHODS =
             stringListProperty("guardsMethods")
-                    .desc("Method use to guard the log statement")
+                    .setDescription("Method use to guard the log statement")
                     .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
                     .delim(',').build();
 

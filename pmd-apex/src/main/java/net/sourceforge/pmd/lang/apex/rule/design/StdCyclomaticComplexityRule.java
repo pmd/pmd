@@ -42,14 +42,14 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
     public static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
             = PropertyFactory.intProperty("reportLevel")
-                             .desc("Cyclomatic Complexity reporting threshold")
+                             .setDescription("Cyclomatic Complexity reporting threshold")
                              .require(inRange(1, 30))
                              .defaultValue(10)
                              .build();
 
-    public static final PropertyDescriptor<Boolean> SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = booleanProperty("showClassesComplexity").desc("Add class average violations to the report").defaultValue(true).build();
+    public static final PropertyDescriptor<Boolean> SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = booleanProperty("showClassesComplexity").setDescription("Add class average violations to the report").defaultValue(true).build();
 
-    public static final PropertyDescriptor<Boolean> SHOW_METHODS_COMPLEXITY_DESCRIPTOR = booleanProperty("showMethodsComplexity").desc("Add method average violations to the report").defaultValue(true).build();
+    public static final PropertyDescriptor<Boolean> SHOW_METHODS_COMPLEXITY_DESCRIPTOR = booleanProperty("showMethodsComplexity").setDescription("Add method average violations to the report").defaultValue(true).build();
 
     private int reportLevel;
     private boolean showClassesComplexity = true;

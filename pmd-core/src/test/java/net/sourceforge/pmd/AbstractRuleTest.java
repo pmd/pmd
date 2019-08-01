@@ -32,7 +32,7 @@ public class AbstractRuleTest {
         private static final StringProperty FOO_PROPERTY = new StringProperty("foo", "foo property", "x", 1.0f);
         private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
                 .defaultValue("bar")
-                .desc("Property without value uses default value")
+                .setDescription("Property without value uses default value")
                 .build();
 
         private static final StringProperty XPATH_PROPERTY = new StringProperty("xpath", "xpath property", "", 2.0f);
@@ -103,7 +103,7 @@ public class AbstractRuleTest {
     @Test
     public void testRuleWithVariableInMessage() {
         MyRule r = new MyRule();
-        r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
+        r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").setDescription("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());

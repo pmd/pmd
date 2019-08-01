@@ -37,11 +37,11 @@ public class CommentContentRule extends AbstractCommentRule {
     private List<String> currentBadWords;
 
     // ignored when property above == True
-    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive").defaultValue(false).desc("Case sensitive").build();
+    public static final PropertyDescriptor<Boolean> CASE_SENSITIVE_DESCRIPTOR = booleanProperty("caseSensitive").defaultValue(false).setDescription("Case sensitive").build();
 
     public static final PropertyDescriptor<List<String>> DISSALLOWED_TERMS_DESCRIPTOR =
             stringListProperty("disallowedTerms")
-                    .desc("Illegal terms or phrases")
+                    .setDescription("Illegal terms or phrases")
                     .defaultValues("idiot", "jerk").build(); // TODO make blank property? or add more defaults?
 
     private static final Set<PropertyDescriptor<?>> NON_REGEX_PROPERTIES;

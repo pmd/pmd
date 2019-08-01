@@ -17,7 +17,7 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
     private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor
         = stringListProperty("ignoredAnnotations")
-        .desc("Fully qualified names of the annotation types that should be ignored by this rule")
+        .setDescription("Fully qualified names of the annotation types that should be ignored by this rule")
         .defaultValue(defaultSuppressionAnnotations())
         .build();
 

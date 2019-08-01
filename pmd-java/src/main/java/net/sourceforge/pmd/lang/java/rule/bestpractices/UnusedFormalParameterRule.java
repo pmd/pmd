@@ -32,7 +32,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").desc("Check all methods, including non-private ones").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").setDescription("Check all methods, including non-private ones").defaultValue(false).build();
 
     public UnusedFormalParameterRule() {
         definePropertyDescriptor(CHECKALL_DESCRIPTOR);

@@ -36,14 +36,14 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
     private static final PropertyDescriptor<Integer> METHOD_REPORT_LEVEL_DESCRIPTOR =
             PropertyFactory.intProperty("methodReportLevel")
-                           .desc("NCSS reporting threshold for methods")
+                           .setDescription("NCSS reporting threshold for methods")
                            .require(positive())
                            .defaultValue(60)
                            .build();
 
     private static final PropertyDescriptor<Integer> CLASS_REPORT_LEVEL_DESCRIPTOR =
             PropertyFactory.intProperty("classReportLevel")
-                           .desc("NCSS reporting threshold for classes")
+                           .setDescription("NCSS reporting threshold for classes")
                            .require(positive())
                            .defaultValue(1500)
                            .build();
@@ -59,7 +59,7 @@ public final class NcssCountRule extends AbstractJavaMetricsRule {
 
     private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR =
             PropertyFactory.enumListProperty("ncssOptions", OPTION_MAP)
-                           .desc("Choose options for the computation of Ncss")
+                           .setDescription("Choose options for the computation of Ncss")
                            .emptyDefaultValue()
                            .build();
 

@@ -39,14 +39,14 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
             = PropertyFactory.intProperty("maxDuplicateLiterals")
-                             .desc("Max duplicate literals")
+                             .setDescription("Max duplicate literals")
                              .require(positive()).defaultValue(4).build();
 
-    public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = PropertyFactory.intProperty("minimumLength").desc("Minimum string length to check").require(positive()).defaultValue(3).build();
+    public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = PropertyFactory.intProperty("minimumLength").setDescription("Minimum string length to check").require(positive()).defaultValue(3).build();
 
     public static final PropertyDescriptor<Boolean> SKIP_ANNOTATIONS_DESCRIPTOR =
             booleanProperty("skipAnnotations")
-                    .desc("Skip literals within annotations").defaultValue(false).build();
+                    .setDescription("Skip literals within annotations").defaultValue(false).build();
 
     // This set of properties is impossible to convert to the new framework before 7.0.0
     // It looks like it tried to implement itself delimiter escaping and such, which we

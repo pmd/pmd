@@ -27,7 +27,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
 
     private static final PropertyDescriptor<Integer> MAX_FIELDS_DESCRIPTOR
             = PropertyFactory.intProperty("maxfields")
-                             .desc("Max allowable fields")
+                             .setDescription("Max allowable fields")
                              .defaultValue(DEFAULT_MAXFIELDS)
                              .require(positive())
                              .build();

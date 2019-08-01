@@ -31,12 +31,12 @@ public class NPathComplexityRule extends AbstractJavaMetricsRule {
 
     @Deprecated
     private static final PropertyDescriptor<Double> MINIMUM_DESCRIPTOR
-            = PropertyFactory.doubleProperty("minimum").desc("Deprecated! Minimum reporting threshold")
+            = PropertyFactory.doubleProperty("minimum").setDescription("Deprecated! Minimum reporting threshold")
                              .require(positive()).defaultValue(200d).build();
 
 
     private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
-        = PropertyFactory.intProperty("reportLevel").desc("N-Path Complexity reporting threshold")
+        = PropertyFactory.intProperty("reportLevel").setDescription("N-Path Complexity reporting threshold")
                          .require(positive()).defaultValue(200).build();
 
 

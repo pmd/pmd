@@ -46,7 +46,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 
     // TODO extend AbstractIgnoredAnnotationsRule node
     // TODO ignore if there is javadoc
-    private static final PropertyDescriptor<Boolean> IGNORE_ANNOTATIONS_DESCRIPTOR = booleanProperty("ignoreAnnotations").defaultValue(false).desc("Ignore annotations").build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ANNOTATIONS_DESCRIPTOR = booleanProperty("ignoreAnnotations").defaultValue(false).setDescription("Ignore annotations").build();
 
 
     public UselessOverridingMethodRule() {

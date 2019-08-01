@@ -32,7 +32,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class CodeFormatRule extends AbstractPLSQLRule {
 
     private static final PropertyDescriptor<Integer> INDENTATION_PROPERTY = PropertyFactory.intProperty("indentation")
-                                                                                           .desc("Indentation to be used for blocks").defaultValue(2).require(inRange(0, 32)).build();
+                                                                                           .setDescription("Indentation to be used for blocks").defaultValue(2).require(inRange(0, 32)).build();
 
     private int indentation = INDENTATION_PROPERTY.defaultValue();
 

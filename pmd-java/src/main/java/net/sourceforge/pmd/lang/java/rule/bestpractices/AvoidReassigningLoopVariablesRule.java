@@ -56,7 +56,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
             = enumProperty("foreachReassign", FOREACH_REASSIGN_VALUES)
             .defaultValue(ForeachReassignOption.DENY)
-            .desc("how/if foreach control variables may be reassigned")
+            .setDescription("how/if foreach control variables may be reassigned")
             .build();
 
     private static final Map<String, ForReassignOption> FOR_REASSIGN_VALUES;
@@ -72,7 +72,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractOptimizationRule 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
             = enumProperty("forReassign", FOR_REASSIGN_VALUES)
             .defaultValue(ForReassignOption.DENY)
-            .desc("how/if for control variables may be reassigned")
+            .setDescription("how/if for control variables may be reassigned")
             .build();
 
     public AvoidReassigningLoopVariablesRule() {

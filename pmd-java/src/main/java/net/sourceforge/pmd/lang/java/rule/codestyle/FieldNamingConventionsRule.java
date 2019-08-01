@@ -25,13 +25,13 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     // We could define a new property, but specifying property values as a single string doesn't scale
     private static final PropertyDescriptor<List<String>> EXCLUDED_NAMES =
             PropertyFactory.stringListProperty("exclusions")
-                           .desc("Names of fields to whitelist.")
+                           .setDescription("Names of fields to whitelist.")
                            .defaultValues("serialVersionUID", "serialPersistentFields")
                            .build();
 
 
     private final PropertyDescriptor<Pattern> publicConstantFieldRegex = defaultProp("public constant").defaultValue("[A-Z][A-Z_0-9]*").build();
-    private final PropertyDescriptor<Pattern> constantFieldRegex = defaultProp("constant").desc("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
+    private final PropertyDescriptor<Pattern> constantFieldRegex = defaultProp("constant").setDescription("Regex which applies to non-public static final field names").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final PropertyDescriptor<Pattern> enumConstantRegex = defaultProp("enum constant").defaultValue("[A-Z][A-Z_0-9]*").build();
     private final PropertyDescriptor<Pattern> finalFieldRegex = defaultProp("final field").build();
     private final PropertyDescriptor<Pattern> staticFieldRegex = defaultProp("static field").build();

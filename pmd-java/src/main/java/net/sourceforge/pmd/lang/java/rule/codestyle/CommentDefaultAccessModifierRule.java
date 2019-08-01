@@ -39,9 +39,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class CommentDefaultAccessModifierRule extends AbstractIgnoredAnnotationRule {
 
     private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR = PropertyFactory.regexProperty("regex")
-            .desc("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").build();
+            .setDescription("Regular expression").defaultValue("\\/\\*\\s+(default|package)\\s+\\*\\/").build();
     private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES = PropertyFactory.booleanProperty("checkTopLevelTypes")
-            .desc("Check for default access modifier in top-level classes, annotations, and enums")
+            .setDescription("Check for default access modifier in top-level classes, annotations, and enums")
             .defaultValue(false).build();
     private static final String MESSAGE = "To avoid mistakes add a comment "
             + "at the beginning of the %s %s if you want a default access modifier";

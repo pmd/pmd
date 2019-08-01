@@ -41,18 +41,18 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
     @Deprecated
     private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
         = PropertyFactory.intProperty("reportLevel")
-                         .desc("Deprecated! Cyclomatic Complexity reporting threshold")
+                         .setDescription("Deprecated! Cyclomatic Complexity reporting threshold")
                          .require(positive()).defaultValue(10).build();
 
 
     private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR
         = PropertyFactory.intProperty("classReportLevel")
-                         .desc("Total class complexity reporting threshold")
+                         .setDescription("Total class complexity reporting threshold")
                          .require(positive()).defaultValue(80).build();
 
     private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR
         = PropertyFactory.intProperty("methodReportLevel")
-                         .desc("Cyclomatic complexity reporting threshold")
+                         .setDescription("Cyclomatic complexity reporting threshold")
                          .require(positive()).defaultValue(10).build();
 
     private static final Map<String, CycloOption> OPTION_MAP;
@@ -65,7 +65,7 @@ public class CyclomaticComplexityRule extends AbstractJavaMetricsRule {
 
     private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
             = PropertyFactory.enumListProperty("cycloOptions", OPTION_MAP)
-                             .desc("Choose options for the computation of Cyclo")
+                             .setDescription("Choose options for the computation of Cyclo")
                              .emptyDefaultValue()
                              .build();
 

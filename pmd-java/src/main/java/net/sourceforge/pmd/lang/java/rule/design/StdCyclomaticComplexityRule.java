@@ -46,7 +46,7 @@ public class StdCyclomaticComplexityRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
             = PropertyFactory.intProperty("reportLevel")
-                             .desc("Cyclomatic Complexity reporting threshold")
+                             .setDescription("Cyclomatic Complexity reporting threshold")
                              .require(positive()).defaultValue(10).build();
 
     public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty(

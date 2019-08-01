@@ -42,7 +42,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
             = PropertyFactory.intProperty("threshold")
-                             .desc("Unique type reporting threshold")
+                             .setDescription("Unique type reporting threshold")
                              .require(positive()).defaultValue(20).build();
 
     public CouplingBetweenObjectsRule() {

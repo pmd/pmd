@@ -29,7 +29,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  * properly:
  * <ul>
  *   <li>A name: filled-in when obtaining the builder
- *   <li>A description: see {@link #desc(String)}
+ *   <li>A description: see {@link #setDescription(String)}
  *   <li>A default value: see {@link #defaultValue(Object)}
  * </ul>
  *
@@ -117,7 +117,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @throws IllegalArgumentException If the description is null or whitespace
      */
     @SuppressWarnings("unchecked")
-    public B desc(String desc) {
+    public B setDescription(String desc) {
         if (StringUtils.isBlank(desc)) {
             throw new IllegalArgumentException("Description must be provided");
         }

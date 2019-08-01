@@ -20,7 +20,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
 
     private static final PropertyDescriptor<Boolean> IGNORE_FOR_EACH =
-            booleanProperty("ignoreForEachDecl").defaultValue(false).desc("Ignore non-final loop variables in a for-each statement.").build();
+            booleanProperty("ignoreForEachDecl").defaultValue(false).setDescription("Ignore non-final loop variables in a for-each statement.").build();
 
     public LocalVariableCouldBeFinalRule() {
         definePropertyDescriptor(IGNORE_FOR_EACH);

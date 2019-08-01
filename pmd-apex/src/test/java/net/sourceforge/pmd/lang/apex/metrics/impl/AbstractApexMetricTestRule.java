@@ -31,22 +31,22 @@ public abstract class AbstractApexMetricTestRule extends AbstractApexRule {
 
     private final PropertyDescriptor<List<MetricOption>> optionsDescriptor =
             PropertyFactory.enumListProperty("metricOptions", optionMappings())
-                           .desc("Choose a variant of the metric or the standard")
+                           .setDescription("Choose a variant of the metric or the standard")
                            .emptyDefaultValue().build();
 
     private final PropertyDescriptor<Boolean> reportClassesDescriptor =
             PropertyFactory.booleanProperty("reportClasses")
-                           .desc("Add class violations to the report")
+                           .setDescription("Add class violations to the report")
                            .defaultValue(isReportClasses()).build();
 
     private final PropertyDescriptor<Boolean> reportMethodsDescriptor =
             PropertyFactory.booleanProperty("reportMethods")
-                           .desc("Add method violations to the report")
+                           .setDescription("Add method violations to the report")
                            .defaultValue(isReportMethods()).build();
 
     private final PropertyDescriptor<Double> reportLevelDescriptor =
             PropertyFactory.doubleProperty("reportLevel")
-                           .desc("Minimum value required to report")
+                           .setDescription("Minimum value required to report")
                            .defaultValue(defaultReportLevel()).build();
 
     private MetricOptions metricOptions;

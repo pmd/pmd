@@ -71,23 +71,23 @@ public class CloseResourceRule extends AbstractJavaRule {
     private Set<String> closeTargets = new HashSet<>();
     private static final PropertyDescriptor<List<String>> CLOSE_TARGETS_DESCRIPTOR =
             stringListProperty("closeTargets")
-                           .desc("Methods which may close this resource")
+                           .setDescription("Methods which may close this resource")
                            .emptyDefaultValue()
                            .delim(',').build();
 
     private static final PropertyDescriptor<List<String>> TYPES_DESCRIPTOR =
             stringListProperty("types")
-                    .desc("Affected types")
+                    .setDescription("Affected types")
                     .defaultValues("java.lang.AutoCloseable", "java.sql.Connection", "java.sql.Statement", "java.sql.ResultSet")
                     .delim(',').build();
 
     private static final PropertyDescriptor<Boolean> USE_CLOSE_AS_DEFAULT_TARGET =
             booleanProperty("closeAsDefaultTarget")
-                    .desc("Consider 'close' as a target by default").defaultValue(true).build();
+                    .setDescription("Consider 'close' as a target by default").defaultValue(true).build();
 
     private static final PropertyDescriptor<List<String>> ALLOWED_RESOURCE_TYPES =
             stringListProperty("allowedResourceTypes")
-            .desc("Exact class names that do not need to be closed")
+            .setDescription("Exact class names that do not need to be closed")
             .defaultValues("java.io.ByteArrayOutputStream", "java.io.ByteArrayInputStream", "java.io.StringWriter",
                     "java.io.CharArrayWriter")
             .build();

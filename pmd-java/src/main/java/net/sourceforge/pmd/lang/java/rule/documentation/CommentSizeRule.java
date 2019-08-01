@@ -26,12 +26,12 @@ public class CommentSizeRule extends AbstractCommentRule {
 
     public static final PropertyDescriptor<Integer> MAX_LINES
             = PropertyFactory.intProperty("maxLines")
-                             .desc("Maximum lines")
+                             .setDescription("Maximum lines")
                              .require(positive()).defaultValue(6).build();
     
     public static final PropertyDescriptor<Integer> MAX_LINE_LENGTH
             = PropertyFactory.intProperty("maxLineLength")
-                             .desc("Maximum line length")
+                             .setDescription("Maximum line length")
                              .require(positive()).defaultValue(80).build();
 
     private static final String CR = "\n";

@@ -34,7 +34,7 @@ public class BeanMembersShouldSerializeRule extends AbstractLombokAwareRule {
 
     private String prefixProperty;
 
-    private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").desc("A variable prefix to skip, i.e., m_").defaultValue("").build();
+    private static final PropertyDescriptor<String> PREFIX_DESCRIPTOR = stringProperty("prefix").setDescription("A variable prefix to skip, i.e., m_").defaultValue("").build();
 
     public BeanMembersShouldSerializeRule() {
         definePropertyDescriptor(PREFIX_DESCRIPTOR);

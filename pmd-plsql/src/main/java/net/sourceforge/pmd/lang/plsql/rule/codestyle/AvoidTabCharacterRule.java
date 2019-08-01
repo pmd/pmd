@@ -16,7 +16,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class AvoidTabCharacterRule extends AbstractPLSQLRule {
 
     private static final PropertyDescriptor<Boolean> EACH_LINE = PropertyFactory.booleanProperty("eachLine")
-            .desc("Whether to report each line with a tab character or only the first line")
+            .setDescription("Whether to report each line with a tab character or only the first line")
             .defaultValue(false)
             .build();
 

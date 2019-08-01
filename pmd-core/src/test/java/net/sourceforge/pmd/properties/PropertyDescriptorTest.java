@@ -49,7 +49,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testConstraintViolationCausesDysfunctionalRule() {
         PropertyDescriptor<Integer> intProperty = PropertyFactory.intProperty("fooProp")
-                                                                 .desc("hello")
+                                                                 .setDescription("hello")
                                                                  .defaultValue(4)
                                                                  .require(inRange(1, 10))
                                                                  .build();
@@ -70,7 +70,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testConstraintViolationCausesDysfunctionalRuleMulti() {
         PropertyDescriptor<List<Double>> descriptor = PropertyFactory.doubleListProperty("fooProp")
-                                                                     .desc("hello")
+                                                                     .setDescription("hello")
                                                                      .defaultValues(2., 11.) // 11. is in range
                                                                      .requireEach(inRange(1d, 20d))
                                                                      .build();
@@ -96,7 +96,7 @@ public class PropertyDescriptorTest {
                                    containsIgnoreCase(constraint.getConstraintDescription())));
 
         PropertyFactory.intProperty("fooProp")
-                       .desc("hello")
+                       .setDescription("hello")
                        .defaultValue(1000)
                        .require(constraint)
                        .build();
@@ -112,7 +112,7 @@ public class PropertyDescriptorTest {
                                    containsIgnoreCase(constraint.getConstraintDescription())));
 
         PropertyFactory.doubleListProperty("fooProp")
-                       .desc("hello")
+                       .setDescription("hello")
                        .defaultValues(2., 11.) // 11. is out of range
                        .requireEach(constraint)
                        .build();
@@ -123,7 +123,7 @@ public class PropertyDescriptorTest {
     public void testNoConstraintViolationCausesIsOkMulti() {
 
         PropertyDescriptor<List<Double>> descriptor = PropertyFactory.doubleListProperty("fooProp")
-                                                                     .desc("hello")
+                                                                     .setDescription("hello")
                                                                      .defaultValues(2., 11.) // 11. is in range
                                                                      .requireEach(inRange(1d, 20d))
                                                                      .build();
@@ -139,7 +139,7 @@ public class PropertyDescriptorTest {
     public void testNoConstraintViolationCausesIsOk() {
 
         PropertyDescriptor<String> descriptor = PropertyFactory.stringProperty("fooProp")
-                                                                     .desc("hello")
+                                                                     .setDescription("hello")
                                                                      .defaultValue("bazooli")
                                                                      .build();
 
@@ -151,7 +151,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testIntProperty() {
         PropertyDescriptor<Integer> descriptor = PropertyFactory.intProperty("intProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue(1)
                 .build();
         assertEquals("intProp", descriptor.name());
@@ -160,7 +160,7 @@ public class PropertyDescriptorTest {
         assertEquals(Integer.valueOf(5), descriptor.valueFrom("5"));
 
         PropertyDescriptor<List<Integer>> listDescriptor = PropertyFactory.intListProperty("intListProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValues(1, 2)
                 .build();
         assertEquals("intListProp", listDescriptor.name());
@@ -172,7 +172,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testIntPropertyInvalidValue() {
         PropertyDescriptor<Integer> descriptor = PropertyFactory.intProperty("intProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue(1)
                 .build();
         thrown.expect(NumberFormatException.class);
@@ -183,7 +183,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testDoubleProperty() {
         PropertyDescriptor<Double> descriptor = PropertyFactory.doubleProperty("doubleProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue(1.0)
                 .build();
         assertEquals("doubleProp", descriptor.name());
@@ -192,7 +192,7 @@ public class PropertyDescriptorTest {
         assertEquals(Double.valueOf(2.0), descriptor.valueFrom("2.0"));
 
         PropertyDescriptor<List<Double>> listDescriptor = PropertyFactory.doubleListProperty("doubleListProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValues(1.0, 2.0)
                 .build();
         assertEquals("doubleListProp", listDescriptor.name());
@@ -204,7 +204,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testDoublePropertyInvalidValue() {
         PropertyDescriptor<Double> descriptor = PropertyFactory.doubleProperty("doubleProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue(1.0)
                 .build();
         thrown.expect(NumberFormatException.class);
@@ -215,7 +215,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testStringProperty() {
         PropertyDescriptor<String> descriptor = PropertyFactory.stringProperty("stringProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue("default value")
                 .build();
         assertEquals("stringProp", descriptor.name());
@@ -224,7 +224,7 @@ public class PropertyDescriptorTest {
         assertEquals("foo", descriptor.valueFrom("foo"));
 
         PropertyDescriptor<List<String>> listDescriptor = PropertyFactory.stringListProperty("stringListProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValues("v1", "v2")
                 .build();
         assertEquals("stringListProp", listDescriptor.name());
@@ -246,7 +246,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testEnumProperty() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
         assertEquals("enumProp", descriptor.name());
@@ -255,7 +255,7 @@ public class PropertyDescriptorTest {
         assertEquals(SampleEnum.C, descriptor.valueFrom("TEST_C"));
 
         PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", nameMap)
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValues(SampleEnum.A, SampleEnum.B)
                 .build();
         assertEquals("enumListProp", listDescriptor.name());
@@ -292,7 +292,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testEnumPropertyInvalidValue() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", nameMap)
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
         thrown.expect(IllegalArgumentException.class);
@@ -303,7 +303,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testRegexProperty() {
         PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue("^[A-Z].*$")
                 .build();
         assertEquals("regexProp", descriptor.name());
@@ -315,7 +315,7 @@ public class PropertyDescriptorTest {
     @Test
     public void testRegexPropertyInvalidValue() {
         PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue("^[A-Z].*$")
                 .build();
         thrown.expect(PatternSyntaxException.class);
@@ -328,7 +328,7 @@ public class PropertyDescriptorTest {
         thrown.expect(PatternSyntaxException.class);
         thrown.expectMessage("Unclosed character class");
         PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
-                .desc("hello")
+                .setDescription("hello")
                 .defaultValue("[open class")
                 .build();
     }

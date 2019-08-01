@@ -41,7 +41,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor<List<String>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
             PropertyFactory.enumListProperty("checkAddressTypes", ADDRESSES_TO_CHECK)
-                           .desc("Check for IP address types.")
+                           .setDescription("Check for IP address types.")
                            .defaultValue(ADDRESSES_TO_CHECK.keySet()).build();
 
     // Provides 4 capture groups that can be used for additional validation

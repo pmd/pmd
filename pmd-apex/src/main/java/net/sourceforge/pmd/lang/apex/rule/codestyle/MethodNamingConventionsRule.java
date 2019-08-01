@@ -29,7 +29,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
 
     private static final PropertyDescriptor<Boolean> SKIP_TEST_METHOD_UNDERSCORES_DESCRIPTOR
         = booleanProperty("skipTestMethodUnderscores")
-              .desc("deprecated! Skip underscores in test methods")
+              .setDescription("deprecated! Skip underscores in test methods")
               .defaultValue(false)
               .build();
     

@@ -48,7 +48,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  *   // The property descriptor may be static, it can be shared across threads.
  *   private static final {@link PropertyDescriptor}&lt;Integer&gt; myIntProperty
  *     = PropertyFactory.{@linkplain #intProperty(String) intProperty}("myIntProperty")
- *                      .{@linkplain PropertyBuilder#desc(String) desc}("This is my property")
+ *                      .{@linkplain PropertyBuilder#setDescription(String) desc}("This is my property")
  *                      .{@linkplain PropertyBuilder#defaultValue(Object) defaultValue}(3)
  *                      .{@linkplain PropertyBuilder#require(PropertyConstraint) require}(inRange(0, 100))   // constraints are checked before the rule is run
  *                      .{@linkplain PropertyBuilder#build() build}();

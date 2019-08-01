@@ -35,13 +35,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Executable {
     private static final PropertyDescriptor<Integer> MAX_PATH_DESCRIPTOR
             = PropertyFactory.intProperty("maxPaths")
-                             .desc("Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.")
+                             .setDescription("Maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease anomalies found.")
                              .require(inRange(100, 8000))
                              .defaultValue(1000)
                              .build();
     private static final PropertyDescriptor<Integer> MAX_VIOLATIONS_DESCRIPTOR
             = PropertyFactory.intProperty("maxViolations")
-                             .desc("Maximum number of anomalies per class")
+                             .setDescription("Maximum number of anomalies per class")
                              .require(inRange(1, 2000))
                              .defaultValue(100)
                              .build();

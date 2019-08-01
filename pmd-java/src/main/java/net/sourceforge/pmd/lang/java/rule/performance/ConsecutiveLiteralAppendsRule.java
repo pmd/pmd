@@ -82,7 +82,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
             = PropertyFactory.intProperty("threshold")
-                             .desc("Max consecutive appends")
+                             .setDescription("Max consecutive appends")
                              .require(inRange(1, 10)).defaultValue(1).build();
 
     private int threshold = 1;

@@ -30,14 +30,14 @@ public class CyclomaticComplexityRule extends AbstractApexRule {
 
     private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR
         = PropertyFactory.intProperty("classReportLevel")
-                         .desc("Total class complexity reporting threshold")
+                         .setDescription("Total class complexity reporting threshold")
                          .require(positive())
                          .defaultValue(40)
                          .build();
 
     private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR
         = PropertyFactory.intProperty("methodReportLevel")
-                         .desc("Cyclomatic complexity reporting threshold")
+                         .setDescription("Cyclomatic complexity reporting threshold")
                          .require(positive())
                          .defaultValue(10)
                          .build();

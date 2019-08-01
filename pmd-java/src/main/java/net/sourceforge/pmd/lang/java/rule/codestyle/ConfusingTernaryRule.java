@@ -54,7 +54,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * </pre>
  */
 public class ConfusingTernaryRule extends AbstractJavaRule {
-    private static PropertyDescriptor<Boolean> ignoreElseIfProperty = booleanProperty("ignoreElseIf").desc("Ignore conditions with an else-if case").defaultValue(false).build();
+    private static PropertyDescriptor<Boolean> ignoreElseIfProperty = booleanProperty("ignoreElseIf").setDescription("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super();
