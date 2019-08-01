@@ -288,7 +288,7 @@ public class StatisticalRuleTest {
 
         Report report = makeReport(rule);
 
-        assertEquals("Expecting only one result", 1, report.size());
+        assertEquals("Expecting only one result", 1, report.getNumViolations());
     }
 
     // Okay, we have three properties we need to
@@ -819,15 +819,15 @@ public class StatisticalRuleTest {
                 assertEquals(
                         "Unexpected number of results: sigma= " + Double.toString(sigma) + " min= "
                                 + Double.toString(minimum) + " topscore= " + Integer.toString(topScore),
-                        expected, report.size());
+                        expected, report.getNumViolations());
             } else {
                 String assertStr = "Unexpected number of results: sigma= " + Double.toString(sigma) + " min= "
                         + Double.toString(minimum) + " topscore= " + Integer.toString(topScore) + " expected= "
                         + Integer.toString(expected) + " +/- " + Integer.toString(delta) + " actual-result= "
-                        + report.size();
+                        + report.getNumViolations();
 
-                assertTrue(assertStr, report.size() >= (expected - delta));
-                assertTrue(assertStr, report.size() <= (expected + delta));
+                assertTrue(assertStr, report.getNumViolations() >= (expected - delta));
+                assertTrue(assertStr, report.getNumViolations() <= (expected + delta));
             }
         } catch (AssertionFailedError afe) {
             System.err.println("******** " + testName + " ***********");

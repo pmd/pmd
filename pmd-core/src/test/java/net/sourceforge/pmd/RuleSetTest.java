@@ -440,7 +440,7 @@ public class RuleSetTest {
         ctx.setSourceCodeFile(file);
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertEquals("Violations", 2, r.size());
+        assertEquals("Violations", 2, r.getNumViolations());
 
         // One violation
         ruleSet1 = createRuleSetBuilder("RuleSet1")
@@ -455,7 +455,7 @@ public class RuleSetTest {
         r = new Report();
         ctx.setReport(r);
         ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
-        assertEquals("Violations", 1, r.size());
+        assertEquals("Violations", 1, r.getNumViolations());
     }
     
     @Test
@@ -483,7 +483,7 @@ public class RuleSetTest {
         context.setReport(new Report());
         ruleset.apply(makeCompilationUnits(), context);
 
-        assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
+        assertEquals("Invalid number of Violations Reported", size, context.getReport().getNumViolations());
 
         Iterator<RuleViolation> violations = context.getReport().iterator();
         while (violations.hasNext()) {
@@ -580,7 +580,7 @@ public class RuleSetTest {
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        assertEquals("There should be a violation", 1, context.getReport().getNumViolations());
     }
 
     @Test
@@ -620,7 +620,7 @@ public class RuleSetTest {
         assertEquals("Wrong error message", "RuntimeException: Test exception while applying rule", errors.get(0).getMsg());
         assertTrue("Should be a RuntimeException", errors.get(0).getError() instanceof RuntimeException);
 
-        assertEquals("There should be a violation", 1, context.getReport().size());
+        assertEquals("There should be a violation", 1, context.getReport().getNumViolations());
     }
 
 }
