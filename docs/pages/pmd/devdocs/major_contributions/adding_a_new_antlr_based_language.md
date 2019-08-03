@@ -17,7 +17,7 @@ folder: pmd/devdocs
 *	ANTLR gives you this for free.
 
 ## 3.  Create AST node classes
-*	We provide an [AntlrBaseNode](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AntlrBaseNode.java). 
+*	We provide an [`AntlrBaseNode`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/ast/AntlrBaseNode.java). 
 *	We override ANTLR auto-generated code to provide this for free, you need to add an ANT script similar to the [swift script](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/ant/antlr4.xml).
 *	You can extend AntlrBaseNode and override any method that you require, but on most cases you won't need to do anything.
 
