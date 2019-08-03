@@ -34,17 +34,17 @@ folder: pmd/devdocs
 *   We provide a [`BaseParser`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrBaseParser.java) implementation that you need to extend to create your own adapter as we do with [`SwiftParserAdapter`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftParserAdapter.java).
 
 ## 7.  Create a rule violation factory
-*	We provide a [AntlrRuleViolationFactory](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrRuleViolationFactory.java) as base implementation, you can use that for most scenarios.
+*	We provide a [`AntlrRuleViolationFactory`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrRuleViolationFactory.java) as base implementation, you can use that for most scenarios.
 *   The purpose of this class is to create a rule violation instance for your handler (spoiler).
 
 ## 8.  Create a version handler
-*   Now you need to create your version handler, as we did with [SwiftHandler](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
+*   Now you need to create your version handler, as we did with [`SwiftHandler`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftHandler.java).
 *   This class is sort of a gateway between PMD and all parsing logic specific to your language. It has 2 purposes:
     *   `getRuleViolationFactory` method returns an instance of your rule violation factory *(see step #7)*
     *   `getParser` returns an instance of your parser adapter *(see step #6)*
 
 ## 9.  Create a parser visitor adapter
-*	We provide an [AbstractAntlrVisitor](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AbstractAntlrVisitor.java) as default implementation, to be able to use this you should also add it to the ANT script we talked about on step #3
+*	We provide an [`AbstractAntlrVisitor`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AbstractAntlrVisitor.java) as default implementation, to be able to use this you should also add it to the ANT script we talked about on step #3
 *   The purpose of this class is to serve as a pass-through `visitor` implementation, which, for all AST types in your language, just executes visit on the base AST type
 
 ## 10. Create a rule chain visitor
