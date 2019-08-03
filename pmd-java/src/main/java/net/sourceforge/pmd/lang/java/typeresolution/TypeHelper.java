@@ -19,6 +19,10 @@ public final class TypeHelper {
      * Checks whether the resolved type of the given {@link TypeNode} n is of the type
      * given by the clazzName. If the clazzName is on the auxclasspath, then also subclasses
      * are considered.
+     * 
+     * <p>If clazzName is not on the auxclasspath (so it can't be resolved), then a string
+     * comparison of the class names are performed. This might result in comparing only
+     * the simple name of the classes.
      *
      * @param n the type node to check
      * @param clazzName the class name to compare to
@@ -33,7 +37,7 @@ public final class TypeHelper {
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     /**
      * Checks whether the resolved type of the given {@link TypeNode} n is exactly of the type
      * given by the clazzName.
