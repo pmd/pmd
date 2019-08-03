@@ -61,7 +61,7 @@ folder: pmd/devdocs
 
 ## 12. Create an abstract rule class for the language
 *	You need to create your own `AbstractRule`, our `AbstractAntlrVisitor` implements this and makes the connection with ANTLR via our ANT script (see step #3).
-*	You will have an auto-generated XBaseVisitor class (similar to SwiftBaseVisitor) that you will have to extend as we did with [AbstractSwiftRule](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java).
+*	You will have an auto-generated `XBaseVisitor` class (similar to `SwiftBaseVisitor`) that you will have to extend as we did with [`AbstractSwiftRule`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/AbstractSwiftRule.java).
 *   All other rules for your language should extend this class. The purpose of this class is to implement visit methods for all AST types to simply delegate to default behavior. This is useful because most rules care only about specific AST nodes, but PMD needs to know what to do with each node - so this just lets you use default behavior for nodes you don’t care about.
 
 ## 13. Create rules
