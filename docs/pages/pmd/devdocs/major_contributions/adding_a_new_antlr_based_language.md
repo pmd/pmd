@@ -48,7 +48,7 @@ folder: pmd/devdocs
 *   The purpose of this class is to serve as a pass-through `visitor` implementation, which, for all AST types in your language, just executes visit on the base AST type
 
 ## 10. Create a rule chain visitor
-*   We provide an [AntlrRuleChainVisitor](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrRuleChainVisitor.java), you can use that for most scenarios.
+*   We provide an [`AntlrRuleChainVisitor`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrRuleChainVisitor.java), you can use that for most scenarios.
 *   If you wish to create your own, you should `implement` two `important` methods:
     *   `indexNodes` generates a map of "node type" to "list of nodes of that type". This is used to visit all applicable nodes when a rule is applied.
     *   `visit` method should evaluate what kind of rule is being applied, and execute appropriate logic. Usually it will just check if the rule is a "parser visitor" kind of rule specific to your language, then execute the visitor. If it’s an XPath rule, then we just need to execute evaluate on that.
