@@ -31,7 +31,7 @@ folder: pmd/devdocs
 *	If you wish to filter specific tokens you can create your own implementation of [`BaseTokenFilter`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java) as we did with [`SwiftTokenFilter`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java).
 
 ## 6.  Create a PMD parser “adapter”
-*   We provide a [BaseParser](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrBaseParser.java) implementation that you need to extend to create your own adapter as we do with [SwiftParserAdapter](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftParserAdapter.java).
+*   We provide a [`BaseParser`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrBaseParser.java) implementation that you need to extend to create your own adapter as we do with [`SwiftParserAdapter`](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/SwiftParserAdapter.java).
 
 ## 7.  Create a rule violation factory
 *	We provide a [AntlrRuleViolationFactory](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrRuleViolationFactory.java) as base implementation, you can use that for most scenarios.
