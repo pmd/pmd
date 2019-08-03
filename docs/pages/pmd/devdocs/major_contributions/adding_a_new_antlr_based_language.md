@@ -26,7 +26,7 @@ folder: pmd/devdocs
 *	You should review the [swift pom](https://github.com/pmd/pmd/blob/master/pmd-swift/pom.xml). Don't forget to enable visitor generation property. 
 
 ## 5.  Create a TokenManager
-*   We provide a default implementation using [AntlrTokenManager](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrTokenManager.java) that uses an [AntlrTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AntlrTokenizer.java). 
+*   We provide a default implementation using [`AntlrTokenManager`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/lang/antlr/AntlrTokenManager.java) that uses an [`AntlrTokenizer`](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AntlrTokenizer.java). 
 *	You must create your own AntlrTokenizer such as we do with [SwiftTokenizer](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/cpd/SwiftTokenizer.java).
 *	If you wish to filter specific tokens you can create your own implementation of [BaseTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/internal/BaseTokenFilter.java) as we did with [SwiftTokenFilter](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/token/AntlrTokenFilter.java).
 
