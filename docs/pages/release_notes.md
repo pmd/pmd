@@ -16,6 +16,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   java-codestyle:
+    *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
+
 ### API Changes
 
 #### Deprecated APIs
