@@ -22,7 +22,7 @@ public class RuleContextTest {
     @Test
     public void testReport() {
         RuleContext ctx = new RuleContext();
-        assertEquals(0, ctx.getReport().getNumViolations());
+        assertEquals(0, ctx.getReport().getNumberOfViolations());
         Report r = new Report();
         ctx.setReport(r);
         Report r2 = ctx.getReport();

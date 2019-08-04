@@ -145,7 +145,7 @@ public abstract class RuleTst {
                 }
 
                 report = processUsingStringReader(test, rule);
-                res = report.getNumViolations();
+                res = report.getNumberOfViolations();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
@@ -184,7 +184,7 @@ public abstract class RuleTst {
         }
 
         List<String> expectedMessages = test.getExpectedMessages();
-        if (report.getNumViolations() != expectedMessages.size()) {
+        if (report.getNumberOfViolations() != expectedMessages.size()) {
             throw new RuntimeException("Test setup error: number of expected messages doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
@@ -210,7 +210,7 @@ public abstract class RuleTst {
         }
 
         List<Integer> expected = test.getExpectedLineNumbers();
-        if (report.getNumViolations() != expected.size()) {
+        if (report.getNumberOfViolations() != expected.size()) {
             throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
                     + "number of violations for test case '" + test.getDescription() + "'");
         }
@@ -232,7 +232,7 @@ public abstract class RuleTst {
     private void printReport(TestDescriptor test, Report report) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("Test Failure: " + test.getDescription());
-        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.getNumViolations()
+        System.out.println(" -> Expected " + test.getNumberOfProblemsExpected() + " problem(s), " + report.getNumberOfViolations()
                 + " problem(s) found.");
         System.out.println(" -> Expected messages: " + test.getExpectedMessages());
         System.out.println(" -> Expected line numbers: " + test.getExpectedLineNumbers());

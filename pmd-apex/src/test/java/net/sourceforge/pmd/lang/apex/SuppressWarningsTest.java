@@ -37,10 +37,10 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
         runTestFromString(TEST2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST4, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(1, rpt.getNumViolations());
+        assertEquals(1, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST5, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST6, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(1, rpt.getNumViolations());
+        assertEquals(1, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST7, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(1, rpt.getNumViolations());
+        assertEquals(1, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST8, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(1, rpt.getNumViolations());
+        assertEquals(1, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(1, rpt.getNumViolations());
+        assertEquals(1, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9_MULTIPLE_VALUES, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST10, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(2, rpt.getNumViolations());
+        assertEquals(2, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST11, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(2, rpt.getNumViolations());
+        assertEquals(2, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -128,7 +128,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST12, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST13, new BarRule(), rpt,
                 LanguageRegistry.getLanguage(ApexLanguageModule.NAME).getDefaultVersion());
-        assertEquals(0, rpt.getNumViolations());
+        assertEquals(0, rpt.getNumberOfViolations());
     }
 
     private static final String TEST1 = "@SuppressWarnings('PMD')" + PMD.EOL + "public class Foo {}";
