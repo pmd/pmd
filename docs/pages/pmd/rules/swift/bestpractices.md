@@ -33,11 +33,24 @@ It's difficult to review the auto-generated code and allow concurrent modificati
 **Priority:** Medium (3)
 
 Due to Objective-C and Swift interoperability some functions are often required to be implemented but
-aren't really needed. Is extremely common that the sole implementation of the functions consist of throwing
-a fatal error. Marking this functions as unavailable prevents them from being executed while still making
+aren't really needed. It is extremely common that the sole implementation of the functions consist of throwing
+a fatal error. Marking these functions as unavailable prevents them from being executed while still making
 the compiler happy.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.swift.rule.bestpractices.UnavailableFunctionRule](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/UnavailableFunctionRule.java)
+
+**Example(s):**
+
+``` swift
+required init?(coder _: NSCoder) { // violation, no unavailable attribute added to the function declaration
+    fatalError("init(coder:) has not been implemented")
+}
+
+@available(*, unavailable)         // no violation
+required init?(coder _: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+}
+```
 
 **Use this rule by referencing it:**
 ``` xml

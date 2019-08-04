@@ -46,7 +46,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
         return null;
     }
 
-    private Boolean shouldIncludeUnavailableModifier(final SwiftParser.CodeBlockContext ctx) {
+    private boolean shouldIncludeUnavailableModifier(final SwiftParser.CodeBlockContext ctx) {
         if (ctx == null || ctx.statements() == null) {
             return false;
         }
@@ -56,7 +56,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
         return statements.size() == 1 && FATAL_ERROR.equals(statements.get(0).getStart().getText());
     }
 
-    private Boolean hasUnavailableModifier(final List<SwiftParser.AttributeContext> attributes) {
+    private boolean hasUnavailableModifier(final List<SwiftParser.AttributeContext> attributes) {
         return attributes.stream().anyMatch(atr -> AVAILABLE_UNAVAILABLE.equals(atr.getText()));
     }
 }
