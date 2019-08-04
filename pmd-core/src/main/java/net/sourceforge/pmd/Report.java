@@ -507,12 +507,23 @@ public class Report implements Iterable<RuleViolation> {
         return violationTree.size();
     }
 
+
     /**
      * The number of violations.
      *
      * @return number of violations.
      */
+    @Deprecated
     public int size() {
+        return getNumViolations();
+    }
+
+    /**
+     * The number of violations.
+     *
+     * @return number of violations.
+     */
+    public int getNumViolations() {
         return violations.size();
     }
 

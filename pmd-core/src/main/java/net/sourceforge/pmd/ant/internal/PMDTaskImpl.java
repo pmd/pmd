@@ -165,7 +165,7 @@ public class PMDTaskImpl {
 
                 @Override
                 public void renderFileReport(Report r) {
-                    int size = r.size();
+                    int size = r.getNumViolations();
                     if (size > 0) {
                         reportSize.addAndGet(size);
                     }

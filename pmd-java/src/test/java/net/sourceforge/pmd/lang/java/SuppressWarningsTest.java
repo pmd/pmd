@@ -43,10 +43,10 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
         runTestFromString(TEST2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST4, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST5, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST6, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST7, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST8, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9_VALUE1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9_VALUE2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -126,7 +126,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9_VALUE3, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(1, rpt.size());
+        assertEquals(1, rpt.getNumViolations());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9_MULTIPLE_VALUES_1, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     @Test
@@ -142,7 +142,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST9_MULTIPLE_VALUES_2, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST10, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(2, rpt.size());
+        assertEquals(2, rpt.getNumViolations());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST11, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(2, rpt.size());
+        assertEquals(2, rpt.getNumViolations());
     }
 
     @Test
@@ -166,7 +166,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST12, new FooRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     @Test
@@ -174,7 +174,7 @@ public class SuppressWarningsTest extends RuleTst {
         Report rpt = new Report();
         runTestFromString(TEST13, new BarRule(), rpt,
                 LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion("1.5"));
-        assertEquals(0, rpt.size());
+        assertEquals(0, rpt.getNumViolations());
     }
 
     private static final String TEST1 = "@SuppressWarnings(\"PMD\")" + PMD.EOL + "public class Foo {}";
