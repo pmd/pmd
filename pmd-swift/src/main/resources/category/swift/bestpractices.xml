@@ -29,8 +29,8 @@ Rules which enforce generally accepted best practices.
           externalInfoUrl="http://pmd.github.io/pmd/pmd_rules_swift_bestpractices.html#unavailablefunction">
         <description>
             Due to Objective-C and Swift interoperability some functions are often required to be implemented but
-            aren't really needed. Is extremely common that the sole implementation of the functions consist of throwing
-            a fatal error. Marking this functions as unavailable prevents them from being executed while still making
+            aren't really needed. It is extremely common that the sole implementation of the functions consist of throwing
+            a fatal error. Marking these functions as unavailable prevents them from being executed while still making
             the compiler happy.
         </description>
         <priority>3</priority>
