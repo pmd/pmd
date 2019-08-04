@@ -184,7 +184,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         if (matches.isEmpty()) {
             if (isJavaLangImplicit(node)) {
                 addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
-            } else if (isSamePackage(name)) {
+            } else if (isSamePackage(node, name)) {
                 addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
             }
         } else {
@@ -240,7 +240,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isSamePackage(String name) {
+    private boolean isSamePackage(TypeNode node, String name) {
+        if (node.getType() != null) {
+            // with type resolution we can do an exact package match
+            Package packageOfType = node.getType().getPackage();
+            if (packageOfType != null) {
+                return node.getType().getPackage().getName().equals(currentPackage);
+            }
+        }
+
         int i = name.lastIndexOf('.');
         while (i > 0) {
             name = name.substring(0, i);

@@ -575,4 +575,19 @@ class length {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>False positive when subpackage is referenced</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+public class FQNTest {
+    public void foo() {
+        new net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyClass(); // no violation
+        new net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass(); // violation
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
