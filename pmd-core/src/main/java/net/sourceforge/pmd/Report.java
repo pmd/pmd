@@ -508,12 +508,12 @@ public class Report implements Iterable<RuleViolation> {
     }
 
 
+    @Deprecated
     /**
      * The number of violations.
      *
      * @return number of violations.
      */
-    @Deprecated
     public int size() {
         return getNumViolations();
     }
