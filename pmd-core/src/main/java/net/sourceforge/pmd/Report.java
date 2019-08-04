@@ -520,6 +520,10 @@ public class Report implements Iterable<RuleViolation> {
     }
 
 
+    /**
+     * Get number of violations.
+     *
+     */
     public int getNumberOfViolations() {
         return violations.size();
     }
