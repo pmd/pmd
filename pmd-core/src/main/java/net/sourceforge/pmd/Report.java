@@ -518,11 +518,7 @@ public class Report implements Iterable<RuleViolation> {
         return getNumberOfViolations();
     }
 
-    /**
-     * The number of violations.
-     *
-     * @return number of violations.
-     */
+   
     public int getNumberOfViolations() {
         return violations.size();
     }
