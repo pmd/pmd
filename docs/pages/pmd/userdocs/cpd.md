@@ -17,7 +17,7 @@ It can also be run with Maven by using the `cpd-check` goal on the [Maven PMD Pl
 
 
 Your own language is missing?
-See how to add it [here](/pmd_devdocs_major_adding_new_cpd_language.html).
+See how to add it [here](pmd_devdocs_major_adding_new_cpd_language.html).
 
 
 ### Why should you care about duplicates?
@@ -199,7 +199,7 @@ Please note that if CPD detects duplicated source code, it will exit with status
 This behavior has been introduced to ease CPD integration into scripts or hooks, such as SVN hooks.
 
 <table>
-<tr><td>0</td><td>Everything is fine, now code duplications found</td></tr>
+<tr><td>0</td><td>Everything is fine, no code duplications found</td></tr>
 <tr><td>1</td><td>Couldn't understand command line parameters or CPD exited with an exception</td></tr>
 <tr><td>4</td><td>At least one code duplication has been detected unless '--failOnViolation false' is used.</td></tr>
 </table>
@@ -218,6 +218,7 @@ This behavior has been introduced to ease CPD integration into scripts or hooks,
 * Java
 * Jsp
 * Kotlin
+* Lua
 * Matlab
 * Objective-C
 * Perl
@@ -366,7 +367,7 @@ Here's a screenshot of CPD after running on the JDK 8 java.lang package:
 ## Suppression
 
 Arbitrary blocks of code can be ignored through comments on **Java**, **C/C++**, **Dart**, **Go**, **Javascript**,
-**Kotlin**, **Matlab**, **Objective-C**, **PL/SQL**, **Python** and **Swift** by including the keywords `CPD-OFF` and `CPD-ON`.
+**Kotlin**, **Lua**, **Matlab**, **Objective-C**, **PL/SQL**, **Python** and **Swift** by including the keywords `CPD-OFF` and `CPD-ON`.
 
 ```java
     public Object someParameterizedFactoryMethod(int x) throws Exception {

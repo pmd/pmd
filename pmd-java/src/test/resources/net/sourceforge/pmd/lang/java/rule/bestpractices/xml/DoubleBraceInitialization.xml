@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Pos in return</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+
+ List<String> bar() {
+    return new ArrayList<String>(){{addAll("a","b","c");}};
+ }
+
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Neg, override</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+ List<String> bar() {
+    return new ArrayList<String>(){
+
+        {addAll("a","b","c");}
+
+        void add(String x) {
+            throw new UnsupportedOperationException();
+        }
+    };
+ }
+
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Neg, new field</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+ List<String> bar() {
+    return new ArrayList<String>(){
+
+        {addAll("a","b","c");}
+
+        int field;
+    };
+ }
+
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Neg, enum constant</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+enum Foo {
+
+ A {
+    // neg in enum cons
+    {addAll("a","b","c");}
+
+
+ };
+
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Neg, regular class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+
+    // neg in regular class
+    {addAll("a","b","c");}
+
+
+
+
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
