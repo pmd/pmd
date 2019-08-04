@@ -11,11 +11,12 @@ folder: pmd/rules
 
 {% include callout.html content="Rules which enforce generally accepted best practices." %}
 
-*   [ProhibitedInterfaceBuilder](pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder): Creating views using Interface Builder should be avoided.
+*   [ProhibitedInterfaceBuilder](pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder): Creating views using Interface Builder should be avoided.            Defining views by code allow...
 
 ## Error Prone
 
 {% include callout.html content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors." %}
 
-*   [ForceTry](pmd_rules_swift_errorprone.html#forcetry): Force tries should be avoided.
+*   [ForceCast](pmd_rules_swift_errorprone.html#forcecast): Force casts should be avoided. This may lead to a crash if it's not used carefully.            Fo...
+*   [ForceTry](pmd_rules_swift_errorprone.html#forcetry): Force tries should be avoided. If the code being wrapped happens to raise and exception, our appl...
 

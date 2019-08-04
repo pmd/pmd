@@ -18,7 +18,19 @@ Rules which enforce generally accepted best practices.
             Creating views using Interface Builder should be avoided.
             Defining views by code allows the compiler to detect issues that otherwise will be runtime errors.
             It's difficult to review the auto-generated code and allow concurrent modifications of those files.
+            Consider building views programmatically.
         </description>
         <priority>2</priority>
+        <example>
+            <![CDATA[
+class ViewController: UIViewController {
+    @IBOutlet var label: UILabel! // violation, referencing a IBOutlet
+}
+
+class ViewController: UIViewController {
+    var label: UILabel!
+}
+]]>
+        </example>
     </rule>
 </ruleset>

@@ -16,8 +16,23 @@ language: Swift
 **Priority:** Medium High (2)
 
 Creating views using Interface Builder should be avoided.
+Defining views by code allows the compiler to detect issues that otherwise will be runtime errors.
+It's difficult to review the auto-generated code and allow concurrent modifications of those files.
+Consider building views programmatically.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.swift.rule.bestpractices.ProhibitedInterfaceBuilderRule](https://github.com/pmd/pmd/blob/master/pmd-swift/src/main/java/net/sourceforge/pmd/lang/swift/rule/bestpractices/ProhibitedInterfaceBuilderRule.java)
+
+**Example(s):**
+
+``` swift
+{%raw%}class ViewController: UIViewController {
+    @IBOutlet var label: UILabel! // violation, referencing a IBOutlet
+}
+
+class ViewController: UIViewController {
+    var label: UILabel!
+}{%endraw%}
+```
 
 **Use this rule by referencing it:**
 ``` xml
