@@ -507,18 +507,19 @@ public class Report implements Iterable<RuleViolation> {
         return violationTree.size();
     }
 
-
-    @Deprecated
     /**
      * The number of violations.
      *
      * @return number of violations.
+     *
+     * @deprecated replaced by getNumberOfViolations()
      */
+    @Deprecated
     public int size() {
         return getNumberOfViolations();
     }
 
-   
+
     public int getNumberOfViolations() {
         return violations.size();
     }
