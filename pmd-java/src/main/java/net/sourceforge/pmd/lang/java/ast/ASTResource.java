@@ -68,7 +68,13 @@ public final class ASTResource extends AbstractJavaNode {
                 builder.insert(0, "." + fa.getFieldName());
                 expr = fa.getLhsExpression();
             }
-            builder.insert(0, ((ASTVariableReference) expr).getVariableName());
+            // the last one may be ambiguous, or a variable reference
+            // the only common interface we have to get their name is
+            // unfortunately Node::getImage
+
+            if (expr != null) {
+                builder.insert(0, expr.getImage());
+            }
             return builder.toString();
         } else {
             return asLocalVariableDeclaration().iterator().next().getVariableName();

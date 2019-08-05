@@ -26,6 +26,8 @@ class ASTTryStatementTest : ParserTestSpec({
             child<ASTResourceList> {
                 child<ASTResource> {
                     it::isConciseResource shouldBe false
+                    it::getStableName shouldBe "a"
+
                     it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                         it::isFinal shouldBe false
                         classType("Foo")
@@ -45,6 +47,8 @@ class ASTTryStatementTest : ParserTestSpec({
             child<ASTResourceList> {
                 child<ASTResource> {
                     it::isConciseResource shouldBe false
+                    it::getStableName shouldBe "a"
+
                     it::getInitializer shouldBe fromChild<ASTLocalVariableDeclaration, ASTExpression> {
                         it::isFinal shouldBe true
                         classType("Foo")
@@ -68,6 +72,8 @@ class ASTTryStatementTest : ParserTestSpec({
             child<ASTResourceList> {
                 child<ASTResource> {
                     it::isConciseResource shouldBe true
+                    it::getStableName shouldBe "a"
+
                     it::getInitializer shouldBe variableRef("a")
                 }
                 it::hasTrailingSemiColon shouldBe false
@@ -82,6 +88,8 @@ class ASTTryStatementTest : ParserTestSpec({
             child<ASTResourceList> {
                 child<ASTResource> {
                     it::isConciseResource shouldBe true
+                    it::getStableName shouldBe "a"
+
                     it::getInitializer shouldBe variableRef("a")
                 }
                 it::hasTrailingSemiColon shouldBe true
@@ -96,6 +104,8 @@ class ASTTryStatementTest : ParserTestSpec({
             child<ASTResourceList> {
                 child<ASTResource> {
                     it::isConciseResource shouldBe true
+                    it::getStableName shouldBe "a.b"
+
                     it::getInitializer shouldBe fieldAccess("b") {
                         ambiguousName("a")
                     }
