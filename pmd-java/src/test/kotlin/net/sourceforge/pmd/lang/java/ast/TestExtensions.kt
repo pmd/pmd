@@ -102,7 +102,7 @@ fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: 
 fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, out ASTExpression>.() -> ASTExpression): ASTExpression =
         child<ASTUnaryExpression> {
             it::getOp shouldBe op
-            it::getBaseExpression shouldBe baseExpr()
+            it::getOperand shouldBe baseExpr()
         }
 
 
@@ -119,7 +119,7 @@ fun TreeNodeWrapper<Node, *>.incrementExpr(op: IncrementOp, isPrefix: Boolean, b
             it::isPrefix shouldBe isPrefix
             it::isDecrement shouldBe (op == IncrementOp.DECREMENT)
             it::isIncrement shouldBe (op == IncrementOp.INCREMENT)
-            it::getBaseExpression shouldBe baseExpr()
+            it::getOperand shouldBe baseExpr()
         }
 
 fun TreeNodeWrapper<Node, *>.typeParamList(contents: NodeSpec<ASTTypeParameters>) =

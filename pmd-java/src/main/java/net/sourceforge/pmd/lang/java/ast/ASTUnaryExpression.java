@@ -48,7 +48,7 @@ public final class ASTUnaryExpression extends AbstractJavaExpr implements ASTExp
     }
 
 
-    public ASTExpression getBaseExpression() {
+    public ASTExpression getOperand() {
         return (ASTExpression) jjtGetChild(0);
     }
 

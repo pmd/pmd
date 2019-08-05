@@ -102,7 +102,7 @@ public final class ASTIncrementExpression extends AbstractJavaExpr implements AS
     /**
      * Returns the expression assigned by this expression.
      */
-    public ASTAssignableExpr getBaseExpression() {
+    public ASTAssignableExpr getOperand() {
         return (ASTAssignableExpr) jjtGetChild(0);
     }
 
