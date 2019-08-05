@@ -9,7 +9,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * UnaryOp ::= "++" | "--"
+ * IncrementOp ::= "++" | "--"
  *
  * </pre>
  *
