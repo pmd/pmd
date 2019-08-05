@@ -12,7 +12,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
- * The interface use to mark nodes that can be annotated.
+ * Marks nodes that can be annotated. {@linkplain ASTAnnotation Annotations}
+ * are most often the first few children of the node they apply to.
+ * E.g. in {@code @Positive int}, the {@code @Positive} annotation is
+ * a child of the {@link ASTPrimitiveType PrimitiveType} node. This
+ * contrasts with PMD 6.0 grammar, where the annotations were most often
+ * the preceding siblings.
  */
 public interface Annotatable extends JavaNode {
 

@@ -1,5 +1,5 @@
 /**
- * Nest annotations inside the node they apply to. The node TypeBound is 
+ * Nest annotations inside the node they apply to. The node TypeBound is
  * removed. Allow type annotations on InstanceofExpression, MethodReference
  * and bounds of an IntersectionType.
  * Clément Fournier 06/2019
@@ -1716,15 +1716,17 @@ private void ModuleDeclLahead() #void:
 
 
 void PackageDeclaration() :
-{}
+{String image;}
 {
-  AnnotationList() "package" Name() ";"
+  AnnotationList() "package" image=VoidName() { jjtThis.setImage(image); } ";"
 }
 
 void ImportDeclaration() :
-{}
+{String image;}
 {
-  "import" [ "static" {checkForBadStaticImportUsage();jjtThis.setStatic();} ] Name() [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
+  "import" [ "static" {checkForBadStaticImportUsage();jjtThis.setStatic();} ]
+  image=VoidName() { jjtThis.setImage(image); }
+  [ "." "*" {jjtThis.setImportOnDemand();} ] ";"
 }
 
 /*
@@ -2278,7 +2280,7 @@ void ResultType() :
 }
 
 
-// TODO rename to ThrowsClause
+// TODO rename to ThrowsClause, stop using Name
 void NameList() :
 {}
 {
@@ -3198,10 +3200,10 @@ void Annotation() #void:
 {}
 {
  (
-   LOOKAHEAD( "@" Name() "(" ( <IDENTIFIER> "=" | ")" ))
+   LOOKAHEAD( "@" VoidName() "(" ( <IDENTIFIER> "=" | ")" ))
    NormalAnnotation()
  |
-   LOOKAHEAD( "@" Name() "(" )
+   LOOKAHEAD( "@" VoidName() "(" )
    SingleMemberAnnotation()
  |
    MarkerAnnotation()
@@ -3391,7 +3393,8 @@ void AmbiguousName():
 String VoidName() #void:
 /*
  * A lookahead of 2 is required below since "Name" can be followed
- * by a ".*" when used in the context of an "ImportDeclaration".
+ * by a ".*" when used in the context of an "ImportDeclaration",
+ * or with "this" or "super" in PrimaryPrefix.
  */
 {
   StringBuilder s = new StringBuilder();

@@ -218,23 +218,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return data;
     }
 
-    @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName importedType = (ASTName) node.jjtGetChild(0);
-
-        if (importedType.getType() != null) {
-            setTypeDefinition(node, JavaTypeDefinition.forClass(importedType.getType()));
-        } else {
-            populateType(node, importedType.getImage());
-        }
-
-        if (node.getType() != null) {
-            node.setPackage(node.getType().getPackage());
-        }
-
-        // no need to visit children, the only child, ASTName, will have no type
-        return data;
-    }
 
     @Override
     public Object visit(ASTTypeDeclaration node, Object data) {

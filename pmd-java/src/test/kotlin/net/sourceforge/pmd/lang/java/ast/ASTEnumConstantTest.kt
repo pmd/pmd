@@ -18,18 +18,28 @@ class ASTEnumConstantTest : ParserTestSpec({
 
             child<ASTEnumBody> {
 
-                child<ASTEnumConstant> {
-                    variableId("A") {
+                enumConstant("A") {
+                    it::isAnonymousClass shouldBe false
+
+                    it::getId shouldBe variableId("A") {
                         it::isEnumConstant shouldBe true
-                        it::isField shouldBe false // TODO ???
+                        it::isField shouldBe false
                     }
+
+                    it::getArguments shouldBe null
+                    it::getAnonymousClass shouldBe null
                 }
 
-                child<ASTEnumConstant> {
-                    variableId("B") {
+                enumConstant("B") {
+                    it::isAnonymousClass shouldBe false
+
+                    it::getId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
-                        it::isField shouldBe false // TODO ???
+                        it::isField shouldBe false
                     }
+
+                    it::getArguments shouldBe null
+                    it::getAnonymousClass shouldBe null
                 }
             }
         }
@@ -42,16 +52,18 @@ class ASTEnumConstantTest : ParserTestSpec({
 
             child<ASTEnumBody> {
 
-                child<ASTEnumConstant> {
-                    variableId("B") {
+                enumConstant("B") {
+                    it::isAnonymousClass shouldBe true
+
+                    it::getId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
-                        it::isField shouldBe false // TODO ???
+                        it::isField shouldBe false
                     }
 
-                    child<ASTAnonymousClassDeclaration> {
-                        child<ASTClassOrInterfaceBody> {
+                    it::getArguments shouldBe null
 
-                        }
+                    it::getAnonymousClass shouldBe child {
+                        child<ASTClassOrInterfaceBody> {}
                     }
                 }
             }
@@ -64,17 +76,22 @@ class ASTEnumConstantTest : ParserTestSpec({
 
             child<ASTEnumBody> {
 
-                child<ASTEnumConstant> {
-                    annotation("C")
+                enumConstant("B") {
+                    it::getDeclaredAnnotations shouldBe listOf(annotation("C"))
 
-                    variableId("B")
+                    it::getId shouldBe variableId("B")
+
+                    it::getArguments shouldBe null
+                    it::getAnonymousClass shouldBe null
                 }
 
-                child<ASTEnumConstant> {
-                    annotation("A")
-                    annotation("a")
+                enumConstant("C") {
+                    it::getDeclaredAnnotations shouldBe listOf(annotation("A"), annotation("a"))
 
-                    variableId("C")
+                    it::getId shouldBe variableId("C")
+
+                    it::getArguments shouldBe null
+                    it::getAnonymousClass shouldBe null
                 }
             }
         }
@@ -86,15 +103,17 @@ class ASTEnumConstantTest : ParserTestSpec({
 
             child<ASTEnumBody> {
 
-                child<ASTEnumConstant> {
-                    variableId("B") {
+                enumConstant("B") {
+                    it::getId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
-                        it::isField shouldBe false // TODO ???
+                        it::isField shouldBe false
                     }
 
-                    child<ASTArgumentList> {
-                        child<ASTStringLiteral> { }
+                    it::getArguments shouldBe child {
+                        stringLit("\"str\"")
                     }
+
+                    it::getAnonymousClass shouldBe null
                 }
             }
         }
@@ -103,18 +122,18 @@ class ASTEnumConstantTest : ParserTestSpec({
 
             child<ASTEnumBody> {
 
-                child<ASTEnumConstant> {
-                    variableId("B") {
+                enumConstant("B") {
+                    it::getId shouldBe variableId("B") {
                         it::isEnumConstant shouldBe true
-                        it::isField shouldBe false // TODO ???
+                        it::isField shouldBe false
                     }
 
-                    child<ASTArgumentList> {
-                        child<ASTStringLiteral> { }
+                    it::getArguments shouldBe child {
+                        stringLit("\"str\"")
                     }
 
-                    child<ASTAnonymousClassDeclaration> {
-                        child<ASTClassOrInterfaceBody> { }
+                    it::getAnonymousClass shouldBe child {
+                        child<ASTClassOrInterfaceBody> {}
                     }
                 }
             }

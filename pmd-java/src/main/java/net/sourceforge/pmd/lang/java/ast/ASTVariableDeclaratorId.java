@@ -150,6 +150,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
     /**
      * Returns true if this node declares a field.
+     * TODO should this return true if this is an enum constant?
      */
     public boolean isField() {
         return getNthParent(2) instanceof ASTFieldDeclaration;
