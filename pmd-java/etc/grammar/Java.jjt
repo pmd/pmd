@@ -3127,25 +3127,19 @@ void TryStatement() :
  */
 {}
 {
-  "try" (ResourceSpecification())? Block()
+  "try" (ResourceList())? Block()
   ( CatchStatement() )*
   [ FinallyStatement() ]
 }
 
-void ResourceSpecification() #ResourceList:
+void ResourceList():
 {}
 {
     {checkForBadTryWithResourcesUsage();}
 	"("
-	Resources()
-	(LOOKAHEAD(2) ";" {jjtThis.setTrailingSemi();})?
-	")"	
-}
-
-void Resources() #void:
-{}
-{
 	Resource() (LOOKAHEAD(2) ";" Resource())*
+	(";" {jjtThis.setTrailingSemi();})?
+	")"
 }
 
 void Resource() :
