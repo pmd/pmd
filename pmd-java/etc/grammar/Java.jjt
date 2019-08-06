@@ -232,7 +232,7 @@ options {
   STATIC = false;
   USER_CHAR_STREAM = true;
   JDK_VERSION = "1.5";
-  TOKEN_FACTORY = "JavaTokenUtils";
+  TOKEN_FACTORY = "JavaTokenFactory";
 
   MULTI = true;
   VISITOR = true;
@@ -2999,14 +2999,14 @@ void AssertStatement() :
 void RUNSIGNEDSHIFT() #void:
 {}
 {
-    LOOKAHEAD({ JavaTokenUtils.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
+    LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RUNSIGNEDSHIFT})
     ">" ">" ">"
 }
 
 void RSIGNEDSHIFT() #void:
 {}
 {
-    LOOKAHEAD({ JavaTokenUtils.getRealKind(getToken(1)) == RSIGNEDSHIFT})
+    LOOKAHEAD({ JavaTokenFactory.getRealKind(getToken(1)) == RSIGNEDSHIFT})
     ">" ">"
 }
 

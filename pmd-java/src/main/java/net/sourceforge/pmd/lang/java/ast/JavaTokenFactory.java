@@ -9,15 +9,18 @@ import net.sourceforge.pmd.lang.ast.impl.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.impl.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
 
-final class JavaTokenUtils {
+final class JavaTokenFactory {
 
-    private JavaTokenUtils() {
+    private JavaTokenFactory() {
 
     }
 
     static JavaccToken newToken(int kind, CharStream charStream) {
         JavaCharStream jcs = (JavaCharStream) charStream;
 
+        // Most tokens have an entry in there, it's used to share the
+        // image string for keywords & punctuation. Those represent ~40%
+        // of token instances
         String image = JavaParserTokenManager.jjstrLiteralImages[kind];
 
         switch (kind) {
@@ -32,12 +35,12 @@ final class JavaTokenUtils {
                 jcs.getEndOffset(),
                 jcs.getTokenDocument()
             );
-        case JavaParserConstants.WHITESPACE:
-            // unlikely that anybody cares about that, and since
-            // they're still 30% of all tokens best make this assumption
 
-            // btw 40% of all tokens have a compile-time string constant
-            // as image (jjstrLiteralImages) so they're shared.
+        case JavaParserConstants.WHITESPACE:
+            // We don't create a new string for the image of whitespace tokens eagerly
+
+            // It's unlikely that anybody cares about that, and since
+            // they're still 30% of all tokens this is advantageous
             return new LazyImageToken(
                 kind,
                 jcs.getStartOffset(),

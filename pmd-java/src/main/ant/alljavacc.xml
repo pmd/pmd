@@ -145,20 +145,20 @@
 
 
         <replace file="${target-package-dir}/JavaParserTokenManager.java">
-            <replacetoken><![CDATA[t = JavaTokenUtils.newToken(jjmatchedKind, curTokenImage);
+            <replacetoken><![CDATA[t = JavaTokenFactory.newToken(jjmatchedKind, curTokenImage);
 
    t.beginLine = beginLine;
    t.endLine = endLine;
    t.beginColumn = beginColumn;
    t.endColumn = endColumn;]]></replacetoken>
             <replacevalue>
-                <![CDATA[t = JavaTokenUtils.newToken(jjmatchedKind, curTokenImage, beginLine, endLine, beginColumn, endColumn);]]></replacevalue>
+                <![CDATA[t = JavaTokenFactory.newToken(jjmatchedKind, curTokenImage, beginLine, endLine, beginColumn, endColumn);]]></replacevalue>
         </replace>
 
         <replaceregexp file="${target-package-dir}/JavaParserTokenManager.java" flags="s">
             <regexp pattern="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken.*?}" />
             <substitution
-                    expression="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken() {return JavaTokenUtils.newToken(jjmatchedKind, input_stream);}"/>
+                    expression="protected net.sourceforge.pmd.lang.ast.impl.JavaccToken jjFillToken() {return JavaTokenFactory.newToken(jjmatchedKind, input_stream);}"/>
         </replaceregexp>
 
 
