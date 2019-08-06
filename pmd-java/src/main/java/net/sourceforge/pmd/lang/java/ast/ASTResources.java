@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+@Deprecated
 public final class ASTResources extends AbstractJavaNode {
 
     ASTResources(int id) {

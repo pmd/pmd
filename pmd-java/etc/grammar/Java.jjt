@@ -1,4 +1,9 @@
 /**
+ * Make Resources #void, rename ResourceSpecification to ResourceList,
+ * put a LocalVariableDeclaration node inside Resource.
+ * Merge different increment/decrement expressions.
+ * Clément Fournier 07/2019
+ *====================================================================
  * Nest annotations inside the node they apply to. The node TypeBound is
  * removed. Allow type annotations on InstanceofExpression, MethodReference
  * and bounds of an IntersectionType.
@@ -3117,33 +3122,29 @@ void TryStatement() :
  */
 {}
 {
-  "try" (ResourceSpecification())? Block()
+  "try" (ResourceList())? Block()
   ( CatchStatement() )*
   [ FinallyStatement() ]
 }
 
-void ResourceSpecification() :
+void ResourceList():
 {}
 {
     {checkForBadTryWithResourcesUsage();}
 	"("
-	Resources()
-	(LOOKAHEAD(2) ";")?
-	")"	
-}
-
-void Resources() :
-{}
-{
 	Resource() (LOOKAHEAD(2) ";" Resource())*
+	(";" {jjtThis.setTrailingSemi();})?
+	")"
 }
 
 void Resource() :
 {boolean isFinal = false;}
 {
    LOOKAHEAD(("final" | Annotation())* LocalVariableType() VariableDeclaratorId() "=" )
-       isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
-       LocalVariableType() VariableDeclaratorId() "=" Expression()
+        (
+            isFinal=LocalVarModifierList() {jjtThis.setFinal(isFinal);}
+            LocalVariableType() VariableDeclarator()
+        ) #LocalVariableDeclaration
    |
    PrimaryExpression() {checkForBadConciseTryWithResourcesUsage();} {}
 }

@@ -33,7 +33,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
-import net.sourceforge.pmd.lang.java.ast.ASTResourceSpecification;
+import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
@@ -407,7 +407,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                 }
             } else if (t.isTryWithResources()) {
                 // maybe the variable is used as a resource
-                List<ASTName> names = t.getFirstChildOfType(ASTResourceSpecification.class).findDescendantsOfType(ASTName.class);
+                List<ASTName> names = t.getFirstChildOfType(ASTResourceList.class).findDescendantsOfType(ASTName.class);
                 for (ASTName potentialUsage : names) {
                     if (potentialUsage.hasImageEqualTo(variableToClose)) {
                         closed = true;
