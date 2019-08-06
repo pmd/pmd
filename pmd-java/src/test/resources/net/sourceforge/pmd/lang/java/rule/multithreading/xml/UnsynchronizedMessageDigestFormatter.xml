@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Digest is called from non-synchronized block</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.security.MessageDigest;
+
+public class Foo {
+    private static final MessageDigest INSTANCE = MessageDigest.getInstance("SHA-512");
+    void bar() {
+        byte[] input = new byte[13];
+        INSTANCE.digest(input); // poor, no thread-safety
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>2, No call to digest</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.security.MessageDigest;
+
+public class Foo {
+    private static final MessageDigest INSTANCE = MessageDigest.getInstance("SHA-512");
+    void bar() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>3, Instance synchronized, Not OK - see #1815</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.security.MessageDigest;
+
+public class Foo {
+    private static final MessageDigest INSTANCE = MessageDigest.getInstance("SHA-512");
+    synchronized void bar() {
+        byte[] input = new byte[13];
+        INSTANCE.digest(input); // no thread-safety, protected by no static monitor
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description>4, Inside synchronized, OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.security.MessageDigest;
+
+public class Foo {
+    private static final MessageDigest INSTANCE = MessageDigest.getInstance("SHA-512");
+    void bar() {
+        synchronized(INSTANCE) {
+            byte[] input = new byte[13];
+            INSTANCE.digest(input); // no thread-safety, protected by no static monitor
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

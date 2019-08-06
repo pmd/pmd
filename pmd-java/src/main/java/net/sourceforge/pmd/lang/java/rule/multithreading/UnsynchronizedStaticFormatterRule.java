@@ -77,7 +77,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                 continue;
             }
 
-            // is there a block-level synch?
+            // is there a block-level sync?
             ASTSynchronizedStatement syncStatement = n.getFirstParentOfType(ASTSynchronizedStatement.class);
             if (syncStatement != null) {
                 ASTExpression expression = syncStatement.getFirstChildOfType(ASTExpression.class);
@@ -89,7 +89,7 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRule {
                 }
             }
             
-            // method level synch enabled and used?
+            // method level sync enabled and used?
             if (getProperty(ALLOW_METHOD_LEVEL_SYNC)) {
                 ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (method != null && method.isSynchronized() && method.isStatic()) {

@@ -288,6 +288,36 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnsynchronizedStaticMessageDigest"
+          since="6.18.0"
+          message="Static MessageDigest object should be accessed in a synchronized manner"
+          class="net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticMessageDigestRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#unsynchronizedstaticmessagedigest">
+        <description>
+            MessageDigest::digest is not synchronized. We should use separate format instances
+            for each thread. If multiple threads must access a static formatter, the formatter must be
+            synchronized on block level.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+    private static final MessageDigest INSTANCE = MessageDigest.getInstance("SHA-512");
+    void bar() {
+        byte[] input = new byte[13];
+        INSTANCE.digest(input); // poor, no thread-safety
+    }
+    void foo() {
+        byte[] input = new byte[13];
+        synchronized (sdf) {
+            INSTANCE.digest(input); // preferred
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnsynchronizedStaticFormatter"
           since="6.11.0"
           message="Static Formatter objects should be accessed in a synchronized manner"
