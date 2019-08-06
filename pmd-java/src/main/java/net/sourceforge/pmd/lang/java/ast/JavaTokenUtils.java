@@ -32,6 +32,18 @@ final class JavaTokenUtils {
                 jcs.getEndOffset(),
                 jcs.getTokenDocument()
             );
+        case JavaParserConstants.WHITESPACE:
+            // unlikely that anybody cares about that, and since
+            // they're still 30% of all tokens best make this assumption
+
+            // btw 40% of all tokens have a compile-time string constant
+            // as image (jjstrLiteralImages) so they're shared.
+            return new LazyImageToken(
+                kind,
+                jcs.getStartOffset(),
+                jcs.getEndOffset(),
+                jcs.getTokenDocument()
+            );
         default:
             return new JavaccToken(
                 kind,
@@ -45,6 +57,18 @@ final class JavaTokenUtils {
 
     static int getRealKind(JavaccToken token) {
         return token instanceof GTToken ? ((GTToken) token).realKind : token.kind;
+    }
+
+    private static final class LazyImageToken extends JavaccToken {
+
+        public LazyImageToken(int kind, int startInclusive, int endExclusive, TokenDocument document) {
+            super(kind, null, startInclusive, endExclusive, document);
+        }
+
+        @Override
+        public String getImage() {
+            return document.getFullText().substring(getStartInDocument(), getEndInDocument());
+        }
     }
 
     private static final class GTToken extends JavaccToken {

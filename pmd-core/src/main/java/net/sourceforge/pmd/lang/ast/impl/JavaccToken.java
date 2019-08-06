@@ -67,7 +67,7 @@ public class JavaccToken implements GenericToken, java.io.Serializable {
     private final CharSequence image;
     private final int startInclusive;
     private final int endExclusive;
-    private final TokenDocument document;
+    protected final TokenDocument document;
 
     /** {@link #undefined()} */
     private JavaccToken() {

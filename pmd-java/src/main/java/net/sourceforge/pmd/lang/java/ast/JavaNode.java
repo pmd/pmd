@@ -85,6 +85,7 @@ public interface JavaNode extends ScopedNode, TextAvailableNode {
     @Override
     JavaNode jjtGetParent();
 
+
     GenericToken jjtGetFirstToken();
 
 
