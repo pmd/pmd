@@ -301,7 +301,7 @@ class JavaParser {
     return getToken(1).image.equals("assert");
   }
 
-  private boolean isPrecededByComment(Token tok) {
+  private boolean isPrecededByComment(JavaccToken tok) {
       boolean res = false;
       while (!res && tok.specialToken != null) {
           tok = tok.specialToken;
@@ -1632,7 +1632,7 @@ void TypeDeclaration():
 
 void ClassOrInterfaceDeclaration(int modifiers):
 {
-    Token t = null;
+    JavaccToken t = null;
     jjtThis.setModifiers(modifiers);
 }
 {
@@ -1663,7 +1663,7 @@ void ImplementsList():
 void EnumDeclaration(int modifiers):
 {
 
-Token t;
+JavaccToken t;
 jjtThis.setModifiers(modifiers);
 }
 {
@@ -1700,7 +1700,7 @@ void TypeParameters():
 }
 
 void TypeParameter():
-{Token t;}
+{JavaccToken t;}
 {
    AnnotationList()
    t=<IDENTIFIER> {jjtThis.setImage(t.image);} [  "extends" IntersectionType() ]
@@ -1928,7 +1928,7 @@ void AnnotatedClassOrInterfaceType() #void:
  */
 void Type() #void:
 {
-    Token t;
+    JavaccToken t;
 }
 {
  // lookahead to catch arrays of primitive types.
@@ -2359,7 +2359,7 @@ void PrimaryExpression() #void :
   Expressions that may be present at the start of a primary expression.
  */
 void PrimaryPrefix() #void :
-{Token savedStart;}
+{JavaccToken savedStart;}
 {
   Literal()
 | "this"                                  #ThisExpression
@@ -2544,7 +2544,7 @@ boolean LambdaParameterType() #void :
 }
 
 void Literal() #void :
-{ Token t;}
+{ JavaccToken t;}
 {
   NumericLiteral()
 | StringLiteral()
@@ -2555,7 +2555,7 @@ void Literal() #void :
 
 
 void NumericLiteral():
-{ Token t; }
+{ JavaccToken t; }
 {
   ( t=<INTEGER_LITERAL>             { jjtThis.setIntLiteral(); }
   | t=<FLOATING_POINT_LITERAL>      { jjtThis.setFloatLiteral(); }
@@ -2678,13 +2678,13 @@ void Statement() #void:
 }
 
 void LabeledStatement() :
-{Token t;}
+{JavaccToken t;}
 {
   t=<IDENTIFIER> {jjtThis.setImage(t.image);} ":" Statement()
 }
 
 void Block() :
-{Token t;}
+{JavaccToken t;}
 {
       "{"
 
@@ -2903,13 +2903,13 @@ void ForUpdate() :
 }
 
 void BreakStatement() :
-{Token t;}
+{JavaccToken t;}
 {
   "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() ] ";"
 }
 
 void ContinueStatement() :
-{Token t;}
+{JavaccToken t;}
 {
   "continue" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
 }
@@ -3055,7 +3055,7 @@ void MemberValuePairs() #void:
 }
 
 void MemberValuePair():
-{Token t;}
+{JavaccToken t;}
 {
     t=<IDENTIFIER> { jjtThis.setImage(t.image); } "=" MemberValue()
 }
@@ -3127,7 +3127,7 @@ void AnnotationTypeMemberDeclaration():
 
 void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
 {
-  Token t;
+  JavaccToken t;
   jjtThis.setModifiers(modifiers);
 }
 {
@@ -3150,7 +3150,7 @@ void DefaultValue():
 void ModuleDeclaration():
 {
     StringBuilder s = new StringBuilder();
-    Token t;
+    JavaccToken t;
 }
 {
   ( Annotation() )* [LOOKAHEAD({isKeyword("open")}) <IDENTIFIER> {jjtThis.setOpen(true);}] LOOKAHEAD({isKeyword("module")}) <IDENTIFIER>
@@ -3176,7 +3176,7 @@ void ModuleDirective():
 void ModuleName():
 {
   StringBuilder s = new StringBuilder();
-  Token t;
+  JavaccToken t;
 }
 {
   t=<IDENTIFIER> { s.append(t.image); }
@@ -3208,7 +3208,7 @@ String VoidName() #void:
  */
 {
   StringBuilder s = new StringBuilder();
-  Token t;
+  JavaccToken t;
 }
 {
   t=<IDENTIFIER>
