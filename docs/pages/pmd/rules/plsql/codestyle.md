@@ -82,7 +82,7 @@ Calling a procedure:
 **Example(s):**
 
 ``` sql
-BEGIN
+{%raw%}BEGIN
   -- select columns each on a separate line
   SELECT cmer_id
         ,version
@@ -108,7 +108,7 @@ BEGIN
    ,slt_code_in          => NULL
   );
 
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -157,7 +157,7 @@ In case you have loops please name the loop variables more meaningful.
 **Example(s):**
 
 ``` sql
--- good example
+{%raw%}-- good example
 BEGIN
 FOR company IN (SELECT * FROM companies) LOOP
   FOR contact IN (SELECT * FROM contacts) LOOP
@@ -179,7 +179,7 @@ FOR c1 IN (SELECT * FROM companies) LOOP
   END LOOP;
 END LOOP;
 END;
-/
+/{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -258,7 +258,7 @@ https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
 **Example(s):**
 
 ``` sql
-create or replace package inline_pragma_error is
+{%raw%}create or replace package inline_pragma_error is
 
 end;
 /
@@ -273,7 +273,7 @@ create or replace package body inline_pragma_error is
    end do_transaction;
 
 end inline_pragma_error;
-/
+/{%endraw%}
 ```
 
 **Use this rule by referencing it:**

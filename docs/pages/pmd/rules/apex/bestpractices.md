@@ -24,7 +24,7 @@ improves the readability of test output.
 **Example(s):**
 
 ``` java
-@isTest
+{%raw%}@isTest
 public class Foo {
      @isTest
     static void methodATest() {
@@ -33,7 +33,7 @@ public class Foo {
         System.assert(o.isClosed); // not good
         System.assert(o.isClosed, 'Opportunity is not closed.'); // good
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -55,7 +55,7 @@ with messages provide the developer a clearer idea of what the test does.
 **Example(s):**
 
 ``` java
-@isTest
+{%raw%}@isTest
 public class Foo {
    public static testMethod void testSomething() {
       Account a = null;
@@ -63,7 +63,7 @@ public class Foo {
    // System.assertNotEquals(a, null, 'account not found');
    a.toString();
    }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -85,7 +85,7 @@ As testMethod keyword is deprecated, Salesforce advices to use @isTest annotatio
 **Example(s):**
 
 ``` java
-@isTest
+{%raw%}@isTest
 private class ATest {
     @isTest
     static void methodATest() {
@@ -100,7 +100,7 @@ private class ATest {
     }
     private void fetchData() {
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -121,7 +121,7 @@ Apex unit tests should not use @isTest(seeAllData=true) because it opens up the 
 **Example(s):**
 
 ``` java
-@isTest(seeAllData = true)
+{%raw%}@isTest(seeAllData = true)
 public class Foo {
    public static testMethod void testSomething() {
       Account a = null;
@@ -129,7 +129,7 @@ public class Foo {
    // System.assertNotEquals(a, null, 'account not found');
    a.toString();
    }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -151,11 +151,11 @@ Many interfaces (e.g. Batch) required global modifiers in the past but don't req
 **Example(s):**
 
 ``` java
-global class Unchangeable {
+{%raw%}global class Unchangeable {
     global UndeletableType unchangable(UndeletableType param) {
         // ...
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -179,7 +179,7 @@ See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex
 **Example(s):**
 
 ``` java
-trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
+{%raw%}trigger Accounts on Account (before insert, before update, before delete, after insert, after update, after delete, after undelete) {
     for(Account acc : Trigger.new) {
         if(Trigger.isInsert) {
             // ...
@@ -191,7 +191,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
             // ...
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
