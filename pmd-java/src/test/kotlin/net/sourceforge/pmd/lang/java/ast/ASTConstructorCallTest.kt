@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 
 class ASTConstructorCallTest : ParserTestSpec({
 
@@ -15,7 +16,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                child<ASTVariableReference> { }
+                variableRef("a")
             }
         }
 
@@ -67,12 +68,10 @@ class ASTConstructorCallTest : ParserTestSpec({
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe child<ASTFieldAccess> {
+            it::getLhsExpression shouldBe fieldAccess("c", READ) {
                 it::getFieldName shouldBe "c"
 
-                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
-                    it::getName shouldBe "a.g"
-                }
+                it::getLhsExpression shouldBe ambiguousName("a.g")
             }
 
             it::getTypeNode shouldBe child {
@@ -81,7 +80,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                child<ASTVariableReference> { }
+                variableRef("a")
             }
         }
 
@@ -89,9 +88,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "a"
-            }
+            it::getLhsExpression shouldBe variableRef("a")
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
@@ -99,7 +96,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                child<ASTVariableReference> { }
+                variableRef("a")
             }
         }
     }
@@ -112,9 +109,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getLhsExpression shouldBe child<ASTConstructorCall> {
 
-                it::getTypeNode shouldBe child {
-                    it::getTypeImage shouldBe "O"
-                }
+                it::getTypeNode shouldBe classType("O")
 
                 it::getArguments shouldBe child {}
             }
@@ -123,12 +118,9 @@ class ASTConstructorCallTest : ParserTestSpec({
                 unspecifiedChild()
             }
 
-            it::getTypeNode shouldBe child {
-                it::getTypeImage shouldBe "Foo"
+            it::getTypeNode shouldBe classType("Foo") {
 
-                it::getTypeArguments shouldBe child {
-                    unspecifiedChild()
-                }
+                it::getTypeArguments shouldBe typeArgList()
             }
 
             it::getArguments shouldBe child {}
@@ -149,9 +141,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
                 annotation("Lol")
 
-                it::getTypeArguments shouldBe child {
-                    unspecifiedChild()
-                }
+                it::getTypeArguments shouldBe typeArgList()
             }
 
             it::getArguments shouldBe child {}

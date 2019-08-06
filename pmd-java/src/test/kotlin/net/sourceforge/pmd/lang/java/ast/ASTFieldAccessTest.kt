@@ -52,7 +52,7 @@ class ASTFieldAccessTest : ParserTestSpec({
         }
 
 
-        "a" should matchExpr<ASTVariableReference> {
+        "a" should matchExpr<ASTVariableAccess> {
             it::getVariableName shouldBe "a"
             it::parent shouldNotBe null
         }

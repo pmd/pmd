@@ -403,7 +403,7 @@ public class JavaParser {
   }
   private void checkForBadConciseTryWithResourcesUsage() {
     Node top = jjtree.peekNode();
-    if (!(top instanceof ASTFieldAccess || top instanceof ASTVariableReference)) {
+    if (!(top instanceof ASTFieldAccess || top instanceof ASTVariableAccess)) {
       throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
     }
 
@@ -2454,21 +2454,16 @@ void UnaryExpression() #void:
 {}
 {
     (("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()) #UnaryExpression
-  | PreIncrementExpression()
-  | PreDecrementExpression()
+  | PrefixIncrementExpression()
   | UnaryExpressionNotPlusMinus()
 }
 
-void PreIncrementExpression() :
+void PrefixIncrementExpression() #IncrementExpression:
 {}
 {
-  "++" PrimaryExpression()
-}
-
-void PreDecrementExpression() :
-{}
-{
-  "--" PrimaryExpression()
+  ( "++" {jjtThis.setIncrement();} | "--" )
+  { jjtThis.setPrefix(); }
+  PrimaryExpression()
 }
 
 void UnaryExpressionNotPlusMinus() #void:
@@ -2499,10 +2494,11 @@ private void UnaryExprNotPmStart() #void:
    | "void" | PrimitiveType()
 }
 
-void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
+void PostfixExpression() #void:
 {}
 {
-  PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
+
+  PrimaryExpression() [ ("++" {jjtThis.setIncrement();} | "--") #IncrementExpression(1) ]
 }
 
 
@@ -2954,9 +2950,7 @@ void EmptyStatement() :
 void StatementExpression() :
 {AssignmentOp op = null;}
 {
-  PreIncrementExpression()
-|
-  PreDecrementExpression()
+  PrefixIncrementExpression()
 |
   // using PostfixExpression here allows us to skip the part of the production tree
   // between Expression() and PostfixExpression()
@@ -3423,7 +3417,7 @@ String VoidName() #void:
 // normally by jjtree, but rather by the disambiguation
 // hooks spread across the parser
 //noinspection UnusedProduction
-void VariableReference():
+void VariableAccess():
 {}
 {
    <IDENTIFIER>

@@ -14,30 +14,20 @@ class ASTArrayAccessTest : ParserTestSpec({
 
         "a.b[0]" should matchExpr<ASTArrayAccess> {
 
-            it::getLhsExpression shouldBe child<ASTFieldAccess> {
-                it::getFieldName shouldBe "b"
-
-                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
-                    it::getName shouldBe "a"
-                }
+            it::getLhsExpression shouldBe fieldAccess("b") {
+                it::getLhsExpression shouldBe ambiguousName("a")
             }
 
-            it::getIndexExpression shouldBe child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 0
-            }
+            it::getIndexExpression shouldBe int(0)
         }
 
 
         "b[0]" should matchExpr<ASTArrayAccess> {
 
-            it::getLhsExpression shouldBe child<ASTVariableReference> {
-                it::getVariableName shouldBe "b"
-            }
+            it::getLhsExpression shouldBe variableRef("b")
 
 
-            it::getIndexExpression shouldBe child<ASTNumericLiteral> {
-                it::getValueAsInt shouldBe 0
-            }
+            it::getIndexExpression shouldBe int(0)
         }
     }
 })

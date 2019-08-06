@@ -10,17 +10,15 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * PrimaryExpression ::= {@linkplain ASTLiteral Literal}
- *                     | {@linkplain ASTClassLiteral ClassLiteral}
- *                     | {@linkplain ASTMethodCall MethodCall}
- *                     | {@linkplain ASTFieldAccess FieldAccess}
- *                     | {@linkplain ASTConstructorCall ConstructorCall}
- *                     | {@linkplain ASTArrayAllocation ArrayAllocation}
- *                     | {@linkplain ASTArrayAccess ArrayAccess}
- *                     | {@linkplain ASTVariableReference VariableReference}
- *                     | {@linkplain ASTMethodReference MethodReference}
- *                     | {@linkplain ASTThisExpression ThisExpression}
- *                     | {@linkplain ASTSuperExpression SuperExpression}
+ * PrimaryExpression ::= {@link ASTAssignableExpr AssignableExpr}
+ *                     | {@link ASTLiteral Literal}
+ *                     | {@link ASTClassLiteral ClassLiteral}
+ *                     | {@link ASTMethodCall MethodCall}
+ *                     | {@link ASTConstructorCall ConstructorCall}
+ *                     | {@link ASTArrayAllocation ArrayAllocation}
+ *                     | {@link ASTMethodReference MethodReference}
+ *                     | {@link ASTThisExpression ThisExpression}
+ *                     | {@link ASTSuperExpression SuperExpression}
  *
  *
  * </pre>

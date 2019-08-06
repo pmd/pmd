@@ -11,27 +11,27 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * VariableReference ::= &lt;IDENTIFIER&gt;
+ * VariableAccess ::= &lt;IDENTIFIER&gt;
  *
  * </pre>
  */
-public final class ASTVariableReference extends AbstractJavaExpr implements ASTPrimaryExpression {
+public final class ASTVariableAccess extends AbstractJavaExpr implements ASTAssignableExpr {
 
     /**
      * Constructor promoting an ambiguous name to a variable reference.
      */
-    ASTVariableReference(ASTAmbiguousName name) {
-        super(JavaParserTreeConstants.JJTVARIABLEREFERENCE);
+    ASTVariableAccess(ASTAmbiguousName name) {
+        super(JavaParserTreeConstants.JJTVARIABLEACCESS);
         setImage(name.getImage());
     }
 
 
-    ASTVariableReference(int id) {
+    ASTVariableAccess(int id) {
         super(id);
     }
 
 
-    ASTVariableReference(JavaParser p, int id) {
+    ASTVariableAccess(JavaParser p, int id) {
         super(p, id);
     }
 
