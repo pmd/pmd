@@ -42,7 +42,7 @@ class ASTCastExpressionTest : ParserTestSpec({
                     classType("Foo")
                     castExpr {
                         primitiveType(INT)
-                        variableRef("obj")
+                        variableAccess("obj")
                     }
                 }
             }
@@ -103,7 +103,7 @@ class ASTCastExpressionTest : ParserTestSpec({
                 equalityExpr(BinaryOp.NE) {
                     parenthesized {
                         andExpr {
-                            variableRef("modifiers")
+                            variableAccess("modifiers")
                             fieldAccess("Foo") {
                                 unspecifiedChild()
                             }
@@ -118,7 +118,7 @@ class ASTCastExpressionTest : ParserTestSpec({
             "(modifiers) != 0" should parseAs {
                 equalityExpr(BinaryOp.NE) {
                     parenthesized {
-                        variableRef("modifiers")
+                        variableAccess("modifiers")
                     }
 
                     number()
@@ -129,7 +129,7 @@ class ASTCastExpressionTest : ParserTestSpec({
             "(modifiers) * 0" should parseAs {
                 multiplicativeExpr(BinaryOp.MUL) {
                     parenthesized {
-                        variableRef("modifiers")
+                        variableAccess("modifiers")
                     }
 
                     number()

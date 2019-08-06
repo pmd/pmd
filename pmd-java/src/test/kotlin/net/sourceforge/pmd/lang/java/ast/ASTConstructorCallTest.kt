@@ -16,7 +16,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                variableRef("a")
+                variableAccess("a")
             }
         }
 
@@ -80,7 +80,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                variableRef("a")
+                variableAccess("a")
             }
         }
 
@@ -88,7 +88,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe variableRef("a")
+            it::getLhsExpression shouldBe variableAccess("a")
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
@@ -96,7 +96,7 @@ class ASTConstructorCallTest : ParserTestSpec({
 
             it::getArguments shouldBe child {
 
-                variableRef("a")
+                variableAccess("a")
             }
         }
     }

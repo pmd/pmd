@@ -24,7 +24,7 @@ class ASTArrayAccessTest : ParserTestSpec({
 
         "b[0]" should matchExpr<ASTArrayAccess> {
 
-            it::getLhsExpression shouldBe variableRef("b")
+            it::getLhsExpression shouldBe variableAccess("b")
 
 
             it::getIndexExpression shouldBe int(0)

@@ -16,7 +16,7 @@ class ASTRelationalExpressionTest : ParserTestSpec({
         "b < 3" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.LT
 
-            variableRef("b")
+            variableAccess("b")
             number()
         }
 
@@ -24,7 +24,7 @@ class ASTRelationalExpressionTest : ParserTestSpec({
         "a <= 3" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.LE
 
-            variableRef("a")
+            variableAccess("a")
             number()
         }
 
@@ -32,7 +32,7 @@ class ASTRelationalExpressionTest : ParserTestSpec({
             it::getOp shouldBe BinaryOp.GT
 
             number()
-            variableRef("b")
+            variableAccess("b")
         }
 
         "1 >= 3" should matchExpr<ASTRelationalExpression> {

@@ -133,8 +133,8 @@ class ASTArrayAllocationTest : ParserTestSpec({
             }
 
             it::getArrayInitializer shouldBe child {
-                variableRef("f")
-                variableRef("g")
+                variableAccess("f")
+                variableAccess("g")
             }
         }
 

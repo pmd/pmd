@@ -70,7 +70,7 @@ class ASTTryStatementTest : ParserTestSpec({
                     it::isConciseResource shouldBe true
                     it::getStableName shouldBe "a"
 
-                    it::getInitializer shouldBe variableRef("a")
+                    it::getInitializer shouldBe variableAccess("a")
                 }
                 it::hasTrailingSemiColon shouldBe false
             }
@@ -86,7 +86,7 @@ class ASTTryStatementTest : ParserTestSpec({
                     it::isConciseResource shouldBe true
                     it::getStableName shouldBe "a"
 
-                    it::getInitializer shouldBe variableRef("a")
+                    it::getInitializer shouldBe variableAccess("a")
                 }
                 it::hasTrailingSemiColon shouldBe true
             }

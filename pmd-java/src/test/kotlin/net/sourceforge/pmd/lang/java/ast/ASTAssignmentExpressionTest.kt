@@ -16,7 +16,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe variableRef("a", WRITE)
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
             it::getRightHandSide shouldBe child<ASTLambdaExpression> {
                 unspecifiedChildren(2)
@@ -27,7 +27,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe variableRef("a", WRITE)
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
             it::getRightHandSide shouldBe int(2)
         }
@@ -46,7 +46,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::isCompound shouldBe true
 
 
-            it::getLeftHandSide shouldBe variableRef("a", WRITE)
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
             it::getRightHandSide shouldBe int(2)
         }
@@ -59,13 +59,13 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe variableRef("a", WRITE)
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
             it::getRightHandSide shouldBe assignmentExpr(AssignmentOp.EQ) {
                 it::isCompound shouldBe false
 
-                it::getLeftHandSide shouldBe variableRef("b", WRITE)
-                it::getRightHandSide shouldBe variableRef("c", READ)
+                it::getLeftHandSide shouldBe variableAccess("b", WRITE)
+                it::getRightHandSide shouldBe variableAccess("c", READ)
             }
         }
     }

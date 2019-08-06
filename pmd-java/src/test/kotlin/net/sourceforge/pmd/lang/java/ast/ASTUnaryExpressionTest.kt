@@ -91,9 +91,9 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "(p)+q" should parseAs {
                 additiveExpr(ADD) {
                     parenthesized {
-                        variableRef("p", READ)
+                        variableAccess("p", READ)
                     }
-                    variableRef("q", READ)
+                    variableAccess("q", READ)
                 }
             }
 
@@ -103,7 +103,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     classType("p")
 
                     unaryExpr(BITWISE_INVERSE) {
-                        variableRef("q", READ)
+                        variableAccess("q", READ)
                     }
                 }
             }
@@ -113,7 +113,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     classType("p")
 
                     unaryExpr(BOOLEAN_NOT) {
-                        variableRef("q", READ)
+                        variableAccess("q", READ)
                     }
                 }
             }
@@ -121,7 +121,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "(p)++" should parseAs {
                 postfixMutation(INCREMENT) {
                     parenthesized {
-                        variableRef("p", WRITE)
+                        variableAccess("p", WRITE)
                     }
                 }
             }
@@ -132,9 +132,9 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "i+++i" should parseAs {
                 additiveExpr(ADD) {
                     postfixMutation(INCREMENT) {
-                        variableRef("i", WRITE)
+                        variableAccess("i", WRITE)
                     }
-                    variableRef("i", READ)
+                    variableAccess("i", READ)
                 }
             }
 
@@ -151,7 +151,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 unaryExpr(UNARY_PLUS) {
-                                    variableRef("q", READ)
+                                    variableAccess("q", READ)
                                 }
                             }
                         }
@@ -161,7 +161,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 unaryExpr(UNARY_MINUS) {
-                                    variableRef("q", READ)
+                                    variableAccess("q", READ)
                                 }
                             }
                         }
@@ -171,7 +171,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 prefixMutation(INCREMENT) {
-                                    variableRef("q", WRITE)
+                                    variableAccess("q", WRITE)
                                 }
                             }
                         }
@@ -181,7 +181,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                                 primitiveType(type)
 
                                 prefixMutation(DECREMENT) {
-                                    variableRef("q", WRITE)
+                                    variableAccess("q", WRITE)
                                 }
                             }
                         }

@@ -40,12 +40,12 @@ class ASTShiftExpressionTest : ParserTestSpec({
         "i < width >> 1" should matchExpr<ASTRelationalExpression> {
             it::getOp shouldBe BinaryOp.LT
 
-            variableRef("i")
+            variableAccess("i")
 
             child<ASTShiftExpression> {
                 it::getOp shouldBe BinaryOp.RIGHT_SHIFT
 
-                variableRef("width")
+                variableAccess("width")
                 int(1)
             }
         }
