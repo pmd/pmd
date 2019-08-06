@@ -7,10 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
- * Represents a string literal. The image of this node can be the literal as it appeared
- * in the source, but JavaCC performs its own unescaping and some escapes may be lost.
- * At the very least it has delimiters. {@link #getUnescapedValue()} allows to recover
- * the actual runtime value.
+ * Represents a string literal. The image of this node is the literal as it appeared
+ * in the source ({@link #getText()}). {@link #getUnescapedValue()} allows to recover
+ * the actual runtime value, by processing escapes.
  */
 public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
 

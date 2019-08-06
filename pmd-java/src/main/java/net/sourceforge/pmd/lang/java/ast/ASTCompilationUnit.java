@@ -104,6 +104,12 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
         return classTypeResolver;
     }
 
+
+    @Override
+    public ASTCompilationUnit getRoot() {
+        return this;
+    }
+
     @InternalApi
     @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {

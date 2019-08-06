@@ -18,8 +18,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
  */
 final class TokenUtils {
 
-    // we use JavaccToken to avoid using getBeginLine and getEndLine,
-    // which are now slower.
+    // mind: getBeginLine and getEndLine on JavaccToken are now very slow.
 
     /**
      * Assumes no two tokens overlap, and that the two tokens are from

@@ -25,8 +25,9 @@ public interface TextAvailableNode extends Node {
 
 
     /**
-     * Returns the original source underlying this node. In particular,
-     * for a {@link RootNode}, returns the whole text of the file.
+     * Returns the original source code underlying this node. In
+     * particular, for a {@link RootNode}, returns the whole text
+     * of the file.
      */
     String getText();
 
