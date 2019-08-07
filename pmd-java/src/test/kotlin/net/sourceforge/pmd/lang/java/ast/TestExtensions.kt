@@ -60,6 +60,13 @@ fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumCo
             spec()
         }
 
+fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: (ASTThisExpression) -> ASTClassOrInterfaceType? = { null }) =
+        child<ASTThisExpression> {
+            qualifier(it).let { qual ->
+                it::getQualifier shouldBe qual
+            }
+        }
+
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
         child<ASTVariableDeclaratorId>(ignoreChildren = true) {
             it::getVariableName shouldBe name
@@ -81,6 +88,7 @@ fun TreeNodeWrapper<Node, *>.variableAccess(name: String, accessType: ASTAssigna
             }
             otherAssertions(it)
         }
+
 fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
         child<ASTFieldAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getFieldName shouldBe name
@@ -225,6 +233,7 @@ fun TreeNodeWrapper<Node, *>.shiftExpr(op: BinaryOp, assertions: NodeSpec<ASTShi
             it::getOperator shouldBe op
             assertions()
         }
+
 fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTRelationalExpression>) =
         child<ASTRelationalExpression> {
             it::getOperator shouldBe op
