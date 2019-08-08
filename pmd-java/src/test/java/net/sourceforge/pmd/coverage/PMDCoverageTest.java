@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.coverage;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
@@ -17,20 +18,20 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.StandardErrorStreamLog;
-import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
+import org.junit.contrib.java.lang.system.SystemErrRule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.xpath.internal.XPathReportingUtils;
 
 public class PMDCoverageTest {
 
-    @Rule
-    public StandardOutputStreamLog output = new StandardOutputStreamLog();
+    @org.junit.Rule
+    public final SystemErrRule errorStream = new SystemErrRule().enableLog();
 
-    @Rule
-    public StandardErrorStreamLog errorStream = new StandardErrorStreamLog();
+    @org.junit.Rule
+    public final SystemOutRule output = new SystemOutRule().enableLog();
 
     /**
      * Test some of the PMD command line options
@@ -68,7 +69,7 @@ public class PMDCoverageTest {
 
             assertEquals("No exceptions expected", 0, StringUtils.countMatches(errorStream.getLog(), "Exception applying rule"));
             assertFalse("Wrong configuration? Ruleset not found", errorStream.getLog().contains("Ruleset not found"));
-            assertEquals("No usage of deprecated XPath attributes expected", 0, StringUtils.countMatches(errorStream.getLog(), "Use of deprecated attribute"));
+            assertEquals("No usage of deprecated XPath attributes expected", emptyList(), XPathReportingUtils.deprecatedAttrNames(errorStream.getLog()));
 
             String report = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
             assertEquals("No processing errors expected", 0, StringUtils.countMatches(report, "Error while processing"));

@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.testframework;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.junit.contrib.java.lang.system.SystemErrRule;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -45,6 +48,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.ast.xpath.internal.XPathReportingUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.TextRenderer;
 
@@ -53,6 +57,8 @@ import net.sourceforge.pmd.renderers.TextRenderer;
  */
 public abstract class RuleTst {
     private final DocumentBuilder documentBuilder;
+    @org.junit.Rule
+    public final SystemErrRule systemErrRule = new SystemErrRule().enableLog();
 
     public RuleTst() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -90,7 +96,7 @@ public abstract class RuleTst {
     }
 
     protected List<Rule> getRules() {
-        return Collections.emptyList();
+        return emptyList();
     }
 
     /**
@@ -157,6 +163,7 @@ public abstract class RuleTst {
                     test.getNumberOfProblemsExpected(), res);
             assertMessages(report, test);
             assertLineNumbers(report, test);
+            assertEquals("Rule " + rule.getName() + " uses deprecated attributes", emptyList(), XPathReportingUtils.deprecatedAttrNames(systemErrRule.getLog()));
         } finally {
             // Restore old properties
             for (Map.Entry<PropertyDescriptor<?>, Object> entry : oldProperties.entrySet()) {

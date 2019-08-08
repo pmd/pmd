@@ -9,13 +9,10 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
-
-import net.sourceforge.pmd.annotation.internal.DeprecationInfo;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.internal.XPathReportingUtils;
 
 /**
  * Represents an XPath attribute of a specific node.
@@ -71,11 +68,7 @@ public class Attribute {
             return value;
         }
 
-        if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING)
-            && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getLoggableAttributeName(), Boolean.TRUE) == null) {
-
-            LOG.warning(deprecationMsg(method.getAnnotation(DeprecationInfo.class)));
-        }
+        XPathReportingUtils.logIfDeprecated(this, method);
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
@@ -87,14 +80,6 @@ public class Attribute {
         return null;
     }
 
-    private String deprecationMsg(DeprecationInfo info) {
-        // this message needs to be kept in sync with PMDCoverageTest
-        String msg = "Use of deprecated attribute '" + getLoggableAttributeName() + "' in XPath query";
-        if (info != null) {
-            msg += ", " + StringUtils.uncapitalize(info.xpathReplacement());
-        }
-        return msg;
-    }
 
     public String getStringValue() {
         if (stringValue != null) {

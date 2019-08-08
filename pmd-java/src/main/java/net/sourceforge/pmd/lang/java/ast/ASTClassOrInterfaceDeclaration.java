@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.annotation.internal.DeprecationInfo;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -101,6 +102,22 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
         return isInterface() ? TypeKind.INTERFACE : TypeKind.CLASS;
     }
 
+    /**
+     * Returns the simple name of this type declaration.
+     */
+    public String getSimpleName() {
+        return getImage();
+    }
+
+    /**
+     * @deprecated Use {@link #getSimpleName()}
+     */
+    @Deprecated
+    @DeprecationInfo(xpathReplacement = "Use @SimpleName instead")
+    @Override
+    public String getImage() {
+        return super.getImage();
+    }
 
     @Override
     public List<ASTAnyTypeBodyDeclaration> getDeclarations() {
