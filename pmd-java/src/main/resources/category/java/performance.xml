@@ -862,7 +862,7 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
      ]
      /VariableDeclarator/VariableDeclaratorId[
       count(..//AllocationExpression/ClassOrInterfaceType[
-       @Image="ArrayList"
+       @VariableName="ArrayList"
       ]
       )=1
      ]/@Image
@@ -870,9 +870,9 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
    [
-     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType="true"]/@Image
+     @Image = ancestor::MethodDeclaration[1]//LocalVariableDeclaration/VariableDeclarator/VariableDeclaratorId[@ArrayType="true"]/@VariableName
      or
-     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@Image
+     @Image = ancestor::MethodDeclaration[1]//FormalParameter/VariableDeclaratorId/@VariableName
    ]
    /../..[count(.//PrimarySuffix)
    =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix

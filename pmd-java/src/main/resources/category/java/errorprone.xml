@@ -138,7 +138,7 @@ Use of the term 'assert' will conflict with newer versions of Java since it is a
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Image='assert']</value>
+                <value>//VariableDeclaratorId[@VariableName='assert']</value>
             </property>
         </properties>
         <example>
@@ -293,13 +293,13 @@ exactly equal to 0.1, as one would expect.  Therefore, it is generally recommend
         Name[ancestor::Block/BlockStatement/LocalVariableDeclaration
                 [Type[PrimitiveType[@Image='double' or @Image='float']
                       or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
-                /VariableDeclarator/VariableDeclaratorId/@Image = @Image
+                /VariableDeclarator/VariableDeclaratorId/@VariableName = @Image
             ]
         or
         Name[ancestor::MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter
                 [Type[PrimitiveType[@Image='double' or @Image='float']
                       or ReferenceType/ClassOrInterfaceType[@Image='Double' or @Image='Float']]]
-                /VariableDeclaratorId/@Image = @Image
+                /VariableDeclaratorId/@VariableName = @Image
             ]
     ]
 ]
@@ -352,7 +352,7 @@ Use of the term 'enum' will conflict with newer versions of Java since it is a r
         <priority>2</priority>
         <properties>
             <property name="xpath">
-                <value>//VariableDeclaratorId[@Image='enum']</value>
+                <value>//VariableDeclaratorId[@VariableName='enum']</value>
             </property>
         </properties>
         <example>
@@ -426,7 +426,7 @@ Each caught exception type should be handled in its own catch clause.
  /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
   /Name[
    @Image = ./ancestor::Block/preceding-sibling::FormalParameter
-    /VariableDeclaratorId/@Image
+    /VariableDeclaratorId/@VariableName
   ]
 ]]>
                 </value>
@@ -520,15 +520,15 @@ only add to code size.  Either remove the invocation, or use the return result.
 <![CDATA[
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression/PrimaryExpression/PrimaryPrefix/Name
 [
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getMessage')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@VariableName, '.getMessage')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getLocalizedMessage')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@VariableName, '.getLocalizedMessage')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getCause')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@VariableName, '.getCause')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.getStackTrace')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@VariableName, '.getStackTrace')
    or
-   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@Image, '.toString')
+   @Image = concat(../../../../../../../FormalParameter/VariableDeclaratorId/@VariableName, '.toString')
 ]
 ]]>
                 </value>
@@ -1450,7 +1450,7 @@ or reported.
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
- [FormalParameter/VariableDeclaratorId[not(matches(@Image, $allowExceptionNameRegex))]]
+ [FormalParameter/VariableDeclaratorId[not(matches(@VariableName, $allowExceptionNameRegex))]]
 ]]>
                 </value>
             </property>
@@ -2092,7 +2092,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
   [
     ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
     =
-    ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
+    ancestor::ForStatement/ForInit//VariableDeclaratorId/@VariableName
   ]
 ]]>
                 </value>
@@ -2383,7 +2383,7 @@ chain needs an own serialVersionUID field. See also [Should an abstract class ha
 //ClassOrInterfaceDeclaration
     [@Interface = 'false']
     [count(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-        /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@Image='serialVersionUID']) = 0]
+        /FieldDeclaration/VariableDeclarator/VariableDeclaratorId[@VariableName='serialVersionUID']) = 0]
     [(ImplementsList | ExtendsList)/ClassOrInterfaceType[pmd-java:typeIs('java.io.Serializable')]]
 ]]>
                 </value>
@@ -2683,8 +2683,8 @@ with the restriction that the logger needs to be passed into the constructor.
     (: check modifiers :)
     (@Private = false() or @Final = false())
     (: check logger name :)
-    or (@Static and .//VariableDeclaratorId[@Image != $staticLoggerName])
-    or (@Static = false() and .//VariableDeclaratorId[@Image != $loggerName])
+    or (@Static and .//VariableDeclaratorId[@VariableName != $staticLoggerName])
+    or (@Static = false() and .//VariableDeclaratorId[@VariableName != $loggerName])
 
     (: check logger argument type matches class or enum name :)
     or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@Image]
@@ -2698,7 +2698,7 @@ with the restriction that the logger needs to be passed into the constructor.
      ancestor::ClassOrInterfaceBody//ConstructorDeclaration//StatementExpression
         [PrimaryExpression[PrimaryPrefix[@ThisModifier]]/PrimarySuffix[@Image=$loggerName]]
         [AssignmentOperator[@Image = '=']]
-        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@Image]]
+        [Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = ancestor::ConstructorDeclaration//FormalParameter/VariableDeclaratorId/@VariableName]]
         [count(.//AllocationExpression)=0]
   )
 ]
@@ -3327,9 +3327,9 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 /PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
 concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [Type//ClassOrInterfaceType[@Image='Log']]
-/VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
+/VariableDeclarator/VariableDeclaratorId/@VariableName, '.'))]]
 [PrimarySuffix/Arguments[@ArgumentCount='1']]
-[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
+[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@VariableName]
 ]]>
                 </value>
             </property>

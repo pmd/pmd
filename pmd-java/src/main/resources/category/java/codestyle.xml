@@ -161,7 +161,7 @@ by the more general rule {% rule java/codestyle/FormalParameterNamingConventions
                 <value>
 <![CDATA[
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
-        pmd:matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
+        pmd:matches(@VariableName,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
 ]
 ]]>
                 </value>
@@ -1217,7 +1217,7 @@ Fields, formal arguments, or local variable names that are too long can make the
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) > $minimum]
+//VariableDeclaratorId[string-length(@VariableName) > $minimum]
 ]]>
                 </value>
             </property>
@@ -1343,7 +1343,7 @@ by the more general rule
                 <value>
 <![CDATA[
 //VariableDeclaratorId
-[starts-with(@Image, 'm_')]
+[starts-with(@VariableName, 'm_')]
 [not (../../../FieldDeclaration)]
 ]]>
                 </value>
@@ -1678,7 +1678,7 @@ Fields, local variables, or parameter names that are very short are not helpful 
             <property name="xpath">
                 <value>
 <![CDATA[
-//VariableDeclaratorId[string-length(@Image) < $minimum]
+//VariableDeclaratorId[string-length(@VariableName) < $minimum]
  (: ForStatement :)
  [not(../../..[self::ForInit])]
  (: Foreach statement :)
@@ -1731,7 +1731,7 @@ by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
 //ClassOrInterfaceDeclaration[@Interface='false']
  /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
   [@Final='false']
-  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
+  [VariableDeclarator/VariableDeclaratorId[upper-case(@VariableName)=@VariableName]]
 ]]>
                 </value>
             </property>
