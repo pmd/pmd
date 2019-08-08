@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.plugins.scala.cpd.ScalaTokenizer;
 
 import net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
@@ -22,7 +21,7 @@ public class ScalaTokenizerTest extends AbstractTokenizerTest {
 
     private static final Charset ENCODING = StandardCharsets.UTF_8;
 
-    private static final String FILENAME = "sample-LiftActor.scala";
+    private static final String FILENAME = "/tokenizerFiles/sample-LiftActor.scala";
 
     private File tempFile;
 
@@ -42,12 +41,12 @@ public class ScalaTokenizerTest extends AbstractTokenizerTest {
 
     @Override
     public String getSampleCode() throws IOException {
-        return IOUtils.toString(ScalaTokenizer.class.getResourceAsStream(FILENAME), ENCODING);
+        return IOUtils.toString(getClass().getResourceAsStream(FILENAME), ENCODING);
     }
 
     @Test
     public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 2591;
+        this.expectedTokenCount = 2471;
         super.tokenizeTest();
     }
 
