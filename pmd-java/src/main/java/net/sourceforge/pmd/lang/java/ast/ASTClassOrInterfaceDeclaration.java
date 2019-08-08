@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.annotation.internal.DeprecationInfo;
+import net.sourceforge.pmd.annotation.internal.XPathMigration;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -113,7 +113,7 @@ public class ASTClassOrInterfaceDeclaration extends AbstractAnyTypeDeclaration {
      * @deprecated Use {@link #getSimpleName()}
      */
     @Deprecated
-    @DeprecationInfo(xpathReplacement = "Use @SimpleName instead")
+    @XPathMigration(replacement = "Use @SimpleName instead")
     @Override
     public String getImage() {
         return super.getImage();

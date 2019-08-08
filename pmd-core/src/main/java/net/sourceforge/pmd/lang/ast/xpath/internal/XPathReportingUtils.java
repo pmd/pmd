@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.internal.DeprecationInfo;
+import net.sourceforge.pmd.annotation.internal.XPathMigration;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 public class XPathReportingUtils {
@@ -47,15 +47,15 @@ public class XPathReportingUtils {
         if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING)
             && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getLoggableAttributeName(attr), Boolean.TRUE) == null) {
 
-            LOG.warning(deprecationMsg(attr, method.getAnnotation(DeprecationInfo.class)));
+            LOG.warning(deprecationMsg(attr, method.getAnnotation(XPathMigration.class)));
         }
     }
 
-    private static String deprecationMsg(Attribute attr, DeprecationInfo info) {
+    private static String deprecationMsg(Attribute attr, XPathMigration info) {
         // this message needs to be kept in sync with PMDCoverageTest
         String msg = MESSAGE_PREFIX + " '" + getLoggableAttributeName(attr) + "' in XPath query";
         if (info != null) {
-            msg += ", " + StringUtils.uncapitalize(info.xpathReplacement());
+            msg += ", " + StringUtils.uncapitalize(info.replacement());
         }
         return msg;
     }

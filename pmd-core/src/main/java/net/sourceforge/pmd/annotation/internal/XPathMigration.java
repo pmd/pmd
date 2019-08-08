@@ -21,10 +21,13 @@ import java.lang.annotation.RetentionPolicy;
  * @since 6.18.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DeprecationInfo {
+public @interface XPathMigration {
 
 
-    String xpathReplacement();
+    /**
+     * An English sentence like "Use @SuchAttribute instead".
+     */
+    String replacement();
 
 
 }
