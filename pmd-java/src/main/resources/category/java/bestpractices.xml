@@ -662,7 +662,7 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
                 <value>
 <![CDATA[
 //ClassOrInterfaceDeclaration[
-       matches(@Image, $testClassPattern)
+       matches(@SimpleName, $testClassPattern)
         or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
 
     /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]

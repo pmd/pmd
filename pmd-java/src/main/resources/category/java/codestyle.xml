@@ -29,7 +29,7 @@ by {% rule java/codestyle/ClassNamingConventions %}.
 <![CDATA[
 //ClassOrInterfaceDeclaration
  [@Abstract='true' and @Interface='false']
- [not (starts-with(@Image,'Abstract'))]
+ [not (starts-with(@SimpleName,'Abstract'))]
 |
 //ClassOrInterfaceDeclaration
  [@Abstract='false']
@@ -1619,7 +1619,7 @@ Short Classnames with fewer than e.g. five characters are not recommended.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[string-length(@Image) < $minimum]
+//ClassOrInterfaceDeclaration[string-length(@SimpleName) < $minimum]
 ]]>
                 </value>
             </property>
@@ -2096,7 +2096,7 @@ public class Foo {
 [PrimarySuffix[@Arguments='false' and @ArrayDereference = 'false']]
 [not(PrimarySuffix/MemberSelector)]
 [ancestor::ClassOrInterfaceBodyDeclaration[1][@AnonymousInnerClass='false']]
-/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image]
+/PrimaryPrefix/Name[@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName]
 ]]>
                 </value>
             </property>

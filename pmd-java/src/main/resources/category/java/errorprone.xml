@@ -939,7 +939,7 @@ Note: This is only possible with Java 1.5 or higher.
 [
 MethodDeclarator/@Image = 'clone'
 and MethodDeclarator/FormalParameters/@ParameterCount = 0
-and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image)
+and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@SimpleName)
 ]
 ]]>
                 </value>
@@ -2446,7 +2446,7 @@ See the property `annotations`.
            [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
                 [@Public=true()]
                 [./ResultType/Type/ReferenceType/ClassOrInterfaceType
-                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
+                    [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@SimpleName]
                 ]
             ]
         )
@@ -2641,7 +2641,7 @@ Object clone() should be implemented with super.clone().
 [count(../Block//*[
     (self::AllocationExpression) and
     (./ClassOrInterfaceType/@Image = ancestor::
-ClassOrInterfaceDeclaration[1]/@Image)
+ClassOrInterfaceDeclaration[1]/@SimpleName)
   ])> 0
 ]
 ]]>
@@ -2687,7 +2687,7 @@ with the restriction that the logger needs to be passed into the constructor.
     or (@Static = false() and .//VariableDeclaratorId[@VariableName != $loggerName])
 
     (: check logger argument type matches class or enum name :)
-    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@Image]
+    or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::ClassOrInterfaceDeclaration/@SimpleName]
     or .//ArgumentList//ClassOrInterfaceType[@Image != ancestor::EnumDeclaration/@Image]
 ]
 [not(
