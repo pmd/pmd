@@ -100,6 +100,11 @@ public interface Node {
      */
     String getImage();
 
+
+    /**
+     * @deprecated Setting the image should not be done in user code.
+     */
+    @Deprecated
     void setImage(String image);
 
     /**

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.annotation.internal.DeprecationInfo;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -162,6 +163,15 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
         return getImage();
     }
 
+    /**
+     * @deprecated Use {@link #getVariableName()}.
+     */
+    @Override
+    @Deprecated
+    @DeprecationInfo(xpathReplacement = "Use @VariableName instead")
+    public String getImage() {
+        return super.getImage();
+    }
 
     /**
      * Returns true if the variable declared by this node is declared final.
