@@ -862,10 +862,10 @@ You must use new ArrayList<>(Arrays.asList(...)) if that is inconvenient for you
      ]
      /VariableDeclarator/VariableDeclaratorId[
       count(..//AllocationExpression/ClassOrInterfaceType[
-       @VariableName="ArrayList"
+       @Image="ArrayList"
       ]
       )=1
-     ]/@Image
+     ]/@VariableName
     ]
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
