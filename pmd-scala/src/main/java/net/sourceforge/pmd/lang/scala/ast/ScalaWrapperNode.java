@@ -4,17 +4,11 @@
 
 package net.sourceforge.pmd.lang.scala.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.scala.ScalaParser;
-import net.sourceforge.pmd.util.CompoundIterator;
 
 import scala.meta.Tree;
 import scala.meta.inputs.Position;
@@ -40,8 +34,8 @@ public class ScalaWrapperNode extends AbstractNode implements ScalaNode {
         this.node = scalaNode;
         Position pos = node.pos();
         beginLine = pos.startLine() + 1;
-        endLine = pos.endLine();
-        beginColumn = pos.startColumn();
+        endLine = pos.endLine() + 1;
+        beginColumn = pos.startColumn() + 1;
         endColumn = pos.endColumn() + 1;
     }
 
@@ -156,27 +150,6 @@ public class ScalaWrapperNode extends AbstractNode implements ScalaNode {
     @Override
     public void removeChildAtIndex(int childIndex) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Iterator<Attribute> getXPathAttributesIterator() {
-        List<Iterator<Attribute>> iterators = new ArrayList<>();
-
-        // Possible things we would want to expose to the XPath AST
-        //
-        // JavaConverters.asJava(node.productElementNames()).forEachRemaining(System.out::print);
-        // JavaConverters.asJava(node.productFields()).forEach(System.out::print);
-        // JavaConverters.asJava(node.productIterator()).forEachRemaining(System.out::print);
-
-        String image = getImage();
-        if (image != null) {
-            iterators.add(Collections.singletonList(new Attribute(this, "Image", image)).iterator());
-        }
-
-        @SuppressWarnings("unchecked")
-        Iterator<Attribute>[] it = new Iterator[iterators.size()];
-
-        return new CompoundIterator<>(iterators.toArray(it));
     }
 
 }

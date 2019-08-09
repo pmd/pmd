@@ -58,9 +58,11 @@ public class DumpFacade extends ScalaParserVisitorAdapter {
             StringBuilder sb = new StringBuilder();
             while (attributeIter.hasNext()) {
                 Attribute attr = attributeIter.next();
-                sb.append(attr.getName()).append("=").append(attr.getStringValue()).append(",");
+                sb.append(attr.getName()).append("=").append(attr.getStringValue()).append(", ");
             }
-            attrs = sb.deleteCharAt(sb.length()).toString();
+            if (sb.length() != 0) {
+                attrs = sb.delete(sb.length() - 2, sb.length()).toString();
+            }
         }
 
         if (image != null) {
