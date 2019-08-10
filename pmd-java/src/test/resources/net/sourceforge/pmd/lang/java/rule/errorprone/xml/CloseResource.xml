@@ -1200,4 +1200,18 @@ public class CloseResourceStream {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1076 [java] CloseResource false positive on non-SQL classes called Statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Statement;
+
+public class CloseResourceStatementFP {
+    public void check() {
+        Statement s = new Statement();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
