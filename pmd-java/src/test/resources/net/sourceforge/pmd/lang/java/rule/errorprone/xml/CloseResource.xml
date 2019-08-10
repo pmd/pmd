@@ -1122,7 +1122,7 @@ public class CloseResourceCase {
     </test-code>
 
     <test-code>
-        <description>Don't consider streams that are passed in as method arguments</description>
+        <description>#1966 [java] CloseResource false positive if Stream is passed as method parameter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.*;
@@ -1150,7 +1150,7 @@ public class CloseResourceFP {
     </test-code>
 
     <test-code>
-        <description>Indirect chaining with assignment before try</description>
+        <description>#1967 [java] CloseResource false positive with late assignment of variable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.*;

@@ -14,10 +14,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified Rules
+
+*   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now ignores by default instances
+    of `java.util.stream.Stream`. These streams are `AutoCloseable`, but most streams are backed by collections,
+    arrays, or generating functions, which require no special resource management. However, there are some exceptions:
+    The stream returned by `Files::lines(Path)` is backed by a actual file and needs to be closed. These instances
+    won't be found by default by the rule anymore.
+
 ### Fixed Issues
 
 *   java-codestyle
     *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
+*   java-errorprone
+    *   [#1922](https://github.com/pmd/pmd/issues/1922): \[java] CloseResource possible false positive with Streams
+    *   [#1966](https://github.com/pmd/pmd/issues/1966): \[java] CloseResource false positive if Stream is passed as method parameter
+    *   [#1967](https://github.com/pmd/pmd/issues/1967): \[java] CloseResource false positive with late assignment of variable
 
 ### API Changes
 
