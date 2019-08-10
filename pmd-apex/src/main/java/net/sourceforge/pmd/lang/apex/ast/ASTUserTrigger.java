@@ -35,6 +35,6 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
     }
 
     public String getUsages() {
-        return node.getUsages().stream().map(TriggerUsage::name).collect(Collectors.joining(","));
+        return node.getUsages().stream().map(TriggerUsage::name).sorted().collect(Collectors.joining(","));
     }
 }
