@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#1901](https://github.com/pmd/pmd/issues/1901): \[apex] Expose super type name of UserClass
+*   java-codestyle
+    *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
 
 ### API Changes
 
