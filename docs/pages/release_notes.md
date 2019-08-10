@@ -14,6 +14,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### New rule designer documentation
+
+The documentation for the rule designer is now available on the main PMD documentation page:
+[Rule Designer Reference](pmd_userdocs_extending_designer_reference.html). Check it out to learn
+about the usage and features of the rule designer.
+
 ### Fixed Issues
 
 ### API Changes
