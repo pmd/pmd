@@ -217,7 +217,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             if (formalParameters != null) {
                 List<ASTVariableDeclaratorId> ids = formalParameters.findDescendantsOfType(ASTVariableDeclaratorId.class);
                 for (ASTVariableDeclaratorId id : ids) {
-                    if (id.hasImageEqualTo(name.getImage())) {
+                    if (id.hasImageEqualTo(name.getImage()) && isResourceTypeOrSubtype(id)) {
                         result = true;
                         break;
                     }

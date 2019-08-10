@@ -1214,4 +1214,28 @@ public class CloseResourceStatementFP {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False-negative if only byte array is passed in as method parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceFN {
+    public Object deserialize(byte[] bytes) {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            return ois.readObject();
+        }
+        catch (IOException ex) {
+            throw new IllegalArgumentException("Failed to deserialize object", ex);
+        }
+        catch (ClassNotFoundException ex) {
+            throw new IllegalStateException("Failed to deserialize object type", ex);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
