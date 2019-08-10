@@ -1238,4 +1238,17 @@ public class CloseResourceFN {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>NullPointerException if type of method parameter is not known</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class CloseResourceNullPointer {
+    public void check(UnknownType param) {
+        InputStream in = param;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

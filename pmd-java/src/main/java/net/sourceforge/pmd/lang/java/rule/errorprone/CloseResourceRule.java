@@ -267,7 +267,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                     return true;
                 }
             }
-        } else if (refType.jjtGetChild(0) instanceof ASTReferenceType) {
+        } else if (refType.jjtGetNumChildren() > 0 && refType.jjtGetChild(0) instanceof ASTReferenceType) {
             // no type information (probably missing auxclasspath) - use simple types
             ASTReferenceType ref = (ASTReferenceType) refType.jjtGetChild(0);
             if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
