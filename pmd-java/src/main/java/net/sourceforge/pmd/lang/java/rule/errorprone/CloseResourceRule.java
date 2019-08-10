@@ -20,6 +20,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -345,10 +346,14 @@ public class CloseResourceRule extends AbstractJavaRule {
                 boolean criticalStatements = false;
 
                 for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
-                    // assume variable declarations are not critical
-                    ASTLocalVariableDeclaration varDecl = blocks.get(i)
+                    // assume variable declarations are not critical and assignments are not critical
+                    ASTBlockStatement block = blocks.get(i);
+                    ASTLocalVariableDeclaration varDecl = block
                             .getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
-                    if (varDecl == null) {
+                    ASTStatementExpression statementExpression = block.getFirstDescendantOfType(ASTStatementExpression.class);
+
+                    if (varDecl == null && (statementExpression == null
+                            || statementExpression.getFirstChildOfType(ASTAssignmentOperator.class) == null)) {
                         criticalStatements = true;
                         break;
                     }
