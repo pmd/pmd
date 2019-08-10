@@ -1120,4 +1120,24 @@ public class CloseResourceCase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Don't consider streams that are passed in as method arguments</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceFP {
+    public void check(InputStream in) {
+        if (in instanceof FileInputStream) {
+            FileInputStream fin = (FileInputStream) in;
+            doCheck(fin);
+        } else if (in instanceof ByteArrayInputStream) {
+            ByteArrayInputStream bin = (ByteArrayInputSream) in;
+            doCheck(bin);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
