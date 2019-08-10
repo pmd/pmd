@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -178,7 +177,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                     }
                 }
 
-                if (!isAllowedResourceType(type) && !isCastMethodParameter(var, node)) {
+                if (!isAllowedResourceType(type) && !isMethodParameter(var, node)) {
                     ids.put(var.getVariableId(), type);
                 }
             }
@@ -193,37 +192,33 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     /**
-     * Checks whether the variable is initialized via a cast expression from a method parameter.
+     * Checks whether the variable is initialized from a method parameter.
      * @param var the variable that is being initialized
      * @param methodOrCstor the method or constructor in which the variable is declared
      * @return <code>true</code> if the variable is initialized from a method parameter. <code>false</code>
      *         otherwise.
      */
-    private boolean isCastMethodParameter(ASTVariableDeclarator var, ASTMethodOrConstructorDeclaration methodOrCstor) {
+    private boolean isMethodParameter(ASTVariableDeclarator var, ASTMethodOrConstructorDeclaration methodOrCstor) {
         if (!var.hasInitializer()) {
             return false;
         }
 
         boolean result = false;
         ASTVariableInitializer initializer = var.getInitializer();
-        if (initializer.jjtGetChild(0) instanceof ASTExpression
-               && initializer.jjtGetChild(0).jjtGetChild(0) instanceof ASTCastExpression) {
-            ASTCastExpression cast = (ASTCastExpression) initializer.jjtGetChild(0).jjtGetChild(0);
-            ASTName name = cast.jjtGetChild(1).getFirstDescendantOfType(ASTName.class);
-            if (name != null) {
-                ASTFormalParameters formalParameters = null;
-                if (methodOrCstor.getKind() == MethodLikeKind.METHOD) {
-                    formalParameters = ((ASTMethodDeclaration) methodOrCstor).getFormalParameters();
-                } else if (methodOrCstor.getKind() == MethodLikeKind.CONSTRUCTOR) {
-                    formalParameters = ((ASTConstructorDeclaration) methodOrCstor).getFormalParameters();
-                }
-                if (formalParameters != null) {
-                    List<ASTVariableDeclaratorId> ids = formalParameters.findDescendantsOfType(ASTVariableDeclaratorId.class);
-                    for (ASTVariableDeclaratorId id : ids) {
-                        if (id.hasImageEqualTo(name.getImage())) {
-                            result = true;
-                            break;
-                        }
+        ASTName name = initializer.getFirstDescendantOfType(ASTName.class);
+        if (name != null) {
+            ASTFormalParameters formalParameters = null;
+            if (methodOrCstor.getKind() == MethodLikeKind.METHOD) {
+                formalParameters = ((ASTMethodDeclaration) methodOrCstor).getFormalParameters();
+            } else if (methodOrCstor.getKind() == MethodLikeKind.CONSTRUCTOR) {
+                formalParameters = ((ASTConstructorDeclaration) methodOrCstor).getFormalParameters();
+            }
+            if (formalParameters != null) {
+                List<ASTVariableDeclaratorId> ids = formalParameters.findDescendantsOfType(ASTVariableDeclaratorId.class);
+                for (ASTVariableDeclaratorId id : ids) {
+                    if (id.hasImageEqualTo(name.getImage())) {
+                        result = true;
+                        break;
                     }
                 }
             }

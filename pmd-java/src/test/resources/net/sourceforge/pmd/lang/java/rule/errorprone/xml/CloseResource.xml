@@ -1135,6 +1135,9 @@ public class CloseResourceFP {
         } else if (in instanceof ByteArrayInputStream) {
             ByteArrayInputStream bin = (ByteArrayInputSream) in;
             doCheck(bin);
+        } else {
+            BufferedInputStream buf = new BufferedInputStream(in);
+            doCheck(buf);
         }
     }
 }
