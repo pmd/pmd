@@ -73,9 +73,15 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
     }
 
 
-    public String getSuperTypeName() {
+    public String getSuperClassName() {
         return node.getDefiningType().getCodeUnitDetails().getSuperTypeRef().map(TypeRef::getNames)
             .map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
             .orElse("");
+    }
+
+    public String getInterfaceNames() {
+        return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream()
+                .map(TypeRef::getNames).map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
+                .collect(Collectors.joining(","));
     }
 }

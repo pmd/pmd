@@ -30,18 +30,26 @@ public class ASTUserClassTest {
     }
 
     @Test
-    public void testSuperClassType() {
+    public void testSuperClassName() {
         ApexNode<?> node = parse("public class AccountTriggerHandler extends TriggerHandler {}");
         Assert.assertSame(ASTUserClass.class, node.getClass());
         ASTUserClass toplevel = (ASTUserClass) node;
-        Assert.assertEquals("TriggerHandler", toplevel.getSuperTypeName());
+        Assert.assertEquals("TriggerHandler", toplevel.getSuperClassName());
     }
 
     @Test
-    public void testSuperClassType2() {
+    public void testSuperClassName2() {
         ApexNode<?> node = parse("public class AccountTriggerHandler extends Other.TriggerHandler {}");
         Assert.assertSame(ASTUserClass.class, node.getClass());
         ASTUserClass toplevel = (ASTUserClass) node;
-        Assert.assertEquals("Other.TriggerHandler", toplevel.getSuperTypeName());
+        Assert.assertEquals("Other.TriggerHandler", toplevel.getSuperClassName());
+    }
+
+    @Test
+    public void testInterfaces() {
+        ApexNode<?> node = parse("public class AccountTriggerHandler implements TriggerHandler, Other.Interface2 {}");
+        Assert.assertSame(ASTUserClass.class, node.getClass());
+        ASTUserClass toplevel = (ASTUserClass) node;
+        Assert.assertEquals("TriggerHandler,Other.Interface2", toplevel.getInterfaceNames());
     }
 }

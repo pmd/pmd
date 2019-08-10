@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.stream.Collectors;
+
+import apex.jorje.data.Identifier;
+import apex.jorje.data.ast.TriggerUsage;
 import apex.jorje.semantic.ast.compilation.UserTrigger;
 
 public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
@@ -24,5 +28,13 @@ public class ASTUserTrigger extends ApexRootNode<UserTrigger> {
 
     public ASTModifierNode getModifiers() {
         return getFirstChildOfType(ASTModifierNode.class);
+    }
+
+    public String getTargetName() {
+        return node.getTargetName().stream().map(Identifier::getValue).collect(Collectors.joining("."));
+    }
+
+    public String getUsages() {
+        return node.getUsages().stream().map(TriggerUsage::name).collect(Collectors.joining(","));
     }
 }
