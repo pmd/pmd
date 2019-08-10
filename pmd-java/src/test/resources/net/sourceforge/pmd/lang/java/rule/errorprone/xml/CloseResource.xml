@@ -1140,6 +1140,11 @@ public class CloseResourceFP {
             doCheck(buf);
         }
     }
+
+    public void dump(final Writer writer) {
+        final PrintWriter printWriter = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
+        printWriter.println(this);
+    }
 }
         ]]></code>
     </test-code>
