@@ -9,12 +9,11 @@ Basic test case for AvoidStringBufferField
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
-import java.lang.StringBuffer;
-import java.lang.StringBuilder;
+import java.security.MessageDigest;
 
 public class Foo {
-    private StringBuffer buffer;
-    private StringBuilder buffer2;
+    private MessageDigest md;
+    private static MessageDigest staticMd;
 }
      ]]></code>
     </test-code>
