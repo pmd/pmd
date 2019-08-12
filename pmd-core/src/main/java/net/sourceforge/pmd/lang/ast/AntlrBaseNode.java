@@ -109,6 +109,7 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     // TODO: should we make it abstract due to the comment in AbstractNode ?
     @Override
     public String getXPathNodeName() {
-        return getClass().getSimpleName();
+        final String simpleName = getClass().getSimpleName();
+        return simpleName.substring(0, simpleName.length() - "Context".length());
     }
 }

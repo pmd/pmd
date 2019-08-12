@@ -9,14 +9,22 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
+import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.FunctionHeadContext;
+import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.VariableDeclarationHeadContext;
 
 public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Boolean> {
 
     private static final String IBACTION = "@IBAction";
     private static final String IBOUTLET = "@IBOutlet";
 
+    public ProhibitedInterfaceBuilderRule() {
+        super();
+        addRuleChainVisit(FunctionHeadContext.class);
+        addRuleChainVisit(VariableDeclarationHeadContext.class);
+    }
+    
     @Override
-    public Boolean visitFunctionHead(SwiftParser.FunctionHeadContext ctx) {
+    public Boolean visitFunctionHead(FunctionHeadContext ctx) {
         if (ctx == null || ctx.attributes() == null) {
             return false;
         }
@@ -25,7 +33,7 @@ public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Boolean> {
     }
 
     @Override
-    public Boolean visitVariableDeclarationHead(final SwiftParser.VariableDeclarationHeadContext ctx) {
+    public Boolean visitVariableDeclarationHead(final VariableDeclarationHeadContext ctx) {
         if (ctx == null || ctx.attributes() == null) {
             return false;
         }

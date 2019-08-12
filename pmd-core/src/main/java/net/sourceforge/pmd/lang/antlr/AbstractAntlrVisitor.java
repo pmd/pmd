@@ -28,17 +28,20 @@ public abstract class AbstractAntlrVisitor<T> extends AbstractRule implements Pa
 
     @Override
     public T visit(ParseTree tree) {
+        if (tree instanceof AntlrBaseNode) {
+            return visit((AntlrBaseNode) tree);
+        }
         return tree.accept(this);
     }
 
     @Override
     public T visitChildren(RuleNode node) {
         T result = this.defaultResult();
-        int n = node.getChildCount();
+        final int n = node.getChildCount();
 
         for (int i = 0; i < n && this.shouldVisitNextChild(node, result); ++i) {
-            ParseTree c = node.getChild(i);
-            T childResult = c.accept(this);
+            final ParseTree c = node.getChild(i);
+            final T childResult = visit(c);
             result = this.aggregateResult(result, childResult);
         }
 
