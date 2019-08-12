@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.stream.Stream;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
@@ -84,9 +86,9 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     @Override
     public Node jjtGetChild(final int index) {
         try {
-            return (Node) children.get(index);
+            return (Node) childrenStream().skip(index).findFirst().orElse(null);
         } catch (final ClassCastException e) {
-            return new AntlrBaseNode();
+            throw new IllegalArgumentException("Accessing invalid Antlr node", e);
         }
     }
 
@@ -97,7 +99,11 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
 
     @Override
     public int jjtGetNumChildren() {
-        return children == null ? 0 : children.size();
+        return (int) childrenStream().count();
+    }
+    
+    private Stream<Node> childrenStream() {
+        return children == null ? Stream.empty() : children.stream().filter(e -> e instanceof Node).map(e -> (Node) e);
     }
 
     // TODO: should we make it abstract due to the comment in AbstractNode ?
