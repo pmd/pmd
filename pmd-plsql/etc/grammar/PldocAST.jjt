@@ -91,7 +91,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //
 options {
-	DEBUG_PARSER = false;
+	DEBUG_PARSER = true;
 	DEBUG_TOKEN_MANAGER = false;
 	DEBUG_LOOKAHEAD = false;
 	IGNORE_CASE = true;
@@ -1186,6 +1186,28 @@ void RestOfStatement() #void :
 
     [ OrderByClause() ]
     [ RowLimitingClause() ]
+    [ ForUpdateClause() ]
+}
+
+/**
+ * @see https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016
+ */
+void ForUpdateClause() #void :
+{}
+{
+  <FOR> <UPDATE>
+  [<OF> ColumnPath() ("," ColumnPath())* ]
+  [ <NOWAIT>
+  | <WAIT> <UNSIGNED_NUMERIC_LITERAL>
+  | <K_SKIP> <LOCKED>]
+}
+
+void ColumnPath() #void :
+{}
+{
+    [ LOOKAHEAD(6) SchemaName() "." ]
+    [ LOOKAHEAD(4) TableName() "." ]
+    Column()
 }
 
 void Subquery() #void :
@@ -4873,6 +4895,7 @@ TOKEN [IGNORE_CASE]:
 <UI: "UI"> |
 <UNDER: "UNDER"> |
 <USING: "USING"> |
+<WAIT: "WAIT"> |
 <WHILE: "WHILE"> |
 <YES: "YES"> | //SRT 2011-04-17
 
@@ -5006,11 +5029,13 @@ TOKEN [IGNORE_CASE]:
 | <LATERAL : "LATERAL">
 | <NOCYCLE : "NOCYCLE">
 | <CONNECT_BY_ROOT : "CONNECT_BY_ROOT">
+| <K_SKIP : "SKIP">
+| <LOCKED : "LOCKED">
 }
 
 /**
  * 2006-05-20 - Matthias Hendler - Added #GERMAN_SPECIAL_CHARACTERS and #SPECIAL_CHARACTERS.
- *                                 Added ":" to <IDENTIFIER>
+ *                                 Added ":" to <I  DENTIFIER>
  */
 TOKEN :
 {
@@ -5204,7 +5229,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
- "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
+"REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 "OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
@@ -5637,7 +5662,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LOCALTIMESTAMP>
 //| <LOCATION>
 //| <LOCATOR>
-//| <LOCKED>
+| <LOCKED>
 //| <LOGFILE>
 //| <LOGGING>
 //| <LOGICAL>
@@ -6078,7 +6103,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SIMPLE>
 //| <SINGLE>
 //| <SINGLETASK>
-//| <K_SKIP>
+| <K_SKIP>
 //| <SKIP_EXT_OPTIMIZER>
 //| <SKIP_UNQ_UNUSABLE_IDX>
 //| <SKIP_UNUSABLE_INDEXES>
@@ -6244,7 +6269,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <VECTOR_READ_TRACE>
 //| <VERSION>
 //| <VERSIONS>
-//| <WAIT>
+| <WAIT>
 //| <WALLET>
 //| <WELLFORMED>
 //| <WHEN>
