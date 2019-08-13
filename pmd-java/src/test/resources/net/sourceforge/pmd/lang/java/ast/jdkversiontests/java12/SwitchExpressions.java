@@ -23,7 +23,7 @@ public class SwitchExpressions {
                     default                     -> {
                         int k = day * 2;
                         int result = f(k);
-                        break result;
+                        yield result;
                     }
                 };
         System.out.printf("NumLetters: %d%n", numLetters);

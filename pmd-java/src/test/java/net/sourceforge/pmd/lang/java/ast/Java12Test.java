@@ -77,7 +77,8 @@ public class Java12Test {
 
     @Test
     public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12",
+        // note: this uses java13 as we need to use the yield statement
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13",
                 loadSource("SwitchExpressions.java"));
         Assert.assertNotNull(compilationUnit);
 
@@ -91,26 +92,4 @@ public class Java12Test {
         Assert.assertEquals(Integer.TYPE, localVarDecl.getType());
         Assert.assertEquals(Integer.TYPE, switchExpression.getType());
     }
-
-    @Test
-    public void testSwitchExpressionsBreak() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12",
-                loadSource("SwitchExpressionsBreak.java"));
-        Assert.assertNotNull(compilationUnit);
-
-        ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
-        Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabel.class).size());
-
-        ASTBreakStatement breakStatement = switchExpression.getFirstDescendantOfType(ASTBreakStatement.class);
-        Assert.assertEquals("SwitchExpressionsBreak.SIX", breakStatement.getImage());
-        Assert.assertTrue(breakStatement.jjtGetChild(0) instanceof ASTExpression);
-
-        ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(1);
-        ASTVariableDeclarator localVarDecl = localVar.getFirstChildOfType(ASTVariableDeclarator.class);
-        Assert.assertEquals(Integer.TYPE, localVarDecl.getType());
-        Assert.assertEquals(Integer.TYPE, switchExpression.getType());
-    }
-
 }

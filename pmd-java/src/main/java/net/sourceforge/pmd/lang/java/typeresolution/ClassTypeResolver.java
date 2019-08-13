@@ -1186,7 +1186,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
 
         JavaTypeDefinition type = null;
-        // first try to determine the type based on the first expression/break/yield of a switch rule
+        // first try to determine the type based on the first expression/yield of a switch rule
         List<ASTSwitchLabeledRule> rules = node.findChildrenOfType(ASTSwitchLabeledRule.class);
         for (ASTSwitchLabeledRule rule : rules) {
             Node body = rule.jjtGetChild(1); // second child is either Expression, Block, ThrowStatement
@@ -1194,14 +1194,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 type = ((ASTExpression) body).getTypeDefinition();
                 break;
             } else if (body instanceof ASTBlock) {
-                List<ASTBreakStatement> breaks = body.findDescendantsOfType(ASTBreakStatement.class);
-                if (!breaks.isEmpty()) {
-                    ASTExpression expression = breaks.get(0).getFirstChildOfType(ASTExpression.class);
-                    if (expression != null) {
-                        type = expression.getTypeDefinition();
-                        break;
-                    }
-                }
                 List<ASTYieldStatement> yields = body.findDescendantsOfType(ASTYieldStatement.class);
                 if (!yields.isEmpty()) {
                     ASTExpression expression = yields.get(0).getFirstChildOfType(ASTExpression.class);
@@ -1213,18 +1205,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         }
         if (type == null) {
-            // now check the labels and their expressions of break/yield statements
+            // now check the labels and their expressions of yield statements
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
                 Node child = node.jjtGetChild(i);
                 if (child instanceof ASTBlockStatement) {
-                    List<ASTBreakStatement> breaks = child.findDescendantsOfType(ASTBreakStatement.class);
-                    if (!breaks.isEmpty()) {
-                        ASTExpression expression = breaks.get(0).getFirstChildOfType(ASTExpression.class);
-                        if (expression != null) {
-                            type = expression.getTypeDefinition();
-                            break;
-                        }
-                    }
                     List<ASTYieldStatement> yields = child.findDescendantsOfType(ASTYieldStatement.class);
                     if (!yields.isEmpty()) {
                         ASTExpression expression = yields.get(0).getFirstChildOfType(ASTExpression.class);
