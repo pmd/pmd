@@ -19,6 +19,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Swift support
+
+PMD now fully supports Swift, not only for CPD, but we are pleased to announce we are shipping a number of rules starting with PMD 7.
+
+* {% rule "swift/errorprone/ForceCast" %} (`swift-errorprone`) flags all force casts, making sure you are defensively considering all types.
+  Having the application crash shouldn't be an option.
+* {% rule "swift/errorprone/ForceTry" %} (`swift-errorprone`) flags all force tries, making sure you are defensively handling exceptions.
+  Having the application crash shouldn't be an option.
+* {% rule "swift/bestpractices/ProhibitedInterfaceBuilder" %} (`swift-bestpractices`) flags any usage of interface builder. Interface builder
+  files are prone to merge conflicts, and are impossible to code review, so larger teams usually try to avoid it or reduce it's usage.
+
 ### Fixed Issues
 
 ### API Changes
@@ -37,6 +48,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#1658](https://github.com/pmd/pmd/pull/1658): \[core] Node support for Antlr-based languages - [Matías Fraga](https://github.com/matifraga)
 *   [#1698](https://github.com/pmd/pmd/pull/1698): \[core] [swift] Antlr Base Parser adapter and Swift Implementation - [Lucas Soncini](https://github.com/lsoncini)
 *   [#1774](https://github.com/pmd/pmd/pull/1774): \[core] Antlr visitor rules - [Lucas Soncini](https://github.com/lsoncini)
+*   [#1877](https://github.com/pmd/pmd/pull/1877): \[swift] Feature/swift rules - [Matias Fraga](https://github.com/matifraga)
 
 {% endtocmaker %}
 
