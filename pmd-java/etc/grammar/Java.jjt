@@ -1,6 +1,8 @@
 /**
  * Add support for the yield statement introduced as a preview language
  * feature with Java 13. See JEP 354.
+ * Add support for text block literals introduces as a preview language
+ * feature with Java 13. See JEP 355.
  * Andreas Dangel 08/2019
  *====================================================================
  * Fix #1848 Local classes should preserve their modifiers
@@ -212,6 +214,7 @@ options {
 
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
+  //DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(JavaParser)
@@ -424,6 +427,13 @@ public class JavaParser {
       throwParseException("Yield statements are only supported with Java 13");
     }
   }
+
+  private void checkForTextBlockLiteral() {
+    if (jdkVersion < 13) {
+      throwParseException("Text block literals are only supported with Java 13");
+    }
+  }
+
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -664,6 +674,21 @@ TOKEN :
       )*
       "\""
   >
+}
+
+MORE :
+{
+    < "\"\"\"" > : IN_TEXT_BLOCK
+}
+
+<IN_TEXT_BLOCK> TOKEN :
+{
+    < TEXT_BLOCK_LITERAL: "\"\"\""> : DEFAULT
+}
+
+<IN_TEXT_BLOCK> MORE :
+{
+    < ~[] >
 }
 
 /* IDENTIFIERS */
@@ -2334,6 +2359,7 @@ void Literal() :
 | t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); checkForBadNumericalLiteralslUsage(t); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
 | t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
+| t=<TEXT_BLOCK_LITERAL> { checkForTextBlockLiteral(); jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
 | BooleanLiteral()
 | NullLiteral()
 }

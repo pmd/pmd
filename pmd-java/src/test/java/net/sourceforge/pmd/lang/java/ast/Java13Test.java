@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -43,6 +44,27 @@ public class Java13Test {
     @Test(expected = ParseException.class)
     public void testSwitchExpressionsBeforeJava13() {
         ParserTstUtil.parseAndTypeResolveJava("12", loadSource("SwitchExpressions.java"));
+    }
+
+    @Test
+    public void testTextBlocks() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13", loadSource("TextBlocks.java"));
+        Assert.assertNotNull(compilationUnit);
+        List<ASTLiteral> literals = compilationUnit.findDescendantsOfType(ASTLiteral.class);
+        Assert.assertEquals(9, literals.size());
+        for (int i = 0; i < 8; i++) {
+            ASTLiteral literal = literals.get(i);
+            Assert.assertTrue(literal.isTextBlock());
+        }
+        Assert.assertEquals("\"\"\"\n" + "                <html>\n" + "                    <body>\n"
+                + "                        <p>Hello, world</p>\n" + "                    </body>\n"
+                + "                </html>\n" + "                \"\"\"", literals.get(0).getImage());
+        Assert.assertFalse(literals.get(8).isTextBlock());
+    }
+
+    @Test(expected = ParseException.class)
+    public void testTextBlocksBeforeJava13() {
+        ParserTstUtil.parseAndTypeResolveJava("12", loadSource("TextBlocks.java"));
     }
 
 }
