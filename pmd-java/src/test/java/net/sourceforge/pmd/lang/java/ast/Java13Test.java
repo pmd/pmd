@@ -41,6 +41,29 @@ public class Java13Test {
         Assert.assertEquals(Integer.TYPE, yieldStatement.getType());
     }
 
+    @Test
+    public void testSwitchExpressionsYield() {
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13",
+                loadSource("SwitchExpressionsYield.java"));
+        Assert.assertNotNull(compilationUnit);
+
+        ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
+        Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
+        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
+        Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabel.class).size());
+
+        ASTYieldStatement yieldStatement = switchExpression.getFirstDescendantOfType(ASTYieldStatement.class);
+        Assert.assertEquals("SwitchExpressionsBreak.SIX", yieldStatement.getImage());
+        Assert.assertTrue(yieldStatement.jjtGetChild(0) instanceof ASTExpression);
+
+        ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class)
+                .get(1);
+        ASTVariableDeclarator localVarDecl = localVar.getFirstChildOfType(ASTVariableDeclarator.class);
+        Assert.assertEquals(Integer.TYPE, localVarDecl.getType());
+        Assert.assertEquals(Integer.TYPE, switchExpression.getType());
+    }
+
+
     @Test(expected = ParseException.class)
     public void testSwitchExpressionsBeforeJava13() {
         ParserTstUtil.parseAndTypeResolveJava("12", loadSource("SwitchExpressions.java"));

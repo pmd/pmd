@@ -34,7 +34,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -1187,7 +1186,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
 
         JavaTypeDefinition type = null;
-        // first try to determine the type based on the first expression/break of a switch rule
+        // first try to determine the type based on the first expression/break/yield of a switch rule
         List<ASTSwitchLabeledRule> rules = node.findChildrenOfType(ASTSwitchLabeledRule.class);
         for (ASTSwitchLabeledRule rule : rules) {
             Node body = rule.jjtGetChild(1); // second child is either Expression, Block, ThrowStatement
@@ -1203,10 +1202,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         break;
                     }
                 }
+                List<ASTYieldStatement> yields = body.findDescendantsOfType(ASTYieldStatement.class);
+                if (!yields.isEmpty()) {
+                    ASTExpression expression = yields.get(0).getFirstChildOfType(ASTExpression.class);
+                    if (expression != null) {
+                        type = expression.getTypeDefinition();
+                        break;
+                    }
+                }
             }
         }
         if (type == null) {
-            // now check the labels and their expressions of break statements
+            // now check the labels and their expressions of break/yield statements
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
                 Node child = node.jjtGetChild(i);
                 if (child instanceof ASTBlockStatement) {
@@ -1214,6 +1221,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     if (!breaks.isEmpty()) {
                         ASTExpression expression = breaks.get(0).getFirstChildOfType(ASTExpression.class);
                         if (expression != null) {
+                            type = expression.getTypeDefinition();
+                            break;
+                        }
+                    }
+                    List<ASTYieldStatement> yields = child.findDescendantsOfType(ASTYieldStatement.class);
+                    if (!yields.isEmpty()) {
+                        ASTExpression expression = yields.get(0).getFirstChildOfType(ASTExpression.class);
+                        if (expression != null && expression.getTypeDefinition() != null) {
                             type = expression.getTypeDefinition();
                             break;
                         }
