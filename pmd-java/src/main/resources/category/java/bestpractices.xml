@@ -131,6 +131,58 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidMessageDigestField"
+          language="java"
+          since="6.18.0"
+          message="You shouldn't declare field of MessageDigest type, because unsynchronized access could cause problems"
+          typeResolution="true"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidmessagedigestfield">
+        <description>
+            Declaring a MessageDigest instance as a field make this instance directly available to multiple threads.
+            Such sharing of MessageDigest instances should be avoided if possible since it leads to wrong results
+            if the access is not synchronized correctly.
+            Just create a new instance and use it locally, where you need it.
+            Creating a new instance is easier than synchronizing access to a shared instance.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//FieldDeclaration[pmd-java:typeIs('java.security.MessageDigest')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.security.MessageDigest;
+public class AvoidMessageDigestFieldExample {
+    private final MessageDigest sharedMd;
+    public AvoidMessageDigestFieldExample() throws Exception {
+        sharedMd = MessageDigest.getInstance("SHA-256");
+    }
+    public byte[] calculateHashShared(byte[] data) {
+        // sharing a MessageDigest like this without synchronizing access
+        // might lead to wrong results
+        sharedMd.reset();
+        sharedMd.update(data);
+        return sharedMd.digest();
+    }
+
+    // better
+    public byte[] calculateHash(byte[] data) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(data);
+        return md.digest();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidPrintStackTrace"
           language="java"
           since="3.2"
@@ -1707,60 +1759,6 @@ public class Example {
     do { } while (false); // disallowed
   }
 }
-        </example>
-    </rule>
-
-    <rule name="AvoidMessageDigestField"
-          language="java"
-          minimumLanguageVersion="1.5"
-          since="6.18.0"
-          message="You shouldn't declare field of MessageDigest type, because unsynchronized access could cause problems"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidmessagedigestfield">
-        <description>
-            Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can
-            perform efficient map reads without blocking other threads.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'MessageDigest']
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-public class Foo {
-    private final MessageDigest sharedMd;    // potential problem in unsynchronized method
-
-    private static final byte[] DATA1 = "the data".getBytes(StandardCharsets.UTF_8);
-    private static final byte[] DATA2 = "more_data".getBytes(StandardCharsets.UTF_8);
-
-    public byte[] calculateHashShared(byte[] data) {
-        sharedMd.reset();
-        sharedMd.update(data);
-        return sharedMd.digest();
-    }
-
-    List<Future<String>> hash1Futures = new ArrayList<>();
-    List<Future<String>> hash2Futures = new ArrayList<>();
-
-    // unsynchronized access
-    ExecutorService executor = Executors.newFixedThreadPool(5);
-    for (int i = 0; i < 100; i++) {
-        hash1Futures.add(executor.submit(() -> test.calculateHashShared(DATA1)));
-        hash2Futures.add(executor.submit(() -> test.calculateHashShared(DATA2)));
-    }
-    executor.shutdown();
-
-    // we expect same result for 100 calculateHashShared(DATA1) calls
-    // but we could find different hashes in hash1Futures or hash2Futures
-    }
-}
-]]>
         </example>
     </rule>
 
