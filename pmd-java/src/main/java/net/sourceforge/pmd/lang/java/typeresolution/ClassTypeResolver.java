@@ -90,6 +90,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
+import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
@@ -1265,6 +1266,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTSingleMemberAnnotation node, Object data) {
+        super.visit(node, data);
+        rollupTypeUnary(node);
+        return data;
+    }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
         super.visit(node, data);
         rollupTypeUnary(node);
         return data;

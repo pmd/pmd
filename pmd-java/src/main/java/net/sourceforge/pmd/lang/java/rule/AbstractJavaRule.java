@@ -694,4 +694,9 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 }

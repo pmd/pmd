@@ -753,4 +753,9 @@ public class JavaParserVisitorDecorator implements JavaParserControllessVisitor 
     public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
         return visitor.visit(node, data);
     }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
+        return visitor.visit(node, data);
+    }
 }

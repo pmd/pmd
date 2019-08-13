@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ParserTstUtil;
 public class Java12Test {
     private static String loadSource(String name) {
         try {
-            return IOUtils.toString(Java10Test.class.getResourceAsStream("jdkversiontests/java12/" + name),
+            return IOUtils.toString(Java12Test.class.getResourceAsStream("jdkversiontests/java12/" + name),
                     StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
