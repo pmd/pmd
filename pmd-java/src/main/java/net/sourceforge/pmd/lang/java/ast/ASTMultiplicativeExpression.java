@@ -32,7 +32,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @deprecated Replaced with {@link ASTInfixExpression}
  */
 @Deprecated
-public final class ASTMultiplicativeExpression extends AbstractLrBinaryExpr {
+public final class ASTMultiplicativeExpression extends AbstractJavaExpr {
 
 
     ASTMultiplicativeExpression(int id) {

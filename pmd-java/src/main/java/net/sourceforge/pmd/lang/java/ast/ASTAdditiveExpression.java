@@ -35,7 +35,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @deprecated Replaced with {@link ASTInfixExpression}
  */
 @Deprecated
-public final class ASTAdditiveExpression extends AbstractLrBinaryExpr {
+public final class ASTAdditiveExpression extends AbstractJavaExpr {
 
     ASTAdditiveExpression(int id) {
         super(id);

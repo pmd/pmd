@@ -4,13 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toMap;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-
 /**
  * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
  * Constants are roughly ordered by precedence, except some of them have the same
@@ -80,15 +73,6 @@ public enum BinaryOp {
     /** Modulo {@code "%"} operator. */
     MOD("%");
 
-
-    private static final Map<String, BinaryOp> LOOKUP =
-        Arrays.stream(values())
-              .collect(
-                  collectingAndThen(
-                      toMap(BinaryOp::toString, op -> op),
-                      Collections::unmodifiableMap
-                  )
-              );
 
     private final String code;
 
@@ -179,10 +163,5 @@ public enum BinaryOp {
         return this.code;
     }
 
-
-    // parser only for now
-    static BinaryOp fromImage(String image) {
-        return LOOKUP.get(image);
-    }
 
 }

@@ -21,7 +21,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @deprecated Replaced with {@link ASTInfixExpression}
  */
 @Deprecated
-public final class ASTRelationalExpression extends AbstractLrBinaryExpr implements ASTExpression {
+public final class ASTRelationalExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTRelationalExpression(int id) {
         super(id);
