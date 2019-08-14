@@ -29,7 +29,10 @@ package net.sourceforge.pmd.lang.java.ast;
  *     <tr><td>{@code 1 == 2 != 3 != 4}</td><td>{@code ((1 == 2) != 3 != 4)}</td></tr>
  *     <tr><td>{@code 1 == 2 != 3 != 4 == 5}</td><td>{@code (((1 == 2) != 3 != 4) == 5)}</td></tr>
  * </table>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
+@Deprecated
 public final class ASTEqualityExpression extends AbstractLrBinaryExpr implements ASTExpression {
     ASTEqualityExpression(int id) {
         super(id);

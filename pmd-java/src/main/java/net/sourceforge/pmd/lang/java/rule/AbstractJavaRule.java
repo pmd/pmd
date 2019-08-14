@@ -14,17 +14,27 @@ import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaProcessingStage;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
@@ -124,6 +134,56 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return JavaParserVisitor.super.visit(node, data);
     }
 
+
+    @Deprecated
+    public Object visit(ASTConditionalOrExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTConditionalAndExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTInclusiveOrExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTExclusiveOrExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTAndExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTEqualityExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTRelationalExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTShiftExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTAdditiveExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTMultiplicativeExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
 
     @Deprecated
     public Object visit(ASTPrimaryPrefix node, Object data) {

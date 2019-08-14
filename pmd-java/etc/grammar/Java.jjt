@@ -2330,50 +2330,48 @@ void ConditionalExpression() #ConditionalExpression(>1) :
   ConditionalOrExpression() [ "?" Expression() ":" ConditionalExpression() ]
 }
 
-void ConditionalOrExpression() #ConditionalOrExpression(>1):
+void ConditionalOrExpression() #void:
 {}
 {
-  ConditionalAndExpression() ( LOOKAHEAD(2) "||" ConditionalAndExpression() )*
+  ConditionalAndExpression() (("||" {jjtThis.setOp(BinaryOp.CONDITIONAL_OR);} ConditionalAndExpression()) #InfixExpression(2))*
 }
 
-void ConditionalAndExpression() #ConditionalAndExpression(>1):
+void ConditionalAndExpression() #void:
 {}
 {
-  InclusiveOrExpression() ( LOOKAHEAD(2) "&&" InclusiveOrExpression() )*
+  InclusiveOrExpression() (("&&" {jjtThis.setOp(BinaryOp.CONDITIONAL_AND);} InclusiveOrExpression())  #InfixExpression(2))*
 }
 
-void InclusiveOrExpression() #InclusiveOrExpression(>1) :
+void InclusiveOrExpression() #void:
 {}
 {
-  ExclusiveOrExpression() ( LOOKAHEAD(2) "|" ExclusiveOrExpression() )*
+  ExclusiveOrExpression() (("|" {jjtThis.setOp(BinaryOp.OR);} ExclusiveOrExpression())  #InfixExpression(2))*
 }
 
-void ExclusiveOrExpression() #ExclusiveOrExpression(>1) :
+void ExclusiveOrExpression() #void:
 {}
 {
-  AndExpression()  ( LOOKAHEAD(2) "^" AndExpression() )*
+  AndExpression()  ( ("^" {jjtThis.setOp(BinaryOp.XOR);} AndExpression()) #InfixExpression(2))*
 }
 
-void AndExpression() #AndExpression(>1):
+void AndExpression() #void:
 {}
 {
-  EqualityExpression() ( LOOKAHEAD(2) "&" EqualityExpression() )*
+  EqualityExpression() (("&" {jjtThis.setOp(BinaryOp.AND);} EqualityExpression()) #InfixExpression(2))*
 }
 
-// same as ShiftExpression
 void EqualityExpression() #void:
 {}
 {
-  InstanceOfExpression() (EqualityExprTail())*
-}
-
-
-void EqualityExprTail() #EqualityExpression(2):
-{}
-{
-    ( "==" | "!=" )
-    { setLastTokenImage(jjtThis); }
-    InstanceOfExpression()
+  InstanceOfExpression()
+  (
+    (
+        ( "==" {jjtThis.setOp(BinaryOp.EQ);}
+        | "!=" {jjtThis.setOp(BinaryOp.NE);}
+        )
+        InstanceOfExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
 void InstanceOfExpression() #InstanceOfExpression(>1):
@@ -2391,69 +2389,65 @@ void RelationalExpression() #void:
   // For example, a<b<c parses as (a<b)<c, which is always a compile-time
   // error, because the type of a<b is always boolean and < is not an operator
   // on boolean values.
-  ShiftExpression() (RelationalExprTail())*
+  ShiftExpression()
+  (
+    (
+      (
+          "<"  {jjtThis.setOp(BinaryOp.LT);}
+        | ">"  {jjtThis.setOp(BinaryOp.GT);}
+        | "<=" {jjtThis.setOp(BinaryOp.LE);}
+        | ">=" {jjtThis.setOp(BinaryOp.GE);}
+      )
+      ShiftExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void RelationalExprTail() #RelationalExpression(2):
-{}
-{
-    ( "<" | ">" | "<=" | ">=" )
-    { setLastTokenImage(jjtThis); }
-    ShiftExpression()
-}
-
-/**
- * The structure parsed by this production is entirely left-recursive,
- * but the jjtClose of AbstractLrBinaryExpr flattens the first child
- * if the operator is the same. This is the best compromise I've found,
- * it keeps the grammar readable and simple to parse in lookaheads.
- */
 void ShiftExpression() #void:
 {}
 {
-  AdditiveExpression() (ShiftExprTail())*
+  AdditiveExpression()
+  (
+    (
+      ( "<<"                     {jjtThis.setOp(BinaryOp.LEFT_SHIFT);}
+      | RSIGNEDSHIFT()           {jjtThis.setOp(BinaryOp.RIGHT_SHIFT);}
+      | RUNSIGNEDSHIFT()         {jjtThis.setOp(BinaryOp.UNSIGNED_RIGHT_SHIFT);}
+      )
+      AdditiveExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-
-void ShiftExprTail() #ShiftExpression(2):
-{}
-{
-    ( "<<"                     { jjtThis.setImage("<<");}
-    | RSIGNEDSHIFT()           { jjtThis.setImage(">>"); }
-    | RUNSIGNEDSHIFT()         { jjtThis.setImage(">>>"); }
-    )
-    AdditiveExpression()
-}
-
-// this is exactly similar to ShiftExpression
 void AdditiveExpression() #void:
 {}
 {
-  MultiplicativeExpression() (AdditiveExprTail())*
+  MultiplicativeExpression()
+  (
+    (
+      ( "+" {jjtThis.setOp(BinaryOp.ADD);}
+      | "-" {jjtThis.setOp(BinaryOp.SUB);}
+      )
+      MultiplicativeExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void AdditiveExprTail() #AdditiveExpression(2):
-{}
-{
-    ( "+" | "-" )
-    { setLastTokenImage(jjtThis); }
-    MultiplicativeExpression()
-}
-
-// this is exactly similar to ShiftExpression
 void MultiplicativeExpression() #void:
 {}
 {
-  UnaryExpression() (MultiplicativeExprTail())*
+  UnaryExpression()
+  (
+    (
+      ( "*" {jjtThis.setOp(BinaryOp.MUL);}
+      | "/" {jjtThis.setOp(BinaryOp.DIV);}
+      | "%" {jjtThis.setOp(BinaryOp.MOD);}
+      )
+      UnaryExpression()
+    ) #InfixExpression(2)
+  )*
 }
 
-void MultiplicativeExprTail() #MultiplicativeExpression(2):
-{}
-{
-  ( "*" | "/" | "%" )
-  { setLastTokenImage(jjtThis); }
-  UnaryExpression()
-}
+// TODO update operator setting for those expressions
 
 void UnaryExpression() #void:
 {}

@@ -20,16 +20,20 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
             "1 * 2 * 3" should parseAs {
                 multiplicativeExpr(MUL) {
-                    int(1)
-                    int(2)
+                    multiplicativeExpr(MUL) {
+                        int(1)
+                        int(2)
+                    }
                     int(3)
                 }
             }
 
             "1 / 2 / -4" should parseAs {
                 multiplicativeExpr(DIV) {
-                    int(1)
-                    int(2)
+                    multiplicativeExpr(DIV) {
+                        int(1)
+                        int(2)
+                    }
                     unaryExpr(UNARY_MINUS) {
                         int(4)
                     }
@@ -38,8 +42,10 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
 
             "1 % 2 % 3" should parseAs {
                 multiplicativeExpr(MOD) {
-                    int(1)
-                    int(2)
+                    multiplicativeExpr(MOD) {
+                        int(1)
+                        int(2)
+                    }
                     int(3)
                 }
             }

@@ -456,6 +456,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                         <additionalJOptions>
                             <additionalJOption>-html5</additionalJOption>
                         </additionalJOptions>
+                        <docfilessubdirs/>
                         <additionalDependencies>
                             <!-- TODO: this is only needed to make javadoc happy -->
                             <additionalDependency>
