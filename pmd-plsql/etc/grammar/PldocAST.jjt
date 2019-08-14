@@ -1885,6 +1885,7 @@ ASTVariableName VariableName() :
 {
     id = ID() { name.append(id.getImage()); }
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+    [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     {
         jjtThis.setImage(name.toString());
         return jjtThis;
@@ -2325,7 +2326,7 @@ ASTValuesClause ValuesClause() :
     (
         "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
     |
-        ID() // that's a record variable name
+        Name() // that's a record variable name
     )
     { return jjtThis; }
 }
@@ -2409,7 +2410,7 @@ ASTUpdateSetClause UpdateSetClause() :
 {
     <SET>
     (
-        LOOKAHEAD(1) <ROW> "=" ID()
+        LOOKAHEAD(1) <ROW> "=" Name()
     |
         "VALUE" "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
     |
@@ -2431,7 +2432,7 @@ ASTUpdateSetClause UpdateSetClause() :
 ASTReturningClause ReturningClause() :
 {}
 {
-    ( <RETURN> | <RETURNING> ) ( Expression() (",")? )+ <INTO> ( ID() (",")? )+
+    ( <RETURN> | <RETURNING> ) ( Expression() (",")? )+ <INTO> ( Name() (",")? )+
     { return jjtThis; }
 }
 
