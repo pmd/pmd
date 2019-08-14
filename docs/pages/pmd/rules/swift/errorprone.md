@@ -17,10 +17,19 @@ language: Swift
 
 Force casts should be avoided. This may lead to a crash if it's not used carefully.
 For example assuming a JSON property has a given type, or your reused Cell has a certain contract.
+Consider using conditional casting and handling the resulting optional.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//TypeCastingOperatorContext[starts-with(@Text,'as!')]
+//TypeCastingOperator[starts-with(@Text,'as!')]
+```
+
+**Example(s):**
+
+``` swift
+{%raw%}NSNumber() as! Int // violation, force casting
+
+NSNumber() as? Int // no violation{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -35,10 +44,19 @@ For example assuming a JSON property has a given type, or your reused Cell has a
 **Priority:** Medium (3)
 
 Force tries should be avoided. If the code being wrapped happens to raise and exception, our application will crash.
+Consider using a conditional try and handling the resulting optional, or wrapping the try statement in a do-catch block.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//TryOperatorContext[@Text='try!']
+//TryOperator[@Text='try!']
+```
+
+**Example(s):**
+
+``` swift
+{%raw%}let x = try! someThrowingFunction() // violation, force trying
+
+let x = try? someThrowingFunction() // no violation{%endraw%}
 ```
 
 **Use this rule by referencing it:**

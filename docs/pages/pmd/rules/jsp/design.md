@@ -42,7 +42,7 @@ tags, or attributes like &quot;align='center'&quot;.
 **Example(s):**
 
 ``` jsp
-<html><body><p align='center'><b>text</b></p></body></html>
+{%raw%}<html><body><p align='center'><b>text</b></p></body></html>{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -66,7 +66,7 @@ Scripts should be part of Tag Libraries, rather than part of JSP pages.
 **Example(s):**
 
 ``` jsp
-<HTML>
+{%raw%}<HTML>
 <BODY>
 <!--Java Script-->
 <SCRIPT language="JavaScript" type="text/javascript">
@@ -86,7 +86,7 @@ onload=calcDays;
 //-->
 </SCRIPT>
 </BODY>
-</HTML>
+</HTML>{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -112,7 +112,7 @@ Scriptlets should be factored into Tag Libraries or JSP declarations, rather tha
 **Example(s):**
 
 ``` jsp
-<HTML>
+{%raw%}<HTML>
 <HEAD>
 <%
 response.setHeader("Pragma", "No-cache");
@@ -121,7 +121,7 @@ response.setHeader("Pragma", "No-cache");
     <BODY>
         <jsp:scriptlet>String title = "Hello world!";</jsp:scriptlet>
     </BODY>
-</HTML>
+</HTML>{%endraw%}
 ```
 
 **Use this rule by referencing it:**

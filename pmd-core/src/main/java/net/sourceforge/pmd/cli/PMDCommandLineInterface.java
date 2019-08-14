@@ -27,6 +27,7 @@ public final class PMDCommandLineInterface {
     public static final String NO_EXIT_AFTER_RUN = "net.sourceforge.pmd.cli.noExit";
     public static final String STATUS_CODE_PROPERTY = "net.sourceforge.pmd.cli.status";
 
+    private static final int NO_ERRORS_STATUS = 0;
     public static final int ERROR_STATUS = 1;
     public static final int VIOLATIONS_FOUND = 4;
 
@@ -41,7 +42,7 @@ public final class PMDCommandLineInterface {
             if (arguments.isHelp()) {
                 jcommander.usage();
                 System.out.println(buildUsageText(jcommander));
-                setStatusCodeOrExit(ERROR_STATUS);
+                setStatusCodeOrExit(NO_ERRORS_STATUS);
             }
         } catch (ParameterException e) {
             jcommander.usage();

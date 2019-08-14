@@ -58,4 +58,9 @@ update xsearch_wsh_active
        and revision = p_rev
      returning opp_id into v_opp_id;
 
+update employees
+     set salary = salary + sal_raise,
+         salary = (salary - discounts) * sal_raise
+     where employee_id = emp_id;
+
 END;

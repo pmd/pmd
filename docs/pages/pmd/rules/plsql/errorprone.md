@@ -27,7 +27,7 @@ TO_DATE(TO_CHAR(date-variable)) used to remove time component - use TRUNC(date-v
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE BODY date_utilities
+{%raw%}CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
 
 -- Take single parameter, relying on current default NLS date format
@@ -39,7 +39,7 @@ END strip_time;
 
 
 END date_utilities;
-/
+/{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -64,7 +64,7 @@ TO_DATE without date format- use TO_DATE(expression, date-format)
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE BODY date_utilities
+{%raw%}CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
 
 -- Take single parameter, relying on current default NLS date format
@@ -89,7 +89,7 @@ BEGIN
 END to_date_three_parameters;
 
 END date_utilities;
-/
+/{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -114,7 +114,7 @@ TO_TIMESTAMP without date format- use TO_TIMESTAMP(expression, date-format)
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE BODY date_utilities
+{%raw%}CREATE OR REPLACE PACKAGE BODY date_utilities
 IS
 
 -- Take single parameter, relying on current default NLS date format
@@ -139,7 +139,7 @@ BEGIN
 END to_timestamp_three_parameters;
 
 END date_utilities;
-/
+/{%endraw%}
 ```
 
 **Use this rule by referencing it:**

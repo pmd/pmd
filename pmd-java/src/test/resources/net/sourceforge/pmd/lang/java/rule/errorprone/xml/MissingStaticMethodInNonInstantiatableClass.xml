@@ -247,4 +247,77 @@ public final class BacklogElementParameters {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1832 Check constructor injection with @Autowired or @Inject </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Foo {
+
+ private String arg;
+
+ @Autowired
+ private Foo() {}
+
+ @Inject
+ private Foo(String arg) {
+    this.arg = arg;
+ }
+
+ public void bar() {}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1832 fine with a least one constructor annotated with "Autowired</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.PersistenceConstructor;
+
+public class Foo {
+
+ private String arg;
+
+ @PersistenceConstructor
+ private Foo() {}
+
+ @Autowired
+ private Foo(String arg) {
+    this.arg = arg;
+ }
+
+ public void bar() {}
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1832 but fail with both private constructors annotated with @PersistenceConstructor</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.springframework.data.annotation.PersistenceConstructor;
+
+public class Foo {
+
+ private String arg;
+
+ @PersistenceConstructor
+ private Foo() {}
+
+ @PersistenceConstructor
+ private Foo(String arg) {
+    this.arg = arg;
+ }
+
+ public void bar() {}
+}
+     ]]></code>
+    </test-code>
+
+
 </test-data>
