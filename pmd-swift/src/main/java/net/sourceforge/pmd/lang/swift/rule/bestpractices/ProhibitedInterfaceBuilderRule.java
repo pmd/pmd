@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.FunctionHeadContext;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.VariableDeclarationHeadContext;
 
-public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Boolean> {
+public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Void> {
 
     private static final String IBACTION = "@IBAction";
     private static final String IBOUTLET = "@IBOutlet";
@@ -24,24 +24,24 @@ public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Boolean> {
     }
     
     @Override
-    public Boolean visitFunctionHead(FunctionHeadContext ctx) {
+    public Void visitFunctionHead(FunctionHeadContext ctx) {
         if (ctx == null || ctx.attributes() == null) {
-            return false;
+            return null;
         }
 
         return visitDeclarationHead(ctx, ctx.attributes().attribute(), IBACTION);
     }
 
     @Override
-    public Boolean visitVariableDeclarationHead(final VariableDeclarationHeadContext ctx) {
+    public Void visitVariableDeclarationHead(final VariableDeclarationHeadContext ctx) {
         if (ctx == null || ctx.attributes() == null) {
-            return false;
+            return null;
         }
 
         return visitDeclarationHead(ctx, ctx.attributes().attribute(), IBOUTLET);
     }
 
-    private boolean visitDeclarationHead(final Node node, final List<SwiftParser.AttributeContext> attributes,
+    private Void visitDeclarationHead(final Node node, final List<SwiftParser.AttributeContext> attributes,
         final String match) {
 
         final boolean violate = attributes.stream().anyMatch(atr -> match.equals(atr.getText()));
@@ -49,6 +49,6 @@ public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Boolean> {
             addViolation(data, node);
         }
 
-        return violate;
+        return null;
     }
 }
