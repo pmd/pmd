@@ -36,7 +36,7 @@ import java.util.Objects;
  * <img src="doc-files/binaryExpr_60x.svg" />
  * </figure>
  */
-public class ASTInfixExpression extends AbstractJavaExpr implements ASTExpression, JSingleChildNode<ASTExpression>, LeftRecursiveNode {
+public final class ASTInfixExpression extends AbstractJavaExpr implements ASTExpression, JSingleChildNode<ASTExpression>, LeftRecursiveNode {
 
     private BinaryOp operator;
 
