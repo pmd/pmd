@@ -12,6 +12,7 @@ folder: pmd/rules
 {% include callout.html content="Rules which enforce generally accepted best practices." %}
 
 *   [ProhibitedInterfaceBuilder](pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder): Creating views using Interface Builder should be avoided.            Defining views by code allow...
+*   [UnavailableFunction](pmd_rules_swift_bestpractices.html#unavailablefunction): Due to Objective-C and Swift interoperability some functions are often required to be implemented...
 
 ## Error Prone
 

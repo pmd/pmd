@@ -21,7 +21,7 @@ Consider using conditional casting and handling the resulting optional.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//TypeCastingOperatorContext[starts-with(@Text,'as!')]
+//TypeCastingOperator[starts-with(@Text,'as!')]
 ```
 
 **Example(s):**
@@ -48,7 +48,7 @@ Consider using a conditional try and handling the resulting optional, or wrappin
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//TryOperatorContext[@Text='try!']
+//TryOperator[@Text='try!']
 ```
 
 **Example(s):**
