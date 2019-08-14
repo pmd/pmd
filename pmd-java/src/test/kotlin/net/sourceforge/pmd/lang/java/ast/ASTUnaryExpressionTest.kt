@@ -1,12 +1,13 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
-import net.sourceforge.pmd.lang.java.ast.IncrementOp.*
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-import net.sourceforge.pmd.lang.java.ast.UnaryOp.*
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.PostfixOp.POST_DECREMENT
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.PostfixOp.POST_INCREMENT
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.PrefixOp.*
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -20,25 +21,25 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
         inContext(ExpressionParsingCtx) {
             "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
+                prefixExpr(UNARY_MINUS) {
                     number()
                 }
             }
 
             "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
+                prefixExpr(UNARY_MINUS) {
                     number()
                 }
             }
 
             "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
+                prefixExpr(UNARY_MINUS) {
                     number()
                 }
             }
 
             "-2" should parseAs {
-                unaryExpr(UNARY_MINUS) {
+                prefixExpr(UNARY_MINUS) {
                     number()
                 }
             }
@@ -51,7 +52,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "2 + -2" should parseAs {
                 additiveExpr(ADD) {
                     number()
-                    unaryExpr(UNARY_MINUS) {
+                    prefixExpr(UNARY_MINUS) {
                         number()
                     }
                 }
@@ -60,7 +61,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "2 +-2" should parseAs {
                 additiveExpr(ADD) {
                     number()
-                    unaryExpr(UNARY_MINUS) {
+                    prefixExpr(UNARY_MINUS) {
                         number()
                     }
                 }
@@ -69,7 +70,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             "2 + +2" should parseAs {
                 additiveExpr(ADD) {
                     number()
-                    unaryExpr(UNARY_PLUS) {
+                    prefixExpr(UNARY_PLUS) {
                         number()
                     }
                 }
@@ -102,7 +103,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                 castExpr {
                     classType("p")
 
-                    unaryExpr(BITWISE_INVERSE) {
+                    prefixExpr(COMPLEMENT) {
                         variableAccess("q", READ)
                     }
                 }
@@ -112,14 +113,14 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                 castExpr {
                     classType("p")
 
-                    unaryExpr(BOOLEAN_NOT) {
+                    prefixExpr(NEGATION) {
                         variableAccess("q", READ)
                     }
                 }
             }
 
             "(p)++" should parseAs {
-                postfixMutation(INCREMENT) {
+                postfixExpr(POST_INCREMENT) {
                     parenthesized {
                         variableAccess("p", WRITE)
                     }
@@ -131,7 +132,16 @@ class ASTUnaryExpressionTest : ParserTestSpec({
 
             "i+++i" should parseAs {
                 additiveExpr(ADD) {
-                    postfixMutation(INCREMENT) {
+                    postfixExpr(POST_INCREMENT) {
+                        variableAccess("i", WRITE)
+                    }
+                    variableAccess("i", READ)
+                }
+            }
+
+            "i---i" should parseAs {
+                additiveExpr(ADD) {
+                    postfixExpr(POST_DECREMENT) {
                         variableAccess("i", WRITE)
                     }
                     variableAccess("i", READ)
@@ -150,7 +160,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                             castExpr {
                                 primitiveType(type)
 
-                                unaryExpr(UNARY_PLUS) {
+                                prefixExpr(UNARY_PLUS) {
                                     variableAccess("q", READ)
                                 }
                             }
@@ -160,7 +170,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                             castExpr {
                                 primitiveType(type)
 
-                                unaryExpr(UNARY_MINUS) {
+                                prefixExpr(UNARY_MINUS) {
                                     variableAccess("q", READ)
                                 }
                             }
@@ -170,7 +180,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                             castExpr {
                                 primitiveType(type)
 
-                                prefixMutation(INCREMENT) {
+                                prefixExpr(PRE_INCREMENT) {
                                     variableAccess("q", WRITE)
                                 }
                             }
@@ -180,7 +190,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                             castExpr {
                                 primitiveType(type)
 
-                                prefixMutation(DECREMENT) {
+                                prefixExpr(PRE_DECREMENT) {
                                     variableAccess("q", WRITE)
                                 }
                             }
@@ -198,34 +208,34 @@ class ASTUnaryExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "!!true" should parseAs {
-                unaryExpr(BOOLEAN_NOT) {
-                    unaryExpr(BOOLEAN_NOT) {
+                prefixExpr(NEGATION) {
+                    prefixExpr(NEGATION) {
                         boolean(true)
                     }
                 }
             }
 
             "~~1" should parseAs {
-                unaryExpr(BITWISE_INVERSE) {
-                    unaryExpr(BITWISE_INVERSE) {
+                prefixExpr(COMPLEMENT) {
+                    prefixExpr(COMPLEMENT) {
                         number()
                     }
                 }
             }
 
             "-~1" should parseAs {
-                unaryExpr(UNARY_MINUS) {
-                    unaryExpr(BITWISE_INVERSE) {
+                prefixExpr(UNARY_MINUS) {
+                    prefixExpr(COMPLEMENT) {
                         number()
                     }
                 }
             }
 
             "-+-+1" should parseAs {
-                unaryExpr(UNARY_MINUS) {
-                    unaryExpr(UNARY_PLUS) {
-                        unaryExpr(UNARY_MINUS) {
-                            unaryExpr(UNARY_PLUS) {
+                prefixExpr(UNARY_MINUS) {
+                    prefixExpr(UNARY_PLUS) {
+                        prefixExpr(UNARY_MINUS) {
+                            prefixExpr(UNARY_PLUS) {
                                 number()
                             }
                         }

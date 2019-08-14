@@ -7,13 +7,14 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 
@@ -120,7 +121,7 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     private boolean isStandAlonePostfix(Node primaryExpression) {
-        if (!(primaryExpression instanceof ASTIncrementExpression && ((ASTIncrementExpression) primaryExpression).isPostfix())
+        if (!(primaryExpression instanceof ASTPostfixExpression && !((ASTPostfixExpression) primaryExpression).getOperator().isPure())
                 || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
             return false;
         }
@@ -152,7 +153,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             Node p = l.jjtGetParent();
             Node gp = p.jjtGetParent();
             Node node = gp.jjtGetParent();
-            if (node instanceof ASTIncrementExpression) {
+            if (node instanceof ASTUnaryExpression && !((ASTUnaryExpression) node).getOperator().isPure()) {
                 return true;
             }
 
@@ -174,7 +175,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             }
 
             // catch this.i++ or ++this.i
-            return gp instanceof ASTIncrementExpression;
+            return node instanceof ASTUnaryExpression && !((ASTUnaryExpression) node).getOperator().isPure();
         }
     }
 

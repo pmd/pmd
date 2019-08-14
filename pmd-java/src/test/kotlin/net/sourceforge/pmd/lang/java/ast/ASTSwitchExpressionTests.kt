@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.PrefixOp.UNARY_MINUS
 
 
 /**
@@ -145,7 +146,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
             "-switch (day) {default -> 6;}" should parseAs {
-                unaryExpr(UnaryOp.UNARY_MINUS) {
+                prefixExpr(UNARY_MINUS) {
                     switchExpr()
                 }
             }
