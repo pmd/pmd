@@ -996,7 +996,8 @@ void Skip2NextTerminator(String initiator,String terminator) :
     t = getToken(1);
 	  if(t.image.equals(initiator)) count++;
 	  if(t.image.equals(terminator)) count--;
-    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE && beginToken.kind != MERGE && beginToken.kind != EXECUTE) || t.kind == EOF)
+    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE
+        && beginToken.kind != MERGE && beginToken.kind != EXECUTE && beginToken.kind != WITH) || t.kind == EOF)
         return;
     if (t.specialToken != null && "/".equals(t.image))
 	    return;
