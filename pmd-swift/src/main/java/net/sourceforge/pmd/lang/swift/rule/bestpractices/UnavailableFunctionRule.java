@@ -8,14 +8,22 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
 import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
+import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.FunctionDeclarationContext;
+import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.InitializerDeclarationContext;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
 
     private static final String AVAILABLE_UNAVAILABLE = "@available(*,unavailable)";
     private static final String FATAL_ERROR = "fatalError";
 
+    public UnavailableFunctionRule() {
+        super();
+        addRuleChainVisit(FunctionDeclarationContext.class);
+        addRuleChainVisit(InitializerDeclarationContext.class);
+    }
+
     @Override
-    public Void visitFunctionDeclaration(final SwiftParser.FunctionDeclarationContext ctx) {
+    public Void visitFunctionDeclaration(final FunctionDeclarationContext ctx) {
         if (ctx == null) {
             return null;
         }
@@ -31,7 +39,7 @@ public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
     }
 
     @Override
-    public Void visitInitializerDeclaration(final SwiftParser.InitializerDeclarationContext ctx) {
+    public Void visitInitializerDeclaration(final InitializerDeclarationContext ctx) {
         if (ctx == null) {
             return null;
         }
