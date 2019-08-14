@@ -1,11 +1,11 @@
-CREATE OR REPLACE PACKAGE BODY trim_test_package IS
+create or replace package body trim_test_package is
 
-  PROCEDURE trim_test_procedure  IS
-  BEGIN
-    IF TRIM(var_package.wer.wer) = 'TEST' THEN
-      NULL;
-    END IF;
-  END;
+  procedure trim_test_procedure is
+  begin
+    if trim(var_package.record.field) = 'TEST' then
+      null;
+    end if;
+  end;
 
-END trim_test_package;
+end trim_test_package;
 /
