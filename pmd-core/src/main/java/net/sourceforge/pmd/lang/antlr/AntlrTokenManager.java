@@ -67,7 +67,7 @@ public class AntlrTokenManager implements TokenManager {
 
         @Override
         public void syntaxError(final Recognizer<?, ?> recognizer, final Object offendingSymbol, final int line,
-                                final int charPositionInLine, final String msg, final RecognitionException ex) {
+            final int charPositionInLine, final String msg, final RecognitionException ex) {
             throw new ANTLRSyntaxError(msg, line, charPositionInLine, ex);
         }
     }
@@ -78,7 +78,7 @@ public class AntlrTokenManager implements TokenManager {
         private final int column;
 
         /* default */ ANTLRSyntaxError(final String msg, final int line, final int column,
-                                       final RecognitionException cause) {
+            final RecognitionException cause) {
             super(msg, cause);
             this.line = line;
             this.column = column;
