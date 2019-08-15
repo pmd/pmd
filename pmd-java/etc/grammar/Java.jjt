@@ -2313,7 +2313,7 @@ void Expression() #AssignmentExpression(>1):
 {
   ConditionalExpression()
   [
-    LOOKAHEAD(2) op=AssignmentOperator() {jjtThis.setOp(op);} Expression()
+    LOOKAHEAD(1) op=AssignmentOperator() {jjtThis.setOp(op);} Expression()
   ]
 }
 
@@ -2327,44 +2327,44 @@ AssignmentOp AssignmentOperator() #void:
 void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() [ "?" Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [LOOKAHEAD(1) "?" Expression() ":" ConditionalExpression() ]
 }
 
 void ConditionalOrExpression() #void:
 {}
 {
-  ConditionalAndExpression() (("||" {jjtThis.setOp(BinaryOp.CONDITIONAL_OR);} ConditionalAndExpression()) #InfixExpression(2))*
+  ConditionalAndExpression() (LOOKAHEAD(1) ("||" {jjtThis.setOp(BinaryOp.CONDITIONAL_OR);} ConditionalAndExpression()) #InfixExpression(2))*
 }
 
 void ConditionalAndExpression() #void:
 {}
 {
-  InclusiveOrExpression() (("&&" {jjtThis.setOp(BinaryOp.CONDITIONAL_AND);} InclusiveOrExpression())  #InfixExpression(2))*
+  InclusiveOrExpression() (LOOKAHEAD(1) ("&&" {jjtThis.setOp(BinaryOp.CONDITIONAL_AND);} InclusiveOrExpression())  #InfixExpression(2))*
 }
 
 void InclusiveOrExpression() #void:
 {}
 {
-  ExclusiveOrExpression() (("|" {jjtThis.setOp(BinaryOp.OR);} ExclusiveOrExpression())  #InfixExpression(2))*
+  ExclusiveOrExpression() (LOOKAHEAD(1) ("|" {jjtThis.setOp(BinaryOp.OR);} ExclusiveOrExpression())  #InfixExpression(2))*
 }
 
 void ExclusiveOrExpression() #void:
 {}
 {
-  AndExpression()  ( ("^" {jjtThis.setOp(BinaryOp.XOR);} AndExpression()) #InfixExpression(2))*
+  AndExpression()  (LOOKAHEAD(1) ("^" {jjtThis.setOp(BinaryOp.XOR);} AndExpression()) #InfixExpression(2))*
 }
 
 void AndExpression() #void:
 {}
 {
-  EqualityExpression() (("&" {jjtThis.setOp(BinaryOp.AND);} EqualityExpression()) #InfixExpression(2))*
+  EqualityExpression() (LOOKAHEAD(1) ("&" {jjtThis.setOp(BinaryOp.AND);} EqualityExpression()) #InfixExpression(2))*
 }
 
 void EqualityExpression() #void:
 {}
 {
   InstanceOfExpression()
-  (
+  (LOOKAHEAD(1)
     (
         ( "==" {jjtThis.setOp(BinaryOp.EQ);}
         | "!=" {jjtThis.setOp(BinaryOp.NE);}
@@ -2377,7 +2377,7 @@ void EqualityExpression() #void:
 void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(2) "instanceof" AnnotatedRefType() ]
+  RelationalExpression() [ LOOKAHEAD(1) "instanceof" AnnotatedRefType() ]
 }
 
 void RelationalExpression() #void:
@@ -2390,7 +2390,7 @@ void RelationalExpression() #void:
   // error, because the type of a<b is always boolean and < is not an operator
   // on boolean values.
   ShiftExpression()
-  (
+  (LOOKAHEAD(1)
     (
       (
           "<"  {jjtThis.setOp(BinaryOp.LT);}
@@ -2407,7 +2407,7 @@ void ShiftExpression() #void:
 {}
 {
   AdditiveExpression()
-  (
+  (LOOKAHEAD(1)
     (
       ( "<<"                     {jjtThis.setOp(BinaryOp.LEFT_SHIFT);}
       | RSIGNEDSHIFT()           {jjtThis.setOp(BinaryOp.RIGHT_SHIFT);}
@@ -2422,7 +2422,7 @@ void AdditiveExpression() #void:
 {}
 {
   MultiplicativeExpression()
-  (
+  (LOOKAHEAD(1)
     (
       ( "+" {jjtThis.setOp(BinaryOp.ADD);}
       | "-" {jjtThis.setOp(BinaryOp.SUB);}
@@ -2436,7 +2436,7 @@ void MultiplicativeExpression() #void:
 {}
 {
   UnaryExpression()
-  (
+  (LOOKAHEAD(1)
     (
       ( "*" {jjtThis.setOp(BinaryOp.MUL);}
       | "/" {jjtThis.setOp(BinaryOp.DIV);}
@@ -2497,7 +2497,7 @@ void PostfixExpression() #void:
 {}
 {
 
-  PrimaryExpression() [ ("++" {jjtThis.setIncrement();} | "--") #IncrementExpression(1) ]
+  PrimaryExpression() [LOOKAHEAD(1) ("++" {jjtThis.setIncrement();} | "--") #IncrementExpression(1) ]
 }
 
 
