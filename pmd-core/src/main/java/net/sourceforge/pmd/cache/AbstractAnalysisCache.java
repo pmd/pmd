@@ -193,7 +193,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                             EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
                 } else if (f.isFile()) {
                     entries.add(f.toURI().toURL());
-                } else {
+                } else if (f.exists()) { // ignore non-existing directories
                     Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
                             fileVisitor);
                 }
