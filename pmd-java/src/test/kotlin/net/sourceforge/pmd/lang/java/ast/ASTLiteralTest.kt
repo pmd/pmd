@@ -128,7 +128,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
 
         "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getOperator shouldBe UnaryOp.UNARY_MINUS
             it::getOperand shouldBe number(INT) {
                 it::getImage shouldBe "0X0000_000f"
                 it::getValueAsInt shouldBe 15
@@ -178,7 +178,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
 
         "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getOperator shouldBe UnaryOp.UNARY_MINUS
 
             it::getOperand shouldBe number(DOUBLE) {
                 it::getValueAsInt shouldBe 3456

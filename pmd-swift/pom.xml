@@ -17,13 +17,18 @@
     <build>
         <plugins>
             <plugin>
+                <!-- this needs to run before the ant task -->
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <inherited>true</inherited>
                 <executions>
                     <execution>
-                        <id>process-sources</id>
-                        <phase>process-sources</phase>
+                        <id>antlr-generation</id>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <target>
                                 <ant antfile="src/main/ant/antlr4.xml">
@@ -36,10 +41,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
             </plugin>
 
             <plugin>

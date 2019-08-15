@@ -304,6 +304,8 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                             <goals>
                                 <goal>antlr4</goal>
                             </goals>
+                            <!-- This is default but let's be clear -->
+                            <phase>generate-sources</phase>
                         </execution>
                     </executions>
                 </plugin>
