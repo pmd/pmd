@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an array dimension initialized with an expression in an
  * {@linkplain ASTArrayAllocation array allocation expression}. This
- * is always a child of {@link ASTArrayAllocationDims ArrayAllocationDims}.
+ * is always a child of {@link ASTArrayTypeDims ArrayTypeDims}.
+ *
+ * TODO not sure we need a separate node type here?
  *
  * <pre class="grammar">
  *
@@ -15,7 +17,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTArrayDimExpr extends AbstractJavaTypeNode implements Annotatable {
+public final class ASTArrayDimExpr extends ASTArrayTypeDim implements Annotatable {
 
     ASTArrayDimExpr(int id) {
         super(id);

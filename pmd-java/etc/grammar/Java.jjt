@@ -2828,17 +2828,17 @@ void UnqualifiedAllocationExpr() #void :
 
 
 /*
- * The second LOOKAHEAD specification below is to parse to PrimarySuffix
- * if there is an expression between the "[...]".
+ * The array dimensions are appended to the array type and they're both
+ * enclosed into an ArrayType node.
  */
 void ArrayDimsAndInits() #void:
 {}
 {
-   LOOKAHEAD(TypeAnnotationList() "[" "]" ) ((ArrayTypeDim())+) #ArrayAllocationDims [ ArrayInitializer() ]
-     | (ArrayDimExpr())+ #ArrayAllocationDims
+   LOOKAHEAD(TypeAnnotationList() "[" "]" ) (((ArrayTypeDim())+) #ArrayTypeDims) #ArrayType(2) [ ArrayInitializer() ]
+     | ( (ArrayDimExpr())+ #ArrayTypeDims ) #ArrayType(2)
 }
 
-
+// may push either an ArrayDimExpr or ArrayTypeDim
 void ArrayDimExpr() #void:
 {boolean hasExpr=false;}
 {

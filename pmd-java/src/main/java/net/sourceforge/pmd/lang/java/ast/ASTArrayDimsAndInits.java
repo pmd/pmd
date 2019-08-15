@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * @deprecated Replaced by {@link ASTArrayAllocationDims}
+ * @deprecated Replaced by {@link ASTArrayTypeDims}
  */
 @Deprecated
 public class ASTArrayDimsAndInits extends AbstractJavaNode implements Dimensionable {
