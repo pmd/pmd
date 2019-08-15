@@ -216,6 +216,20 @@ public class FileAnalysisCacheTest {
     }
 
     @Test
+    public void testClasspathNonExistingEntryIsIgnored() throws MalformedURLException, IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final ClassLoader cl = mock(ClassLoader.class);
+        
+        System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator
+                + tempFolder.getRoot().getAbsolutePath() + File.separator + "non-existing-dir");
+        
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        reloadedCache.checkValidity(rs, cl);
+        assertFalse("Cache believes cache is up to date when the classpath changed",
+                reloadedCache.isUpToDate(sourceFile));
+    }
+    
+    @Test
     public void testClasspathChangeInvalidatesCache() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);
         final ClassLoader cl = mock(ClassLoader.class);
