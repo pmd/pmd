@@ -780,7 +780,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTUnaryExpression node, Object data) {
         super.visit(node, data);
 
-        switch (node.getOp()) {
+        switch (node.getOperator()) {
         case BOOLEAN_NOT:
             populateType(node, "boolean");
             break;
