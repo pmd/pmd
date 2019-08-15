@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 /**
  * Represents an array dimension initialized with an expression in an
  * {@linkplain ASTArrayAllocation array allocation expression}. This
- * is always a child of {@link ASTArrayTypeDims ArrayTypeDims}.
+ * is always a child of {@link ASTArrayDimensions ArrayDimensions}.
  *
  * TODO not sure we need a separate node type here?
  *

@@ -1917,7 +1917,7 @@ void VariableDeclarator() :
   VariableDeclaratorId() [ "=" VariableInitializer() ]
 }
 
-// TODO use ArrayTypeDims
+// TODO use ArrayDimensions
 void VariableDeclaratorId() :
 {
   Token t;
@@ -1969,7 +1969,7 @@ void MethodDeclarator() :
     checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
-  FormalParameters() ( "[" "]" )* // TODO use ArrayTypeDims
+  FormalParameters() ( "[" "]" )* // TODO use ArrayDimensions
 }
 
 
@@ -2128,7 +2128,7 @@ void Type() #void:
  | PrimitiveType()
 }
 
-void Dims() #ArrayTypeDims:
+void Dims() #ArrayDimensions:
 {}
 {
   // the list of dimensions is flat, but annotations are
@@ -2834,8 +2834,8 @@ void UnqualifiedAllocationExpr() #void :
 void ArrayDimsAndInits() #void:
 {}
 {
-   LOOKAHEAD(TypeAnnotationList() "[" "]" ) (((ArrayTypeDim())+) #ArrayTypeDims) #ArrayType(2) [ ArrayInitializer() ]
-     | ( (ArrayDimExpr())+ #ArrayTypeDims ) #ArrayType(2)
+   LOOKAHEAD(TypeAnnotationList() "[" "]" ) (((ArrayTypeDim())+) #ArrayDimensions) #ArrayType(2) [ ArrayInitializer() ]
+     | ( (ArrayDimExpr())+ #ArrayDimensions ) #ArrayType(2)
 }
 
 // may push either an ArrayDimExpr or ArrayTypeDim

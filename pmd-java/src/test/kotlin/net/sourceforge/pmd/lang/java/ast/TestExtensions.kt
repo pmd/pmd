@@ -311,7 +311,7 @@ fun TreeNodeWrapper<Node, *>.dimExpr(assertions: NodeSpec<ASTArrayDimExpr> = Emp
             it::getLengthExpression shouldBe lengthExpr()
         }
 
-fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayTypeDims> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
         child<ASTArrayType> {
             it::getElementType shouldBe elementType()
             it::getDimensions shouldBe child {

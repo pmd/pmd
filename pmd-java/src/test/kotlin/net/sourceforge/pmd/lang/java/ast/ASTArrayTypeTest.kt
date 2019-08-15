@@ -17,7 +17,7 @@ class ASTArrayTypeTest : ParserTestSpec({
                 it::getImage shouldBe "ArrayTypes"
             }
 
-            it::getDimensions shouldBe child<ASTArrayTypeDims> {
+            it::getDimensions shouldBe child<ASTArrayDimensions> {
 
                 child<ASTArrayTypeDim> {}
                 child<ASTArrayTypeDim> {}
@@ -34,7 +34,7 @@ class ASTArrayTypeTest : ParserTestSpec({
                 it::getImage shouldBe "ArrayTypes"
             }
 
-            it::getDeclaredAnnotations shouldBe fromChild<ASTArrayTypeDims, List<ASTAnnotation>> {
+            it::getDeclaredAnnotations shouldBe fromChild<ASTArrayDimensions, List<ASTAnnotation>> {
 
                 child<ASTArrayTypeDim> {}
                 child<ASTArrayTypeDim> {}

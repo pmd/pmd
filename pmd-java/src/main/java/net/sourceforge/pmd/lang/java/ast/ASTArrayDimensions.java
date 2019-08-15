@@ -22,18 +22,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * <pre class="grammar">
  *
- * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}+ {@link ASTArrayDimExpr ArrayDimExpr}*
+ * ArrayDimensions ::= {@link ASTArrayTypeDim ArrayTypeDim}+ {@link ASTArrayDimExpr ArrayDimExpr}*
  *
  * </pre>
  */
-public final class ASTArrayTypeDims extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, JSingleChildNode<ASTArrayTypeDim> {
+public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, JSingleChildNode<ASTArrayTypeDim> {
 
-    ASTArrayTypeDims(int id) {
+    ASTArrayDimensions(int id) {
         super(id);
     }
 
 
-    ASTArrayTypeDims(JavaParser p, int id) {
+    ASTArrayDimensions(JavaParser p, int id) {
         super(p, id);
     }
 
