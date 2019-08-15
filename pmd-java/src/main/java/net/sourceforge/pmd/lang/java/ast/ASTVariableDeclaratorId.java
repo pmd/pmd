@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *    <li> Field and enum constant declarations;
  *    <li> Local variable declarations;
  *    <li> Method, constructor and lambda parameter declarations;
- *    <li> Method and constructor explicit receiver parameter declarations;
  *    <li> Exception parameter declarations occurring in catch clauses;
  *    <li> Resource declarations occurring in try-with-resources statements.
  * </ul>
