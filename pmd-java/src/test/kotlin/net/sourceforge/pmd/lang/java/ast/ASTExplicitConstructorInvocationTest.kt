@@ -6,12 +6,6 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 
-/**
- * Nodes that previously corresponded to ASTAllocationExpression.
- *
- * @author Clément Fournier
- * @since 7.0.0
- */
 class ASTExplicitConstructorInvocationTest : ParserTestSpec({
 
     parserTest("Explicit this invocation") {

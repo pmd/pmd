@@ -28,6 +28,8 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
                 }
 
             }
+
+            it::getBody shouldBe block()
         }
 
         "Foo(@A Bar Bar.this, int other){}" should matchDeclaration<ASTConstructorDeclaration> {

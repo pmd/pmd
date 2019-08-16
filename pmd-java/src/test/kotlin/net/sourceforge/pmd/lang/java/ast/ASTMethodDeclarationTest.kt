@@ -108,7 +108,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
          */
 
         "void bar(@A Foo this);" should matchDeclaration<ASTMethodDeclaration> {
-            i it ::isAbstract shouldBe false
+            it::isAbstract shouldBe false
             it::getMethodName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
