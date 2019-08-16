@@ -46,16 +46,6 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
     }
 
 
-    /**
-     * If true, this formal parameter represents one without explit types.
-     *
-     * @deprecated Returns false always, since lambda expressions use {@link ASTLambdaParameter}.
-     */
-    @Deprecated
-    public boolean isTypeInferred() {
-        return false;
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -111,14 +101,6 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
         return getFirstChildOfType(ASTType.class);
     }
 
-
-    /**
-     * @deprecated use {@link #getVariableDeclaratorId()}
-     */
-    @Deprecated
-    protected ASTVariableDeclaratorId getDecl() {
-        return getVariableDeclaratorId();
-    }
 
     /**
      * Returns the type of this formal parameter. That type
