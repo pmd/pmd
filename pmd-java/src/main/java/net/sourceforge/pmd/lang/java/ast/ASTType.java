@@ -74,17 +74,6 @@ public interface ASTType extends TypeNode, Annotatable {
     }
 
 
-    /**
-     * Returns a read-only list of the components of this type.
-     * Returns a singleton containing this type if this is neither
-     * a {@linkplain ASTUnionType union type} or a {@linkplain ASTIntersectionType intersection type}.
-     * In those cases, returns the list of components.
-     */
-    default List<ASTType> asList() {
-        return Collections.singletonList(this);
-    }
-
-
     default boolean isClassOrInterfaceType() {
         return this instanceof ASTClassOrInterfaceType;
     }

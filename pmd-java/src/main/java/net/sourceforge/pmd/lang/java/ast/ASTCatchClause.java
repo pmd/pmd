@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -79,8 +80,10 @@ public final class ASTCatchClause extends AbstractJavaNode {
      * one element.
      */
     public List<ASTType> getCaughtExceptionTypeNodes() {
-        // maybe cache the list
-        return getFormal().getTypeNode().asList();
+        ASTType typeNode = getFormal().getTypeNode();
+        return typeNode instanceof ASTUnionType
+               ? typeNode.findChildrenOfType(ASTType.class)
+               : Collections.singletonList(typeNode);
     }
 
 

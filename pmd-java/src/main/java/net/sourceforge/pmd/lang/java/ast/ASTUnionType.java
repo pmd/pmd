@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -37,11 +36,6 @@ public final class ASTUnionType extends AbstractJavaTypeNode implements ASTRefer
     public String getTypeImage() {
         // TODO
         return iterator().next().getTypeImage();
-    }
-
-    @Override
-    public List<ASTType> asList() {
-        return findChildrenOfType(ASTType.class);
     }
 
     @Override

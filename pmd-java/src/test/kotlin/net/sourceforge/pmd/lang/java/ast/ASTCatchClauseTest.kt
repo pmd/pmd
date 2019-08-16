@@ -61,7 +61,6 @@ class ASTCatchClauseTest : ParserTestSpec({
                         val t2 = classType("AssertionError")
 
                         types = listOf(t1, t2)
-                        it::asList shouldBe types!!
                     }
                     variableId("e")
                 }
