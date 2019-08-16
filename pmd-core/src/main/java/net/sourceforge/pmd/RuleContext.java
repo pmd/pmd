@@ -20,7 +20,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * As well as the following source file specific information:
  * <ul>
  * <li>A File for the source file.</li>
- * <li>A String for the name of the source file.</li>
  * <li>The Language Version of the source file.</li>
  * </ul>
  * It is <strong>required</strong> that all source file specific options be set
@@ -31,6 +30,7 @@ public class RuleContext {
 
     private Report report = new Report();
     private File sourceCodeFile;
+    @Deprecated
     private String sourceCodeFilename;
     private LanguageVersion languageVersion;
     private final ConcurrentMap<String, Object> attributes;
@@ -97,11 +97,15 @@ public class RuleContext {
 
     /**
      * Get the file name associated with the current source file.
+     * If there is no source file, then an empty string is returned.
      *
      * @return The file name.
      */
     public String getSourceCodeFilename() {
-        return sourceCodeFilename;
+        if (sourceCodeFile != null) {
+            return sourceCodeFile.getName();
+        }
+        return "";
     }
 
     /**
@@ -109,9 +113,13 @@ public class RuleContext {
      *
      * @param filename
      *            The file name.
+     * @deprecated This method will be removed. The file should only be
+     * set with {@link #setSourceCodeFile(File)}. Setting the filename here
+     * has no effect.
      */
+    @Deprecated
     public void setSourceCodeFilename(String filename) {
-        this.sourceCodeFilename = filename;
+        // ignored, does nothing.
     }
 
     /**

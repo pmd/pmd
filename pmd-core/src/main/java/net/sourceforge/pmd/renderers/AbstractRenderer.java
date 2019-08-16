@@ -6,21 +6,30 @@ package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.cli.PMDParameters;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 
 /**
  * Abstract base class for {@link Renderer} implementations.
  */
 public abstract class AbstractRenderer extends AbstractPropertySource implements Renderer {
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     protected String name;
     protected String description;
 
     protected boolean showSuppressedViolations = true;
     protected Writer writer;
+
+    protected List<String> inputPathPrefixes = Collections.emptyList();
 
     public AbstractRenderer(String name, String description) {
         this.name = name;
@@ -60,6 +69,47 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     @Override
     public void setShowSuppressedViolations(boolean showSuppressedViolations) {
         this.showSuppressedViolations = showSuppressedViolations;
+    }
+
+    @Override
+    public void setUseShortNames(List<String> inputPaths) {
+        this.inputPathPrefixes = inputPaths;
+    }
+
+    /**
+     * Determines the filename that should be used in the report depending on the
+     * option "shortnames". If the option is enabled, then the filename in the report
+     * is without the directory prefix of the directories, that have been analyzed.
+     * If the option "shortnames" is not enabled, then the inputFileName is returned as-is.
+     *
+     * @param inputFileName
+     * @return
+     *
+     * @see PMDConfiguration#isReportShortNames()
+     * @see PMDParameters#isShortnames()
+     */
+    protected String determineFileName(String inputFileName) {
+        for (final String prefix : inputPathPrefixes) {
+            final Path prefPath = Paths.get(prefix).toAbsolutePath();
+            final String prefPathString = prefPath.toString();
+
+            if (inputFileName.startsWith(prefPathString)) {
+                if (prefPath.toFile().isDirectory()) {
+                    return trimAnyPathSep(inputFileName.substring(prefPathString.length()));
+                } else {
+                    if (inputFileName.indexOf(FILE_SEPARATOR.charAt(0)) == -1) {
+                        return inputFileName;
+                    }
+                    return trimAnyPathSep(inputFileName.substring(prefPathString.lastIndexOf(FILE_SEPARATOR)));
+                }
+            }
+        }
+
+        return inputFileName;
+    }
+
+    private String trimAnyPathSep(String name) {
+        return name.startsWith(FILE_SEPARATOR) ? name.substring(1) : name;
     }
 
     @Override
