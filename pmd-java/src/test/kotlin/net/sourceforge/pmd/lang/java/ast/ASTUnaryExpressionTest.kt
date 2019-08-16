@@ -4,17 +4,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD
+import net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.PostfixOp.POST_DECREMENT
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.PostfixOp.POST_INCREMENT
 import net.sourceforge.pmd.lang.java.ast.UnaryOp.PrefixOp.*
 
-/**
- * Nodes that previously corresponded to ASTAllocationExpression.
- *
- * @author Clément Fournier
- * @since 7.0.0
- */
 class ASTUnaryExpressionTest : ParserTestSpec({
 
     parserTest("Simple unary expressions") {
@@ -72,6 +67,27 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                     number()
                     prefixExpr(UNARY_PLUS) {
                         number()
+                    }
+                }
+            }
+
+            "+(int)-a" should parseAs {
+                prefixExpr(UNARY_PLUS) {
+                    castExpr {
+                        primitiveType(PrimitiveType.INT)
+                        prefixExpr(UNARY_MINUS) {
+                            variableAccess("a")
+                        }
+                    }
+                }
+            }
+            "+-(int)a" should parseAs {
+                prefixExpr(UNARY_PLUS) {
+                    prefixExpr(UNARY_MINUS) {
+                        castExpr {
+                            primitiveType(PrimitiveType.INT)
+                            variableAccess("a")
+                        }
                     }
                 }
             }
@@ -140,7 +156,7 @@ class ASTUnaryExpressionTest : ParserTestSpec({
             }
 
             "i---i" should parseAs {
-                additiveExpr(ADD) {
+                additiveExpr(SUB) {
                     postfixExpr(POST_DECREMENT) {
                         variableAccess("i", WRITE)
                     }
@@ -148,8 +164,8 @@ class ASTUnaryExpressionTest : ParserTestSpec({
                 }
             }
 
-            // "++i++" doesn't compile so don't test it
-
+            // "++i++" parses, but doesn't compile, so don't test it
+            // same for eg "p+++++q" (which doesn't parse)
 
             PrimitiveType
                     .values()

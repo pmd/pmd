@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp.PostfixOp;
  *
  * </pre>
  */
-public final class ASTPostfixExpression extends AbstractJavaExpr implements ASTUnaryExpression {
+public final class ASTPostfixExpression extends AbstractJavaExpr implements ASTUnaryExpression, LeftRecursiveNode {
 
     private PostfixOp operator;
 
