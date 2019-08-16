@@ -75,22 +75,27 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements ASTExp
     }
 
 
-    @Override
-    public void setImage(String image) {
-        throw new UnsupportedOperationException();
-    }
 
     void setOp(BinaryOp op) {
         this.operator = Objects.requireNonNull(op);
     }
 
-    @Override
-    public String getImage() {
-        return operator.toString();
-    }
 
     /** Returns the operator. */
     public BinaryOp getOperator() {
         return operator;
     }
+
+    // intentionally left-out
+
+    @Override
+    public void setImage(String image) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getImage() {
+        return null;
+    }
+
 }
