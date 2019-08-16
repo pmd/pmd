@@ -60,20 +60,9 @@ public final class ASTUnaryExpression extends AbstractJavaExpr implements ASTExp
 
 
     /**
-     * Returns the image of this unary operator, i.e. "+" or "-".
-     * @deprecated use {@link #getOp()}
-     */
-    @Deprecated
-    public String getOperator() {
-        return getImage();
-    }
-
-
-    /**
      * Returns the constant representing the operator of this expression.
      */
-    public UnaryOp getOp() {
+    public UnaryOp getOperator() {
         return operator;
     }
-
 }
