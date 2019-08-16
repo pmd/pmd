@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -224,9 +225,11 @@ public class FileAnalysisCacheTest {
                 + tempFolder.getRoot().getAbsolutePath() + File.separator + "non-existing-dir");
         
         final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
-        reloadedCache.checkValidity(rs, cl);
-        assertFalse("Cache believes cache is up to date when the classpath changed",
-                reloadedCache.isUpToDate(sourceFile));
+        try {
+            reloadedCache.checkValidity(rs, cl);
+        } catch (final Exception e) {
+            fail("Validity check failed when classpath includes non-existing directories");
+        }
     }
     
     @Test
