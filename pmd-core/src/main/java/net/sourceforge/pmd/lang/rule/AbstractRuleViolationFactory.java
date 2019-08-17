@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
@@ -18,6 +19,15 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ * This is a functional implementation of {@link RuleViolationFactory}.
+ * It uses only the standard {@link ViolationSuppressor}s (constants in the interface).
+ * It may be extended to add more suppression options.
+ *
+ * <p>Implementations should be internal. Only the interface should be exposed.
+ *
+ * TODO this should not be an abstract class anymore
+ */
 public abstract class AbstractRuleViolationFactory implements RuleViolationFactory {
 
     private static final Object[] NO_ARGS = new Object[0];
@@ -42,7 +52,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         String formattedMessage = cleanup(message, args);
 
         RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage);
-        maybeSuppress(ruleContext, node, rv, rule);
+        maybeSuppress(ruleContext, node, rv);
     }
 
     @Override
@@ -51,10 +61,10 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         String formattedMessage = cleanup(message, args);
 
         RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage, beginLine, endLine);
-        maybeSuppress(ruleContext, node, rv, rule);
+        maybeSuppress(ruleContext, node, rv);
     }
 
-    private void maybeSuppress(RuleContext ruleContext, Node node, RuleViolation rv, Rule rule) {
+    private void maybeSuppress(RuleContext ruleContext, @Nullable Node node, RuleViolation rv) {
         List<ViolationSuppressor> suppressors = new ArrayList<>(getSuppressors());
         suppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
         suppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
@@ -62,7 +72,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
 
         if (node != null) {
             for (ViolationSuppressor suppressor : suppressors) {
-                SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node, rule);
+                SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
                 if (suppressed != null) {
                     ruleContext.getReport().addSuppressedViolation(suppressed);
                     return;

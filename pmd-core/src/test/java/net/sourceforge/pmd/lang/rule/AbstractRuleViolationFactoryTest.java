@@ -10,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -18,21 +17,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AbstractRuleViolationFactoryTest {
     private RuleContext ruleContext;
     private RuleViolationFactory factory;
-
-    private static class TestRuleViolationFactory extends AbstractRuleViolationFactory {
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
-            return new ParametricRuleViolation<>(rule, ruleContext, node, message);
-        }
-
-        @Override
-        protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-                int beginLine, int endLine) {
-            ParametricRuleViolation<Node> violation = new ParametricRuleViolation<>(rule, ruleContext, node, message);
-            violation.setLines(beginLine, endLine);
-            return violation;
-        }
-    }
 
     private static class TestRule extends AbstractRule {
         @Override
@@ -44,7 +28,7 @@ public class AbstractRuleViolationFactoryTest {
     @Before
     public void setup() {
         ruleContext = new RuleContext();
-        factory = new TestRuleViolationFactory();
+        factory = new AbstractRuleViolationFactory() {};
     }
     
     @Test

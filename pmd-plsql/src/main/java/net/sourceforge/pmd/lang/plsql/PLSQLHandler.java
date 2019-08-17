@@ -16,9 +16,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.dfa.DFAPLSQLGraphRule;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous
@@ -36,11 +34,6 @@ public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new PLSQLParser(parserOptions);
-    }
-
-    @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return PLSQLRuleViolationFactory.INSTANCE;
     }
 
     @Override

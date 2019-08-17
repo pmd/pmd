@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
@@ -28,8 +30,8 @@ public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory
         }
 
         @Override
-        public Report.SuppressedViolation suppressOrNull(RuleViolation rv, Node node, Rule rule) {
-            if (AnnotationSuppressionUtil.contextSuppresses(node, rule)) {
+        public Report.SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
+            if (AnnotationSuppressionUtil.contextSuppresses(node, rv.getRule())) {
                 return new SuppressedViolation(rv, this, null);
             }
             return null;
