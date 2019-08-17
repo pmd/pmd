@@ -65,10 +65,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
             }
             // Variable name node specific
             setVariableNameIfExists(node);
-
-            if (!suppressed) {
-                suppressed = isSupressed(node, getRule());
-            }
         }
     }
 

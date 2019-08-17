@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,8 +46,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     }
 
     @Override
-    public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine,
-            Object[] args) {
+    public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, int beginLine, int endLine, Object[] args) {
 
         String formattedMessage = cleanup(message, args);
 
@@ -55,9 +55,13 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     }
 
     private void maybeSuppress(RuleContext ruleContext, Node node, RuleViolation rv, Rule rule) {
-        List<ViolationSuppressor> suppressors = getSuppressors(node, rule);
+        List<ViolationSuppressor> suppressors = new ArrayList<>(getSuppressors());
+        suppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
+        suppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
+        suppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
+
         for (ViolationSuppressor suppressor : suppressors) {
-            SuppressedViolation suppressed = suppressor.suppressOrNull(rv);
+            SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node, rule);
             if (suppressed != null) {
                 ruleContext.getReport().addSuppressedViolation(suppressed);
                 return;
@@ -66,8 +70,11 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         ruleContext.getReport().addRuleViolation(rv);
     }
 
-
-    protected List<ViolationSuppressor> getSuppressors(Node node, Rule rule) {
+    /**
+     * Returns a list of additional suppressors for this language. These
+     * are added to regular //NOPMD, regex and XPath suppression.
+     */
+    protected List<ViolationSuppressor> getSuppressors() {
         return Collections.emptyList();
     }
 

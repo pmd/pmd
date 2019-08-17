@@ -40,7 +40,8 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
     }
 
 
-    Map<Integer, String> getNoPmdComments() {
+    @Override
+    public Map<Integer, String> getNoPmdComments() {
         return noPmdComments;
     }
 

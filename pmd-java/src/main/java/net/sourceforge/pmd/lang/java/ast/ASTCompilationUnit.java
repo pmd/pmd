@@ -80,7 +80,8 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         this.classTypeResolver = classTypeResolver;
     }
 
-    Map<Integer, String> getNoPmdComments() {
+    @Override
+    public Map<Integer, String> getNoPmdComments() {
         return noPmdComments;
     }
 
