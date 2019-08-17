@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.apex;
 
 import java.io.Reader;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -34,8 +33,4 @@ public class ApexParser extends AbstractParser {
         return apexParser.parse(source);
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return apexParser.getSuppressMap();
-    }
 }

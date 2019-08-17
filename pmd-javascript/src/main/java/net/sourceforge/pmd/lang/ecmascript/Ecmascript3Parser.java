@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ecmascript.ast.ASTAstRoot;
 import net.sourceforge.pmd.lang.ecmascript5.Ecmascript5TokenManager;
 
 /**
@@ -32,7 +33,7 @@ public class Ecmascript3Parser extends AbstractParser {
     }
 
     @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
+    public ASTAstRoot parse(String fileName, Reader source) throws ParseException {
         return ecmascriptParser.parse(source);
     }
 

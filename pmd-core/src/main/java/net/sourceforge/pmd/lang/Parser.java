@@ -49,8 +49,4 @@ public interface Parser {
     Node parse(String fileName, Reader source) throws ParseException;
 
 
-    // TODO Document
-    default Map<Integer, String> getSuppressMap() {
-        return Collections.emptyMap();
-    }
 }
