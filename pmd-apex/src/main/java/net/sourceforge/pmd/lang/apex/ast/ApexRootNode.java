@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.Collections;
+import java.util.Map;
+
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
@@ -11,6 +14,9 @@ import apex.jorje.semantic.ast.AstNode;
 import apex.jorje.services.Version;
 
 public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T> implements RootNode {
+
+    private Map<Integer, String> noPmdComments = Collections.emptyMap();
+
     public ApexRootNode(T node) {
         super(node);
     }
@@ -31,5 +37,14 @@ public abstract class ApexRootNode<T extends AstNode> extends AbstractApexNode<T
      */
     public double getApexVersion() {
         return getNode().getDefiningType().getCodeUnitDetails().getVersion().getExternal();
+    }
+
+
+    Map<Integer, String> getNoPmdComments() {
+        return noPmdComments;
+    }
+
+    void setNoPmdComments(Map<Integer, String> noPmdComments) {
+        this.noPmdComments = noPmdComments;
     }
 }

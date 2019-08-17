@@ -71,8 +71,14 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         return Collections.emptyList();
     }
 
-    protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message);
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
+        return new ParametricRuleViolation<>(rule, ruleContext, node, message);
+    }
 
-    protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
-            int beginLine, int endLine);
+    protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
+                                                int beginLine, int endLine) {
+        ParametricRuleViolation<Node> rv = new ParametricRuleViolation<>(rule, ruleContext, node, message);
+        rv.setLines(beginLine, endLine);
+        return rv;
+    }
 }
