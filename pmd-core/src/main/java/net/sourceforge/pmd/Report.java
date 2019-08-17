@@ -178,15 +178,6 @@ public class Report implements Iterable<RuleViolation> {
     }
 
 
-    /**
-     * Configure the lines, that are suppressed via a NOPMD comment.
-     *
-     * @param lines
-     *            the suppressed lines
-     */
-    public void suppress(Map<Integer, String> lines) {
-    }
-
     private static String keyFor(RuleViolation rv) {
 
         return StringUtils.isNotBlank(rv.getPackageName()) ? rv.getPackageName() + '.' + rv.getClassName() : "";
