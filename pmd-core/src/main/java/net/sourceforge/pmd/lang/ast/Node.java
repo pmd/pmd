@@ -396,4 +396,14 @@ public interface Node {
     default Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);
     }
+
+
+    default RootNode getRoot() {
+        Node r = this;
+        while (r != null && !(r instanceof RootNode)) {
+            r = r.jjtGetParent();
+        }
+
+        return (RootNode) r;
+    }
 }

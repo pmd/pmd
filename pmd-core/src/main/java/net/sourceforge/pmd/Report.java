@@ -178,62 +178,6 @@ public class Report implements Iterable<RuleViolation> {
         }
     }
 
-    /**
-     * Represents a violation, that has been suppressed.
-     */
-    public static class SuppressedViolation {
-        private final RuleViolation rv;
-        private final boolean isNOPMD;
-        private final String userMessage;
-
-        /**
-         * Creates a suppressed violation.
-         *
-         * @param rv
-         *            the actual violation, that has been suppressed
-         * @param isNOPMD
-         *            the suppression mode: <code>true</code> if it is
-         *            suppressed via a NOPMD comment, <code>false</code> if
-         *            suppressed via annotations.
-         * @param userMessage
-         *            contains the suppressed code line or <code>null</code>
-         */
-        public SuppressedViolation(RuleViolation rv, boolean isNOPMD, String userMessage) {
-            this.isNOPMD = isNOPMD;
-            this.rv = rv;
-            this.userMessage = userMessage;
-        }
-
-        /**
-         * Returns <code>true</code> if the violation has been suppressed via a
-         * NOPMD comment.
-         *
-         * @return <code>true</code> if the violation has been suppressed via a
-         *         NOPMD comment.
-         */
-        public boolean suppressedByNOPMD() {
-            return this.isNOPMD;
-        }
-
-        /**
-         * Returns <code>true</code> if the violation has been suppressed via a
-         * annotation.
-         *
-         * @return <code>true</code> if the violation has been suppressed via a
-         *         annotation.
-         */
-        public boolean suppressedByAnnotation() {
-            return !this.isNOPMD;
-        }
-
-        public RuleViolation getRuleViolation() {
-            return this.rv;
-        }
-
-        public String getUserMessage() {
-            return userMessage;
-        }
-    }
 
     /**
      * Configure the lines, that are suppressed via a NOPMD comment.
@@ -300,6 +244,71 @@ public class Report implements Iterable<RuleViolation> {
 
     public List<SuppressedViolation> getSuppressedRuleViolations() {
         return suppressedRuleViolations;
+    }
+
+    /**
+     * Represents a violation, that has been suppressed.
+     * TODO this should implement RuleViolation
+     */
+    public static class SuppressedViolation {
+        private final RuleViolation rv;
+        private final boolean isNOPMD;
+        private final String userMessage;
+
+        /**
+         * Creates a suppressed violation.
+         *
+         * @param rv
+         *            the actual violation, that has been suppressed
+         * @param isNOPMD
+         *            the suppression mode: <code>true</code> if it is
+         *            suppressed via a NOPMD comment, <code>false</code> if
+         *            suppressed via annotations.
+         * @param userMessage
+         *            contains the suppressed code line or <code>null</code>
+         */
+        public SuppressedViolation(RuleViolation rv, boolean isNOPMD, String userMessage) {
+            this.isNOPMD = isNOPMD;
+            this.rv = rv;
+            this.userMessage = userMessage;
+        }
+
+        /**
+         * Returns <code>true</code> if the violation has been suppressed via a
+         * NOPMD comment.
+         *
+         * @return <code>true</code> if the violation has been suppressed via a
+         *         NOPMD comment.
+         */
+        public boolean suppressedByNOPMD() {
+            return this.isNOPMD;
+        }
+
+        /**
+         * Returns <code>true</code> if the violation has been suppressed via a
+         * annotation.
+         *
+         * @return <code>true</code> if the violation has been suppressed via a
+         *         annotation.
+         */
+        public boolean suppressedByAnnotation() {
+            return !this.isNOPMD;
+        }
+
+        public RuleViolation getRuleViolation() {
+            return this.rv;
+        }
+
+        public String getUserMessage() {
+            return userMessage;
+        }
+    }
+
+
+    public void addSuppressedViolation(SuppressedViolation sv) {
+        if (sv != null) {
+            suppressedRuleViolations.add(sv);
+        }
     }
 
     /**

@@ -6,9 +6,12 @@ package net.sourceforge.pmd.lang.java;
 
 import java.io.Reader;
 
+import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.java.ast.JavaParser;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -16,7 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  * @author Andreas Dangel
  */
-public class JavaLanguageParser extends AbstractJavaParser {
+public class JavaLanguageParser extends AbstractParser {
+
     private final int jdkVersion;
     private final boolean preview;
 
@@ -31,10 +35,12 @@ public class JavaLanguageParser extends AbstractJavaParser {
     }
 
     @Override
-    protected JavaParser createJavaParser(Reader source) throws ParseException {
-        JavaParser javaParser = super.createJavaParser(source);
-        javaParser.setJdkVersion(jdkVersion);
-        javaParser.setPreview(preview);
-        return javaParser;
+    public TokenManager createTokenManager(Reader source) {
+        return new JavaTokenManager(source);
+    }
+
+    @Override
+    public Node parse(String fileName, Reader source) throws ParseException {
+        return InternalApiBridge.parseInternal(fileName, source, jdkVersion, preview, getParserOptions());
     }
 }

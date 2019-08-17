@@ -8,6 +8,7 @@ import java.text.MessageFormat;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -29,12 +30,20 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         }
     }
 
+    // TODO why do we need those two overloads??
+
     @Override
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args) {
 
         String formattedMessage = cleanup(message, args);
 
-        ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, formattedMessage));
+        RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage);
+        SuppressedViolation sup = node.getRoot().getSuppressor().suppressOrNull(rv);
+        if (sup != null) {
+            ruleContext.getReport().addSuppressedViolation(sup);
+        } else {
+            ruleContext.getReport().addRuleViolation(rv);
+        }
     }
 
     @Override
@@ -43,8 +52,13 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
 
         String formattedMessage = cleanup(message, args);
 
-        ruleContext.getReport()
-                .addRuleViolation(createRuleViolation(rule, ruleContext, node, formattedMessage, beginLine, endLine));
+        RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage, beginLine, endLine);
+        SuppressedViolation sup = node.getRoot().getSuppressor().suppressOrNull(rv);
+        if (sup != null) {
+            ruleContext.getReport().addSuppressedViolation(sup);
+        } else {
+            ruleContext.getReport().addRuleViolation(rv);
+        }
     }
 
     protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message);
