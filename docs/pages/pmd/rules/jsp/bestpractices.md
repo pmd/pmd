@@ -25,7 +25,7 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
 **Example(s):**
 
 ``` jsp
-<html>
+{%raw%}<html>
   <body>
     <ul>
       <c:forEach items='${books}' var='b'>
@@ -33,7 +33,7 @@ Do not nest JSF component custom actions inside a custom action that iterates ov
       </c:forEach>
     </ul>
   </body>
-</html>
+</html>{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -57,9 +57,9 @@ Do not use an attribute called 'class'. Use &quot;styleclass&quot; for CSS style
 **Example(s):**
 
 ``` jsp
-<HTML> <BODY>
+{%raw%}<HTML> <BODY>
 <P class="MajorHeading">Some text</P>
-</BODY> </HTML>
+</BODY> </HTML>{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -85,13 +85,13 @@ little other purpose. Consider switching to JSP comments.
 **Example(s):**
 
 ``` jsp
-<HTML><title>bad example><BODY>
+{%raw%}<HTML><title>bad example><BODY>
 <!-- HTML comment -->
 </BODY> </HTML>
 
 <HTML><title>good example><BODY>
 <%-- JSP comment --%>
-</BODY> </HTML>
+</BODY> </HTML>{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -115,7 +115,7 @@ Do not do a forward from within a JSP file.
 **Example(s):**
 
 ``` jsp
-<jsp:forward page='UnderConstruction.jsp'/>
+{%raw%}<jsp:forward page='UnderConstruction.jsp'/>{%endraw%}
 ```
 
 **Use this rule by referencing it:**

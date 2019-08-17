@@ -25,7 +25,7 @@ language: PLSQL
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE BODY update_planned_hrs
+{%raw%}CREATE OR REPLACE PACKAGE BODY update_planned_hrs
 IS
 
 PROCEDURE set_new_planned (p_emp_id IN NUMBER, p_project_id IN NUMBER, p_hours IN NUMBER)
@@ -64,7 +64,7 @@ BEGIN
    END existing_planned;
 
 END update_planned_hrs;
-/
+/{%endraw%}
 ```
 
 **Use this rule by referencing it:**

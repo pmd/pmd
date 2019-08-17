@@ -25,7 +25,7 @@ high complexity, and 11+ is very high complexity.
 **Example(s):**
 
 ``` sql
--- Cyclomatic Complexity of 25 
+{%raw%}-- Cyclomatic Complexity of 25 
 CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS
 1 PROCEDURE ty_logger  IS BEGIN
 2        IF true
@@ -138,7 +138,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_pmd_working_sequence  AS
      END IF;
 END;
 
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -181,12 +181,12 @@ Try to reduce the method length by creating helper methods and removing any copy
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 PROCEDURE doSomething BEGIN
     DBMS_OUTPUT.PUT_LINE("Hello world!");
     DBMS_OUTPUT.PUT_LINE("Hello world!");
         -- 98 copies omitted for brevity.
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -226,7 +226,7 @@ apart the code becomes more managable and ripe for reuse.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 PACKAGE BODY Foo AS
     PROCEDURE bar1 IS BEGIN
     -- 1000 lines of code
@@ -242,7 +242,7 @@ PACKAGE BODY Foo AS
     PROCEDURE barN IS BEGIN
     -- 1000 lines of code
     END barn;
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -282,7 +282,7 @@ apart the code becomes more managable and ripe for reuse.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 PACKAGE BODY Foo AS
     PROCEDURE bar1 IS BEGIN
     -- 1000 lines of code
@@ -298,7 +298,7 @@ PACKAGE BODY Foo AS
     PROCEDURE barN IS BEGIN
     -- 1000 lines of code
     END barn;
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -338,7 +338,7 @@ apart the code becomes more managable and ripe for reuse.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 PACKAGE Foo AS
     PROCEDURE bar1;
     PROCEDURE bar2;
@@ -347,7 +347,7 @@ PACKAGE Foo AS
     ...
 
     PROCEDURE barN;
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -386,7 +386,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 PROCEDURE addPerson(        -- too many arguments liable to be mixed up
     birthYear pls_integer, birthMonth pls_integer, birthDate pls_integer, height pls_integer, weight pls_integer, ssn pls_integer) {
 
@@ -398,7 +398,7 @@ PROCEDURE addPerson(        -- preferred approach
     birthdate DATE, measurements BodyMeasurements , ssn INTEGER) BEGIN
 
     . . . .
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -438,7 +438,7 @@ apart the code becomes more managable and ripe for reuse.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 TYPE BODY Foo AS
     MEMBER PROCEDURE bar1 IS BEGIN
     -- 1000 lines of code
@@ -454,7 +454,7 @@ TYPE BODY Foo AS
     MEMBER PROCEDURE barN IS BEGIN
     -- 1000 lines of code
     END barn;
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -494,12 +494,12 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE BODY AS
+{%raw%}CREATE OR REPLACE PACKAGE BODY AS
  FUNCTION methd RETURN INTEGER IS
  BEGIN
    RETURN 1;;
  END;
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -539,14 +539,14 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE pkg_
+{%raw%}CREATE OR REPLACE PACKAGE pkg_
  PROCEDURE Foo IS
  BEGIN
  --this class only has 6 NCSS lines
      super();
      super();
  END;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -586,7 +586,7 @@ complexity and increase readability.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE
+{%raw%}CREATE OR REPLACE
 PROCEDURE bar AS BEGIN  -- this is something more complex than it needs to be,
     if (y) THEN -- it should be broken down into smaller methods or functions
         for j IN 0 .. j-1 LOOP
@@ -617,7 +617,7 @@ PROCEDURE bar AS BEGIN  -- this is something more complex than it needs to be,
             log_problem;
         END;
     END;
-END;
+END;{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -657,12 +657,12 @@ city/state/zip fields could park them within a single Address field.
 **Example(s):**
 
 ``` sql
-CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
+{%raw%}CREATE OR REPLACE PACKAGE pkg_too_many_fields AS
     C_CHAR_A CONSTANT CHAR(1 CHAR) := 'A';
     C_CHAR_B CONSTANT CHAR(1 CHAR) := 'B';
     ...
     C_CHAR_Z CONSTANT CHAR(1 CHAR) := 'Z';
-END pkg_too_many_fields;
+END pkg_too_many_fields;{%endraw%}
 ```
 
 **This rule has the following properties:**

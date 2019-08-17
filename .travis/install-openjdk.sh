@@ -1,21 +1,18 @@
 #
-# Original sources:
-# Linux: https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/jdk-11.0.3%2B7/
-#        https://github.com/AdoptOpenJDK/openjdk11-upstream-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-x64_linux_11.0.3_7.tar.gz
-# MacOSX: https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/jdk-11.0.3%2B7/
-#         https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.3%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.3_7.tar.gz
+# AdoptOpenJDK Builds from:
+# https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/tag/jdk-11.0.4%2B11
 #
 
-
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    OPENJDK_ARCHIVE=OpenJDK11U-jdk_x64_mac_hotspot_11.0.3_7.tar.gz
+    DOWNLOAD_URL=https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.4%2B11/OpenJDK11U-jdk_x64_mac_hotspot_11.0.4_11.tar.gz
     COMPONENTS_TO_STRIP=3 # e.g. jdk-11.0.3+7/Contents/Home/bin/java
 else
-    OPENJDK_ARCHIVE=OpenJDK11U-x64_linux_11.0.3_7.tar.gz
+    DOWNLOAD_URL=https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.4%2B11/OpenJDK11U-jdk_x64_linux_hotspot_11.0.4_11.tar.gz
     COMPONENTS_TO_STRIP=1 # e.g. openjdk-11.0.3+7/bin/java
 fi
 
-DOWNLOAD_URL=https://pmd-code.org/${OPENJDK_ARCHIVE}
+OPENJDK_ARCHIVE=$(basename $DOWNLOAD_URL)
+
 LOCAL_DIR=${HOME}/.cache/openjdk
 TARGET_DIR=${HOME}/openjdk11
 

@@ -283,9 +283,9 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>3-SNAPSHOT</pmd.build-tools.version>
+        <pmd.build-tools.version>3</pmd.build-tools.version>
 
-        <pmd-designer.version>6.14.0</pmd-designer.version>
+        <pmd-designer.version>6.17.0</pmd-designer.version>
     </properties>
 
     <build>
@@ -304,6 +304,8 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                             <goals>
                                 <goal>antlr4</goal>
                             </goals>
+                            <!-- This is default but let's be clear -->
+                            <phase>generate-sources</phase>
                         </execution>
                     </executions>
                 </plugin>
@@ -369,9 +371,6 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.7.0</version>
                     <configuration>
-                        <!-- Bug with incremental compilation -->
-                        <!-- https://issues.apache.org/jira/browse/MCOMPILER-209 -->
-                        <useIncrementalCompilation>false</useIncrementalCompilation>
                         <release>${java.version}</release>
                     </configuration>
                     <executions>
@@ -917,13 +916,25 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>5.4.0</version>
+                <version>5.5.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>5.4.0</version>
+                <version>5.5.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-commons</artifactId>
+                <version>1.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-launcher</artifactId>
+                <version>1.5.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -931,7 +942,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.junit.vintage</groupId>
                 <artifactId>junit-vintage-engine</artifactId>
-                <version>5.4.0</version>
+                <version>5.5.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1144,6 +1155,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
         <module>pmd-fortran</module>
         <module>pmd-go</module>
         <module>pmd-groovy</module>
+        <module>pmd-lua</module>
         <module>pmd-java</module>
         <module>pmd-javascript</module>
         <module>pmd-jsp</module>

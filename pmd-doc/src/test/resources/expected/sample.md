@@ -50,7 +50,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 **Example(s):**
 
 ``` java
-public class JumbledIncrementerRule1 {
+{%raw%}public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
             for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
@@ -58,7 +58,7 @@ public class JumbledIncrementerRule1 {
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -123,7 +123,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 **Example(s):**
 
 ``` java
-public class JumbledIncrementerRule1 {
+{%raw%}public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
             for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
@@ -131,7 +131,7 @@ public class JumbledIncrementerRule1 {
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -162,7 +162,7 @@ Third paragraph.
 **Example(s):**
 
 ``` java
-public class Bar {      // poor, missing a hashcode() method
+{%raw%}public class Bar {      // poor, missing a hashcode() method
     public boolean equals(Object o) {
       // do some comparison
     }
@@ -182,6 +182,13 @@ public class Foo {      // perfect, both methods provided
       // return some hash value
     }
 }
+
+// A sample with double braces (#1898)
+public class Foo {
+    public List<String> bar() {
+        return new ArrayList<String>(){{ addAll("a","b","c"); }};
+    }
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -214,7 +221,7 @@ Avoid jumbled loop incrementers - its usually a mistake, and is confusing even i
 **Example(s):**
 
 ``` java
-public class JumbledIncrementerRule1 {
+{%raw%}public class JumbledIncrementerRule1 {
     public void foo() {
         for (int i = 0; i < 10; i++) {          // only references 'i'
             for (int k = 0; k < 20; i++) {      // references both 'i' and 'k'
@@ -222,7 +229,7 @@ public class JumbledIncrementerRule1 {
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -312,14 +319,14 @@ if (0 > 1 && 0 < 1) {
 **Example(s):**
 
 ``` java
-public class Bar {
+{%raw%}public class Bar {
     public boolean foo() {
       if (0 < 1) { // less-than should not be escaped in markdown
           String s = "abc"; // the quotes should not be escaped in markdown.
       }
     }
     // <script>alert('XSS');</script>
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**

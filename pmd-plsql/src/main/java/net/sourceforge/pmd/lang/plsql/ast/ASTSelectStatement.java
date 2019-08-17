@@ -16,10 +16,12 @@ public class ASTSelectStatement extends AbstractSelectStatement {
         super(p, id);
     }
 
-    /** Accept the visitor. **/
     @Override
     public Object jjtAccept(PLSQLParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+
+    public ASTFromClause getFromClause() {
+        return getFirstChildOfType(ASTFromClause.class);
+    }
 }
-/* JavaCC - OriginalChecksum=6a27b24d958d9811f9cd9229a7d3a3ac (do not edit this line) */

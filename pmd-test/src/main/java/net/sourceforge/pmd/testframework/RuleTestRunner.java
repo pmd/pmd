@@ -28,8 +28,8 @@ import org.junit.runners.model.Statement;
 import net.sourceforge.pmd.Rule;
 
 /**
- * A JUnit Runner, that executes all declared rule tests in the class.
- * It supports Before and After methods as well as TestRules.
+ * A JUnit Runner, that executes all declared rule tests in the class. It supports Before and After methods as well as
+ * TestRules.
  *
  * @author Andreas Dangel
  */
@@ -37,20 +37,20 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private ConcurrentHashMap<TestDescriptor, Description> testDescriptions = new ConcurrentHashMap<>();
     private final RuleTst instance;
 
-    public RuleTestRunner(Class<? extends RuleTst> testClass) throws InitializationError {
+    /* default */ RuleTestRunner(final Class<? extends RuleTst> testClass) throws InitializationError {
         super(testClass);
         instance = createTestClass();
         instance.setUp();
     }
 
     @Override
-    protected Description describeChild(TestDescriptor testCase) {
+    protected Description describeChild(final TestDescriptor testCase) {
         Description description = testDescriptions.get(testCase);
         if (description == null) {
             description = Description.createTestDescription(getTestClass().getJavaClass(),
                 testCase.getRule().getName() + "::"
-                        + testCase.getNumberInDocument() + " "
-                        + testCase.getDescription().replaceAll("\n|\r", " "));
+                    + testCase.getNumberInDocument() + " "
+                    + testCase.getDescription().replaceAll("\n|\r", " "));
             testDescriptions.putIfAbsent(testCase, description);
         }
         return description;
@@ -58,28 +58,22 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
 
     /**
      * Checks whether this test class has additionally unit test methods.
+     *
      * @return true if there is at least one unit test method.
      */
-    public boolean hasUnitTests() {
+    /* default */ boolean hasUnitTests() {
         return !getTestClass().getAnnotatedMethods(Test.class).isEmpty();
     }
 
     @Override
     protected List<TestDescriptor> getChildren() {
-        List<Rule> rules = new ArrayList<>(instance.getRules());
-        Collections.sort(rules, new Comparator<Rule>() {
-            @Override
-            public int compare(Rule o1, Rule o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        final List<Rule> rules = new ArrayList<>(instance.getRules());
+        rules.sort(Comparator.comparing(Rule::getName));
 
-        List<TestDescriptor> tests = new LinkedList<>();
-        for (Rule r : rules) {
-            TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
-            for (TestDescriptor t : ruleTests) {
-                tests.add(t);
-            }
+        final List<TestDescriptor> tests = new LinkedList<>();
+        for (final Rule r : rules) {
+            final TestDescriptor[] ruleTests = instance.extractTestsFromXml(r);
+            Collections.addAll(tests, ruleTests);
         }
 
         return tests;
@@ -88,14 +82,14 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private RuleTst createTestClass() throws InitializationError {
         try {
             return (RuleTst) getTestClass().getOnlyConstructor().newInstance();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new InitializationError(e);
         }
     }
 
     @Override
-    protected void runChild(TestDescriptor testCase, RunNotifier notifier) {
-        Description description = describeChild(testCase);
+    protected void runChild(final TestDescriptor testCase, final RunNotifier notifier) {
+        final Description description = describeChild(testCase);
         if (isIgnored(testCase)) {
             notifier.fireTestIgnored(description);
         } else {
@@ -104,8 +98,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     }
 
     /**
-     * Executes the actual test case. If there are Before, After, or TestRules present,
-     * they are executed accordingly.
+     * Executes the actual test case. If there are Before, After, or TestRules present, they are executed accordingly.
      *
      * @param testCase the PMD rule test case to be executed
      * @return a single statement which includes any rules, if present.
@@ -113,7 +106,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
     private Statement ruleTestBlock(final TestDescriptor testCase) {
         Statement statement = new Statement() {
             @Override
-            public void evaluate() throws Throwable {
+            public void evaluate() {
                 instance.runTest(testCase);
             }
         };
@@ -123,23 +116,24 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
         return statement;
     }
 
-    private Statement withBefores(Statement statement) {
-        List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(Before.class);
+    private Statement withBefores(final Statement statement) {
+        final List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(Before.class);
         return befores.isEmpty() ? statement : new RunBefores(statement, befores, instance);
     }
 
-    private Statement withAfters(Statement statement) {
-        List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
+    private Statement withAfters(final Statement statement) {
+        final List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(After.class);
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, instance);
     }
 
     private Statement withRules(final TestDescriptor testCase, Statement statement) {
-        List<TestRule> testRules = getTestClass().getAnnotatedFieldValues(instance, org.junit.Rule.class, TestRule.class);
+        final List<TestRule> testRules =
+            getTestClass().getAnnotatedFieldValues(instance, org.junit.Rule.class, TestRule.class);
         return testRules.isEmpty() ? statement : new RunRules(statement, testRules, describeChild(testCase));
     }
 
     @Override
-    protected boolean isIgnored(TestDescriptor child) {
+    protected boolean isIgnored(final TestDescriptor child) {
         return TestDescriptor.inRegressionTestMode() && !child.isRegressionTest();
     }
 }
