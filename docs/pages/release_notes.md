@@ -30,6 +30,8 @@ about the usage and features of the rule designer.
 
 ### Fixed Issues
 
+*   all
+    *   [#1983](https://github.com/pmd/pmd/pull/1983): \[core] Avoid crashes with analysis cache when classpath references non-existing directories
 *   java-bestpractices
     *   [#1862](https://github.com/pmd/pmd/issues/1862): \[java] New rule for MessageDigest.getInstance
 *   java-codestyle
