@@ -11,7 +11,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
@@ -58,5 +60,26 @@ public class ZipFileExtractor {
         } finally {
             zip.close();
         }
+    }
+
+    /**
+     * Compiles a list of all the files/directories contained in the given zip file.
+     * @param zipPath the zip file to look into
+     * @return list of all entries
+     * @throws Exception if any error happens during read of the zip file
+     */
+    public static List<String> readZipFile(Path zipPath) throws Exception {
+        List<String> result = new ArrayList<>();
+        ZipFile zip = new ZipFile(zipPath.toFile());
+        try {
+            Enumeration<ZipArchiveEntry> entries = zip.getEntries();
+            while (entries.hasMoreElements()) {
+                ZipArchiveEntry entry = entries.nextElement();
+                result.add(entry.getName());
+            }
+        } finally {
+            zip.close();
+        }
+        return result;
     }
 }

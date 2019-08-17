@@ -5,13 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * This interface allows a Java Class to be associated with a node.
  */
-public interface TypeNode extends Node {
+public interface TypeNode extends JavaNode {
 
     /**
      * Get the Java Class associated with this node.

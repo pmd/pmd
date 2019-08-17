@@ -89,8 +89,10 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return isStatic;
     }
 
-    // TODO - this should go away, but the DuplicateImports rule still uses it
-    // (in a clunky way)
+    /**
+     * @deprecated this will be removed with PMD 7.0.0
+     */
+    @Deprecated
     public ASTName getImportedNameNode() {
         return (ASTName) jjtGetChild(0);
     }

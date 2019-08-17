@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
@@ -20,10 +21,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
 
@@ -102,8 +106,16 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private void checkImports(AbstractJavaTypeNode node, Object data) {
-        String name = node.getImage();
+    private void checkImports(TypeNode node, Object data) {
+        final String name = node.getImage();
+
+        // variable names shadow everything else
+        // If the first segment is a variable, then all
+        // the following are field accesses and it's not an FQCN
+        if (isVariable(node.getScope(), name)) {
+            return;
+        }
+
         List<ASTImportDeclaration> matches = new ArrayList<>();
 
         // Find all "matching" import declarations
@@ -172,7 +184,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         if (matches.isEmpty()) {
             if (isJavaLangImplicit(node)) {
                 addViolation(data, node, new Object[] { node.getImage(), "java.lang.*", "implicit "});
-            } else if (isSamePackage(node)) {
+            } else if (isSamePackage(node, name)) {
                 addViolation(data, node, new Object[] { node.getImage(), currentPackage + ".*", "same package "});
             }
         } else {
@@ -211,12 +223,45 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return result;
     }
 
-    private boolean isSamePackage(AbstractJavaTypeNode node) {
-        String name = node.getImage();
-        return name.substring(0, name.lastIndexOf('.')).equals(currentPackage);
+    private boolean isVariable(Scope scope, String name) {
+        String firstSegment = name.substring(0, name.indexOf('.'));
+
+        while (scope != null) {
+
+            for (Entry<VariableNameDeclaration, List<NameOccurrence>> entry : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                if (entry.getKey().getName().equals(firstSegment)) {
+                    return true;
+                }
+            }
+
+            scope = scope.getParent();
+        }
+
+        return false;
     }
-    
-    private boolean isJavaLangImplicit(AbstractJavaTypeNode node) {
+
+    private boolean isSamePackage(TypeNode node, String name) {
+        if (node.getType() != null) {
+            // with type resolution we can do an exact package match
+            Package packageOfType = node.getType().getPackage();
+            if (packageOfType != null) {
+                return node.getType().getPackage().getName().equals(currentPackage);
+            }
+        }
+
+        int i = name.lastIndexOf('.');
+        while (i > 0) {
+            name = name.substring(0, i);
+            if (name.equals(currentPackage)) {
+                return true;
+            }
+            i = name.lastIndexOf('.');
+        }
+
+        return false;
+    }
+
+    private boolean isJavaLangImplicit(TypeNode node) {
         String name = node.getImage();
         boolean isJavaLang = name != null && name.startsWith("java.lang.");
 
@@ -232,8 +277,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         return false;
     }
 
-    private boolean isAvoidingConflict(final AbstractJavaTypeNode node, final String name,
-            final ASTImportDeclaration firstMatch) {
+    private boolean isAvoidingConflict(final TypeNode node, final String name,
+                                       final ASTImportDeclaration firstMatch) {
         // is it a conflict between different imports?
         if (firstMatch.isImportOnDemand() && firstMatch.isStatic()) {
             final String methodCalled = name.substring(name.indexOf('.') + 1);
