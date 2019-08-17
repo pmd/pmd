@@ -504,7 +504,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // swallow
             } catch (final LinkageError e) {
                 if (LOG.isLoggable(Level.WARNING)) {
-                    LOG.log(Level.WARNING, "Error during type resolution due to: " + e);
+                    String message = "Error during type resolution of field '" + fieldImage + "' in "
+                            + typeToSearch.getType() + " due to: " + e;
+                    LOG.log(Level.WARNING, message);
                 }
                 // TODO : report a missing class once we start doing that...
                 return null;
@@ -1407,7 +1409,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             }
         } else {
             JavaTypeDefinition def = JavaTypeDefinition.forClass(myType);
-            node.setTypeDefinition(def.withDimensions(arrayDimens));
+            if (def != null) {
+                node.setTypeDefinition(def.withDimensions(arrayDimens));
+            }
         }
     }
 

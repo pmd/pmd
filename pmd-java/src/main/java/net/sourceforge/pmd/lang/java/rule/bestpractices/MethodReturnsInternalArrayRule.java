@@ -10,6 +10,7 @@ import org.jaxen.JaxenException;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 
@@ -46,7 +46,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
             return data;
         }
         List<ASTReturnStatement> returns = method.findDescendantsOfType(ASTReturnStatement.class);
-        ASTTypeDeclaration td = method.getFirstParentOfType(ASTTypeDeclaration.class);
+        ASTAnyTypeDeclaration td = method.getFirstParentOfType(ASTAnyTypeDeclaration.class);
         for (ASTReturnStatement ret : returns) {
             final String vn = getReturnedVariableName(ret);
             if (!isField(vn, td)) {
@@ -111,7 +111,7 @@ public class MethodReturnsInternalArrayRule extends AbstractSunSecureRule {
         return false;
     }
 
-    private boolean isEmptyArray(String varName, ASTTypeDeclaration typeDeclaration) {
+    private boolean isEmptyArray(String varName, ASTAnyTypeDeclaration typeDeclaration) {
         final List<ASTFieldDeclaration> fds = typeDeclaration.findDescendantsOfType(ASTFieldDeclaration.class);
         if (fds != null) {
             for (ASTFieldDeclaration fd : fds) {

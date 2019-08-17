@@ -22,7 +22,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar(Integer x, Integer y, Integer z) {
         if (x>y) {
             if (y>z) {
@@ -32,16 +32,13 @@ public class Foo {
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|200|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |problemDepth|3|The if statement depth reporting threshold|no|
 
 **Use this rule with the default properties by just referencing it:**
@@ -73,7 +70,7 @@ program. As such, they include all control flow statements, such as 'if', 'while
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity &gt;= 10.
-Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+Additionally, classes with many methods of moderate complexity get reported as well once the total of their
 methods' complexities reaches 40, even if none of the methods was directly reported.
 
 Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
@@ -84,7 +81,7 @@ into subcomponents.
 **Example(s):**
 
 ``` java
-public class Complicated {
+{%raw%}public class Complicated {
   public void example() { // This method has a cyclomatic complexity of 12
     int x = 0, y = 1, z = 2, t = 2;
     boolean a = false, b = true, c = false, d = true;
@@ -106,16 +103,13 @@ public class Complicated {
       }
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |classReportLevel|40|Total class complexity reporting threshold|no|
 |methodReportLevel|10|Cyclomatic complexity reporting threshold|no|
 
@@ -149,7 +143,7 @@ apart the code becomes more managable and ripe for reuse.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar1() {
         // 1000 lines of code
     }
@@ -162,19 +156,14 @@ public class Foo {
     public void barN() {
         // 1000 lines of code
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|1000.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|150|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|1000|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -185,7 +174,7 @@ public class Foo {
 ``` xml
 <rule ref="category/apex/design.xml/ExcessiveClassLength">
     <properties>
-        <property name="minimum" value="1000.0" />
+        <property name="minimum" value="1000" />
     </properties>
 </rule>
 ```
@@ -204,26 +193,21 @@ same datatype. These situations usually denote the need for new objects to wrap 
 **Example(s):**
 
 ``` java
-// too many arguments liable to be mixed up
+{%raw%}// too many arguments liable to be mixed up
 public void addPerson(int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
     // ...
 }
 // preferred approach 
 public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
     // ...
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|4.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|4|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -234,7 +218,7 @@ public void addPerson(Date birthdate, BodyMeasurements measurements, int ssn) {
 ``` xml
 <rule ref="category/apex/design.xml/ExcessiveParameterList">
     <properties>
-        <property name="minimum" value="4.0" />
+        <property name="minimum" value="4" />
     </properties>
 </rule>
 ```
@@ -255,7 +239,7 @@ developed easily.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public String value;
     public Bar something;
     public Variable var;
@@ -265,19 +249,14 @@ public class Foo {
     public void doMoreWork() {}
     public void doWorkAgain() {}
     // [... more more public methods ...]
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|20.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|150|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|20|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -288,7 +267,7 @@ public class Foo {
 ``` xml
 <rule ref="category/apex/design.xml/ExcessivePublicCount">
     <properties>
-        <property name="minimum" value="20.0" />
+        <property name="minimum" value="20" />
     </properties>
 </rule>
 ```
@@ -308,7 +287,7 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     //this constructor only has 1 NCSS lines
     public Foo() {
         super();
@@ -318,19 +297,14 @@ public class Foo extends Bar {
 
         super.foo();
 }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|20.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|20|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -341,7 +315,7 @@ public class Foo extends Bar {
 ``` xml
 <rule ref="category/apex/design.xml/NcssConstructorCount">
     <properties>
-        <property name="minimum" value="20.0" />
+        <property name="minimum" value="20" />
     </properties>
 </rule>
 ```
@@ -361,7 +335,7 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     //this method only has 1 NCSS lines
     public Integer methd() {
         super.methd();
@@ -370,19 +344,14 @@ public class Foo extends Bar {
 
         return 1;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|40.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|40|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -393,7 +362,7 @@ public class Foo extends Bar {
 ``` xml
 <rule ref="category/apex/design.xml/NcssMethodCount">
     <properties>
-        <property name="minimum" value="40.0" />
+        <property name="minimum" value="40" />
     </properties>
 </rule>
 ```
@@ -413,7 +382,7 @@ lines of code that are split are counted as one.
 **Example(s):**
 
 ``` java
-//this class only has 6 NCSS lines
+{%raw%}//this class only has 6 NCSS lines
 public class Foo extends Bar {
     public Foo() {
         super();
@@ -424,19 +393,14 @@ public class Foo extends Bar {
 
         super.foo();
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|topscore||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Top score value|no|
-|minimum|500.0|Minimum reporting threshold|no|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|250|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-|sigma||<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Sigma value|no|
+|minimum|500|Threshold above which a node is reported|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -447,7 +411,7 @@ public class Foo extends Bar {
 ``` xml
 <rule ref="category/apex/design.xml/NcssTypeCount">
     <properties>
-        <property name="minimum" value="500.0" />
+        <property name="minimum" value="500" />
     </properties>
 </rule>
 ```
@@ -468,7 +432,7 @@ high complexity, and 11+ is very high complexity.
 **Example(s):**
 
 ``` java
-// This has a Cyclomatic Complexity = 12
+{%raw%}// This has a Cyclomatic Complexity = 12
 public class Foo {
 1   public void example() {
 2   if (a == b || (c == d && e == f)) {
@@ -503,16 +467,13 @@ public class Foo {
                 break;
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|250|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |reportLevel|10|Cyclomatic Complexity reporting threshold|no|
 |showClassesComplexity|true|Add class average violations to the report|no|
 |showMethodsComplexity|true|Add method average violations to the report|no|
@@ -548,7 +509,7 @@ city/state/zip fields could park them within a single Address field.
 **Example(s):**
 
 ``` java
-public class Person {
+{%raw%}public class Person {
     // too many separate fields
     int birthYear;
     int birthMonth;
@@ -561,16 +522,13 @@ public class Person {
     // this is more manageable
     Date birthDate;
     BodyMeasurements measurements;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|cc\_categories|Complexity|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|200|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
 |maxfields|15|Max allowable fields|no|
 
 **Use this rule with the default properties by just referencing it:**

@@ -41,7 +41,7 @@ cutting through 100% of the document.
 **Example(s):**
 
 ``` xsl
-<xsl:variable name="var" select="//item/descendant::child"/>
+{%raw%}<xsl:variable name="var" select="//item/descendant::child"/>{%endraw%}
 ```
 
 **This rule has the following properties:**

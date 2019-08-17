@@ -27,7 +27,7 @@ gets it.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   // Try to avoid this:
   synchronized void foo() {
   }
@@ -46,7 +46,7 @@ public class Foo {
     synchronized(Foo.class) {
     }
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -72,14 +72,14 @@ it contains methods that are not thread-safe.
 **Example(s):**
 
 ``` java
-public class Bar {
+{%raw%}public class Bar {
     void buz() {
         ThreadGroup tg = new ThreadGroup("My threadgroup");
         tg = new ThreadGroup(tg, "my thread group");
         tg = Thread.currentThread().getThreadGroup();
         tg = System.getSecurityManager().getThreadGroup();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -105,10 +105,10 @@ the volatile keyword should not be used for maintenance purpose and portability.
 **Example(s):**
 
 ``` java
-public class ThrDeux {
+{%raw%}public class ThrDeux {
   private volatile String var1; // not suggested
   private          String var2; // preferred
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -132,7 +132,7 @@ The J2EE specification explicitly forbids the use of threads.
 **Example(s):**
 
 ``` java
-// This is not allowed
+{%raw%}// This is not allowed
 public class UsingThread extends Thread {
 
 }
@@ -143,7 +143,7 @@ public class OtherThread implements Runnable {
     public void methode() {
         Runnable thread = new Thread(); thread.run();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -177,9 +177,9 @@ Explicitly calling Thread.run() method will execute in the caller's thread of co
 **Example(s):**
 
 ``` java
-Thread t = new Thread();
+{%raw%}Thread t = new Thread();
 t.run();            // use t.start() instead
-new Thread().run(); // same violation
+new Thread().run(); // same violation{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -207,7 +207,7 @@ or <http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html>
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     /*volatile */ Object baz = null; // fix for Java5 and later: volatile
     Object bar() {
         if (baz == null) { // baz may be non-null yet not fully created
@@ -219,7 +219,7 @@ public class Foo {
         }
         return baz;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -250,7 +250,7 @@ See Effective Java, item 48.
 **Example(s):**
 
 ``` java
-private static Foo foo = null;
+{%raw%}private static Foo foo = null;
 
 //multiple simultaneous callers may see partially initialized objects
 public static Foo getFoo() {
@@ -258,7 +258,7 @@ public static Foo getFoo() {
         foo = new Foo();
     }
     return foo;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -293,7 +293,7 @@ public static Foo getFoo() {
 
 SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances
 for each thread. If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.
+synchronized on block level.
 
 This rule has been deprecated in favor of the rule {% rule UnsynchronizedStaticFormatter %}.
 
@@ -302,20 +302,37 @@ This rule has been deprecated in favor of the rule {% rule UnsynchronizedStaticF
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private static final SimpleDateFormat sdf = new SimpleDateFormat();
     void bar() {
         sdf.format(); // poor, no thread-safety
     }
-    synchronized void foo() {
-        sdf.format(); // preferred
+    void foo() {
+        synchronized (sdf) { // preferred
+            sdf.format();
+        }
     }
-}
+}{%endraw%}
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowMethodLevelSynchronization|false|If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.|no|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/multithreading.xml/UnsynchronizedStaticDateFormatter">
+    <properties>
+        <property name="allowMethodLevelSynchronization" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UnsynchronizedStaticFormatter
@@ -327,27 +344,44 @@ public class Foo {
 Instances of `java.text.Format` are generally not synchronized.
 Sun recommends using separate format instances for each thread.
 If multiple threads must access a static formatter, the formatter must be
-synchronized either on method or block level.
+synchronized on block level.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.multithreading.UnsynchronizedStaticFormatterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/multithreading/UnsynchronizedStaticFormatterRule.java)
 
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private static final SimpleDateFormat sdf = new SimpleDateFormat();
     void bar() {
         sdf.format(); // poor, no thread-safety
     }
-    synchronized void foo() {
-        sdf.format(); // preferred
+    void foo() {
+        synchronized (sdf) { // preferred
+            sdf.format();
+        }
     }
-}
+}{%endraw%}
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|allowMethodLevelSynchronization|false|If true, method level synchronization is allowed as well as synchronized block. Otherwise only synchronized blocks are allowed.|no|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/multithreading.xml/UnsynchronizedStaticFormatter">
+    <properties>
+        <property name="allowMethodLevelSynchronization" value="false" />
+    </properties>
+</rule>
 ```
 
 ## UseConcurrentHashMap
@@ -370,7 +404,7 @@ perform efficient map reads without blocking other threads.
 **Example(s):**
 
 ``` java
-public class ConcurrentApp {
+{%raw%}public class ConcurrentApp {
   public void getMyInstance() {
     Map map1 = new HashMap();           // fine for single-threaded access
     Map map2 = new ConcurrentHashMap(); // preferred for use with multiple threads
@@ -378,7 +412,7 @@ public class ConcurrentApp {
     // the following case will be ignored by this rule
     Map map3 = someModule.methodThatReturnMap(); // might be OK, if the returned map is already thread-safe
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -411,12 +445,12 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
 **Example(s):**
 
 ``` java
-void bar() {
+{%raw%}void bar() {
     x.notify();
     // If many threads are monitoring x, only one (and you won't know which) will be notified.
     // use instead:
     x.notifyAll();
-  }
+  }{%endraw%}
 ```
 
 **Use this rule by referencing it:**

@@ -220,4 +220,165 @@ public class MethodReturnsInternalArrayCase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description> #1738 MethodReturnsInternalArray in inner classes</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Outer {
+
+	public static class Inner {
+		private int[] arr2;
+
+		public int[] getArr2() {
+			return arr2;
+		}
+
+	}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1845 Regression in MethodReturnsInternalArray not handling enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public enum MethodReturnsInternalArrayCaseEnum {
+    ONE("One"),
+    TWO("Two", "Three");
+
+    private String[] titles;
+
+    MethodReturnsInternalArrayCaseEnum(String... titles) {
+        this.titles = Arrays.copyOf(titles, titles.length);
+    }
+
+    public String[] getTitles() {
+        return titles.clone();
+    }
+
+    @Override
+    public String toString() {
+        return titles[0];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface OuterInterface {
+       interface InnerInterface {
+            String[] method();
+       }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Retention;
+public final class I {
+    private I() {
+    }
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface Inner {
+        String[] value();
+    }
+}
+        ]]>
+        </code>
+    </test-code>
+    
+    <test-code>
+        <description>Top-level annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TopLevelAnnotation {
+
+    String[] value();
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum that returns array instead of copy</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public enum MethodReturnsInternalArrayCaseEnum {
+    ONE("One"),
+    TWO("Two", "Three");
+
+    private String[] titles;
+
+    MethodReturnsInternalArrayCaseEnum(String... titles) {
+        this.titles = titles;
+    }
+
+    public String[] getTitles() {
+        return titles;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner enum that returns array instead of copy</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+
+    public enum InnerEnum {
+        INNER_ENUM("first", "second");
+        private String[] titles;
+
+        InnerEnum(String... titles) {
+            this.titles = titles;
+        }
+
+        public String[] getTitles() {
+            return titles;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner enum that returns copy of array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Arrays;
+public class OuterClass {
+
+    public enum InnerEnum {
+        INNER_ENUM("first", "second");
+        private String[] titles;
+
+        InnerEnum(String... titles) {
+            this.titles = titles;
+        }
+
+        public String[] getTitles() {
+            return Arrays.copyOf(titles, titles.length);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

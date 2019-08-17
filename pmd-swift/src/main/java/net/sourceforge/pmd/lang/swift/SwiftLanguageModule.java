@@ -5,13 +5,11 @@
 package net.sourceforge.pmd.lang.swift;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.antlr.AntlrRuleChainVisitor;
 
 /**
  * Language Module for Swift
- *
- * @deprecated There is no full PMD support for Swift.
  */
-@Deprecated
 public class SwiftLanguageModule extends BaseLanguageModule {
 
     /** The name. */
@@ -23,7 +21,7 @@ public class SwiftLanguageModule extends BaseLanguageModule {
      * Create a new instance of Swift Language Module.
      */
     public SwiftLanguageModule() {
-        super(NAME, null, TERSE_NAME, null, "swift");
-        addVersion("", null, true);
+        super(NAME, null, TERSE_NAME, AntlrRuleChainVisitor.class, "swift");
+        addVersion("", new SwiftHandler(), true);
     }
 }

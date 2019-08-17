@@ -25,24 +25,16 @@ Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Tr
 **Example(s):**
 
 ``` java
-trigger AccountTrigger on Account (before insert, before update) {
+{%raw%}trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
    
    foreach ( Account a : Trigger.new ){   
         //Good: Iterate through the trigger.new array instead.
    }
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidDirectAccessTriggerMap" />
 ```
@@ -62,7 +54,7 @@ the logic can dynamically identify the proper data to operate against and not fa
 **Example(s):**
 
 ``` java
-public without sharing class Foo {
+{%raw%}public without sharing class Foo {
     void foo() {
         //Error - hardcoded the record type id
         if(a.RecordTypeId == '012500000009WAr'){
@@ -71,18 +63,10 @@ public without sharing class Foo {
             //do some logic here for a different record type...
         }
     }
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|100|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidHardcodingId" />
 ```
@@ -103,22 +87,14 @@ A full list of supported annotations can be found at https://developer.salesforc
 **Example(s):**
 
 ``` java
-@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
+{%raw%}@NonExistentAnnotation public class ClassWithNonexistentAnnotation {
 	@NonExistentAnnotation public void methodWithNonExistentAnnotation() {
 		// ...
 	}
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/AvoidNonExistentAnnotations" />
 ```
@@ -141,25 +117,17 @@ or reported.
 **Example(s):**
 
 ``` java
-public void doSomething() {
+{%raw%}public void doSomething() {
   ...
   try {
     insert accounts;
   } catch (DmlException dmle) {
     // not good
   }
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyCatchBlock" />
 ```
@@ -181,24 +149,16 @@ Empty If Statement finds instances where a condition is checked but nothing is d
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   public void bar(Integer x) {
     if (x == 0) {
       // empty!
     }
   }
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyIfStmt" />
 ```
@@ -220,7 +180,7 @@ Empty block statements serve no purpose and should be removed.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
 
    private int _bar;
 
@@ -228,18 +188,10 @@ public class Foo {
         // empty
    }
 
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyStatementBlock" />
 ```
@@ -260,7 +212,7 @@ Avoid empty try or finally blocks - what's the point?
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar() {
         try {
           // empty !
@@ -278,18 +230,10 @@ public class Foo {
             // empty!
         }
     }
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyTryOrFinallyBlock" />
 ```
@@ -312,22 +256,14 @@ a while loop that does a lot in the exit expression, rewrite it to make it clear
 **Example(s):**
 
 ``` java
-public void bar(Integer a, Integer b) {
+{%raw%}public void bar(Integer a, Integer b) {
   while (a == b) {
     // empty!
   }
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|1|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/EmptyWhileStmt" />
 ```
@@ -345,23 +281,15 @@ Non-constructor methods should not have the same name as the enclosing class.
 **Example(s):**
 
 ``` java
-public class MyClass {
+{%raw%}public class MyClass {
     // this is OK because it is a constructor
     public MyClass() {}
     // this is bad because it is a method
     public void MyClass() {}
-}
+}{%endraw%}
 ```
 
-**This rule has the following properties:**
-
-|Name|Default Value|Description|Multivalued|
-|----|-------------|-----------|-----------|
-|cc\_categories|Style|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Categories|yes. Delimiter is '\|'.|
-|cc\_remediation\_points\_multiplier|50|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Remediation Points multiplier|no|
-|cc\_block\_highlighting|false|<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span>  Code Climate Block Highlighting|no|
-
-**Use this rule with the default properties by just referencing it:**
+**Use this rule by referencing it:**
 ``` xml
 <rule ref="category/apex/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
 ```

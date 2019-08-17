@@ -8,6 +8,7 @@
 clear rule violation
      ]]></description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
  static int x;
@@ -27,6 +28,22 @@ public class Foo {
  static final int x;
      Foo(int y) {
      x = y; 
+     }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+rule violated twice
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+ static int x;
+     Foo(int y) {
+         x = y;
+         x = y;
      }
 }
      ]]></code>

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.vf.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class AbstractVFNode extends AbstractNode implements VfNode {
 
@@ -29,7 +30,7 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
 
     @Override
     public void jjtClose() {
-        if (beginLine == -1 && (children == null || children.length == 0)) {
+        if (beginLine == -1 && children.length == 0) {
             beginColumn = parser.token.beginColumn;
         }
         if (beginLine == -1) {
@@ -53,8 +54,8 @@ public class AbstractVFNode extends AbstractNode implements VfNode {
     @Override
     public Object childrenAccept(VfParserVisitor visitor, Object data) {
         if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((VfNode) children[i]).jjtAccept(visitor, data);
+            for (Node child : children) {
+                ((VfNode) child).jjtAccept(visitor, data);
             }
         }
         return data;
