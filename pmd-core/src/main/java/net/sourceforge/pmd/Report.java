@@ -43,7 +43,6 @@ public class Report implements Iterable<RuleViolation> {
     private final List<ThreadSafeReportListener> listeners = new ArrayList<>();
     private List<ProcessingError> errors;
     private List<ConfigurationError> configErrors;
-    private Map<Integer, String> linesToSuppress = new HashMap<>();
     private long start;
     private long end;
     private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<>();
@@ -186,7 +185,6 @@ public class Report implements Iterable<RuleViolation> {
      *            the suppressed lines
      */
     public void suppress(Map<Integer, String> lines) {
-        linesToSuppress = lines;
     }
 
     private static String keyFor(RuleViolation rv) {
@@ -283,9 +281,7 @@ public class Report implements Iterable<RuleViolation> {
 
 
     public void addSuppressedViolation(SuppressedViolation sv) {
-        if (sv != null) {
-            suppressedRuleViolations.add(sv);
-        }
+        suppressedRuleViolations.add(sv);
     }
 
     /**

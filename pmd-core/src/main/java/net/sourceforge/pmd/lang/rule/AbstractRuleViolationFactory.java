@@ -60,11 +60,13 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         suppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
         suppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
 
-        for (ViolationSuppressor suppressor : suppressors) {
-            SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node, rule);
-            if (suppressed != null) {
-                ruleContext.getReport().addSuppressedViolation(suppressed);
-                return;
+        if (node != null) {
+            for (ViolationSuppressor suppressor : suppressors) {
+                SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node, rule);
+                if (suppressed != null) {
+                    ruleContext.getReport().addSuppressedViolation(suppressed);
+                    return;
+                }
             }
         }
         ruleContext.getReport().addRuleViolation(rv);

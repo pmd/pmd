@@ -14,6 +14,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -78,9 +79,8 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyRootNode(1);
-                    node.testingOnlySetBeginLine(1);
-                    node.testingOnlySetBeginColumn(1);
+                    DummyNode node = new DummyRoot();
+                    node.setCoords(1, 1, 2, 10);
                     node.setImage("Foo");
                     return node;
                 }
@@ -91,14 +91,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
             };
         }
-    }
-
-    private static class DummyRootNode extends DummyNode implements RootNode {
-
-        DummyRootNode(int id) {
-            super(id);
-        }
-
     }
 
     public static class RuleViolationFactory extends AbstractRuleViolationFactory {
