@@ -1,6 +1,5 @@
 package net.sourceforge.pmd;
 
-import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -12,35 +11,30 @@ import net.sourceforge.pmd.Report.SuppressedViolation;
  */
 public interface ViolationSuppressor {
 
+    String NOPMD_COMMENT_ID = "//NOPMD";
+
+
+    String id();
 
     @Nullable
     SuppressedViolation suppressOrNull(RuleViolation violation);
 
 
-    static ViolationSuppressor noop() {
-        return rv -> null;
-    }
-
-
-    static ViolationSuppressor compose(List<ViolationSuppressor> suppressors) {
-        return rv -> {
-            for (ViolationSuppressor suppressor : suppressors) {
-                SuppressedViolation suppressed = suppressor.suppressOrNull(rv);
-                if (suppressed != null) {
-                    return suppressed;
-                }
-            }
-            return null;
-        };
-    }
-
-
+    // TODO hide, internal
     static ViolationSuppressor noPmdCommentSuppressor(Map<Integer, String> noPmdComments) {
-        return rv -> {
-            if (noPmdComments.containsKey(rv.getBeginLine())) {
-                return new SuppressedViolation(rv, true, noPmdComments.get(rv.getBeginLine()));
+        return new ViolationSuppressor() {
+            @Override
+            public String id() {
+                return NOPMD_COMMENT_ID;
             }
-            return null;
+
+            @Override
+            public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv) {
+                if (noPmdComments.containsKey(rv.getBeginLine())) {
+                    return new SuppressedViolation(rv, this, noPmdComments.get(rv.getBeginLine()));
+                }
+                return null;
+            }
         };
     }
 

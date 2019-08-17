@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
@@ -139,7 +140,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 buf.append("<suppressedviolation ").append("filename=\"");
                 StringUtil.appendXmlEscaped(buf, determineFileName(s.getRuleViolation().getFilename()), useUTF8);
                 buf.append("\" suppressiontype=\"");
-                StringUtil.appendXmlEscaped(buf, s.suppressedByNOPMD() ? "nopmd" : "annotation", useUTF8);
+                StringUtil.appendXmlEscaped(buf, s.getSuppressor().id().toLowerCase(Locale.ROOT), useUTF8);
                 buf.append("\" msg=\"");
                 StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription(), useUTF8);
                 buf.append("\" usermsg=\"");

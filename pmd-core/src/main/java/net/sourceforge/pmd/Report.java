@@ -252,47 +252,24 @@ public class Report implements Iterable<RuleViolation> {
      */
     public static class SuppressedViolation {
         private final RuleViolation rv;
-        private final boolean isNOPMD;
         private final String userMessage;
+        private final ViolationSuppressor suppressor;
 
         /**
          * Creates a suppressed violation.
          *
-         * @param rv
-         *            the actual violation, that has been suppressed
-         * @param isNOPMD
-         *            the suppression mode: <code>true</code> if it is
-         *            suppressed via a NOPMD comment, <code>false</code> if
-         *            suppressed via annotations.
-         * @param userMessage
-         *            contains the suppressed code line or <code>null</code>
+         * @param rv The violation, that has been suppressed
+         * @param suppressor The suppressor which suppressed the violation
+         * @param userMessage Any relevant info given by the suppressor
          */
-        public SuppressedViolation(RuleViolation rv, boolean isNOPMD, String userMessage) {
-            this.isNOPMD = isNOPMD;
+        public SuppressedViolation(RuleViolation rv, ViolationSuppressor suppressor, String userMessage) {
+            this.suppressor = suppressor;
             this.rv = rv;
             this.userMessage = userMessage;
         }
 
-        /**
-         * Returns <code>true</code> if the violation has been suppressed via a
-         * NOPMD comment.
-         *
-         * @return <code>true</code> if the violation has been suppressed via a
-         *         NOPMD comment.
-         */
-        public boolean suppressedByNOPMD() {
-            return this.isNOPMD;
-        }
-
-        /**
-         * Returns <code>true</code> if the violation has been suppressed via a
-         * annotation.
-         *
-         * @return <code>true</code> if the violation has been suppressed via a
-         *         annotation.
-         */
-        public boolean suppressedByAnnotation() {
-            return !this.isNOPMD;
+        public ViolationSuppressor getSuppressor() {
+            return suppressor;
         }
 
         public RuleViolation getRuleViolation() {
@@ -318,19 +295,6 @@ public class Report implements Iterable<RuleViolation> {
      *            the violation to add
      */
     public void addRuleViolation(RuleViolation violation) {
-
-        // NOPMD suppress
-        int line = violation.getBeginLine();
-        if (linesToSuppress.containsKey(line)) {
-            suppressedRuleViolations.add(new SuppressedViolation(violation, true, linesToSuppress.get(line)));
-            return;
-        }
-
-        if (violation.isSuppressed()) {
-            suppressedRuleViolations.add(new SuppressedViolation(violation, false, null));
-            return;
-        }
-
         int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
         violations.add(index < 0 ? -index - 1 : index, violation);
         violationTree.addRuleViolation(violation);

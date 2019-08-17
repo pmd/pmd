@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -84,16 +82,6 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
 
     Map<Integer, String> getNoPmdComments() {
         return noPmdComments;
-    }
-
-    @Override
-    public ViolationSuppressor getSuppressor() {
-        return ViolationSuppressor.compose(Arrays.asList(
-            ViolationSuppressor.noPmdCommentSuppressor(noPmdComments),
-            rv-> {
-                if ()
-            }
-        ));
     }
 
     void setNoPmdComments(Map<Integer, String> noPmdComments) {

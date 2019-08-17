@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +14,7 @@ import net.sourceforge.pmd.Report.SuppressedViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractRuleViolationFactory implements RuleViolationFactory {
@@ -38,12 +41,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         String formattedMessage = cleanup(message, args);
 
         RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage);
-        SuppressedViolation sup = node.getRoot().getSuppressor().suppressOrNull(rv);
-        if (sup != null) {
-            ruleContext.getReport().addSuppressedViolation(sup);
-        } else {
-            ruleContext.getReport().addRuleViolation(rv);
-        }
+        maybeSuppress(ruleContext, node, rv, rule);
     }
 
     @Override
@@ -53,12 +51,24 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         String formattedMessage = cleanup(message, args);
 
         RuleViolation rv = createRuleViolation(rule, ruleContext, node, formattedMessage, beginLine, endLine);
-        SuppressedViolation sup = node.getRoot().getSuppressor().suppressOrNull(rv);
-        if (sup != null) {
-            ruleContext.getReport().addSuppressedViolation(sup);
-        } else {
-            ruleContext.getReport().addRuleViolation(rv);
+        maybeSuppress(ruleContext, node, rv, rule);
+    }
+
+    private void maybeSuppress(RuleContext ruleContext, Node node, RuleViolation rv, Rule rule) {
+        List<ViolationSuppressor> suppressors = getSuppressors(node, rule);
+        for (ViolationSuppressor suppressor : suppressors) {
+            SuppressedViolation suppressed = suppressor.suppressOrNull(rv);
+            if (suppressed != null) {
+                ruleContext.getReport().addSuppressedViolation(suppressed);
+                return;
+            }
         }
+        ruleContext.getReport().addRuleViolation(rv);
+    }
+
+
+    protected List<ViolationSuppressor> getSuppressors(Node node, Rule rule) {
+        return Collections.emptyList();
     }
 
     protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message);
