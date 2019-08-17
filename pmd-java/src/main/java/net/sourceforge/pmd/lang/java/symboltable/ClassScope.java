@@ -347,8 +347,9 @@ public class ClassScope extends AbstractJavaScope {
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode()
-                .findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = mnd.getDeclarator()
+                                                 .getFormalParameters()
+                                                 .findChildrenOfType(ASTFormalParameter.class);
         if (parameters.isEmpty()) {
             return Collections.emptyList();
         }

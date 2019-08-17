@@ -36,17 +36,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return p.isVarargs();
     }
 
-    public ASTMethodDeclarator getMethodNameDeclaratorNode() {
-        return (ASTMethodDeclarator) node;
-    }
-
     public String getParameterDisplaySignature() {
         StringBuilder sb = new StringBuilder("(");
-        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
-        // TODO - this can be optimized - add [0] then ,[n] in a loop.
-        // no need to trim at the end
-        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
-            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
+        // TODO - this can be written with Streams and Collectors::joining
+        for (ASTFormalParameter p : getDeclarator().getFormalParameters()) {
             sb.append(p.getTypeNode().getTypeImage());
             if (p.isVarargs()) {
                 sb.append("...");
@@ -140,6 +133,6 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     @Override
     public String toString() {
         return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = "
-                + ((ASTMethodDeclarator) node).getParameterCount();
+                + getDeclarator().getArity();
     }
 }
