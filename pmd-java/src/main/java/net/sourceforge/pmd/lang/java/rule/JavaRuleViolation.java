@@ -11,7 +11,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -66,35 +65,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
             setVariableNameIfExists(node);
 
             if (!suppressed) {
-                suppressed = isSupressed(node, getRule());
+                suppressed = AnnotationSuppressionUtil.contextSuppresses(node, getRule());
             }
         }
     }
 
-    /**
-     * Check for suppression on this node, on parents, and on contained types
-     * for ASTCompilationUnit
-     *
-     * @param node
-     */
-    // TODO there's a typo in this method name, and it doesn't need to be public
-    public static boolean isSupressed(Node node, Rule rule) {
-        boolean result = AnnotationSuppressionUtil.suppresses(node, rule);
-
-        if (!result && node instanceof ASTCompilationUnit) {
-            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = AnnotationSuppressionUtil.suppresses(node.jjtGetChild(i), rule);
-            }
-        }
-        if (!result) {
-            Node parent = node.jjtGetParent();
-            while (!result && parent != null) {
-                result = AnnotationSuppressionUtil.suppresses(parent, rule);
-                parent = parent.jjtGetParent();
-            }
-        }
-        return result;
-    }
 
     private void setClassNameFrom(JavaNode node) {
         // TODO this can use regular qualified names (those would also consider anon classes)

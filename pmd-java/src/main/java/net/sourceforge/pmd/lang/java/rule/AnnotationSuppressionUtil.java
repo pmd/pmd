@@ -14,6 +14,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -53,11 +54,30 @@ final class AnnotationSuppressionUtil {
 
     }
 
+    static boolean contextSuppresses(Node node, Rule rule) {
+        boolean result = suppresses(node, rule);
+
+        if (!result && node instanceof ASTCompilationUnit) {
+            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
+                result = AnnotationSuppressionUtil.suppresses(node.jjtGetChild(i), rule);
+            }
+        }
+        if (!result) {
+            Node parent = node.jjtGetParent();
+            while (!result && parent != null) {
+                result = AnnotationSuppressionUtil.suppresses(parent, rule);
+                parent = parent.jjtGetParent();
+            }
+        }
+        return result;
+    }
+
+
     /**
      * Returns true if the node has an annotation that suppresses the
      * given rule.
      */
-    static boolean suppresses(final Node node, Rule rule) {
+    private static boolean suppresses(final Node node, Rule rule) {
         Annotatable suppressor = getSuppressor(node);
         if (suppressor == null) {
             return false;
