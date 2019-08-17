@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -85,11 +83,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
                     node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
                     return node;
-                }
-
-                @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
                 }
 
                 @Override

@@ -53,8 +53,4 @@ public class PLSQLParser extends AbstractParser {
         }
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }

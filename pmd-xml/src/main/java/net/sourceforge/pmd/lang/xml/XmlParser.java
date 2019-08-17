@@ -34,8 +34,4 @@ public class XmlParser extends AbstractParser {
         return new XmlParserImpl((XmlParserOptions) parserOptions).parse(source);
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }

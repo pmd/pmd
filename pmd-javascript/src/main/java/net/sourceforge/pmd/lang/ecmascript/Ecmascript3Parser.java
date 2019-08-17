@@ -36,8 +36,4 @@ public class Ecmascript3Parser extends AbstractParser {
         return ecmascriptParser.parse(source);
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return ecmascriptParser.getSuppressMap();
-    }
 }

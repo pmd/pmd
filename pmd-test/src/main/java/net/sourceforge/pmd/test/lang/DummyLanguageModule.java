@@ -87,11 +87,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
 
                 @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
-                }
-
-                @Override
                 protected TokenManager createTokenManager(Reader source) {
                     return null;
                 }
