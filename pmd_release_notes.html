@@ -1308,6 +1308,16 @@ be entirely wrong. Instead of declaring this as a field and synchronize access t
 a new instance should be created when needed. This rule is also active when using java’s quickstart ruleset.</li>
 </ul>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="highlighter-rouge">CloseResource</code></a> (<code class="highlighter-rouge">java-errorprone</code>) now ignores by default instances
+of <code class="highlighter-rouge">java.util.stream.Stream</code>. These streams are <code class="highlighter-rouge">AutoCloseable</code>, but most streams are backed by collections,
+arrays, or generating functions, which require no special resource management. However, there are some exceptions:
+The stream returned by <code class="highlighter-rouge">Files::lines(Path)</code> is backed by a actual file and needs to be closed. These instances
+won’t be found by default by the rule anymore.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1324,6 +1334,13 @@ a new instance should be created when needed. This rule is also active when usin
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1951">#1951</a>: [java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1922">#1922</a>: [java] CloseResource possible false positive with Streams</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1966">#1966</a>: [java] CloseResource false positive if Stream is passed as method parameter</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1967">#1967</a>: [java] CloseResource false positive with late assignment of variable</li>
     </ul>
   </li>
 </ul>
@@ -1362,7 +1379,7 @@ will be removed with PMD 7.0.0.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 17, 2019 <br />
+ Site last generated: Aug 18, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
