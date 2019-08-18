@@ -536,11 +536,17 @@ accessible from outside the anonymous class, and those legit cases should be sup
 
 ``` java
 {%raw%}// this is double-brace initialization
-return new ArrayList<String>(){{ addAll("a","b","c"); }};
+return new ArrayList<String>(){{
+    add("a");
+    add("b");
+    add("c");
+}};
 
 // the better way is to not create an anonymous class:
 List<String> a = new ArrayList<>();
-a.addAll("a","b","c");
+a.add("a");
+a.add("b");
+a.add("c");
 return a;{%endraw%}
 ```
 
