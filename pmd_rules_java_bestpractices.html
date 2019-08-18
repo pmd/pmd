@@ -1831,11 +1831,17 @@ accessible from outside the anonymous class, and those legit cases should be sup
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// this is double-brace initialization</span>
-<span class="k">return</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;(){{</span> <span class="n">addAll</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span><span class="s">"b"</span><span class="o">,</span><span class="s">"c"</span><span class="o">);</span> <span class="o">}};</span>
+<span class="k">return</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;(){{</span>
+    <span class="n">add</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>
+    <span class="n">add</span><span class="o">(</span><span class="s">"b"</span><span class="o">);</span>
+    <span class="n">add</span><span class="o">(</span><span class="s">"c"</span><span class="o">);</span>
+<span class="o">}};</span>
 
 <span class="c1">// the better way is to not create an anonymous class:</span>
 <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
-<span class="n">a</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span><span class="s">"b"</span><span class="o">,</span><span class="s">"c"</span><span class="o">);</span>
+<span class="n">a</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"a"</span><span class="o">);</span>
+<span class="n">a</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"b"</span><span class="o">);</span>
+<span class="n">a</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"c"</span><span class="o">);</span>
 <span class="k">return</span> <span class="n">a</span><span class="o">;</span>
 </code></pre></div></div>
 
