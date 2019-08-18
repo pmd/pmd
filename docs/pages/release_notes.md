@@ -37,5 +37,7 @@ about the usage and features of the rule designer.
 
 ### External Contributions
 
+* [#1970](https://github.com/pmd/pmd/pull/1970): \[java] DoubleBraceInitialization: Fix example - [Tobias Weimer](https://github.com/tweimer)
+
 {% endtocmaker %}
 
