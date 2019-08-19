@@ -41,7 +41,7 @@ public class XPathRuleTest extends RuleTst {
 
     @Test
     public void testPrintHelloWorld() throws Exception {
-        String xpath = "//ASTTermApplyNode/ASTTermNameNode[@Image=\"println\"]";
+        String xpath = "//TermApply/TermName[@Image=\"println\"]";
         rule.setXPath(xpath);
         rule.setVersion(XPathRuleQuery.XPATH_2_0);
         Report report = getReportForTestString(rule,

@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,10 +14,11 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageHandler;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 
-import scala.collection.JavaConverters;
+import scala.collection.Iterator;
 import scala.meta.Dialect;
 import scala.meta.inputs.Input;
 import scala.meta.internal.tokenizers.ScalametaTokenizer;
+import scala.meta.tokens.Token;
 
 /**
  * Scala Tokenizer class. Uses the Scala Meta Tokenizer.
@@ -69,11 +68,9 @@ public class ScalaTokenizer implements Tokenizer {
 
         // tokenize with a filter
         scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
-        List<scala.meta.tokens.Token> tokenList = JavaConverters.asJava(tokens.toList());
+        ScalaTokenFilter filter = new ScalaTokenFilter(tokens.iterator());
 
-        ScalaTokenFilter filter = new ScalaTokenFilter(tokenList);
-
-        scala.meta.tokens.Token token;
+        Token token;
         while ((token = filter.getNextToken()) != null) {
             String tokenText = token.text() != null ? token.text() : token.name();
             TokenEntry cpdToken = new TokenEntry(tokenText, filename, token.pos().startLine());
@@ -86,32 +83,32 @@ public class ScalaTokenizer implements Tokenizer {
      * and patterns.
      */
     private static class ScalaTokenFilter {
-        Iterator<scala.meta.tokens.Token> tokenListIter;
+        Iterator<Token> tokenIter;
 
-        ScalaTokenFilter(List<scala.meta.tokens.Token> tokenList) {
-            this.tokenListIter = tokenList.iterator();
+        ScalaTokenFilter(Iterator<Token> iterator) {
+            this.tokenIter = iterator.iterator();
         }
 
-        scala.meta.tokens.Token getNextToken() {
-            if (!tokenListIter.hasNext()) {
+        Token getNextToken() {
+            if (!tokenIter.hasNext()) {
                 return null;
             }
 
-            scala.meta.tokens.Token token;
+            Token token;
             do {
-                token = tokenListIter.next();
-            } while (token != null && skipToken(token) && tokenListIter.hasNext());
+                token = tokenIter.next();
+            } while (token != null && skipToken(token) && tokenIter.hasNext());
 
             return token;
         }
 
-        private boolean skipToken(scala.meta.tokens.Token token) {
+        private boolean skipToken(Token token) {
             boolean skip = false;
             if (token.text() != null) {
                 // skip any token that is whitespaces
-                skip |= token instanceof scala.meta.tokens.Token.Space || token instanceof scala.meta.tokens.Token.Tab
-                        || token instanceof scala.meta.tokens.Token.CR || token instanceof scala.meta.tokens.Token.LF
-                        || token instanceof scala.meta.tokens.Token.FF || token instanceof scala.meta.tokens.Token.LFLF;
+                skip |= token instanceof Token.Space || token instanceof Token.Tab
+                        || token instanceof Token.CR || token instanceof Token.LF
+                        || token instanceof Token.FF || token instanceof Token.LFLF;
             }
             return skip;
         }

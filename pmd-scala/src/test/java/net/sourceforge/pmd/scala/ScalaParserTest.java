@@ -32,9 +32,9 @@ public class ScalaParserTest {
                 new StringReader(IOUtils.toString(getClass().getResourceAsStream(SCALA_TEST), "UTF-8")));
 
         final List<NodeLineMatcher> nodeLineTargets = new ArrayList<NodeLineMatcher>();
-        nodeLineTargets.add(new NodeLineMatcher("ASTTermNameNode", "Main", 1));
-        nodeLineTargets.add(new NodeLineMatcher("ASTTypeNameNode", "App", 1));
-        nodeLineTargets.add(new NodeLineMatcher("ASTTermNameNode", "println", 2));
+        nodeLineTargets.add(new NodeLineMatcher("TermName", "Main", 1));
+        nodeLineTargets.add(new NodeLineMatcher("TypeName", "App", 1));
+        nodeLineTargets.add(new NodeLineMatcher("TermName", "println", 2));
 
         ScalaParserVisitorAdapter visitor = new ScalaParserVisitorAdapter() {
             public Object visit(ScalaNode node, Object data) {

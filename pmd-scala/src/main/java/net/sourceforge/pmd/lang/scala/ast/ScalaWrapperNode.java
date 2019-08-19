@@ -60,7 +60,7 @@ public class ScalaWrapperNode extends AbstractNode implements ScalaNode {
 
     @Override
     public String getXPathNodeName() {
-        return "AST" + node.productPrefix().replace(".", "") + "Node";
+        return node.productPrefix().replace(".", "");
     }
 
     @Override
