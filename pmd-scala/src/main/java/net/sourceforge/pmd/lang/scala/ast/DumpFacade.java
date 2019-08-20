@@ -29,7 +29,7 @@ public class DumpFacade extends ScalaParserVisitorAdapter {
      * @param node
      *            the node to start with. Not necessarily a tree root.
      */
-    public void dump(Writer outWriter, String prefix, boolean shouldRecurse, ScalaNode node) {
+    public void dump(Writer outWriter, String prefix, boolean shouldRecurse, ScalaNode<?> node) {
         this.writer = outWriter instanceof PrintWriter ? (PrintWriter) outWriter : new PrintWriter(outWriter);
         this.recurse = shouldRecurse;
         this.visit(node, prefix);
@@ -37,7 +37,7 @@ public class DumpFacade extends ScalaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ScalaNode node, Object data) {
+    public Object visit(ScalaNode<?> node, Object data) {
         dump(node, (String) data);
         if (recurse) {
             return super.visit(node, data + " ");
@@ -46,7 +46,7 @@ public class DumpFacade extends ScalaParserVisitorAdapter {
         }
     }
 
-    private void dump(ScalaNode node, String prefix) {
+    private void dump(ScalaNode<?> node, String prefix) {
         writer.print(prefix);
         writer.print(node.getXPathNodeName());
 

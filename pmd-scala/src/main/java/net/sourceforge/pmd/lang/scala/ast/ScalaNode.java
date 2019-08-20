@@ -11,8 +11,11 @@ import scala.meta.Tree;
 /**
  * A Base interface of a Scala Node. Defines several required methods of all
  * nodes.
+ * 
+ * @param <T>
+ *            The Scala node type that extends Scala's Tree trait
  */
-public interface ScalaNode extends Node {
+public interface ScalaNode<T extends Tree> extends Node {
     /**
      * Accept a visitor and traverse this node.
      * 
@@ -41,5 +44,5 @@ public interface ScalaNode extends Node {
      * 
      * @return the Scala Node for this node
      */
-    Tree getNode();
+    T getNode();
 }

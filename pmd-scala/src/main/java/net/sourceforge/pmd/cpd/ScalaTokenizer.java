@@ -106,9 +106,8 @@ public class ScalaTokenizer implements Tokenizer {
             boolean skip = false;
             if (token.text() != null) {
                 // skip any token that is whitespaces
-                skip |= token instanceof Token.Space || token instanceof Token.Tab
-                        || token instanceof Token.CR || token instanceof Token.LF
-                        || token instanceof Token.FF || token instanceof Token.LFLF;
+                skip |= token instanceof Token.Space || token instanceof Token.Tab || token instanceof Token.CR
+                        || token instanceof Token.LF || token instanceof Token.FF || token instanceof Token.LFLF;
             }
             return skip;
         }

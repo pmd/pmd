@@ -16,12 +16,11 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.scala.ast.ASTSourceNode;
-import net.sourceforge.pmd.lang.scala.ast.ScalaWrapperNode;
+import net.sourceforge.pmd.lang.scala.ast.ScalaTreeBuilder;
+import net.sourceforge.pmd.lang.scala.ast.nodes.ASTSource;
 
 import scala.meta.Dialect;
 import scala.meta.Source;
-import scala.meta.Tree;
 import scala.meta.inputs.Input;
 import scala.meta.internal.parsers.ScalametaParser;
 
@@ -32,8 +31,6 @@ import scala.meta.internal.parsers.ScalametaParser;
  */
 public class ScalaParser extends AbstractParser {
     private final Dialect dialect;
-
-    private Map<Tree, ScalaWrapperNode> nodeCache = new HashMap<>();
 
     /**
      * Create a parser using the given Scala Dialect and set of parser options.
@@ -55,7 +52,6 @@ public class ScalaParser extends AbstractParser {
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        nodeCache.clear();
         Input.VirtualFile virtualFile;
         try {
             String sourceString = IOUtils.toString(source);
@@ -64,30 +60,7 @@ public class ScalaParser extends AbstractParser {
             throw new ParseException(e);
         }
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
-        ASTSourceNode srcNode = new ASTSourceNode(this, src);
-        nodeCache.put(src, srcNode);
-        return srcNode;
-    }
-
-    /**
-     * Creates a wrapper around the given node so that we can interact with PMD
-     * systems using the underlying scala node.
-     * 
-     * @param scalaNode
-     *            a node from Scala's parsing
-     * @return A Java-wrapped version of the given node, using a cache if this
-     *         has been previously wrapped, or null, if the given node is null
-     */
-    public ScalaWrapperNode wrapNode(Tree scalaNode) {
-        if (scalaNode == null) {
-            return null;
-        }
-        ScalaWrapperNode node = nodeCache.get(scalaNode);
-        if (node == null) {
-            node = new ScalaWrapperNode(this, scalaNode);
-            nodeCache.put(scalaNode, node);
-        }
-        return node;
+        return (ASTSource) new ScalaTreeBuilder().build(src);
     }
 
     @Override
