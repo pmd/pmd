@@ -33,6 +33,15 @@ public class StringLiteralsTest extends AbstractPLSQLParserTst {
                 "\n" + "    also multiple\n" + "    lines\n" + "  ", 15, strings);
     }
 
+    @Test
+    public void parseMultilineVarchar() throws Exception {
+        String code = IOUtils.toString(this.getClass().getResourceAsStream("MultilineVarchar.pls"),
+                StandardCharsets.UTF_8);
+        ASTInput input = parsePLSQL(code);
+        List<ASTStringLiteral> strings = input.findDescendantsOfType(ASTStringLiteral.class);
+        Assert.assertEquals(1, strings.size());
+        Assert.assertTrue(strings.get(0).getString().startsWith("\ncreate or replace and"));
+    }
 
     private static void assertString(String quoted, String plain, int index, List<ASTStringLiteral> strings) {
         Assert.assertEquals(quoted, strings.get(index).getImage());
