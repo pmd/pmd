@@ -91,7 +91,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //
 options {
-	DEBUG_PARSER = false;
+	DEBUG_PARSER = true;
 	DEBUG_TOKEN_MANAGER = false;
 	DEBUG_LOOKAHEAD = false;
 	IGNORE_CASE = true;
@@ -149,6 +149,7 @@ import java.io.*;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SimpleCharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import java.util.ArrayList;
 
 public class PLSQLParser {
 
@@ -268,11 +269,14 @@ ASTInput Input(String sourcecode) : {}
 ASTDDLCommand DDLCommand() :
 {
  PLSQLNode simpleNode = null ;
+ ArrayList<String> sqlplus_terminators = new ArrayList<String>();
+ sqlplus_terminators.add(";");
+ sqlplus_terminators.add("/");
 }
 {
   (
     simpleNode = DDLEvent()
-    SkipPastNextTokenOccurrence(SQLPLUS_TERMINATOR)
+    SkipPastNextOccurrenceArray(sqlplus_terminators)
   )
   { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
@@ -1005,13 +1009,13 @@ void Skip2NextTerminator(String initiator,String terminator) :
 }
 
 /*
- Read Tokens up to but not including the target String.
+ Read Tokens up to but not including target Strings from Array.
 */
-void Skip2NextOccurrence(String target) :
+void Skip2NextOccurrenceArray(ArrayList<String> target) :
 {
   Token nextToken = getToken(1);
-  while (!nextToken.image.equals(target)
-	 && (null == nextToken.specialToken || !nextToken.specialToken.image.equals(target) ) //In case the target is a Special Token
+  while (!target.contains(nextToken.image)
+	 && (null == nextToken.specialToken || !target.contains(nextToken.specialToken.image)) //In case the target is a Special Token
 	 && nextToken.kind!=EOF //SRT 20110521 - Prevent endless loop when target does not exist in the input stream
         )
   {
@@ -1024,12 +1028,12 @@ void Skip2NextOccurrence(String target) :
 }
 
 /*
- Read Tokens up to and including the target String.
+ Read Tokens up to and including the target Strings  from Array.
 */
-void SkipPastNextOccurrence(String target) :
+void SkipPastNextOccurrenceArray(ArrayList<String> target) :
 {
   Token t = null;
-  Skip2NextOccurrence(target) ;
+  Skip2NextOccurrenceArray(target) ;
   t = getNextToken(); // Chomp this one
 }
 {
@@ -1065,17 +1069,13 @@ void Skip2NextTokenOccurrence(int target) :
     specToken = nextToken.specialToken;
     if (null!= specToken)
     {
-	//Walk backwards through the list looking for this Token as a Special Token
+	    //Walk backwards through the list looking for this Token as a Special Token
         while (specToken != null && specToken.kind != target)
-	{
-		specToken = specToken.specialToken;
-	}
+		    specToken = specToken.specialToken;
 
-	//We have found the target as a SpecialToken - break out of normal Token search
+	    //We have found the target as a SpecialToken - break out of normal Token search
         if (null != specToken && specToken.kind == target)
-	{
-		break;
-        }
+		    break;
     }
 
     nextToken = getNextToken();
@@ -1134,6 +1134,41 @@ ASTReadPastNextOccurrence ReadPastNextOccurrence(String target) :
 	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
 }
 
+/*
+ Read Tokens until finds token ending with target string.
+*/
+ASTReadPastNextOccurrenceAtEnd ReadPastNextOccurrenceAtEnd(String target) :
+{
+  StringBuilder sb = new StringBuilder();
+  Token t = null;
+  sb.append(Read2NextOccurrenceAtEnd(target)) ;
+  t = getNextToken(); // Chomp this one
+  sb.append(t.image);
+}
+{
+	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
+}
+
+/*
+ Read Tokens until finds token ending with target string. This token is not consumed.
+*/
+ASTRead2NextOccurrenceAtEnd Read2NextOccurrenceAtEnd(String target) :
+{
+  StringBuilder sb = new StringBuilder();
+  Token nextToken = getToken(1);
+  while (!nextToken.image.endsWith(target)
+	 && nextToken.kind!=EOF
+        )
+  {
+    nextToken = getNextToken();
+    sb.append(nextToken.image);
+    nextToken = getToken(1);
+  }
+}
+{
+	{ jjtThis.setImage(sb.toString()) ;  jjtThis.value = sb.toString(); return jjtThis ;}
+}
+
 /**
  * 2006-05-24 - Matthias Hendler - added MERGE
  */
@@ -1141,7 +1176,7 @@ ASTSqlStatement SqlStatement(String initiator, String terminator)  :
 {}
 {
 	(<SELECT>|<UPDATE>|<INSERT>|<DELETE>|<COMMIT>|<ROLLBACK>|<SAVEPOINT>|<EXECUTE>|<SET><TRANSACTION>|<LOCK><TABLE>|<MERGE>|<WITH>)
-	Skip2NextTerminator(initiator,terminator)
+	Skip2NextTerminator(initiator, terminator)
 	{
           return jjtThis ;
 	}
@@ -2694,7 +2729,10 @@ ASTCollectionDeclaration CollectionDeclaration() : {Token t = null ; } { t = <ID
 ASTObjectDeclaration ObjectDeclaration() : {Token t = null ; } { t = <IDENTIFIER> { jjtThis.setImage(t.image) ;  return jjtThis ; } }
 
 /** Java stored procedure, external function*/
-ASTCallSpecTail CallSpecTail() : {
+ASTCallSpecTail CallSpecTail() :
+{
+  ArrayList<String> terminators = new ArrayList<String>();
+  terminators.add(")");
 }
 {
 	// /* <LANGUAGE> (/*"C"*/<IDENTIFIER> | <JAVA>)
@@ -2720,7 +2758,7 @@ ASTCallSpecTail CallSpecTail() : {
 		  |
 		  (
 		    <PARAMETERS>
-		    SkipPastNextOccurrence(")") // Read until we have eaten the closing bracket ")"
+		    SkipPastNextOccurrenceArray(terminators) // Read until we have eaten the closing bracket ")"
 		  )
 		)*
 	)
@@ -3407,7 +3445,7 @@ ASTStringLiteral  StringLiteral() :
      if (!thisToken.image.endsWith(terminator))
      {
        //Loop until we find atoken that ends with a single-quote precede by the terminator
-       literal.append(ReadPastNextOccurrence(terminator));
+       literal.append(ReadPastNextOccurrenceAtEnd(terminator));
      }
    }
   }
@@ -3676,6 +3714,8 @@ ASTAccessibleByClause AccessibleByClause() :
 // SRT *
 ASTTable Table()  :
 {
+  ArrayList<String> terminators = new ArrayList<String>();
+  terminators.add(";");
 }
 {
   <CREATE> [ ( <GLOBAL> | <PRIVATE> ) <TEMPORARY> | <SHARDED> | <DUPLICATED> ]
@@ -3689,9 +3729,7 @@ ASTTable Table()  :
   [LOOKAHEAD(4) <ON> <COMMIT> (<DELETE> | <PRESERVE>) <ROWS>] )
   //### [PhysicalProperties()]
   //### [TableProperties()]
-  Skip2NextOccurrence(";")
-  [";"]
-
+  SkipPastNextOccurrenceArray(terminators)
       { return jjtThis ; }
 }
 

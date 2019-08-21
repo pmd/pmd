@@ -142,16 +142,6 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     }
 
     @Override
-    public Object visit(ASTSkip2NextOccurrence node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
-    public Object visit(ASTSkipPastNextOccurrence node, Object data) {
-        return visit((PLSQLNode) node, data);
-    }
-
-    @Override
     public Object visit(ASTSkip2NextTokenOccurrence node, Object data) {
         return visit((PLSQLNode) node, data);
     }
@@ -167,7 +157,17 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     }
 
     @Override
+    public Object visit(ASTRead2NextOccurrenceAtEnd node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
     public Object visit(ASTReadPastNextOccurrence node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTReadPastNextOccurrenceAtEnd node, Object data) {
         return visit((PLSQLNode) node, data);
     }
 
@@ -1111,4 +1111,15 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTOuterJoinExpression node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTSkip2NextOccurrenceArray node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
+    @Override
+    public Object visit(ASTSkipPastNextOccurrenceArray node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
+
 }
