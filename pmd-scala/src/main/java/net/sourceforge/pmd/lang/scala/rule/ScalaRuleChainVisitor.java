@@ -21,21 +21,22 @@ import net.sourceforge.pmd.lang.scala.ast.nodes.ASTSource;
  */
 public class ScalaRuleChainVisitor extends AbstractRuleChainVisitor {
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void visit(Rule rule, Node node, RuleContext ctx) {
         // Rule better either be a ScalaParserVisitor, or a XPathRule
         if (rule instanceof XPathRule) {
             ((XPathRule) rule).evaluate(node, ctx);
         } else {
-            ((ScalaNode<?>) node).accept((ScalaParserVisitorAdapter) rule, ctx);
+            ((ScalaNode<?>) node).accept((ScalaParserVisitorAdapter<RuleContext, ?>) rule, ctx);
         }
     }
 
     @Override
     protected void indexNodes(List<Node> nodes, RuleContext ctx) {
-        ScalaParserVisitor visitor = new ScalaParserVisitorAdapter() {
+        ScalaParserVisitor<RuleContext, Void> visitor = new ScalaParserVisitorAdapter<RuleContext, Void>() {
             @Override
-            public Object visit(ScalaNode<?> node, Object data) {
+            public Void visit(ScalaNode<?> node, RuleContext data) {
                 indexNode(node);
                 return super.visit(node, data);
             }

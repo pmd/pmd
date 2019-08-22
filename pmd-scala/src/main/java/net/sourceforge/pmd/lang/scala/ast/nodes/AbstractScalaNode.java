@@ -18,7 +18,7 @@ import scala.meta.inputs.Position;
  * @param <T>
  *            the type of the Scala tree node
  */
-public class AbstractScalaNode<T extends Tree> extends AbstractNode implements ScalaNode<T> {
+public abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements ScalaNode<T> {
     private final T node;
 
     /**
@@ -38,17 +38,16 @@ public class AbstractScalaNode<T extends Tree> extends AbstractNode implements S
     }
 
     @Override
-    public Object accept(ScalaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
+    public abstract <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
 
     @Override
-    public Object childrenAccept(ScalaParserVisitor visitor, Object data) {
+    public <D, R> R childrenAccept(ScalaParserVisitor<D, R> visitor, D data) {
         int numChildren = jjtGetNumChildren();
+        R returnValue = null;
         for (int i = 0; i < numChildren; ++i) {
-            ((ScalaNode<?>) jjtGetChild(i)).accept(visitor, data);
+            returnValue = ((ScalaNode<?>) jjtGetChild(i)).accept(visitor, data);
         }
-        return data;
+        return returnValue;
     }
 
     @Override
@@ -60,4 +59,5 @@ public class AbstractScalaNode<T extends Tree> extends AbstractNode implements S
     public String getXPathNodeName() {
         return node.productPrefix().replace(".", "");
     }
+
 }

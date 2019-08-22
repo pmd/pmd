@@ -58,7 +58,7 @@ public class ScalaLanguageHandler extends AbstractLanguageVersionHandler {
         return new VisitorStarter() {
             @Override
             public void start(Node rootNode) {
-                new DumpFacade().dump(writer, prefix, recurse, (ScalaNode) rootNode);
+                new DumpFacade().dump(writer, prefix, recurse, (ScalaNode<?>) rootNode);
             }
         };
     }

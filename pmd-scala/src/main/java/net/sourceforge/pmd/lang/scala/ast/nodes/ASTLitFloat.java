@@ -4,12 +4,28 @@
 
 package net.sourceforge.pmd.lang.scala.ast.nodes;
 
+import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitor;
+
 import scala.meta.Lit;
 
+/**
+ * The ASTLitFloat node implementation.
+ */
 public class ASTLitFloat extends AbstractScalaNode<Lit.Float> {
 
+    /**
+     * Create the AST node for this Scala node.
+     * 
+     * @param scalaNode
+     *            the underlying Scala node
+     */
     public ASTLitFloat(Lit.Float scalaNode) {
         super(scalaNode);
+    }
+
+    @Override
+    public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
+        return visitor.visit(this, data);
     }
 
     @Override

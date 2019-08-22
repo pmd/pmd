@@ -14,6 +14,7 @@ public class ScalaLanguageModule extends BaseLanguageModule {
 
     /** The name. */
     public static final String NAME = "Scala";
+
     /** The terse name. */
     public static final String TERSE_NAME = "scala";
 

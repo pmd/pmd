@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 /**
  * A Dump Facade for Scala for testing purposes.
  */
-public class DumpFacade extends ScalaParserVisitorAdapter {
+public class DumpFacade extends ScalaParserVisitorAdapter<String, String> {
     private PrintWriter writer;
     private boolean recurse;
 
@@ -37,7 +37,7 @@ public class DumpFacade extends ScalaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(ScalaNode<?> node, Object data) {
+    public String visit(ScalaNode<?> node, String data) {
         dump(node, (String) data);
         if (recurse) {
             return super.visit(node, data + " ");

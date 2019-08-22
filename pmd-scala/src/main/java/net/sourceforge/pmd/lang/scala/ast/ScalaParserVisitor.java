@@ -134,8 +134,13 @@ import net.sourceforge.pmd.lang.scala.ast.nodes.ASTTypeWith;
 
 /**
  * A Visitor Pattern Interface for the Scala AST.
+ *
+ * @param <D>
+ *            The type of the data input to each visit method
+ * @param <R>
+ *            the type of the returned data from each visit method
  */
-public interface ScalaParserVisitor {
+public interface ScalaParserVisitor<D, R> {
     /**
      * Visit an arbitrary Scala Node (any node in the tree).
      * 
@@ -145,7 +150,7 @@ public interface ScalaParserVisitor {
      *            context-specific data
      * @return context-specific data
      */
-    Object visit(ScalaNode<?> node, Object data);
+    R visit(ScalaNode<?> node, D data);
 
     /**
      * Visit the Source Node (the root node of the tree).
@@ -156,258 +161,258 @@ public interface ScalaParserVisitor {
      *            context-specific data
      * @return context-specific data
      */
-    Object visit(ASTSource node, Object data);
+    R visit(ASTSource node, D data);
 
-    Object visit(ASTCase node, Object data);
+    R visit(ASTCase node, D data);
 
-    Object visit(ASTCtorPrimary node, Object data);
+    R visit(ASTCtorPrimary node, D data);
 
-    Object visit(ASTCtorSecondary node, Object data);
+    R visit(ASTCtorSecondary node, D data);
 
-    Object visit(ASTDeclDef node, Object data);
+    R visit(ASTDeclDef node, D data);
 
-    Object visit(ASTDeclType node, Object data);
+    R visit(ASTDeclType node, D data);
 
-    Object visit(ASTDeclVal node, Object data);
+    R visit(ASTDeclVal node, D data);
 
-    Object visit(ASTDeclVar node, Object data);
+    R visit(ASTDeclVar node, D data);
 
-    Object visit(ASTDefnClass node, Object data);
+    R visit(ASTDefnClass node, D data);
 
-    Object visit(ASTDefnDef node, Object data);
+    R visit(ASTDefnDef node, D data);
 
-    Object visit(ASTDefnMacro node, Object data);
+    R visit(ASTDefnMacro node, D data);
 
-    Object visit(ASTDefnObject node, Object data);
+    R visit(ASTDefnObject node, D data);
 
-    Object visit(ASTDefnTrait node, Object data);
+    R visit(ASTDefnTrait node, D data);
 
-    Object visit(ASTDefnType node, Object data);
+    R visit(ASTDefnType node, D data);
 
-    Object visit(ASTDefnVal node, Object data);
+    R visit(ASTDefnVal node, D data);
 
-    Object visit(ASTDefnVar node, Object data);
+    R visit(ASTDefnVar node, D data);
 
-    Object visit(ASTEnumeratorGenerator node, Object data);
+    R visit(ASTEnumeratorGenerator node, D data);
 
-    Object visit(ASTEnumeratorGuard node, Object data);
+    R visit(ASTEnumeratorGuard node, D data);
 
-    Object visit(ASTEnumeratorVal node, Object data);
+    R visit(ASTEnumeratorVal node, D data);
 
-    Object visit(ASTImport node, Object data);
+    R visit(ASTImport node, D data);
 
-    Object visit(ASTImporteeName node, Object data);
+    R visit(ASTImporteeName node, D data);
 
-    Object visit(ASTImporteeRename node, Object data);
+    R visit(ASTImporteeRename node, D data);
 
-    Object visit(ASTImporteeUnimport node, Object data);
+    R visit(ASTImporteeUnimport node, D data);
 
-    Object visit(ASTImporteeWildcard node, Object data);
+    R visit(ASTImporteeWildcard node, D data);
 
-    Object visit(ASTImporter node, Object data);
+    R visit(ASTImporter node, D data);
 
-    Object visit(ASTInit node, Object data);
+    R visit(ASTInit node, D data);
 
-    Object visit(ASTLitBoolean node, Object data);
+    R visit(ASTLitBoolean node, D data);
 
-    Object visit(ASTLitByte node, Object data);
+    R visit(ASTLitByte node, D data);
 
-    Object visit(ASTLitChar node, Object data);
+    R visit(ASTLitChar node, D data);
 
-    Object visit(ASTLitDouble node, Object data);
+    R visit(ASTLitDouble node, D data);
 
-    Object visit(ASTLitFloat node, Object data);
+    R visit(ASTLitFloat node, D data);
 
-    Object visit(ASTLitInt node, Object data);
+    R visit(ASTLitInt node, D data);
 
-    Object visit(ASTLitLong node, Object data);
+    R visit(ASTLitLong node, D data);
 
-    Object visit(ASTLitNull node, Object data);
+    R visit(ASTLitNull node, D data);
 
-    Object visit(ASTLitShort node, Object data);
+    R visit(ASTLitShort node, D data);
 
-    Object visit(ASTLitString node, Object data);
+    R visit(ASTLitString node, D data);
 
-    Object visit(ASTLitSymbol node, Object data);
+    R visit(ASTLitSymbol node, D data);
 
-    Object visit(ASTLitUnit node, Object data);
+    R visit(ASTLitUnit node, D data);
 
-    Object visit(ASTModAbstract node, Object data);
+    R visit(ASTModAbstract node, D data);
 
-    Object visit(ASTModAnnot node, Object data);
+    R visit(ASTModAnnot node, D data);
 
-    Object visit(ASTModCase node, Object data);
+    R visit(ASTModCase node, D data);
 
-    Object visit(ASTModContravariant node, Object data);
+    R visit(ASTModContravariant node, D data);
 
-    Object visit(ASTModCovariant node, Object data);
+    R visit(ASTModCovariant node, D data);
 
-    Object visit(ASTModFinal node, Object data);
+    R visit(ASTModFinal node, D data);
 
-    Object visit(ASTModImplicit node, Object data);
+    R visit(ASTModImplicit node, D data);
 
-    Object visit(ASTModInline node, Object data);
+    R visit(ASTModInline node, D data);
 
-    Object visit(ASTModLazy node, Object data);
+    R visit(ASTModLazy node, D data);
 
-    Object visit(ASTModOverride node, Object data);
+    R visit(ASTModOverride node, D data);
 
-    Object visit(ASTModPrivate node, Object data);
+    R visit(ASTModPrivate node, D data);
 
-    Object visit(ASTModProtected node, Object data);
+    R visit(ASTModProtected node, D data);
 
-    Object visit(ASTModSealed node, Object data);
+    R visit(ASTModSealed node, D data);
 
-    Object visit(ASTModValParam node, Object data);
+    R visit(ASTModValParam node, D data);
 
-    Object visit(ASTModVarParam node, Object data);
+    R visit(ASTModVarParam node, D data);
 
-    Object visit(ASTNameAnonymous node, Object data);
+    R visit(ASTNameAnonymous node, D data);
 
-    Object visit(ASTNameIndeterminate node, Object data);
+    R visit(ASTNameIndeterminate node, D data);
 
-    Object visit(ASTPatAlternative node, Object data);
+    R visit(ASTPatAlternative node, D data);
 
-    Object visit(ASTPatBind node, Object data);
+    R visit(ASTPatBind node, D data);
 
-    Object visit(ASTPatExtract node, Object data);
+    R visit(ASTPatExtract node, D data);
 
-    Object visit(ASTPatExtractInfix node, Object data);
+    R visit(ASTPatExtractInfix node, D data);
 
-    Object visit(ASTPatInterpolate node, Object data);
+    R visit(ASTPatInterpolate node, D data);
 
-    Object visit(ASTPatSeqWildcard node, Object data);
+    R visit(ASTPatSeqWildcard node, D data);
 
-    Object visit(ASTPatTuple node, Object data);
+    R visit(ASTPatTuple node, D data);
 
-    Object visit(ASTPatTyped node, Object data);
+    R visit(ASTPatTyped node, D data);
 
-    Object visit(ASTPatVar node, Object data);
+    R visit(ASTPatVar node, D data);
 
-    Object visit(ASTPatWildcard node, Object data);
+    R visit(ASTPatWildcard node, D data);
 
-    Object visit(ASTPatXml node, Object data);
+    R visit(ASTPatXml node, D data);
 
-    Object visit(ASTPkg node, Object data);
+    R visit(ASTPkg node, D data);
 
-    Object visit(ASTPkgObject node, Object data);
+    R visit(ASTPkgObject node, D data);
 
-    Object visit(ASTQuasi node, Object data);
+    R visit(ASTQuasi node, D data);
 
-    Object visit(ASTSelf node, Object data);
+    R visit(ASTSelf node, D data);
 
-    Object visit(ASTTemplate node, Object data);
+    R visit(ASTTemplate node, D data);
 
-    Object visit(ASTTermAnnotate node, Object data);
+    R visit(ASTTermAnnotate node, D data);
 
-    Object visit(ASTTermApply node, Object data);
+    R visit(ASTTermApply node, D data);
 
-    Object visit(ASTTermApplyInfix node, Object data);
+    R visit(ASTTermApplyInfix node, D data);
 
-    Object visit(ASTTermApplyType node, Object data);
+    R visit(ASTTermApplyType node, D data);
 
-    Object visit(ASTTermApplyUnary node, Object data);
+    R visit(ASTTermApplyUnary node, D data);
 
-    Object visit(ASTTermAscribe node, Object data);
+    R visit(ASTTermAscribe node, D data);
 
-    Object visit(ASTTermAssign node, Object data);
+    R visit(ASTTermAssign node, D data);
 
-    Object visit(ASTTermBlock node, Object data);
+    R visit(ASTTermBlock node, D data);
 
-    Object visit(ASTTermDo node, Object data);
+    R visit(ASTTermDo node, D data);
 
-    Object visit(ASTTermEta node, Object data);
+    R visit(ASTTermEta node, D data);
 
-    Object visit(ASTTermFor node, Object data);
+    R visit(ASTTermFor node, D data);
 
-    Object visit(ASTTermForYield node, Object data);
+    R visit(ASTTermForYield node, D data);
 
-    Object visit(ASTTermFunction node, Object data);
+    R visit(ASTTermFunction node, D data);
 
-    Object visit(ASTTermIf node, Object data);
+    R visit(ASTTermIf node, D data);
 
-    Object visit(ASTTermInterpolate node, Object data);
+    R visit(ASTTermInterpolate node, D data);
 
-    Object visit(ASTTermMatch node, Object data);
+    R visit(ASTTermMatch node, D data);
 
-    Object visit(ASTTermName node, Object data);
+    R visit(ASTTermName node, D data);
 
-    Object visit(ASTTermNewAnonymous node, Object data);
+    R visit(ASTTermNewAnonymous node, D data);
 
-    Object visit(ASTTermNew node, Object data);
+    R visit(ASTTermNew node, D data);
 
-    Object visit(ASTTermParam node, Object data);
+    R visit(ASTTermParam node, D data);
 
-    Object visit(ASTTermPartialFunction node, Object data);
+    R visit(ASTTermPartialFunction node, D data);
 
-    Object visit(ASTTermPlaceholder node, Object data);
+    R visit(ASTTermPlaceholder node, D data);
 
-    Object visit(ASTTermRepeated node, Object data);
+    R visit(ASTTermRepeated node, D data);
 
-    Object visit(ASTTermReturn node, Object data);
+    R visit(ASTTermReturn node, D data);
 
-    Object visit(ASTTermSelect node, Object data);
+    R visit(ASTTermSelect node, D data);
 
-    Object visit(ASTTermSuper node, Object data);
+    R visit(ASTTermSuper node, D data);
 
-    Object visit(ASTTermThis node, Object data);
+    R visit(ASTTermThis node, D data);
 
-    Object visit(ASTTermThrow node, Object data);
+    R visit(ASTTermThrow node, D data);
 
-    Object visit(ASTTermTry node, Object data);
+    R visit(ASTTermTry node, D data);
 
-    Object visit(ASTTermTryWithHandler node, Object data);
+    R visit(ASTTermTryWithHandler node, D data);
 
-    Object visit(ASTTermTuple node, Object data);
+    R visit(ASTTermTuple node, D data);
 
-    Object visit(ASTTermWhile node, Object data);
+    R visit(ASTTermWhile node, D data);
 
-    Object visit(ASTTermXml node, Object data);
+    R visit(ASTTermXml node, D data);
 
-    Object visit(ASTTypeAnd node, Object data);
+    R visit(ASTTypeAnd node, D data);
 
-    Object visit(ASTTypeAnnotate node, Object data);
+    R visit(ASTTypeAnnotate node, D data);
 
-    Object visit(ASTTypeApply node, Object data);
+    R visit(ASTTypeApply node, D data);
 
-    Object visit(ASTTypeApplyInfix node, Object data);
+    R visit(ASTTypeApplyInfix node, D data);
 
-    Object visit(ASTTypeBounds node, Object data);
+    R visit(ASTTypeBounds node, D data);
 
-    Object visit(ASTTypeByName node, Object data);
+    R visit(ASTTypeByName node, D data);
 
-    Object visit(ASTTypeExistential node, Object data);
+    R visit(ASTTypeExistential node, D data);
 
-    Object visit(ASTTypeFunction node, Object data);
+    R visit(ASTTypeFunction node, D data);
 
-    Object visit(ASTTypeImplicitFunction node, Object data);
+    R visit(ASTTypeImplicitFunction node, D data);
 
-    Object visit(ASTTypeLambda node, Object data);
+    R visit(ASTTypeLambda node, D data);
 
-    Object visit(ASTTypeMethod node, Object data);
+    R visit(ASTTypeMethod node, D data);
 
-    Object visit(ASTTypeName node, Object data);
+    R visit(ASTTypeName node, D data);
 
-    Object visit(ASTTypeOr node, Object data);
+    R visit(ASTTypeOr node, D data);
 
-    Object visit(ASTTypeParam node, Object data);
+    R visit(ASTTypeParam node, D data);
 
-    Object visit(ASTTypePlaceholder node, Object data);
+    R visit(ASTTypePlaceholder node, D data);
 
-    Object visit(ASTTypeProject node, Object data);
+    R visit(ASTTypeProject node, D data);
 
-    Object visit(ASTTypeRefine node, Object data);
+    R visit(ASTTypeRefine node, D data);
 
-    Object visit(ASTTypeRepeated node, Object data);
+    R visit(ASTTypeRepeated node, D data);
 
-    Object visit(ASTTypeSelect node, Object data);
+    R visit(ASTTypeSelect node, D data);
 
-    Object visit(ASTTypeSingleton node, Object data);
+    R visit(ASTTypeSingleton node, D data);
 
-    Object visit(ASTTypeTuple node, Object data);
+    R visit(ASTTypeTuple node, D data);
 
-    Object visit(ASTTypeVar node, Object data);
+    R visit(ASTTypeVar node, D data);
 
-    Object visit(ASTTypeWith node, Object data);
+    R visit(ASTTypeWith node, D data);
 
 }

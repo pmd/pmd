@@ -67,15 +67,20 @@ public class ScalaTokenizer implements Tokenizer {
         ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect);
 
         // tokenize with a filter
-        scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
-        ScalaTokenFilter filter = new ScalaTokenFilter(tokens.iterator());
+        try {
+            scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
+            ScalaTokenFilter filter = new ScalaTokenFilter(tokens.iterator());
 
-        Token token;
-        while ((token = filter.getNextToken()) != null) {
-            String tokenText = token.text() != null ? token.text() : token.name();
-            TokenEntry cpdToken = new TokenEntry(tokenText, filename, token.pos().startLine());
-            tokenEntries.add(cpdToken);
+            Token token;
+            while ((token = filter.getNextToken()) != null) {
+                String tokenText = token.text() != null ? token.text() : token.name();
+                TokenEntry cpdToken = new TokenEntry(tokenText, filename, token.pos().startLine());
+                tokenEntries.add(cpdToken);
+            }
+        } finally {
+            tokenEntries.add(TokenEntry.getEOF());
         }
+
     }
 
     /**
@@ -84,6 +89,8 @@ public class ScalaTokenizer implements Tokenizer {
      */
     private static class ScalaTokenFilter {
         Iterator<Token> tokenIter;
+        Class<?>[] skippableTokens = new Class<?>[] { Token.Space.class, Token.Tab.class, Token.CR.class,
+            Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class };
 
         ScalaTokenFilter(Iterator<Token> iterator) {
             this.tokenIter = iterator.iterator();
@@ -105,9 +112,9 @@ public class ScalaTokenizer implements Tokenizer {
         private boolean skipToken(Token token) {
             boolean skip = false;
             if (token.text() != null) {
-                // skip any token that is whitespaces
-                skip |= token instanceof Token.Space || token instanceof Token.Tab || token instanceof Token.CR
-                        || token instanceof Token.LF || token instanceof Token.FF || token instanceof Token.LFLF;
+                for (Class<?> skipTokenClazz : skippableTokens) {
+                    skip |= skipTokenClazz.isInstance(token);
+                }
             }
             return skip;
         }

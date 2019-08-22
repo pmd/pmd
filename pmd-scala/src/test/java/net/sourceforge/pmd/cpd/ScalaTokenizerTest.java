@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,9 +30,7 @@ public class ScalaTokenizerTest extends AbstractTokenizerTest {
     @Override
     public void buildTokenizer() throws IOException {
         createTempFileOnDisk();
-
         this.tokenizer = new ScalaTokenizer();
-        this.sourceCode = new SourceCode(new SourceCode.FileCodeLoader(tempFile, "UTF-8"));
     }
 
     private void createTempFileOnDisk() throws IOException {
@@ -46,8 +45,25 @@ public class ScalaTokenizerTest extends AbstractTokenizerTest {
 
     @Test
     public void tokenizeTest() throws IOException {
-        this.expectedTokenCount = 2471;
+        this.sourceCode = new SourceCode(new SourceCode.FileCodeLoader(tempFile, "UTF-8"));
+        this.expectedTokenCount = 2472;
         super.tokenizeTest();
+    }
+
+    @Test
+    public void tokenizeFailTest() throws IOException {
+        this.sourceCode = new SourceCode(new SourceCode.StringCodeLoader(
+                "  object Main { "
+                + " def main(args: Array[String]): Unit = { "
+                + "  println(\"Hello, World!) " //unclosed string literal
+                + " }"
+                + "}"));
+        try {
+            super.tokenizeTest();
+            Assert.fail();
+        } catch (Exception e) {
+            // intentional
+        }
     }
 
     @After
