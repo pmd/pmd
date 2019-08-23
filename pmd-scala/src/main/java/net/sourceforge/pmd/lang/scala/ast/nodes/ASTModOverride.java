@@ -23,7 +23,8 @@ public class ASTModOverride extends AbstractScalaNode<Mod.Override> {
         super(scalaNode);
     }
 
-    @Override
+    // java.lang pacakage is required or else PMD can't see this Override
+    @java.lang.Override
     public <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data) {
         return visitor.visit(this, data);
     }
