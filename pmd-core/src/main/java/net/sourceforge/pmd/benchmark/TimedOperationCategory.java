@@ -16,8 +16,11 @@ import org.apache.commons.lang3.StringUtils;
  * @author Juan Martín Sotuyo Dodero
  */
 public enum TimedOperationCategory {
+    /** Single rule execution. */
     RULE,
     RULECHAIN_RULE,
+    /** Aggregate category for all rule application. */
+    RULE_APP,
     COLLECT_FILES,
     LOAD_RULES,
     PARSER,

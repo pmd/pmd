@@ -164,7 +164,9 @@ public class SourceCodeProcessor {
         dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
         List<Node> acus = Collections.singletonList(rootNode);
-        ruleSets.apply(acus, ctx, languageVersion.getLanguage());
+        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_APP)) {
+            ruleSets.apply(acus, ctx, languageVersion.getLanguage());
+        }
     }
 
 

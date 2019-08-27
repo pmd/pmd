@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.StringProperty;
 
@@ -300,6 +301,15 @@ public interface Rule extends PropertySource {
      * @return the list of AST node names
      */
     List<String> getRuleChainVisits();
+
+
+    default boolean shouldVisit(Node n) {
+        if (!getRuleChainVisits().isEmpty()) {
+            return getRuleChainVisits().contains(n.getXPathNodeName());
+        } else {
+            return n instanceof RootNode;
+        }
+    }
 
     /**
      * Adds an AST node by class to be visited by the Rule on the RuleChain.
