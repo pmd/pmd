@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.Language;
@@ -300,12 +302,23 @@ public interface Rule extends PropertySource {
      *
      * @return the list of AST node names
      */
-    List<String> getRuleChainVisits();
+    default List<String> getRuleChainVisits() {
+        return new ArrayList<>(getRuleChainVisitsSet());
+    }
+
+
+    /**
+     * Gets the collection of AST node names visited by the Rule on the
+     * RuleChain.
+     *
+     * @return the list of AST node names
+     */
+    Set<String> getRuleChainVisitsSet();
 
 
     default boolean shouldVisit(Node n) {
-        if (!getRuleChainVisits().isEmpty()) {
-            return getRuleChainVisits().contains(n.getXPathNodeName());
+        if (!getRuleChainVisitsSet().isEmpty()) {
+            return getRuleChainVisitsSet().contains(n.getXPathNodeName());
         } else {
             return n instanceof RootNode;
         }

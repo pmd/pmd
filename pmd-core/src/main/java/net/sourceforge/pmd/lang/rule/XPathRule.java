@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -211,7 +212,7 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    public List<String> getRuleChainVisits() {
+    public Set<String> getRuleChainVisitsSet() {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
 
@@ -219,7 +220,7 @@ public class XPathRule extends AbstractRule {
                 super.addRuleChainVisit(nodeName);
             }
         }
-        return super.getRuleChainVisits();
+        return super.getRuleChainVisitsSet();
     }
 
     @Override

@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -33,13 +33,16 @@ public class RuleApplicator {
 
     private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
 
+    public void apply(List<Node> nodes, Map<Boolean, List<Rule>> isRChain, RuleContext ctx) {
+        isRChain.getOrDefault(false, Collections.emptyList())
+                .stream()
+                .filter(it -> RuleSet.applies(it, ctx.getLanguageVersion()))
+                .forEach(rule -> applySingleRule(nodes, ctx, rule));
 
-    public void apply(List<Node> nodes, List<Rule> rules, RuleContext ctx) {
-        Map<Boolean, List<Rule>> isNotRChain = rules.stream().collect(Collectors.groupingBy(it -> it.getRuleChainVisits().isEmpty()));
-        isNotRChain.getOrDefault(true, Collections.emptyList()).forEach(rule -> applySingleRule(nodes, ctx, rule));
+        List<Rule> rchainRules = isRChain.getOrDefault(true, Collections.emptyList());
 
         for (Node root : nodes) {
-            applyRecursive(root, isNotRChain.getOrDefault(false, Collections.emptyList()), ctx);
+            applyRecursive(root, rchainRules, ctx);
         }
     }
 
@@ -55,7 +58,7 @@ public class RuleApplicator {
      */
     protected void doApply(Node node, Collection<Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
-            if (rule.shouldVisit(node)) {
+            if (RuleSet.applies(rule, ctx.getLanguageVersion()) && rule.shouldVisit(node)) {
                 applySingleRule(Collections.singletonList(node), ctx, rule);
             }
         }

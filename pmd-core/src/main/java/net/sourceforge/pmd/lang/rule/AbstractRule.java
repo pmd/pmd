@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -14,6 +16,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.internal.LinearSmallSet;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -38,7 +41,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private List<String> examples = new ArrayList<>();
     private String externalInfoUrl;
     private RulePriority priority = RulePriority.LOW;
-    private List<String> ruleChainVisits = new ArrayList<>();
+    private LinearSmallSet<String> ruleChainVisits = new LinearSmallSet<>();
 
     public AbstractRule() {
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
@@ -70,15 +73,11 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         otherRule.priority = priority;
         otherRule.propertyDescriptors = new ArrayList<>(getPropertyDescriptors());
         otherRule.propertyValuesByDescriptor = copyPropertyValues();
-        otherRule.ruleChainVisits = copyRuleChainVisits();
+        otherRule.ruleChainVisits = new LinearSmallSet<>(ruleChainVisits);
     }
 
     private List<String> copyExamples() {
         return new ArrayList<>(examples);
-    }
-
-    private List<String> copyRuleChainVisits() {
-        return new ArrayList<>(ruleChainVisits);
     }
 
     @Override
@@ -233,7 +232,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     @Override
-    public List<String> getRuleChainVisits() {
+    public Set<String> getRuleChainVisitsSet() {
         return ruleChainVisits;
     }
 
@@ -254,9 +253,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void addRuleChainVisit(String astNodeName) {
-        if (!ruleChainVisits.contains(astNodeName)) {
-            ruleChainVisits.add(astNodeName);
-        }
+        ruleChainVisits.add(astNodeName);
     }
 
     @Override
