@@ -4,54 +4,30 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
+
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 
 @SuppressWarnings("unchecked")
 final class MonoidImpl {
 
-    // TODO using persistent collections would be beneficial.
-
-    static final Monoid<? extends List> LIST_MONOID = new Monoid<List>() {
-        @Override
-        public List apply(List l, List r) {
-            if (l.isEmpty()) {
-                return r;
-            } else if (r.isEmpty()) {
-                return l;
-            }
-            ArrayList more = new ArrayList(l.size() + r.size());
-            more.addAll(l);
-            more.addAll(r);
-            return more;
-        }
-
-        @Override
-        public List zero() {
-            return Collections.emptyList();
-        }
-    };
-    static final Monoid<? extends Set> SET_MONOID = new Monoid<Set>() {
+    static final Monoid PSET_MONOID = new Monoid<Set>() {
         @Override
         public Set apply(Set l, Set r) {
-            if (l.isEmpty()) {
-                return r;
-            } else if (r.isEmpty()) {
-                return l;
+            if (l instanceof PSet) {
+                return ((PSet) l).plusAll(r);
+            } else if (r instanceof PSet) {
+                return ((PSet) r).plusAll(l);
             }
-            Set more = new LinkedHashSet(l);
-            more.addAll(r);
-            return more;
+
+            return HashTreePSet.from(l).plusAll(r);
         }
 
         @Override
         public Set zero() {
-            return Collections.emptySet();
+            return HashTreePSet.empty();
         }
     };
 

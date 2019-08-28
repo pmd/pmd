@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.BinaryOperator;
+
+import org.pcollections.PSet;
 
 /**
  * Describes a particular {@linkplain #apply(Object, Object) binary operation}
@@ -38,11 +39,8 @@ interface Monoid<U> extends BinaryOperator<U> {
 
 
     static <T> Monoid<Set<T>> forSet() {
-        return (Monoid<Set<T>>) MonoidImpl.SET_MONOID;
+        return (Monoid<Set<T>>) MonoidImpl.PSET_MONOID;
     }
 
 
-    static <T> Monoid<List<T>> forList() {
-        return (Monoid<List<T>>) MonoidImpl.LIST_MONOID;
-    }
 }
