@@ -19,13 +19,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * {@code <U>} associated to a node is the recursive combination of the values of
  * all its children, plus its own value, as defined by a {@link Monoid}.
  *
- * <p>Despite the resemblance to the {@link Map} interface, a heap doesn't follow its contract.
+ * <p>Despite the resemblance to the {@link Map} interface, a heap doesn't
+ * follow the same contract.
  * <ul>
  * <li>{@link #get(Object) get} doesn't necessarily reflect values previously
- * {@link #put(Object, Object) put} into the heap. In fact it never returns
- * null, rather using the {@link Monoid#zero() zero} element.</li>
- * <li>A heap does not *contain* elements, rather it represents a relation
- * on the elements. For that reason there is no equality relation defined
+ * {@link #put(Object, Object) put} into the heap. It never returns
+ * null, rather using the {@link Monoid#zero() zero} element. It may return
+ * non-zero for an element that wasn't implicitly inserted.</li>
+ * <li>A heap does not *contain* elements, rather it represents a property
+ * of the elements. For that reason there is no equality relation defined
  * on a heap, and no operation to test if a key is contained in the heap.
  * </li>
  * </ul>

@@ -10,6 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriority;
@@ -18,6 +20,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.ClassRulechainVisits;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.StringRulechainVisits;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -44,6 +49,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     private RulePriority priority = RulePriority.LOW;
     private Set<String> ruleChainVisits = new LinkedHashSet<>();
     private Set<Class<?>> classRuleChainVisits = new LinkedHashSet<>();
+    private TargetSelectionStrategy myStrategy;
 
     public AbstractRule() {
         definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
@@ -240,7 +246,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     }
 
     @Override
-    public Set<Class<?>> getRuleChainVisitsSet() {
+    public Set<Class<?>> getClassRuleChainVisits() {
         if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
             return Collections.singleton(RootNode.class);
         }
@@ -255,6 +261,25 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     @Override
     public void addRuleChainVisit(String astNodeName) {
         ruleChainVisits.add(astNodeName);
+    }
+
+    @Override
+    public TargetSelectionStrategy getTargetingStrategy() {
+        if (myStrategy == null) {
+            myStrategy = buildSelectionStrat();
+        }
+        return myStrategy;
+    }
+
+    @NonNull
+    private TargetSelectionStrategy buildSelectionStrat() {
+        if (ruleChainVisits.isEmpty() && classRuleChainVisits.isEmpty()) {
+            return ClassRulechainVisits.ROOT_ONLY;
+        } else if (ruleChainVisits.isEmpty()) {
+            return new ClassRulechainVisits(classRuleChainVisits);
+        } else {
+            return new StringRulechainVisits(ruleChainVisits);
+        }
     }
 
     @Override

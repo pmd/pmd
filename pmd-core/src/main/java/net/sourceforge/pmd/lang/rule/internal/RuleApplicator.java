@@ -42,12 +42,8 @@ public class RuleApplicator {
     private void applyRecursive(NodeIdx idx, Collection<Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
 
-            Stream<Node> nodes = rule.getRuleChainVisits().isEmpty() ? idx.getByClass(rule.getRuleChainVisitsSet())
-                                                                     : idx.getByName(rule.getRuleChainVisits());
+            for (Node node : rule.getTargetingStrategy().getVisitedNodes(idx)) {
 
-            Iterable<Node> it = nodes::iterator;
-
-            for (Node node : it) {
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
                     rule.apply(Collections.singletonList(node), ctx);
                     rcto.close(1);
@@ -75,18 +71,18 @@ public class RuleApplicator {
         }
     }
 
-    private static class NodeIdx {
+    static class NodeIdx {
 
         private final Heap<Class<?>, List<Node>> byClass;
         private final Map<String, List<Node>> byName;
 
 
-        public NodeIdx() {
+        NodeIdx() {
             byClass = new Heap<>(Monoid.forList(), TopoOrder.TYPE_ORDER);
             byName = new HashMap<>();
         }
 
-        public void indexNode(Node n) {
+        void indexNode(Node n) {
             byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
             byClass.put(n.getClass(), Collections.singletonList(n));
         }
@@ -95,7 +91,7 @@ public class RuleApplicator {
          * Freezing the heap divides by on-average 6 the number of tree
          * recursive computations on the heap.
          */
-        public void complete() {
+        void complete() {
             byClass.freeze();
         }
 
@@ -111,7 +107,7 @@ public class RuleApplicator {
             return n.stream().flatMap(this::getByName);
         }
 
-        public Stream<Node> getByClass(Collection<Class<?>> n) {
+        public Stream<Node> getByClass(Collection<? extends Class<?>> n) {
             return n.stream().flatMap(this::getByClass);
         }
     }
