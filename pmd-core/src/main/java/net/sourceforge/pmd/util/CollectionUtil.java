@@ -184,6 +184,17 @@ public final class CollectionUtil {
     }
 
 
+    public static <T> Set<T> setOf(T... ts) {
+        LinkedHashSet<T> set = new LinkedHashSet<>(ts.length);
+        Collections.addAll(set, ts);
+        return set;
+    }
+
+    public static <T> List<T> listOf(T... ts) {
+        return Arrays.asList(ts);
+    }
+
+
     /**
      * Consumes all the elements of the iterator and
      * returns a list containing them. The iterator is

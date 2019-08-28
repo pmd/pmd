@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -73,18 +74,18 @@ public class RuleApplicator {
 
     static class NodeIdx {
 
-        private final LatticeRelation<Class<?>, List<Node>> byClass;
+        private final LatticeRelation<Class<?>, Set<Node>> byClass;
         private final Map<String, List<Node>> byName;
 
 
         NodeIdx() {
-            byClass = new LatticeRelation<>(Monoid.forList(), TopoOrder.TYPE_HIERARCHY_ORDERING);
+            byClass = new LatticeRelation<>(Monoid.forSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
             byName = new HashMap<>();
         }
 
         void indexNode(Node n) {
             byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
-            byClass.put(n.getClass(), Collections.singletonList(n));
+            byClass.put(n.getClass(), Collections.singleton(n));
         }
 
         /**

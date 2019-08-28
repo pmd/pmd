@@ -4,10 +4,15 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,27 +40,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
 class LatticeRelation<T, U> {
-    /* For example, a simple lattice on types:
-
-                 Object
-                    ^
-                    |
-                    +
-              Serializable <-------+
-                    ^              |
-                    |              |
-                    +              |
-                  Number           |
-                  ^    ^           |
-                  |    |           |
-                  |    |           |
-                  +    +           +
-               Long  Integer    String
-
-       Say now that the monoid is (emptySet(), Set.add), and that every
-       node has its key as proper value. Then the lattice associates the
-       set of know subtypes to each type.
-     */
 
     private final Monoid<U> valueMonoid;
     private final TopoOrder<T> keyOrder;
@@ -74,11 +58,15 @@ class LatticeRelation<T, U> {
     }
 
     private LNode getNode(T key) {
-        return nodes.computeIfAbsent(key, k -> {
-            LNode n = new LNode(k);
-            keyOrder.directSuccessors(k).distinct().map(this::getNode).forEach(it -> it.parents.add(n));
+        if (nodes.containsKey(key)) {
+            return nodes.get(key);
+        } else {
+            LNode n = new LNode(key);
+            nodes.put(key, n);
+            // add all successors recursively
+            keyOrder.directSuccessors(key).distinct().map(this::getNode).forEach(n.succ::add);
             return n;
-        });
+        }
     }
 
     /**
@@ -99,22 +87,146 @@ class LatticeRelation<T, U> {
      */
     @NonNull
     public U get(T key) {
+        if (!frozen) {
+            throw new IllegalStateException("Lattice is not ready");
+        }
         LNode n = nodes.get(key);
         return n == null ? valueMonoid.zero() : n.computeValue();
     }
 
-    /**
-     * Mark this lattice as read-only. The values of the nodes will
-     * subsequently be computed at most once.
-     */
-    void freeze() {
-        frozen = true;
+    // test only
+    Map<T, LNode> getNodes() {
+        return nodes;
     }
 
-    private class LNode {
+    /**
+     * Mark this lattice as read-only and perform necessary computations
+     * to let it slide.
+     */
+    void freeze() {
+        frozen = true; // TODO non-thread-safe
 
+        /*
+            We need to do all this shit because there may be diamonds
+            in the lattice, in which case some nodes are reachable through
+            several paths and we would risk combining their proper values
+            several times.
+         */
+
+        int n = nodes.size();
+
+        // topological sort
+        List<LNode> lst = new ArrayList<>(nodes.values());
+        lst.sort(Comparator.comparing(it -> it.key, keyOrder));
+
+
+        for (int i = 0; i < lst.size(); i++) {
+            lst.get(i).idx = i;
+        }
+
+        // todo use a BitSet[]
+        boolean[][] path = new boolean[n][n];
+
+        for (LNode k : lst) {
+            for (LNode t : k.succ) {
+                if (k.idx != t.idx) {
+                    // ignore self loop
+                    path[k.idx][t.idx] = true;
+                }
+            }
+        }
+
+        // here path is an adjacency matrix
+        // (ie path[i][j] means "j is a direct successor of i")
+
+        // we turn it into a path matrix
+
+        // since nodes are toposorted,
+        //  path[i][j] => i < j
+        // so we can avoid being completely cubic
+
+        // transitive closure
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (path[i][j]) {
+                    for (int k = j + 1; k < n; k++) {
+                        if (path[j][k]) {
+                            // i -> j -> k
+                            path[i][k] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // now path[i][j] means "j is reachable from i"
+
+
+        // diamond detection
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (path[i][j]) {
+                    for (int k = j + 1; k < n; k++) {
+                        if (path[j][k]) {
+                            // i -> j -> k
+                            // Look for an "m" s.t.
+                            // i -> m -> k
+                            for (int m = i + 1; m < n; m++) {
+                                if (m != j && !path[j][m] && !path[m][j] && path[i][m] && path[m][k]) {
+                                    lst.get(k).hasDiamond = true;
+                                    for (int o = k; o < n; o++) {
+                                        if (path[k][o]) {
+                                            lst.get(o).hasDiamond = true;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // transitive reduction
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (path[i][j]) {
+                    for (int k = j + 1; k < n; k++) {
+                        if (path[j][k]) {
+                            // i -> j -> k
+                            path[i][k] = false;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        // assign predecessors to all nodes
+        for (int i = 0; i < n; i++) {
+            LNode ln = lst.get(i);
+            ln.succ.clear();
+
+            for (int j = 0; j < i; j++) {
+                if (path[j][i]) {
+                    // succ means "pred" now
+                    ln.succ.add(lst.get(j));
+                }
+            }
+        }
+
+    }
+
+    //test only
+    class LNode {
+
+        // before freezing this contains the successors of a node
+        // after, it contains its direct predecessors
+        private final Set<LNode> succ = new LinkedHashSet<>(0);
         private final T key;
-        private final Set<LNode> parents = new LinkedHashSet<>(0);
+        boolean hasDiamond = false;
+        private int idx = -1;
         /** Proper value associated with this node (independent of parents). */
         private @NonNull U properVal = valueMonoid.zero();
 
@@ -135,12 +247,40 @@ class LatticeRelation<T, U> {
         }
 
         private U computeVal() {
-            return parents.stream().map(LNode::computeValue).reduce(properVal, valueMonoid);
+            if (hasDiamond) {
+                // then we can't reuse values of children, because some
+                // descendants are reachable through several paths
+                return descendantsAndSelf().distinct()
+                                           .map(it -> it.properVal)
+                                           .reduce(valueMonoid.zero(), valueMonoid);
+            }
+            return succ.stream().map(LNode::computeValue).reduce(properVal, valueMonoid);
+        }
+
+        private Stream<LNode> descendantsAndSelf() {
+            return Stream.concat(Stream.of(this), succ.stream().flatMap(LNode::descendantsAndSelf));
         }
 
         @Override
         public String toString() {
             return "(" + key + ')';
+        }
+
+        @Override
+        public boolean equals(Object data) {
+            if (this == data) {
+                return true;
+            }
+            if (data == null || getClass() != data.getClass()) {
+                return false;
+            }
+            LNode lNode = (LNode) data;
+            return Objects.equals(key, lNode.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(key);
         }
     }
 

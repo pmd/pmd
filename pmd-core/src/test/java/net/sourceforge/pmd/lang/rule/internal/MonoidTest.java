@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.rule.internal;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -21,17 +23,6 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 public class MonoidTest {
-
-
-    <T> Set<T> setOf(T... ts) {
-        LinkedHashSet<T> set = new LinkedHashSet<>(ts.length);
-        Collections.addAll(set, ts);
-        return set;
-    }
-
-    <T> List<T> listOf(T... ts) {
-        return Arrays.asList(ts);
-    }
 
     @Test
     public void testSetMonoid() {

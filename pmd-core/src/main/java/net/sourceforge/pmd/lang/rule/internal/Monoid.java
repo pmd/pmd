@@ -9,13 +9,19 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 
 /**
- * Describes a particular {@linkplain #apply(Object, Object) pure operation} on a
- * type {@code <U>}. That operation must have a {@linkplain #zero() neutral element},
- * meaning the following must hold for all {@code u : U}, and for all {@code z : U}
- * such that {@code z.equals(zero())}:
+ * Describes a particular {@linkplain #apply(Object, Object) binary operation}
+ * on a type {@code <U>}. That operation must satisfy the following requirements,
+ * where {@code ==} represents {@code equals}, and {@code u + v} represents {@code apply(u, v)}:
  * <pre>
- *  apply(u, z).equals(u)
- *  apply(z, u).equals(u)
+ *  Identity element:
+ *  u, z : U,
+ *  z == zero() =>
+ *      u + z == u
+ *      z + u == u
+ *
+ *  Associativity:
+ *  u, v, w : U =>
+ *      (u + v) + w == u + (v + w)
  * </pre>
  *
  * @param <U> Domain of the operation

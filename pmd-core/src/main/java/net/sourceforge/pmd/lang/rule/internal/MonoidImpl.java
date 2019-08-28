@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ final class MonoidImpl {
             } else if (r.isEmpty()) {
                 return l;
             }
-            HashSet more = new HashSet(l);
+            Set more = new LinkedHashSet(l);
             more.addAll(r);
             return more;
         }
