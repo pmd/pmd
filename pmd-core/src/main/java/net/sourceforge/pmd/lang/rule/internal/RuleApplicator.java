@@ -77,17 +77,12 @@ public class RuleApplicator {
 
     private static class NodeIdx {
 
-        private static final Monoid<List<Node>> monoid = Monoid.forList();
         private final Heap<Class<?>, List<Node>> byClass;
         private final Map<String, List<Node>> byName;
 
-        public NodeIdx(int baseCap) {
-            byClass = new Heap<>(monoid, TopoOrder.TYPE_ORDER, baseCap);
-            byName = new HashMap<>(baseCap);
-        }
 
         public NodeIdx() {
-            byClass = new Heap<>(monoid, TopoOrder.TYPE_ORDER);
+            byClass = new Heap<>(Monoid.forList(), TopoOrder.TYPE_ORDER);
             byName = new HashMap<>();
         }
 
@@ -96,6 +91,10 @@ public class RuleApplicator {
             byClass.put(n.getClass(), Collections.singletonList(n));
         }
 
+        /**
+         * Freezing the heap divides by on-average 6 the number of tree
+         * recursive computations on the heap.
+         */
         public void complete() {
             byClass.freeze();
         }
