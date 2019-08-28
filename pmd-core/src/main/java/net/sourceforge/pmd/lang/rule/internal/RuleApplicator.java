@@ -73,12 +73,12 @@ public class RuleApplicator {
 
     static class NodeIdx {
 
-        private final Heap<Class<?>, List<Node>> byClass;
+        private final LatticeRelation<Class<?>, List<Node>> byClass;
         private final Map<String, List<Node>> byName;
 
 
         NodeIdx() {
-            byClass = new Heap<>(Monoid.forList(), TopoOrder.TYPE_ORDER);
+            byClass = new LatticeRelation<>(Monoid.forList(), TopoOrder.TYPE_HIERARCHY_ORDERING);
             byName = new HashMap<>();
         }
 
@@ -88,8 +88,8 @@ public class RuleApplicator {
         }
 
         /**
-         * Freezing the heap divides by on-average 6 the number of tree
-         * recursive computations on the heap.
+         * Freezing the lattice divides by on-average 6 the number of
+         * recursive computations (and hence of lists created).
          */
         void complete() {
             byClass.freeze();

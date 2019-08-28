@@ -7,11 +7,14 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-
+/**
+ * Represents a partial order on a type {@code <T>}. This ordering
+ * generates a directed *acyclic* graph on instances of {@code <T>}.
+ */
 public interface TopoOrder<T> {
 
-    /** TopoOrder on types. */
-    TopoOrder<Class<?>> TYPE_ORDER = node -> {
+    /** TopoOrder on classes. A class's successors are its direct supertypes. */
+    TopoOrder<Class<?>> TYPE_HIERARCHY_ORDERING = node -> {
         if (node == Object.class) {
             // Object
             return Stream.empty();
@@ -29,7 +32,8 @@ public interface TopoOrder<T> {
     };
 
 
-    Stream<T> strictParents(T node);
+    /** Returns all nodes that strictly follow this node. */
+    Stream<T> directSuccessors(T node);
 
 
 }

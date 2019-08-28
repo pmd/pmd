@@ -14,28 +14,28 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A heap is a kind of structured map. The internal representation is a lattice
- * of {@code <T>}, ordered according to a {@link TopoOrder}. The value
- * {@code <U>} associated to a node is the recursive combination of the values of
- * all its children, plus its own value, as defined by a {@link Monoid}.
+ * Represents a property of type {@code <U>} on a datatype {@code <T>}.
+ * The internal representation is a directed acyclic graph of {@code <T>},
+ * ordered according to a {@link TopoOrder}. The value {@code <U>} associated
+ * to a node is the recursive combination of the values of all its children,
+ * plus its own value, as defined by a {@link Monoid  Monoid&lt;U&gt;}.
  *
- * <p>Despite the resemblance to the {@link Map} interface, a heap doesn't
- * follow the same contract.
- * <ul>
- * <li>{@link #get(Object) get} doesn't necessarily reflect values previously
- * {@link #put(Object, Object) put} into the heap. It never returns
- * null, rather using the {@link Monoid#zero() zero} element. It may return
- * non-zero for an element that wasn't implicitly inserted.</li>
- * <li>A heap does not *contain* elements, rather it represents a property
- * of the elements. For that reason there is no equality relation defined
- * on a heap, and no operation to test if a key is contained in the heap.
- * </li>
- * </ul>
+ * <p>The {@link TopoOrder TopoOrder<T>} must generate an acyclic graph,
+ * cycles are not handled by this implementation.
  *
- * @param <T> Type of keys, must have a corresponding {@link TopoOrder}
+ * <p>There is no equality relation defined on a lattice, and no
+ * operation to test if an element is contained in the lattice.
+ *
+ * <p>A lattice may be frozen to make it read-only, when the construction
+ * of the property is done. This optimizes subsequent calls to {@link #get(Object)}.
+ * Once frozen a lattice may not be unfrozen.
+ *
+ * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
+ *           must implement a consistent {@link Object#equals(Object) equals} and
+ *           {@link Object#hashCode() hashcode} and be immutable.
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
-public class Heap<T, U> {
+public class LatticeRelation<T, U> {
 
     private final Monoid<U> valueMonoid;
     private final TopoOrder<T> keyOrder;
@@ -43,13 +43,11 @@ public class Heap<T, U> {
 
     private final Map<T, HNode> nodes;
 
-    public Heap(Monoid<U> valueMonoid, TopoOrder<T> keyOrder, int initialCapacity) {
-        this.valueMonoid = valueMonoid;
-        this.keyOrder = keyOrder;
-        nodes = new HashMap<>(initialCapacity);
-    }
-
-    public Heap(Monoid<U> valueMonoid, TopoOrder<T> keyOrder) {
+    /**
+     * Builds a new relation with the specified monoid and topological
+     * ordering.
+     */
+    public LatticeRelation(Monoid<U> valueMonoid, TopoOrder<T> keyOrder) {
         this.valueMonoid = valueMonoid;
         this.keyOrder = keyOrder;
         nodes = new HashMap<>();
@@ -58,7 +56,7 @@ public class Heap<T, U> {
     private HNode getNode(T key) {
         return nodes.computeIfAbsent(key, k -> {
             HNode n = new HNode(k);
-            keyOrder.strictParents(k).map(this::getNode).forEach(it -> it.children.add(n));
+            keyOrder.directSuccessors(k).map(this::getNode).forEach(it -> it.children.add(n));
             return n;
         });
     }
@@ -71,7 +69,7 @@ public class Heap<T, U> {
      */
     public U put(T key, U value) {
         if (frozen) {
-            throw new IllegalStateException("A frozen heap may not be mutated");
+            throw new IllegalStateException("A frozen lattice may not be mutated");
         }
         HNode node = getNode(key);
         U p = node.getProperVal();
@@ -81,7 +79,7 @@ public class Heap<T, U> {
 
     /**
      * Returns the computed value for the given key, or {@link Monoid#zero()}
-     * if the key is not recorded in this heap.
+     * if the key is not recorded in this lattice.
      */
     @NonNull
     public U get(T key) {
@@ -90,10 +88,10 @@ public class Heap<T, U> {
     }
 
     /**
-     * Mark this heap as read-only. Values of the nodes will subsequently
-     * be computed at most once.
+     * Mark this lattice as read-only. The values of the nodes will
+     * subsequently be computed at most once.
      */
-    public void freeze() {
+    void freeze() {
         frozen = true;
     }
 
