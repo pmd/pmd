@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * Represents a property of type {@code <U>} on a datatype {@code <T>}.
  * The internal representation is a directed acyclic graph of {@code <T>},
@@ -40,6 +42,10 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
 class LatticeRelation<T, U> {
+
+    private static int UNDEFINED_TOPOMARK = -1;
+    private static int PERMANENT_TOPOMARK = 0;
+    private static int TMP_TOPOMARK = 1;
 
     private final Monoid<U> valueMonoid;
     private final TopoOrder<T> keyOrder;
@@ -97,6 +103,12 @@ class LatticeRelation<T, U> {
     // test only
     Map<T, LNode> getNodes() {
         return nodes;
+    }
+
+    private void toposort(List<Node> remaining, List<LNode> nodes) {
+
+
+
     }
 
     /**
@@ -226,6 +238,7 @@ class LatticeRelation<T, U> {
         private final Set<LNode> succ = new LinkedHashSet<>(0);
         private final T key;
         boolean hasDiamond = false;
+        private int topoMark = UNDEFINED_TOPOMARK;
         private int idx = -1;
         /** Proper value associated with this node (independent of parents). */
         private @NonNull U properVal = valueMonoid.zero();

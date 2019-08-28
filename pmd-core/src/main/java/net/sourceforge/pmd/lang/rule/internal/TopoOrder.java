@@ -23,7 +23,7 @@ interface TopoOrder<T> extends Comparator<T> {
 
         @Override
         public Stream<Class<?>> directSuccessors(Class<?> node) {
-            if (node == Object.class) {
+            if (node == Object.class || node.isPrimitive()) {
                 // Object
                 return Stream.empty();
             }
@@ -45,6 +45,7 @@ interface TopoOrder<T> extends Comparator<T> {
             if (l.equals(r)) {
                 return 0;
             }
+
             if (l.isAssignableFrom(r)) {
                 // r <: l
                 return 1;

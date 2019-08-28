@@ -184,12 +184,14 @@ public final class CollectionUtil {
     }
 
 
+    @SafeVarargs
     public static <T> Set<T> setOf(T... ts) {
         LinkedHashSet<T> set = new LinkedHashSet<>(ts.length);
         Collections.addAll(set, ts);
         return set;
     }
 
+    @SafeVarargs
     public static <T> List<T> listOf(T... ts) {
         return Arrays.asList(ts);
     }

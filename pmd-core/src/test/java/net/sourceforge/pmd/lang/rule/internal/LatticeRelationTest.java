@@ -42,5 +42,4 @@ public class LatticeRelationTest {
         assertFalse(nodes.get(Comparable.class).hasDiamond);
     }
 
-
 }
