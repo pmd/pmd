@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 
-import org.pcollections.PSet;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * Describes a particular {@linkplain #apply(Object, Object) binary operation}
@@ -40,6 +41,11 @@ interface Monoid<U> extends BinaryOperator<U> {
 
     static <T> Monoid<Set<T>> forSet() {
         return (Monoid<Set<T>>) MonoidImpl.PSET_MONOID;
+    }
+
+
+    static <T extends Node> Monoid<NodeStream<T>> forNodeStream() {
+        return (Monoid<NodeStream<T>>) MonoidImpl.NODE_STREAM_MONOID;
     }
 
 
