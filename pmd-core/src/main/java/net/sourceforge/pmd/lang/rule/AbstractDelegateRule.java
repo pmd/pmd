@@ -240,7 +240,12 @@ public abstract class AbstractDelegateRule implements Rule {
     }
 
     @Override
-    public Set<String> getRuleChainVisitsSet() {
+    public Set<String> getRuleChainVisits() {
+        return rule.getRuleChainVisits();
+    }
+
+    @Override
+    public Set<Class<?>> getRuleChainVisitsSet() {
         return rule.getRuleChainVisitsSet();
     }
 

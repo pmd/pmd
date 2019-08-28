@@ -294,16 +294,8 @@ public interface Rule extends PropertySource {
      *
      * @return <code>true</code> if RuleChain is used.
      */
-    boolean isRuleChain();
-
-    /**
-     * Gets the collection of AST node names visited by the Rule on the
-     * RuleChain.
-     *
-     * @return the list of AST node names
-     */
-    default List<String> getRuleChainVisits() {
-        return new ArrayList<>(getRuleChainVisitsSet());
+    default boolean isRuleChain() {
+        return !getRuleChainVisits().isEmpty() || !getRuleChainVisitsSet().isEmpty();
     }
 
 
@@ -313,12 +305,15 @@ public interface Rule extends PropertySource {
      *
      * @return the list of AST node names
      */
-    Set<String> getRuleChainVisitsSet();
+    Set<String> getRuleChainVisits();
+
+
+    Set<Class<?>> getRuleChainVisitsSet();
 
 
     default boolean shouldVisit(Node n) {
-        if (!getRuleChainVisitsSet().isEmpty()) {
-            return getRuleChainVisitsSet().contains(n.getXPathNodeName());
+        if (!getRuleChainVisits().isEmpty()) {
+            return getRuleChainVisitsSet().stream().anyMatch(it -> it.isInstance(n));
         } else {
             return n instanceof RootNode;
         }

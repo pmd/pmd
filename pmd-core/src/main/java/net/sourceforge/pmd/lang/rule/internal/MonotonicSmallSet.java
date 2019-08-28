@@ -13,17 +13,17 @@ import java.util.Set;
 /**
  * Set that can only grow, optimised for case empty/singleton.
  */
-public class LinearSmallSet<T> implements Set<T> {
+public class MonotonicSmallSet<T> implements Set<T> {
 
     private Set<T> mySet;
     private SetState state;
 
-    public LinearSmallSet() {
+    public MonotonicSmallSet() {
         mySet = Collections.emptySet();
         state = SetState.EMPTY;
     }
 
-    public LinearSmallSet(LinearSmallSet<T> other) {
+    public MonotonicSmallSet(MonotonicSmallSet<T> other) {
         this.mySet = other.state.copy(other.mySet);
         this.state = other.state;
     }
@@ -100,7 +100,7 @@ public class LinearSmallSet<T> implements Set<T> {
     private enum SetState {
         MORE {
             @Override
-            <T> boolean add(LinearSmallSet<T> base, T t) {
+            <T> boolean add(MonotonicSmallSet<T> base, T t) {
                 return base.mySet.add(t);
             }
 
@@ -111,7 +111,7 @@ public class LinearSmallSet<T> implements Set<T> {
         },
         SINGLE {
             @Override
-            <T> boolean add(LinearSmallSet<T> base, T t) {
+            <T> boolean add(MonotonicSmallSet<T> base, T t) {
                 if (base.mySet.contains(t)) {
                     return false;
                 }
@@ -123,7 +123,7 @@ public class LinearSmallSet<T> implements Set<T> {
         },
         EMPTY {
             @Override
-            <T> boolean add(LinearSmallSet<T> base, T t) {
+            <T> boolean add(MonotonicSmallSet<T> base, T t) {
                 base.mySet = Collections.singleton(t);
                 base.state = SINGLE;
                 return true;
@@ -131,7 +131,7 @@ public class LinearSmallSet<T> implements Set<T> {
         },
         ;
 
-        abstract <T> boolean add(LinearSmallSet<T> base, T t);
+        abstract <T> boolean add(MonotonicSmallSet<T> base, T t);
 
 
         <T> Set<T> copy(Set<T> from) {

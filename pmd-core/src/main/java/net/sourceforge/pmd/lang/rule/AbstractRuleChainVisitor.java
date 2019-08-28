@@ -84,9 +84,8 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
                         continue;
                     }
                     try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULECHAIN_RULE, rule.getName())) {
-                        final List<String> nodeNames = rule.getRuleChainVisits();
-                        for (int j = 0; j < nodeNames.size(); j++) {
-                            List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));
+                        for (String nodeName : rule.getRuleChainVisits()) {
+                            List<Node> ns = nodeNameToNodes.get(nodeName);
                             for (Node node : ns) {
                                 // Visit with underlying Rule, not the RuleReference
                                 Rule actualRule = rule;

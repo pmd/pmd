@@ -212,7 +212,7 @@ public class XPathRule extends AbstractRule {
     }
 
     @Override
-    public Set<String> getRuleChainVisitsSet() {
+    public Set<String> getRuleChainVisits() {
         if (xPathRuleQueryNeedsInitialization()) {
             initXPathRuleQuery();
 
@@ -220,7 +220,7 @@ public class XPathRule extends AbstractRule {
                 super.addRuleChainVisit(nodeName);
             }
         }
-        return super.getRuleChainVisitsSet();
+        return super.getRuleChainVisits();
     }
 
     @Override

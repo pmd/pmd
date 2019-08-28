@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,7 @@ public class RuleSets {
      */
     private List<RuleSet> ruleSets = new ArrayList<>();
 
-    private Map<Boolean, List<Rule>> isRchain;
+    private List<Rule> filtered;
 
     /**
      * RuleChain for efficient AST visitation.
@@ -143,15 +142,15 @@ public class RuleSets {
      *            the Language of the source
      */
     public void apply(List<Node> acuList, RuleContext ctx, Language language) {
-        if (isRchain == null) {
-            isRchain = ruleSets.stream()
+        if (filtered == null) {
+            filtered = ruleSets.stream()
                                .filter(it -> it.applies(ctx.getSourceCodeFile()))
                                .flatMap(it -> it.getRules().stream())
                                .filter(it -> RuleSet.applies(it, ctx.getLanguageVersion()))
-                               .collect(Collectors.groupingBy(Rule::isRuleChain));
+                               .collect(Collectors.toList());
         }
 
-        ruleApplicator.apply(acuList, isRchain, ctx);
+        ruleApplicator.apply(acuList, filtered, ctx);
     }
 
     /**
