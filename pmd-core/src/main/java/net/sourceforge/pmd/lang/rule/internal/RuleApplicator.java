@@ -2,11 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
-package net.sourceforge.pmd.lang.rule;
+package net.sourceforge.pmd.lang.rule.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,20 +17,12 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.internal.Heap;
-import net.sourceforge.pmd.lang.rule.internal.Monoid;
-import net.sourceforge.pmd.lang.rule.internal.TopoOrder;
 
-/**
- * This is a base class for RuleChainVisitor implementations which extracts
- * interesting nodes from an AST, and lets each Rule visit the nodes it has
- * expressed interest in.
- */
+/** Applies a set of rules to a set of ASTs. */
 public class RuleApplicator {
 
     private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
@@ -45,6 +33,8 @@ public class RuleApplicator {
         for (Node root : nodes) {
             indexTree(root, idx);
         }
+
+        idx.complete();
 
         applyRecursive(idx, rules, ctx);
     }
@@ -104,6 +94,10 @@ public class RuleApplicator {
         public void indexNode(Node n) {
             byName.computeIfAbsent(n.getXPathNodeName(), k -> new ArrayList<>()).add(n);
             byClass.put(n.getClass(), Collections.singletonList(n));
+        }
+
+        public void complete() {
+            byClass.freeze();
         }
 
         public Stream<Node> getByName(String n) {

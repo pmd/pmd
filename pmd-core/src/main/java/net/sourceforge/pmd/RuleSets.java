@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.RuleApplicator;
+import net.sourceforge.pmd.lang.rule.internal.RuleApplicator;
 
 /**
  * Grouping of Rules per Language in a RuleSet.

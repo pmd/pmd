@@ -20,19 +20,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * all its children, plus its own value, as defined by a {@link Monoid}.
  *
  * <p>Despite the resemblance to the {@link Map} interface, a heap doesn't follow its contract.
- * {@link #get(Object) get} doesn't necessarily reflect values previously
+ * <ul>
+ * <li>{@link #get(Object) get} doesn't necessarily reflect values previously
  * {@link #put(Object, Object) put} into the heap. In fact it never returns
- * null, rather using the {@link Monoid#zero() zero} element. Testing for the
- * containment of a key is irrelevant.
+ * null, rather using the {@link Monoid#zero() zero} element.</li>
+ * <li>A heap does not *contain* elements, rather it represents a relation
+ * on the elements. For that reason there is no equality relation defined
+ * on a heap, and no operation to test if a key is contained in the heap.
+ * </li>
+ * </ul>
  *
  * @param <T> Type of keys, must have a corresponding {@link TopoOrder}
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
 public class Heap<T, U> {
 
-
     private final Monoid<U> valueMonoid;
     private final TopoOrder<T> keyOrder;
+    private boolean frozen;
 
     private final Map<T, HNode> nodes;
 
@@ -63,6 +68,9 @@ public class Heap<T, U> {
      * @return The previous value
      */
     public U put(T key, U value) {
+        if (frozen) {
+            throw new IllegalStateException("A frozen heap may not be mutated");
+        }
         HNode node = getNode(key);
         U p = node.getProperVal();
         node.properVal = valueMonoid.combine(p, value);
@@ -79,12 +87,21 @@ public class Heap<T, U> {
         return n == null ? valueMonoid.zero() : n.computeValue();
     }
 
+    /**
+     * Mark this heap as read-only. Values of the nodes will subsequently
+     * be computed at most once.
+     */
+    public void freeze() {
+        frozen = true;
+    }
 
     private class HNode {
 
         private final T key;
         private final Set<HNode> children = new LinkedHashSet<>(0);
         private @Nullable U properVal;
+
+        private @Nullable U frozenVal;
 
         private HNode(T key) {
             this.key = key;
@@ -96,6 +113,16 @@ public class Heap<T, U> {
         }
 
         U computeValue() {
+            if (frozen) {
+                if (frozenVal == null) {
+                    frozenVal = computeVal();
+                }
+                return frozenVal;
+            }
+            return computeVal();
+        }
+
+        private U computeVal() {
             Stream<U> childrenVals = Stream.concat(Stream.of(getProperVal()), children.stream().map(HNode::computeValue));
             return childrenVals.reduce(valueMonoid.zero(), valueMonoid::combine);
         }
