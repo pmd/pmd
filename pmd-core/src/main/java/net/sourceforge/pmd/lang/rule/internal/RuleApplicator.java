@@ -27,7 +27,7 @@ public class RuleApplicator {
 
     private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
 
-    public void apply(List<Node> nodes, List<Rule> rules, RuleContext ctx) {
+    public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
         NodeIdx idx = new NodeIdx();
 
         for (Node root : nodes) {
@@ -39,7 +39,7 @@ public class RuleApplicator {
         applyRecursive(idx, rules, ctx);
     }
 
-    private void applyRecursive(NodeIdx idx, Collection<Rule> rules, RuleContext ctx) {
+    private void applyRecursive(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
 
             for (Node node : rule.getTargetingStrategy().getVisitedNodes(idx)) {
@@ -95,19 +95,19 @@ public class RuleApplicator {
             byClass.freeze();
         }
 
-        public Stream<Node> getByName(String n) {
+        Stream<Node> getByName(String n) {
             return byName.getOrDefault(n, Collections.emptyList()).stream();
         }
 
-        public Stream<Node> getByClass(Class<?> n) {
+        Stream<Node> getByClass(Class<?> n) {
             return byClass.get(n).stream();
         }
 
-        public Stream<Node> getByName(Collection<String> n) {
+        Stream<Node> getByName(Collection<String> n) {
             return n.stream().flatMap(this::getByName);
         }
 
-        public Stream<Node> getByClass(Collection<? extends Class<?>> n) {
+        Stream<Node> getByClass(Collection<? extends Class<?>> n) {
             return n.stream().flatMap(this::getByClass);
         }
     }

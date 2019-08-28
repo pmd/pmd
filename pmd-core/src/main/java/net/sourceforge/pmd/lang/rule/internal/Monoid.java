@@ -6,25 +6,28 @@ package net.sourceforge.pmd.lang.rule.internal;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BinaryOperator;
 
 /**
- * Describes a particular {@linkplain #combine(Object, Object) pure operation} on a
+ * Describes a particular {@linkplain #apply(Object, Object) pure operation} on a
  * type {@code <U>}. That operation must have a {@linkplain #zero() neutral element},
- * meaning the following must hold for all {@code u : U}:
+ * meaning the following must hold for all {@code u : U}, and for all {@code z : U}
+ * such that {@code z.equals(zero())}:
  * <pre>
- *  combine(u, zero()).equals(u)
- *  combine(zero(), u).equals(u)
+ *  apply(u, z).equals(u)
+ *  apply(z, u).equals(u)
  * </pre>
  *
  * @param <U> Domain of the operation
  */
-public interface Monoid<U> {
+interface Monoid<U> extends BinaryOperator<U> {
 
     /** Combine two U, in a way consistent with {@link #zero()}. This method must not produce side-effects. */
-    U combine(U l, U r);
+    @Override
+    U apply(U u, U u2);
 
 
-    /** Neutral element for the {@link #combine} operation. */
+    /** Neutral element for the {@link #apply} operation. */
     U zero();
 
 

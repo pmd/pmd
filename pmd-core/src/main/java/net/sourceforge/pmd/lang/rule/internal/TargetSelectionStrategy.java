@@ -23,7 +23,7 @@ public abstract class TargetSelectionStrategy {
     abstract Iterable<? extends Node> getVisitedNodes(NodeIdx index);
 
 
-    public static class StringRulechainVisits extends TargetSelectionStrategy {
+    public static final class StringRulechainVisits extends TargetSelectionStrategy {
 
         private final Set<String> visits;
 
@@ -38,7 +38,7 @@ public abstract class TargetSelectionStrategy {
         }
     }
 
-    public static class ClassRulechainVisits extends TargetSelectionStrategy {
+    public static final class ClassRulechainVisits extends TargetSelectionStrategy {
 
         public static final TargetSelectionStrategy ROOT_ONLY = new ClassRulechainVisits(Collections.singleton(RootNode.class));
 

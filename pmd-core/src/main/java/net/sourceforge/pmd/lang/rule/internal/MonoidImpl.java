@@ -18,7 +18,7 @@ final class MonoidImpl {
 
     static final Monoid<? extends List> LIST_MONOID = new Monoid<List>() {
         @Override
-        public List combine(List l, List r) {
+        public List apply(List l, List r) {
             if (l.isEmpty()) {
                 return r;
             } else if (r.isEmpty()) {
@@ -37,7 +37,7 @@ final class MonoidImpl {
     };
     static final Monoid<? extends Set> SET_MONOID = new Monoid<Set>() {
         @Override
-        public Set combine(Set l, Set r) {
+        public Set apply(Set l, Set r) {
             if (l.isEmpty()) {
                 return r;
             } else if (r.isEmpty()) {

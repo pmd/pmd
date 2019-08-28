@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * Represents a partial order on a type {@code <T>}. This ordering
  * generates a directed *acyclic* graph on instances of {@code <T>}.
  */
-public interface TopoOrder<T> {
+interface TopoOrder<T> {
 
     /** TopoOrder on classes. A class's successors are its direct supertypes. */
     TopoOrder<Class<?>> TYPE_HIERARCHY_ORDERING = node -> {
@@ -21,10 +21,11 @@ public interface TopoOrder<T> {
         }
 
         Class<?> superclass = node.getSuperclass();
-        Stream<Class<?>> stream = superclass != null ? Stream.of(superclass) : Stream.empty();
+        Stream<Class<?>> stream = superclass != null ? Stream.of(superclass)
+                                                     : Stream.empty();
 
         stream = Stream.concat(stream, Arrays.stream(node.getInterfaces()));
-        if (node.isInterface()) {
+        if (node.isInterface() && node.getInterfaces().length == 0) {
             stream = Stream.concat(stream, Stream.of(Object.class));
         }
 

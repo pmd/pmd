@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -35,28 +34,49 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *           {@link Object#hashCode() hashcode} and be immutable.
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
-public class LatticeRelation<T, U> {
+class LatticeRelation<T, U> {
+    /* For example, a simple lattice on types:
+
+                 Object
+                    ^
+                    |
+                    +
+              Serializable <-------+
+                    ^              |
+                    |              |
+                    +              |
+                  Number           |
+                  ^    ^           |
+                  |    |           |
+                  |    |           |
+                  +    +           +
+               Long  Integer    String
+
+       Say now that the monoid is (emptySet(), Set.add), and that every
+       node has its key as proper value. Then the lattice associates the
+       set of know subtypes to each type.
+     */
 
     private final Monoid<U> valueMonoid;
     private final TopoOrder<T> keyOrder;
     private boolean frozen;
 
-    private final Map<T, HNode> nodes;
+    private final Map<T, LNode> nodes;
 
     /**
      * Builds a new relation with the specified monoid and topological
      * ordering.
      */
-    public LatticeRelation(Monoid<U> valueMonoid, TopoOrder<T> keyOrder) {
+    LatticeRelation(Monoid<U> valueMonoid, TopoOrder<T> keyOrder) {
         this.valueMonoid = valueMonoid;
         this.keyOrder = keyOrder;
         nodes = new HashMap<>();
     }
 
-    private HNode getNode(T key) {
+    private LNode getNode(T key) {
         return nodes.computeIfAbsent(key, k -> {
-            HNode n = new HNode(k);
-            keyOrder.directSuccessors(k).map(this::getNode).forEach(it -> it.children.add(n));
+            LNode n = new LNode(k);
+            keyOrder.directSuccessors(k).distinct().map(this::getNode).forEach(it -> it.parents.add(n));
             return n;
         });
     }
@@ -64,17 +84,13 @@ public class LatticeRelation<T, U> {
     /**
      * Associate the value to the given key. If the key already had a
      * value, it is combined using the {@link Monoid}.
-     *
-     * @return The previous value
      */
-    public U put(T key, U value) {
+    public void put(T key, U value) {
         if (frozen) {
             throw new IllegalStateException("A frozen lattice may not be mutated");
         }
-        HNode node = getNode(key);
-        U p = node.getProperVal();
-        node.properVal = valueMonoid.combine(p, value);
-        return p;
+        LNode node = getNode(key);
+        node.properVal = valueMonoid.apply(node.properVal, value);
     }
 
     /**
@@ -83,7 +99,7 @@ public class LatticeRelation<T, U> {
      */
     @NonNull
     public U get(T key) {
-        HNode n = nodes.get(key);
+        LNode n = nodes.get(key);
         return n == null ? valueMonoid.zero() : n.computeValue();
     }
 
@@ -95,21 +111,17 @@ public class LatticeRelation<T, U> {
         frozen = true;
     }
 
-    private class HNode {
+    private class LNode {
 
         private final T key;
-        private final Set<HNode> children = new LinkedHashSet<>(0);
-        private @Nullable U properVal;
+        private final Set<LNode> parents = new LinkedHashSet<>(0);
+        /** Proper value associated with this node (independent of parents). */
+        private @NonNull U properVal = valueMonoid.zero();
 
         private @Nullable U frozenVal;
 
-        private HNode(T key) {
+        private LNode(T key) {
             this.key = key;
-        }
-
-        @NonNull
-        U getProperVal() {
-            return properVal == null ? valueMonoid.zero() : properVal;
         }
 
         U computeValue() {
@@ -123,8 +135,7 @@ public class LatticeRelation<T, U> {
         }
 
         private U computeVal() {
-            Stream<U> childrenVals = Stream.concat(Stream.of(getProperVal()), children.stream().map(HNode::computeValue));
-            return childrenVals.reduce(valueMonoid.zero(), valueMonoid::combine);
+            return parents.stream().map(LNode::computeValue).reduce(properVal, valueMonoid);
         }
 
         @Override
