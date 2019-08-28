@@ -12,17 +12,20 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-
+/**
+ * Describes a particular {@linkplain #combine(Object, Object) pure operation} on a
+ * type {@code <U>}. That operation must have a {@linkplain #zero() neutral element},
+ * meaning the following must hold for all {@code u : U}:
+ * <pre>
+ *  combine(u, zero()).equals(u)
+ *  combine(zero(), u).equals(u)
+ * </pre>
+ *
+ * @param <U> Domain of the operation
+ */
 public interface Monoid<U> {
 
-    /**
-     * Combine two U, in a way consistent with {@link #zero()}.
-     * This operation must satisfy the following requirement:
-     * <pre>
-     *  Neutral element: combine(u, zero()).equals(u)
-     *                   combine(zero(), u).equals(u)
-     * </pre>
-     */
+    /** Combine two U, in a way consistent with {@link #zero()}. This method must not produce side-effects. */
     U combine(U l, U r);
 
 

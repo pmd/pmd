@@ -13,6 +13,21 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+/**
+ * A heap is a kind of structured map. The internal representation is a lattice
+ * of {@code <T>}, ordered according to a {@link TopoOrder}. The value
+ * {@code <U>} associated to a node is the recursive combination of the values of
+ * all its children, plus its own value, as defined by a {@link Monoid}.
+ *
+ * <p>Despite the resemblance to the {@link Map} interface, a heap doesn't follow its contract.
+ * {@link #get(Object) get} doesn't necessarily reflect values previously
+ * {@link #put(Object, Object) put} into the heap. In fact it never returns
+ * null, rather using the {@link Monoid#zero() zero} element. Testing for the
+ * containment of a key is irrelevant.
+ *
+ * @param <T> Type of keys, must have a corresponding {@link TopoOrder}
+ * @param <U> Type of values, must have a corresponding {@link Monoid}
+ */
 public class Heap<T, U> {
 
 
@@ -33,10 +48,6 @@ public class Heap<T, U> {
         nodes = new HashMap<>();
     }
 
-    public int size() {
-        return nodes.size();
-    }
-
     private HNode getNode(T key) {
         return nodes.computeIfAbsent(key, k -> {
             HNode n = new HNode(k);
@@ -45,6 +56,12 @@ public class Heap<T, U> {
         });
     }
 
+    /**
+     * Associate the value to the given key. If the key already had a
+     * value, it is combined using the {@link Monoid}.
+     *
+     * @return The previous value
+     */
     public U put(T key, U value) {
         HNode node = getNode(key);
         U p = node.getProperVal();
@@ -60,10 +77,6 @@ public class Heap<T, U> {
     public U get(T key) {
         HNode n = nodes.get(key);
         return n == null ? valueMonoid.zero() : n.computeValue();
-    }
-
-    public boolean containsKey(T key) {
-        return nodes.containsKey(key);
     }
 
 
