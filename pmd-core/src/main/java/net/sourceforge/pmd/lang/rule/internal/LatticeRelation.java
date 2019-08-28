@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,12 +18,10 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 /**
  * Represents a property of type {@code <U>} on a datatype {@code <T>}.
  * The internal representation is a directed acyclic graph of {@code <T>},
- * ordered according to a {@link TopoOrder}. The value {@code <U>} associated
+ * built according to a {@link TopoOrder}. The value {@code <U>} associated
  * to a node is the recursive combination of the values of all its children,
  * plus its own value, as defined by a {@link Monoid  Monoid&lt;U&gt;}.
  *
@@ -43,9 +42,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 class LatticeRelation<T, U> {
 
-    private static int UNDEFINED_TOPOMARK = -1;
-    private static int PERMANENT_TOPOMARK = 0;
-    private static int TMP_TOPOMARK = 1;
+    private static final int UNDEFINED_TOPOMARK = -1;
+    private static final int PERMANENT_TOPOMARK = 0;
+    private static final int TMP_TOPOMARK = 1;
 
     private final Monoid<U> valueMonoid;
     private final TopoOrder<T> keyOrder;
@@ -105,10 +104,37 @@ class LatticeRelation<T, U> {
         return nodes;
     }
 
-    private void toposort(List<Node> remaining, List<LNode> nodes) {
+    /**
+     * Returns a list in which the vertices of this graph are sorted
+     * in the following way:
+     *
+     * if there exists an edge u -> v, then indexOf(u) &lt; indexOf(v) in the list.
+     *
+     * @throws IllegalStateException If the lattice has a cycle
+     */
+    private List<LNode> toposort() {
+        Deque<LNode> sorted = new ArrayDeque<>(nodes.size());
+        for (LNode n : nodes.values()) {
+            doToposort(n, sorted);
+        }
+        return new ArrayList<>(sorted);
+    }
 
+    private void doToposort(LNode v, Deque<LNode> sorted) {
+        if (v.topoMark == PERMANENT_TOPOMARK) {
+            return;
+        } else if (v.topoMark == TMP_TOPOMARK) {
+            throw new IllegalStateException("This lattice has cycles");
+        }
 
+        v.topoMark = TMP_TOPOMARK;
 
+        for (LNode w : v.succ) {
+            doToposort(w, sorted);
+        }
+
+        v.topoMark = PERMANENT_TOPOMARK;
+        sorted.addFirst(v);
     }
 
     /**
@@ -128,9 +154,7 @@ class LatticeRelation<T, U> {
         int n = nodes.size();
 
         // topological sort
-        List<LNode> lst = new ArrayList<>(nodes.values());
-        lst.sort(Comparator.comparing(it -> it.key, keyOrder));
-
+        List<LNode> lst = toposort();
 
         for (int i = 0; i < lst.size(); i++) {
             lst.get(i).idx = i;
@@ -250,13 +274,10 @@ class LatticeRelation<T, U> {
         }
 
         U computeValue() {
-            if (frozen) {
-                if (frozenVal == null) {
-                    frozenVal = computeVal();
-                }
-                return frozenVal;
+            if (frozenVal == null) {
+                frozenVal = computeVal();
             }
-            return computeVal();
+            return frozenVal;
         }
 
         private U computeVal() {

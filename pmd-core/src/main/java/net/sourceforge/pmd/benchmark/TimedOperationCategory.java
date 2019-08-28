@@ -6,6 +6,7 @@ package net.sourceforge.pmd.benchmark;
 
 import java.util.Locale;
 
+import org.antlr.v4.runtime.dfa.DFA;
 import org.apache.commons.lang3.StringUtils;
 
 /**
