@@ -7,18 +7,18 @@ package net.sourceforge.pmd.document;
 /**
  * Immutable implementation of the {@link TextRegion.RegionByLine} interface.
  */
-public class RegionByLineImp implements TextRegion.RegionByLine {
+class RegionByLineImp implements TextRegion.RegionByLine {
 
     private final int beginLine;
     private final int endLine;
     private final int beginColumn;
     private final int endColumn;
 
-    public RegionByLineImp(final int beginLine, final int endLine, final int beginColumn, final int endColumn) {
-        this.beginLine = requireNonNegative(beginLine);
-        this.endLine = requireNonNegative(endLine);
-        this.beginColumn = requireNonNegative(beginColumn);
-        this.endColumn = requireNonNegative(endColumn);
+    RegionByLineImp(final int beginLine, final int beginColumn, final int endLine, final int endColumn) {
+        this.beginLine = requireOver1(beginLine);
+        this.endLine = requireOver1(endLine);
+        this.beginColumn = requireOver1(beginColumn);
+        this.endColumn = requireOver1(endColumn);
 
         requireLinesCorrectlyOrdered();
     }
@@ -29,9 +29,9 @@ public class RegionByLineImp implements TextRegion.RegionByLine {
         }
     }
 
-    private static int requireNonNegative(final int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("parameter must be non-negative");
+    private static int requireOver1(final int value) {
+        if (value < 1) {
+            throw new IllegalArgumentException("parameter must be >= 1");
         }
         return value;
     }
@@ -54,16 +54,6 @@ public class RegionByLineImp implements TextRegion.RegionByLine {
     @Override
     public int getEndColumn() {
         return endColumn;
-    }
-
-    @Override
-    public RegionByLine toLine(Document document) {
-        return this;
-    }
-
-    @Override
-    public RegionByOffset toOffset(Document document) {
-        return null;
     }
 
     @Override

@@ -23,8 +23,20 @@ public interface TextRegion {
     RegionByLine toLine(Document document);
 
 
+    static RegionByLine newRegionByLine(final int beginLine, final int beginColumn, final int endLine, final int endColumn) {
+        return new RegionByLineImp(beginLine, beginColumn, endLine, endColumn);
+    }
+
+
+    static RegionByOffset newRegionByOffset(final int offset, final int length) {
+        return new RegionByOffsetImp(offset, length);
+    }
+
+
     /**
      * Represents a region in a {@link Document} with the tuple (beginLine, endLine, beginColumn, endColumn).
+     *
+     * <p>Lines and columns in PMD are 1-based.
      */
     interface RegionByLine extends TextRegion {
 
@@ -63,8 +75,9 @@ public interface TextRegion {
         int getLength();
 
 
-        int getOffsetAfterEnding();
-
+        default int getOffsetAfterEnding() {
+            return getOffset() + getLength();
+        }
 
         @Override
         default RegionByLine toLine(Document document) {

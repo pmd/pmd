@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.document;
 
+import static net.sourceforge.pmd.document.TextRegion.newRegionByLine;
+import static net.sourceforge.pmd.document.TextRegion.newRegionByOffset;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedWriter;
@@ -12,9 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -40,7 +40,21 @@ public class DocumentFileTest {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, 0, "public ");
+            documentFile.insert(1, 1, "public ");
+        }
+
+        try (FileInputStream stream = new FileInputStream(temporaryFile)) {
+            final String actualContent = new String(readAllBytes(stream));
+            assertEquals("public static void main(String[] args) {}", actualContent);
+        }
+    }
+
+    @Test
+    public void insertAtStartOfTheFileWithOffsetShouldSucceed() throws IOException {
+        writeContentToTemporaryFile("static void main(String[] args) {}");
+
+        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+            documentFile.insert(0, "public ");
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -67,7 +81,7 @@ public class DocumentFileTest {
 
     private byte[] readAllBytes(final FileInputStream stream) throws IOException {
         final int defaultBufferSize = 8192;
-        final int maxBufferSize = Integer.MAX_VALUE - 8;
+        final int maxBufferSize = 2147483639;
 
         byte[] buf = new byte[defaultBufferSize];
         int capacity = buf.length;
@@ -103,8 +117,8 @@ public class DocumentFileTest {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, 0, "public ");
-            documentFile.insert(0, 17, "final ");
+            documentFile.insert(1, 1, "public ");
+            documentFile.insert(17, "final ");
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -119,7 +133,7 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, code.length(), "{}");
+            documentFile.insert(code.length(), "{}");
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -134,7 +148,7 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.delete(new RegionByLineImp(0, 0, 24, 30));
+            documentFile.delete(newRegionByLine(1, 25, 1, 31));
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -149,8 +163,8 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, 0, "public ");
-            documentFile.delete(new RegionByLineImp(0, 0, 17, 23));
+            documentFile.insert(1, 1, "public ");
+            documentFile.delete(newRegionByOffset("static void main(".length(), "final ".length()));
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -165,11 +179,13 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, 0, "public ");
-            documentFile.insert(0, 0, "static ");
-            documentFile.delete(new RegionByLineImp(0, 0, 0, 4));
-            documentFile.insert(0, 10, "final ");
-            documentFile.delete(new RegionByLineImp(0, 0, 25, 28));
+            documentFile.insert(0, "public ");
+            documentFile.insert(0, "static ");
+            // delete "void"
+            documentFile.delete(newRegionByOffset(0, 4));
+            documentFile.insert(10, "final ");
+            // delete "{}"
+            documentFile.delete(newRegionByOffset("void main(String[] args) ".length(), 2));
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -184,7 +200,7 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.replace(new RegionByLineImp(0, 0, 0, 3), "void");
+            documentFile.replace(newRegionByOffset(0, 3), "void");
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -199,9 +215,9 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.replace(new RegionByLineImp(0, 0, 0, "int".length()), "void");
-            documentFile.replace(new RegionByLineImp(0, 0, 4, 4 + "main".length()), "foo");
-            documentFile.replace(new RegionByLineImp(0, 0, 9, 9 + "String".length()), "CharSequence");
+            documentFile.replace(newRegionByLine(1, 1, 1, 1 + "int".length()), "void");
+            documentFile.replace(newRegionByLine(1, 1 + "int ".length(), 1, 1 + "int main".length()), "foo");
+            documentFile.replace(newRegionByOffset("int main(".length(), "String".length()), "CharSequence");
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -216,11 +232,13 @@ public class DocumentFileTest {
         writeContentToTemporaryFile(code);
 
         try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, 0, "public");
-            documentFile.delete(new RegionByLineImp(0, 0, 0, 6));
-            documentFile.replace(new RegionByLineImp(0, 0, 7, 7 + "int".length()), "void");
-            documentFile.insert(0, 16, "final ");
-            documentFile.replace(new RegionByLineImp(0, 0, 16, 16 + "CharSequence".length()), "String");
+            documentFile.insert(1, 1, "public");
+            // delete "static "
+            documentFile.delete(newRegionByLine(1, 1, 1, 7));
+            // replace "int"
+            documentFile.replace(newRegionByLine(1, 8, 1, 8 + "int".length()), "void");
+            documentFile.insert(1, 17, "final ");
+            documentFile.replace(newRegionByLine(1, 17, 1, 17 + "CharSequence".length()), "String");
         }
 
         try (FileInputStream stream = new FileInputStream(temporaryFile)) {
@@ -228,61 +246,10 @@ public class DocumentFileTest {
             assertEquals("public void main(final String[] args) {}", actualContent);
         }
     }
-
-    @Test
-    public void lineToOffsetMappingWithLineFeedShouldSucceed() throws IOException {
-        final String code = "public static int main(String[] args) {" + '\n'
-                + "int var;" + '\n'
-                + "}";
-        writeContentToTemporaryFile(code);
-
-        final List<Integer> expectedLineToOffset = new ArrayList<>();
-        expectedLineToOffset.add(0);
-        expectedLineToOffset.add(40);
-        expectedLineToOffset.add(49);
-
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
-        }
-    }
-
-    @Test
-    public void lineToOffsetMappingWithCarriageReturnFeedLineFeedShouldSucceed() throws IOException {
-        final String code = "public static int main(String[] args) {" + "\r\n"
-                + "int var;" + "\r\n"
-                + "}";
-        writeContentToTemporaryFile(code);
-
-        final List<Integer> expectedLineToOffset = new ArrayList<>();
-        expectedLineToOffset.add(0);
-        expectedLineToOffset.add(41);
-        expectedLineToOffset.add(51);
-
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
-        }
-    }
-
-    @Test
-    public void lineToOffsetMappingWithMixedLineSeparatorsShouldSucceed() throws IOException {
-        final String code = "public static int main(String[] args) {" + "\r\n"
-                + "int var;" + "\n"
-                + "}";
-        writeContentToTemporaryFile(code);
-
-        final List<Integer> expectedLineToOffset = new ArrayList<>();
-        expectedLineToOffset.add(0);
-        expectedLineToOffset.add(41);
-        expectedLineToOffset.add(50);
-
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
-            assertEquals(expectedLineToOffset, documentFile.getLineToOffset());
-        }
-    }
-
     private void writeContentToTemporaryFile(final String content) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile.toPath(), StandardCharsets.UTF_8)) {
             writer.write(content);
         }
     }
+
 }

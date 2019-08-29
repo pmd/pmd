@@ -26,9 +26,11 @@ public class SourceCodePositioner {
      */
     private final List<Integer> lineOffsets = new ArrayList<>();
     private final int sourceCodeLength;
+    private final String sourceCode;
 
     public SourceCodePositioner(String sourceCode) {
         sourceCodeLength = sourceCode.length();
+        this.sourceCode = sourceCode;
 
         try (Scanner scanner = new Scanner(sourceCode)) {
             int currentGlobalOffset = 0;
@@ -38,6 +40,16 @@ public class SourceCodePositioner {
                 currentGlobalOffset += getLineLengthWithLineSeparator(scanner);
             }
         }
+    }
+
+    /** Returns the full source. */
+    public String getSourceCode() {
+        return sourceCode;
+    }
+
+    // test only
+    List<Integer> getLineOffsets() {
+        return lineOffsets;
     }
 
     /**
@@ -72,6 +84,22 @@ public class SourceCodePositioner {
         }
         int columnOffset = offset - lineOffsets.get(lineNumber - 1);
         return columnOffset + 1; // 1-based column offsets
+    }
+
+    public int offsetFromLineColumn(int line, int column) {
+        line--;
+
+        if (line < 0 || line >= lineOffsets.size()) {
+            return -1;
+        }
+
+        int bound = line == lineOffsets.size() - 1  // last line?
+                    ? sourceCodeLength
+                    : lineOffsets.get(line + 1);
+
+        int off = lineOffsets.get(line) + column - 1;
+        return off > bound ? -1 // out of bounds!
+                           : off;
     }
 
     /** Returns the number of lines, which is also the ordinal of the last line. */

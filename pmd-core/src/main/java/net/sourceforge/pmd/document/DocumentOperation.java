@@ -16,7 +16,7 @@ public abstract class DocumentOperation {
     private final TextRegion.RegionByLine regionByLine;
 
     public DocumentOperation(final int beginLine, final int endLine, final int beginColumn, final int endColumn) {
-        regionByLine = new RegionByLineImp(beginLine, endLine, beginColumn, endColumn);
+        regionByLine = TextRegion.newRegionByLine(beginLine, beginColumn, endLine, endColumn);
     }
 
     /**

@@ -5,24 +5,22 @@
 package net.sourceforge.pmd.document;
 
 import static java.util.Objects.requireNonNull;
+import static net.sourceforge.pmd.document.TextRegion.newRegionByLine;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Collections;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import net.sourceforge.pmd.document.TextRegion.RegionByLine;
 import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
+import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+
 
 import org.apache.commons.io.IOUtils;
 
@@ -33,146 +31,109 @@ import org.apache.commons.io.IOUtils;
  */
 public class DocumentFile implements Document, Closeable {
 
-    private static final Logger LOG = Logger.getLogger(DocumentFile.class.getName());
+    private final ReplaceFunction out;
+    /** The positioner has the original source file. */
+    private final SourceCodePositioner positioner;
+    private final SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
-    private List<Integer> lineToOffset = new ArrayList<>();
-
-    private final Path filePath;
-    private final BufferedReader reader;
-    private int currentPosition = 0;
-
-    private final Path temporaryPath = Files.createTempFile("pmd-", ".tmp");
-    private final Writer writer;
 
     public DocumentFile(final File file, final Charset charset) throws IOException {
-        reader = Files.newBufferedReader(requireNonNull(file).toPath(), requireNonNull(charset));
-        writer = Files.newBufferedWriter(temporaryPath, charset);
-        this.filePath = file.toPath();
-        mapLinesToOffsets();
+        byte[] bytes = Files.readAllBytes(requireNonNull(file).toPath());
+        String text = new String(bytes, requireNonNull(charset));
+        positioner = new SourceCodePositioner(text);
+        out = ReplaceFunction.bufferedFile(text, file.toPath(), charset);
     }
 
-    private void mapLinesToOffsets() throws IOException {
-        try (Scanner scanner = new Scanner(filePath)) {
-            int currentGlobalOffset = 0;
-
-            while (scanner.hasNextLine()) {
-                lineToOffset.add(currentGlobalOffset);
-                currentGlobalOffset += getLineLengthWithLineSeparator(scanner);
-            }
-        }
-    }
-
-    /**
-     * Sums the line length without the line separation and the characters which matched the line separation pattern
-     * @param scanner the scanner from which to read the line's length
-     * @return the length of the line with the line separator.
-     */
-    private int getLineLengthWithLineSeparator(final Scanner scanner) {
-        int lineLength = scanner.nextLine().length();
-        final String lineSeparationMatch = scanner.match().group(1);
-
-        if (lineSeparationMatch != null) {
-            lineLength += lineSeparationMatch.length();
-        }
-
-        return lineLength;
+    public DocumentFile(final String source, final ReplaceFunction writer) {
+        this.out = writer;
+        positioner = new SourceCodePositioner(source);
     }
 
     @Override
     public void insert(int beginLine, int beginColumn, final String textToInsert) {
-        try {
-            tryToInsertIntoFile(beginLine, beginColumn, textToInsert);
-        } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when inserting into file " + filePath);
-        }
-    }
-
-    private void tryToInsertIntoFile(int beginLine, int beginColumn, final String textToInsert) throws IOException {
-        final int offset = mapToOffset(beginLine, beginColumn);
-        writeUntilOffsetReached(offset);
-        writer.write(textToInsert);
-    }
-
-    private int mapToOffset(final int line, final int column) {
-        return lineToOffset.get(line) + column;
-    }
-
-    /**
-     * Write characters between the current offset until the next offset to be read
-     * @param nextOffsetToRead the position in which the reader will stop reading
-     * @throws IOException if an I/O error occurs
-     */
-    private void writeUntilOffsetReached(final int nextOffsetToRead) throws IOException {
-        if (nextOffsetToRead < currentPosition) {
-            throw new IllegalStateException();
-        }
-        final char[] bufferToCopy = new char[nextOffsetToRead - currentPosition];
-        reader.read(bufferToCopy);
-        writer.write(bufferToCopy);
-        currentPosition = nextOffsetToRead;
+        insert(positioner.offsetFromLineColumn(beginLine, beginColumn), textToInsert);
     }
 
     @Override
-    public void replace(final TextRegion.RegionByLine regionByLine, final String textToReplace) {
-        try {
-            tryToReplaceInFile(mapToOffset(regionByLine), textToReplace);
-        } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when replacing in file " + filePath.toAbsolutePath());
-        }
+    public void insert(int offset, String textToInsert) {
+        replace(createByOffset(offset, 0), textToInsert);
     }
 
+
+    @Override
+    public void delete(final TextRegion region) {
+        replace(region, "");
+    }
+
+    @Override
+    public void replace(final TextRegion region, final String textToReplace) {
+        RegionByOffset off = region.toOffset(this);
+
+        RegionByOffset realPos = shiftOffset(off, textToReplace.length() - off.getLength());
+
+        out.replace(realPos, textToReplace);
+    }
+
+    private RegionByOffset shiftOffset(RegionByOffset origCoords, int lenDiff) {
+        ArrayList<Integer> keys = new ArrayList<>(accumulatedOffsets.keySet());
+        int idx = Collections.binarySearch(keys, origCoords.getOffset());
+
+        if (idx < 0) {
+            idx = -(idx + 1);
+        } else {
+            idx++;
+        }
+
+        int shift = 0;
+        for (int i = 0; i < idx; i++) {
+            shift += accumulatedOffsets.get(keys.get(i));
+        }
+
+        RegionByOffset realPos = shift == 0 ? origCoords
+                                            : createByOffset(origCoords.getOffset() + shift, origCoords.getLength());
+
+        accumulatedOffsets.compute(origCoords.getOffset(), (k, v) -> {
+            int s = v == null ? lenDiff : v + lenDiff;
+            return s == 0 ? null : s; // delete mapping if shift is 0
+        });
+
+        return realPos;
+    }
 
     @Override
     public RegionByLine mapToLine(RegionByOffset offset) {
-        return null;
+        int bline = positioner.lineNumberFromOffset(offset.getOffset());
+        int bcol = positioner.columnFromOffset(bline, offset.getOffset());
+        int eline = positioner.lineNumberFromOffset(offset.getOffsetAfterEnding());
+        int ecol = positioner.columnFromOffset(eline, offset.getOffsetAfterEnding());
+
+        return newRegionByLine(bline, bcol, eline, ecol);
     }
 
     @Override
-    public TextRegion.RegionByOffset mapToOffset(final TextRegion.RegionByLine regionByLine) {
-        final int startOffset = mapToOffset(regionByLine.getBeginLine(), regionByLine.getBeginColumn());
-        final int endOffset = mapToOffset(regionByLine.getEndLine(), regionByLine.getEndColumn());
+    public RegionByOffset mapToOffset(final RegionByLine regionByLine) {
 
-        return new RegionByOffsetImp(startOffset, endOffset - startOffset);
+        int offset = positioner.offsetFromLineColumn(regionByLine.getBeginLine(), regionByLine.getBeginColumn());
+        int len = positioner.offsetFromLineColumn(regionByLine.getEndLine(), regionByLine.getEndColumn())
+            - offset;
+
+
+        return createByOffset(offset, len);
     }
 
-    private void tryToReplaceInFile(final TextRegion.RegionByOffset regionByOffset, final String textToReplace) throws IOException {
-        writeUntilOffsetReached(regionByOffset.getOffset());
-        reader.skip(regionByOffset.getLength());
-        currentPosition = regionByOffset.getOffsetAfterEnding();
-        writer.write(textToReplace);
-    }
+    private RegionByOffset createByOffset(int offset, int len) {
 
-    @Override
-    public void delete(final TextRegion.RegionByLine regionByOffset) {
-        try {
-            tryToDeleteFromFile(mapToOffset(regionByOffset));
-        } catch (final IOException e) {
-            LOG.log(Level.WARNING, "An exception occurred when deleting from file " + filePath.toAbsolutePath());
+        if (offset < 0) {
+            throw new IndexOutOfBoundsException(
+                "Region (" + offset + ",+" + len + ") is not in range of this document");
         }
-    }
 
-    private void tryToDeleteFromFile(final TextRegion.RegionByOffset regionByOffset) throws IOException {
-        writeUntilOffsetReached(regionByOffset.getOffset());
-        reader.skip(regionByOffset.getLength());
-        currentPosition = regionByOffset.getOffsetAfterEnding();
+        return TextRegion.newRegionByOffset(offset, len);
     }
 
     @Override
     public void close() throws IOException {
-        if (reader.ready()) {
-            writeUntilEOF();
-        }
-        reader.close();
-        writer.close();
-
-        Files.move(temporaryPath, filePath, StandardCopyOption.REPLACE_EXISTING);
+        out.commit();
     }
 
-    private void writeUntilEOF() throws IOException {
-        IOUtils.copy(reader, writer);
-    }
-
-    /* package-private */ List<Integer> getLineToOffset() {
-        return lineToOffset;
-    }
 }
