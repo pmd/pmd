@@ -74,7 +74,7 @@ public class RuleBuilder {
         if (lang == null) {
             throw new IllegalArgumentException(
                     "Unknown Language '" + languageName + "' for rule" + name + ", supported Languages are "
-                    + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport()));
+                    + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.getLanguages()));
         }
         language = lang;
     }

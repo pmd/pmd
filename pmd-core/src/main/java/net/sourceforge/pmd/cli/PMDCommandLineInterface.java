@@ -120,7 +120,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport())
+                + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.getLanguages())
                 + PMD.EOL;
     }
 

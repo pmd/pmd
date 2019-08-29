@@ -120,7 +120,7 @@ public class RuleSetFactory {
         String rulesetsProperties = null;
         try {
             List<RuleSetReferenceId> ruleSetReferenceIds = new ArrayList<>();
-            for (Language language : LanguageRegistry.findWithRuleSupport()) {
+            for (Language language : LanguageRegistry.getLanguages()) {
                 Properties props = new Properties();
                 rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
                 try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {

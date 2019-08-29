@@ -111,8 +111,7 @@ public class AbstractLanguageVersionTest {
      */
     @Test
     public void testRegisteredRulesets() throws Exception {
-        // only check for languages, that support rules
-        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null) {
+        if (expected == null) {
             return;
         }
 

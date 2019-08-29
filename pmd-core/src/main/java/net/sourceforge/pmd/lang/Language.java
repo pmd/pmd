@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Interface each Language implementation has to implement. It is used by the
  * LanguageRregistry to access constants and implementation classes in order to
@@ -78,7 +80,7 @@ public interface Language extends Comparable<Language> {
      * @return The RuleChainVisitor class.
      * @see net.sourceforge.pmd.lang.rule.RuleChainVisitor
      */
-    Class<?> getRuleChainVisitorClass();
+    @NonNull Class<?> getRuleChainVisitorClass();
 
     /**
      * Gets the list of supported LanguageVersion for this Language.
