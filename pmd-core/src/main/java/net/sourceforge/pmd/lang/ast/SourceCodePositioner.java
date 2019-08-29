@@ -9,10 +9,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.io.input.CharSequenceReader;
+
+import net.sourceforge.pmd.document.Document;
+
 /**
- * Calculates from an absolute offset in the source file the line/column
- * coordinate. This is needed as Rhino only offers absolute positions for each
- * node. Some other languages like XML and Apex use this, too.
+ * Maps absolute offset in a text to line/column coordinates, and back.
+ * This is used by some language implementations (JS, XML, Apex) and by
+ * the {@link Document} implementation.
+ *
+ * <p>TODO move to document package
  *
  * Idea from:
  * http://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/javascript/jscomp/SourceFile.java
@@ -26,13 +32,13 @@ public class SourceCodePositioner {
      */
     private final List<Integer> lineOffsets = new ArrayList<>();
     private final int sourceCodeLength;
-    private final String sourceCode;
+    private final CharSequence sourceCode;
 
-    public SourceCodePositioner(String sourceCode) {
+    public SourceCodePositioner(CharSequence sourceCode) {
         sourceCodeLength = sourceCode.length();
         this.sourceCode = sourceCode;
 
-        try (Scanner scanner = new Scanner(sourceCode)) {
+        try (Scanner scanner = new Scanner(new CharSequenceReader(sourceCode))) {
             int currentGlobalOffset = 0;
 
             while (scanner.hasNextLine()) {
@@ -86,6 +92,12 @@ public class SourceCodePositioner {
         return columnOffset + 1; // 1-based column offsets
     }
 
+    /**
+     * Finds the offset of a position given (line,column) coordinates.
+     *
+     * @return The offset, or -1 if the given coordinates do not identify a
+     *     valid position in the wrapped file
+     */
     public int offsetFromLineColumn(int line, int column) {
         line--;
 

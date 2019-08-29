@@ -6,8 +6,12 @@ package net.sourceforge.pmd.document;
 
 import java.util.Comparator;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /** A generic range of text in a document. */
 public interface TextRegion {
+
+    // TODO should we have a single interface, and bind regions to their document?
 
     /**
      * Returns a view of this region as an (offset,length) 2-tuple.
@@ -55,7 +59,7 @@ public interface TextRegion {
 
 
         @Override
-        default int compareTo(RegionByLine o) {
+        default int compareTo(@NonNull RegionByLine o) {
             return COMPARATOR.compare(this, o);
         }
 
@@ -108,7 +112,7 @@ public interface TextRegion {
 
 
         @Override
-        default int compareTo(RegionByOffset o) {
+        default int compareTo(@NonNull RegionByOffset o) {
             return COMPARATOR.compare(this, o);
         }
     }

@@ -14,7 +14,10 @@ import java.nio.file.Path;
 import net.sourceforge.pmd.document.TextRegion.RegionByLine;
 import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 
-/** Represents a text document. */
+/**
+ * Represents a text document. A document provides methods to identify
+ * regions of text.
+ */
 public interface Document {
 
     /**
@@ -69,7 +72,7 @@ public interface Document {
 
 
     static Document forCode(final String source) {
-        return new DocumentImpl(source, ReplaceHandler.NOOP);
+        return new DocumentImpl(source);
     }
 
 }
