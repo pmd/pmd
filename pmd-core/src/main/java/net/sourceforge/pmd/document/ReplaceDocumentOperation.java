@@ -6,17 +6,18 @@ package net.sourceforge.pmd.document;
 
 import static java.util.Objects.requireNonNull;
 
-public class ReplaceDocumentOperation extends DocumentOperation {
+class ReplaceDocumentOperation extends DocumentOperation {
 
     private final String textToReplace;
 
-    public ReplaceDocumentOperation(final int beginLine, final int endLine, final int beginColumn, final int endColumn, final String textToReplace) {
-        super(beginLine, endLine, beginColumn, endColumn);
+    ReplaceDocumentOperation(TextRegion region, final String textToReplace) {
+        super(region);
         this.textToReplace = requireNonNull(textToReplace);
     }
 
     @Override
-    public void apply(final Document document) {
-        document.replace(getRegionByLine(), textToReplace);
+    public void apply(final MutableDocument document) {
+        document.replace(getRegion(), textToReplace);
     }
+
 }

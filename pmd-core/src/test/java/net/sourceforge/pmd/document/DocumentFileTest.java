@@ -9,10 +9,10 @@ import static net.sourceforge.pmd.document.TextRegion.newRegionByOffset;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -25,18 +25,18 @@ public class DocumentFileTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-    private File temporaryFile;
+    private Path temporaryFile;
 
     @Before
     public void setUpTemporaryFiles() throws IOException {
-        temporaryFile = temporaryFolder.newFile(FILE_PATH);
+        temporaryFile = temporaryFolder.newFile(FILE_PATH).toPath();
     }
 
     @Test
     public void insertAtStartOfTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(1, 1, "public ");
         }
 
@@ -47,7 +47,7 @@ public class DocumentFileTest {
     public void insertAtStartOfTheFileWithOffsetShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
         }
 
@@ -70,7 +70,7 @@ public class DocumentFileTest {
 
         writeContentToTemporaryFile(testFileContent);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
         }
 
@@ -92,7 +92,7 @@ public class DocumentFileTest {
 
         writeContentToTemporaryFile(testFileContent);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
         }
 
@@ -103,7 +103,7 @@ public class DocumentFileTest {
     public void insertVariousTokensIntoTheFileShouldSucceed() throws IOException {
         writeContentToTemporaryFile("static void main(String[] args) {}");
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(1, 1, "public ");
             documentFile.insert(17, "final ");
         }
@@ -116,7 +116,7 @@ public class DocumentFileTest {
         final String code = "public static void main(String[] args)";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(code.length(), "{}");
         }
 
@@ -128,7 +128,7 @@ public class DocumentFileTest {
         final String code = "public static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.delete(newRegionByLine(1, 25, 1, 31));
         }
 
@@ -140,7 +140,7 @@ public class DocumentFileTest {
         final String code = "static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(1, 1, "public ");
             documentFile.delete(newRegionByOffset("static void main(".length(), "final ".length()));
         }
@@ -153,7 +153,7 @@ public class DocumentFileTest {
         final String code = "void main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(0, "public ");
             documentFile.insert(0, "static ");
             // delete "void"
@@ -171,7 +171,7 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.replace(newRegionByOffset(0, 3), "void");
         }
 
@@ -183,7 +183,7 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.replace(newRegionByLine(1, 1, 1, 1 + "int".length()), "void");
             documentFile.replace(newRegionByLine(1, 1 + "int ".length(), 1, 1 + "int main".length()), "foo");
             documentFile.replace(newRegionByOffset("int main(".length(), "String".length()), "CharSequence");
@@ -197,7 +197,7 @@ public class DocumentFileTest {
         final String code = "static int main(CharSequence[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (DocumentFile documentFile = new DocumentFile(temporaryFile, StandardCharsets.UTF_8)) {
+        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
             documentFile.insert(1, 1, "public");
             // delete "static "
             documentFile.delete(newRegionByLine(1, 1, 1, 7));
@@ -211,12 +211,12 @@ public class DocumentFileTest {
     }
 
     private void assertFinalFileIs(String s) throws IOException {
-        final String actualContent = new String(Files.readAllBytes(temporaryFile.toPath()));
+        final String actualContent = new String(Files.readAllBytes(temporaryFile));
         assertEquals(s, actualContent);
     }
 
     private void writeContentToTemporaryFile(final String content) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile.toPath(), StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(temporaryFile, StandardCharsets.UTF_8)) {
             writer.write(content);
         }
     }

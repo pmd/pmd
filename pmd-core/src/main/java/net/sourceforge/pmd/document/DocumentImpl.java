@@ -4,14 +4,9 @@
 
 package net.sourceforge.pmd.document;
 
-import static java.util.Objects.requireNonNull;
 import static net.sourceforge.pmd.document.TextRegion.newRegionByLine;
 
-import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.SortedMap;
@@ -22,29 +17,15 @@ import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 
-import org.apache.commons.io.IOUtils;
+class DocumentImpl implements MutableDocument {
 
-/**
- * Implementation that handles a Document as a file in the filesystem and receives operations in a sorted manner
- * (i.e. the regions are sorted). This improves the efficiency of reading the file by only scanning it once while
- * operations are applied, until an instance of this document is closed.
- */
-public class DocumentFile implements Document, Closeable {
-
-    private final ReplaceFunction out;
+    private ReplaceFunction out;
     /** The positioner has the original source file. */
     private final SourceCodePositioner positioner;
     private final SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
 
-    public DocumentFile(final File file, final Charset charset) throws IOException {
-        byte[] bytes = Files.readAllBytes(requireNonNull(file).toPath());
-        String text = new String(bytes, requireNonNull(charset));
-        positioner = new SourceCodePositioner(text);
-        out = ReplaceFunction.bufferedFile(text, file.toPath(), charset);
-    }
-
-    public DocumentFile(final String source, final ReplaceFunction writer) {
+    public DocumentImpl(final String source, final ReplaceFunction writer) {
         this.out = writer;
         positioner = new SourceCodePositioner(source);
     }
@@ -101,20 +82,20 @@ public class DocumentFile implements Document, Closeable {
     }
 
     @Override
-    public RegionByLine mapToLine(RegionByOffset offset) {
-        int bline = positioner.lineNumberFromOffset(offset.getOffset());
-        int bcol = positioner.columnFromOffset(bline, offset.getOffset());
-        int eline = positioner.lineNumberFromOffset(offset.getOffsetAfterEnding());
-        int ecol = positioner.columnFromOffset(eline, offset.getOffsetAfterEnding());
+    public RegionByLine mapToLine(RegionByOffset region) {
+        int bline = positioner.lineNumberFromOffset(region.getOffset());
+        int bcol = positioner.columnFromOffset(bline, region.getOffset());
+        int eline = positioner.lineNumberFromOffset(region.getOffsetAfterEnding());
+        int ecol = positioner.columnFromOffset(eline, region.getOffsetAfterEnding());
 
         return newRegionByLine(bline, bcol, eline, ecol);
     }
 
     @Override
-    public RegionByOffset mapToOffset(final RegionByLine regionByLine) {
+    public RegionByOffset mapToOffset(final RegionByLine region) {
 
-        int offset = positioner.offsetFromLineColumn(regionByLine.getBeginLine(), regionByLine.getBeginColumn());
-        int len = positioner.offsetFromLineColumn(regionByLine.getEndLine(), regionByLine.getEndColumn())
+        int offset = positioner.offsetFromLineColumn(region.getBeginLine(), region.getBeginColumn());
+        int len = positioner.offsetFromLineColumn(region.getEndLine(), region.getEndColumn())
             - offset;
 
 
@@ -133,7 +114,7 @@ public class DocumentFile implements Document, Closeable {
 
     @Override
     public void close() throws IOException {
-        out.commit();
+        out = out.commit();
     }
 
 }

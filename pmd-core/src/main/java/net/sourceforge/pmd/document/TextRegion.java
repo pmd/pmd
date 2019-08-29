@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.document;
 
+import java.util.Comparator;
+
 /** A generic range of text in a document. */
 public interface TextRegion {
 
@@ -38,7 +40,13 @@ public interface TextRegion {
      *
      * <p>Lines and columns in PMD are 1-based.
      */
-    interface RegionByLine extends TextRegion {
+    interface RegionByLine extends TextRegion, Comparable<RegionByLine> {
+
+        Comparator<RegionByLine> COMPARATOR = Comparator.comparingInt(RegionByLine::getBeginLine)
+                                                        .thenComparingInt(RegionByLine::getBeginColumn)
+                                                        .thenComparingInt(RegionByLine::getEndLine)
+                                                        .thenComparingInt(RegionByLine::getEndColumn);
+
 
         int getBeginLine();
 
@@ -50,6 +58,12 @@ public interface TextRegion {
 
 
         int getEndColumn();
+
+
+        @Override
+        default int compareTo(RegionByLine o) {
+            return COMPARATOR.compare(this, o);
+        }
 
 
         @Override
@@ -67,7 +81,10 @@ public interface TextRegion {
     /**
      * Represents a region in a {@link Document} with the tuple (offset, length).
      */
-    interface RegionByOffset extends TextRegion {
+    interface RegionByOffset extends TextRegion, Comparable<RegionByOffset> {
+
+        Comparator<RegionByOffset> COMPARATOR = Comparator.comparingInt(RegionByOffset::getOffset)
+                                                          .thenComparingInt(RegionByOffset::getLength);
 
         int getOffset();
 
@@ -88,6 +105,12 @@ public interface TextRegion {
         @Override
         default RegionByOffset toOffset(Document document) {
             return this;
+        }
+
+
+        @Override
+        default int compareTo(RegionByOffset o) {
+            return COMPARATOR.compare(this, o);
         }
     }
 }

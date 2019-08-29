@@ -6,20 +6,19 @@ package net.sourceforge.pmd.document;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
+
 public class DocumentOperationsApplierForNonOverlappingRegions {
 
-    private static final Comparator<DocumentOperation> COMPARATOR = new DocumentOperationNonOverlappingRegionsComparator();
-
-    private final Document document;
+    private final MutableDocument document;
     private final List<DocumentOperation> operations;
 
     private boolean applied;
 
-    public DocumentOperationsApplierForNonOverlappingRegions(final Document document) {
+    public DocumentOperationsApplierForNonOverlappingRegions(final MutableDocument document) {
         this.document = Objects.requireNonNull(document);
         operations = new ArrayList<>();
         applied = false;
@@ -39,7 +38,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
     }
 
     private int getIndexForDocumentOperation(final DocumentOperation documentOperation) {
-        int potentialIndex = Collections.binarySearch(operations, documentOperation, COMPARATOR);
+        int potentialIndex = Collections.binarySearch(operations, documentOperation, this::compareOps);
 
         if (potentialIndex < 0) {
             return ~potentialIndex;
@@ -53,7 +52,7 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
     }
 
     private boolean areSiblingsEqual(final int index) {
-        return COMPARATOR.compare(operations.get(index), operations.get(index + 1)) == 0;
+        return compareOps(operations.get(index), operations.get(index + 1)) == 0;
     }
 
     public void apply() {
@@ -65,38 +64,21 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
         }
     }
 
-    private static class DocumentOperationNonOverlappingRegionsComparator implements Comparator<DocumentOperation> {
+    private int compareOps(final DocumentOperation o1, final DocumentOperation o2) {
+        final RegionByOffset r1 = Objects.requireNonNull(o1).getRegion().toOffset(document);
+        final RegionByOffset r2 = Objects.requireNonNull(o2).getRegion().toOffset(document);
 
-        @Override
-        public int compare(final DocumentOperation o1, final DocumentOperation o2) {
-            final TextRegion.RegionByLine r1 = Objects.requireNonNull(o1).getRegionByLine();
-            final TextRegion.RegionByLine r2 = Objects.requireNonNull(o2).getRegionByLine();
-
-            final int comparison;
-            if (operationsStartAtTheSameOffsetAndHaveZeroLength(r1, r2)) {
-                comparison = 0;
-            } else if (doesFirstRegionEndBeforeSecondRegionBegins(r1, r2)) {
-                comparison = -1;
-            } else if (doesFirstRegionEndBeforeSecondRegionBegins(r2, r1)) {
-                comparison = 1;
-            } else {
-                throw new IllegalArgumentException("Regions between document operations overlap, " + r1.toString() + "\n" + r2.toString());
-            }
-            return comparison;
+        final int comparison;
+        if (r1.getOffset() == r2.getOffset() && r2.getLength() == r1.getLength() && r1.getLength() == 0) {
+            comparison = 0;
+        } else if (r1.getOffsetAfterEnding() <= r2.getOffset()) {
+            comparison = -1;
+        } else if (r2.getOffsetAfterEnding() <= r1.getOffset()) {
+            comparison = 1;
+        } else {
+            throw new IllegalArgumentException(
+                "Regions between document operations overlap, " + r1.toString() + "\n" + r2.toString());
         }
-
-        private boolean operationsStartAtTheSameOffsetAndHaveZeroLength(final TextRegion.RegionByLine r1, final TextRegion.RegionByLine r2) {
-            return r1.getBeginLine() == r2.getBeginLine() && r1.getBeginColumn() == r2.getBeginColumn()
-                    && r1.getBeginLine() == r1.getEndLine() && r1.getBeginColumn() == r1.getEndColumn();
-        }
-
-        private boolean doesFirstRegionEndBeforeSecondRegionBegins(final TextRegion.RegionByLine r1, final TextRegion.RegionByLine r2) {
-            if (r1.getEndLine() < r2.getBeginLine()) {
-                return true;
-            } else if (r1.getEndLine() == r2.getBeginLine()) {
-                return r1.getEndColumn() <= r2.getBeginColumn();
-            }
-            return false;
-        }
+        return comparison;
     }
 }

@@ -4,52 +4,48 @@
 
 package net.sourceforge.pmd.document;
 
+import static java.util.Objects.requireNonNull;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import net.sourceforge.pmd.document.TextRegion.RegionByLine;
 import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 
 /**
- * Represents a file which contains programming code that will be fixed.
+ * Represents a text document.
  */
 public interface Document {
 
     /**
-     * Insert a text at a line at the position/column specified. If there is any text to the right of the insertion,
-     * that text is shifted by the length of the text to insert, which means that it is not replaced.
-     * @param beginLine the line in which to insert the text
-     * @param beginColumn the position in the line in which to insert the text
-     * @param textToInsert the text to be added
-     */
-    void insert(int beginLine, int beginColumn, String textToInsert);
-
-
-    /**
-     * Insert a text at a line at the position/column specified. If there is any text to the right of the insertion,
-     * that text is shifted by the length of the text to insert, which means that it is not replaced.
+     * Convert the representation of the given region.
      *
-     * @param offset       the offset at which to insert the text
-     * @param textToInsert the text to be added
+     * @throws IndexOutOfBoundsException If the parameter does not identify
+     *                                   a valid region in this document
      */
-    void insert(int offset, String textToInsert);
+    RegionByLine mapToLine(RegionByOffset region);
+
 
     /**
-     * Replace a specific region in the document which contains text by another text, which not necessarily is the same
-     * length as the region's one.
-     * @param region the region in which a text will be inserted to replace the current document's contents
-     * @param textToReplace the text to insert
+     * Convert the representation of the given region.
+     *
+     * @throws IndexOutOfBoundsException If the parameter does not identify
+     *                                   a valid region in this document
      */
-    void replace(TextRegion region, String textToReplace);
-
-    /**
-     * Delete a region in the document, removing all text which contains it. If there is any text to the right of this
-     * region, it will be shifted to the left by the length of the region to delete.
-     * @param region the region in which to erase all the text
-     */
-    void delete(TextRegion region);
+    RegionByOffset mapToOffset(RegionByLine region);
 
 
-    RegionByLine mapToLine(RegionByOffset offset);
+    static Document forFile(final Path file, final Charset charset) throws IOException {
+        byte[] bytes = Files.readAllBytes(requireNonNull(file));
+        String text = new String(bytes, requireNonNull(charset));
+        return forCode(text);
+    }
 
 
-    RegionByOffset mapToOffset(RegionByLine offset);
+    static Document forCode(final String source) {
+        return new DocumentImpl(source, ReplaceFunction.NOOP);
+    }
 
 }

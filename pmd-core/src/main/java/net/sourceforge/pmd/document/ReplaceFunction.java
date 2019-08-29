@@ -22,8 +22,8 @@ public interface ReplaceFunction {
         }
 
         @Override
-        public void commit() {
-
+        public ReplaceFunction commit() {
+            return NOOP;
         }
     };
 
@@ -34,9 +34,16 @@ public interface ReplaceFunction {
     void replace(RegionByOffset region, String text);
 
 
-    void commit() throws IOException;
+    /**
+     * Commit the document (eg writing it to disk), and returns a new
+     * replace function that may be used to edit the final document.
+     *
+     * @return An updated replace function
+     */
+    ReplaceFunction commit() throws IOException;
 
 
+    /** Write updates into an in-memory buffer, commit writes to disk. */
     static ReplaceFunction bufferedFile(String originalBuffer, Path path, Charset charSet) {
 
         return new ReplaceFunction() {
@@ -49,8 +56,11 @@ public interface ReplaceFunction {
             }
 
             @Override
-            public void commit() throws IOException {
-                Files.write(path, builder.toString().getBytes(charSet));
+            public ReplaceFunction commit() throws IOException {
+                String done = builder.toString();
+                byte[] bytes = done.getBytes(charSet);
+                Files.write(path, bytes);
+                return bufferedFile(done, path, charSet);
             }
         };
     }
