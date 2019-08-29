@@ -7,14 +7,14 @@ package net.sourceforge.pmd.document;
 /**
  * Immutable implementation of the {@link TextRegion.RegionByLine} interface.
  */
-class RegionByLineImp implements TextRegion.RegionByLine {
+class RegionByLineImpl implements TextRegion.RegionByLine {
 
     private final int beginLine;
     private final int endLine;
     private final int beginColumn;
     private final int endColumn;
 
-    RegionByLineImp(final int beginLine, final int beginColumn, final int endLine, final int endColumn) {
+    RegionByLineImpl(final int beginLine, final int beginColumn, final int endLine, final int endColumn) {
         this.beginLine = requireOver1(beginLine);
         this.endLine = requireOver1(endLine);
         this.beginColumn = requireOver1(beginColumn);
@@ -58,11 +58,6 @@ class RegionByLineImp implements TextRegion.RegionByLine {
 
     @Override
     public String toString() {
-        return "RegionByLineImp{"
-                + "beginLine=" + beginLine
-                + ", endLine=" + endLine
-                + ", beginColumn=" + beginColumn
-                + ", endColumn=" + endColumn
-                + '}';
+        return "Region(bl=" + beginLine + ", el=" + endLine + ", bc=" + beginColumn + ", ec=" + endColumn + ')';
     }
 }

@@ -5,12 +5,9 @@
 
 package net.sourceforge.pmd.document;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -62,24 +59,13 @@ public interface MutableDocument extends Document, Closeable {
     CharSequence getText();
 
 
-    /** Returns the uncommitted text. */
+    /** Returns the uncommitted text, that will be committed by {@link #close()}. */
     CharSequence getUncommittedText();
 
 
     static MutableDocument forFile(final Path file, final Charset charset) throws IOException {
-        byte[] bytes = Files.readAllBytes(requireNonNull(file));
-        String text = new String(bytes, requireNonNull(charset));
-        return forCode(text, ReplaceFunction.bufferedFile(text, file, charset));
-    }
-
-
-    static MutableDocument forFile(String code, final Path file, final Charset charset) {
-        return forCode(code, ReplaceFunction.bufferedFile(code, file, charset));
-    }
-
-
-    static MutableDocument forCode(final String source, final ReplaceFunction writer) {
-        return new DocumentImpl(source, writer);
+        Document doc = Document.forFile(file, charset);
+        return doc.newMutableDoc(ReplaceHandler.bufferedFile(doc.getText(), file, charset));
     }
 
 }

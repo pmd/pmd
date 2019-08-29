@@ -12,10 +12,11 @@ import java.nio.file.Path;
 
 import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 
-public interface ReplaceFunction {
+/** Handles text updates for a {@link MutableDocument}. */
+public interface ReplaceHandler {
 
-
-    ReplaceFunction NOOP = new ReplaceFunction() {
+    /** Does nothing. */
+    ReplaceHandler NOOP = new ReplaceHandler() {
         @Override
         public CharSequence getCurrentText(MutableDocument doc) {
             return doc.getText();
@@ -27,7 +28,7 @@ public interface ReplaceFunction {
         }
 
         @Override
-        public ReplaceFunction commit() {
+        public ReplaceHandler commit() {
             return NOOP;
         }
     };
@@ -39,7 +40,9 @@ public interface ReplaceFunction {
     void replace(RegionByOffset region, String text);
 
 
+    /** Gets the latest text. */
     CharSequence getCurrentText(MutableDocument doc);
+
 
     /**
      * Commit the document (eg writing it to disk), and returns a new
@@ -47,16 +50,16 @@ public interface ReplaceFunction {
      *
      * @return An updated replace function
      */
-    ReplaceFunction commit() throws IOException;
+    ReplaceHandler commit() throws IOException;
 
 
     /**
      * Write updates into an in-memory buffer, commit writes to disk.
      * This doesn't use any IO resources outside of the commit method.
      */
-    static ReplaceFunction bufferedFile(String originalBuffer, Path path, Charset charSet) {
+    static ReplaceHandler bufferedFile(CharSequence originalBuffer, Path path, Charset charSet) {
 
-        return new ReplaceFunction() {
+        return new ReplaceHandler() {
 
             private StringBuilder builder = new StringBuilder(originalBuffer);
 
@@ -67,11 +70,11 @@ public interface ReplaceFunction {
 
             @Override
             public void replace(RegionByOffset region, String text) {
-                builder.replace(region.getOffset(), region.getOffsetAfterEnding(), text);
+                builder.replace(region.getStartOffset(), region.getOffsetAfterEnding(), text);
             }
 
             @Override
-            public ReplaceFunction commit() throws IOException {
+            public ReplaceHandler commit() throws IOException {
                 String done = builder.toString();
                 byte[] bytes = done.getBytes(charSet);
                 Files.write(path, bytes);

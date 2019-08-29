@@ -57,6 +57,10 @@ public interface Document {
     CharSequence subSequence(TextRegion region);
 
 
+    /** Returns a mutable document that uses the given replace handler. */
+    MutableDocument newMutableDoc(ReplaceHandler out);
+
+
     static Document forFile(final Path file, final Charset charset) throws IOException {
         byte[] bytes = Files.readAllBytes(requireNonNull(file));
         String text = new String(bytes, requireNonNull(charset));
@@ -65,7 +69,7 @@ public interface Document {
 
 
     static Document forCode(final String source) {
-        return new DocumentImpl(source, ReplaceFunction.NOOP);
+        return new DocumentImpl(source, ReplaceHandler.NOOP);
     }
 
 }

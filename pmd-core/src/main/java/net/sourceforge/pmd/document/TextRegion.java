@@ -22,12 +22,7 @@ public interface TextRegion {
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in the document
      */
-    RegionByLine toLine(Document document);
-
-
-    static RegionByLine newRegionByLine(final int beginLine, final int beginColumn, final int endLine, final int endColumn) {
-        return new RegionByLineImp(beginLine, beginColumn, endLine, endColumn);
-    }
+    RegionByLine toLineColumn(Document document);
 
 
     /**
@@ -66,7 +61,7 @@ public interface TextRegion {
 
 
         @Override
-        default RegionByLine toLine(Document document) {
+        default RegionByLine toLineColumn(Document document) {
             return this;
         }
 
@@ -82,12 +77,12 @@ public interface TextRegion {
      */
     interface RegionByOffset extends TextRegion, Comparable<RegionByOffset> {
 
-        Comparator<RegionByOffset> COMPARATOR = Comparator.comparingInt(RegionByOffset::getOffset)
+        Comparator<RegionByOffset> COMPARATOR = Comparator.comparingInt(RegionByOffset::getStartOffset)
                                                           .thenComparingInt(RegionByOffset::getLength);
 
 
         /** 0-based, inclusive index. */
-        int getOffset();
+        int getStartOffset();
 
 
         /** Length of the region. */
@@ -96,12 +91,12 @@ public interface TextRegion {
 
         /** 0-based, exclusive index. */
         default int getOffsetAfterEnding() {
-            return getOffset() + getLength();
+            return getStartOffset() + getLength();
         }
 
 
         @Override
-        default RegionByLine toLine(Document document) {
+        default RegionByLine toLineColumn(Document document) {
             return document.mapToLine(this);
         }
 

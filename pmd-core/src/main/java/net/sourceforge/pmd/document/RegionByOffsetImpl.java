@@ -7,11 +7,11 @@ package net.sourceforge.pmd.document;
 /**
  * Immutable implementation of the {@link TextRegion.RegionByOffset} interface.
  */
-class RegionByOffsetImp implements TextRegion.RegionByOffset {
+class RegionByOffsetImpl implements TextRegion.RegionByOffset {
     private final int offset;
     private final int length;
 
-    RegionByOffsetImp(final int offset, final int length) {
+    RegionByOffsetImpl(final int offset, final int length) {
         this.offset = requireNonNegative(offset);
         this.length = requireNonNegative(length);
     }
@@ -25,7 +25,7 @@ class RegionByOffsetImp implements TextRegion.RegionByOffset {
     }
 
     @Override
-    public int getOffset() {
+    public int getStartOffset() {
         return offset;
     }
 
@@ -34,4 +34,8 @@ class RegionByOffsetImp implements TextRegion.RegionByOffset {
         return length;
     }
 
+    @Override
+    public String toString() {
+        return "Region(start=" + offset + ", len=" + length + ")";
+    }
 }
