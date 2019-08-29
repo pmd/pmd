@@ -32,6 +32,7 @@ import org.mockito.Mockito;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.Language;
 
 public class FileAnalysisCacheTest {
     
@@ -100,6 +101,7 @@ public class FileAnalysisCacheTest {
         final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getPath());
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
+        when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
         cache.ruleViolationAdded(rv);
@@ -187,6 +189,7 @@ public class FileAnalysisCacheTest {
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.isDfa()).thenReturn(true);
+        when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         reloadedCache.checkValidity(rs, cl);
         assertFalse("Cache believes unmodified file is up to date after auxclasspath changed",
@@ -203,6 +206,7 @@ public class FileAnalysisCacheTest {
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.isDfa()).thenReturn(true);
+        when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
