@@ -30,11 +30,6 @@ public class RuleSets {
 
     private List<Rule> filtered;
 
-    /**
-     * RuleChain for efficient AST visitation.
-     */
-    private RuleChain ruleChain = new RuleChain();
-
     private final RuleApplicator ruleApplicator = new RuleApplicator();
 
     /**

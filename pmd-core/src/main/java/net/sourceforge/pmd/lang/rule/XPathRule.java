@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,6 +35,8 @@ import net.sourceforge.pmd.properties.StringProperty;
  * Rule that tries to match an XPath expression against a DOM view of an AST.
  */
 public class XPathRule extends AbstractRule {
+
+    private static final Logger LOG = Logger.getLogger(XPathRule.class.getName());
 
     /**
      * @deprecated Use {@link #XPathRule(XPathVersion, String)}
@@ -219,8 +223,19 @@ public class XPathRule extends AbstractRule {
             for (String nodeName : xpathRuleQuery.getRuleChainVisits()) {
                 super.addRuleChainVisit(nodeName);
             }
+            logXPathRuleChainUsage(!xpathRuleQuery.getRuleChainVisits().isEmpty());
         }
         return super.getRuleChainVisits();
+    }
+
+
+    private void logXPathRuleChainUsage(boolean usesRuleChain) {
+        if (LOG.isLoggable(Level.FINE)) {
+            String message = (usesRuleChain ? "Using " : "no ")
+                + "rule chain for XPath " + getProperty(XPathRule.VERSION_DESCRIPTOR)
+                + " rule: " + getName() + " (" + getRuleSetName() + ")";
+            LOG.fine(message);
+        }
     }
 
     @Override

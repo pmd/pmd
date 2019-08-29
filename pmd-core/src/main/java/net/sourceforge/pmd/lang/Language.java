@@ -73,14 +73,6 @@ public interface Language extends Comparable<Language> {
      */
     boolean hasExtension(String extension);
 
-    /**
-     * Get the RuleChainVisitor implementation class used when visiting the AST
-     * structure for this Rules for this Language.
-     *
-     * @return The RuleChainVisitor class.
-     * @see net.sourceforge.pmd.lang.rule.RuleChainVisitor
-     */
-    @NonNull Class<?> getRuleChainVisitorClass();
 
     /**
      * Gets the list of supported LanguageVersion for this Language.
