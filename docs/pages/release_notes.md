@@ -60,6 +60,12 @@ about the usage and features of the rule designer.
     {% jdoc java::ast.ASTImportDeclaration#getPackage() %} have been deprecated and
     will be removed with PMD 7.0.0.
 
+
+##### Internal APIs
+
+* The contents of the package {% jdoc_package core::cache %} have been marked `@InternalApi`. That subsystem is very low-level and is not intended for public use. It will be hidden with PMD 7.0.0. 
+
+
 ### External Contributions
 
 *   [#1970](https://github.com/pmd/pmd/pull/1970): \[java] DoubleBraceInitialization: Fix example - [Tobias Weimer](https://github.com/tweimer)

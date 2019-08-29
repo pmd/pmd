@@ -13,6 +13,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * A mapper from rule class names to rule instances for cached rules.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
 @Deprecated
 @InternalApi

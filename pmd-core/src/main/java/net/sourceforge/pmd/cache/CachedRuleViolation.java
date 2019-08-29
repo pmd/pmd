@@ -10,10 +10,15 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * A {@link RuleViolation} implementation that is immutable, and therefore cache friendly
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public final class CachedRuleViolation implements RuleViolation {
 
     private final CachedRuleMapper mapper;

@@ -18,10 +18,15 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * An analysis cache backed by a regular file.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public class FileAnalysisCache extends AbstractAnalysisCache {
 
     private final File cacheFile;
