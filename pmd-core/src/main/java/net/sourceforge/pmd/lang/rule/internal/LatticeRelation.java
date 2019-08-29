@@ -25,78 +25,93 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * to a node is the recursive combination of the values of all its children,
  * plus its own value, as defined by a {@link Monoid  Monoid&lt;U&gt;}.
  *
+ * <p>An instance has two states:
+ * <ul>
+ * <li>Read-only: mutation is impossible, but querying data is.
+ * <li>Write-only: querying data is impossible, but mutating the structure is.
+ * </ul>
+ * If the internal structure is not changed during a write phase,
+ * most of the work may be avoided when {@linkplain #topoFreeze() freezing}
+ * the structure.
+ *
  * <p>The {@link TopoOrder TopoOrder<T>} must generate an acyclic graph,
- * cycles are not handled by this implementation.
+ * this implementation handles cycles by throwing an exception upon freezing.
  *
  * <p>There is no equality relation defined on a lattice, and no
  * operation to test if an element is contained in the lattice.
  *
- * <p>A lattice may be frozen to make it read-only, when the construction
- * of the property is done. This optimizes subsequent calls to {@link #get(Object)}.
- * Once frozen a lattice may not be unfrozen.
+ * <p>This implementation is not thread-safe.
  *
  * @param <T> Type of keys, must have a corresponding {@link TopoOrder},
  *           must implement a consistent {@link Object#equals(Object) equals} and
  *           {@link Object#hashCode() hashcode} and be immutable.
  * @param <U> Type of values, must have a corresponding {@link Monoid}
  */
-class LatticeRelation<T, U> {
+class LatticeRelation<T, @NonNull U> {
 
     private static final int UNDEFINED_TOPOMARK = -1;
     private static final int PERMANENT_TOPOMARK = 0;
     private static final int TMP_TOPOMARK = 1;
 
-    private final Monoid<U> valueMonoid;
+    /** Used to combine values of the predecessors of a node. */
+    private final Monoid<U> combine;
+    /** Used to accumulate proper values into the same node. */
+    private final Monoid<U> accumulate;
+
     private final TopoOrder<T> keyOrder;
     private boolean frozen;
+    private boolean up2DateTopo;
 
     private final Map<T, LNode> nodes;
 
-    /**
-     * Builds a new relation with the specified monoid and topological
-     * ordering.
-     */
-    LatticeRelation(Monoid<U> valueMonoid, TopoOrder<T> keyOrder) {
-        this.valueMonoid = valueMonoid;
+    LatticeRelation(Monoid<U> combine, TopoOrder<T> keyOrder) {
+        this(combine, combine, keyOrder);
+    }
+
+    LatticeRelation(Monoid<U> combine, Monoid<U> accumulate, TopoOrder<T> keyOrder) {
+
+        this.combine = combine;
+        this.accumulate = accumulate;
         this.keyOrder = keyOrder;
         nodes = new HashMap<>();
     }
 
-    private LNode getNode(T key) {
+    private LNode getOrCreateNode(T key) {
         if (nodes.containsKey(key)) {
             return nodes.get(key);
         } else {
+            up2DateTopo = false;
             LNode n = new LNode(key);
             nodes.put(key, n);
             // add all successors recursively
-            keyOrder.directSuccessors(key).distinct().map(this::getNode).forEach(n.succ::add);
+            keyOrder.directSuccessors(key).distinct().map(this::getOrCreateNode).forEach(n.succ::add);
             return n;
         }
     }
 
     /**
      * Associate the value to the given key. If the key already had a
-     * value, it is combined using the {@link Monoid}.
+     * value, it is accumulated using the {@link #accumulate} monoid.
      */
     public void put(T key, U value) {
         if (frozen) {
             throw new IllegalStateException("A frozen lattice may not be mutated");
         }
-        LNode node = getNode(key);
-        node.properVal = valueMonoid.apply(node.properVal, value);
+        LNode node = getOrCreateNode(key);
+        node.properVal = accumulate.apply(node.properVal, value);
     }
 
     /**
-     * Returns the computed value for the given key, or {@link Monoid#zero()}
-     * if the key is not recorded in this lattice.
+     * Returns the computed value for the given key, or the {@link Monoid#zero() zero}
+     * of the {@link #combine} monoid if the key is not recorded in this lattice.
      */
     @NonNull
     public U get(T key) {
         if (!frozen) {
-            throw new IllegalStateException("Lattice is not ready");
+            throw new IllegalStateException("Lattice topology is not frozen");
         }
         LNode n = nodes.get(key);
-        return n == null ? valueMonoid.zero() : n.computeValue();
+        return n == null ? combine.zero() : n.computeValue();
     }
 
     // test only
@@ -105,44 +120,50 @@ class LatticeRelation<T, U> {
     }
 
     /**
-     * Returns a list in which the vertices of this graph are sorted
-     * in the following way:
+     * Clear values on the lattice nodes. The lattice topology is preserved.
+     * Reusing the lattice for another run may avoid having to make topological
+     * checks again, provided the topology is not modified.
      *
-     * if there exists an edge u -> v, then indexOf(u) &lt; indexOf(v) in the list.
-     *
-     * @throws IllegalStateException If the lattice has a cycle
+     * <p>If you want to clear the topology, use another instance.
      */
-    private List<LNode> toposort() {
-        Deque<LNode> sorted = new ArrayDeque<>(nodes.size());
-        for (LNode n : nodes.values()) {
-            doToposort(n, sorted);
-        }
-        return new ArrayList<>(sorted);
-    }
-
-    private void doToposort(LNode v, Deque<LNode> sorted) {
-        if (v.topoMark == PERMANENT_TOPOMARK) {
-            return;
-        } else if (v.topoMark == TMP_TOPOMARK) {
-            throw new IllegalStateException("This lattice has cycles");
+    void clearValues() {
+        if (frozen) {
+            // this is actually unnecessary
+            throw new IllegalStateException("A frozen lattice may not be mutated");
         }
 
-        v.topoMark = TMP_TOPOMARK;
-
-        for (LNode w : v.succ) {
-            doToposort(w, sorted);
+        for (LNode value : nodes.values()) {
+            value.frozenVal = null;
+            value.properVal = accumulate.zero();
         }
-
-        v.topoMark = PERMANENT_TOPOMARK;
-        sorted.addFirst(v);
     }
 
     /**
-     * Mark this lattice as read-only and perform necessary computations
-     * to let it slide.
+     * Mark this instance as write-only. Mutating the topology becomes
+     * possible, but querying data is impossible.
      */
-    void freeze() {
+    void unfreezeTopo() {
+        frozen = false;
+    }
+
+    /**
+     * Marks this instance as read-only. Insertions of nodes are prohibited,
+     * querying values is allowed. This method checks that the lattice is
+     * acyclic, and performs other topological checks and transformations
+     * to optimize performance of queries.
+     *
+     * @throws IllegalStateException If the lattice has a cycle
+     */
+    void topoFreeze() {
         frozen = true; // TODO non-thread-safe
+        if (up2DateTopo) {
+            // topology up to date
+            return;
+        }
+
+        for (LNode node : nodes.values()) {
+            node.reset();
+        }
 
         /*
             We need to do all this shit because there may be diamonds
@@ -252,21 +273,62 @@ class LatticeRelation<T, U> {
             }
         }
 
+        up2DateTopo = true;
+    }
+
+
+    /**
+     * Returns a list in which the vertices of this graph are sorted
+     * in the following way:
+     *
+     * if there exists an edge u -> v, then indexOf(u) &lt; indexOf(v) in the list.
+     *
+     * @throws IllegalStateException If the lattice has a cycle
+     */
+    private List<LNode> toposort() {
+        Deque<LNode> sorted = new ArrayDeque<>(nodes.size());
+        for (LNode n : nodes.values()) {
+            doToposort(n, sorted);
+        }
+        return new ArrayList<>(sorted);
+    }
+
+    private void doToposort(LNode v, Deque<LNode> sorted) {
+        if (v.topoMark == PERMANENT_TOPOMARK) {
+            return;
+        } else if (v.topoMark == TMP_TOPOMARK) {
+            throw new IllegalStateException("This lattice has cycles");
+        }
+
+        v.topoMark = TMP_TOPOMARK;
+
+        for (LNode w : v.succ) {
+            doToposort(w, sorted);
+        }
+
+        v.topoMark = PERMANENT_TOPOMARK;
+        sorted.addFirst(v);
     }
 
     //test only
     class LNode {
 
+        // topological state, to be reset
+
         // before freezing this contains the successors of a node
         // after, it contains its direct predecessors
         private final Set<LNode> succ = new LinkedHashSet<>(0);
-        private final T key;
         boolean hasDiamond = false;
         private int topoMark = UNDEFINED_TOPOMARK;
         private int idx = -1;
-        /** Proper value associated with this node (independent of parents). */
-        private @NonNull U properVal = valueMonoid.zero();
 
+
+        private final T key;
+
+
+        /** Proper value associated with this node (independent of topology). */
+        private @NonNull U properVal = accumulate.zero();
+        /** Cached value. */
         private @Nullable U frozenVal;
 
         private LNode(T key) {
@@ -281,18 +343,30 @@ class LatticeRelation<T, U> {
         }
 
         private U computeVal() {
+            // we use the combine monoid here
+
             if (hasDiamond) {
                 // then we can't reuse values of children, because some
                 // descendants are reachable through several paths
                 return descendantsAndSelf().distinct()
                                            .map(it -> it.properVal)
-                                           .reduce(valueMonoid.zero(), valueMonoid);
+                                           .reduce(combine.zero(), combine);
             }
-            return succ.stream().map(LNode::computeValue).reduce(properVal, valueMonoid);
+            return succ.stream().map(LNode::computeValue).reduce(properVal, combine);
         }
 
         private Stream<LNode> descendantsAndSelf() {
             return Stream.concat(Stream.of(this), succ.stream().flatMap(LNode::descendantsAndSelf));
+        }
+
+
+        private void reset() {
+            topoMark = UNDEFINED_TOPOMARK;
+            idx = -1;
+            hasDiamond = false;
+            frozenVal = null;
+            succ.clear();
+            keyOrder.directSuccessors(key).distinct().map(LatticeRelation.this::getOrCreateNode).forEach(succ::add);
         }
 
         @Override

@@ -30,7 +30,7 @@ public class LatticeRelationTest {
         lattice.put(Integer.class, setOf("int"));
         lattice.put(Long.class, setOf("long"));
 
-        lattice.freeze();
+        lattice.topoFreeze();
 
         assertEquals(setOf("string", "int", "long"), lattice.get(Object.class));
 
@@ -39,6 +39,24 @@ public class LatticeRelationTest {
         assertTrue(nodes.get(Object.class).hasDiamond);
         assertFalse(nodes.get(Serializable.class).hasDiamond);
         assertFalse(nodes.get(Comparable.class).hasDiamond);
+    }
+
+    @Test
+    public void testClearing() {
+
+        LatticeRelation<Class<?>, Set<String>> lattice = new LatticeRelation<>(Monoid.forSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
+
+
+        lattice.put(String.class, setOf("string"));
+        lattice.put(Integer.class, setOf("int"));
+        lattice.put(Long.class, setOf("long"));
+
+        lattice.topoFreeze();
+        lattice.clearValues();
+
+        Map<Class<?>, LatticeRelation<Class<?>, Set<String>>.LNode> nodes = lattice.getNodes();
+
+        nodes.values().forEach(it -> assertEquals(setOf(), it.computeValue()));
     }
 
 }

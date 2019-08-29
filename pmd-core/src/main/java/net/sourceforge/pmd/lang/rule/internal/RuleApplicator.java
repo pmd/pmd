@@ -27,9 +27,16 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class RuleApplicator {
 
     private static final Logger LOG = Logger.getLogger(RuleApplicator.class.getName());
+    // we reuse the type lattice from run to run, eventually it converges
+    // towards the final topology (all node types have been encountered)
+    // and there's no need to perform more topological checks when freezing
+    // it
+    // This has a cache hit ratio of more than 99%, making the indexing
+    // less than 2% of the total runtime of the apply method.
+    private final NodeIdx idx = new NodeIdx();
 
     public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
-        NodeIdx idx = new NodeIdx();
+        idx.clear();
 
         for (Node root : nodes) {
             indexTree(root, idx);
@@ -37,10 +44,10 @@ public class RuleApplicator {
 
         idx.complete();
 
-        applyRecursive(idx, rules, ctx);
+        applyOnIndex(idx, rules, ctx);
     }
 
-    private void applyRecursive(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
+    private void applyOnIndex(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
 
             for (Node node : rule.getTargetingStrategy().getVisitedNodes(idx)) {
@@ -79,7 +86,7 @@ public class RuleApplicator {
 
 
         NodeIdx() {
-            byClass = new LatticeRelation<>(Monoid.forSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
+            byClass = new LatticeRelation<>(Monoid.forSet(), Monoid.forMutableSet(), TopoOrder.TYPE_HIERARCHY_ORDERING);
             byName = new HashMap<>();
         }
 
@@ -93,7 +100,13 @@ public class RuleApplicator {
          * recursive computations (and hence of lists created).
          */
         void complete() {
-            byClass.freeze();
+            byClass.topoFreeze();
+        }
+
+        void clear() {
+            byClass.clearValues();
+            byClass.unfreezeTopo();
+            byName.clear();
         }
 
         Stream<Node> getByName(String n) {

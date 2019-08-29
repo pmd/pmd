@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.pcollections.HashTreePSet;
@@ -28,6 +29,19 @@ final class MonoidImpl {
         @Override
         public Set zero() {
             return HashTreePSet.empty();
+        }
+    };
+
+    static final Monoid MSET_MONOID = new Monoid<Set>() {
+        @Override
+        public Set apply(Set l, Set r) {
+            l.addAll(r);
+            return l;
+        }
+
+        @Override
+        public Set zero() {
+            return new LinkedHashSet();
         }
     };
 
