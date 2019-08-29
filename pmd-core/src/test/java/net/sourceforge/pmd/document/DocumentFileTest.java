@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.document;
 
-import static net.sourceforge.pmd.document.TextRegion.newRegionByLine;
-import static net.sourceforge.pmd.document.TextRegion.newRegionByOffset;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedWriter;
@@ -128,8 +126,8 @@ public class DocumentFileTest {
         final String code = "public static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.delete(newRegionByLine(1, 25, 1, 31));
+        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+            doc.delete(doc.createRegion(1, 25, 1, 31));
         }
 
         assertFinalFileIs("public static void main(String[] args) {}");
@@ -140,9 +138,9 @@ public class DocumentFileTest {
         final String code = "static void main(final String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(1, 1, "public ");
-            documentFile.delete(newRegionByOffset("static void main(".length(), "final ".length()));
+        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+            doc.insert(1, 1, "public ");
+            doc.delete(doc.createRegion("static void main(".length(), "final ".length()));
         }
 
         assertFinalFileIs("public static void main(String[] args) {}");
@@ -153,14 +151,14 @@ public class DocumentFileTest {
         final String code = "void main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(0, "public ");
-            documentFile.insert(0, "static ");
+        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+            doc.insert(0, "public ");
+            doc.insert(0, "static ");
             // delete "void"
-            documentFile.delete(newRegionByOffset(0, 4));
-            documentFile.insert(10, "final ");
+            doc.delete(doc.createRegion(0, 4));
+            doc.insert(10, "final ");
             // delete "{}"
-            documentFile.delete(newRegionByOffset("void main(String[] args) ".length(), 2));
+            doc.delete(doc.createRegion("void main(String[] args) ".length(), 2));
         }
 
         assertFinalFileIs("public static  main(final String[] args) ");
@@ -171,8 +169,8 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.replace(newRegionByOffset(0, 3), "void");
+        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+            doc.replace(doc.createRegion(0, 3), "void");
         }
 
         assertFinalFileIs("void main(String[] args) {}");
@@ -183,10 +181,10 @@ public class DocumentFileTest {
         final String code = "int main(String[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.replace(newRegionByLine(1, 1, 1, 1 + "int".length()), "void");
-            documentFile.replace(newRegionByLine(1, 1 + "int ".length(), 1, 1 + "int main".length()), "foo");
-            documentFile.replace(newRegionByOffset("int main(".length(), "String".length()), "CharSequence");
+        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+            doc.replace(doc.createRegion(1, 1, 1, 1 + "int".length()), "void");
+            doc.replace(doc.createRegion(1, 1 + "int ".length(), 1, 1 + "int main".length()), "foo");
+            doc.replace(doc.createRegion("int main(".length(), "String".length()), "CharSequence");
         }
 
         assertFinalFileIs("void foo(CharSequence[] args) {}");
@@ -197,14 +195,14 @@ public class DocumentFileTest {
         final String code = "static int main(CharSequence[] args) {}";
         writeContentToTemporaryFile(code);
 
-        try (MutableDocument documentFile = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
-            documentFile.insert(1, 1, "public");
+        try (MutableDocument doc = MutableDocument.forFile(temporaryFile, StandardCharsets.UTF_8)) {
+            doc.insert(1, 1, "public");
             // delete "static "
-            documentFile.delete(newRegionByLine(1, 1, 1, 7));
+            doc.delete(doc.createRegion(1, 1, 1, 7));
             // replace "int"
-            documentFile.replace(newRegionByLine(1, 8, 1, 8 + "int".length()), "void");
-            documentFile.insert(1, 17, "final ");
-            documentFile.replace(newRegionByLine(1, 17, 1, 17 + "CharSequence".length()), "String");
+            doc.replace(doc.createRegion(1, 8, 1, 8 + "int".length()), "void");
+            doc.insert(1, 17, "final ");
+            doc.replace(doc.createRegion(1, 17, 1, 17 + "CharSequence".length()), "String");
         }
 
         assertFinalFileIs("public void main(final String[] args) {}");

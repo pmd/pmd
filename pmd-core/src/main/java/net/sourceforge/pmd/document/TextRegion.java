@@ -12,7 +12,7 @@ public interface TextRegion {
     /**
      * Returns a view of this region as an (offset,length) 2-tuple.
      *
-     * @param document Containing document
+     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in the document
      */
     RegionByOffset toOffset(Document document);
 
@@ -20,18 +20,13 @@ public interface TextRegion {
     /**
      * Returns a view of this region as a (begin,end)x(line,column) 4-tuple.
      *
-     * @param document Containing document
+     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in the document
      */
     RegionByLine toLine(Document document);
 
 
     static RegionByLine newRegionByLine(final int beginLine, final int beginColumn, final int endLine, final int endColumn) {
         return new RegionByLineImp(beginLine, beginColumn, endLine, endColumn);
-    }
-
-
-    static RegionByOffset newRegionByOffset(final int offset, final int length) {
-        return new RegionByOffsetImp(offset, length);
     }
 
 
@@ -48,15 +43,19 @@ public interface TextRegion {
                                                         .thenComparingInt(RegionByLine::getEndColumn);
 
 
+        /** 1-based, inclusive index. */
         int getBeginLine();
 
 
+        /** 1-based, inclusive index. */
         int getEndLine();
 
 
+        /** 1-based, inclusive index. */
         int getBeginColumn();
 
 
+        /** 1-based, inclusive index. */
         int getEndColumn();
 
 
@@ -74,7 +73,7 @@ public interface TextRegion {
 
         @Override
         default RegionByOffset toOffset(Document document) {
-            return document.mapToOffset(this, false);
+            return document.mapToOffset(this);
         }
     }
 
@@ -86,19 +85,24 @@ public interface TextRegion {
         Comparator<RegionByOffset> COMPARATOR = Comparator.comparingInt(RegionByOffset::getOffset)
                                                           .thenComparingInt(RegionByOffset::getLength);
 
+
+        /** 0-based, inclusive index. */
         int getOffset();
 
 
+        /** Length of the region. */
         int getLength();
 
 
+        /** 0-based, exclusive index. */
         default int getOffsetAfterEnding() {
             return getOffset() + getLength();
         }
 
+
         @Override
         default RegionByLine toLine(Document document) {
-            return document.mapToLine(this, false);
+            return document.mapToLine(this);
         }
 
 

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.document;
 
-import static net.sourceforge.pmd.document.TextRegion.newRegionByLine;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +35,7 @@ class DocumentImpl implements MutableDocument {
 
     @Override
     public void insert(int offset, String textToInsert) {
-        replace(createAndCheck(offset, 0, true), textToInsert);
+        replace(createRegion(offset, 0), textToInsert);
     }
 
 
@@ -70,9 +68,10 @@ class DocumentImpl implements MutableDocument {
             shift += accumulatedOffsets.get(keys.get(i));
         }
 
-        RegionByOffset realPos = shift == 0 ? origCoords
-                                            : createAndCheck(
-                                                origCoords.getOffset() + shift, origCoords.getLength(), false);
+        RegionByOffset realPos = shift == 0
+                                 ? origCoords
+                                 // don't check it
+                                 : new RegionByOffsetImp(origCoords.getOffset() + shift, origCoords.getLength());
 
         accumulatedOffsets.compute(origCoords.getOffset(), (k, v) -> {
             int s = v == null ? lenDiff : v + lenDiff;
@@ -83,24 +82,39 @@ class DocumentImpl implements MutableDocument {
     }
 
     @Override
-    public RegionByLine mapToLine(RegionByOffset region, boolean check) {
+    public RegionByLine mapToLine(RegionByOffset region) {
         int bline = positioner.lineNumberFromOffset(region.getOffset());
         int bcol = positioner.columnFromOffset(bline, region.getOffset());
         int eline = positioner.lineNumberFromOffset(region.getOffsetAfterEnding());
         int ecol = positioner.columnFromOffset(eline, region.getOffsetAfterEnding());
 
-        // TODO check, positioner should return -1
-
-        return newRegionByLine(bline, bcol, eline, ecol);
+        return createRegion(bline, bcol, eline, ecol);
     }
 
     @Override
-    public RegionByOffset mapToOffset(RegionByLine region, boolean check) {
+    public RegionByOffset mapToOffset(RegionByLine region) {
         int offset = positioner.offsetFromLineColumn(region.getBeginLine(), region.getBeginColumn());
         int len = positioner.offsetFromLineColumn(region.getEndLine(), region.getEndColumn())
             - offset;
 
-        return createAndCheck(offset, len, check);
+        return createRegion(offset, len);
+    }
+
+    @Override
+    public RegionByLine createRegion(int beginLine, int beginColumn, int endLine, int endColumn) {
+        // TODO checks, positioner should return -1
+        return TextRegion.newRegionByLine(beginLine, beginColumn, endLine, endColumn);
+    }
+
+    @Override
+    public RegionByOffset createRegion(int offset, int length) {
+        if (offset < 0 || offset + length > positioner.getSourceCode().length()) {
+            throw new IndexOutOfBoundsException(
+                "Region (" + offset + ",+" + length + ") is not in range of this document");
+        }
+
+
+        return new RegionByOffsetImp(offset, length);
     }
 
     @Override
@@ -109,19 +123,14 @@ class DocumentImpl implements MutableDocument {
     }
 
     @Override
-    public CharSequence getUncommittedText() {
-        return out.getCurrentText(this);
+    public CharSequence subSequence(TextRegion region) {
+        RegionByOffset byOffset = region.toOffset(this);
+        return getText().subSequence(byOffset.getOffset(), byOffset.getOffsetAfterEnding());
     }
 
-    private RegionByOffset createAndCheck(int offset, int len, boolean check) {
-
-        if (check && (offset < 0 || offset + len > positioner.getSourceCode().length())) {
-            throw new IndexOutOfBoundsException(
-                "Region (" + offset + ",+" + len + ") is not in range of this document");
-        }
-
-
-        return TextRegion.newRegionByOffset(offset, len);
+    @Override
+    public CharSequence getUncommittedText() {
+        return out.getCurrentText(this);
     }
 
     @Override

@@ -18,25 +18,43 @@ import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 public interface Document {
 
     /**
-     * Convert the representation of the given region.
+     * Create a new line-based region.
      *
-     * @throws IndexOutOfBoundsException If 'check', and the first arg does
-     *                                   not identify a valid region in this document
+     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    RegionByLine mapToLine(RegionByOffset region, boolean check);
+    RegionByLine createRegion(final int beginLine, final int beginColumn, final int endLine, final int endColumn);
+
+
+    /**
+     * Create a new offset-based region.
+     *
+     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
+     */
+    RegionByOffset createRegion(final int offset, final int length);
 
 
     /**
      * Convert the representation of the given region.
      *
-     * @throws IndexOutOfBoundsException If 'check', and the first arg does
-     *                                   not identify a valid region in this document
+     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    RegionByOffset mapToOffset(RegionByLine region, boolean check);
+    RegionByLine mapToLine(RegionByOffset region);
+
+
+    /**
+     * Convert the representation of the given region.
+     *
+     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
+     */
+    RegionByOffset mapToOffset(RegionByLine region);
 
 
     /** Returns the text of this document. */
     CharSequence getText();
+
+
+    /** Returns a region of the {@link #getText() text} as a character sequence. */
+    CharSequence subSequence(TextRegion region);
 
 
     static Document forFile(final Path file, final Charset charset) throws IOException {
