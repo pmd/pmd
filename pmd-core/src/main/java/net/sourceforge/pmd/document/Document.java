@@ -14,27 +14,29 @@ import java.nio.file.Path;
 import net.sourceforge.pmd.document.TextRegion.RegionByLine;
 import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 
-/**
- * Represents a text document.
- */
+/** Represents a text document. */
 public interface Document {
 
     /**
      * Convert the representation of the given region.
      *
-     * @throws IndexOutOfBoundsException If the parameter does not identify
-     *                                   a valid region in this document
+     * @throws IndexOutOfBoundsException If 'check', and the first arg does
+     *                                   not identify a valid region in this document
      */
-    RegionByLine mapToLine(RegionByOffset region);
+    RegionByLine mapToLine(RegionByOffset region, boolean check);
 
 
     /**
      * Convert the representation of the given region.
      *
-     * @throws IndexOutOfBoundsException If the parameter does not identify
-     *                                   a valid region in this document
+     * @throws IndexOutOfBoundsException If 'check', and the first arg does
+     *                                   not identify a valid region in this document
      */
-    RegionByOffset mapToOffset(RegionByLine region);
+    RegionByOffset mapToOffset(RegionByLine region, boolean check);
+
+
+    /** Returns the text of this document. */
+    CharSequence getText();
 
 
     static Document forFile(final Path file, final Charset charset) throws IOException {

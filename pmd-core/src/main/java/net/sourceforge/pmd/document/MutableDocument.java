@@ -46,17 +46,35 @@ public interface MutableDocument extends Document, Closeable {
 
 
     /**
-     * Commit the document. Subsequent operations will use the committed state
-     * for their coordinate system.
+     * Commit the document. The {@link #getUncommittedText() uncommitted text}
+     * becomes the {@link #getText() text}, and subsequent operations use that
+     * coordinate system.
      */
     @Override
     void close() throws IOException;
+
+
+    /**
+     * Returns the original text, source of the coordinate system used by mutation
+     * operations.
+     */
+    @Override
+    CharSequence getText();
+
+
+    /** Returns the uncommitted text. */
+    CharSequence getUncommittedText();
 
 
     static MutableDocument forFile(final Path file, final Charset charset) throws IOException {
         byte[] bytes = Files.readAllBytes(requireNonNull(file));
         String text = new String(bytes, requireNonNull(charset));
         return forCode(text, ReplaceFunction.bufferedFile(text, file, charset));
+    }
+
+
+    static MutableDocument forFile(String code, final Path file, final Charset charset) {
+        return forCode(code, ReplaceFunction.bufferedFile(code, file, charset));
     }
 
 

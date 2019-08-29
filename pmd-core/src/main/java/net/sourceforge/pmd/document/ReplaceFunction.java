@@ -17,6 +17,11 @@ public interface ReplaceFunction {
 
     ReplaceFunction NOOP = new ReplaceFunction() {
         @Override
+        public CharSequence getCurrentText(MutableDocument doc) {
+            return doc.getText();
+        }
+
+        @Override
         public void replace(RegionByOffset region, String text) {
 
         }
@@ -34,21 +39,31 @@ public interface ReplaceFunction {
     void replace(RegionByOffset region, String text);
 
 
+    CharSequence getCurrentText(MutableDocument doc);
+
     /**
      * Commit the document (eg writing it to disk), and returns a new
-     * replace function that may be used to edit the final document.
+     * document corresponding to the new document.
      *
      * @return An updated replace function
      */
     ReplaceFunction commit() throws IOException;
 
 
-    /** Write updates into an in-memory buffer, commit writes to disk. */
+    /**
+     * Write updates into an in-memory buffer, commit writes to disk.
+     * This doesn't use any IO resources outside of the commit method.
+     */
     static ReplaceFunction bufferedFile(String originalBuffer, Path path, Charset charSet) {
 
         return new ReplaceFunction() {
 
             private StringBuilder builder = new StringBuilder(originalBuffer);
+
+            @Override
+            public CharSequence getCurrentText(MutableDocument doc) {
+                return builder;
+            }
 
             @Override
             public void replace(RegionByOffset region, String text) {

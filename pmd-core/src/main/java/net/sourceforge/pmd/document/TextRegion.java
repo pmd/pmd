@@ -74,7 +74,7 @@ public interface TextRegion {
 
         @Override
         default RegionByOffset toOffset(Document document) {
-            return document.mapToOffset(this);
+            return document.mapToOffset(this, false);
         }
     }
 
@@ -98,7 +98,7 @@ public interface TextRegion {
 
         @Override
         default RegionByLine toLine(Document document) {
-            return document.mapToLine(this);
+            return document.mapToLine(this, false);
         }
 
 

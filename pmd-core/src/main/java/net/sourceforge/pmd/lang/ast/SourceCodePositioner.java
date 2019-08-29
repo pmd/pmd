@@ -43,7 +43,7 @@ public class SourceCodePositioner {
     }
 
     /** Returns the full source. */
-    public String getSourceCode() {
+    public CharSequence getSourceCode() {
         return sourceCode;
     }
 

@@ -21,8 +21,8 @@ class DocumentImpl implements MutableDocument {
 
     private ReplaceFunction out;
     /** The positioner has the original source file. */
-    private final SourceCodePositioner positioner;
-    private final SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
+    private SourceCodePositioner positioner;
+    private SortedMap<Integer, Integer> accumulatedOffsets = new TreeMap<>();
 
 
     public DocumentImpl(final String source, final ReplaceFunction writer) {
@@ -37,7 +37,7 @@ class DocumentImpl implements MutableDocument {
 
     @Override
     public void insert(int offset, String textToInsert) {
-        replace(createByOffset(offset, 0), textToInsert);
+        replace(createAndCheck(offset, 0, true), textToInsert);
     }
 
 
@@ -71,7 +71,8 @@ class DocumentImpl implements MutableDocument {
         }
 
         RegionByOffset realPos = shift == 0 ? origCoords
-                                            : createByOffset(origCoords.getOffset() + shift, origCoords.getLength());
+                                            : createAndCheck(
+                                                origCoords.getOffset() + shift, origCoords.getLength(), false);
 
         accumulatedOffsets.compute(origCoords.getOffset(), (k, v) -> {
             int s = v == null ? lenDiff : v + lenDiff;
@@ -82,32 +83,43 @@ class DocumentImpl implements MutableDocument {
     }
 
     @Override
-    public RegionByLine mapToLine(RegionByOffset region) {
+    public RegionByLine mapToLine(RegionByOffset region, boolean check) {
         int bline = positioner.lineNumberFromOffset(region.getOffset());
         int bcol = positioner.columnFromOffset(bline, region.getOffset());
         int eline = positioner.lineNumberFromOffset(region.getOffsetAfterEnding());
         int ecol = positioner.columnFromOffset(eline, region.getOffsetAfterEnding());
 
+        // TODO check, positioner should return -1
+
         return newRegionByLine(bline, bcol, eline, ecol);
     }
 
     @Override
-    public RegionByOffset mapToOffset(final RegionByLine region) {
-
+    public RegionByOffset mapToOffset(RegionByLine region, boolean check) {
         int offset = positioner.offsetFromLineColumn(region.getBeginLine(), region.getBeginColumn());
         int len = positioner.offsetFromLineColumn(region.getEndLine(), region.getEndColumn())
             - offset;
 
-
-        return createByOffset(offset, len);
+        return createAndCheck(offset, len, check);
     }
 
-    private RegionByOffset createByOffset(int offset, int len) {
+    @Override
+    public CharSequence getText() {
+        return positioner.getSourceCode();
+    }
 
-        if (offset < 0) {
+    @Override
+    public CharSequence getUncommittedText() {
+        return out.getCurrentText(this);
+    }
+
+    private RegionByOffset createAndCheck(int offset, int len, boolean check) {
+
+        if (check && (offset < 0 || offset + len > positioner.getSourceCode().length())) {
             throw new IndexOutOfBoundsException(
                 "Region (" + offset + ",+" + len + ") is not in range of this document");
         }
+
 
         return TextRegion.newRegionByOffset(offset, len);
     }
@@ -115,6 +127,8 @@ class DocumentImpl implements MutableDocument {
     @Override
     public void close() throws IOException {
         out = out.commit();
+        positioner = new SourceCodePositioner(out.getCurrentText(this).toString());
+        accumulatedOffsets = new TreeMap<>();
     }
 
 }
