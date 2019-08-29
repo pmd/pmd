@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.document;
 
 /**
- * Immutable implementation of the {@link RegionByOffset} interface.
+ * Immutable implementation of the {@link TextRegion.RegionByOffset} interface.
  */
-public class RegionByOffsetImp implements RegionByOffset {
+public class RegionByOffsetImp implements TextRegion.RegionByOffset {
     private final int offset;
     private final int length;
     private final int offsetAfterEnding;

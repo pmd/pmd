@@ -20,7 +20,7 @@ public class InsertDocumentOperation extends DocumentOperation {
 
     @Override
     public void apply(final Document document) {
-        final RegionByLine regionByLine = getRegionByLine();
+        final TextRegion.RegionByLine regionByLine = getRegionByLine();
         document.insert(regionByLine.getBeginLine(), regionByLine.getBeginColumn(), textToInsert);
     }
 }

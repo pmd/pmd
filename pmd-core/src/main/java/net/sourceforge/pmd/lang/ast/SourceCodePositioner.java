@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Calculates from an absolute offset in the source file the line/column
@@ -16,56 +19,64 @@ import java.util.Arrays;
  */
 public class SourceCodePositioner {
 
-    private int[] lineOffsets;
-    private int sourceCodeLength;
+    /**
+     * This list has one entry for each line, denoting the start offset of the line.
+     * The start offset of the next line includes the length of the line terminator
+     * (1 for \r|\n, 2 for \r\n).
+     */
+    private final List<Integer> lineOffsets = new ArrayList<>();
+    private final int sourceCodeLength;
 
     public SourceCodePositioner(String sourceCode) {
-        analyzeLineOffsets(sourceCode);
-    }
-
-    private void analyzeLineOffsets(String sourceCode) {
-        String[] lines = sourceCode.split("\n");
         sourceCodeLength = sourceCode.length();
 
-        int startOffset = 0;
-        int lineNumber = 0;
+        try (Scanner scanner = new Scanner(sourceCode)) {
+            int currentGlobalOffset = 0;
 
-        lineOffsets = new int[lines.length];
-
-        for (String line : lines) {
-            lineOffsets[lineNumber] = startOffset;
-            lineNumber++;
-            startOffset += line.length() + 1; // +1 for the "\n" character
+            while (scanner.hasNextLine()) {
+                lineOffsets.add(currentGlobalOffset);
+                currentGlobalOffset += getLineLengthWithLineSeparator(scanner);
+            }
         }
+    }
+
+    /**
+     * Sums the line length without the line separation and the characters which matched the line separation pattern
+     *
+     * @param scanner the scanner from which to read the line's length
+     *
+     * @return the length of the line with the line separator.
+     */
+    private int getLineLengthWithLineSeparator(final Scanner scanner) {
+        int lineLength = scanner.nextLine().length();
+        final String lineSeparationMatch = scanner.match().group(1);
+
+        if (lineSeparationMatch != null) {
+            lineLength += lineSeparationMatch.length();
+        }
+
+        return lineLength;
     }
 
     public int lineNumberFromOffset(int offset) {
-        int search = Arrays.binarySearch(lineOffsets, offset);
-        int lineNumber;
-        if (search >= 0) {
-            lineNumber = search;
-        } else {
-            int insertionPoint = search;
-            insertionPoint += 1;
-            insertionPoint *= -1;
-            lineNumber = insertionPoint - 1; // take the insertion point one
-            // before
-        }
-        return lineNumber + 1; // 1-based line numbers
+        int search = Collections.binarySearch(lineOffsets, offset);
+        return search >= 0 ? search + 1 // 1-based line numbers
+                           : -(search + 1); // see spec of binarySearch
     }
 
     public int columnFromOffset(int lineNumber, int offset) {
         int lineIndex = lineNumber - 1;
-        if (lineIndex < 0 || lineIndex >= lineOffsets.length) {
+        if (lineIndex < 0 || lineIndex >= lineOffsets.size()) {
             // no line number found...
             return 0;
         }
-        int columnOffset = offset - lineOffsets[lineNumber - 1];
+        int columnOffset = offset - lineOffsets.get(lineNumber - 1);
         return columnOffset + 1; // 1-based column offsets
     }
 
+    /** Returns the number of lines, which is also the ordinal of the last line. */
     public int getLastLine() {
-        return lineOffsets.length;
+        return lineOffsets.size();
     }
 
     public int getLastLineColumn() {

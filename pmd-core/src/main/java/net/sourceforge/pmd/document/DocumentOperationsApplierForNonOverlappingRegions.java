@@ -69,8 +69,8 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
 
         @Override
         public int compare(final DocumentOperation o1, final DocumentOperation o2) {
-            final RegionByLine r1 = Objects.requireNonNull(o1).getRegionByLine();
-            final RegionByLine r2 = Objects.requireNonNull(o2).getRegionByLine();
+            final TextRegion.RegionByLine r1 = Objects.requireNonNull(o1).getRegionByLine();
+            final TextRegion.RegionByLine r2 = Objects.requireNonNull(o2).getRegionByLine();
 
             final int comparison;
             if (operationsStartAtTheSameOffsetAndHaveZeroLength(r1, r2)) {
@@ -85,12 +85,12 @@ public class DocumentOperationsApplierForNonOverlappingRegions {
             return comparison;
         }
 
-        private boolean operationsStartAtTheSameOffsetAndHaveZeroLength(final RegionByLine r1, final RegionByLine r2) {
+        private boolean operationsStartAtTheSameOffsetAndHaveZeroLength(final TextRegion.RegionByLine r1, final TextRegion.RegionByLine r2) {
             return r1.getBeginLine() == r2.getBeginLine() && r1.getBeginColumn() == r2.getBeginColumn()
                     && r1.getBeginLine() == r1.getEndLine() && r1.getBeginColumn() == r1.getEndColumn();
         }
 
-        private boolean doesFirstRegionEndBeforeSecondRegionBegins(final RegionByLine r1, final RegionByLine r2) {
+        private boolean doesFirstRegionEndBeforeSecondRegionBegins(final TextRegion.RegionByLine r1, final TextRegion.RegionByLine r2) {
             if (r1.getEndLine() < r2.getBeginLine()) {
                 return true;
             } else if (r1.getEndLine() == r2.getBeginLine()) {

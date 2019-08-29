@@ -13,7 +13,7 @@ public abstract class DocumentOperation {
     /**
      * The region to which this operations belongs
      */
-    private final RegionByLine regionByLine;
+    private final TextRegion.RegionByLine regionByLine;
 
     public DocumentOperation(final int beginLine, final int endLine, final int beginColumn, final int endColumn) {
         regionByLine = new RegionByLineImp(beginLine, endLine, beginColumn, endColumn);
@@ -25,7 +25,7 @@ public abstract class DocumentOperation {
      */
     public abstract void apply(Document document);
 
-    public RegionByLine getRegionByLine() {
+    public TextRegion.RegionByLine getRegionByLine() {
         return regionByLine;
     }
 }

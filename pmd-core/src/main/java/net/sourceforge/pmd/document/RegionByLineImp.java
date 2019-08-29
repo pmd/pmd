@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.document;
 
 /**
- * Immutable implementation of the {@link RegionByLine} interface.
+ * Immutable implementation of the {@link TextRegion.RegionByLine} interface.
  */
-public class RegionByLineImp implements RegionByLine {
+public class RegionByLineImp implements TextRegion.RegionByLine {
 
     private final int beginLine;
     private final int endLine;
@@ -54,6 +54,16 @@ public class RegionByLineImp implements RegionByLine {
     @Override
     public int getEndColumn() {
         return endColumn;
+    }
+
+    @Override
+    public RegionByLine toLine(Document document) {
+        return this;
+    }
+
+    @Override
+    public RegionByOffset toOffset(Document document) {
+        return null;
     }
 
     @Override

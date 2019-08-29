@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.document;
 
+import net.sourceforge.pmd.document.TextRegion.RegionByLine;
+import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
+
 /**
  * Represents a file which contains programming code that will be fixed.
  */
@@ -24,12 +27,19 @@ public interface Document {
      * @param regionByOffset the region in which a text will be inserted to replace the current document's contents
      * @param textToReplace the text to insert
      */
-    void replace(RegionByLine regionByOffset, String textToReplace);
+    void replace(TextRegion.RegionByLine regionByOffset, String textToReplace);
 
     /**
      * Delete a region in the document, removing all text which contains it. If there is any text to the right of this
      * region, it will be shifted to the left by the length of the region to delete.
      * @param regionByOffset the region in which to erase all the text
      */
-    void delete(RegionByLine regionByOffset);
+    void delete(TextRegion.RegionByLine regionByOffset);
+
+
+    RegionByLine mapToLine(RegionByOffset offset);
+
+
+    RegionByOffset mapToOffset(RegionByLine offset);
+
 }
