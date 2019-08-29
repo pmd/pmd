@@ -30,7 +30,7 @@ public class LatticeRelationTest {
         lattice.put(Integer.class, setOf("int"));
         lattice.put(Long.class, setOf("long"));
 
-        lattice.topoFreeze();
+        lattice.freezeTopo();
 
         assertEquals(setOf("string", "int", "long"), lattice.get(Object.class));
 
@@ -51,7 +51,7 @@ public class LatticeRelationTest {
         lattice.put(Integer.class, setOf("int"));
         lattice.put(Long.class, setOf("long"));
 
-        lattice.topoFreeze();
+        lattice.freezeTopo();
         lattice.clearValues();
 
         Map<Class<?>, LatticeRelation<Class<?>, Set<String>>.LNode> nodes = lattice.getNodes();

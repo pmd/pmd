@@ -273,12 +273,14 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @NonNull
     private TargetSelectionStrategy buildSelectionStrat() {
-        if (ruleChainVisits.isEmpty() && classRuleChainVisits.isEmpty()) {
+        Set<String> rvs = getRuleChainVisits();
+        Set<Class<?>> crvs = getClassRuleChainVisits();
+        if (rvs.isEmpty() && crvs.isEmpty()) {
             return ClassRulechainVisits.ROOT_ONLY;
-        } else if (ruleChainVisits.isEmpty()) {
-            return new ClassRulechainVisits(classRuleChainVisits);
+        } else if (rvs.isEmpty()) {
+            return new ClassRulechainVisits(crvs);
         } else {
-            return new StringRulechainVisits(ruleChainVisits);
+            return new StringRulechainVisits(rvs);
         }
     }
 

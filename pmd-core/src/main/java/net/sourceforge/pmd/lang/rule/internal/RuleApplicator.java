@@ -100,12 +100,12 @@ public class RuleApplicator {
          * recursive computations (and hence of lists created).
          */
         void complete() {
-            byClass.topoFreeze();
+            byClass.freezeTopo();
         }
 
         void clear() {
-            byClass.clearValues();
             byClass.unfreezeTopo();
+            byClass.clearValues();
             byName.clear();
         }
 

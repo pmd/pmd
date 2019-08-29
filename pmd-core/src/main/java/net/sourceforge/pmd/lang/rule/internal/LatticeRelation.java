@@ -31,7 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <li>Write-only: querying data is impossible, but mutating the structure is.
  * </ul>
  * If the internal structure is not changed during a write phase,
- * most of the work may be avoided when {@linkplain #topoFreeze() freezing}
+ * most of the work may be avoided when {@linkplain #freezeTopo() freezing}
  * the structure.
  *
  * <p>The {@link TopoOrder TopoOrder<T>} must generate an acyclic graph,
@@ -154,7 +154,7 @@ class LatticeRelation<T, @NonNull U> {
      *
      * @throws IllegalStateException If the lattice has a cycle
      */
-    void topoFreeze() {
+    void freezeTopo() {
         frozen = true; // TODO non-thread-safe
         if (up2DateTopo) {
             // topology up to date
