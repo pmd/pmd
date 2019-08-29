@@ -1324,6 +1324,7 @@ won’t be found by default by the rule anymore.</li>
   <li>all
     <ul>
       <li><a href="https://github.com/pmd/pmd/pull/1983">#1983</a>: [core] Avoid crashes with analysis cache when classpath references non-existing directories</li>
+      <li><a href="https://github.com/pmd/pmd/pull/1990">#1990</a>: [core] Incremental analysis mixes XPath rule violations</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -1357,6 +1358,12 @@ won’t be found by default by the rule anymore.</li>
 will be removed with PMD 7.0.0.</li>
 </ul>
 
+<h5 id="internal-apis">Internal APIs</h5>
+
+<ul>
+  <li>The contents of the package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/cache/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.cache</code></a> have been marked <code class="highlighter-rouge">@InternalApi</code>. That subsystem is very low-level and is not intended for public use. It will be hidden with PMD 7.0.0.</li>
+</ul>
+
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
@@ -1380,7 +1387,7 @@ will be removed with PMD 7.0.0.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Aug 23, 2019 <br />
+ Site last generated: Aug 29, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
