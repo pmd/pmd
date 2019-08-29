@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 
@@ -43,14 +42,13 @@ class MutableDocumentImpl extends DocumentImpl implements MutableDocument {
 
     @Override
     public void replace(final TextRegion region, final String textToReplace) {
-        RegionByOffset off = region.toOffset(this);
 
-        RegionByOffset realPos = shiftOffset(off, textToReplace.length() - off.getLength());
+        TextRegion realPos = shiftOffset(region, textToReplace.length() - region.getLength());
 
         out.replace(realPos, textToReplace);
     }
 
-    private RegionByOffset shiftOffset(RegionByOffset origCoords, int lenDiff) {
+    private TextRegion shiftOffset(TextRegion origCoords, int lenDiff) {
         // instead of using a map, a balanced binary tree would be more efficient
         ArrayList<Integer> keys = new ArrayList<>(accumulatedOffsets.keySet());
         int idx = Collections.binarySearch(keys, origCoords.getStartOffset());
@@ -72,10 +70,10 @@ class MutableDocumentImpl extends DocumentImpl implements MutableDocument {
             shift += accumulatedOffsets.get(keys.get(i));
         }
 
-        RegionByOffset realPos = shift == 0
+        TextRegion realPos = shift == 0
                                  ? origCoords
                                  // don't check the bounds
-                                 : new RegionByOffsetImpl(origCoords.getStartOffset() + shift, origCoords.getLength());
+                                 : new TextRegionImpl(origCoords.getStartOffset() + shift, origCoords.getLength());
 
         accumulatedOffsets.compute(origCoords.getStartOffset(), (k, v) -> {
             int s = v == null ? lenDiff : v + lenDiff;

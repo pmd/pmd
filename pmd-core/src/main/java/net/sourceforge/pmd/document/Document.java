@@ -11,45 +11,40 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import net.sourceforge.pmd.document.TextRegion.RegionByLine;
-import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
+import net.sourceforge.pmd.document.TextRegion.RegionWithLines;
 
 /**
  * Represents a text document. A document provides methods to identify
- * regions of text.
+ * regions of text and to convert between lines and columns.
+ *
+ * <p>The default document implementations do *not* normalise line endings.
  */
 public interface Document {
 
     /**
-     * Create a new line-based region.
+     * Create a new region based on line coordinates.
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    RegionByLine createRegion(final int beginLine, final int beginColumn, final int endLine, final int endColumn);
+    RegionWithLines createRegion(final int beginLine, final int beginColumn, final int endLine, final int endColumn);
 
 
     /**
-     * Create a new offset-based region.
+     * Create a new region based on offset coordinates.
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    RegionByOffset createRegion(final int offset, final int length);
+    TextRegion createRegion(final int offset, final int length);
 
 
     /**
-     * Convert the representation of the given region.
+     * Add line information to the given region. Only the start and end
+     * offsets are considered, if the region is already a {@link RegionWithLines},
+     * that information is discarded.
      *
      * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
      */
-    RegionByLine mapToLine(RegionByOffset region);
-
-
-    /**
-     * Convert the representation of the given region.
-     *
-     * @throws IndexOutOfBoundsException If the argument does not identify a valid region in this document
-     */
-    RegionByOffset mapToOffset(RegionByLine region);
+    RegionWithLines addLineInfo(TextRegion region);
 
 
     /** Returns the text of this document. */
@@ -60,7 +55,7 @@ public interface Document {
     CharSequence subSequence(TextRegion region);
 
 
-    /** Returns a mutable document that uses the given replace handler. */
+    /** Returns a mutable document that uses the given replace handler to carry out updates. */
     MutableDocument newMutableDoc(ReplaceHandler out);
 
 

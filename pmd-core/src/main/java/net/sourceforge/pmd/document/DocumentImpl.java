@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.document;
 
-import net.sourceforge.pmd.document.TextRegion.RegionByLine;
-import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
+import net.sourceforge.pmd.document.TextRegion.RegionWithLines;
+import net.sourceforge.pmd.document.TextRegionImpl.WithLineInfo;
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
 
 
@@ -25,38 +25,41 @@ class DocumentImpl implements Document {
     }
 
     @Override
-    public RegionByLine mapToLine(RegionByOffset region) {
+    public RegionWithLines addLineInfo(TextRegion region) {
         int bline = positioner.lineNumberFromOffset(region.getStartOffset());
         int bcol = positioner.columnFromOffset(bline, region.getStartOffset());
-        int eline = positioner.lineNumberFromOffset(region.getOffsetAfterEnding());
-        int ecol = positioner.columnFromOffset(eline, region.getOffsetAfterEnding());
+        int eline = positioner.lineNumberFromOffset(region.getEndOffset());
+        int ecol = positioner.columnFromOffset(eline, region.getEndOffset());
 
         return createRegion(bline, bcol, eline, ecol);
     }
 
     @Override
-    public RegionByOffset mapToOffset(RegionByLine region) {
-        int offset = positioner.offsetFromLineColumn(region.getBeginLine(), region.getBeginColumn());
-        int len = positioner.offsetFromLineColumn(region.getEndLine(), region.getEndColumn())
-            - offset;
-
-        return createRegion(offset, len);
-    }
-
-    @Override
-    public RegionByLine createRegion(int beginLine, int beginColumn, int endLine, int endColumn) {
+    public RegionWithLines createRegion(int beginLine, int beginColumn, int endLine, int endColumn) {
         // TODO checks, positioner should return -1 if not found
-        return new RegionByLineImpl(beginLine, beginColumn, endLine, endColumn);
+        int startOffset = positioner.offsetFromLineColumn(beginLine, beginColumn);
+        int endOffset = positioner.offsetFromLineColumn(endLine, endColumn);
+
+        if (startOffset < 0 || endOffset < 0) {
+            throw new IndexOutOfBoundsException(
+                "Region (" + beginLine + ", "
+                    + beginColumn
+                    + "," + endLine +
+                    "," + endColumn + ") is not in range of this document");
+        }
+
+        return new WithLineInfo(startOffset, endOffset - startOffset,
+                                beginLine, beginColumn, endLine, endColumn);
     }
 
     @Override
-    public RegionByOffset createRegion(int offset, int length) {
+    public TextRegion createRegion(int offset, int length) {
         if (offset < 0 || offset + length > positioner.getSourceCode().length()) {
             throw new IndexOutOfBoundsException(
                 "Region (" + offset + ",+" + length + ") is not in range of this document");
         }
 
-        return new RegionByOffsetImpl(offset, length);
+        return new TextRegionImpl(offset, length);
     }
 
     @Override
@@ -66,8 +69,7 @@ class DocumentImpl implements Document {
 
     @Override
     public CharSequence subSequence(TextRegion region) {
-        RegionByOffset byOffset = region.toOffset(this);
-        return getText().subSequence(byOffset.getStartOffset(), byOffset.getOffsetAfterEnding());
+        return getText().subSequence(region.getStartOffset(), region.getEndOffset());
     }
 
 }

@@ -10,8 +10,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import net.sourceforge.pmd.document.TextRegion.RegionByOffset;
-
 /** Handles text updates for a {@link MutableDocument}. */
 public interface ReplaceHandler {
 
@@ -23,7 +21,7 @@ public interface ReplaceHandler {
         }
 
         @Override
-        public void replace(RegionByOffset region, String text) {
+        public void replace(TextRegion region, String text) {
 
         }
 
@@ -37,7 +35,7 @@ public interface ReplaceHandler {
     /**
      * Replace the content of a region with some text.
      */
-    void replace(RegionByOffset region, String text);
+    void replace(TextRegion region, String text);
 
 
     /** Gets the latest text. */
@@ -69,8 +67,8 @@ public interface ReplaceHandler {
             }
 
             @Override
-            public void replace(RegionByOffset region, String text) {
-                builder.replace(region.getStartOffset(), region.getOffsetAfterEnding(), text);
+            public void replace(TextRegion region, String text) {
+                builder.replace(region.getStartOffset(), region.getEndOffset(), text);
             }
 
             @Override
