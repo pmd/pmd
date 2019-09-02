@@ -29,18 +29,9 @@ abstract class AbstractJavaAnnotatableNode extends AbstractJavaNode implements A
     public ASTAnnotation getAnnotation(String annotQualifiedName) {
         List<ASTAnnotation> annotations = getDeclaredAnnotations();
         for (ASTAnnotation annotation : annotations) {
-            if (annotation.getType() != null) {
-                // since annotQulifiedName is fully qualified, we can directly compare now
-                if (annotQualifiedName.equals(annotation.getType().getName())) {
-                    return annotation;
-                }
-            } else {
-                // note: this alternative might fall back to comparing simple class names. If auxclasspath is not
-                // correct, this might lead to false-positives/false-negatives.
-                ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
-                if (name != null && TypeHelper.isA(name, annotQualifiedName)) {
-                    return annotation;
-                }
+            ASTName name = annotation.getFirstDescendantOfType(ASTName.class);
+            if (name != null && TypeHelper.isA(name, annotQualifiedName)) {
+                return annotation;
             }
         }
         return null;

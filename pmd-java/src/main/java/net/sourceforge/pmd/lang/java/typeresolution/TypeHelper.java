@@ -31,7 +31,7 @@ public final class TypeHelper {
     public static boolean isA(final TypeNode n, final String clazzName) {
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
 
-        if (clazz != null) {
+        if (clazz != null || n.getType() != null) {
             return isA(n, clazz);
         }
 
@@ -137,8 +137,8 @@ public final class TypeHelper {
 
     public static boolean subclasses(TypeNode n, Class<?> clazz) {
         Class<?> type = n.getType();
-        if (type == null) {
-            return n.hasImageEqualTo(clazz.getSimpleName()) || n.hasImageEqualTo(clazz.getName());
+        if (type == null || clazz == null) {
+            return false; // If in auxclasspath, both should be resolvable, or are not the same
         }
 
         return clazz.isAssignableFrom(type);
