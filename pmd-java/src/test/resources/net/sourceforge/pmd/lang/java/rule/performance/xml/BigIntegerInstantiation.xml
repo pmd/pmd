@@ -51,7 +51,7 @@ Pass, BigDecimal(i - 1)
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public class Foo {
  int i = 42;
@@ -67,6 +67,7 @@ Pass, BigInteger("10") and BigDecimal in 1.4 mode
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public class Foo {
  void test14() {
