@@ -100,7 +100,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
                     if (inputFileName.indexOf(File.separatorChar) == -1) {
                         return inputFileName;
                     }
-                    return trimAnyPathSep(inputFileName.substring(prefPathString.lastIndexOf(FILE_SEPARATOR)));
+                    return trimAnyPathSep(inputFileName.substring(prefPathString.lastIndexOf(File.separatorChar)));
                 }
             }
         }
