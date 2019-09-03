@@ -57,8 +57,8 @@ about the usage and features of the rule designer.
 
 ##### For removal
 
-*   The methods {% jdoc java::ast.ASTImportDeclaration#getImportedNameNode() %} and
-    {% jdoc java::ast.ASTImportDeclaration#getPackage() %} have been deprecated and
+*   The methods {% jdoc java::lang.java.ast.ASTImportDeclaration#getImportedNameNode() %} and
+    {% jdoc java::lang.java.ast.ASTImportDeclaration#getPackage() %} have been deprecated and
     will be removed with PMD 7.0.0.
 
 
