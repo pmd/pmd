@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -28,10 +29,10 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  */
 public class RuleContext {
 
+    private static final Logger LOG = Logger.getLogger(RuleContext.class.getName());
+
     private Report report = new Report();
     private File sourceCodeFile;
-    @Deprecated
-    private String sourceCodeFilename;
     private LanguageVersion languageVersion;
     private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
@@ -120,6 +121,8 @@ public class RuleContext {
     @Deprecated
     public void setSourceCodeFilename(String filename) {
         // ignored, does nothing.
+        LOG.warning("The method RuleContext::setSourceCodeFilename(String) has been deprecated and will be removed."
+                + "Setting the filename here has no effect. Use RuleContext::setSourceCodeFile(File) instead.");
     }
 
     /**

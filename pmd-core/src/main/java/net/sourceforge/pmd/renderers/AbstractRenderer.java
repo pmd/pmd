@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.renderers;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
@@ -21,8 +22,6 @@ import net.sourceforge.pmd.properties.AbstractPropertySource;
  * Abstract base class for {@link Renderer} implementations.
  */
 public abstract class AbstractRenderer extends AbstractPropertySource implements Renderer {
-    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
-
     protected String name;
     protected String description;
 
@@ -109,7 +108,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
     }
 
     private String trimAnyPathSep(String name) {
-        return name.startsWith(FILE_SEPARATOR) ? name.substring(1) : name;
+        return name != null && name.charAt(0) == File.separatorChar ? name.substring(1) : name;
     }
 
     @Override
