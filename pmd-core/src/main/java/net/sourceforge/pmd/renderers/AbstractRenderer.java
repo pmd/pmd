@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.cli.PMDParameters;
+import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 
 /**
@@ -88,27 +86,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
      * @see PMDParameters#isShortnames()
      */
     protected String determineFileName(String inputFileName) {
-        for (final String prefix : inputPathPrefixes) {
-            final Path prefPath = Paths.get(prefix).toAbsolutePath();
-            final String prefPathString = prefPath.toString();
-
-            if (inputFileName.startsWith(prefPathString)) {
-                if (prefPath.toFile().isDirectory()) {
-                    return trimAnyPathSep(inputFileName.substring(prefPathString.length()));
-                } else {
-                    if (inputFileName.indexOf(File.separatorChar) == -1) {
-                        return inputFileName;
-                    }
-                    return trimAnyPathSep(inputFileName.substring(prefPathString.lastIndexOf(File.separatorChar)));
-                }
-            }
-        }
-
-        return inputFileName;
-    }
-
-    private String trimAnyPathSep(String name) {
-        return name != null && name.charAt(0) == File.separatorChar ? name.substring(1) : name;
+        return ShortFilenameUtil.determineFileName(inputPathPrefixes, inputFileName);
     }
 
     @Override
