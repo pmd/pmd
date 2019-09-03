@@ -97,7 +97,7 @@ public abstract class AbstractRenderer extends AbstractPropertySource implements
                 if (prefPath.toFile().isDirectory()) {
                     return trimAnyPathSep(inputFileName.substring(prefPathString.length()));
                 } else {
-                    if (inputFileName.indexOf(FILE_SEPARATOR.charAt(0)) == -1) {
+                    if (inputFileName.indexOf(File.separatorChar) == -1) {
                         return inputFileName;
                     }
                     return trimAnyPathSep(inputFileName.substring(prefPathString.lastIndexOf(FILE_SEPARATOR)));
