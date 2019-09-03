@@ -1120,4 +1120,135 @@ public class CloseResourceCase {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#1966 [java] CloseResource false positive if Stream is passed as method parameter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceFP {
+    public void check(InputStream in) {
+        if (in instanceof FileInputStream) {
+            FileInputStream fin = (FileInputStream) in;
+            doCheck(fin);
+        } else if (in instanceof ByteArrayInputStream) {
+            ByteArrayInputStream bin = (ByteArrayInputSream) in;
+            doCheck(bin);
+        } else {
+            BufferedInputStream buf = new BufferedInputStream(in);
+            doCheck(buf);
+        }
+    }
+
+    public void dump(final Writer writer) {
+        final PrintWriter printWriter = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
+        printWriter.println(this);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1967 [java] CloseResource false positive with late assignment of variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceFP {
+    public void check(File outputFile) {
+        final OutputStream os;
+        if (outputFile == null) {
+            os = System.out;
+        } else if (outputFile.isAbsolute()) {
+            os = Files.newOutputStream(outputFile.toPath());
+        } else {
+            os = Files.newOutputStream(new File(getProject().getBaseDir(), outputFile.toString()).toPath());
+        }
+
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"))) {
+            renderer.render(cpd.getMatches(), writer);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1922 [java] CloseResource possible false positive with Streams</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+
+public class CloseResourceStream {
+     public static <T> Stream<MatchResult<T>> filterResults(List<T> candidates, Function<T, String> matchExtractor, String query, MatchSelector<T> limiter) {
+        if (query.length() < MIN_QUERY_LENGTH) {
+            return Stream.empty();
+        }
+
+        // violation here
+        Stream<MatchResult<T>> base = candidates.stream()
+                                                .map(it -> {
+                                                    String cand = matchExtractor.apply(it);
+                                                    return new MatchResult<>(0, it, cand, query, new TextFlow(makeNormalText(cand)));
+                                                });
+        return limiter.selectBest(base);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1076 [java] CloseResource false positive on non-SQL classes called Statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.Statement;
+
+public class CloseResourceStatementFP {
+    public void check() {
+        Statement s = new Statement();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False-negative if only byte array is passed in as method parameter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceFN {
+    public Object deserialize(byte[] bytes) {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            return ois.readObject();
+        }
+        catch (IOException ex) {
+            throw new IllegalArgumentException("Failed to deserialize object", ex);
+        }
+        catch (ClassNotFoundException ex) {
+            throw new IllegalStateException("Failed to deserialize object type", ex);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NullPointerException if type of method parameter is not known</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+public class CloseResourceNullPointer {
+    public void check(UnknownType param) {
+        InputStream in = param;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
