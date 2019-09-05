@@ -1,43 +1,43 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast;
+package net.sourceforge.pmd.lang.xml.ast.internal;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 
 import net.sourceforge.pmd.lang.ast.SourceCodePositioner;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  *
  */
 class DOMLineNumbers {
-    private final Document document;
+    private final RootXmlNode document;
     private String xmlString;
     private SourceCodePositioner sourceCodePositioner;
 
-    DOMLineNumbers(Document document, String xmlString) {
-        this.document = document;
+    DOMLineNumbers(RootXmlNode root, String xmlString) {
+        this.document = root;
         this.xmlString = xmlString;
         this.sourceCodePositioner = new SourceCodePositioner(xmlString);
     }
 
-    public void determine() {
+    void determine() {
         determineLocation(document, 0);
     }
 
-    private int determineLocation(Node n, int index) {
+    private int determineLocation(XmlNodeWrapper wrapper, int index) {
         int nextIndex = index;
         int nodeLength = 0;
         int textLength = 0;
+        org.w3c.dom.Node n = wrapper.getNode();
         if (n.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
             nextIndex = xmlString.indexOf("<!DOCTYPE", nextIndex);
         } else if (n.getNodeType() == Node.COMMENT_NODE) {
@@ -65,14 +65,14 @@ class DOMLineNumbers {
         } else if (n.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
             nextIndex = xmlString.indexOf("&" + n.getNodeName() + ";", nextIndex);
         }
-        setBeginLocation(n, nextIndex);
+        setBeginLocation(wrapper, nextIndex);
 
         nextIndex += nodeLength;
 
         if (n.hasChildNodes()) {
-            NodeList childs = n.getChildNodes();
-            for (int i = 0; i < childs.getLength(); i++) {
-                nextIndex = determineLocation(childs.item(i), nextIndex);
+            int numChildren = wrapper.jjtGetNumChildren();
+            for (int i = 0; i < numChildren; i++) {
+                nextIndex = determineLocation((XmlNodeWrapper) wrapper.jjtGetChild(i), nextIndex);
             }
         }
 
@@ -104,7 +104,7 @@ class DOMLineNumbers {
             ProcessingInstruction pi = (ProcessingInstruction) n;
             nextIndex += "<?".length() + pi.getTarget().length() + "?>".length() + pi.getData().length();
         }
-        setEndLocation(n, nextIndex - 1);
+        setEndLocation(wrapper, nextIndex - 1);
         return nextIndex;
     }
 
@@ -146,21 +146,21 @@ class DOMLineNumbers {
         return result;
     }
 
-    private void setBeginLocation(Node n, int index) {
+    private void setBeginLocation(XmlNodeWrapper n, int index) {
         if (n != null) {
             int line = sourceCodePositioner.lineNumberFromOffset(index);
             int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setUserData(XmlNode.BEGIN_LINE, line, null);
-            n.setUserData(XmlNode.BEGIN_COLUMN, column, null);
+            n.setBeginLine(line);
+            n.setBeginColumn(column);
         }
     }
 
-    private void setEndLocation(Node n, int index) {
+    private void setEndLocation(XmlNodeWrapper n, int index) {
         if (n != null) {
             int line = sourceCodePositioner.lineNumberFromOffset(index);
             int column = sourceCodePositioner.columnFromOffset(line, index);
-            n.setUserData(XmlNode.END_LINE, line, null);
-            n.setUserData(XmlNode.END_COLUMN, column, null);
+            n.setEndLine(line);
+            n.setEndColumn(column);
         }
     }
 }

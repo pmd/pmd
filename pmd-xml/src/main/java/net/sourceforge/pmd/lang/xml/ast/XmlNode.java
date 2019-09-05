@@ -5,17 +5,12 @@
 package net.sourceforge.pmd.lang.xml.ast;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.AttributeNode;
 
 /**
  * This interface represents all XML AST nodes. They are essentially thin
  * wrappers around the underlying DOM nodes.
  */
-public interface XmlNode extends Node, AttributeNode {
-    String BEGIN_LINE = "pmd:beginLine";
-    String BEGIN_COLUMN = "pmd:beginColumn";
-    String END_LINE = "pmd:endLine";
-    String END_COLUMN = "pmd:endColumn";
+public interface XmlNode extends Node {
 
     /**
      * Provide access to the underlying DOM node.

@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.xml.ast;
+package net.sourceforge.pmd.lang.xml.ast.internal;
 
 
 import java.util.ArrayList;
@@ -16,9 +16,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.CompoundIterator;
 
 
@@ -28,14 +30,16 @@ import net.sourceforge.pmd.util.CompoundIterator;
  * @author Clément Fournier
  * @since 6.1.0
  */
-public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
+class XmlNodeWrapper extends AbstractNode implements XmlNode {
 
-    private final XmlParser parser;
+    private final XmlParserImpl parser;
     private Object userData;
+    private final org.w3c.dom.Node node;
 
 
-    public XmlNodeWrapper(XmlParser parser, org.w3c.dom.Node domNode) {
-        super(domNode);
+    XmlNodeWrapper(XmlParserImpl parser, org.w3c.dom.Node domNode) {
+        super(0);
+        this.node = domNode;
         this.parser = parser;
     }
 
@@ -117,30 +121,6 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
     @Override
     public boolean hasImageEqualTo(String image) {
         return Objects.equals(image, getImage());
-    }
-
-
-    @Override
-    public int getBeginLine() {
-        return (int) getUserData(BEGIN_LINE);
-    }
-
-
-    @Override
-    public int getBeginColumn() {
-        return (int) getUserData(BEGIN_COLUMN);
-    }
-
-
-    @Override
-    public int getEndLine() {
-        return (int) getUserData(END_LINE);
-    }
-
-
-    @Override
-    public int getEndColumn() {
-        return (int) getUserData(END_COLUMN);
     }
 
 
@@ -249,18 +229,28 @@ public class XmlNodeWrapper extends AbstractDomNodeProxy implements XmlNode {
     }
 
 
-    /**
-     * @deprecated use {@link #getXPathAttributesIterator()}
-     */
-    @Override
-    @Deprecated
-    public Iterator<Attribute> getAttributeIterator() {
-        return getXPathAttributesIterator();
-    }
-
-
     @Override
     public org.w3c.dom.Node getNode() {
         return node;
     }
+
+
+    // package private, open only to DOMLineNumbers
+
+    void setBeginLine(int i) {
+        this.beginLine = i;
+    }
+
+    void setBeginColumn(int i) {
+        this.beginColumn = i;
+    }
+
+    void setEndLine(int i) {
+        this.endLine = i;
+    }
+
+    void setEndColumn(int i) {
+        this.endColumn = i;
+    }
+
 }
