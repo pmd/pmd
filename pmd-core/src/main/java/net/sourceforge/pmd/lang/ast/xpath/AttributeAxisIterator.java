@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,9 +12,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.NoAttribute.NoAttrScope;
 
 
 /**
@@ -31,7 +33,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class AttributeAxisIterator implements Iterator<Attribute> {
 
     /** Caches the precomputed attribute accessors of a given class. */
-    private static final ConcurrentMap<Class<?>, MethodWrapper[]> METHOD_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<?>, List<MethodWrapper>> METHOD_CACHE = new ConcurrentHashMap<>();
 
     /* Constants used to determine which methods are accessors */
     private static final Set<Class<?>> CONSIDERED_RETURN_TYPES
@@ -40,10 +42,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             = new HashSet<>(Arrays.asList("toString", "getClass", "getXPathNodeName", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
 
     /* Iteration variables */
-    private Attribute currObj;
-    private MethodWrapper[] methodWrappers;
-    private int position;
-    private Node node;
+    private final Iterator<MethodWrapper> iterator;
+    private final Node node;
 
 
     /**
@@ -53,20 +53,14 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      */
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
-        if (!METHOD_CACHE.containsKey(contextNode.getClass())) {
-            Method[] preFilter = contextNode.getClass().getMethods();
-            List<MethodWrapper> postFilter = new ArrayList<>();
-            for (Method element : preFilter) {
-                if (isAttributeAccessor(element)) {
-                    postFilter.add(new MethodWrapper(element));
-                }
-            }
-            METHOD_CACHE.putIfAbsent(contextNode.getClass(), postFilter.toArray(new MethodWrapper[0]));
-        }
-        this.methodWrappers = METHOD_CACHE.get(contextNode.getClass());
+        this.iterator = METHOD_CACHE.computeIfAbsent(contextNode.getClass(), this::getWrappersForClass).iterator();
+    }
 
-        this.position = 0;
-        this.currObj = getNextAttribute();
+    private List<MethodWrapper> getWrappersForClass(Class<?> nodeClass) {
+        return Arrays.stream(nodeClass.getMethods())
+                     .filter(m -> isAttributeAccessor(nodeClass, m))
+                     .map(MethodWrapper::new)
+                     .collect(Collectors.toList());
     }
 
     /**
@@ -76,13 +70,47 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      *
      * @param method The method to test
      */
-    protected boolean isAttributeAccessor(Method method) {
+    protected boolean isAttributeAccessor(Class<?> nodeClass, Method method) {
         String methodName = method.getName();
 
         return isConsideredReturnType(method.getReturnType())
                 && method.getParameterTypes().length == 0
                 && !methodName.startsWith("jjt")
+                && !isIgnored(nodeClass, method)
                 && !FILTERED_OUT_NAMES.contains(methodName);
+    }
+
+    private boolean isIgnored(Class<?> nodeClass, Method method) {
+        Class<?> declaration = method.getDeclaringClass();
+        if (method.isAnnotationPresent(NoAttribute.class)) {
+            return true;
+        } else if (declaration == Node.class || declaration == AbstractNode.class) {
+            // attributes from Node and AbstractNode are never suppressed
+            // we don't know what might go wrong if we do suppress them
+            return false;
+        }
+
+        NoAttribute declAnnot = declaration.getAnnotation(NoAttribute.class);
+
+        if (declAnnot != null && declAnnot.scope() == NoAttrScope.ALL) {
+            // then the parent didn't want children to inherit the attr
+            return true;
+        }
+
+        // we don't care about the parent annotation in the following
+
+        NoAttribute localAnnot = nodeClass.getAnnotation(NoAttribute.class);
+
+        if (localAnnot == null) {
+            return false;
+        } else if (!declaration.equals(nodeClass)) {
+            // then the node suppressed the attributes of its parent
+            return localAnnot.scope() == NoAttrScope.INHERITED;
+        } else {
+            // then declaration == nodeClass so we need the scope to be ALL
+            return localAnnot.scope() == NoAttrScope.ALL;
+
+        }
     }
 
     private boolean isConsideredReturnType(Class<?> klass) {
@@ -92,33 +120,14 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     @Override
     public Attribute next() {
-        if (!hasNext()) {
-            throw new IndexOutOfBoundsException();
-        }
-        Attribute ret = currObj;
-        currObj = getNextAttribute();
-        return ret;
+        MethodWrapper m = iterator.next();
+        return new Attribute(node, m.name, m.method);
     }
 
 
     @Override
     public boolean hasNext() {
-        return currObj != null;
-    }
-
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    private Attribute getNextAttribute() {
-        if (methodWrappers == null || position == methodWrappers.length) {
-            return null;
-        }
-        MethodWrapper m = methodWrappers[position++];
-        return new Attribute(node, m.name, m.method);
+        return iterator.hasNext();
     }
 
 
