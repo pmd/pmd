@@ -69,7 +69,6 @@ public class Report implements Iterable<RuleViolation> {
         report.addListeners(ctx.getReport().getListeners());
 
         ctx.setReport(report);
-        ctx.setSourceCodeFilename(fileName);
         ctx.setSourceCodeFile(new File(fileName));
         return report;
     }

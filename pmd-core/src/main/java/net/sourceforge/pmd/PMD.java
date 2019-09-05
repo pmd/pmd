@@ -280,7 +280,6 @@ public class PMD {
 
         RuleContext context = new RuleContext();
         context.setSourceCodeFile(sourceCodeFile);
-        context.setSourceCodeFilename(sourceCodeFilename);
         context.setReport(new Report());
         return context;
     }

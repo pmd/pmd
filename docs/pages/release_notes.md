@@ -40,6 +40,7 @@ about the usage and features of the rule designer.
 
 *   all
     *   [#1465](https://github.com/pmd/pmd/issues/1465): \[core] Stylesheet pmd-report.xslt fails to display filepath if 'java' in path
+    *   [#1923](https://github.com/pmd/pmd/issues/1923): \[core] Incremental analysis does not work with shortnames
     *   [#1983](https://github.com/pmd/pmd/pull/1983): \[core] Avoid crashes with analysis cache when classpath references non-existing directories
     *   [#1990](https://github.com/pmd/pmd/pull/1990): \[core] Incremental analysis mixes XPath rule violations
 *   java-bestpractices
@@ -54,6 +55,17 @@ about the usage and features of the rule designer.
 
 ### API Changes
 
+#### Changes to Renderer
+
+*   Each renderer has now a new method {% jdoc !!core::renderers.Renderer#setUseShortNames(List) %} which
+    is used for implementing the "shortnames" CLI option. The method is automatically called by PMD, if this
+    CLI option is in use. When rendering filenames to the report, the new helper method
+    {% jdoc !!core::renderers.AbstractRenderer#determineFileName(String) %} should be used. This will change
+    the filename to a short name, if the CLI option "shortnames" is used.
+    
+    Not adjusting custom renderers will make them render always the full file names and not honoring the
+    CLI option "shortnames".
+
 #### Deprecated APIs
 
 ##### For removal
@@ -61,6 +73,13 @@ about the usage and features of the rule designer.
 *   The methods {% jdoc java::lang.java.ast.ASTImportDeclaration#getImportedNameNode() %} and
     {% jdoc java::lang.java.ast.ASTImportDeclaration#getPackage() %} have been deprecated and
     will be removed with PMD 7.0.0.
+*   The method {% jdoc !!core::RuleContext#setSourceCodeFilename(String) %} has been deprecated
+    and will be removed. The already existing method {% jdoc !!core::RuleContext#setSourceCodeFile(File) %}
+    should be used instead. The method {% jdoc !!core::RuleContext#getSourceCodeFilename() %} still
+    exists and returns just the filename without the full path.
+*   The method {% jdoc !!core::processor.AbstractPMDProcessor#filenameFrom(DataSource) %} has been
+    deprecated. It was used to determine a "short name" of the file being analyzed, so that the report
+    can use short names. However, this logic has been moved to the renderers.
 
 
 ##### Internal APIs
