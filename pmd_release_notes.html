@@ -1324,6 +1324,7 @@ won’t be found by default by the rule anymore.</li>
   <li>all
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1465">#1465</a>: [core] Stylesheet pmd-report.xslt fails to display filepath if ‘java’ in path</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1923">#1923</a>: [core] Incremental analysis does not work with shortnames</li>
       <li><a href="https://github.com/pmd/pmd/pull/1983">#1983</a>: [core] Avoid crashes with analysis cache when classpath references non-existing directories</li>
       <li><a href="https://github.com/pmd/pmd/pull/1990">#1990</a>: [core] Incremental analysis mixes XPath rule violations</li>
     </ul>
@@ -1350,6 +1351,21 @@ won’t be found by default by the rule anymore.</li>
 
 <h3 id="api-changes">API Changes</h3>
 
+<h4 id="changes-to-renderer">Changes to Renderer</h4>
+
+<ul>
+  <li>
+    <p>Each renderer has now a new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/renderers/Renderer.html#setUseShortNames(List)"><code class="highlighter-rouge">Renderer#setUseShortNames</code></a> which
+is used for implementing the “shortnames” CLI option. The method is automatically called by PMD, if this
+CLI option is in use. When rendering filenames to the report, the new helper method
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/renderers/AbstractRenderer.html#determineFileName(String)"><code class="highlighter-rouge">AbstractRenderer#determineFileName</code></a> should be used. This will change
+the filename to a short name, if the CLI option “shortnames” is used.</p>
+
+    <p>Not adjusting custom renderers will make them render always the full file names and not honoring the
+CLI option “shortnames”.</p>
+  </li>
+</ul>
+
 <h4 id="deprecated-apis">Deprecated APIs</h4>
 
 <h5 id="for-removal">For removal</h5>
@@ -1358,6 +1374,13 @@ won’t be found by default by the rule anymore.</li>
   <li>The methods <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.18.0/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#getImportedNameNode()"><code class="highlighter-rouge">getImportedNameNode</code></a> and
 <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.18.0/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#getPackage()"><code class="highlighter-rouge">getPackage</code></a> have been deprecated and
 will be removed with PMD 7.0.0.</li>
+  <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/RuleContext.html#setSourceCodeFilename(String)"><code class="highlighter-rouge">RuleContext#setSourceCodeFilename</code></a> has been deprecated
+and will be removed. The already existing method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/RuleContext.html#setSourceCodeFile(File)"><code class="highlighter-rouge">RuleContext#setSourceCodeFile</code></a>
+should be used instead. The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/RuleContext.html#getSourceCodeFilename()"><code class="highlighter-rouge">RuleContext#getSourceCodeFilename</code></a> still
+exists and returns just the filename without the full path.</li>
+  <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/processor/AbstractPMDProcessor.html#filenameFrom(DataSource)"><code class="highlighter-rouge">AbstractPMDProcessor#filenameFrom</code></a> has been
+deprecated. It was used to determine a “short name” of the file being analyzed, so that the report
+can use short names. However, this logic has been moved to the renderers.</li>
 </ul>
 
 <h5 id="internal-apis">Internal APIs</h5>
@@ -1390,7 +1413,7 @@ will be removed with PMD 7.0.0.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 4, 2019 <br />
+ Site last generated: Sep 5, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
