@@ -566,7 +566,7 @@ public class Designer implements ClipboardOwner {
             if (dfaGraphRule != null) {
                 final RuleSet rs = new RuleSetFactory().createSingleRuleRuleSet(dfaGraphRule);
                 RuleContext ctx = new RuleContext();
-                ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
+                ctx.setSourceCodeFile(new File("[no filename]." + languageVersion.getLanguage().getExtensions().get(0)));
                 StringReader reader = new StringReader(codeEditorPane.getText());
                 PMDConfiguration config = new PMDConfiguration();
                 config.setDefaultLanguageVersion(languageVersion);

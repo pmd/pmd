@@ -18,10 +18,15 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * An analysis cache backed by a regular file.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public class FileAnalysisCache extends AbstractAnalysisCache {
 
     private final File cacheFile;
@@ -116,7 +121,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
             for (final Map.Entry<String, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
                 final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
-                outputStream.writeUTF(resultEntry.getKey());
+                outputStream.writeUTF(resultEntry.getKey()); // the full filename
                 outputStream.writeLong(resultEntry.getValue().getFileChecksum());
 
                 outputStream.writeInt(violations.size());

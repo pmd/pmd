@@ -50,6 +50,13 @@ public abstract class AbstractPMDProcessor {
         }
     }
 
+    /**
+     * 
+     * @deprecated this method will be removed. It was once used to determine a short filename
+     * for the file being analyzed, so that shortnames can be reported. But the logic has
+     * been moved to the renderers.
+     */
+    @Deprecated
     protected String filenameFrom(DataSource dataSource) {
         return dataSource.getNiceFileName(configuration.isReportShortNames(), configuration.getInputPaths());
     }
@@ -103,9 +110,10 @@ public abstract class AbstractPMDProcessor {
         SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
         for (DataSource dataSource : files) {
-            String niceFileName = filenameFrom(dataSource);
+            // this is the real, canonical and absolute filename (not shortened)
+            String realFileName = dataSource.getNiceFileName(false, null);
 
-            runAnalysis(new PmdRunnable(dataSource, niceFileName, renderers, ctx, rs, processor));
+            runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
         }
 
         // render base report first - general errors

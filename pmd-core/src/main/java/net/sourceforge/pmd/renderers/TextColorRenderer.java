@@ -122,8 +122,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             buf.setLength(0);
             numberOfWarnings++;
             RuleViolation rv = i.next();
-            if (!rv.getFilename().equals(lastFile)) {
-                lastFile = rv.getFilename();
+            String nextFile = determineFileName(rv.getFilename());
+            if (!nextFile.equals(lastFile)) {
+                lastFile = nextFile;
                 buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold
                         + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
@@ -151,8 +152,9 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
             buf.setLength(0);
             numberOfErrors++;
             Report.ProcessingError error = i.next();
-            if (error.getFile().equals(lastFile)) {
-                lastFile = error.getFile();
+            String nextFile = determineFileName(error.getFile());
+            if (!nextFile.equals(lastFile)) {
+                lastFile = nextFile;
                 buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold
                         + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
