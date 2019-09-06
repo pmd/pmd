@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.processor;
+package net.sourceforge.pmd.internal;
 
 import java.io.StringReader;
 import java.util.Arrays;

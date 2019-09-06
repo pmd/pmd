@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.internal;
 
 import java.util.ArrayList;
@@ -45,7 +41,7 @@ public class RulesetStageDependencyHelper {
     }
 
 
-    public List<AstProcessingStage<?>> testOnlyGetDependencies(RuleSets ruleSets, LanguageVersion languageVersion) {
+    List<AstProcessingStage<?>> testOnlyGetDependencies(RuleSets ruleSets, LanguageVersion languageVersion) {
         return getDependencies(ruleSets, languageVersion);
     }
 
