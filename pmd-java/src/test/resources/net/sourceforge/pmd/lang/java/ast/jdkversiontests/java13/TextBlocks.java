@@ -44,5 +44,12 @@ public class TextBlocks {
                            """;  // the two characters \ LF
 
         String normalStringLiteral = "test";
+
+        String code = 
+            """
+            String text = \"""
+                A text block inside a text block
+            \""";
+            """;
     }
 }

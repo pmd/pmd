@@ -491,7 +491,8 @@ TOKEN_MGR_DECLS :
 
 SPECIAL_TOKEN :
 {
-  " " | "\t" | "\n" | "\r" | "\f"
+  < HORIZONTAL_WHITESPACE: [" ", "\t", "\f"] >
+| < LINE_TERMINATOR: "\n" | "\r" | "\r\n" >
 }
 
 SPECIAL_TOKEN :
@@ -655,34 +656,28 @@ TOKEN :
       )
       "'"
   >
+| < #STRING_ESCAPE:
+      "\\"
+      ( ["n","t","b","r","f","\\","'","\""]
+      // octal escapes
+      | ["0"-"7"] ( ["0"-"7"] )?
+      | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+      )
+  >
 |
   < STRING_LITERAL:
       "\""
       (   (~["\"","\\","\n","\r"])
-        | ("\\"
-            ( ["n","t","b","r","f","\\","'","\""]
-            | ["0"-"7"] ( ["0"-"7"] )?
-            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-            )
-          )
+        | <STRING_ESCAPE>
       )*
       "\""
   >
-}
-
-MORE :
-{
-    < "\"\"\"" > : IN_TEXT_BLOCK
-}
-
-<IN_TEXT_BLOCK> TOKEN :
-{
-    < TEXT_BLOCK_LITERAL: "\"\"\""> : DEFAULT
-}
-
-<IN_TEXT_BLOCK> MORE :
-{
-    < ~[] >
+|
+  < TEXT_BLOCK_LITERAL:
+     "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
+        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
+     "\"\"\""
+  >
 }
 
 /* IDENTIFIERS */
