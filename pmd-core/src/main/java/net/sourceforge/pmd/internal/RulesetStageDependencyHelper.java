@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Rule;
@@ -33,7 +34,7 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 public class RulesetStageDependencyHelper {
 
     // cache by ruleset
-    private final Map<RuleSets, Map<LanguageVersion, List<AstProcessingStage<?>>>> dependenciesByRuleset = new HashMap<>();
+    private final Map<RuleSets, Map<LanguageVersion, List<AstProcessingStage<?>>>> dependenciesByRuleset = new ConcurrentHashMap<>();
     private final PMDConfiguration configuration;
 
     public RulesetStageDependencyHelper(PMDConfiguration configuration) {
@@ -47,7 +48,7 @@ public class RulesetStageDependencyHelper {
 
     /** Gets the stage dependencies of the ruleset for the given language version. */
     private List<AstProcessingStage<?>> getDependencies(RuleSets ruleSets, LanguageVersion languageVersion) {
-        Map<LanguageVersion, List<AstProcessingStage<?>>> byLanguage = dependenciesByRuleset.computeIfAbsent(ruleSets, r -> new HashMap<>());
+        Map<LanguageVersion, List<AstProcessingStage<?>>> byLanguage = dependenciesByRuleset.computeIfAbsent(ruleSets, r -> new ConcurrentHashMap<>());
 
         return byLanguage.computeIfAbsent(languageVersion, l -> buildDependencyList(ruleSets, l));
     }
