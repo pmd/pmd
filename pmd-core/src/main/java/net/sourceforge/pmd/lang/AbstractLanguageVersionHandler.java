@@ -50,6 +50,7 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
         return VisitorStarter.DUMMY;
     }
 
+    @Deprecated
     @Override
     public VisitorStarter getMultifileFacade() {
         return VisitorStarter.DUMMY;

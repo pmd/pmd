@@ -421,10 +421,12 @@ public interface Rule extends PropertySource {
     void addRuleChainVisit(Class<? extends Node> nodeClass);
 
     /**
-     * Adds an AST node by name to be visited by the Rule on the RuleChain.
+     * Adds an AST node by XPath name to be visited by the Rule on the RuleChain.
      *
      * @param astNodeName
-     *            the AST node to add to the RuleChain visit list as string
+     *            the XPath name of the node to add to the RuleChain visit list
+     *
+     * @see Node#getXPathNodeName()
      */
     void addRuleChainVisit(String astNodeName);
 

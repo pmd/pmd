@@ -22,7 +22,7 @@ A rule for the politically correct... we don't want to offend anyone.
 **Example(s):**
 
 ``` java
-//OMG, this is horrible, Bob is an idiot !!!
+{%raw%}//OMG, this is horrible, Bob is an idiot !!!{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -60,11 +60,11 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 **Example(s):**
 
 ``` java
-/**
+{%raw%}/**
 * 
 *
 * @author Jon Doe
-*/
+*/{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -79,6 +79,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
 |protectedMethodCommentRequirement|Required|Protected method constructor comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 |enumCommentRequirement|Required|Enum comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 |serialVersionUIDCommentRequired|Ignored|Serial version UID comments. Possible values: \[Required, Ignored, Unwanted\]|no|
+|serialPersistentFieldsCommentRequired|Ignored|Serial persistent fields comments. Possible values: \[Required, Ignored, Unwanted\]|no|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
@@ -97,6 +98,7 @@ Denotes whether comments are required (or unwanted) for specific language elemen
         <property name="protectedMethodCommentRequirement" value="Required" />
         <property name="enumCommentRequirement" value="Required" />
         <property name="serialVersionUIDCommentRequired" value="Ignored" />
+        <property name="serialPersistentFieldsCommentRequired" value="Ignored" />
     </properties>
 </rule>
 ```
@@ -114,7 +116,7 @@ Determines whether the dimensions of non-header comments found are within the sp
 **Example(s):**
 
 ``` java
-/**
+{%raw%}/**
 *
 *   too many lines!
 *
@@ -129,7 +131,7 @@ Determines whether the dimensions of non-header comments found are within the sp
 *
 *
 *
-*/
+*/{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -175,9 +177,9 @@ and unintentional empty constructors.
 **Example(s):**
 
 ``` java
-public Foo() {
+{%raw%}public Foo() {
   // This constructor is intentionally empty. Nothing special is needed here.
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -219,8 +221,8 @@ empty methods.
 **Example(s):**
 
 ``` java
-public void doSomething() {
-}
+{%raw%}public void doSomething() {
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**

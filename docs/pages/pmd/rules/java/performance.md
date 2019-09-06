@@ -26,8 +26,8 @@ It is much better to use one of the type-specific toString() methods instead.
 **Example(s):**
 
 ``` java
-String s = "" + 123;                // inefficient
-String t = Integer.toString(456);   // preferred approach
+{%raw%}String s = "" + 123;                // inefficient
+String t = Integer.toString(456);   // preferred approach{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -48,11 +48,11 @@ Avoid concatenating characters as strings in StringBuffer/StringBuilder.append m
 **Example(s):**
 
 ``` java
-StringBuffer sb = new StringBuffer();
+{%raw%}StringBuffer sb = new StringBuffer();
 sb.append("a");     // avoid this
 
 StringBuffer sb = new StringBuffer();
-sb.append('a');     // use this instead
+sb.append('a');     // use this instead{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -91,7 +91,7 @@ or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
 **Example(s):**
 
 ``` java
-public class Test {
+{%raw%}public class Test {
     public void bar() {
         int[] a = new int[10];
         int[] b = new int[10];
@@ -105,7 +105,7 @@ public class Test {
             b[i]=a[c[i]];
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -151,7 +151,7 @@ that one covers both.
 **Example(s):**
 
 ``` java
-// these instantiations cause garbage collection pauses, even if properly closed
+{%raw%}// these instantiations cause garbage collection pauses, even if properly closed
 
     FileInputStream fis = new FileInputStream(fileName);
     FileOutputStream fos = new FileOutputStream(fileName);
@@ -167,7 +167,7 @@ that one covers both.
     try(BufferedReader br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8)) {
     }
     try(BufferedWriter wr = Files.newBufferedWriter(Paths.get(fileName), StandardCharsets.UTF_8)) {
-    }
+    }{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -188,13 +188,13 @@ New objects created within loops should be checked to see if they can created ou
 **Example(s):**
 
 ``` java
-public class Something {
+{%raw%}public class Something {
     public static void main( String as[] ) {
         for (int i = 0; i < 10; i++) {
             Foo f = new Foo(); // Avoid this whenever you can it's really expensive
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -231,14 +231,14 @@ adverse impacts on performance.
 **Example(s):**
 
 ``` java
-public class UsingShort {
+{%raw%}public class UsingShort {
    private short doNotUseShort = 0;
 
    public UsingShort() {
     short shouldNotBeUsed = 1;
     doNotUseShort += shouldNotBeUsed;
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -260,11 +260,11 @@ for Java 1.5 onwards, BigInteger.TEN and BigDecimal (BigDecimal.ZERO, BigDecimal
 **Example(s):**
 
 ``` java
-BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
+{%raw%}BigInteger bi = new BigInteger(1);       // reference BigInteger.ONE instead
 BigInteger bi2 = new BigInteger("0");    // reference BigInteger.ZERO instead
 BigInteger bi3 = new BigInteger(0.0);    // reference BigInteger.ZERO instead
 BigInteger bi4;
-bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead
+bi4 = new BigInteger(0);                 // reference BigInteger.ZERO instead{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -286,8 +286,8 @@ Note that new Boolean() is deprecated since JDK 9 for that reason.
 **Example(s):**
 
 ``` java
-Boolean bar = new Boolean("true");        // unnecessary creation, just reference Boolean.TRUE;
-Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;
+{%raw%}Boolean bar = new Boolean("true");        // unnecessary creation, just reference Boolean.TRUE;
+Boolean buz = Boolean.valueOf(false);    // ...., just reference Boolean.FALSE;{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -315,9 +315,9 @@ and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Byte')]]
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private Byte i = new Byte(0); // change to Byte i = Byte.valueOf(0);
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -339,7 +339,7 @@ by producing a smaller bytecode, reducing overhead and improving inlining. A com
 **Example(s):**
 
 ``` java
-String foo = " ";
+{%raw%}String foo = " ";
 
 StringBuffer buf = new StringBuffer();
 buf.append("Hello"); // poor
@@ -347,7 +347,7 @@ buf.append(foo);
 buf.append("World");
 
 StringBuffer buf = new StringBuffer();
-buf.append("Hello").append(foo).append("World"); // good
+buf.append("Hello").append(foo).append("World"); // good{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -370,7 +370,7 @@ can be appended in a single method call.
 **Example(s):**
 
 ``` java
-StringBuilder buf = new StringBuilder();
+{%raw%}StringBuilder buf = new StringBuilder();
 buf.append("Hello").append(" ").append("World");    // poor
 buf.append("Hello World");                          // good
 
@@ -378,7 +378,7 @@ buf.append('h').append('e').append('l').append('l').append('o'); // poor
 buf.append("hello");                                             // good
 
 buf.append(1).append('m');  // poor
-buf.append("1m");           // good
+buf.append("1m");           // good{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -434,11 +434,11 @@ include the check for != null).
 **Example(s):**
 
 ``` java
-public void bar(String string) {
+{%raw%}public void bar(String string) {
     if (string != null && string.trim().length() > 0) {
         doSomething();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -460,12 +460,12 @@ need to be be created and destroyed by the JVM.
 **Example(s):**
 
 ``` java
-// Avoid this, two buffers are actually being created here
+{%raw%}// Avoid this, two buffers are actually being created here
 StringBuffer sb = new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
 
 // do this instead
 StringBuffer sb = new StringBuffer("tmp = ");
-sb.append(System.getProperty("java.io.tmpdir"));
+sb.append(System.getProperty("java.io.tmpdir"));{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -490,11 +490,11 @@ is assumed if the length of the constructor can not be determined.
 **Example(s):**
 
 ``` java
-StringBuffer bad = new StringBuffer();
+{%raw%}StringBuffer bad = new StringBuffer();
 bad.append("This is a long string that will exceed the default 16 characters");
 
 StringBuffer good = new StringBuffer(41);
-good.append("This is a long string, which is pre-sized");
+good.append("This is a long string, which is pre-sized");{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -522,9 +522,9 @@ Note that new Integer() is deprecated since JDK 9 for that reason.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -552,9 +552,9 @@ and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Long')]]
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private Long i = new Long(0); // change to Long i = Long.valueOf(0);
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -596,14 +596,14 @@ PrimarySuffix/Arguments/ArgumentList/Expression
 **Example(s):**
 
 ``` java
-List<Foo> foos = getFoos();
+{%raw%}List<Foo> foos = getFoos();
 
 // much better; this one allows the jvm to allocate an array of the correct size and effectively skip
 // the zeroing, since each array element will be overridden anyways
 Foo[] fooArray = foos.toArray(new Foo[0]);
 
 // inefficient, the array needs to be zeroed out by the jvm before it is handed over to the toArray method
-Foo[] fooArray = foos.toArray(new Foo[foos.size()]);
+Foo[] fooArray = foos.toArray(new Foo[foos.size()]);{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -625,7 +625,7 @@ is redundant and results in a larger class file (approximately three additional 
 **Example(s):**
 
 ``` java
-public class C {
+{%raw%}public class C {
     boolean b   = false;    // examples of redundant initializers
     byte by     = 0;
     short s     = 0;
@@ -643,7 +643,7 @@ public class C {
     class Nested {
         boolean b = false;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -671,9 +671,9 @@ and ClassOrInterfaceType[pmd-java:typeIs('java.lang.Short')]]
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private Short i = new Short(0); // change to Short i = Short.valueOf(0);
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -707,7 +707,7 @@ at the expense of some readability.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
 
     boolean checkIt(String x) {
         return x.startsWith("a");   // suboptimal
@@ -716,7 +716,7 @@ public class Foo {
     boolean fasterCheckIt(String x) {
         return x.charAt(0) == 'a';  // faster approach
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -737,7 +737,7 @@ Avoid instantiating String objects; this is usually unnecessary since they are i
 **Example(s):**
 
 ``` java
-private String bar = new String("bar"); // just do a String bar = "bar";
+{%raw%}private String bar = new String("bar"); // just do a String bar = "bar";{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -758,10 +758,10 @@ Avoid calling toString() on objects already known to be string instances; this i
 **Example(s):**
 
 ``` java
-private String baz() {
+{%raw%}private String baz() {
     String bar = "howdy";
     return bar.toString();
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -789,7 +789,7 @@ if-then statement to increase code readability.
 **Example(s):**
 
 ``` java
-// With a minimumNumberCaseForASwitch of 3
+{%raw%}// With a minimumNumberCaseForASwitch of 3
 public class Foo {
     public void bar() {
         switch (condition) {
@@ -800,7 +800,7 @@ public class Foo {
                 break; // not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -838,7 +838,7 @@ garbage-collected later.
 **Example(s):**
 
 ``` java
-public int convert(String s) {
+{%raw%}public int convert(String s) {
     int i, i2;
 
     i = Integer.valueOf(s).intValue();  // this wastes an object
@@ -851,7 +851,7 @@ public int convert(String s) {
     s3 = Integer.toString(i2);                  // this is better
 
     return i2;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -877,12 +877,12 @@ ArrayList is a much better Collection implementation than Vector if thread-safe 
 **Example(s):**
 
 ``` java
-public class SimpleTest extends TestCase {
+{%raw%}public class SimpleTest extends TestCase {
     public void testX() {
     Collection c1 = new Vector();
     Collection c2 = new ArrayList();    // achieves the same with much better performance
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -943,7 +943,7 @@ You must use new ArrayList&lt;&gt;(Arrays.asList(...)) if that is inconvenient f
 **Example(s):**
 
 ``` java
-public class Test {
+{%raw%}public class Test {
     public void foo(Integer[] ints) {
         // could just use Arrays.asList(ints)
         List<Integer> l= new ArrayList<>(100);
@@ -954,7 +954,7 @@ public class Test {
             l.add(a[i].toString()); // won't trigger the rule
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -975,11 +975,11 @@ Use String.indexOf(char) when checking for the index of a single character; it e
 **Example(s):**
 
 ``` java
-String s = "hello world";
+{%raw%}String s = "hello world";
 // avoid this
 if (s.indexOf("d") {}
 // instead do this
-if (s.indexOf('d') {}
+if (s.indexOf('d') {}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1000,12 +1000,12 @@ No need to call String.valueOf to append to a string; just use the valueOf() arg
 **Example(s):**
 
 ``` java
-public String convert(int i) {
+{%raw%}public String convert(int i) {
     String s;
     s = "a" + String.valueOf(i);    // not required
     s = "a" + i;                    // preferred approach
     return s;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1028,7 +1028,7 @@ threadsafe StringBuffer is recommended to avoid this.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void bar() {
         String a;
         a = "foo";
@@ -1037,7 +1037,7 @@ public class Foo {
         // StringBuilder a = new StringBuilder("foo");
         // a.append(" bar");
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1059,11 +1059,11 @@ or StringBuffer.toString().length() == ...
 **Example(s):**
 
 ``` java
-StringBuffer sb = new StringBuffer();
+{%raw%}StringBuffer sb = new StringBuffer();
 
 if (sb.toString().equals("")) {}        // inefficient
 
-if (sb.length() == 0) {}                // preferred
+if (sb.length() == 0) {}                // preferred{%endraw%}
 ```
 
 **Use this rule by referencing it:**

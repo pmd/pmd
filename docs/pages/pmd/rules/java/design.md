@@ -30,10 +30,10 @@ protected constructor in order to prevent instantiation than make the class misl
 **Example(s):**
 
 ``` java
-public abstract class Example {
+{%raw%}public abstract class Example {
     String field;
     int otherField;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -60,7 +60,7 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
 **Example(s):**
 
 ``` java
-package com.igate.primitive;
+{%raw%}package com.igate.primitive;
 
 public class PrimitiveType {
 
@@ -75,7 +75,7 @@ public class PrimitiveType {
             e.printStackTrace();
         }
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -96,7 +96,7 @@ Avoid creating deeply nested if-then statements since they are harder to read an
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   public void bar(int x, int y, int z) {
     if (x>y) {
       if (y>z) {
@@ -106,7 +106,7 @@ public class Foo {
       }
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -148,13 +148,13 @@ Catch blocks that merely rethrow a caught exception only add to code size and ru
 **Example(s):**
 
 ``` java
-public void bar() {
+{%raw%}public void bar() {
     try {
         // do something
     }  catch (SomeException se) {
        throw se;
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -187,14 +187,14 @@ code size and runtime complexity.
 **Example(s):**
 
 ``` java
-public void bar() {
+{%raw%}public void bar() {
     try {
         // do something
     } catch (SomeException se) {
         // harmless comment
         throw new SomeException(se);
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -244,11 +244,11 @@ public class Foo {
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     void bar() {
         throw new NullPointerException();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -282,11 +282,11 @@ or
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar() throws Exception {
         throw new Exception();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -315,8 +315,8 @@ exceptional cases with a `@throws` Javadoc tag, which allows being more descript
 **Example(s):**
 
 ``` java
-public void foo() throws RuntimeException {
-}
+{%raw%}public void foo() throws RuntimeException {
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -345,9 +345,9 @@ TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
 **Example(s):**
 
 ``` java
-public class Foo {  //Should be final
+{%raw%}public class Foo {  //Should be final
     private Foo() { }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -376,7 +376,7 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
 **Example(s):**
 
 ``` java
-void bar() {
+{%raw%}void bar() {
     if (x) {            // original implementation
         if (y) {
             // do stuff
@@ -388,7 +388,7 @@ void bar() {
     if (x && y) {        // optimized implementation
         // do stuff
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -410,7 +410,7 @@ A number higher than the specified threshold can indicate a high degree of coupl
 **Example(s):**
 
 ``` java
-import com.Blah;
+{%raw%}import com.Blah;
 import org.Bar;
 import org.Bardo;
 
@@ -425,7 +425,7 @@ public class Foo {
         ObjectZ var93;
         return something;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -464,7 +464,7 @@ details on the calculation, see the documentation of the [Cyclo metric](pmd_java
 
 Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
 high complexity, and 11+ is very high complexity. By default, this rule reports methods with a complexity &gt;= 10.
-Additionnally, classes with many methods of moderate complexity get reported as well once the total of their
+Additionally, classes with many methods of moderate complexity get reported as well once the total of their
 methods' complexities reaches 80, even if none of the methods was directly reported.
 
 Reported methods should be broken down into several smaller methods. Reported classes should probably be broken down
@@ -475,7 +475,7 @@ into subcomponents.
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
   void baseCyclo() {                // Cyclo = 1
     highCyclo();
   }
@@ -498,7 +498,7 @@ class Foo {
       }
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -550,7 +550,7 @@ into the former client classes.
 **Example(s):**
 
 ``` java
-public class DataClass {
+{%raw%}public class DataClass {
 
   public int bar = 0;
   public int na = 0;
@@ -559,7 +559,7 @@ public class DataClass {
   public void setBee(int n) {
     bee = n;
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -584,7 +584,7 @@ Errors are system exceptions. Do not extend them.
 **Example(s):**
 
 ``` java
-public class Foo extends Error { }
+{%raw%}public class Foo extends Error { }{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -606,7 +606,7 @@ Either add the necessary validation or use an alternate control structure.
 **Example(s):**
 
 ``` java
-public void bar() {
+{%raw%}public void bar() {
     try {
         try {
         } catch (Exception e) {
@@ -616,7 +616,7 @@ public void bar() {
     } catch (WrapperException e) {
         // do some more stuff
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -639,7 +639,7 @@ apart the code becomes more manageable and ripe for reuse.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public void bar1() {
         // 1000 lines of code
     }
@@ -653,7 +653,7 @@ public class Foo {
     public void barN() {
         // 1000 lines of code
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -693,12 +693,12 @@ user-specified threshold.
 **Example(s):**
 
 ``` java
-import blah.blah.Baz;
+{%raw%}import blah.blah.Baz;
 import blah.blah.Bif;
 // 18 others from the same package elided
 public class Foo {
     public void doWork() {}
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -739,11 +739,11 @@ Try to reduce the method length by creating helper methods and removing any copy
 **Example(s):**
 
 ``` java
-public void doSomething() {
+{%raw%}public void doSomething() {
     System.out.println("Hello world!");
     System.out.println("Hello world!");
     // 98 copies omitted for brevity.
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -782,7 +782,7 @@ same datatype. These situations usually denote the need for new objects to wrap 
 **Example(s):**
 
 ``` java
-public void addPerson(      // too many arguments liable to be mixed up
+{%raw%}public void addPerson(      // too many arguments liable to be mixed up
     int birthYear, int birthMonth, int birthDate, int height, int weight, int ssn) {
 
     . . . .
@@ -792,7 +792,7 @@ public void addPerson(      // preferred approach
     Date birthdate, BodyMeasurements measurements, int ssn) {
 
     . . . .
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -833,7 +833,7 @@ developed easily.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public String value;
     public Bar something;
     public Variable var;
@@ -843,7 +843,7 @@ public class Foo {
     public void doMoreWork() {}
     public void doWorkAgain() {}
     // [... more more public methods ...]
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -888,9 +888,9 @@ in each object at runtime.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   public final int BAR = 42; // this could be static and save some space
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -936,7 +936,7 @@ of the field or by a constructor.  This helps in converting existing classes to 
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   private int x; // could be final
   public Foo() {
       x = 7;
@@ -944,7 +944,7 @@ public class Foo {
   public void foo() {
      int a = x + 2;
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -988,7 +988,7 @@ See also the references:
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     /**
      * This example will result in two violations.
      */
@@ -1008,7 +1008,7 @@ public class Foo {
         // this method call is ok, because we have create the new instance of D locally.
         d.doSomethingElse(); 
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1032,7 +1032,7 @@ Use opposite operator instead of negating the whole expression with a logic comp
 **Example(s):**
 
 ``` java
-public boolean bar(int a, int b) {
+{%raw%}public boolean bar(int a, int b) {
 
     if (!(a == b)) { // use !=
          return false;
@@ -1043,7 +1043,7 @@ public boolean bar(int a, int b) {
     }
 
     return true;
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1065,13 +1065,13 @@ except when using one of the configured allowed classes.
 **Example(s):**
 
 ``` java
-package some.package;
+{%raw%}package some.package;
 
 import some.other.package.subpackage.subsubpackage.DontUseThisClass;
 
 public class Bar {
     DontUseThisClass boo = new DontUseThisClass();
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1118,7 +1118,7 @@ by the rule {% rule java/design/CyclomaticComplexity %}.
 **Example(s):**
 
 ``` java
-public class Foo {    // This has a Cyclomatic Complexity = 9
+{%raw%}public class Foo {    // This has a Cyclomatic Complexity = 9
 1   public void example()  {
 2       if (a == b)  {
 3           if (a1 == b1) {
@@ -1153,7 +1153,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1200,7 +1200,7 @@ by the rule {% rule java/design/NcssCount %}.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     public Foo() {
         super();
 
@@ -1211,7 +1211,7 @@ public class Foo extends Bar {
         //this constructor only has 1 NCSS lines
         super.foo();
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1245,14 +1245,14 @@ public class Foo extends Bar {
 This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
 of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
 statements. For more details on the calculation, see the documentation of
-the [NCSS metric](/pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
+the [NCSS metric](pmd_java_metrics_index.html#non-commenting-source-statements-ncss).
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.design.NcssCountRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/design/NcssCountRule.java)
 
 **Example(s):**
 
 ``` java
-import java.util.Collections;       // +0
+{%raw%}import java.util.Collections;       // +0
 import java.io.IOException;         // +0
 
 class Foo {                         // +1, total Ncss = 12
@@ -1276,7 +1276,7 @@ class Foo {                         // +1, total Ncss = 12
       assert false;                 // +1
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1323,7 +1323,7 @@ by the rule {% rule java/design/NcssCount %}.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     public int methd() {
         super.methd();
 
@@ -1335,7 +1335,7 @@ public class Foo extends Bar {
         //this method only has 1 NCSS lines
         return 1;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1380,7 +1380,7 @@ by the rule {% rule java/design/NcssCount %}.
 **Example(s):**
 
 ``` java
-public class Foo extends Bar {
+{%raw%}public class Foo extends Bar {
     public Foo() {
         //this class only has 6 NCSS lines
         super();
@@ -1391,7 +1391,7 @@ public class Foo extends Bar {
 
         super.foo();
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1426,7 +1426,7 @@ The NPath complexity of a method is the number of acyclic execution paths throug
 While cyclomatic complexity counts the number of decision points in a method, NPath counts the number of
 full paths from the beginning to the end of the block of the method. That metric grows exponentially, as
 it multiplies the complexity of statements in the same block. For more details on the calculation, see the
-documentation of the [NPath metric](/pmd_java_metrics_index.html#npath-complexity-npath).
+documentation of the [NPath metric](pmd_java_metrics_index.html#npath-complexity-npath).
 
 A threshold of 200 is generally considered the point where measures should be taken to reduce
 complexity and increase readability.
@@ -1436,7 +1436,7 @@ complexity and increase readability.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   public static void bar() { // Ncss = 252: reported!
     boolean a, b = true;
     try { // 2 * 2 + 2 = 6
@@ -1469,7 +1469,7 @@ public class Foo {
         List buz = new ArrayList();
     } while (a && j++ < 30);
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1509,8 +1509,8 @@ derived from RuntimeException or a checked exception.
 **Example(s):**
 
 ``` java
-public void foo() throws Exception {
-}
+{%raw%}public void foo() throws Exception {
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1559,7 +1559,7 @@ or
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     public boolean test() {
         return condition ? true : something(); // can be as simple as return condition || something();
     }
@@ -1575,7 +1575,7 @@ public class Foo {
     public void test4() {
         final boolean otherValue = condition ? something() : false; // can be as simple as condition && something();
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1622,12 +1622,12 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
 **Example(s):**
 
 ``` java
-public class SimpleTest extends TestCase {
+{%raw%}public class SimpleTest extends TestCase {
     public void testX() {
         assertTrue("not empty", !r.isEmpty());  // replace with assertFalse("not empty", r.isEmpty())
         assertFalse(!r.isEmpty());              // replace with assertTrue(r.isEmpty())
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1652,13 +1652,13 @@ Avoid unnecessary comparisons in boolean expressions, they serve no purpose and 
 **Example(s):**
 
 ``` java
-public class Bar {
+{%raw%}public class Bar {
   // can be simplified to
   // bar = isFoo();
   private boolean bar = (isFoo() == true);
 
   public isFoo() { return false;}
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1680,7 +1680,7 @@ the conditional test can be returned instead.
 **Example(s):**
 
 ``` java
-public boolean isBarEqualTo(int x) {
+{%raw%}public boolean isBarEqualTo(int x) {
     if (bar == x) {      // this bit of code...
         return true;
     } else {
@@ -1690,7 +1690,7 @@ public boolean isBarEqualTo(int x) {
 
 public boolean isBarEqualTo(int x) {
     return bar == x;    // can be replaced with this
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1737,13 +1737,13 @@ InstanceOfExpression
 **Example(s):**
 
 ``` java
-class Foo {
+{%raw%}class Foo {
   void bar(Object x) {
     if (x != null && x instanceof Bar) {
       // just drop the "x != null" check
     }
   }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -1766,20 +1766,20 @@ within those methods.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
     private int x;  // no reason to exist at the Foo instance level
     public void foo(int y) {
      x = y + 5;
      return x;
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
 
 |Name|Default Value|Description|Multivalued|
 |----|-------------|-----------|-----------|
-|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+|ignoredAnnotations|lombok.Setter \| lombok.Getter \| lombok.Builder \| lombok.Data \| lombok.RequiredArgsConstructor \| lombok.AllArgsConstructor \| lombok.Value \| lombok.NoArgsConstructor \| lombok.experimental.Delegate|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
 |checkInnerClasses|false|Check inner classes|no|
 |disallowNotAssignment|false|Disallow violations where the first usage is not an assignment|no|
 
@@ -1792,7 +1792,7 @@ public class Foo {
 ``` xml
 <rule ref="category/java/design.xml/SingularField">
     <properties>
-        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor" />
+        <property name="ignoredAnnotations" value="lombok.Setter|lombok.Getter|lombok.Builder|lombok.Data|lombok.RequiredArgsConstructor|lombok.AllArgsConstructor|lombok.Value|lombok.NoArgsConstructor|lombok.experimental.Delegate" />
         <property name="checkInnerClasses" value="false" />
         <property name="disallowNotAssignment" value="false" />
     </properties>
@@ -1820,7 +1820,7 @@ by the rule {% rule java/design/CyclomaticComplexity %}.
 **Example(s):**
 
 ``` java
-public class Foo {    // This has a Cyclomatic Complexity = 12
+{%raw%}public class Foo {    // This has a Cyclomatic Complexity = 12
 1   public void example()  {
 2       if (a == b || (c == d && e == f))  { // Only one
 3           if (a1 == b1) {
@@ -1855,7 +1855,7 @@ public class Foo {    // This has a Cyclomatic Complexity = 12
             }
         }
     }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1897,7 +1897,7 @@ on the switch variable.
 **Example(s):**
 
 ``` java
-public class Foo {
+{%raw%}public class Foo {
   public void bar(int x) {
     switch (x) {
       case 1: {
@@ -1909,7 +1909,7 @@ public class Foo {
       }
     }
   }
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -1949,7 +1949,7 @@ city/state/zip fields could park them within a single Address field.
 **Example(s):**
 
 ``` java
-public class Person {   // too many separate fields
+{%raw%}public class Person {   // too many separate fields
    int birthYear;
    int birthMonth;
    int birthDate;
@@ -1960,7 +1960,7 @@ public class Person {   // too many separate fields
 public class Person {   // this is more manageable
    Date birthDate;
    BodyMeasurements measurements;
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2041,7 +2041,7 @@ The overriding method merely calls the same method defined in a superclass.
 **Example(s):**
 
 ``` java
-public void foo(String bar) {
+{%raw%}public void foo(String bar) {
     super.foo(bar);      // why bother overriding?
 }
 
@@ -2052,7 +2052,7 @@ public String foo() {
 @Id
 public Long getId() {
     return super.getId();  // OK if 'ignoreAnnotations' is false, which is the default behavior
-}
+}{%endraw%}
 ```
 
 **This rule has the following properties:**
@@ -2098,7 +2098,7 @@ your API.
 **Example(s):**
 
 ``` java
-public class MyClass {
+{%raw%}public class MyClass {
     public void connect(String username,
         String pssd,
         String databaseName,
@@ -2110,7 +2110,7 @@ public class MyClass {
     {
 
     }
-}
+}{%endraw%}
 ```
 
 **Use this rule by referencing it:**
@@ -2135,14 +2135,29 @@ remember to add a private constructor to prevent instantiation.
 **Example(s):**
 
 ``` java
-public class MaybeAUtility {
+{%raw%}public class MaybeAUtility {
   public static void foo() {}
   public static void bar() {}
-}
+}{%endraw%}
 ```
 
-**Use this rule by referencing it:**
+**This rule has the following properties:**
+
+|Name|Default Value|Description|Multivalued|
+|----|-------------|-----------|-----------|
+|ignoredAnnotations|lombok.experimental.UtilityClass|Fully qualified names of the annotation types that should be ignored by this rule|yes. Delimiter is '\|'.|
+
+**Use this rule with the default properties by just referencing it:**
 ``` xml
 <rule ref="category/java/design.xml/UseUtilityClass" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/design.xml/UseUtilityClass">
+    <properties>
+        <property name="ignoredAnnotations" value="lombok.experimental.UtilityClass" />
+    </properties>
+</rule>
 ```
 
