@@ -1381,6 +1381,8 @@ exists and returns just the filename without the full path.</li>
   <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/processor/AbstractPMDProcessor.html#filenameFrom(DataSource)"><code class="highlighter-rouge">AbstractPMDProcessor#filenameFrom</code></a> has been
 deprecated. It was used to determine a “short name” of the file being analyzed, so that the report
 can use short names. However, this logic has been moved to the renderers.</li>
+  <li>The method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/Report.html#metrics()"><code class="highlighter-rouge">Report#metrics</code></a> and <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/Report.html#"><code class="highlighter-rouge">Report</code></a> have
+been deprecated. They were leftovers from a previous deprecation round targeting <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/lang/rule/StatisticalRule.html#"><code class="highlighter-rouge">StatisticalRule</code></a>.</li>
 </ul>
 
 <h5 id="internal-apis">Internal APIs</h5>
@@ -1413,7 +1415,7 @@ can use short names. However, this logic has been moved to the renderers.</li>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 5, 2019 <br />
+ Site last generated: Sep 6, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
