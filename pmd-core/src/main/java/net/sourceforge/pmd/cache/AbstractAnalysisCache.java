@@ -33,11 +33,16 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.stat.Metric;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public abstract class AbstractAnalysisCache implements AnalysisCache {
 
     protected static final Logger LOG = Logger.getLogger(AbstractAnalysisCache.class.getName());
@@ -193,7 +198,7 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
                             EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, jarFileVisitor);
                 } else if (f.isFile()) {
                     entries.add(f.toURI().toURL());
-                } else {
+                } else if (f.exists()) { // ignore non-existing directories
                     Files.walkFileTree(f.toPath(), EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE,
                             fileVisitor);
                 }
