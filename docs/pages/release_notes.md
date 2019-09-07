@@ -89,7 +89,8 @@ about the usage and features of the rule designer.
     deprecated. It was used to determine a "short name" of the file being analyzed, so that the report
     can use short names. However, this logic has been moved to the renderers.
 *   The method {% jdoc !!core::Report#metrics() %} and {% jdoc core::Report::hasMetrics() %} have
-    been deprecated. They were leftovers from a previous deprecation round targeting {% jdoc core::lang.rule.StatisticalRule %}.
+    been deprecated. They were leftovers from a previous deprecation round targeting
+    {% jdoc core::lang.rule.stat.StatisticalRule %}.
 
 ##### Internal APIs
 
