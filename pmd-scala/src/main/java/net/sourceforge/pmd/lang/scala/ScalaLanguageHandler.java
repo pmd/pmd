@@ -4,15 +4,9 @@
 
 package net.sourceforge.pmd.lang.scala;
 
-import java.io.Writer;
-
 import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.scala.ast.DumpFacade;
-import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
 import net.sourceforge.pmd.lang.scala.rule.ScalaRuleViolationFactory;
 
 import scala.meta.Dialect;
@@ -52,15 +46,4 @@ public class ScalaLanguageHandler extends AbstractLanguageVersionHandler {
     public ScalaParser getParser(ParserOptions parserOptions) {
         return new ScalaParser(dialect, parserOptions);
     }
-
-    @Override
-    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            @Override
-            public void start(Node rootNode) {
-                new DumpFacade().dump(writer, prefix, recurse, (ScalaNode<?>) rootNode);
-            }
-        };
-    }
-
 }

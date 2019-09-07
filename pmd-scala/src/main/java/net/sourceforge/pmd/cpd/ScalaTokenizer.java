@@ -29,7 +29,7 @@ public class ScalaTokenizer implements Tokenizer {
      * Denotes the version of the scala dialect to use. Based on the values in
      * {@linkplain ScalaLanguageModule#getVersions()}
      */
-    public static final String SCALA_VERSION_PROPERTY = "scala_version";
+    public static final String SCALA_VERSION_PROPERTY = "net.sourceforge.pmd.scala.version";
     private final Dialect dialect;
 
     /**

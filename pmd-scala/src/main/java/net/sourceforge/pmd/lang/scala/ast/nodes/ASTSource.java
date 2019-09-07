@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala.ast.nodes;
 
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitor;
 
 import scala.meta.Source;
@@ -11,7 +12,7 @@ import scala.meta.Source;
 /**
  * The ASTSource node implementation.
  */
-public class ASTSource extends AbstractScalaNode<Source> {
+public class ASTSource extends AbstractScalaNode<Source> implements RootNode {
 
     /**
      * Create the AST node for this Scala node.
