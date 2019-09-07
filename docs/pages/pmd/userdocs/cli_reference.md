@@ -179,6 +179,7 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [plsql](pmd_rules_plsql.html)
+*   [scala](pmd_rules_scala.html)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
 *   [xml and xsl](pmd_rules_xml.html)
