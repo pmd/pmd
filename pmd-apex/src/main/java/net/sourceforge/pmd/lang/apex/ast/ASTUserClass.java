@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.Rule;
@@ -79,9 +80,9 @@ public class ASTUserClass extends ApexRootNode<UserClass> implements ASTUserClas
             .orElse("");
     }
 
-    public String getInterfaceNames() {
+    public List<String> getInterfaceNames() {
         return node.getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs().stream()
                 .map(TypeRef::getNames).map(it -> it.stream().map(Identifier::getValue).collect(Collectors.joining(".")))
-                .collect(Collectors.joining(","));
+                .collect(Collectors.toList());
     }
 }

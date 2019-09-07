@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,6 +21,6 @@ public class ASTUserTriggerTest {
         Assert.assertEquals("HelloWorldTrigger", node.getImage());
         ASTUserTrigger trigger = (ASTUserTrigger) node;
         Assert.assertEquals("Book__c", trigger.getTargetName());
-        Assert.assertEquals("AFTER_UPDATE,BEFORE_INSERT", trigger.getUsages());
+        Assert.assertEquals(Arrays.asList(TriggerUsage.AFTER_UPDATE, TriggerUsage.BEFORE_INSERT), trigger.getUsages());
     }
 }

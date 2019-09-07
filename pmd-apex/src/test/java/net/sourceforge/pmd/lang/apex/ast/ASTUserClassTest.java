@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static net.sourceforge.pmd.lang.apex.ast.ApexParserTestHelpers.parse;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,6 +52,6 @@ public class ASTUserClassTest {
         ApexNode<?> node = parse("public class AccountTriggerHandler implements TriggerHandler, Other.Interface2 {}");
         Assert.assertSame(ASTUserClass.class, node.getClass());
         ASTUserClass toplevel = (ASTUserClass) node;
-        Assert.assertEquals("TriggerHandler,Other.Interface2", toplevel.getInterfaceNames());
+        Assert.assertEquals(Arrays.asList("TriggerHandler", "Other.Interface2"), toplevel.getInterfaceNames());
     }
 }
