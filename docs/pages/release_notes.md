@@ -30,7 +30,7 @@ variable `PMD_JAVA_OPTS`:
     ./run.sh pmd ...
 
 Note: Support for the extended break statement introduced in Java 12 as a preview language feature
-has been removed.
+will be removed with the next PMD version 6.19.0.
 
 #### New rule designer documentation
 
