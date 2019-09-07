@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -103,7 +104,7 @@ public class AbstractLanguageVersionTest {
     }
 
     /**
-     * Makes sure, that for each language a "rulesets.properties" file exists.
+     * Makes sure, that for each language a "categories.properties" file exists.
      * 
      * @throws Exception
      *             any error
@@ -117,10 +118,41 @@ public class AbstractLanguageVersionTest {
 
         ResourceLoader rl = new ResourceLoader();
         Properties props = new Properties();
-        String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
+        String rulesetsProperties = "category/" + simpleTerseName + "/categories.properties";
         try (InputStream inputStream = rl.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
             props.load(inputStream);
         }
+        assertRulesetsAndCategoriesProperties(rl, props);
+    }
+
+    /**
+     * If a rulesets.properties file still exists, test it as well.
+     * 
+     * @throws Exception
+     *             any error
+     */
+    @Test
+    public void testOldRegisteredRulesets() throws Exception {
+        // only check for languages, that support rules
+        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null) {
+            return;
+        }
+
+        ResourceLoader rl = new ResourceLoader();
+        Properties props = new Properties();
+        String rulesetsProperties = "rulesets/" + simpleTerseName + "/rulesets.properties";
+        InputStream inputStream = rl.loadClassPathResourceAsStream(rulesetsProperties);
+        if (inputStream != null) {
+            // rulesets.properties file exists
+            try (InputStream in = inputStream) {
+                props.load(in);
+            }
+            assertRulesetsAndCategoriesProperties(rl, props);
+        }
+    }
+
+    private void assertRulesetsAndCategoriesProperties(ResourceLoader rl, Properties props)
+            throws IOException, RuleSetNotFoundException {
         String rulesetFilenames = props.getProperty("rulesets.filenames");
         assertNotNull(rulesetFilenames);
 

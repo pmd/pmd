@@ -14,6 +14,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Full support for Scala
+
+Thanks to [Chris Smith](https://github.com/tophersmith) PMD now fully supports Scala. Now rules for analyzing Scala
+code can be developed in addition to the Copy-Pase-Detection (CPD) functionality. There are no rules yet, so
+contributions are welcome.
+
+Additionally Scala support has been upgraded from 2.12.4 to 2.13.
+
 #### New rule designer documentation
 
 The documentation for the rule designer is now available on the main PMD documentation page:
@@ -90,6 +98,7 @@ about the usage and features of the rule designer.
 
 ### External Contributions
 
+*   [#1965](https://github.com/pmd/pmd/pull/1965): \[scala] Use Scalameta for parsing - [Chris Smith](https://github.com/tophersmith)
 *   [#1970](https://github.com/pmd/pmd/pull/1970): \[java] DoubleBraceInitialization: Fix example - [Tobias Weimer](https://github.com/tweimer)
 *   [#1971](https://github.com/pmd/pmd/pull/1971): \[java] 1862 - Message Digest should not be used as class field - [AnthonyKot](https://github.com/AnthonyKot)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
