@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
-import net.sourceforge.pmd.lang.plsql.ast.ASTGlobal;
-import net.sourceforge.pmd.lang.plsql.ast.ASTProgramUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
 
 /**
