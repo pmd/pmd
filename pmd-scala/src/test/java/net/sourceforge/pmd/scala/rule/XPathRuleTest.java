@@ -6,6 +6,7 @@ package net.sourceforge.pmd.scala.rule;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.StringReader;
 
 import org.apache.commons.io.IOUtils;
@@ -55,7 +56,7 @@ public class XPathRuleTest extends RuleTst {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename("test.scala");
+        ctx.setSourceCodeFile(new File("test.scala"));
         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;
