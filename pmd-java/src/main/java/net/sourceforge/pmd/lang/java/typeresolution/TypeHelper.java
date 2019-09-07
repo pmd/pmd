@@ -19,6 +19,10 @@ public final class TypeHelper {
      * Checks whether the resolved type of the given {@link TypeNode} n is of the type
      * given by the clazzName. If the clazzName is on the auxclasspath, then also subclasses
      * are considered.
+     * 
+     * <p>If clazzName is not on the auxclasspath (so it can't be resolved), then a string
+     * comparison of the class names are performed. This might result in comparing only
+     * the simple name of the classes.
      *
      * @param n the type node to check
      * @param clazzName the class name to compare to
@@ -27,13 +31,13 @@ public final class TypeHelper {
     public static boolean isA(final TypeNode n, final String clazzName) {
         final Class<?> clazz = loadClassWithNodeClassloader(n, clazzName);
 
-        if (clazz != null) {
+        if (clazz != null || n.getType() != null) {
             return isA(n, clazz);
         }
 
         return clazzName.equals(n.getImage()) || clazzName.endsWith("." + n.getImage());
     }
-    
+
     /**
      * Checks whether the resolved type of the given {@link TypeNode} n is exactly of the type
      * given by the clazzName.
@@ -133,8 +137,8 @@ public final class TypeHelper {
 
     public static boolean subclasses(TypeNode n, Class<?> clazz) {
         Class<?> type = n.getType();
-        if (type == null) {
-            return n.hasImageEqualTo(clazz.getSimpleName()) || n.hasImageEqualTo(clazz.getName());
+        if (type == null || clazz == null) {
+            return false; // If in auxclasspath, both should be resolvable, or are not the same
         }
 
         return clazz.isAssignableFrom(type);

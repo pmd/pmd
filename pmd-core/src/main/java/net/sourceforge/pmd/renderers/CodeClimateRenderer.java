@@ -109,7 +109,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     private CodeClimateIssue.Location getLocation(RuleViolation rv) {
         CodeClimateIssue.Location result;
 
-        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
+        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(
+                determineFileName(rv.getFilename()), "/code/");
 
         if (rule.hasDescriptor(CODECLIMATE_REMEDIATION_MULTIPLIER)
             && !rule.getProperty(CODECLIMATE_BLOCK_HIGHLIGHTING)) {
