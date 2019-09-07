@@ -11,10 +11,10 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
 import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitor;
 import net.sourceforge.pmd.lang.scala.ast.ScalaParserVisitorAdapter;
-import net.sourceforge.pmd.lang.scala.ast.nodes.ASTSource;
 
 /**
  * A Rule Chain visitor for Scala.

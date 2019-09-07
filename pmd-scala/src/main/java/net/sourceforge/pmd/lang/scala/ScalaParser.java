@@ -16,8 +16,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.scala.ast.ScalaTreeBuilder;
-import net.sourceforge.pmd.lang.scala.ast.nodes.ASTSource;
+import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 
 import scala.meta.Dialect;
 import scala.meta.Source;

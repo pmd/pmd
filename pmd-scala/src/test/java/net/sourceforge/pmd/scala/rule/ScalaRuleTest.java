@@ -26,9 +26,9 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
+import net.sourceforge.pmd.lang.scala.ast.ASTTermApply;
+import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
-import net.sourceforge.pmd.lang.scala.ast.nodes.ASTTermApply;
-import net.sourceforge.pmd.lang.scala.ast.nodes.ASTTermName;
 import net.sourceforge.pmd.lang.scala.rule.ScalaRule;
 
 public class ScalaRuleTest {
