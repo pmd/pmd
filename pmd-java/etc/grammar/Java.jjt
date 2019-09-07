@@ -416,6 +416,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBreakExpression() {
+    if (jdkVersion < 12) {
+      throwParseException("Expressions in break statements are only supported with Java 12");
+    }
+  }
+
   private void checkForYieldStatement() {
     if (jdkVersion < 13) {
       throwParseException("Yield statements are only supported with Java 13");
@@ -2655,7 +2661,7 @@ void ForUpdate() :
 void BreakStatement() :
 {Token t;}
 {
-  "break" [ t=<IDENTIFIER> {jjtThis.setImage(t.image);} ] ";"
+  "break" [ LOOKAHEAD(<IDENTIFIER> ";") t=<IDENTIFIER> {jjtThis.setImage(t.image);} | Expression() {checkForBreakExpression();} ] ";"
 }
 
 void ContinueStatement() :
