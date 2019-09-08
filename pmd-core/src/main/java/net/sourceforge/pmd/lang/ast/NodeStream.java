@@ -941,7 +941,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
         if (iterable instanceof List) {
-            return ListNodeStream.ofNullable(((List<T>) iterable));
+            return ListNodeStream.ofNullable((List<T>) iterable);
         }
         return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);
     }
