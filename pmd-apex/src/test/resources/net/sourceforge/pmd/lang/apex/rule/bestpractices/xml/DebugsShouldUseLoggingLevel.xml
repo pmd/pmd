@@ -22,7 +22,7 @@ public class Foo {
 
     <test-code>
         <description>When using strict mode, one should not use the DEBUG LoggingLevel.</description>
-        <rule-property name="strictMode" value="true"/>
+        <rule-property name="strictMode">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
