@@ -24,6 +24,9 @@ about the usage and features of the rule designer.
 
 *   java-codestyle
     *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
+*   plsql
+    *   [#1933](https://github.com/pmd/pmd/issues/1933): \[plsql] ParseException with cursor declared in anonymous block
+    *   [#1936](https://github.com/pmd/pmd/issues/1936): \[plslq] ParseException with cursor inside procedure declaration
 
 ### API Changes
 
@@ -36,6 +39,8 @@ about the usage and features of the rule designer.
     will be removed with PMD 7.0.0.
 
 ### External Contributions
+
+*   [#1986](https://github.com/pmd/pmd/pull/1986): \[plsql] Fix for cursors in anonymous blocks - [Piotr Szymanski](https://github.com/szyman23)
 
 {% endtocmaker %}
 
