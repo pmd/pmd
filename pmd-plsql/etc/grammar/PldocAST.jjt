@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for SELECT with FOR UPDATE OF
+ *
+ * Piotr Szymanski 08/2019
+ *====================================================================
  * Various fixes for expression lists, join clauses, case expression
  *
  * Hugo Araya Nash 06/2019
@@ -1186,6 +1190,28 @@ void RestOfStatement() #void :
 
     [ OrderByClause() ]
     [ RowLimitingClause() ]
+    [ LOOKAHEAD(2) ForUpdateClause() ]
+}
+
+/**
+ * @see https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016
+ */
+void ForUpdateClause() :
+{}
+{
+  <FOR> <UPDATE>
+  [<OF> ColumnPath() (LOOKAHEAD(2) "," ColumnPath())* ]
+  [ <NOWAIT>
+  | LOOKAHEAD({isKeyword("WAIT")}) KEYWORD("WAIT") <UNSIGNED_NUMERIC_LITERAL>
+  | LOOKAHEAD({isKeyword("SKIP")}) KEYWORD("SKIP") KEYWORD("LOCKED") ]
+}
+
+void ColumnPath() #void :
+{}
+{
+    [ LOOKAHEAD(6) SchemaName() "." ]
+    [ LOOKAHEAD(4) TableName() "." ]
+    Column()
 }
 
 void Subquery() #void :
@@ -5204,7 +5230,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
- "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
+"REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 "OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
@@ -5637,7 +5663,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LOCALTIMESTAMP>
 //| <LOCATION>
 //| <LOCATOR>
-//| <LOCKED>
 //| <LOGFILE>
 //| <LOGGING>
 //| <LOGICAL>
@@ -6078,7 +6103,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SIMPLE>
 //| <SINGLE>
 //| <SINGLETASK>
-//| <K_SKIP>
 //| <SKIP_EXT_OPTIMIZER>
 //| <SKIP_UNQ_UNUSABLE_IDX>
 //| <SKIP_UNUSABLE_INDEXES>
@@ -6244,7 +6268,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <VECTOR_READ_TRACE>
 //| <VERSION>
 //| <VERSIONS>
-//| <WAIT>
 //| <WALLET>
 //| <WELLFORMED>
 //| <WHEN>
@@ -6351,7 +6374,6 @@ ASTID ID(): {}
 		//20120501 | <EXTENDS>
 		| <FETCH> //SYNTAX
 		| <FLOAT> //SYNTAX //RESERVED WORD
-		| <FOR>  //RESERVED WORD
 		| <FORALL> //SYNTAX
 		//| <FROM>  //RESERVED WORD
 
@@ -6385,7 +6407,6 @@ ASTID ID(): {}
 		//20120501 | <NATURAL>
 		| <NATURALN> | <NEXTVAL> | <NOCOPY>
 		| <NOT> //SYNTAX  //RESERVED WORD
-		| <NOWAIT>  //RESERVED WORD
 		| <NULL>  //RESERVED WORD
 		//| <NULLIF>
 		| <NUMBER>  //RESERVED WORD
@@ -6593,7 +6614,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <EXTENDS>
 		//<FETCH>
 		| <FLOAT>
-		//<FOR>
 		| <FORALL>
 		//<FROM>
 		//| <FUNCTION>
@@ -6632,7 +6652,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <NEXTVAL>
 		| <NOCOPY>
 		//<NOT>
-		//<NOWAIT>
 		//<NULL>
 		//| <NULLIF>
 		| <NUMBER>
