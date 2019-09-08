@@ -51,6 +51,8 @@ about the usage and features of the rule designer.
     *   [#1923](https://github.com/pmd/pmd/issues/1923): \[core] Incremental analysis does not work with shortnames
     *   [#1983](https://github.com/pmd/pmd/pull/1983): \[core] Avoid crashes with analysis cache when classpath references non-existing directories
     *   [#1990](https://github.com/pmd/pmd/pull/1990): \[core] Incremental analysis mixes XPath rule violations
+*   apex
+    *   [#1901](https://github.com/pmd/pmd/issues/1901): \[apex] Expose super type name of UserClass
 *   java-bestpractices
     *   [#1862](https://github.com/pmd/pmd/issues/1862): \[java] New rule for MessageDigest.getInstance
     *   [#1952](https://github.com/pmd/pmd/issues/1952): \[java] UnusedPrivateField not triggering if @Value annotation present

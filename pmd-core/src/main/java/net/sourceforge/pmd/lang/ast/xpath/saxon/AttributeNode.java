@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.xpath.saxon;
 
+import java.util.List;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
@@ -55,7 +57,12 @@ public class AttributeNode extends AbstractNodeInfo {
     @Override
     public Value atomize() {
         if (value == null) {
-            value = SaxonXPathRuleQuery.getAtomicRepresentation(attribute.getValue());
+            Object data = attribute.getValue();
+            if (data instanceof List) {
+                value = SaxonXPathRuleQuery.getSequenceRepresentation((List<?>) data);
+            } else {
+                value = SaxonXPathRuleQuery.getAtomicRepresentation(attribute.getValue());
+            }
         }
         return value;
     }
