@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.ast.internal.ListNodeStream;
  *
  * <h1>API usage</h1>
  *
- * <p>The {@link Node} interface exposes methods like {@link Node#childrenStream()} or {@link Node#asStream()}
+ * <p>The {@link Node} interface exposes methods like {@link Node#children()} or {@link Node#asStream()}
  * to obtain new NodeStreams. Null-safe construction methods are available here, see {@link #of(Node)},
  * {@link #of(Node[])}, {@link #fromIterable(Iterable)}.
  *
@@ -65,7 +65,7 @@ import net.sourceforge.pmd.lang.ast.internal.ListNodeStream;
  * <li><tt>node.{@link Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestorStream() ancestorStream()}.{@link #get(int) get(n)}</tt></li>
+ * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestorStream()}.{@link #get(int) get(n)}</tt></li>
  * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.<br/>
  * You can also call <tt>node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt> and use {@link Optional#ifPresent(Consumer) ifPresent} or add more
  * pipeline operations on the {@link Optional}.
@@ -344,30 +344,31 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * contained in this stream. The returned stream doesn't preserve document
      * order, since ancestors are yielded in innermost to outermost order.
      *
-     * <p>This is equivalent to {@code flatMap(Node::ancestorStream)}.
+     * <p>This is equivalent to {@code flatMap(Node::ancestors)}.
      *
      * @return A stream of ancestors
      *
-     * @see Node#ancestorStream()
+     * @see Node#ancestors()
      * @see #ancestorsOrSelf()
+     * @see #ancestors(Class)
      */
     default NodeStream<Node> ancestors() {
-        return flatMap(Node::ancestorStream);
+        return flatMap(Node::ancestors);
     }
 
 
     /**
      * Returns a node stream containing the nodes contained in this stream and their ancestors.
-     * The nodes of the returning stream are yielded in a depth-first fashion.
+     * The nodes of the returned stream are yielded in a depth-first fashion.
      *
-     * <p>This is equivalent to {@code flatMap(Node::treeStream)}.
+     * <p>This is equivalent to {@code flatMap(Node::ancestorsOrSelf)}.
      *
      * @return A stream of ancestors
      *
      * @see #ancestors()
      */
     default NodeStream<Node> ancestorsOrSelf() {
-        return flatMap(n -> n.asStream().append(n.ancestorStream()));
+        return flatMap(n -> n.asStream().append(n.ancestors()));
     }
 
 
@@ -391,48 +392,49 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * Returns a node stream containing all the children of the nodes
      * contained in this stream.
      *
-     * <p>This is equivalent to {@code flatMap(Node::childrenStream)}.
+     * <p>This is equivalent to {@code flatMap(Node::children)}.
      *
      * @return A stream of children
      *
-     * @see Node#childrenStream()
+     * @see Node#children()
      * @see #children(Class)
      */
     default NodeStream<Node> children() {
-        return flatMap(Node::childrenStream);
+        return flatMap(Node::children);
     }
 
 
     /**
      * Returns a node stream containing all the strict descendants of the nodes
-     * contained in this stream. The nodes of the returning stream are yielded
+     * contained in this stream. The nodes of the returned stream are yielded
      * in a depth-first fashion.
      *
-     * <p>This is equivalent to {@code flatMap(Node::descendantStream)}.
+     * <p>This is equivalent to {@code flatMap(Node::descendants)}.
      *
      * @return A stream of descendants
      *
-     * @see Node#descendantStream()
+     * @see Node#descendants()
      * @see #descendants(Class)
+     * @see #descendantsOrSelf()
      */
     default NodeStream<Node> descendants() {
-        return flatMap(Node::descendantStream);
+        return flatMap(Node::descendants);
     }
 
 
     /**
      * Returns a node stream containing the nodes contained in this stream and their descendants.
-     * The nodes of the returning stream are yielded in a depth-first fashion.
+     * The nodes of the returned stream are yielded in a depth-first fashion.
      *
-     * <p>This is equivalent to {@code flatMap(Node::treeStream)}.
+     * <p>This is equivalent to {@code flatMap(Node::descendantsOrSelf)}.
      *
      * @return A stream of descendants
      *
-     * @see Node#treeStream()
+     * @see Node#descendantsOrSelf()
      * @see #descendants()
      */
     default NodeStream<Node> descendantsOrSelf() {
-        return flatMap(Node::treeStream);
+        return flatMap(Node::descendantsOrSelf);
     }
 
 
@@ -460,7 +462,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
     /**
      * Returns a node stream containing all the siblings of the nodes contained in this stream.
-     * The nodes are yielded from left to right, i.e. in document order.
+     * The returned stream does not contain this node. The nodes are yielded from left to right,
+     * i.e. in document order.
      *
      * @return A stream of siblings
      */
@@ -475,8 +478,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * <p>This is equivalent to {@code children().filterIs(rClass)}.
      *
-     * @param rClass Type of node the returning stream should contain
-     * @param <R>    Type of node the returning stream should contain
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
      *
      * @return A new node stream
      *
@@ -494,8 +497,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * <p>This is equivalent to {@code descendants().filterIs(rClass)}.
      *
-     * @param rClass Type of node the returning stream should contain
-     * @param <R>    Type of node the returning stream should contain
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
      *
      * @return A new node stream
      *
@@ -513,8 +516,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * <p>This is equivalent to {@code ancestors().filterIs(rClass)}.
      *
-     * @param rClass Type of node the returning stream should contain
-     * @param <R>    Type of node the returning stream should contain
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
      *
      * @return A new node stream
      *
@@ -938,7 +941,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
         if (iterable instanceof List) {
-            return new ListNodeStream<>(((List<T>) iterable));
+            return ListNodeStream.ofNullable(((List<T>) iterable));
         }
         return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);
     }

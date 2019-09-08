@@ -275,7 +275,9 @@ public abstract class AbstractNode implements Node {
     }
 
     @Override
-    public NodeStream<Node> childrenStream() {
-        return children == null ? NodeStream.empty() : new ListNodeStream<>(Arrays.asList(children));
+    public NodeStream<Node> children() {
+        // it's crucial to preserve the invariant that the children
+        // array may not contain any null elements
+        return children == null ? NodeStream.empty() : ListNodeStream.ofNonNull(Arrays.asList(children));
     }
 }

@@ -421,7 +421,7 @@ public interface Node {
      *
      * @see NodeStream#children(Class)
      */
-    NodeStream<Node> childrenStream();
+    NodeStream<Node> children();
 
 
     /**
@@ -432,8 +432,8 @@ public interface Node {
      *
      * @see NodeStream#descendants()
      */
-    default NodeStream<Node> descendantStream() {
-        return childrenStream().flatMap(Node::treeStream);
+    default NodeStream<Node> descendants() {
+        return children().flatMap(Node::descendantsOrSelf);
     }
 
 
@@ -445,8 +445,8 @@ public interface Node {
      *
      * @see NodeStream#descendantsOrSelf()
      */
-    default NodeStream<Node> treeStream() {
-        return asStream().append(descendantStream());
+    default NodeStream<Node> descendantsOrSelf() {
+        return asStream().append(descendants());
     }
 
 
@@ -459,7 +459,7 @@ public interface Node {
      *
      * @see NodeStream#ancestors()
      */
-    default NodeStream<Node> ancestorStream() {
+    default NodeStream<Node> ancestors() {
         return NodeStream.fromIterable(() -> new Iterator<Node>() {
             Node next = jjtGetParent();
 
@@ -482,11 +482,24 @@ public interface Node {
 
 
     /**
-     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #childrenStream() children}
+     * Returns a node stream containing this node and its ancestors.
+     * The nodes of the returned stream are yielded in a depth-first fashion.
+     *
+     * @return A stream of ancestors
+     *
+     * @see NodeStream#ancestorsOrSelf()
+     */
+    default NodeStream<Node> ancestorsOrSelf() {
+        return asStream().append(ancestors());
+    }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #children() children}
      * of this node that are of the given type.
      *
-     * @param rClass Type of node the returning stream should contain
-     * @param <R>    Type of node the returning stream should contain
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
      *
      * @return A new node stream
      *
@@ -498,11 +511,11 @@ public interface Node {
 
 
     /**
-     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendantStream() descendants}
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendants() descendants}
      * of this node that are of the given type.
      *
-     * @param rClass Type of node the returning stream should contain
-     * @param <R>    Type of node the returning stream should contain
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
      *
      * @return A new node stream
      *
@@ -514,11 +527,11 @@ public interface Node {
 
 
     /**
-     * Returns the {@linkplain #ancestorStream() ancestor stream} of each node
+     * Returns the {@linkplain #ancestors() ancestor stream} of each node
      * in this stream, filtered by the given node type.
      *
-     * @param rClass Type of node the returning stream should contain
-     * @param <R>    Type of node the returning stream should contain
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
      *
      * @return A new node stream
      *

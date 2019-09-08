@@ -17,21 +17,18 @@ import java.util.stream.Stream;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
-
+/**
+ * Random access node stream. Suitable for implementing eg {@link Node#children()},
+ * since stuff like toList/count/get are free.
+ */
 public final class ListNodeStream<T extends Node> implements NodeStream<T> {
 
     public static final NodeStream<Node> EMPTY = new ListNodeStream<>(Collections.emptyList());
 
     private final List<T> myList;
 
-    public ListNodeStream(List<T> list) {
-        if (list.isEmpty()) {
-            this.myList = Collections.emptyList();
-        } else {
-            list = new ArrayList<>(list);
-            list.removeAll(Collections.singleton(null));
-            this.myList = Collections.unmodifiableList(list);
-        }
+    private ListNodeStream(List<T> list) {
+        this.myList = list.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(list);
     }
 
 
@@ -80,7 +77,7 @@ public final class ListNodeStream<T extends Node> implements NodeStream<T> {
         } else if (n >= myList.size()) {
             return NodeStream.empty();
         } else {
-            return new ListNodeStream<>(myList.subList(n, myList.size()));
+            return ofNullable(myList.subList(n, myList.size()));
         }
     }
 
@@ -91,7 +88,7 @@ public final class ListNodeStream<T extends Node> implements NodeStream<T> {
         } else if (maxSize >= myList.size()) {
             return this;
         } else {
-            return new ListNodeStream<>(myList.subList(0, maxSize));
+            return ofNullable(myList.subList(0, maxSize));
         }
     }
 
@@ -113,5 +110,17 @@ public final class ListNodeStream<T extends Node> implements NodeStream<T> {
     @Override
     public List<T> toList() {
         return myList;
+    }
+
+    /** Does a copy. */
+    public static <T extends Node> ListNodeStream<T> ofNullable(List<T> list) {
+        list = new ArrayList<>(list);
+        list.removeAll(Collections.singleton(null));
+        return new ListNodeStream<>(list);
+    }
+
+    /** Doesn't copy. */
+    public static <T extends Node> ListNodeStream<T> ofNonNull(List<T> list) {
+        return new ListNodeStream<>(list);
     }
 }

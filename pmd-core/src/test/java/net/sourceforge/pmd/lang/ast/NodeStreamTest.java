@@ -67,26 +67,26 @@ public class NodeStreamTest {
 
     @Test
     public void testMapIsNullSafe() {
-        assertTrue(tree1.treeStream().map(n -> null).isEmpty());
+        assertTrue(tree1.descendantsOrSelf().map(n -> null).isEmpty());
     }
 
 
     @Test
     public void testFlatMapIsNullSafe() {
-        assertTrue(tree1.treeStream().flatMap(n -> null).isEmpty());
+        assertTrue(tree1.descendantsOrSelf().flatMap(n -> null).isEmpty());
     }
 
 
     @Test
     public void testChildrenStream() {
-        assertThat(pathsOf(tree1.childrenStream()), contains("0", "1"));
+        assertThat(pathsOf(tree1.children()), contains("0", "1"));
         assertThat(pathsOf(tree1.asStream().children()), contains("0", "1"));
     }
 
 
     @Test
     public void testDescendantStream() {
-        assertThat(pathsOf(tree1.descendantStream()), contains("0", "00", "01", "010", "1"));
+        assertThat(pathsOf(tree1.descendants()), contains("0", "00", "01", "010", "1"));
         assertThat(pathsOf(tree1.asStream().descendants()), contains("0", "00", "01", "010", "1"));
     }
 
@@ -99,7 +99,7 @@ public class NodeStreamTest {
 
     @Test
     public void testTreeStream() {
-        assertThat(pathsOf(tree1.treeStream()), contains("", "0", "00", "01", "010", "1"));
+        assertThat(pathsOf(tree1.descendantsOrSelf()), contains("", "0", "00", "01", "010", "1"));
         assertThat(pathsOf(NodeStream.of(tree1).descendantsOrSelf()), contains("", "0", "00", "01", "010", "1"));
     }
 
@@ -125,7 +125,7 @@ public class NodeStreamTest {
 
     @Test
     public void testAncestorStream() {
-        assertThat(pathsOf(followPath(tree1, "01").ancestorStream()), contains("0", ""));
+        assertThat(pathsOf(followPath(tree1, "01").ancestors()), contains("0", ""));
         assertThat(pathsOf(followPath(tree1, "01").asStream().ancestors()), contains("0", ""));
     }
 
@@ -138,31 +138,31 @@ public class NodeStreamTest {
 
     @Test
     public void testAncestorStreamUnion() {
-        assertThat(pathsOf(NodeStream.union(followPath(tree1, "01").ancestorStream(),
-                                            tree2.childrenStream().ancestors())), contains("0", "", "", "", "", ""));
+        assertThat(pathsOf(NodeStream.union(followPath(tree1, "01").ancestors(),
+                                            tree2.children().ancestors())), contains("0", "", "", "", "", ""));
     }
 
 
     @Test
     public void testDistinct() {
-        assertThat(pathsOf(NodeStream.union(followPath(tree1, "01").ancestorStream(),
-                                            tree2.childrenStream().ancestors()).distinct()), contains("0", "", "")); // roots of both trees
+        assertThat(pathsOf(NodeStream.union(followPath(tree1, "01").ancestors(),
+                                            tree2.children().ancestors()).distinct()), contains("0", "", "")); // roots of both trees
     }
 
 
     @Test
     public void testGet() {
         // ("0", "00", "01", "010", "1")
-        assertEquals(Optional.of("0"), tree1.descendantStream().get(0).map(Node::getImage));
-        assertEquals(Optional.of("00"), tree1.descendantStream().get(1).map(Node::getImage));
-        assertEquals(Optional.of("010"), tree1.descendantStream().get(3).map(Node::getImage));
-        assertEquals(Optional.of("1"), tree1.descendantStream().get(4).map(Node::getImage));
-        assertEquals(Optional.empty(), tree1.descendantStream().get(6));
+        assertEquals(Optional.of("0"), tree1.descendants().get(0).map(Node::getImage));
+        assertEquals(Optional.of("00"), tree1.descendants().get(1).map(Node::getImage));
+        assertEquals(Optional.of("010"), tree1.descendants().get(3).map(Node::getImage));
+        assertEquals(Optional.of("1"), tree1.descendants().get(4).map(Node::getImage));
+        assertEquals(Optional.empty(), tree1.descendants().get(6));
     }
 
     @Test
     public void testNodeStreamsCanBeIteratedSeveralTimes() {
-        NodeStream<Node> stream = tree1.descendantStream();
+        NodeStream<Node> stream = tree1.descendants();
 
         assertThat(stream.count(), equalTo(5));
         assertThat(stream.count(), equalTo(5));
@@ -177,7 +177,7 @@ public class NodeStreamTest {
 
         MutableInt numEvals = new MutableInt();
 
-        tree1.descendantStream().filter(n -> {
+        tree1.descendants().filter(n -> {
             numEvals.increment();
             return true;
         });
@@ -191,7 +191,7 @@ public class NodeStreamTest {
 
         MutableInt numEvals = new MutableInt();
         NodeStream<Node> stream =
-            hook(numEvals::increment, tree1.descendantStream())
+            hook(numEvals::increment, tree1.descendants())
                 .forkJoin(
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("0")),
                     n -> NodeStream.of(n).filter(m -> m.hasImageEqualTo("1"))
@@ -216,7 +216,7 @@ public class NodeStreamTest {
         MutableInt downstreamEvals = new MutableInt();
 
         NodeStream<Node> stream =
-            tree1.descendantStream()
+            tree1.descendants()
                  .filter(n -> n.getImage().matches("0.*"))
                  .peek(n -> upstreamEvals.increment())
                  .cached()
@@ -243,8 +243,8 @@ public class NodeStreamTest {
         MutableInt tree1Evals = new MutableInt();
         MutableInt tree2Evals = new MutableInt();
 
-        NodeStream<Node> unionStream = NodeStream.union(tree1.treeStream().peek(n -> tree1Evals.increment()),
-                                                        tree2.treeStream().peek(n -> tree2Evals.increment()));
+        NodeStream<Node> unionStream = NodeStream.union(tree1.descendantsOrSelf().peek(n -> tree1Evals.increment()),
+                                                        tree2.descendantsOrSelf().peek(n -> tree2Evals.increment()));
 
         assertThat(tree1Evals.getValue(), equalTo(0));   // not evaluated yet
         assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated yet
@@ -261,7 +261,7 @@ public class NodeStreamTest {
 
         MutableInt tree1Evals = new MutableInt();
 
-        NodeStream<Node> unionStream = tree1.treeStream().peek(n -> tree1Evals.increment());
+        NodeStream<Node> unionStream = tree1.descendantsOrSelf().peek(n -> tree1Evals.increment());
 
         int i = 0;
 
@@ -283,9 +283,9 @@ public class NodeStreamTest {
 
         unionStream.map(p -> p);
         unionStream.filter(p -> true);
-        unionStream.append(tree2.treeStream());
-        unionStream.prepend(tree2.treeStream());
-        unionStream.flatMap(Node::treeStream);
+        unionStream.append(tree2.descendantsOrSelf());
+        unionStream.prepend(tree2.descendantsOrSelf());
+        unionStream.flatMap(Node::descendantsOrSelf);
         unionStream.iterator();
         unionStream.cached();
         unionStream.descendants();
