@@ -2964,20 +2964,17 @@ ASTTrimExpression TrimExpression() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-    "(" { sb.append("(");}
-     [ LOOKAHEAD(2)
-        [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
-        [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-        ( <FROM> ) { sb.append(" ").append(token.image); }
-     ]
+     "(" { sb.append("(");}
+     [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
+     [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
+     [ <FROM> { sb.append(" ").append(token.image); } ]
      simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-    ")" { sb.append(")");}
+     ")" { sb.append(")");}
   )
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
-
 
 /*
 TREAT ( Expression AS datatype)
