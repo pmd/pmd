@@ -187,11 +187,7 @@ Having the Logging Level specified provides a cleaner log, and improves readabil
           <property name="xpath">
              <value>
 <![CDATA[
-//MethodCallExpression
-  [count(ReferenceExpression[lower-case(@Image)='system']) = 1]
-  [count(VariableExpression) = 0 or (
-    count(VariableExpression) = 1 and VariableExpression[lower-case(@Image)='debug' and $strictMode]
-  )]
+//MethodCallExpression[@FullMethodName='System.debug'][count(*)=2]
 ]]>
              </value>
           </property>
