@@ -19,6 +19,6 @@ public class SelectForUpdateTest extends AbstractPLSQLParserTst {
         String code = IOUtils.toString(this.getClass().getResourceAsStream("SelectForUpdateWait.pls"),
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
-        Assert.assertNotNull(code);
+        Assert.assertNotNull(input);
     }
 }

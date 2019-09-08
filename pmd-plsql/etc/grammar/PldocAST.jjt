@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add support for SELECT with FOR UPDATE OF
+ *
+ * Piotr Szymanski 08/2019
+ *====================================================================
  * Various fixes for expression lists, join clauses, case expression
  *
  * Hugo Araya Nash 06/2019
@@ -1186,7 +1190,7 @@ void RestOfStatement() #void :
 
     [ OrderByClause() ]
     [ RowLimitingClause() ]
-    [ ForUpdateClause() ]
+    [ LOOKAHEAD(2) ForUpdateClause() ]
 }
 
 /**
@@ -1196,10 +1200,10 @@ void ForUpdateClause() #void :
 {}
 {
   <FOR> <UPDATE>
-  [<OF> ColumnPath() ("," ColumnPath())* ]
+  [<OF> ColumnPath() (LOOKAHEAD(2) "," ColumnPath())* ]
   [ <NOWAIT>
-  | <WAIT> <UNSIGNED_NUMERIC_LITERAL>
-  | <K_SKIP> <LOCKED>]
+  | LOOKAHEAD({isKeyword("WAIT")}) KEYWORD("WAIT") <UNSIGNED_NUMERIC_LITERAL>
+  | LOOKAHEAD({isKeyword("SKIP")}) KEYWORD("SKIP") KEYWORD("LOCKED") ]
 }
 
 void ColumnPath() #void :
@@ -4895,7 +4899,6 @@ TOKEN [IGNORE_CASE]:
 <UI: "UI"> |
 <UNDER: "UNDER"> |
 <USING: "USING"> |
-<WAIT: "WAIT"> |
 <WHILE: "WHILE"> |
 <YES: "YES"> | //SRT 2011-04-17
 
@@ -5029,8 +5032,6 @@ TOKEN [IGNORE_CASE]:
 | <LATERAL : "LATERAL">
 | <NOCYCLE : "NOCYCLE">
 | <CONNECT_BY_ROOT : "CONNECT_BY_ROOT">
-| <K_SKIP : "SKIP">
-| <LOCKED : "LOCKED">
 }
 
 /**
@@ -5662,7 +5663,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LOCALTIMESTAMP>
 //| <LOCATION>
 //| <LOCATOR>
-| <LOCKED>
 //| <LOGFILE>
 //| <LOGGING>
 //| <LOGICAL>
@@ -6103,7 +6103,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SIMPLE>
 //| <SINGLE>
 //| <SINGLETASK>
-| <K_SKIP>
 //| <SKIP_EXT_OPTIMIZER>
 //| <SKIP_UNQ_UNUSABLE_IDX>
 //| <SKIP_UNUSABLE_INDEXES>
@@ -6269,7 +6268,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <VECTOR_READ_TRACE>
 //| <VERSION>
 //| <VERSIONS>
-| <WAIT>
 //| <WALLET>
 //| <WELLFORMED>
 //| <WHEN>
@@ -6376,7 +6374,6 @@ ASTID ID(): {}
 		//20120501 | <EXTENDS>
 		| <FETCH> //SYNTAX
 		| <FLOAT> //SYNTAX //RESERVED WORD
-		| <FOR>  //RESERVED WORD
 		| <FORALL> //SYNTAX
 		//| <FROM>  //RESERVED WORD
 
@@ -6410,7 +6407,6 @@ ASTID ID(): {}
 		//20120501 | <NATURAL>
 		| <NATURALN> | <NEXTVAL> | <NOCOPY>
 		| <NOT> //SYNTAX  //RESERVED WORD
-		| <NOWAIT>  //RESERVED WORD
 		| <NULL>  //RESERVED WORD
 		//| <NULLIF>
 		| <NUMBER>  //RESERVED WORD
@@ -6618,7 +6614,6 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <EXTENDS>
 		//<FETCH>
 		| <FLOAT>
-		//<FOR>
 		| <FORALL>
 		//<FROM>
 		//| <FUNCTION>
@@ -6657,7 +6652,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <NEXTVAL>
 		| <NOCOPY>
 		//<NOT>
-		//<NOWAIT>
 		//<NULL>
 		//| <NULLIF>
 		| <NUMBER>
