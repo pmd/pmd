@@ -1196,7 +1196,7 @@ void RestOfStatement() #void :
 /**
  * @see https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016
  */
-void ForUpdateClause() #void :
+void ForUpdateClause() :
 {}
 {
   <FOR> <UPDATE>

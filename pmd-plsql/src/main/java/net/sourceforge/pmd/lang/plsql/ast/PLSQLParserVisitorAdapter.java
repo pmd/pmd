@@ -1111,4 +1111,9 @@ public class PLSQLParserVisitorAdapter implements PLSQLParserVisitor {
     public Object visit(ASTOuterJoinExpression node, Object data) {
         return visit((PLSQLNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTForUpdateClause node, Object data) {
+        return visit((PLSQLNode) node, data);
+    }
 }
