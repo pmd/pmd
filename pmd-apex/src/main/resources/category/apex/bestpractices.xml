@@ -170,7 +170,7 @@ trigger Accounts on Account (before insert, before update, before delete, after 
     </rule>
 
     <rule name="DebugsShouldUseLoggingLevel"
-          since="6.17.0"
+          since="6.18.0"
           language="apex"
           message="Calls to System.debug should specify a logging level."
           class="net.sourceforge.pmd.lang.apex.rule.ApexXPathRule"
@@ -204,7 +204,7 @@ public class Foo {
     static void bar() {
         System.debug('Hey this code executed.'); // not good
         System.debug(LoggingLevel.WARN, 'Hey, something might be wrong.'); // good
-        System.debug(LoggingLevel.DEBUG, 'Hey, something happened.'); // strictly not good
+        System.debug(LoggingLevel.DEBUG, 'Hey, something happened.'); // not good when on strict mode
     }
 }
 ]]>
