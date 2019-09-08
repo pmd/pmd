@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.sourceforge.pmd.lang.ast.internal.ListNodeStream;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 /**
@@ -275,8 +276,6 @@ public abstract class AbstractNode implements Node {
 
     @Override
     public NodeStream<Node> childrenStream() {
-        // it's crucial to preserve the invariant that the children
-        // array may not contain any null elements
-        return children == null ? NodeStream.empty() : () -> Arrays.stream(children);
+        return children == null ? NodeStream.empty() : new ListNodeStream<>(Arrays.asList(children));
     }
 }

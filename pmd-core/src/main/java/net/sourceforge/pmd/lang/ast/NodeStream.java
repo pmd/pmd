@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.ast.internal.ListNodeStream;
 
 
 /**
@@ -902,7 +903,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #of(Node)
      */
     static <T extends Node> NodeStream<T> ofOptional(Optional<T> optNode) {
-        // overload the varargs to avoid useless array creation
         return optNode.map(NodeStream::of).orElseGet(NodeStream::empty);
     }
 
@@ -937,6 +937,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
+        if (iterable instanceof List) {
+            return new ListNodeStream<>(((List<T>) iterable));
+        }
         return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);
     }
 
@@ -981,6 +984,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return An empty node stream
      */
     static <T extends Node> NodeStream<T> empty() {
-        return Stream::empty;
+        return (NodeStream<T>) ListNodeStream.EMPTY;
     }
 }
