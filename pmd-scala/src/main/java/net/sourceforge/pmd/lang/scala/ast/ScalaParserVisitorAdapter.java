@@ -35,9 +35,23 @@ import scala.meta.Type;
  */
 public class ScalaParserVisitorAdapter<D, R> implements ScalaParserVisitor<D, R> {
 
+    /** Initial value when combining values returned by children. */
+    protected R zero() {
+        return null;
+    }
+
+    /** Merge two values of type R, used to combine values returned by children. */
+    protected R combine(R acc, R r) {
+        return r;
+    }
+
     @Override
     public R visit(ScalaNode<?> node, D data) {
-        return node.childrenAccept(this, data);
+        R returnValue = zero();
+        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            returnValue = combine(returnValue, node.jjtGetChild(i).accept(this, data));
+        }
+        return returnValue;
     }
 
     @Override

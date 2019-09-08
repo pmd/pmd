@@ -17,7 +17,7 @@ This is a {{ site.pmd.release_type }} release.
 #### Full support for Scala
 
 Thanks to [Chris Smith](https://github.com/tophersmith) PMD now fully supports Scala. Now rules for analyzing Scala
-code can be developed in addition to the Copy-Pase-Detection (CPD) functionality. There are no rules yet, so
+code can be developed in addition to the Copy-Paste-Detection (CPD) functionality. There are no rules yet, so
 contributions are welcome.
 
 Additionally Scala support has been upgraded from 2.12.4 to 2.13.
