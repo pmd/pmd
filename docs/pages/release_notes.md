@@ -24,6 +24,8 @@ about the usage and features of the rule designer.
 
 *   java-codestyle
     *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
+*   plsql
+    *   [#1953](https://github.com/pmd/pmd/issues/1953): \[plsql] ParseException with WITH in CURSOR
 
 ### API Changes
 
@@ -36,6 +38,8 @@ about the usage and features of the rule designer.
     will be removed with PMD 7.0.0.
 
 ### External Contributions
+
+*   [#1977](https://github.com/pmd/pmd/pull/1977): \[plsql] fix for skipping sql starting with WITH - [Piotr Szymanski](https://github.com/szyman23)
 
 {% endtocmaker %}
 
