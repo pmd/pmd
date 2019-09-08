@@ -37,5 +37,7 @@ about the usage and features of the rule designer.
 
 ### External Contributions
 
+*   [#1976](https://github.com/pmd/pmd/pull/1976): \[plsql] Fix for mistaking / for MultiplicativeExpression - [Piotr Szymanski](https://github.com/szyman23)
+
 {% endtocmaker %}
 
