@@ -11,15 +11,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.jaxen.Navigator;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+
+import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Dummy language used for testing PMD.
@@ -62,6 +67,24 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractLanguageVersionHandler {
+        @Override
+        public XPathHandler getXPathHandler() {
+            return new XPathHandler() {
+                @Override
+                public void initialize(IndependentContext context) {
+                }
+
+                @Override
+                public void initialize() {
+                }
+
+                @Override
+                public Navigator getNavigator() {
+                    return new DocumentNavigator();
+                }
+            };
+        }
+
         @Override
         public RuleViolationFactory getRuleViolationFactory() {
             return new RuleViolationFactory();

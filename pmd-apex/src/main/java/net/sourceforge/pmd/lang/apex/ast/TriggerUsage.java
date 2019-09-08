@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * This maps the apex enum {@link apex.jorje.data.ast.TriggerUsage} to the PMD equivalent.
@@ -48,6 +49,10 @@ public enum TriggerUsage {
     }
 
     public static TriggerUsage of(apex.jorje.data.ast.TriggerUsage apexTriggerUsage) {
-        return APEX_TO_PMD.get(apexTriggerUsage);
+        TriggerUsage result = APEX_TO_PMD.get(apexTriggerUsage);
+        if (result != null) {
+            return result;
+        }
+        throw new NoSuchElementException("Unknown TriggerUsage value '" + apexTriggerUsage.name() + "'");
     }
 }

@@ -11,35 +11,38 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-public class SaxonXPathRuleQueryTest {
+public class JaxenXPathRuleQueryTest {
 
     @Test
     public void testListAttribute() {
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
 
-        assertQuery(1, "//dummyNode[@List = \"A\"]", dummy);
-        assertQuery(1, "//dummyNode[@List = \"B\"]", dummy);
+        assertQuery(1, "//dummyNode[@SimpleAtt = \"foo\"]", dummy);
+        assertQuery(1, "//dummyNode[@List = \"[A, B]\"]", dummy);
+        assertQuery(1, "//dummyNode[contains(@List, \"B\")]", dummy);
         assertQuery(0, "//dummyNode[@List = \"C\"]", dummy);
         assertQuery(1, "//dummyNode[@Enum = \"FOO\"]", dummy);
         assertQuery(0, "//dummyNode[@Enum = \"BAR\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = \"FOO\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = \"BAR\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = (\"FOO\", \"BAR\")]", dummy);
-        assertQuery(0, "//dummyNode[@EmptyList = (\"A\")]", dummy);
+        assertQuery(1, "//dummyNode[@EnumList = \"[FOO, BAR]\"]", dummy);
+        assertQuery(1, "//dummyNode[contains(@EnumList, \"BAR\")]", dummy);
+        assertQuery(0, "//dummyNode[@EmptyList = \"A\"]", dummy);
     }
 
     private static void assertQuery(int resultSize, String xpath, Node node) {
-        SaxonXPathRuleQuery query = createQuery(xpath);
-        List<Node> result = query.evaluate(node, new RuleContext());
+        JaxenXPathRuleQuery query = createQuery(xpath);
+        RuleContext data = new RuleContext();
+        data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+        List<Node> result = query.evaluate(node, data);
         Assert.assertEquals(resultSize, result.size());
     }
 
-    private static SaxonXPathRuleQuery createQuery(String xpath) {
-        SaxonXPathRuleQuery query = new SaxonXPathRuleQuery();
-        query.setVersion("2.0");
+    private static JaxenXPathRuleQuery createQuery(String xpath) {
+        JaxenXPathRuleQuery query = new JaxenXPathRuleQuery();
+        query.setVersion("1.0");
         query.setProperties(Collections.<PropertyDescriptor<?>, Object>emptyMap());
         query.setXPath(xpath);
         return query;
