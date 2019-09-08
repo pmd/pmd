@@ -259,7 +259,7 @@ ASTInput Input(String sourcecode) : {}
 	 | LOOKAHEAD(6) Directory()
 	 | LOOKAHEAD(6) DatabaseLink()
 	 | LOOKAHEAD(6) Global()
-         | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
+     | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
 	 | LOOKAHEAD(2) SqlPlusCommand()
 	 | UpdateStatement()
 	 | DeleteStatement()
@@ -359,20 +359,18 @@ ASTGlobal Global()  :
 {
 }
 {
-
 	/*
 	  Remove triggers from global processing because their schema may be defined in the trigger code itself
 	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema
 	  defaulting to the globalPackageName if it cannot be found
 	*/
-	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) ( Label() )* Block() ";" | LOOKAHEAD (4) ProgramUnit()
+	(
+	LOOKAHEAD ( ( Label() )* ( <DECLARE> | <BEGIN> ) ) ( Label() )* Block() ";"
+	|
+	LOOKAHEAD (4) ProgramUnit()
 	)
-
-
       { return jjtThis ; }
 }
-
-
 
 ASTBlock Block()  :
 {
