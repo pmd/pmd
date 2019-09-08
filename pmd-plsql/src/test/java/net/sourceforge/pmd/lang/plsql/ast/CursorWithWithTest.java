@@ -20,5 +20,10 @@ public class CursorWithWithTest extends AbstractPLSQLParserTst {
                 StandardCharsets.UTF_8);
         ASTInput input = parsePLSQL(code);
         Assert.assertNotNull(input);
+        ASTCursorUnit cursor = input.getFirstDescendantOfType(ASTCursorUnit.class);
+        ASTSelectStatement select = (ASTSelectStatement) cursor.jjtGetChild(1);
+        ASTWithClause with = (ASTWithClause) select.jjtGetChild(0);
+        ASTName queryName = (ASTName) with.jjtGetChild(0);
+        Assert.assertEquals("risk_set", queryName.getImage());
     }
 }

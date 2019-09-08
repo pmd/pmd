@@ -27,6 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add basic support for with clause in select statements
+ *
+ * Andreas Dangel 09/2019
+ *====================================================================
  * Various fixes for expression lists, join clauses, case expression
  *
  * Hugo Araya Nash 06/2019
@@ -1249,7 +1253,7 @@ ASTRowLimitingClause RowLimitingClause() :
 ASTQueryBlock QueryBlock() :
 {}
 {
-    // [ WithClause() ]
+    [ WithClause() ]
     AbstractSelectStatement(jjtThis)
     SelectList()
     FromClause()
@@ -2349,9 +2353,14 @@ ASTConditionalInsertClause ConditionalInsertClause() :
     { return jjtThis; }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6
+ */
 ASTSelectStatement SelectStatement() :
 {}
 {
+    [ WithClause() ]
+
     AbstractSelectStatement(jjtThis)
 
     SelectList()
@@ -2365,6 +2374,28 @@ ASTSelectStatement SelectStatement() :
     RestOfStatement()
 
     { return jjtThis; }
+}
+
+ASTWithClause WithClause() :
+{}
+{
+    <WITH>
+    (MethodDeclarator())* // plsql_declarations
+    [
+        SubqueryFactoringClause()
+        ("," SubqueryFactoringClause() )*
+    ]
+    { return jjtThis; }
+}
+
+void SubqueryFactoringClause() #void :
+{}
+{
+    Name() // query_name
+    <AS>
+    "(" Subquery() ")"
+    // [ SearchClause() ]
+    // [ CycleClause() ]
 }
 
 ASTUpdateStatement UpdateStatement() :
@@ -2786,20 +2817,24 @@ ASTCallSpecTail CallSpecTail() : {
 
 
 
-/** Cursor (common part of specification and body) */
+/**
+ * Cursor (common part of specification and body)
+ *
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/explicit-cursor-declaration-and-definition.html#GUID-38C5DBA3-9DEC-4AF2-9B5E-7B721D11A77C
+ */
 ASTCursorUnit CursorUnit()  :
 {
  PLSQLNode simpleNode = null ;
 }
 {
-	(
-	<CURSOR> simpleNode = ID()
-	[ FormalParameters() ]
-	[<RETURN> Datatype()
-	]
-	)
-	[<IS> ("(")* SqlStatement(null,";")] ";"
-      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+    <CURSOR> simpleNode = ID()
+    [ FormalParameters() ]
+    [ <RETURN> Datatype() ]
+    // cursor definition
+    [<IS> SelectStatement() ]
+    ";"
+
+    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTCursorSpecification CursorSpecification()  : {}
@@ -5508,7 +5543,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <FREEPOOLS>
 //| <FRESH>
 | <FULL>
-| <FUNCTION>
 //| <FUNCTIONS>
 //| <G>
 //| <GATHER_PLAN_STATISTICS>
@@ -5935,7 +5969,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <PRIVATE_SGA>
 //| <PRIVILEGE>
 //| <PRIVILEGES>
-| <PROCEDURE>
 //| <PROFILE>
 //| <PROGRAM>
 //| <PROJECT>
@@ -6356,7 +6389,7 @@ ASTID ID(): {}
 		| <FORALL> //SYNTAX
 		//| <FROM>  //RESERVED WORD
 
-		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
+		// <COMMIT> |
 		| <GOTO> //SYNTAX
 		| <HAVING>  //RESERVED WORD
 		//20120501 | <HEAP>
@@ -6412,7 +6445,6 @@ ASTID ID(): {}
 		| <PRIVATE>
 		| <PROMPT> //SYNTAX
 
-		//	<PROCEDURE> | // this causes bug 643043 Procedure w/o params appears as variable
 		| <PUBLIC>  //RESERVED WORD
 		| <RAISE> //SYNTAX
 		| <RAW>  //RESERVED WORD
@@ -6597,7 +6629,6 @@ ASTQualifiedID QualifiedID(): {}
 		//<FOR>
 		| <FORALL>
 		//<FROM>
-		//| <FUNCTION>
 		//<GOTO>
 		//<HAVING>
 		//20120501 | <HEAP>
@@ -6664,7 +6695,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <PRIOR>
 		| <PRIVATE>
 		| <PROMPT>
-		//<PROCEDURE>
 		//<PUBLIC>
 		| <RAISE>
 		//| <RANGE>
