@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.ast.internal.DescendantOrSelfIterator;
 import net.sourceforge.pmd.lang.ast.internal.ListNodeStream;
 
 
@@ -368,7 +369,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #ancestors()
      */
     default NodeStream<Node> ancestorsOrSelf() {
-        return flatMap(n -> n.asStream().append(n.ancestors()));
+        return flatMap(Node::ancestorsOrSelf);
     }
 
 

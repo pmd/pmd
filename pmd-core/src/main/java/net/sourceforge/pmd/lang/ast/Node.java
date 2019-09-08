@@ -16,6 +16,8 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.lang.ast.internal.AncestorOrSelfIterator;
+import net.sourceforge.pmd.lang.ast.internal.DescendantOrSelfIterator;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
@@ -433,7 +435,7 @@ public interface Node {
      * @see NodeStream#descendants()
      */
     default NodeStream<Node> descendants() {
-        return children().flatMap(Node::descendantsOrSelf);
+        return descendantsOrSelf().drop(1);
     }
 
 
@@ -446,7 +448,7 @@ public interface Node {
      * @see NodeStream#descendantsOrSelf()
      */
     default NodeStream<Node> descendantsOrSelf() {
-        return asStream().append(descendants());
+        return NodeStream.fromIterable(() -> new DescendantOrSelfIterator(this));
     }
 
 
@@ -460,23 +462,7 @@ public interface Node {
      * @see NodeStream#ancestors()
      */
     default NodeStream<Node> ancestors() {
-        return NodeStream.fromIterable(() -> new Iterator<Node>() {
-            Node next = jjtGetParent();
-
-
-            @Override
-            public boolean hasNext() {
-                return next != null;
-            }
-
-
-            @Override
-            public Node next() {
-                Node n = next;
-                next = n.jjtGetParent();
-                return n;
-            }
-        });
+        return ancestorsOrSelf().drop(1);
 
     }
 
@@ -490,7 +476,7 @@ public interface Node {
      * @see NodeStream#ancestorsOrSelf()
      */
     default NodeStream<Node> ancestorsOrSelf() {
-        return asStream().append(ancestors());
+        return NodeStream.fromIterable(() -> new AncestorOrSelfIterator(this));
     }
 
 
