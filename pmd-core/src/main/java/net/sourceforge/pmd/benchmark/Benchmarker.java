@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.benchmark;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -189,7 +190,7 @@ public final class Benchmarker {
             long start = System.currentTimeMillis();
             for (DataSource dataSource : dataSources) {
                 try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
-                    ctx.setSourceCodeFilename(dataSource.getNiceFileName(false, null));
+                    ctx.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
                     new SourceCodeProcessor(config).processSourceCode(stream, ruleSets, ctx);
                 }
             }

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.FooRule;
@@ -75,7 +77,7 @@ public abstract class AbstractRendererTst {
     protected RuleViolation newRuleViolation(int endColumn) {
         DummyNode node = createNode(endColumn);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename(getSourceCodeFilename());
+        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         return new ParametricRuleViolation<Node>(new FooRule(), ctx, node, "blah");
     }
 
@@ -92,7 +94,7 @@ public abstract class AbstractRendererTst {
     public void testRuleWithProperties() throws Exception {
         DummyNode node = createNode(1);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename(getSourceCodeFilename());
+        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         Report report = new Report();
         RuleWithProperties theRule = new RuleWithProperties();
         theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,

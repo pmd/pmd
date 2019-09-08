@@ -67,7 +67,7 @@ public class PmdRunnable implements Callable<Report> {
         Report report = Report.createReport(tc.ruleContext, fileName);
 
         if (LOG.isLoggable(Level.FINE)) {
-            LOG.fine("Processing " + tc.ruleContext.getSourceCodeFilename());
+            LOG.fine("Processing " + fileName);
         }
         for (Renderer r : renderers) {
             r.startFileAnalysis(dataSource);
