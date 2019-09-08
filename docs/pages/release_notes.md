@@ -66,6 +66,7 @@ about the usage and features of the rule designer.
     *   [#1947](https://github.com/pmd/pmd/issues/1947): \[plsql] ParseError - SELECT with FOR UPDATE OF
     *   [#1948](https://github.com/pmd/pmd/issues/1948): \[plsql] ParseException with INSERT INTO using package global variables
     *   [#1950](https://github.com/pmd/pmd/issues/1950): \[plsql] ParseException with UPDATE and package record variable
+    *   [#1953](https://github.com/pmd/pmd/issues/1953): \[plsql] ParseException with WITH in CURSOR
 
 ### API Changes
 
@@ -112,6 +113,7 @@ about the usage and features of the rule designer.
 *   [#1974](https://github.com/pmd/pmd/pull/1974): \[plsql] Fixes for referencing record type variables - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1975](https://github.com/pmd/pmd/pull/1975): \[plsql] TRIM function with record type variables - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1976](https://github.com/pmd/pmd/pull/1976): \[plsql] Fix for mistaking / for MultiplicativeExpression - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1977](https://github.com/pmd/pmd/pull/1977): \[plsql] fix for skipping sql starting with WITH - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
 
 {% endtocmaker %}
