@@ -111,6 +111,7 @@ about the usage and features of the rule designer.
 *   [#1972](https://github.com/pmd/pmd/pull/1972): \[plsql] ParseError - SELECT with FOR UPDATE OF - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1974](https://github.com/pmd/pmd/pull/1974): \[plsql] Fixes for referencing record type variables - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1975](https://github.com/pmd/pmd/pull/1975): \[plsql] TRIM function with record type variables - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1976](https://github.com/pmd/pmd/pull/1976): \[plsql] Fix for mistaking / for MultiplicativeExpression - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
 
 {% endtocmaker %}

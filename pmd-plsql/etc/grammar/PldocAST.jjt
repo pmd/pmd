@@ -3160,7 +3160,7 @@ ASTMultiplicativeExpression MultiplicativeExpression() #MultiplicativeExpression
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
  (
   (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
-  (
+  ( LOOKAHEAD(2)
     ( ("**"  ) { sb.append(" ** "); } //Exponentiation
     | ("*"  ) { sb.append(" * "); }
     | ("/"  ) { sb.append(" / "); }
