@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 public enum EmptyEnum {
-    ;
+    ;  // SUPPRESS CHECKSTYLE now
 
     public static void main(String... args) {
         method();
