@@ -24,6 +24,8 @@ about the usage and features of the rule designer.
 
 *   java-codestyle
     *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
+*   plsql
+    *   [#1946](https://github.com/pmd/pmd/issues/1946): \[plsql] ParseException with using TRIM inside IF statements condition
 
 ### API Changes
 
@@ -36,6 +38,8 @@ about the usage and features of the rule designer.
     will be removed with PMD 7.0.0.
 
 ### External Contributions
+
+*   [#1975](https://github.com/pmd/pmd/pull/1975): \[plsql] TRIM function with record type variables - [Piotr Szymanski](https://github.com/szyman23)
 
 {% endtocmaker %}
 
