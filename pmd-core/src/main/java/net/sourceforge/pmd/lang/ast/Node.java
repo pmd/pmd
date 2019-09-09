@@ -226,7 +226,7 @@ public interface Node {
      * <code>true</code>
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    default <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
+    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
         final List<T> list = new ArrayList<>();
         TraversalUtils.findDescendantsOfType(this, targetType, list, crossBoundaries);
         return list;
@@ -240,7 +240,7 @@ public interface Node {
      * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
      * is <code>true</code>
      */
-    default <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
+    default <T extends Node> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
         TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
     }
 

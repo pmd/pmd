@@ -202,7 +202,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
 
         @Override
         public int count() {
-            return node.jjtGetNumChildren();
+            return TraversalUtils.countChildrenOfType(target, node);
         }
 
         @Override
