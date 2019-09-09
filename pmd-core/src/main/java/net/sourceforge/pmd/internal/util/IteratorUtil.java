@@ -9,12 +9,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 
 /**
@@ -59,6 +62,38 @@ public final class IteratorUtil {
         List<T> tmp = toList(it);
         Collections.reverse(tmp);
         return tmp.iterator();
+    }
+
+    public static <T, R> Iterator<@NonNull R> filterCast(Iterator<? extends T> it, Class<R> type) {
+        return new Iterator<R>() {
+
+            private R next;
+
+            @Override
+            public boolean hasNext() {
+                if (next != null) {
+                    return true;
+                }
+                while (it.hasNext()) {
+                    T next1 = it.next();
+                    if (type.isInstance(next1)) { // returns false if null
+                        this.next = type.cast(next1);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public R next() {
+                if (next == null) {
+                    throw new NoSuchElementException();
+                }
+                R r = next;
+                next = null;
+                return r;
+            }
+        };
     }
 
 

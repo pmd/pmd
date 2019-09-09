@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -13,10 +14,10 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -153,7 +154,27 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
 
         @Override
         public Stream<R> toStream() {
-            return NodeStream.fromIterable(() -> new DescendantOrSelfIterator(node)).drop(1).filterIs(target).toStream();
+            return StreamSupport.stream(spliterator(), false);
+        }
+
+        @Override
+        public Spliterator<R> spliterator() {
+            return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED);
+        }
+
+        @Override
+        public <R1 extends Node> NodeStream<R1> filterIs(Class<R1> r1Class) {
+            return target == Node.class
+                   // node.descendants().filterIs(r1Class) === node.descendants(r1Class)
+                   ? new DescendantStream<>(node, r1Class)
+                   : NodeStream.super.filterIs(r1Class);
+        }
+
+        @Override
+        public Iterator<R> iterator() {
+            DescendantOrSelfIterator iter = new DescendantOrSelfIterator(node);
+            iter.next(); // skip self
+            return IteratorUtil.filterCast(iter, target);
         }
 
         @Override
@@ -185,14 +206,19 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public Stream<R> toStream() {
-            Spliterator<@NonNull Node> spliter = Spliterators.spliterator(
-                new ChildrenIterator(node),
-                node.jjtGetNumChildren(),
-                Spliterator.SIZED | Spliterator.ORDERED
-            );
-            return (Stream<R>) StreamSupport.stream(spliter, false).filter(target::isInstance);
+            return StreamSupport.stream(spliterator(), false);
+        }
+
+        @Override
+        public Spliterator<R> spliterator() {
+            return Spliterators.spliterator(iterator(), node.jjtGetNumChildren(),
+                                            Spliterator.SIZED | Spliterator.ORDERED);
+        }
+
+        @Override
+        public Iterator<R> iterator() {
+            return IteratorUtil.filterCast(new ChildrenIterator(node), target);
         }
 
         @Override
@@ -203,6 +229,14 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         @Override
         public int count() {
             return TraversalUtils.countChildrenOfType(target, node);
+        }
+
+        @Override
+        public <R1 extends Node> NodeStream<R1> filterIs(Class<R1> r1Class) {
+            return target == Node.class
+                   // node.children().filterIs(r1Class) === node.children(r1Class)
+                   ? new ChildrenStream<>(node, r1Class)
+                   : NodeStream.super.filterIs(r1Class);
         }
 
         @Override

@@ -24,6 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
+import net.sourceforge.pmd.lang.ast.internal.FlatmapNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
 
 
@@ -148,8 +149,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#flatMap(Function)
      */
     default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
-        return () -> toStream().flatMap(mapper.<NodeStream<? extends R>>andThen(ns -> ns == null ? empty() : ns)
-                                            .andThen(NodeStream::toStream));
+        return new FlatmapNodeStream<>(this, mapper);
     }
 
 
@@ -189,7 +189,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #filterMatching(Function, Object)
      */
     default NodeStream<T> filter(Predicate<? super T> predicate) {
-        return () -> toStream().filter(predicate);
+        return new FlatmapNodeStream<>(this, predicate);
     }
 
 
@@ -262,17 +262,25 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A cached node stream
      */
     default NodeStream<T> cached() {
-
         return new NodeStream<T>() {
             List<T> cachedValue = null;
 
-
             @Override
             public Stream<T> toStream() {
+                return toList().stream();
+            }
+
+            @Override
+            public int count() {
+                return toList().size();
+            }
+
+            @Override
+            public List<T> toList() {
                 if (cachedValue == null) {
                     cachedValue = NodeStream.this.toStream().collect(Collectors.toList());
                 }
-                return cachedValue.stream();
+                return cachedValue;
             }
         };
     }
@@ -291,6 +299,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #drop(int)
      */
     default NodeStream<T> take(int maxSize) {
+        AssertionUtil.assertArgNonNegative(maxSize);
         return () -> toStream().limit(maxSize);
     }
 
@@ -488,7 +497,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Node#children(Class)
      */
     default <R extends Node> NodeStream<R> children(Class<R> rClass) {
-        return children().filterIs(rClass);
+        return flatMap(it -> it.children(rClass));
     }
 
 
@@ -507,7 +516,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Node#descendants(Class)
      */
     default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
-        return descendants().filterIs(rClass);
+        return flatMap(it -> it.descendants(rClass));
     }
 
 
@@ -526,7 +535,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Node#ancestors(Class)
      */
     default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
-        return ancestors().filterIs(rClass);
+        return flatMap(it -> it.ancestors(rClass));
     }
 
 
