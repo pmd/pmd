@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.scala;
 
-import net.sourceforge.pmd.lang.AbstractLanguageVersionHandler;
+import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.scala.rule.ScalaRuleViolationFactory;
@@ -14,7 +14,7 @@ import scala.meta.Dialect;
 /**
  * The Scala Language Handler implementation.
  */
-public class ScalaLanguageHandler extends AbstractLanguageVersionHandler {
+public class ScalaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     private final Dialect dialect;
 
