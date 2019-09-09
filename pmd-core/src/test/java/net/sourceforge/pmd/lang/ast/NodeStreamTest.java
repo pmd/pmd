@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.Test;
 
 
