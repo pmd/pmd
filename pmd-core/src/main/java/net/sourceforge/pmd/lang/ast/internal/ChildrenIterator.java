@@ -15,7 +15,7 @@ class ChildrenIterator implements Iterator<@NonNull Node> {
     private final Node top;
     private int i;
 
-    public ChildrenIterator(Node top) {
+    ChildrenIterator(Node top) {
         this.top = top;
     }
 

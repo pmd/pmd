@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
@@ -19,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Test;

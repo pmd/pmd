@@ -181,7 +181,7 @@ public interface Node {
      * @return The first parent with a matching type. Returns null if there is no such parent
      */
     default <T extends Node> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
-        return ancestors().map(it-> {
+        return ancestors().map(it -> {
             for (final Class<? extends T> c : parentTypes) {
                 if (c.isInstance(it)) {
                     return c.cast(it);

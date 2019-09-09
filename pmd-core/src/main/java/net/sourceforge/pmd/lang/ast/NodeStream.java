@@ -68,7 +68,7 @@ import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
  * <li><tt>node.{@link Node#findChildrenOfType(Class) findChildrenOfType(t)} === node.{@link Node#descendants(Class) children(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
- * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestorStream()}.{@link #get(int) get(n)}</tt></li>
+ * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
  * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.</li>
  * </ul>
  *

@@ -114,8 +114,11 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
             Node node = this.node;
             while (n >= 0 && node != null) {
                 Node parent = node.jjtGetParent();
-                if (target.isInstance(parent) && --n == 0) {
-                    return target.cast(parent);
+                if (target.isInstance(parent)) {
+                    --n;
+                    if (n == 0) {
+                        return target.cast(parent);
+                    }
                 }
                 node = parent;
             }
@@ -203,7 +206,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        public <R1 extends Node> @Nullable R1 first(Class<R1> r1Class) {
+        public <S extends Node> @Nullable S first(Class<S> r1Class) {
             if (target == Node.class) {
                 return TraversalUtils.getFirstChildOfType(r1Class, node);
             }
