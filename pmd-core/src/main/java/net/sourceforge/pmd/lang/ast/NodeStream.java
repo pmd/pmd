@@ -22,6 +22,7 @@ import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
 
@@ -309,6 +310,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #take(int)
      */
     default NodeStream<T> drop(int n) {
+        AssertionUtil.assertArgNonNegative(n);
         return () -> toStream().skip(n);
     }
 
@@ -755,6 +757,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see #first(Predicate)
      * @see #first(Class)
+     * @see #firstOpt()
      */
     default @Nullable T first() {
         return toStream().findFirst().orElse(null);

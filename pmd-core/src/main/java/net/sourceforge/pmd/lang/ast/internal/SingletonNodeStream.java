@@ -16,6 +16,7 @@ import java.util.stream.StreamSupport;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -57,12 +58,23 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
     }
 
     @Override
-    public NodeStream<Node> children() {
+    public <R extends Node> SingletonNodeStream<R> map(Function<? super T, ? extends R> mapper) {
+        return new SingletonNodeStream<>(mapper.apply(node));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
+        return (NodeStream<R>) mapper.apply(node);
+    }
+
+    @Override
+    public ChildrenStream<Node> children() {
         return new ChildrenStream<>(node, Node.class);
     }
 
     @Override
-    public <R extends Node> NodeStream<R> children(Class<R> rClass) {
+    public <R extends Node> ChildrenStream<R> children(Class<R> rClass) {
         return new ChildrenStream<>(node, rClass);
     }
 
@@ -72,16 +84,16 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
     }
 
     @Override
-    public NodeStream<Node> descendants() {
+    public DescendantStream<Node> descendants() {
         return new DescendantStream<>(node, Node.class);
     }
 
     @Override
-    public <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+    public <R extends Node> DescendantStream<R> descendants(Class<R> rClass) {
         return new DescendantStream<>(node, rClass);
     }
 
-    public static class AncestorStream<R extends Node> implements NodeStream<R> {
+    public static final class AncestorStream<R extends Node> implements NodeStream<R> {
 
         private final Class<R> target;
         private final Node node;
@@ -98,6 +110,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
 
         @Override
         public @Nullable R get(int n) {
+            AssertionUtil.assertArgNonNegative(n);
             Node node = this.node;
             while (n >= 0 && node != null) {
                 Node parent = node.jjtGetParent();
@@ -125,7 +138,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
     }
 
-    public static class DescendantStream<R extends Node> implements NodeStream<R> {
+    public static final class DescendantStream<R extends Node> implements NodeStream<R> {
 
         private final Class<R> target;
         private final Node node;
@@ -158,7 +171,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
     }
 
-    public static class ChildrenStream<R extends Node> implements NodeStream<R> {
+    public static final class ChildrenStream<R extends Node> implements NodeStream<R> {
 
         private final Class<R> target;
         private final Node node;
