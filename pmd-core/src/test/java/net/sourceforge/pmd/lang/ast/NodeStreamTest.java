@@ -8,9 +8,11 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -153,11 +155,11 @@ public class NodeStreamTest {
     @Test
     public void testGet() {
         // ("0", "00", "01", "010", "1")
-        assertEquals(Optional.of("0"), tree1.descendants().get(0).map(Node::getImage));
-        assertEquals(Optional.of("00"), tree1.descendants().get(1).map(Node::getImage));
-        assertEquals(Optional.of("010"), tree1.descendants().get(3).map(Node::getImage));
-        assertEquals(Optional.of("1"), tree1.descendants().get(4).map(Node::getImage));
-        assertEquals(Optional.empty(), tree1.descendants().get(6));
+        assertEquals("0", tree1.descendants().get(0).getImage());
+        assertEquals("00", tree1.descendants().get(1).getImage());
+        assertEquals("010", tree1.descendants().get(3).getImage());
+        assertEquals("1", tree1.descendants().get(4).getImage());
+        assertNull(tree1.descendants().get(6));
     }
 
     @Test
@@ -249,7 +251,7 @@ public class NodeStreamTest {
         assertThat(tree1Evals.getValue(), equalTo(0));   // not evaluated yet
         assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated yet
 
-        assertSame(unionStream.first().get(), tree1);
+        assertSame(unionStream.first(), tree1);
 
         assertThat(tree1Evals.getValue(), equalTo(1));   // evaluated once
         assertThat(tree2Evals.getValue(), equalTo(0));   // not evaluated

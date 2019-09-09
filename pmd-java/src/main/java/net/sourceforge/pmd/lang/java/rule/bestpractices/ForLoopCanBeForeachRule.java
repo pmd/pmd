@@ -107,7 +107,8 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         }
 
         return init.children(ASTLocalVariableDeclaration.class)
-                   .first(it -> it.children(ASTVariableDeclarator.class).count() == 1)
+                   .filter(it -> it.children(ASTVariableDeclarator.class).count() == 1)
+                   .firstOpt()
                    .flatMap(decl -> getInfoAboutForIndexVar(init));
     }
 
@@ -140,7 +141,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .children(ASTPrimaryExpression.class)
                          .children(ASTPrimaryPrefix.class)
                          .children(ASTName.class)
-                         .first()
+                         .firstOpt()
                          .map(Node::getImage);
     }
 
@@ -223,7 +224,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                                      .children(ASTPrimaryPrefix.class)
                                      .children(ASTName.class)
                                      .filter(n -> n.getImage().matches("\\w+\\.(size|length)"))
-                                     .first()
+                                     .firstOpt()
                                      .map(astName -> astName.getImage().split("\\.")[0]);
 
             }
@@ -238,7 +239,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
                          .followingSiblings()
                          .filterIs(ASTVariableInitializer.class)
                          .descendants(ASTName.class)
-                         .first()             // TODO : This can return null if we are calling a local / statically imported method that returns the iterable - currently unhandled
+                         .firstOpt()             // TODO : This can return null if we are calling a local / statically imported method that returns the iterable - currently unhandled
                          .flatMap(nameNode -> {
 
                              String name = nameNode.getImage();
@@ -412,12 +413,10 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRule {
         return iterableInfo.getValue().stream()
                            .map(NameOccurrence::getLocation)
                            .filter(n -> n.ancestors(ASTForStatement.class)
-                                         .first()
+                                         .firstOpt()
                                          .filter(forParent -> Objects.equals(forParent, stmt))
                                          .isPresent())
-                           .filter(it -> it.hasImageEqualTo(iterableInfo.getKey().getName() + ".remove"))
-                           .findAny()
-                           .isPresent();
+                           .anyMatch(it -> it.hasImageEqualTo(iterableInfo.getKey().getName() + ".remove"));
     }
 
 

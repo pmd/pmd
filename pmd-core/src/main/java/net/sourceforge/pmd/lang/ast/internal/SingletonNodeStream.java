@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
@@ -15,10 +14,25 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
+/**
+ * Optimised node stream implementation for a single element. Streams
+ * returned by eg {@link #descendants()} have optimised implementations
+ * for several common operations, like {@link DescendantStream#first()},
+ * which most of the time don't need to iterate a stream directly. Their
+ * performance is equivalent to pre 7.0.0 traversal operations defined on
+ * the {@link Node} interface. When they don't have an optimised implementation,
+ * they fall back on stream processing.
+ *
+ * <p>This ensures that short pipelines like {@code node.descendants().first()}
+ * are as efficient as the pre 7.0.0 methods.
+ *
+ * TODO many more operations can be optimised that way.
+ */
 public final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
 
     private final T node;
@@ -83,16 +97,16 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        public Optional<R> get(int n) {
+        public @Nullable R get(int n) {
             Node node = this.node;
             while (n >= 0 && node != null) {
                 Node parent = node.jjtGetParent();
                 if (target.isInstance(parent) && --n == 0) {
-                    return Optional.of(target.cast(parent));
+                    return target.cast(parent);
                 }
                 node = parent;
             }
-            return Optional.empty();
+            return null;
         }
 
         @Override
@@ -100,14 +114,14 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
             if (n == 0) {
                 return this;
             }
-            Optional<R> p = get(n - 1);
-            return p.isPresent() ? new AncestorStream<>(p.get(), target)
-                                 : NodeStream.empty();
+            @Nullable R p = get(n - 1);
+            return p != null ? new AncestorStream<>(p, target)
+                             : NodeStream.empty();
         }
 
         @Override
-        public Optional<R> first() {
-            return Optional.ofNullable(TraversalUtils.getFirstParentOfType(target, node));
+        public @Nullable R first() {
+            return TraversalUtils.getFirstParentOfType(target, node);
         }
     }
 
@@ -127,8 +141,8 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        public Optional<R> first() {
-            return Optional.ofNullable(TraversalUtils.getFirstDescendantOfType(target, node));
+        public @Nullable R first() {
+            return TraversalUtils.getFirstDescendantOfType(target, node);
         }
 
         @Override
@@ -166,14 +180,19 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        public Optional<R> first() {
-            return Optional.ofNullable(TraversalUtils.getFirstChildOfType(target, node));
+        public @Nullable R first() {
+            return TraversalUtils.getFirstChildOfType(target, node);
         }
 
         @Override
-        public <R1 extends Node> Optional<R1> first(Class<R1> r1Class) {
+        public int count() {
+            return node.jjtGetNumChildren();
+        }
+
+        @Override
+        public <R1 extends Node> @Nullable R1 first(Class<R1> r1Class) {
             if (target == Node.class) {
-                return Optional.ofNullable(TraversalUtils.getFirstChildOfType(r1Class, node));
+                return TraversalUtils.getFirstChildOfType(r1Class, node);
             }
             return NodeStream.super.first(r1Class);
         }

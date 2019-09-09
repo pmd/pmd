@@ -147,7 +147,7 @@ public interface Node {
      * @throws IllegalArgumentException if {@code n} is negative or zero.
      */
     default Node getNthParent(int n) {
-        return ancestors().get(n - 1).orElse(null);
+        return ancestors().get(n - 1);
     }
 
     /**
@@ -158,7 +158,7 @@ public interface Node {
      * @return Node of type parentType. Returns null if none found.
      */
     default <T extends Node> T getFirstParentOfType(Class<T> parentType) {
-        return ancestors(parentType).first().orElse(null);
+        return ancestors(parentType).first();
     }
 
     /**
@@ -188,7 +188,7 @@ public interface Node {
                 }
             }
             return null;
-        }).first().orElse(null);
+        }).first();
     }
 
     /**
@@ -248,7 +248,7 @@ public interface Node {
      * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
      */
     default <T extends Node> T getFirstChildOfType(Class<T> childType) {
-        return children().first(childType).orElse(null);
+        return children().first(childType);
     }
 
     /**
@@ -259,7 +259,7 @@ public interface Node {
      * @return Node of type descendantType. Returns <code>null</code> if none found.
      */
     default <T extends Node> T getFirstDescendantOfType(Class<T> descendantType) {
-        return descendants(descendantType).first().orElse(null);
+        return descendants(descendantType).first();
     }
 
     /**

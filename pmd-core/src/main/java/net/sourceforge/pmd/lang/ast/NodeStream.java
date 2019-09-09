@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
 
@@ -66,10 +68,7 @@ import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
  * <li><tt>node.{@link Node#findDescendantsOfType(Class) findDescendantsOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getParentsOfType(Class) getParentsOfType(t)} === node.{@link Node#descendants(Class) ancestors(t)}.{@link #toList()}</tt></li>
  * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestorStream()}.{@link #get(int) get(n)}</tt></li>
- * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.<br/>
- * You can also call <tt>node.{@link Node#descendants(Class) descendants(t)}.{@link #first()}</tt> and use {@link Optional#ifPresent(Consumer) ifPresent} or add more
- * pipeline operations on the {@link Optional}.
- * </li>
+ * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.</li>
  * </ul>
  *
  * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. That means, that the operations
@@ -724,77 +723,92 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns an optional containing the element at index n in this stream.
-     * If no such element exists, and empty optional is returned.
+     * Returns the element at index n in this stream.
+     * If no such element exists, {@code null} is returned.
      *
      * <p>This is equivalent to <tt>{@link #drop(int) drop(n)}.{@link #first()}</tt>
      *
-     * <p>If instead of an optional, you'd rather continue processing
-     * the nth element as a node stream, you can use <tt>{@link #drop(int) drop(n)}.{@link #take(int) take(1)}.</tt>
+     * <p>If you'd rather continue processing the nth element as a node stream,
+     * you can use <tt>{@link #drop(int) drop(n)}.{@link #take(int) take(1)}.</tt>
      *
      * @param n Index of the element to find
      *
-     * @return The nth element of this stream, or empty if it doesn't exist
+     * @return The nth element of this stream, or {@code null} if it doesn't exist
      *
      * @throws IllegalArgumentException if n is negative
      */
-    default Optional<T> get(int n) {
+    default @Nullable T get(int n) {
         return drop(n).first();
     }
 
 
     /**
-     * Returns an Optional containing the first element of this stream,
-     * or an empty Optional if the stream is empty.
+     * Returns the first element of this stream, or {@code null} if the
+     * stream is empty.
      *
-     * <p>If instead of an optional, you'd rather continue processing
-     * the first element as a node stream, you can use {@link #take(int) take(1)}.
+     * <p>If you'd rather continue processingthe first element as a node
+     * stream, you can use {@link #take(int) take(1)}.
      *
      * <p>This is equivalent to {@link #get(int) get(0)}.
      *
-     * @return an Optional containing the first element of this stream,
+     * @return the first element of this stream, or {@code null} if it doesn't exist
      *
      * @see #first(Predicate)
      * @see #first(Class)
      */
-    default Optional<T> first() {
-        return toStream().findFirst();
+    default @Nullable T first() {
+        return toStream().findFirst().orElse(null);
     }
 
 
     /**
-     * Returns an Optional containing the first element of this stream
-     * that matches the given predicate, or an empty optional if there
-     * is none.
+     * Returns an optional containing the first element of this stream,
+     * or an empty optional if the stream is empty.
+     *
+     * <p>This is equivalent to {@code Optional.ofNullable(first())}.
+     *
+     * @return the first element of this stream, or an empty optional if it doesn't exist
+     *
+     * @see #first(Predicate)
+     * @see #first(Class)
+     * @see #first()
+     */
+    default Optional<T> firstOpt() {
+        return Optional.ofNullable(first());
+    }
+
+
+    /**
+     * Returns the first element of this stream that matches the given
+     * predicate, or {@code null} if there is none.
      *
      * @param predicate The predicate that one element should match for
      *                  this method to return it
      *
-     * @return an Optional containing the first element of this stream
-     * that matches the given predicate
+     * @return the first element of this stream that matches the given
+     * predicate, or {@code null} if it doesn't exist
      *
      * @see #first()
      * @see #first(Class)
      */
-    default Optional<T> first(Predicate<? super T> predicate) {
+    default @Nullable T first(Predicate<? super T> predicate) {
         return filter(predicate).first();
     }
 
 
     /**
-     * Returns an Optional containing the first element of this stream
-     * of the given type, or an empty optional if there is none.
+     * Returns the first element of this stream of the given type, or
+     * {@code null} if there is none.
      *
      * @param rClass The type of node to find
      * @param <R>    The type of node to find
      *
-     * @return an Optional containing the first element of this stream
-     * of the given type
+     * @return the first element of this stream of the given type, or {@code null} if it doesn't exist
      *
      * @see #first()
      * @see #first(Predicate)
      */
-    default <R extends Node> Optional<R> first(Class<R> rClass) {
+    default <R extends Node> @Nullable R first(Class<R> rClass) {
         return filterIs(rClass).first();
     }
 
