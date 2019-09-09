@@ -24,7 +24,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.ast.internal.FlatmapNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
 
 
@@ -149,7 +148,8 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#flatMap(Function)
      */
     default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
-        return new FlatmapNodeStream<>(this, mapper);
+        return () -> toStream().flatMap(mapper.<NodeStream<? extends R>>andThen(ns -> ns == null ? empty() : ns)
+                                            .andThen(NodeStream::toStream));
     }
 
 
@@ -189,7 +189,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #filterMatching(Function, Object)
      */
     default NodeStream<T> filter(Predicate<? super T> predicate) {
-        return new FlatmapNodeStream<>(this, predicate);
+        return () -> toStream().filter(predicate);
     }
 
 
@@ -278,7 +278,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
             @Override
             public List<T> toList() {
                 if (cachedValue == null) {
-                    cachedValue = NodeStream.this.toStream().collect(Collectors.toList());
+                    cachedValue = NodeStream.this.toList();
                 }
                 return cachedValue;
             }
