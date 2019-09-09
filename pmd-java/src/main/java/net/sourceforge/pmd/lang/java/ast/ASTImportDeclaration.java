@@ -89,8 +89,10 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
         return isStatic;
     }
 
-    // TODO - this should go away, but the DuplicateImports rule still uses it
-    // (in a clunky way)
+    /**
+     * @deprecated this will be removed with PMD 7.0.0
+     */
+    @Deprecated
     public ASTName getImportedNameNode() {
         return (ASTName) jjtGetChild(0);
     }
@@ -158,9 +160,10 @@ public class ASTImportDeclaration extends AbstractJavaTypeNode {
      * type or method imported by this declaration. This may be null if the
      * auxclasspath is not correctly set, as this method depends on correct
      * type resolution.
+     *
+     * @deprecated this will be removed with PMD 7.0.0
      */
-    // TODO deprecate? This is only used in a test. I don't think it's really
-    // useful and it gives work to ClassTypeResolver.
+    @Deprecated
     public Package getPackage() {
         return this.pkg;
     }

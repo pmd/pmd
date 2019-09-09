@@ -87,19 +87,19 @@ public class DuplicateImportsRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(),
-                node.getImportedNameNode(), node.isStatic() && node.isImportOnDemand());
+                node, node.isStatic() && node.isImportOnDemand());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be
         // polymorphic...
         if (node.isImportOnDemand()) {
             if (importOnDemandImports.contains(wrapper)) {
-                addViolation(data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
+                addViolation(data, node, node.getImportedName());
             } else {
                 importOnDemandImports.add(wrapper);
             }
         } else {
             if (singleTypeImports.contains(wrapper)) {
-                addViolation(data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
+                addViolation(data, node, node.getImportedName());
             } else {
                 singleTypeImports.add(wrapper);
             }

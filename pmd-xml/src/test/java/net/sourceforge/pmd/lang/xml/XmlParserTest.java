@@ -24,11 +24,11 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
-import net.sourceforge.pmd.lang.xml.ast.XmlParser;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Unit test for the {@link XmlParser}.
+ * Unit test for the {@link XmlParserImpl}.
  */
 public class XmlParserTest {
 

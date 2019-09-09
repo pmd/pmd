@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
@@ -89,7 +90,7 @@ public class AbstractRuleTest {
     public void testCreateRV2() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
@@ -108,7 +109,7 @@ public class AbstractRuleTest {
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ctx.setReport(new Report());
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode s = new DummyNode(1);
         s.testingOnlySetBeginColumn(5);
         s.testingOnlySetBeginLine(5);
@@ -126,7 +127,7 @@ public class AbstractRuleTest {
         m.put(Integer.valueOf(5), "");
         ctx.setReport(new Report());
         ctx.getReport().suppress(m);
-        ctx.setSourceCodeFilename("filename");
+        ctx.setSourceCodeFile(new File("filename"));
         DummyNode n = new DummyNode(1);
         n.testingOnlySetBeginColumn(5);
         n.testingOnlySetBeginLine(5);
