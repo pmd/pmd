@@ -163,7 +163,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        public <R1 extends Node> NodeStream<R1> filterIs(Class<R1> r1Class) {
+        public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
             return target == Node.class
                    // node.descendants().filterIs(r1Class) === node.descendants(r1Class)
                    ? new DescendantStream<>(node, r1Class)
@@ -212,13 +212,12 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
 
         @Override
         public Spliterator<R> spliterator() {
-            return Spliterators.spliterator(iterator(), node.jjtGetNumChildren(),
-                                            Spliterator.SIZED | Spliterator.ORDERED);
+            return Spliterators.spliterator(iterator(), count(), Spliterator.SIZED | Spliterator.ORDERED);
         }
 
         @Override
         public Iterator<R> iterator() {
-            return IteratorUtil.filterCast(new ChildrenIterator(node), target);
+            return TraversalUtils.childrenIterator(node, target);
         }
 
         @Override
@@ -232,7 +231,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
         }
 
         @Override
-        public <R1 extends Node> NodeStream<R1> filterIs(Class<R1> r1Class) {
+        public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
             return target == Node.class
                    // node.children().filterIs(r1Class) === node.children(r1Class)
                    ? new ChildrenStream<>(node, r1Class)

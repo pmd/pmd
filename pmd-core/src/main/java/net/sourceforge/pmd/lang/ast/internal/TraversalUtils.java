@@ -5,8 +5,12 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class TraversalUtils {
@@ -30,7 +34,7 @@ public final class TraversalUtils {
         }
     }
 
-    public static <T extends Node> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
+    static <T extends Node> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             final Node n1 = node.jjtGetChild(i);
@@ -47,7 +51,7 @@ public final class TraversalUtils {
         return null;
     }
 
-    public static <T extends Node> T getFirstParentOfType(final Class<T> type, final Node node) {
+    static <T extends Node> T getFirstParentOfType(final Class<T> type, final Node node) {
         Node n = node.jjtGetParent();
         while (n != null) {
             if (type.isInstance(n)) {
@@ -58,7 +62,7 @@ public final class TraversalUtils {
         return null;
     }
 
-    public static <T extends Node> T getFirstChildOfType(final Class<T> type, final Node node) {
+    static <T extends Node> T getFirstChildOfType(final Class<T> type, final Node node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node c = node.jjtGetChild(i);
             if (type.isInstance(c)) {
@@ -92,4 +96,32 @@ public final class TraversalUtils {
         }
         return sum;
     }
+
+
+    @NonNull
+    static <R extends Node> Iterator<@NonNull R> childrenIterator(Node parent, Class<R> target) {
+        if (target == Node.class) {
+            return (Iterator<R>) childrenIterator(parent);
+        }
+        return IteratorUtil.filterCast(childrenIterator(parent), target);
+    }
+
+    static Iterator<Node> childrenIterator(Node parent) {
+        return new Iterator<Node>() {
+
+            private int i;
+
+            @Override
+            public boolean hasNext() {
+                return i < parent.jjtGetNumChildren();
+            }
+
+            @Override
+            public @NonNull
+            Node next() {
+                return parent.jjtGetChild(i++);
+            }
+        };
+    }
+
 }
