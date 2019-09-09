@@ -21,8 +21,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.ast.internal.DescendantOrSelfIterator;
-import net.sourceforge.pmd.lang.ast.internal.ListNodeStream;
+import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
 
 
 /**
@@ -593,8 +592,10 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see #filter(Predicate)
      */
+    @SuppressWarnings("unchecked")
     default <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
-        return filter(rClass::isInstance).map(rClass::cast);
+        return rClass == Node.class ? (NodeStream<R>) this
+                                    : (NodeStream<R>) filter(rClass::isInstance);
     }
 
 
@@ -891,7 +892,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     static <T extends Node> NodeStream<T> of(T node) {
         // overload the varargs to avoid useless array creation
-        return node == null ? empty() : () -> Stream.of(node);
+        return node == null ? empty() : new SingletonNodeStream<>(node);
     }
 
 
@@ -941,9 +942,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
-        if (iterable instanceof List) {
-            return ListNodeStream.ofNullable((List<T>) iterable);
-        }
         return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);
     }
 
@@ -988,6 +986,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return An empty node stream
      */
     static <T extends Node> NodeStream<T> empty() {
-        return (NodeStream<T>) ListNodeStream.EMPTY;
+        return Stream::empty;
     }
 }

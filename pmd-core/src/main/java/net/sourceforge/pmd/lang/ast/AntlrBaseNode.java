@@ -82,12 +82,6 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     }
 
     @Override
-    public NodeStream<Node> children() {
-        // TODO: review if all children are Nodes
-        return NodeStream.fromSupplier(() -> children.stream().map(it -> (Node) it));
-    }
-
-    @Override
     public Node jjtGetChild(final int index) {
         return (Node) children.get(index); // TODO: review if all children are Nodes
     }
