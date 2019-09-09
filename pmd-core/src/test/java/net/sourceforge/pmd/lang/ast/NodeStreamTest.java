@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.Test;
 
 
@@ -101,6 +102,19 @@ public class NodeStreamTest {
     public void testTreeStream() {
         assertThat(pathsOf(tree1.descendantsOrSelf()), contains("", "0", "00", "01", "010", "1"));
         assertThat(pathsOf(NodeStream.of(tree1).descendantsOrSelf()), contains("", "0", "00", "01", "010", "1"));
+    }
+
+    @Test
+    public void testAncestors() {
+        // 010
+        Node node = tree1.children().children().children().first();
+        assertThat(pathsOf(node.ancestors()), contains("01", "0", ""));
+        assertThat(pathsOf(node.ancestorsOrSelf()), contains("010", "01", "0", ""));
+
+        assertEquals("01", node.getNthParent(1).getImage());
+        assertEquals("0", node.getNthParent(2).getImage());
+        assertEquals("", node.getNthParent(3).getImage());
+        assertNull(node.getNthParent(4));
     }
 
 

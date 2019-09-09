@@ -116,7 +116,7 @@ public final class SingletonNodeStream<T extends Node> implements NodeStream<T> 
                 Node parent = node.jjtGetParent();
                 if (target.isInstance(parent)) {
                     --n;
-                    if (n == 0) {
+                    if (n < 0) {
                         return target.cast(parent);
                     }
                 }

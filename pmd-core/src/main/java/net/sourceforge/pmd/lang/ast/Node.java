@@ -142,6 +142,10 @@ public interface Node {
     /**
      * Returns the n-th parent or null if there are less than {@code n} ancestors.
      *
+     * <pre>{@code
+     *    getNthParent(1) == jjtGetParent
+     * }</pre>
+     *
      * @param n how many ancestors to iterate over.
      * @return the n-th parent or null.
      * @throws IllegalArgumentException if {@code n} is negative or zero.
