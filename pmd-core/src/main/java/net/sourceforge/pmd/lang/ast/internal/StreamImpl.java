@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -67,10 +70,25 @@ public final class StreamImpl {
         return new DescendantOrSelfStream(node);
     }
 
+    public static NodeStream<Node> followingSiblings(Node node) {
+        Node parent = node.jjtGetParent();
+        return parent == null ? empty()
+                              : new SlicedChildrenStream(parent, node.jjtGetChildIndex() + 1, parent.jjtGetNumChildren());
+    }
+
+    public static NodeStream<Node> precedingSiblings(Node node) {
+        Node parent = node.jjtGetParent();
+        return parent == null ? empty()
+                              : new SlicedChildrenStream(parent, 0, node.jjtGetChildIndex());
+    }
+
     /**
      * Implementations are based on the iterator rather than the stream.
+     * For small pipelines this makes a difference, as the pipeline grows
+     * longer, streams becomes more efficient. Any call to {@link NodeStream#flatMap(Function)}
+     * produces a streaming implementation.
      */
-    private static abstract class IteratorBasedStream<R extends Node> implements NodeStream<R> {
+    private abstract static class IteratorBasedStream<R extends Node> implements NodeStream<R> {
 
         @Override
         public Stream<R> toStream() {
@@ -103,24 +121,38 @@ public final class StreamImpl {
 
         @Override
         public @Nullable R get(int n) {
-            Iterator<R> iter = iterator();
-            R result = null;
-            while (n-- >= 0 && iter.hasNext()) {
-                result = iter.next();
-            }
-            return result;
+            return IteratorUtil.getNth(iterator(), n);
         }
 
         @Override
         public NodeStream<R> drop(int n) {
-            return new IteratorBasedStream<R>() {
-                @Override
-                public Iterator iterator() {
-                    Iterator<R> iter = IteratorBasedStream.this.iterator();
-                    IteratorUtil.drop(iter, n);
-                    return iter;
-                }
-            };
+            AssertionUtil.assertArgNonNegative(n);
+            return n == 0 ? this
+                          : new IteratorBasedStream<R>() {
+                              @Override
+                              public Iterator<R> iterator() {
+                                  Iterator<R> iter = IteratorBasedStream.this.iterator();
+                                  IteratorUtil.advance(iter, n);
+                                  return iter;
+                              }
+                          };
+        }
+
+        @Override
+        public NodeStream<R> take(int maxSize) {
+            AssertionUtil.assertArgNonNegative(maxSize);
+            return maxSize == 0 ? NodeStream.empty()
+                                : new IteratorBasedStream<R>() {
+                                    @Override
+                                    public Iterator<R> iterator() {
+                                        return IteratorUtil.take(IteratorBasedStream.this.iterator(), maxSize);
+                                    }
+                                };
+        }
+
+        @Override
+        public int count() {
+            return IteratorUtil.count(iterator());
         }
 
         @Override
@@ -130,11 +162,37 @@ public final class StreamImpl {
 
         @Override
         public @Nullable R first() {
-            return get(0);
+            Iterator<R> iter = iterator();
+            return iter.hasNext() ? null : iter.next();
+        }
+
+        @Override
+        public List<R> toList() {
+            return IteratorUtil.toList(iterator());
+        }
+
+        @Override
+        public <S extends Node> @Nullable S first(Class<S> r1Class) {
+            for (R r : this) {
+                if (r1Class.isInstance(r)) {
+                    return r1Class.cast(r);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public @Nullable R first(Predicate<? super R> predicate) {
+            for (R r : this) {
+                if (predicate.test(r)) {
+                    return r;
+                }
+            }
+            return null;
         }
     }
 
-    private static abstract class AxisStream<R extends Node> extends IteratorBasedStream<R> {
+    private abstract static class AxisStream<R extends Node> extends IteratorBasedStream<R> {
 
         protected final Node node;
         protected final Class<R> target;
@@ -327,7 +385,7 @@ public final class StreamImpl {
         }
     }
 
-    private static final class ChildrenStream extends FilteredChildrenStream<Node> {
+    private static class ChildrenStream extends FilteredChildrenStream<Node> {
 
         ChildrenStream(Node root) {
             super(root, Node.class);
@@ -363,6 +421,50 @@ public final class StreamImpl {
         @Override
         public int count() {
             return node.jjtGetNumChildren();
+        }
+    }
+
+    private static class SlicedChildrenStream extends AxisStream<Node> {
+
+        private final int low;
+        private final int high;
+
+        SlicedChildrenStream(Node root, int low, int high) {
+            super(root, Node.class);
+            this.low = low;
+            this.high = high;
+        }
+
+        @Override
+        public @NonNull Iterator<Node> iterator() {
+            return count() > 0 ? TraversalUtils.childrenIterator(node, low, high)
+                               : IteratorUtil.emptyIterator();
+        }
+
+        @Nullable
+        @Override
+        public Node first() {
+            return low < high ? node.jjtGetChild(low) : null;
+        }
+
+        @Override
+        public NodeStream<Node> take(int maxSize) {
+            return new SlicedChildrenStream(node, low, high - maxSize);
+        }
+
+        @Override
+        public NodeStream<Node> drop(int n) {
+            return new SlicedChildrenStream(node, low + n, high);
+        }
+
+        @Override
+        public boolean nonEmpty() {
+            return count() > 0;
+        }
+
+        @Override
+        public int count() {
+            return Math.max(high - low, 0);
         }
     }
 }

@@ -98,13 +98,17 @@ public final class TraversalUtils {
 
 
     static Iterator<Node> childrenIterator(Node parent) {
+        return childrenIterator(parent, 0, parent.jjtGetNumChildren());
+    }
+
+    static Iterator<Node> childrenIterator(Node parent, int from, int to) {
         return new Iterator<Node>() {
 
-            private int i;
+            private int i = from;
 
             @Override
             public boolean hasNext() {
-                return i < parent.jjtGetNumChildren();
+                return i < to;
             }
 
             @Override

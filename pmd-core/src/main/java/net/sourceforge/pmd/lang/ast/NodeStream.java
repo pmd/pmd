@@ -40,7 +40,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * <p>Most functions have an equivalent in the {@link Stream} interface and their behaviour is equivalent.
  * Some additional functions are provided to iterate the axes of the tree: {@link #children()}, {@link #descendants()},
  * {@link #descendantsOrSelf()}, {@link #parents()}, {@link #ancestors()}, {@link #ancestorsOrSelf()},
- * {@link #precedingSiblings()}, {@link #followingSiblings()}, and {@link #siblings()}. Filtering and mapping
+ * {@link #precedingSiblings()}, {@link #followingSiblings()}. Filtering and mapping
  * nodes by type is possible through {@link #filterIs(Class)}, and the specialized {@link #children(Class)},
  * {@link #descendants(Class)}, and {@link #ancestors(Class)}.
  *
@@ -455,7 +455,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A stream of siblings
      */
     default NodeStream<Node> followingSiblings() {
-        return flatMap(node -> of(node.jjtGetParent()).children().drop(node.jjtGetChildIndex() + 1));
+        return flatMap(StreamImpl::followingSiblings);
     }
 
 
@@ -466,19 +466,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A stream of siblings
      */
     default NodeStream<Node> precedingSiblings() {
-        return flatMap(node -> of(node.jjtGetParent()).children().take(node.jjtGetChildIndex()));
-    }
-
-
-    /**
-     * Returns a node stream containing all the siblings of the nodes contained in this stream.
-     * The returned stream does not contain this node. The nodes are yielded from left to right,
-     * i.e. in document order.
-     *
-     * @return A stream of siblings
-     */
-    default NodeStream<Node> siblings() {
-        return flatMap(n -> n.asStream().precedingSiblings().append(n.asStream().followingSiblings()));
+        return flatMap(StreamImpl::precedingSiblings);
     }
 
 

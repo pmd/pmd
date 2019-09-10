@@ -30,7 +30,7 @@ final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
 
     private final T node;
 
-    public SingletonNodeStream(T node) {
+    SingletonNodeStream(T node) {
         this.node = node;
     }
 
@@ -104,5 +104,15 @@ final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
     @Override
     public NodeStream<Node> descendantsOrSelf() {
         return StreamImpl.descendantsOrSelf(node);
+    }
+
+    @Override
+    public NodeStream<Node> followingSiblings() {
+        return StreamImpl.followingSiblings(node);
+    }
+
+    @Override
+    public NodeStream<Node> precedingSiblings() {
+        return StreamImpl.precedingSiblings(node);
     }
 }

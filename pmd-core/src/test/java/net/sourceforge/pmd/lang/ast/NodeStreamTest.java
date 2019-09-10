@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.followPath;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.node;
 import static net.sourceforge.pmd.lang.ast.DummyTreeUtil.tree;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -107,6 +106,7 @@ public class NodeStreamTest {
     public void testAncestors() {
         // 010
         Node node = tree1.children().children().children().first();
+        assertEquals("010", node.getImage());
         assertThat(pathsOf(node.ancestors()), contains("01", "0", ""));
         assertThat(pathsOf(node.ancestorsOrSelf()), contains("010", "01", "0", ""));
 
@@ -127,14 +127,6 @@ public class NodeStreamTest {
     public void testPrecedingSiblings() {
         assertThat(pathsOf(followPath(tree1, "01").asStream().precedingSiblings()), contains("00"));
     }
-
-    @Test
-    public void testSiblings() {
-        assertThat(pathsOf(followPath(tree2, "1").asStream().siblings()), contains("0", "2", "3"));
-        assertThat(pathsOf(tree2.asStream().siblings()), empty());
-        assertThat(pathsOf(tree1.asStream().siblings()), empty());
-    }
-
 
     @Test
     public void testAncestorStream() {
@@ -305,7 +297,6 @@ public class NodeStreamTest {
         unionStream.ancestors();
         unionStream.followingSiblings();
         unionStream.precedingSiblings();
-        unionStream.siblings();
         unionStream.children();
         unionStream.distinct();
         unionStream.take(4);

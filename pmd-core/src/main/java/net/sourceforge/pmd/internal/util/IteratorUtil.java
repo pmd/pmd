@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 /**
@@ -28,6 +29,28 @@ public final class IteratorUtil {
 
     private IteratorUtil() {
 
+    }
+
+    private static final Iterator EMPTY = new Iterator() {
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer action) {
+
+        }
+
+        @Override
+        public Object next() {
+            throw new NoSuchElementException("empty iterator");
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    public static <T> Iterator<T> emptyIterator() {
+        return EMPTY;
     }
 
 
@@ -121,11 +144,43 @@ public final class IteratorUtil {
         return count;
     }
 
-    /** Counts the items in this iterator, exhausting it. */
-    public static void drop(Iterator<?> it, int n) {
-        while (--n > 0 && it.hasNext()) {
-            it.next();
+    public static <T> @Nullable T getNth(Iterator<T> iterator, int n) {
+        advance(iterator, n);
+        return iterator.hasNext() ? iterator.next() : null;
+    }
+
+    /** Advance {@code n} times. */
+    public static void advance(Iterator<?> iterator, int n) {
+        AssertionUtil.assertArgNonNegative(n);
+
+        while (n > 0 && iterator.hasNext()) {
+            iterator.next();
+            n--;
         }
+    }
+
+
+    /** Limit the number of elements yielded by this iterator to the given number. */
+    public static <T> Iterator<T> take(Iterator<T> iterator, final int n) {
+        AssertionUtil.assertArgNonNegative(n);
+        if (n == 0) {
+            return emptyIterator();
+        }
+
+        return new Iterator<T>() {
+            private int yielded = 0;
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext() && yielded < n;
+            }
+
+            @Override
+            public T next() {
+                yielded++;
+                return iterator.next();
+            }
+        };
     }
 
 

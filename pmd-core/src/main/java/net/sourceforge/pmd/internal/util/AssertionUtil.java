@@ -16,4 +16,5 @@ public final class AssertionUtil {
             throw new IllegalArgumentException("Argument should be positive or null, got " + n);
         }
     }
+
 }
