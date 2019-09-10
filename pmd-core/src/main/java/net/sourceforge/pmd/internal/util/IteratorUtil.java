@@ -88,6 +88,37 @@ public final class IteratorUtil {
         return tmp.iterator();
     }
 
+    public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends Iterator<? extends R>> f) {
+        return new Iterator<R>() {
+
+            private Iterator<? extends R> current = null;
+
+            @Override
+            public boolean hasNext() {
+                if (current != null && current.hasNext()) {
+                    return true;
+                } else {
+                    while (iter.hasNext()) {
+                        Iterator<? extends R> next = f.apply(iter.next());
+                        if (next != null && next.hasNext()) {
+                            current = next;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+
+            @Override
+            public R next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return current.next();
+            }
+        };
+    }
+
     public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> type) {
         return new Iterator<R>() {
 

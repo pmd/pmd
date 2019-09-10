@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.internal.util.Filtermap;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class TraversalUtils {

@@ -10,16 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
+import net.sourceforge.pmd.internal.util.Filtermap;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -102,116 +100,6 @@ public final class StreamImpl {
         return ancestorsOrSelf(node.jjtGetParent(), Filtermap.isInstance(target));
     }
 
-
-    /**
-     * Implementations are based on the iterator rather than the stream.
-     * For small pipelines this makes a difference, as the pipeline grows
-     * longer, streams becomes more efficient. Any call to {@link NodeStream#flatMap(Function)}
-     * produces a streaming implementation.
-     */
-    private abstract static class IteratorBasedStream<R extends Node> implements NodeStream<R> {
-
-        @Override
-        public Stream<R> toStream() {
-            return StreamSupport.stream(spliterator(), false);
-        }
-
-        @Override
-        public Spliterator<R> spliterator() {
-            return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED);
-        }
-
-        @Override
-        public void forEach(Consumer<? super R> action) {
-            iterator().forEachRemaining(action);
-        }
-
-        @Override
-        public abstract Iterator<R> iterator();
-
-
-        @Override
-        public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
-            return new IteratorBasedStream<S>() {
-                @Override
-                public Iterator<S> iterator() {
-                    return IteratorUtil.mapNotNull(IteratorBasedStream.this.iterator(), Filtermap.isInstance(r1Class));
-                }
-            };
-        }
-
-        @Override
-        public @Nullable R get(int n) {
-            return IteratorUtil.getNth(iterator(), n);
-        }
-
-        @Override
-        public NodeStream<R> drop(int n) {
-            AssertionUtil.assertArgNonNegative(n);
-            return n == 0 ? this
-                          : new IteratorBasedStream<R>() {
-                              @Override
-                              public Iterator<R> iterator() {
-                                  Iterator<R> iter = IteratorBasedStream.this.iterator();
-                                  IteratorUtil.advance(iter, n);
-                                  return iter;
-                              }
-                          };
-        }
-
-        @Override
-        public NodeStream<R> take(int maxSize) {
-            AssertionUtil.assertArgNonNegative(maxSize);
-            return maxSize == 0 ? NodeStream.empty()
-                                : new IteratorBasedStream<R>() {
-                                    @Override
-                                    public Iterator<R> iterator() {
-                                        return IteratorUtil.take(IteratorBasedStream.this.iterator(), maxSize);
-                                    }
-                                };
-        }
-
-        @Override
-        public int count() {
-            return IteratorUtil.count(iterator());
-        }
-
-        @Override
-        public boolean nonEmpty() {
-            return iterator().hasNext();
-        }
-
-        @Override
-        public @Nullable R first() {
-            Iterator<R> iter = iterator();
-            return iter.hasNext() ? null : iter.next();
-        }
-
-        @Override
-        public List<R> toList() {
-            return IteratorUtil.toList(iterator());
-        }
-
-        @Override
-        public <S extends Node> @Nullable S first(Class<S> r1Class) {
-            for (R r : this) {
-                if (r1Class.isInstance(r)) {
-                    return r1Class.cast(r);
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public @Nullable R first(Predicate<? super R> predicate) {
-            for (R r : this) {
-                if (predicate.test(r)) {
-                    return r;
-                }
-            }
-            return null;
-        }
-    }
 
     private abstract static class AxisStream<R extends Node> extends IteratorBasedStream<R> {
 

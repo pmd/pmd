@@ -2,7 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast.internal;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.internal.util;
 
 
 import java.util.Iterator;
@@ -12,12 +16,13 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
-
+/**
+ * Combined filter/map predicate. Cannot accept null values.
+ */
 @FunctionalInterface
-interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O> {
+public interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O> {
 
 
     Filtermap<Node, Node> NODE_IDENTITY = emptyFilter();
@@ -36,13 +41,13 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O> {
     }
 
 
-
     default <R> Filtermap<I, R> then(Filtermap<? super O, ? extends R> then) {
         return i -> {
             O o = this.apply(i);
             return o == null ? null : then.apply(o);
         };
     }
+
 
     default <R> Filtermap<I, R> thenCast(Class<R> rClass) {
         return then(isInstance(rClass));
