@@ -107,12 +107,7 @@ public final class IteratorUtil {
 
 
     public static <T> Iterable<T> toIterable(final Iterator<T> it) {
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return it;
-            }
-        };
+        return () -> it;
     }
 
 
@@ -126,34 +121,36 @@ public final class IteratorUtil {
         return count;
     }
 
+    /** Counts the items in this iterator, exhausting it. */
+    public static void drop(Iterator<?> it, int n) {
+        while (--n > 0 && it.hasNext()) {
+            it.next();
+        }
+    }
+
 
     public static <T> Iterable<T> asReversed(final List<T> lst) {
 
-        return new Iterable<T>() {
+        return () -> new Iterator<T>() {
+
+            ListIterator<T> li = lst.listIterator(lst.size());
+
+
             @Override
-            public Iterator<T> iterator() {
-                return new Iterator<T>() {
-
-                    ListIterator<T> li = lst.listIterator(lst.size());
-
-
-                    @Override
-                    public boolean hasNext() {
-                        return li.hasPrevious();
-                    }
+            public boolean hasNext() {
+                return li.hasPrevious();
+            }
 
 
-                    @Override
-                    public T next() {
-                        return li.previous();
-                    }
+            @Override
+            public T next() {
+                return li.previous();
+            }
 
 
-                    @Override
-                    public void remove() {
-                        li.remove();
-                    }
-                };
+            @Override
+            public void remove() {
+                li.remove();
             }
         };
     }

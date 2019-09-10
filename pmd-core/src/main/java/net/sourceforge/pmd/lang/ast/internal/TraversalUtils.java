@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class TraversalUtils {
@@ -97,14 +96,6 @@ public final class TraversalUtils {
         return sum;
     }
 
-
-    @NonNull
-    static <R extends Node> Iterator<@NonNull R> childrenIterator(Node parent, Class<R> target) {
-        if (target == Node.class) {
-            return (Iterator<R>) childrenIterator(parent);
-        }
-        return IteratorUtil.filterCast(childrenIterator(parent), target);
-    }
 
     static Iterator<Node> childrenIterator(Node parent) {
         return new Iterator<Node>() {

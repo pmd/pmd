@@ -24,7 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
-import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream;
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 
 
 /**
@@ -918,7 +918,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     static <T extends Node> NodeStream<T> of(T node) {
         // overload the varargs to avoid useless array creation
-        return node == null ? empty() : new SingletonNodeStream<>(node);
+        return node == null ? empty() : StreamImpl.singleton(node);
     }
 
 
@@ -934,7 +934,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #of(Node)
      */
     static <T extends Node> NodeStream<T> ofOptional(Optional<T> optNode) {
-        return optNode.map(NodeStream::of).orElseGet(NodeStream::empty);
+        return optNode.map(StreamImpl::singleton).orElseGet(StreamImpl::empty);
     }
 
 
@@ -1012,6 +1012,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return An empty node stream
      */
     static <T extends Node> NodeStream<T> empty() {
-        return Stream::empty;
+        return StreamImpl.empty();
     }
 }

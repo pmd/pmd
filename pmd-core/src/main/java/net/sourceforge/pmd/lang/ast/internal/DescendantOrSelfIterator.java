@@ -13,12 +13,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /** Iterates over a node and its descendants. */
-public class DescendantOrSelfIterator implements Iterator<@NonNull Node> {
+class DescendantOrSelfIterator implements Iterator<@NonNull Node> {
 
     private final Deque<Node> queue = new ArrayDeque<>();
 
     /** Always {@link #hasNext()} after exiting the constructor. */
-    public DescendantOrSelfIterator(Node top) {
+    DescendantOrSelfIterator(Node top) {
         queue.addFirst(top);
     }
 
@@ -29,8 +29,7 @@ public class DescendantOrSelfIterator implements Iterator<@NonNull Node> {
 
 
     @Override
-    public @NonNull
-    Node next() {
+    public @NonNull Node next() {
         Node node = queue.removeFirst();
         enqueueChildren(node);
         return node;

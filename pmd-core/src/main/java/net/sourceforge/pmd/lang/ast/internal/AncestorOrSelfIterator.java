@@ -11,13 +11,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
-/** Iterates over a node and its descendants. */
-public class AncestorOrSelfIterator implements Iterator<@NonNull Node> {
+/** Iterates over a node and its ancestors. */
+class AncestorOrSelfIterator implements Iterator<@NonNull Node> {
 
 
     private Node next;
 
-    public AncestorOrSelfIterator(Node top) {
+    AncestorOrSelfIterator(Node top) {
         next = top;
     }
 

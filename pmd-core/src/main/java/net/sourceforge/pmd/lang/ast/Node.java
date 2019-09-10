@@ -16,11 +16,7 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
-import net.sourceforge.pmd.lang.ast.internal.AncestorOrSelfIterator;
-import net.sourceforge.pmd.lang.ast.internal.DescendantOrSelfIterator;
-import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream.AncestorStream;
-import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream.ChildrenStream;
-import net.sourceforge.pmd.lang.ast.internal.SingletonNodeStream.DescendantStream;
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
@@ -382,7 +378,7 @@ public interface Node {
      * @see NodeStream#of(Node)
      */
     default NodeStream<Node> asStream() {
-        return NodeStream.of(this);
+        return StreamImpl.singleton(this);
     }
 
 
@@ -394,7 +390,7 @@ public interface Node {
      * @see NodeStream#children(Class)
      */
     default NodeStream<Node> children() {
-        return children(Node.class);
+        return StreamImpl.children(this);
     }
 
 
@@ -407,7 +403,7 @@ public interface Node {
      * @see NodeStream#descendants()
      */
     default NodeStream<Node> descendants() {
-        return descendants(Node.class);
+        return StreamImpl.descendants(this);
     }
 
 
@@ -420,7 +416,7 @@ public interface Node {
      * @see NodeStream#descendantsOrSelf()
      */
     default NodeStream<Node> descendantsOrSelf() {
-        return NodeStream.fromIterable(() -> new DescendantOrSelfIterator(this));
+        return StreamImpl.descendantsOrSelf(this);
     }
 
 
@@ -434,7 +430,7 @@ public interface Node {
      * @see NodeStream#ancestors()
      */
     default NodeStream<Node> ancestors() {
-        return new AncestorStream<>(this, Node.class);
+        return StreamImpl.ancestors(this);
 
     }
 
@@ -448,7 +444,7 @@ public interface Node {
      * @see NodeStream#ancestorsOrSelf()
      */
     default NodeStream<Node> ancestorsOrSelf() {
-        return NodeStream.fromIterable(() -> new AncestorOrSelfIterator(this));
+        return StreamImpl.ancestorOrSelf(this);
     }
 
 
@@ -464,7 +460,7 @@ public interface Node {
      * @see NodeStream#children(Class)
      */
     default <R extends Node> NodeStream<R> children(Class<R> rClass) {
-        return new ChildrenStream<>(this, rClass);
+        return StreamImpl.children(this, rClass);
     }
 
 
@@ -480,7 +476,7 @@ public interface Node {
      * @see NodeStream#descendants(Class)
      */
     default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
-        return new DescendantStream<>(this, rClass);
+        return StreamImpl.descendants(this, rClass);
     }
 
 
@@ -496,6 +492,6 @@ public interface Node {
      * @see NodeStream#ancestors(Class)
      */
     default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
-        return new AncestorStream<>(this, rClass);
+        return StreamImpl.ancestors(this, rClass);
     }
 }
