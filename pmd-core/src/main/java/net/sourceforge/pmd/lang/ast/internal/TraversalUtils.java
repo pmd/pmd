@@ -18,30 +18,36 @@ public final class TraversalUtils {
 
     }
 
-    public static <T extends Node> void findDescendantsOfType(final Node node, final Class<T> targetType, final List<T> results,
+    public static <T extends Node> void findDescendantsOfType(final Node node, Class<T> type, final List<T> results,
                                                               final boolean crossFindBoundaries) {
+        findDescendantsOfType(node, Filtermap.isInstance(type), results, crossFindBoundaries);
+    }
+
+    static <T extends Node> void findDescendantsOfType(final Node node, final Filtermap<Node, T> filtermap, final List<T> results,
+                                                       final boolean crossFindBoundaries) {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             final Node child = node.jjtGetChild(i);
-            if (targetType.isAssignableFrom(child.getClass())) {
-                results.add(targetType.cast(child));
+            final T mapped = filtermap.apply(child);
+            if (mapped != null) {
+                results.add(mapped);
             }
 
             if (crossFindBoundaries || !child.isFindBoundary()) {
-                findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+                findDescendantsOfType(child, filtermap, results, crossFindBoundaries);
             }
         }
     }
 
-    static <T extends Node> T getFirstDescendantOfType(final Node node, final Class<T> descendantType) {
+    static <T extends Node> T getFirstDescendantOfType(final Node node, final Filtermap<Node, T> filtermap) {
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
-            final Node n1 = node.jjtGetChild(i);
-            if (descendantType.isAssignableFrom(n1.getClass())) {
-                return descendantType.cast(n1);
-            }
-            if (!n1.isFindBoundary()) {
-                final T n2 = getFirstDescendantOfType(n1, descendantType);
+            Node child = node.jjtGetChild(i);
+            final T t = filtermap.apply(child);
+            if (t != null) {
+                return t;
+            } else if (!child.isFindBoundary()) {
+                final T n2 = getFirstDescendantOfType(child, filtermap);
                 if (n2 != null) {
                     return n2;
                 }
@@ -50,56 +56,61 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstParentOrSelfOfType(final Node node, final Class<T> type) {
+    static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<Node, T> filtermap) {
         Node n = node;
         while (n != null) {
-            if (type.isInstance(n)) {
-                return type.cast(n);
+            T t = filtermap.apply(n);
+            if (t != null) {
+                return t;
             }
             n = n.jjtGetParent();
         }
         return null;
     }
 
-    static <T extends Node> T getFirstChildOfType(final Node node, final Class<T> type) {
+    static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<Node, T> filter) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node c = node.jjtGetChild(i);
-            if (type.isInstance(c)) {
-                return type.cast(c);
+            T t = filter.apply(c);
+            if (t != null) {
+                return t;
             }
         }
         return null;
     }
 
-    static <T extends Node> T getLastChildOfType(final Node node, final Class<T> type) {
+    static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<Node, T> filter) {
         for (int i = node.jjtGetNumChildren() - 1; i >= 0; i--) {
             Node c = node.jjtGetChild(i);
-            if (type.isInstance(c)) {
-                return type.cast(c);
+            T t = filter.apply(c);
+            if (t != null) {
+                return t;
             }
         }
         return null;
     }
 
-    static <T extends Node> List<T> findChildrenOfType(final Node node, final Class<T> type) {
+    static <T extends Node> List<T> findChildrenMatching(final Node node, final Filtermap<Node, T> filter) {
         List<T> list = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node c = node.jjtGetChild(i);
-            if (type.isInstance(c)) {
-                list.add(type.cast(c));
+            T t = filter.apply(c);
+            if (t != null) {
+                list.add(t);
             }
         }
         return list;
     }
 
-    static <T extends Node> int countChildrenOfType(final Node node, final Class<T> type) {
-        if (type == Node.class) {
+    static <T extends Node> int countChildrenMatching(final Node node, final Filtermap<Node, T> filter) {
+        if (filter == Filtermap.NODE_IDENTITY) {
             return node.jjtGetNumChildren();
         }
         int sum = 0;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node c = node.jjtGetChild(i);
-            if (type.isInstance(c)) {
+            T t = filter.apply(c);
+            if (t != null) {
                 sum++;
             }
         }
@@ -111,14 +122,14 @@ public final class TraversalUtils {
         return childrenIterator(parent, 0, parent.jjtGetNumChildren());
     }
 
-    static Iterator<Node> childrenIterator(Node parent, int from, int to) {
+    static Iterator<Node> childrenIterator(Node parent, final int from, final int to) {
         return new Iterator<Node>() {
 
-            private int i = from;
+            private int i = Math.max(from, 0);
 
             @Override
             public boolean hasNext() {
-                return i < to;
+                return i < to && i < parent.jjtGetNumChildren();
             }
 
             @Override

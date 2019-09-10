@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -39,7 +40,7 @@ public final class IteratorUtil {
 
         @Override
         public void forEachRemaining(Consumer action) {
-
+            // do nothing
         }
 
         @Override
@@ -87,7 +88,7 @@ public final class IteratorUtil {
         return tmp.iterator();
     }
 
-    public static <T, R> Iterator<@NonNull R> filterCast(Iterator<? extends T> it, Class<R> type) {
+    public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> type) {
         return new Iterator<R>() {
 
             private R next;
@@ -99,17 +100,21 @@ public final class IteratorUtil {
                 }
                 while (it.hasNext()) {
                     T next1 = it.next();
-                    if (type.isInstance(next1)) { // returns false if null
-                        this.next = type.cast(next1);
-                        return true;
+                    if (next1 != null) {
+                        R map = type.apply(next1);
+                        if (map != null) {
+                            this.next = map;
+                            return true;
+                        }
                     }
                 }
+                next = null;
                 return false;
             }
 
             @Override
             public R next() {
-                if (next == null) {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
                 R r = next;
