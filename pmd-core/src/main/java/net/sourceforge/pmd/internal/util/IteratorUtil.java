@@ -82,7 +82,7 @@ public final class IteratorUtil {
         return filter(it, Objects::nonNull);
     }
 
-    public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+    public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<@NonNull ? super T, @Nullable ? extends R> mapper) {
         return new AbstractIterator<R>() {
             @Override
             protected void computeNext() {
@@ -221,11 +221,12 @@ public final class IteratorUtil {
 
             @Override
             protected void computeNext() {
-                if (yielded++ >= n || !iterator.hasNext()) {
+                if (yielded >= n || !iterator.hasNext()) {
                     done();
                 } else {
                     setNext(iterator.next());
                 }
+                yielded++;
             }
         };
     }
@@ -319,7 +320,7 @@ public final class IteratorUtil {
         };
     }
 
-    private static abstract class AbstractIterator<T> implements Iterator<T> {
+    private abstract static class AbstractIterator<T> implements Iterator<T> {
 
         private State state = State.NOT_READY;
         private T next = null;

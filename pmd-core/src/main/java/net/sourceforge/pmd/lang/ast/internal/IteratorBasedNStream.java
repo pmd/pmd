@@ -7,11 +7,15 @@ package net.sourceforge.pmd.lang.ast.internal;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -90,6 +94,19 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <R, A> R collect(Collector<? super T, A, R> collector) {
+        A container = collector.supplier().get();
+        BiConsumer<A, ? super T> accumulator = collector.accumulator();
+        forEach(u -> accumulator.accept(container, u));
+        if (collector.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)) {
+            return (R) container;
+        } else {
+            return collector.finisher().apply(container);
+        }
+    }
+
+    @Override
     public NodeStream<T> distinct() {
         return mapIter(IteratorUtil::distinct);
     }
@@ -146,6 +163,11 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
                     cache = IteratorBasedNStream.this.toList();
                 }
                 return cache;
+            }
+
+            @Override
+            public String toString() {
+                return "CachedStream[" + IteratorBasedNStream.this + "]";
             }
         };
     }
@@ -209,5 +231,10 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         public Iterator<S> iterator() {
             return fun.apply(IteratorBasedNStream.this.iterator());
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [" + toStream().map(Objects::toString).collect(Collectors.joining(", ")) + "]";
     }
 }

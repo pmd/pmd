@@ -71,7 +71,7 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
 
     @Override
     public boolean nonEmpty() {
-        return false;
+        return true;
     }
 
     @Override

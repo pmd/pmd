@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -42,13 +43,23 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
 
     @Override
+    public <R extends Node> NodeStream<@NonNull R> map(Function<? super T, ? extends @Nullable R> mapper) {
+        return copyWithFilter(target.thenApply(mapper));
+    }
+
+    @Override
     public NodeStream<T> filter(Predicate<? super T> predicate) {
-        return copyWithFilter(target.then(Filtermap.filter(predicate)));
+        return copyWithFilter(target.thenApply(Filtermap.filter(predicate)));
     }
 
     @Override
     public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
         return copyWithFilter(target.thenCast(r1Class));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[" + node + "] -> " + toList();
     }
 
     protected abstract <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap);
@@ -334,12 +345,22 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public NodeStream<Node> take(int maxSize) {
-            return new SlicedChildrenStream(node, low, high - maxSize);
+            AssertionUtil.assertArgNonNegative(maxSize);
+            if (maxSize == 0) {
+                return NodeStream.empty();
+            } else {
+                return new SlicedChildrenStream(node, low, low + maxSize);
+            }
         }
 
         @Override
         public NodeStream<Node> drop(int n) {
-            return new SlicedChildrenStream(node, low + n, high);
+            AssertionUtil.assertArgNonNegative(n);
+            if (n == 0) {
+                return this;
+            } else {
+                return new SlicedChildrenStream(node, low + n, high);
+            }
         }
 
         @Override
@@ -350,6 +371,11 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public int count() {
             return Math.min(Math.max(high - low, 0), node.jjtGetNumChildren());
+        }
+
+        @Override
+        public String toString() {
+            return "Slice[" + node + ", " + low + ".." + high + "] -> " + toList();
         }
     }
 }

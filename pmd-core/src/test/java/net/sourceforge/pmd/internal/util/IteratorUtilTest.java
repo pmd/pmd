@@ -265,6 +265,7 @@ public class IteratorUtilTest {
         exception.expect(IllegalArgumentException.class);
         IteratorUtil.take(iter, -5);
     }
+
     @Test
     public void testTake0() {
         Iterator<String> iter = iterOf("a", "b", "c");

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.ast.internal;
 
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -44,7 +45,9 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
     }
 
 
-    default <R> Filtermap<I, R> then(Filtermap<? super O, ? extends R> then) {
+    /** Compose a new Filtermap, coalescing null values. */
+    default <R> Filtermap<I, R> thenApply(Function<@NonNull ? super O, @Nullable ? extends R> then) {
+        Objects.requireNonNull(then);
         return i -> {
             O o = this.apply(i);
             return o == null ? null : then.apply(o);
@@ -53,7 +56,7 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
 
     default <R> Filtermap<I, R> thenCast(Class<R> rClass) {
-        return then(isInstance(rClass));
+        return thenApply(isInstance(rClass));
     }
 
 
@@ -66,8 +69,8 @@ interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@
 
             @Override
             @SuppressWarnings("unchecked")
-            public <R> Filtermap<I, R> then(Filtermap<? super I, ? extends R> then) {
-                return (Filtermap<I, R>) then;
+            public <R> Filtermap<I, R> thenApply(Function<@NonNull ? super I, @Nullable ? extends R> then) {
+                return then instanceof Filtermap ? (Filtermap<I, R>) then : then::apply;
             }
 
             @Override

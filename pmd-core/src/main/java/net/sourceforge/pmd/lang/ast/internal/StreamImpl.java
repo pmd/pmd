@@ -32,6 +32,11 @@ public final class StreamImpl {
         public Iterator iterator() {
             return Collections.emptyIterator();
         }
+
+        @Override
+        public String toString() {
+            return "EmptyStream";
+        }
     };
 
     private StreamImpl() {
@@ -53,7 +58,8 @@ public final class StreamImpl {
             public Spliterator<T> spliterator() {
                 Spliterator<T> spliter = iterable.spliterator();
                 return Spliterators.spliterator(iterator(), spliter.estimateSize(),
-                                                spliter.characteristics() & Spliterator.NONNULL & ~Spliterator.SIZED
+                                                (spliter.characteristics() | Spliterator.NONNULL)
+                                                    & ~Spliterator.SIZED
                                                     & ~Spliterator.SUBSIZED);
             }
         };

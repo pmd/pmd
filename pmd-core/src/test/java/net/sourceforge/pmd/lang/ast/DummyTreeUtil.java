@@ -23,7 +23,12 @@ public final class DummyTreeUtil {
 
     /** Creates a dummy node with the given children. */
     public static DummyNode node(DummyNode... children) {
-        DummyNode node = new DummyNode(0);
+        DummyNode node = new DummyNode(0) {
+            @Override
+            public String toString() {
+                return getImage();
+            }
+        };
         node.children = children;
         for (int i = 0; i < children.length; i++) {
             children[i].jjtSetParent(node);

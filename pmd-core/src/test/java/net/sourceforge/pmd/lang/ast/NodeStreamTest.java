@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Test;
@@ -60,6 +61,7 @@ public class NodeStreamTest {
         assertTrue(NodeStream.of((Node) null).isEmpty());
         assertThat(NodeStream.of(null, null, tree1).count(), equalTo(1));
         assertThat(NodeStream.fromIterable(Arrays.asList(tree1, null, null)).count(), equalTo(1));
+        assertThat(NodeStream.ofOptional(Optional.empty()).count(), equalTo(0));
     }
 
 
