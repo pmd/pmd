@@ -5,12 +5,16 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -30,7 +34,7 @@ final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
 
     private final T node;
 
-    SingletonNodeStream(T node) {
+    SingletonNodeStream(@NonNull T node) {
         this.node = node;
     }
 
@@ -45,19 +49,70 @@ final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
     }
 
     @Override
+    public <R> List<R> toList(Function<? super T, ? extends R> mapper) {
+        return Collections.singletonList(mapper.apply(node));
+    }
+
+    @Override
     public T first() {
         return node;
     }
 
     @Override
-    public @Nullable T last() {
+    public T last() {
         return node;
     }
 
     @Override
-    public <R> List<R> toList(Function<? super T, ? extends R> mapper) {
-        R res = mapper.apply(node);
-        return res == null ? Collections.emptyList() : Collections.singletonList(res);
+    public boolean nonEmpty() {
+        return false;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return toList().iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        action.accept(node);
+    }
+
+    @Override
+    public NodeStream<T> filter(Predicate<? super T> predicate) {
+        return predicate.test(node) ? this : NodeStream.empty();
+    }
+
+    @Override
+    public NodeStream<T> drop(int n) {
+        AssertionUtil.assertArgNonNegative(n);
+        return n == 0 ? this : NodeStream.empty();
+    }
+
+    @Override
+    public NodeStream<T> take(int maxSize) {
+        AssertionUtil.assertArgNonNegative(maxSize);
+        return maxSize >= 1 ? this : NodeStream.empty();
+    }
+
+    @Override
+    public NodeStream<T> cached() {
+        return this;
+    }
+
+    @Override
+    public NodeStream<T> distinct() {
+        return this;
+    }
+
+    @Override
+    public int count() {
+        return 1;
+    }
+
+    @Override
+    public NodeStream<T> takeWhile(Predicate<? super T> predicate) {
+        return filter(predicate);
     }
 
     @Override
