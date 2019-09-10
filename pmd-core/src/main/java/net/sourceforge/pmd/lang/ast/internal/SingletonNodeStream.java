@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -23,8 +25,6 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * <p>This ensures that short pipelines like {@code node.descendants().first()}
  * are as efficient as the pre 7.0.0 methods.
- *
- * TODO many more operations can be optimised that way.
  */
 final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
 
@@ -42,6 +42,16 @@ final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
     @Override
     public List<T> toList() {
         return Collections.singletonList(node);
+    }
+
+    @Override
+    public T first() {
+        return node;
+    }
+
+    @Override
+    public @Nullable T last() {
+        return node;
     }
 
     @Override

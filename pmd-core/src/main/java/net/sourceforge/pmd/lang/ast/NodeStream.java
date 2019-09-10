@@ -105,19 +105,29 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * @implNote Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid the code bloat
  * induced by delegation. Being a functional interface wasn't expected at
- * all, but in the end it's a nice-to-have that shortens the implementation.
+ * all, but in the end it's a nice-to-have that shortens the default implementation.
  *
- * <p>Intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
+ * <p>The default implementation relies exclusively on the {@link #toStream()}
+ * method. This is very inefficient for short pipelines like {@code node.children().first()}
+ * and so, optimal implementations are available for the singleton use case.
+ * When the pipeline is long though, it's more efficient to use streams, and
+ * so the default methods are ok.
+ *
+ * <p>About making stream iterable multiple times:
+ * intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
  * specify new pipeline operations that are stacked on the stream produced by
  * {@link #toStream()}. Terminal operations like {@link #count()} or {@link #toList()}
  * create a new temporary Stream with the correct pipeline and then apply the terminal
  * operation to it. That temporary stream is consumed, but subsequent terminal
  * operations on the NodeStream will be called on new Streams.
+ *
  * @since 7.0.0
  */
 @FunctionalInterface
 public interface NodeStream<T extends Node> extends Iterable<T> {
 
+    // TODO this should probably not be a functional interface,
+    //  it's too easy to instantiate.
 
     /**
      * Returns a new stream of Ts having the pipeline of operations
@@ -810,6 +820,33 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     default <R extends Node> @Nullable R first(Class<R> rClass) {
         return filterIs(rClass).first();
+    }
+
+
+    /**
+     * Returns the last element of this stream, or {@code null} if the
+     * stream is empty.
+     *
+     * @return the last element of this stream, or {@code null} if it doesn't exist
+     */
+    default @Nullable T last() {
+        return IteratorUtil.last(iterator());
+    }
+
+
+    /**
+     * Returns the last element of this stream of the given type, or
+     * {@code null} if there is none.
+     *
+     * @param rClass The type of node to find
+     * @param <R>    The type of node to find
+     *
+     * @return the last element of this stream of the given type, or {@code null} if it doesn't exist
+     *
+     * @see #last()
+     */
+    default <R extends Node> @Nullable R last(Class<R> rClass) {
+        return filterIs(rClass).last();
     }
 
 

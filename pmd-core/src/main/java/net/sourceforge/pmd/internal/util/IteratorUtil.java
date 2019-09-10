@@ -144,6 +144,14 @@ public final class IteratorUtil {
         return count;
     }
 
+    public static <T> @Nullable T last(Iterator<T> iterator) {
+        T next = null;
+        while (iterator.hasNext()) {
+            next = iterator.next();
+        }
+        return next;
+    }
+
     public static <T> @Nullable T getNth(Iterator<T> iterator, int n) {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;

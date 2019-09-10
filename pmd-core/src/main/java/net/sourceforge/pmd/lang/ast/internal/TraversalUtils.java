@@ -33,7 +33,7 @@ public final class TraversalUtils {
         }
     }
 
-    static <T extends Node> T getFirstDescendantOfType(final Class<T> descendantType, final Node node) {
+    static <T extends Node> T getFirstDescendantOfType(final Node node, final Class<T> descendantType) {
         final int n = node.jjtGetNumChildren();
         for (int i = 0; i < n; i++) {
             final Node n1 = node.jjtGetChild(i);
@@ -41,7 +41,7 @@ public final class TraversalUtils {
                 return descendantType.cast(n1);
             }
             if (!n1.isFindBoundary()) {
-                final T n2 = getFirstDescendantOfType(descendantType, n1);
+                final T n2 = getFirstDescendantOfType(n1, descendantType);
                 if (n2 != null) {
                     return n2;
                 }
@@ -50,7 +50,7 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstParentOfType(final Class<T> type, final Node node) {
+    static <T extends Node> T getFirstParentOfType(final Node node, final Class<T> type) {
         Node n = node.jjtGetParent();
         while (n != null) {
             if (type.isInstance(n)) {
@@ -61,7 +61,7 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstChildOfType(final Class<T> type, final Node node) {
+    static <T extends Node> T getFirstChildOfType(final Node node, final Class<T> type) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node c = node.jjtGetChild(i);
             if (type.isInstance(c)) {
@@ -71,7 +71,17 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> List<T> findChildrenOfType(final Class<T> type, final Node node) {
+    static <T extends Node> T getLastChildOfType(final Node node, final Class<T> type) {
+        for (int i = node.jjtGetNumChildren() - 1; i >= 0; i--) {
+            Node c = node.jjtGetChild(i);
+            if (type.isInstance(c)) {
+                return type.cast(c);
+            }
+        }
+        return null;
+    }
+
+    static <T extends Node> List<T> findChildrenOfType(final Node node, final Class<T> type) {
         List<T> list = new ArrayList<>();
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node c = node.jjtGetChild(i);
@@ -82,7 +92,7 @@ public final class TraversalUtils {
         return list;
     }
 
-    static <T extends Node> int countChildrenOfType(final Class<T> type, final Node node) {
+    static <T extends Node> int countChildrenOfType(final Node node, final Class<T> type) {
         if (type == Node.class) {
             return node.jjtGetNumChildren();
         }

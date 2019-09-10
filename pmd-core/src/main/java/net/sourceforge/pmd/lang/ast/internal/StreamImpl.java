@@ -197,7 +197,7 @@ public final class StreamImpl {
         protected final Node node;
         protected final Class<R> target;
 
-        AxisStream(Node root, Class<R> target) {
+        AxisStream(@NonNull Node root, Class<R> target) {
             super();
             this.node = root;
             this.target = target;
@@ -206,7 +206,7 @@ public final class StreamImpl {
 
     private static class FilteredAncestorStream<R extends Node> extends AxisStream<R> {
 
-        private FilteredAncestorStream(Node node, Class<R> target) {
+        private FilteredAncestorStream(@NonNull Node node, Class<R> target) {
             super(node, target);
         }
 
@@ -228,7 +228,7 @@ public final class StreamImpl {
 
         @Override
         public @Nullable R first() {
-            return TraversalUtils.getFirstParentOfType(target, node);
+            return TraversalUtils.getFirstParentOfType(node, target);
         }
 
         protected NodeStream<R> copy(Node start) {
@@ -238,7 +238,7 @@ public final class StreamImpl {
 
     private static class AncestorStream extends FilteredAncestorStream<Node> {
 
-        private AncestorStream(Node node) {
+        private AncestorStream(@NonNull Node node) {
             super(node, Node.class);
         }
 
@@ -247,6 +247,24 @@ public final class StreamImpl {
             AncestorOrSelfIterator iter = new AncestorOrSelfIterator(node);
             iter.next(); // skip self
             return iter;
+        }
+
+        @Nullable
+        @Override
+        public Node last() {
+            if (node.jjtGetParent() == null) {
+                return null;
+            }
+            Node last = node.jjtGetParent();
+            while (last.jjtGetParent() != null) {
+                last = last.jjtGetParent();
+            }
+            return last;
+        }
+
+        @Override
+        public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
+            return new FilteredAncestorStream<>(node, r1Class);
         }
 
         @Override
@@ -262,8 +280,38 @@ public final class StreamImpl {
 
     private static class AncestorOrSelfStream extends AncestorStream {
 
-        private AncestorOrSelfStream(Node node) {
+        private AncestorOrSelfStream(@NonNull Node node) {
             super(node);
+        }
+
+        @Nullable
+        @Override
+        public Node first() {
+            return node;
+        }
+
+        @Override
+        public @Nullable Node last() {
+            Node last = node;
+            while (last.jjtGetParent() != null) {
+                last = last.jjtGetParent();
+            }
+            return last;
+        }
+
+        @Override
+        public NodeStream<Node> drop(int n) {
+            AssertionUtil.assertArgNonNegative(n);
+            switch (n) {
+            case 0:
+                return this;
+            case 1:
+                return new AncestorStream(node);
+            default:
+                // eg for NodeStream.of(a,b,c).drop(2)
+                Node nth = get(n); // get(2) == c
+                return nth == null ? NodeStream.empty() : nth.ancestorsOrSelf(); // b.ancestorsOrSelf() == [c]
+            }
         }
 
         @Override
@@ -287,12 +335,12 @@ public final class StreamImpl {
 
         @Override
         public @Nullable R first() {
-            return TraversalUtils.getFirstDescendantOfType(target, node);
+            return TraversalUtils.getFirstDescendantOfType(node, target);
         }
 
         @Override
         public boolean nonEmpty() {
-            return TraversalUtils.getFirstDescendantOfType(target, node) != null;
+            return TraversalUtils.getFirstDescendantOfType(node, target) != null;
         }
 
         @Override
@@ -339,17 +387,24 @@ public final class StreamImpl {
             return new DescendantOrSelfIterator(node);
         }
 
+        @Nullable
+        @Override
+        public Node first() {
+            return node;
+        }
+
         @Override
         public boolean nonEmpty() {
             return true;
         }
     }
 
+    /** Implements the {@code children(class)} stream optimally. */
     private static class FilteredChildrenStream<R extends Node> extends AxisStream<R> {
 
         private final Class<R> target;
 
-        FilteredChildrenStream(Node node, Class<R> target) {
+        FilteredChildrenStream(@NonNull Node node, Class<R> target) {
             super(node, target);
             this.target = target;
         }
@@ -366,28 +421,34 @@ public final class StreamImpl {
 
         @Override
         public @Nullable R first() {
-            return TraversalUtils.getFirstChildOfType(target, node);
+            return TraversalUtils.getFirstChildOfType(node, target);
+        }
+
+        @Override
+        public @Nullable R last() {
+            return TraversalUtils.getLastChildOfType(node, target);
         }
 
         @Override
         public int count() {
-            return TraversalUtils.countChildrenOfType(target, node);
+            return TraversalUtils.countChildrenOfType(node, target);
         }
 
         @Override
         public boolean nonEmpty() {
-            return TraversalUtils.getFirstChildOfType(target, node) != null;
+            return TraversalUtils.getFirstChildOfType(node, target) != null;
         }
 
         @Override
         public List<R> toList() {
-            return TraversalUtils.findChildrenOfType(target, node);
+            return TraversalUtils.findChildrenOfType(node, target);
         }
     }
 
+    /** Implements the {@code children()} stream optimally. */
     private static class ChildrenStream extends FilteredChildrenStream<Node> {
 
-        ChildrenStream(Node root) {
+        ChildrenStream(@NonNull Node root) {
             super(root, Node.class);
         }
 
@@ -408,9 +469,20 @@ public final class StreamImpl {
             return node.jjtGetNumChildren() > 0 ? node.jjtGetChild(0) : null;
         }
 
+        @Nullable
+        @Override
+        public Node last() {
+            return node.jjtGetNumChildren() > 0 ? node.jjtGetChild(node.jjtGetNumChildren() - 1) : null;
+        }
+
         @Override
         public <R extends Node> @Nullable R first(Class<R> rClass) {
-            return TraversalUtils.getFirstChildOfType(rClass, node);
+            return TraversalUtils.getFirstChildOfType(node, rClass);
+        }
+
+        @Override
+        public <R extends Node> @Nullable R last(Class<R> rClass) {
+            return TraversalUtils.getLastChildOfType(node, rClass);
         }
 
         @Override
@@ -424,15 +496,22 @@ public final class StreamImpl {
         }
     }
 
+    /** Implements following/preceding sibling streams optimally. */
     private static class SlicedChildrenStream extends AxisStream<Node> {
 
-        private final int low;
-        private final int high;
+        private final int low; // inclusive
+        private final int high; // exclusive
 
-        SlicedChildrenStream(Node root, int low, int high) {
+        SlicedChildrenStream(@NonNull Node root, int low, int high) {
             super(root, Node.class);
             this.low = low;
             this.high = high;
+        }
+
+
+        @Override
+        public Spliterator<Node> spliterator() {
+            return Spliterators.spliterator(iterator(), count(), Spliterator.SIZED | Spliterator.ORDERED);
         }
 
         @Override
@@ -444,7 +523,13 @@ public final class StreamImpl {
         @Nullable
         @Override
         public Node first() {
-            return low < high ? node.jjtGetChild(low) : null;
+            return low < high && low >= 0 ? node.jjtGetChild(low) : null;
+        }
+
+        @Nullable
+        @Override
+        public Node last() {
+            return low < high && high <= node.jjtGetNumChildren() ? node.jjtGetChild(high - 1) : null;
         }
 
         @Override
@@ -464,7 +549,7 @@ public final class StreamImpl {
 
         @Override
         public int count() {
-            return Math.max(high - low, 0);
+            return Math.min(Math.max(high - low, 0), node.jjtGetNumChildren());
         }
     }
 }

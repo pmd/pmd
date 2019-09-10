@@ -17,7 +17,7 @@ class AncestorOrSelfIterator implements Iterator<@NonNull Node> {
 
     private Node next;
 
-    AncestorOrSelfIterator(Node top) {
+    AncestorOrSelfIterator(@NonNull Node top) {
         next = top;
     }
 
