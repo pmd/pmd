@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.ast.internal;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,8 +34,40 @@ public final class StreamImpl {
         return new SingletonNodeStream<>(node);
     }
 
+    public static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
+        return new IteratorBasedNStream<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return IteratorUtil.mapNotNull(iterable.iterator(), Function.identity());
+            }
+
+            @Override
+            public Spliterator<T> spliterator() {
+                Spliterator<T> spliter = iterable.spliterator();
+                return Spliterators.spliterator(iterator(), spliter.estimateSize(),
+                                                spliter.characteristics() & ~Spliterator.SIZED & ~Spliterator.SUBSIZED);
+            }
+        };
+    }
+
+    @SafeVarargs
+    public static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
+        return new IteratorBasedNStream<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return IteratorUtil.flatMap(Arrays.asList(streams).iterator(), NodeStream::iterator);
+            }
+        };
+    }
+
+
     public static <T extends Node> NodeStream<T> empty() {
-        return Stream::empty;
+        return new IteratorBasedNStream<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return Collections.emptyIterator();
+            }
+        };
     }
 
     public static <R extends Node> NodeStream<R> children(Node node, Class<R> target) {
@@ -101,7 +135,7 @@ public final class StreamImpl {
     }
 
 
-    private abstract static class AxisStream<R extends Node> extends IteratorBasedStream<R> {
+    private abstract static class AxisStream<R extends Node> extends IteratorBasedNStream<R> {
 
         protected final Node node;
         protected final Filtermap<Node, R> target;
@@ -361,7 +395,7 @@ public final class StreamImpl {
     }
 
     /** Implements following/preceding sibling streams. */
-    private static class SlicedChildrenStream extends IteratorBasedStream<Node> {
+    private static class SlicedChildrenStream extends IteratorBasedNStream<Node> {
 
         private final Node node;
         private final int low; // inclusive

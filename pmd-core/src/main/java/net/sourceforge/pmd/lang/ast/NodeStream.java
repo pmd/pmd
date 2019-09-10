@@ -10,19 +10,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 
@@ -78,7 +74,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * followed by {@link #toList()} will execute the whole pipeline twice. The elements of a stream can
  * however be {@linkplain #cached() cached} at an arbitrary point in the pipeline to evaluate the
  * upstream only once. Some construction methods allow building a node stream from an external data
- * source, e.g. {@link #fromIterable(Iterable) fromIterable} and {@link #fromSupplier(Supplier) fromSupplier}.
+ * source, e.g. {@link #fromIterable(Iterable) fromIterable}.
  * Depending on how the data source is implemented, the built node streams may be iterable only once.
  *
  * <p>Node streams may contain duplicates, which can be pruned with {@link #distinct()}.
@@ -104,38 +100,14 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * @author Clément Fournier
  * @implNote Choosing to wrap a stream instead of extending the interface is to
  * allow the functions to return NodeStreams, and to avoid the code bloat
- * induced by delegation. Being a functional interface wasn't expected at
- * all, but in the end it's a nice-to-have that shortens the default implementation.
+ * induced by delegation.
  *
- * <p>The default implementation relies exclusively on the {@link #toStream()}
- * method. This is very inefficient for short pipelines like {@code node.children().first()}
- * and so, optimal implementations are available for the singleton use case.
- * When the pipeline is long though, it's more efficient to use streams, and
- * so the default methods are ok.
- *
- * <p>About making stream iterable multiple times:
- * intermediate operations like {@link #filter(Predicate)} or {@link #flatMap(Function)}
- * specify new pipeline operations that are stacked on the stream produced by
- * {@link #toStream()}. Terminal operations like {@link #count()} or {@link #toList()}
- * create a new temporary Stream with the correct pipeline and then apply the terminal
- * operation to it. That temporary stream is consumed, but subsequent terminal
- * operations on the NodeStream will be called on new Streams.
+ * <p>The default implementation relies on the iterator method. From benchmarking,
+ * that appears more efficient than streams.
  *
  * @since 7.0.0
  */
-@FunctionalInterface
 public interface NodeStream<T extends Node> extends Iterable<T> {
-
-    // TODO this should probably not be a functional interface,
-    //  it's too easy to instantiate.
-
-    /**
-     * Returns a new stream of Ts having the pipeline of operations
-     * defined by this node stream. This can be called multiple times.
-     *
-     * @return A stream containing the same elements as this node stream
-     */
-    Stream<T> toStream();
 
     // lazy pipeline transformations
 
@@ -157,10 +129,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see Stream#flatMap(Function)
      */
-    default <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
-        return () -> toStream().flatMap(mapper.<NodeStream<? extends R>>andThen(ns -> ns == null ? empty() : ns)
-                                            .andThen(NodeStream::toStream));
-    }
+    <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper);
 
 
     /**
@@ -179,9 +148,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see Stream#map(Function)
      */
-    default <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
-        return () -> toStream().<R>map(mapper).filter(Objects::nonNull);
-    }
+    <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper);
 
 
     /**
@@ -198,9 +165,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #filterIs(Class)
      * @see #filterMatching(Function, Object)
      */
-    default NodeStream<T> filter(Predicate<? super T> predicate) {
-        return () -> toStream().filter(predicate);
-    }
+    NodeStream<T> filter(Predicate<? super T> predicate);
 
 
     /**
@@ -214,9 +179,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A new stream
      */
-    default NodeStream<T> peek(Consumer<? super T> action) {
-        return () -> toStream().peek(action);
-    }
+    NodeStream<T> peek(Consumer<? super T> action);
 
 
     /**
@@ -227,9 +190,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A concatenated stream
      */
-    default NodeStream<T> append(NodeStream<? extends T> right) {
-        return () -> Stream.concat(this.toStream(), right.toStream());
-    }
+    NodeStream<T> append(NodeStream<? extends T> right);
 
 
     /**
@@ -240,9 +201,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A concatenated stream
      */
-    default NodeStream<T> prepend(NodeStream<? extends T> right) {
-        return () -> Stream.concat(right.toStream(), this.toStream());
-    }
+    NodeStream<T> prepend(NodeStream<? extends T> right);
 
 
     /**
@@ -271,30 +230,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A cached node stream
      */
-    default NodeStream<T> cached() {
-        return new NodeStream<T>() {
-            List<T> cachedValue = null;
-
-            @Override
-            public Stream<T> toStream() {
-                return toList().stream();
-            }
-
-            @Override
-            public int count() {
-                return toList().size();
-            }
-
-            @Override
-            public List<T> toList() {
-                if (cachedValue == null) {
-                    cachedValue = NodeStream.this.toList();
-                }
-                return cachedValue;
-            }
-        };
-    }
-
+    NodeStream<T> cached();
 
     /**
      * Returns a stream consisting of the elements of this stream,
@@ -308,10 +244,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#limit(long)
      * @see #drop(int)
      */
-    default NodeStream<T> take(int maxSize) {
-        AssertionUtil.assertArgNonNegative(maxSize);
-        return () -> toStream().limit(maxSize);
-    }
+    NodeStream<T> take(int maxSize);
 
 
     /**
@@ -328,10 +261,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see Stream#skip(long)
      * @see #take(int)
      */
-    default NodeStream<T> drop(int n) {
-        AssertionUtil.assertArgNonNegative(n);
-        return () -> toStream().skip(n);
-    }
+    NodeStream<T> drop(int n);
 
 
     /**
@@ -342,9 +272,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return the longest prefix of this stream whose elements all satisfy
      *     the predicate `p`.
      */
-    default NodeStream<T> takeWhile(Predicate<? super T> predicate) {
-        return () -> IteratorUtil.takeWhile(toStream(), predicate);
-    }
+    NodeStream<T> takeWhile(Predicate<? super T> predicate);
 
 
     /**
@@ -352,9 +280,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return a stream consisting of the distinct elements of this stream
      */
-    default NodeStream<T> distinct() {
-        return () -> toStream().distinct();
-    }
+    NodeStream<T> distinct();
 
     // tree navigation
 
@@ -648,15 +574,17 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     // "terminal" operations
 
 
+    @Override
+    void forEach(Consumer<? super T> action);
+
+
     /**
      * Returns the number of nodes in this stream.
      *
      * @return the number of nodes in this stream
      */
-    default int count() {
-        // ASTs are not so big as to warrant using a 'long' here
-        return (int) toStream().count();
-    }
+    // ASTs are not so big as to warrant using a 'long' here
+    int count();
 
 
     /**
@@ -666,9 +594,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see #isEmpty()
      */
-    default boolean nonEmpty() {
-        return toStream().anyMatch(t -> true);
-    }
+    boolean nonEmpty();
 
 
     /**
@@ -906,22 +832,19 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
     // Iterable methods
 
 
-    @Override
-    default Iterator<T> iterator() {
-        return toStream().iterator();
-    }
+    /**
+     * Returns a new stream of Ts having the pipeline of operations
+     * defined by this node stream. This can be called multiple times.
+     *
+     * @return A stream containing the same elements as this node stream
+     */
+    Stream<T> toStream();
 
 
     @Override
-    default void forEach(Consumer<? super T> action) {
-        toStream().forEach(action);
-    }
+    Iterator<T> iterator();
 
 
-    @Override
-    default Spliterator<T> spliterator() {
-        return toStream().spliterator();
-    }
 
     // construction
     // we ensure here that no node stream may contain null values
@@ -975,7 +898,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     @SafeVarargs
     static <T extends Node> NodeStream<T> of(T... nodes) {
-        return () -> Stream.of(nodes).filter(Objects::nonNull);
+        return fromIterable(Arrays.asList(nodes));
     }
 
 
@@ -993,24 +916,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @return A new node stream
      */
     static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
-        return () -> StreamSupport.stream(iterable.spliterator(), false).filter(Objects::nonNull);
-    }
-
-
-    /**
-     * Returns a new node stream backed by the given stream supplier.
-     * Null items are filtered out of the resulting stream.
-     *
-     * <p>The returned node stream will be iterable several times if the
-     * supplier returns a non-closed stream each time.
-     *
-     * @param streamSupplier A supplier for a stream of nodes
-     * @param <T>            Type of nodes in the returned stream
-     *
-     * @return A new node stream
-     */
-    static <T extends Node> NodeStream<T> fromSupplier(Supplier<Stream<T>> streamSupplier) {
-        return () -> streamSupplier.get().filter(Objects::nonNull);
+        return StreamImpl.fromIterable(iterable);
     }
 
 
@@ -1025,7 +931,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     @SafeVarargs
     static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
-        return () -> Arrays.stream(streams).flatMap(NodeStream::toStream);
+        return StreamImpl.union(streams);
     }
 
 

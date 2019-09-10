@@ -6,17 +6,15 @@ package net.sourceforge.pmd.internal.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -55,32 +53,37 @@ public final class IteratorUtil {
     }
 
 
-    public static <T> Stream<T> takeWhile(Stream<T> stream, Predicate<? super T> predicate) {
-        return StreamSupport.stream(takeWhile(stream.spliterator(), predicate), false);
-    }
+    public static <T> Iterator<T> takeWhile(Iterator<T> splitr, Predicate<? super T> predicate) {
+        return new Iterator<T>() {
 
-
-    private static <T> Spliterator<T> takeWhile(Spliterator<T> splitr, Predicate<? super T> predicate) {
-        return new Spliterators.AbstractSpliterator<T>(splitr.estimateSize(), 0) {
-            boolean stillGoing = true;
+            private T next;
+            private boolean closed;
 
             @Override
-            public boolean tryAdvance(Consumer<? super T> consumer) {
-                if (stillGoing) {
-                    boolean hadNext = splitr.tryAdvance(elem -> {
-                        if (predicate.test(elem)) {
-                            consumer.accept(elem);
-                        } else {
-                            stillGoing = false;
-                        }
-                    });
-                    return hadNext && stillGoing;
+            public boolean hasNext() {
+                if (closed) {
+                    return false;
                 }
-                return false;
+                while (next != null && splitr.hasNext()) {
+                    T t = splitr.next();
+                    if (predicate.test(t)) {
+                        next = t;
+                    } else {
+                        closed = true;
+                    }
+                }
+                return next != null;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return next;
             }
         };
     }
-
 
     public static <T> Iterator<T> reverse(Iterator<T> it) {
         List<T> tmp = toList(it);
@@ -119,7 +122,7 @@ public final class IteratorUtil {
         };
     }
 
-    public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> type) {
+    public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return new Iterator<R>() {
 
             private R next;
@@ -132,7 +135,7 @@ public final class IteratorUtil {
                 while (it.hasNext()) {
                     T next1 = it.next();
                     if (next1 != null) {
-                        R map = type.apply(next1);
+                        R map = mapper.apply(next1);
                         if (map != null) {
                             this.next = map;
                             return true;
@@ -153,6 +156,45 @@ public final class IteratorUtil {
                 return r;
             }
         };
+    }
+
+    public static <T> Iterator<T> peek(Iterator<? extends T> iter, Consumer<? super T> action) {
+        return new Iterator<T>() {
+
+
+            @Override
+            public boolean hasNext() {
+                return iter.hasNext();
+            }
+
+            @Override
+            public T next() {
+                T t = iter.next();
+                action.accept(t);
+                return t;
+            }
+        };
+    }
+
+    public static <T> Iterator<T> concat(Iterator<? extends T> as, Iterator<? extends T> bs) {
+        return new Iterator<T>() {
+
+            @Override
+            public boolean hasNext() {
+                return as.hasNext() || bs.hasNext();
+            }
+
+            @Override
+            public T next() {
+                return as.hasNext() ? as.next() : bs.next();
+            }
+        };
+    }
+
+    // Not a general purpose implementation, because mapNotNull doesn't let null values through
+    public static <T> Iterator<T> distinct(Iterator<? extends T> iter) {
+        Set<T> seen = new HashSet<>();
+        return mapNotNull(iter, Filtermap.filter(seen::add));
     }
 
 

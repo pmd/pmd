@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * <p>This ensures that short pipelines like {@code node.descendants().first()}
  * are as efficient as the pre 7.0.0 methods.
  */
-final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
+final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> {
 
     private final T node;
 

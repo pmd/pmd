@@ -60,7 +60,6 @@ public class NodeStreamTest {
         assertTrue(NodeStream.of((Node) null).isEmpty());
         assertThat(NodeStream.of(null, null, tree1).count(), equalTo(1));
         assertThat(NodeStream.fromIterable(Arrays.asList(tree1, null, null)).count(), equalTo(1));
-        assertThat(NodeStream.fromSupplier(Arrays.asList(tree1, null, null)::stream).count(), equalTo(1));
     }
 
 
@@ -273,16 +272,13 @@ public class NodeStreamTest {
         assertThat(tree1Evals.getValue(), equalTo(i));      // not evaluated yet
 
         unionStream.first();
-
         assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
 
         unionStream.nonEmpty();
-
-        assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
+        assertThat(tree1Evals.getValue(), equalTo(i));     // not evaluated, because of optimised implementation
 
         unionStream.isEmpty();
-
-        assertThat(tree1Evals.getValue(), equalTo(++i));    // evaluated once
+        assertThat(tree1Evals.getValue(), equalTo(i));     // not evaluated, because of optimised implementation
 
         // those don't trigger any evaluation
 
