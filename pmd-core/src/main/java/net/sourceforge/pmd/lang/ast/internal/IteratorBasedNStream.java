@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
@@ -27,52 +31,52 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * Benchmarking shows that stream overhead is significant, and doesn't
  * decrease when the pipeline grows longer.
  */
-abstract class IteratorBasedNStream<R extends Node> implements NodeStream<R> {
+abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
 
     @Override
-    public abstract Iterator<R> iterator();
+    public abstract Iterator<T> iterator();
 
     @Override
-    public Spliterator<R> spliterator() {
+    public Spliterator<T> spliterator() {
         return Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED);
     }
 
     @Override
-    public Stream<R> toStream() {
+    public Stream<T> toStream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
     @Override
-    public <S extends Node> NodeStream<S> flatMap(Function<? super R, ? extends NodeStream<? extends S>> mapper) {
-        return mapIter(iter -> IteratorUtil.flatMap(
-            iter,
-            mapper.<NodeStream<? extends S>>andThen(ns -> ns == null ? NodeStream.empty() : ns)
-                .andThen(NodeStream::iterator)
-        ));
+    public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends @Nullable NodeStream<? extends R>> mapper) {
+        return mapIter(iter -> IteratorUtil.flatMap(iter, mapper.andThen(IteratorBasedNStream::safeMap)));
+    }
+
+    private static <R extends Node> @NonNull Iterator<? extends R> safeMap(@Nullable NodeStream<? extends R> ns) {
+        return ns == null ? Collections.emptyIterator() : ns.iterator();
     }
 
     @Override
-    public <R1 extends Node> NodeStream<R1> map(Function<? super R, ? extends R1> mapper) {
+    public <R extends Node> NodeStream<@NonNull R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return mapIter(iter -> IteratorUtil.mapNotNull(iter, mapper));
     }
 
     @Override
-    public NodeStream<R> filter(Predicate<? super R> predicate) {
+    public NodeStream<T> filter(Predicate<? super T> predicate) {
         return mapIter(it -> IteratorUtil.mapNotNull(it, Filtermap.filter(predicate)));
     }
 
     @Override
-    public void forEach(Consumer<? super R> action) {
+    public void forEach(Consumer<? super T> action) {
         iterator().forEachRemaining(action);
     }
 
     @Override
-    public @Nullable R get(int n) {
+    public @Nullable T get(int n) {
         return IteratorUtil.getNth(iterator(), n);
     }
 
     @Override
-    public NodeStream<R> drop(int n) {
+    public NodeStream<T> drop(int n) {
         AssertionUtil.assertArgNonNegative(n);
         return n == 0 ? this
                       : mapIter(iter -> {
@@ -82,45 +86,60 @@ abstract class IteratorBasedNStream<R extends Node> implements NodeStream<R> {
     }
 
     @Override
-    public NodeStream<R> take(int maxSize) {
+    public NodeStream<T> take(int maxSize) {
         AssertionUtil.assertArgNonNegative(maxSize);
         return maxSize == 0 ? NodeStream.empty()
                             : mapIter(iter -> IteratorUtil.take(iter, maxSize));
     }
 
     @Override
-    public NodeStream<R> takeWhile(Predicate<? super R> predicate) {
+    public NodeStream<T> takeWhile(Predicate<? super T> predicate) {
         return mapIter(iter -> IteratorUtil.takeWhile(iter, predicate));
     }
 
     @Override
-    public NodeStream<R> distinct() {
+    public NodeStream<T> distinct() {
         return mapIter(IteratorUtil::distinct);
     }
 
     @Override
-    public NodeStream<R> peek(Consumer<? super R> action) {
+    public NodeStream<T> peek(Consumer<? super T> action) {
         return mapIter(iter -> IteratorUtil.peek(iter, action));
     }
 
     @Override
-    public NodeStream<R> append(NodeStream<? extends R> right) {
+    public NodeStream<T> append(NodeStream<? extends T> right) {
         return mapIter(iter -> IteratorUtil.concat(iter, right.iterator()));
     }
 
     @Override
-    public NodeStream<R> prepend(NodeStream<? extends R> right) {
+    public NodeStream<T> prepend(NodeStream<? extends T> right) {
         return mapIter(iter -> IteratorUtil.concat(right.iterator(), iter));
     }
 
     @Override
-    public NodeStream<R> cached() {
-        return new IteratorBasedNStream<R>() {
+    public boolean any(Predicate<? super T> predicate) {
+        return IteratorUtil.anyMatch(iterator(), predicate);
+    }
 
-            private List<R> cache;
+    @Override
+    public boolean none(Predicate<? super T> predicate) {
+        return IteratorUtil.noneMatch(iterator(), predicate);
+    }
+
+    @Override
+    public boolean all(Predicate<? super T> predicate) {
+        return IteratorUtil.allMatch(iterator(), predicate);
+    }
+
+    @Override
+    public NodeStream<T> cached() {
+        return new IteratorBasedNStream<T>() {
+
+            private List<T> cache;
 
             @Override
-            public Iterator<R> iterator() {
+            public Iterator<T> iterator() {
                 return toList().iterator();
             }
 
@@ -130,7 +149,7 @@ abstract class IteratorBasedNStream<R extends Node> implements NodeStream<R> {
             }
 
             @Override
-            public List<R> toList() {
+            public List<T> toList() {
                 if (cache == null) {
                     cache = IteratorBasedNStream.this.toList();
                 }
@@ -150,46 +169,46 @@ abstract class IteratorBasedNStream<R extends Node> implements NodeStream<R> {
     }
 
     @Override
-    public @Nullable R first() {
-        Iterator<R> iter = iterator();
+    public @Nullable T first() {
+        Iterator<T> iter = iterator();
         return iter.hasNext() ? iter.next() : null;
     }
 
     @Override
-    public List<R> toList() {
+    public List<T> toList() {
         return IteratorUtil.toList(iterator());
     }
 
     @Override
-    public <S extends Node> @Nullable S first(Class<S> r1Class) {
-        for (R r : this) {
-            if (r1Class.isInstance(r)) {
-                return r1Class.cast(r);
+    public <R extends Node> @Nullable R first(Class<R> r1Class) {
+        for (T t : this) {
+            if (r1Class.isInstance(t)) {
+                return r1Class.cast(t);
             }
         }
         return null;
     }
 
     @Override
-    public @Nullable R first(Predicate<? super R> predicate) {
-        for (R r : this) {
-            if (predicate.test(r)) {
-                return r;
+    public @Nullable T first(Predicate<? super T> predicate) {
+        for (T t : this) {
+            if (predicate.test(t)) {
+                return t;
             }
         }
         return null;
     }
 
-    private <S extends Node> IteratorMapping<S> mapIter(Function<Iterator<R>, Iterator<S>> fun) {
-        return new IteratorMapping<S>(fun);
+    private <R extends Node> IteratorMapping<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {
+        return new IteratorMapping<R>(fun);
     }
 
     private class IteratorMapping<S extends Node> extends IteratorBasedNStream<S> {
 
-        private final Function<Iterator<R>, Iterator<S>> fun;
+        private final Function<Iterator<T>, Iterator<S>> fun;
 
 
-        private IteratorMapping(Function<Iterator<R>, Iterator<S>> fun) {
+        private IteratorMapping(Function<Iterator<T>, Iterator<S>> fun) {
             this.fun = fun;
         }
 

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,6 +16,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
@@ -107,9 +107,16 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * @since 7.0.0
  */
-public interface NodeStream<T extends Node> extends Iterable<T> {
+public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
-    // lazy pipeline transformations
+
+    /**
+     * Returns a new stream of Ts having the pipeline of operations
+     * defined by this node stream. This can be called multiple times.
+     *
+     * @return A stream containing the same elements as this node stream
+     */
+    Stream<@NonNull T> toStream();
 
 
     /**
@@ -129,7 +136,9 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see Stream#flatMap(Function)
      */
-    <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper);
+    <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends @Nullable NodeStream<? extends R>> mapper);
+
+    // lazy pipeline transformations
 
 
     /**
@@ -148,7 +157,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see Stream#map(Function)
      */
-    <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper);
+    <R extends Node> NodeStream<R> map(Function<? super T, ? extends @Nullable R> mapper);
 
 
     /**
@@ -165,7 +174,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #filterIs(Class)
      * @see #filterMatching(Function, Object)
      */
-    NodeStream<T> filter(Predicate<? super T> predicate);
+    NodeStream<T> filter(Predicate<? super @NonNull T> predicate);
 
 
     /**
@@ -179,7 +188,38 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return A new stream
      */
-    NodeStream<T> peek(Consumer<? super T> action);
+    NodeStream<T> peek(Consumer<? super @NonNull T> action);
+
+
+    /**
+     * Applies the given mapping functions to this node stream in order and merges the
+     * results into a new node stream. This allows exploring several paths at once on the
+     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
+     *
+     * @param fst  First mapper
+     * @param snd  Second mapper
+     * @param rest Rest of the mappers
+     * @param <R>  Common supertype for the element type of the streams returned by the mapping functions
+     *
+     * @return A merged node stream
+     */
+    default <R extends Node> NodeStream<R> forkJoin(Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
+                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
+                                                    Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
+        Objects.requireNonNull(fst);
+        Objects.requireNonNull(snd);
+
+        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
+        mappers.add(fst);
+        mappers.add(snd);
+        mappers.addAll(Arrays.asList(rest));
+
+        Function<? super T, NodeStream<R>> aggregate =
+            t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
+
+        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
+        return cached().flatMap(aggregate);
+    }
 
 
     /**
@@ -464,40 +504,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Applies the given mapping functions to this node stream in order and merges the
-     * results into a new node stream. This allows exploring several paths at once on the
-     * same stream. The method is lazy and won't evaluate the upstream pipeline several times.
-     *
-     * @param fst  First mapper
-     * @param snd  Second mapper
-     * @param rest Rest of the mappers
-     * @param <R>  Common supertype for the element type of the streams returned by the mapping functions
-     *
-     * @return A merged node stream
-     */
-    @SuppressWarnings("rawtypes") // necessary because of generic array creation is forbidden
-    default <R extends Node> NodeStream<R> forkJoin(Function<? super T, ? extends NodeStream<? extends R>> fst,
-                                                    Function<? super T, ? extends NodeStream<? extends R>> snd,
-                                                    Function<? super T, ? extends NodeStream<? extends R>>... rest) {
-        Objects.requireNonNull(fst);
-        Objects.requireNonNull(snd);
-
-        List<Function<? super T, ? extends NodeStream<? extends R>>> mappers = new ArrayList<>(rest.length + 2);
-        mappers.add(fst);
-        mappers.add(snd);
-        mappers.addAll(Arrays.asList(rest));
-
-        Function<? super T, ? extends NodeStream<? extends R>> aggregate =
-            t -> NodeStream.union(mappers.stream().map(f -> f.apply(t)).<NodeStream<R>>toArray(NodeStream[]::new));
-
-        // with forkJoin we know that the stream will be iterated more than twice so we cache the values
-        return cached().flatMap(aggregate);
-    }
-
-    // these are shorthands defined relative to filter
-
-
-    /**
      * Filters the node of this stream using the negation of the given predicate.
      *
      * <p>This is equivalent to {@code filter(predicate.negate())}
@@ -509,8 +515,32 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see #filter(Predicate)
      */
-    default NodeStream<T> filterNot(Predicate<? super T> predicate) {
+    default NodeStream<T> filterNot(Predicate<? super @NonNull T> predicate) {
         return filter(predicate.negate());
+    }
+
+    // these are shorthands defined relative to filter
+
+
+    /**
+     * Filters the nodes of this stream by comparing a value extracted from the nodes
+     * with the given constant. This takes care of null value by calling
+     * {@link Objects#equals(Object, Object)}. E.g. to filter nodes that have
+     * the {@linkplain Node#getImage() image} {@code "a"}, use {@code filterMatching(Node::getImage, "a")}.
+     *
+     * <p>This is equivalent to {@code filter(t -> Objects.equals(extractor.apply(t), comparand))}.
+     *
+     * @param extractor Function extracting a value from the nodes of this stream
+     * @param comparand Value to which the extracted value will be compared
+     * @param <U>       Type of value to compare
+     *
+     * @return A filtered node stream
+     *
+     * @see #filter(Predicate)
+     * @see #filterNotMatching(Function, Object)
+     */
+    default <U> NodeStream<T> filterMatching(Function<? super @NonNull T, ? extends @Nullable U> extractor, U comparand) {
+        return filter(t -> Objects.equals(extractor.apply(t), comparand));
     }
 
 
@@ -534,28 +564,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Filters the nodes of this stream by comparing a value extracted from the nodes
-     * with the given constant. This takes care of null value by calling
-     * {@link Objects#equals(Object, Object)}. E.g. to filter nodes that have
-     * the {@linkplain Node#getImage() image} {@code "a"}, use {@code filterMatching(Node::getImage, "a")}.
-     *
-     * <p>This is equivalent to {@code filter(t -> Objects.equals(extractor.apply(t), comparand))}.
-     *
-     * @param extractor Function extracting a value from the nodes of this stream
-     * @param comparand Value to which the extracted value will be compared
-     * @param <U>       Type of value to compare
-     *
-     * @return A filtered node stream
-     *
-     * @see #filter(Predicate)
-     * @see #filterNotMatching(Function, Object)
-     */
-    default <U> NodeStream<T> filterMatching(Function<? super T, ? extends U> extractor, U comparand) {
-        return filter(t -> Objects.equals(extractor.apply(t), comparand));
-    }
-
-
-    /**
      * Inverse of {@link #filterMatching(Function, Object)}.
      *
      * @param extractor Function extracting a value from the nodes of this stream
@@ -567,15 +575,15 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #filter(Predicate)
      * @see #filterMatching(Function, Object)
      */
-    default <U> NodeStream<T> filterNotMatching(Function<? super T, ? extends U> extractor, U comparand) {
+    default <U> NodeStream<T> filterNotMatching(Function<? super @NonNull T, ? extends @Nullable U> extractor, U comparand) {
         return filter(t -> !Objects.equals(extractor.apply(t), comparand));
     }
 
-    // "terminal" operations
-
 
     @Override
-    void forEach(Consumer<? super T> action);
+    void forEach(Consumer<? super @NonNull T> action);
+
+    // "terminal" operations
 
 
     /**
@@ -585,6 +593,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      */
     // ASTs are not so big as to warrant using a 'long' here
     int count();
+
 
 
     /**
@@ -636,9 +645,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #any(Predicate)
      * @see #all(Predicate)
      */
-    default boolean none(Predicate<? super T> predicate) {
-        return toStream().noneMatch(predicate);
-    }
+    boolean none(Predicate<? super T> predicate);
 
 
     /**
@@ -652,9 +659,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      * @see #any(Predicate)
      * @see #none(Predicate)
      */
-    default boolean all(Predicate<? super T> predicate) {
-        return toStream().allMatch(predicate);
-    }
+    boolean all(Predicate<? super T> predicate);
 
 
     /**
@@ -833,24 +838,6 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a new stream of Ts having the pipeline of operations
-     * defined by this node stream. This can be called multiple times.
-     *
-     * @return A stream containing the same elements as this node stream
-     */
-    Stream<T> toStream();
-
-
-    @Override
-    Iterator<T> iterator();
-
-
-
-    // construction
-    // we ensure here that no node stream may contain null values
-
-
-    /**
      * Returns a node stream containing zero or one node,
      * depending on whether the argument is null or not.
      *
@@ -864,9 +851,31 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @see Node#asStream()
      */
-    static <T extends Node> NodeStream<T> of(T node) {
+    static <T extends Node> NodeStream<T> of(@Nullable T node) {
         // overload the varargs to avoid useless array creation
         return node == null ? empty() : StreamImpl.singleton(node);
+    }
+
+
+    // construction
+    // we ensure here that no node stream may contain null values
+
+
+    /**
+     * Returns a new node stream that contains the same elements as the given
+     * iterable. Null items are filtered out of the resulting stream.
+     *
+     * <p>It's possible to map an iterator to a node stream by calling
+     * {@code fromIterable(() -> iterator)}, but then the returned node stream
+     * would only be iterable once.
+     *
+     * @param iterable Source of nodes
+     * @param <T>      Type of nodes in the returned node stream
+     *
+     * @return A new node stream
+     */
+    static <T extends Node> NodeStream<T> fromIterable(Iterable<@Nullable T> iterable) {
+        return StreamImpl.fromIterable(iterable);
     }
 
 
@@ -903,20 +912,17 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
 
 
     /**
-     * Returns a new node stream that contains the same elements as the given
-     * iterable. Null items are filtered out of the resulting stream.
+     * Returns a node stream containing all the elements of the given streams,
+     * one after the other.
      *
-     * <p>It's possible to map an iterator to a node stream by calling
-     * {@code fromIterable(() -> iterator)}, but then the returned node stream
-     * would only be iterable once.
+     * @param <T>     The type of stream elements
+     * @param streams the streams to flatten
      *
-     * @param iterable Source of nodes
-     * @param <T>      Type of nodes in the returned node stream
-     *
-     * @return A new node stream
+     * @return the concatenation of the input streams
      */
-    static <T extends Node> NodeStream<T> fromIterable(Iterable<T> iterable) {
-        return StreamImpl.fromIterable(iterable);
+    @SafeVarargs
+    static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
+        return union(Arrays.asList(streams));
     }
 
 
@@ -929,8 +935,7 @@ public interface NodeStream<T extends Node> extends Iterable<T> {
      *
      * @return the concatenation of the input streams
      */
-    @SafeVarargs
-    static <T extends Node> NodeStream<T> union(NodeStream<? extends T>... streams) {
+    static <T extends Node> NodeStream<T> union(Iterable<? extends NodeStream<? extends T>> streams) {
         return StreamImpl.union(streams);
     }
 

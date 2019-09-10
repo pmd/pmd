@@ -122,6 +122,10 @@ public final class IteratorUtil {
         };
     }
 
+    public static <T> Iterator<@NonNull T> filterNotNull(Iterator<? extends T> it) {
+        return mapNotNull(it, Function.identity());
+    }
+
     public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return new Iterator<R>() {
 
@@ -269,6 +273,36 @@ public final class IteratorUtil {
         };
     }
 
+
+    private static final int MATCH_ANY = 0;
+    private static final int MATCH_ALL = 1;
+    private static final int MATCH_NONE = 2;
+
+    public static <T> boolean anyMatch(Iterator<? extends T> iterator, Predicate<? super T> pred) {
+        return matches(iterator, pred, MATCH_ANY);
+    }
+
+    public static <T> boolean allMatch(Iterator<? extends T> iterator, Predicate<? super T> pred) {
+        return matches(iterator, pred, MATCH_ALL);
+    }
+
+    public static <T> boolean noneMatch(Iterator<? extends T> iterator, Predicate<? super T> pred) {
+        return matches(iterator, pred, MATCH_NONE);
+    }
+
+    private static <T> boolean matches(Iterator<? extends T> iterator, Predicate<? super T> pred, int matchKind) {
+        final boolean kindAny = matchKind == MATCH_ANY;
+        final boolean kindAll = matchKind == MATCH_ALL;
+
+        while (iterator.hasNext()) {
+            final T value = iterator.next();
+            final boolean match = pred.test(value);
+            if (match ^ kindAll) { // xor
+                return kindAny && match;
+            }
+        }
+        return !kindAny;
+    }
 
     public static <T> Iterable<T> asReversed(final List<T> lst) {
 

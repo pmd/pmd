@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -51,6 +52,11 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     @Override
     public <R> List<R> toList(Function<? super T, ? extends R> mapper) {
         return Collections.singletonList(mapper.apply(node));
+    }
+
+    @Override
+    public int count() {
+        return 1;
     }
 
     @Override
@@ -105,10 +111,6 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
         return this;
     }
 
-    @Override
-    public int count() {
-        return 1;
-    }
 
     @Override
     public NodeStream<T> takeWhile(Predicate<? super T> predicate) {
@@ -116,7 +118,7 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     }
 
     @Override
-    public <R extends Node> NodeStream<R> map(Function<? super T, ? extends R> mapper) {
+    public <R extends Node> NodeStream<@NonNull R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return NodeStream.of(mapper.apply(node));
     }
 
@@ -125,6 +127,25 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     public <R extends Node> NodeStream<R> flatMap(Function<? super T, ? extends NodeStream<? extends R>> mapper) {
         return (NodeStream<R>) mapper.apply(node);
     }
+
+    @Override
+    public boolean any(Predicate<? super T> predicate) {
+        return predicate.test(node);
+    }
+
+    @Override
+    public boolean all(Predicate<? super T> predicate) {
+        return predicate.test(node);
+    }
+
+    @Override
+    public boolean none(Predicate<? super T> predicate) {
+        return !predicate.test(node);
+    }
+
+    /*
+        tree navigation
+     */
 
     @Override
     public NodeStream<Node> children() {
