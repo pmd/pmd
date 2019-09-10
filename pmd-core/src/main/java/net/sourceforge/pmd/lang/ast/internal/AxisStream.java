@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
@@ -16,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.internal.util.Filtermap;
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
@@ -318,7 +318,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public Iterator<Node> iterator() {
             return count() > 0 ? TraversalUtils.childrenIterator(node, low, high)
-                               : IteratorUtil.emptyIterator();
+                               : Collections.emptyIterator();
         }
 
         @Nullable

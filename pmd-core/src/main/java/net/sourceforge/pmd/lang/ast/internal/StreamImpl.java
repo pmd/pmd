@@ -108,7 +108,7 @@ public final class StreamImpl {
     }
 
 
-    static NodeStream<Node> ancestorsOrSelf(@Nullable Node node) {
+    public static NodeStream<Node> ancestorsOrSelf(@Nullable Node node) {
         if (node == null) {
             return empty();
         } else if (node.jjtGetParent() == null) {

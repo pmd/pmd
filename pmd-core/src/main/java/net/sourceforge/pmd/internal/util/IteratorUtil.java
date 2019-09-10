@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,61 +27,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class IteratorUtil {
 
+    private static final int MATCH_ANY = 0;
+    private static final int MATCH_ALL = 1;
+    private static final int MATCH_NONE = 2;
+
     private IteratorUtil() {
 
     }
 
-    private static final Iterator EMPTY = new Iterator() {
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public void forEachRemaining(Consumer action) {
-            // do nothing
-        }
-
-        @Override
-        public Object next() {
-            throw new NoSuchElementException("empty iterator");
-        }
-    };
-
-    @SuppressWarnings("unchecked")
-    public static <T> Iterator<T> emptyIterator() {
-        return EMPTY;
-    }
-
-
-    public static <T> Iterator<T> takeWhile(Iterator<T> splitr, Predicate<? super T> predicate) {
-        return new Iterator<T>() {
-
-            private T next;
-            private boolean closed;
-
+    public static <T> Iterator<T> takeWhile(Iterator<T> iter, Predicate<? super T> predicate) {
+        return new AbstractIterator<T>() {
             @Override
-            public boolean hasNext() {
-                if (closed) {
-                    return false;
+            protected void computeNext() {
+                T next = iter.next();
+                if (predicate.test(next)) {
+                    setNext(next);
+                } else {
+                    done();
                 }
-                while (next != null && splitr.hasNext()) {
-                    T t = splitr.next();
-                    if (predicate.test(t)) {
-                        next = t;
-                    } else {
-                        closed = true;
-                    }
-                }
-                return next != null;
-            }
-
-            @Override
-            public T next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-                return next;
             }
         };
     }
@@ -92,90 +56,84 @@ public final class IteratorUtil {
     }
 
     public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends Iterator<? extends R>> f) {
-        return new Iterator<R>() {
-
+        return new AbstractIterator<R>() {
             private Iterator<? extends R> current = null;
 
             @Override
-            public boolean hasNext() {
+            protected void computeNext() {
                 if (current != null && current.hasNext()) {
-                    return true;
+                    setNext(current.next());
                 } else {
                     while (iter.hasNext()) {
                         Iterator<? extends R> next = f.apply(iter.next());
                         if (next != null && next.hasNext()) {
                             current = next;
-                            return true;
+                            setNext(current.next());
+                            return;
                         }
                     }
-                    return false;
+                    done();
                 }
-            }
-
-            @Override
-            public R next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-                return current.next();
             }
         };
     }
 
     public static <T> Iterator<@NonNull T> filterNotNull(Iterator<? extends T> it) {
-        return mapNotNull(it, Function.identity());
+        return filter(it, Objects::nonNull);
     }
 
     public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<? super @NonNull T, ? extends @Nullable R> mapper) {
-        return new Iterator<R>() {
-
-            private R next;
-
+        return new AbstractIterator<R>() {
             @Override
-            public boolean hasNext() {
-                if (next != null) {
-                    return true;
-                }
+            protected void computeNext() {
                 while (it.hasNext()) {
-                    T next1 = it.next();
-                    if (next1 != null) {
-                        R map = mapper.apply(next1);
+                    T next = it.next();
+                    if (next != null) {
+                        R map = mapper.apply(next);
                         if (map != null) {
-                            this.next = map;
-                            return true;
+                            setNext(map);
+                            return;
                         }
                     }
                 }
-                next = null;
-                return false;
+                done();
             }
+        };
+    }
 
+    public static <T> Iterator<T> filter(Iterator<? extends T> it, Predicate<? super T> filter) {
+        return new AbstractIterator<T>() {
             @Override
-            public R next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
+            protected void computeNext() {
+                while (it.hasNext()) {
+                    T next = it.next();
+                    if (filter.test(next)) {
+                        setNext(next);
+                        return;
+                    }
                 }
-                R r = next;
-                next = null;
-                return r;
+                done();
             }
         };
     }
 
     public static <T> Iterator<T> peek(Iterator<? extends T> iter, Consumer<? super T> action) {
-        return new Iterator<T>() {
+        return map(iter, it -> {
+            action.accept(it);
+            return it;
+        });
+    }
 
-
+    public static <T, R> Iterator<R> map(Iterator<? extends T> iter, Function<? super T, ? extends R> mapper) {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return iter.hasNext();
             }
 
             @Override
-            public T next() {
-                T t = iter.next();
-                action.accept(t);
-                return t;
+            public R next() {
+                return mapper.apply(iter.next());
             }
         };
     }
@@ -195,12 +153,10 @@ public final class IteratorUtil {
         };
     }
 
-    // Not a general purpose implementation, because mapNotNull doesn't let null values through
     public static <T> Iterator<T> distinct(Iterator<? extends T> iter) {
         Set<T> seen = new HashSet<>();
-        return mapNotNull(iter, Filtermap.filter(seen::add));
+        return filter(iter, seen::add);
     }
-
 
     public static <T> List<T> toList(Iterator<T> it) {
         List<T> list = new ArrayList<>();
@@ -210,11 +166,9 @@ public final class IteratorUtil {
         return list;
     }
 
-
     public static <T> Iterable<T> toIterable(final Iterator<T> it) {
         return () -> it;
     }
-
 
     /** Counts the items in this iterator, exhausting it. */
     public static int count(Iterator<?> it) {
@@ -234,6 +188,12 @@ public final class IteratorUtil {
         return next;
     }
 
+    /**
+     * Returns the nth element of this iterator, or null if the iterator
+     * is shorter.
+     *
+     * @throws IllegalArgumentException If n is negative
+     */
     public static <T> @Nullable T getNth(Iterator<T> iterator, int n) {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;
@@ -249,43 +209,72 @@ public final class IteratorUtil {
         }
     }
 
-
     /** Limit the number of elements yielded by this iterator to the given number. */
     public static <T> Iterator<T> take(Iterator<T> iterator, final int n) {
         AssertionUtil.assertArgNonNegative(n);
         if (n == 0) {
-            return emptyIterator();
+            return Collections.emptyIterator();
         }
 
-        return new Iterator<T>() {
+        return new AbstractIterator<T>() {
             private int yielded = 0;
 
             @Override
-            public boolean hasNext() {
-                return iterator.hasNext() && yielded < n;
-            }
-
-            @Override
-            public T next() {
-                yielded++;
-                return iterator.next();
+            protected void computeNext() {
+                if (yielded++ >= n || !iterator.hasNext()) {
+                    done();
+                } else {
+                    setNext(iterator.next());
+                }
             }
         };
     }
 
+    /** Produce an iterator whose first element is the nth element of the given source. */
+    public static <T> Iterator<T> drop(Iterator<T> source, final int n) {
+        AssertionUtil.assertArgNonNegative(n);
+        if (n == 0) {
+            return source;
+        }
 
-    private static final int MATCH_ANY = 0;
-    private static final int MATCH_ALL = 1;
-    private static final int MATCH_NONE = 2;
+        return new AbstractIterator<T>() {
+            private int yielded = 0;
 
+            @Override
+            protected void computeNext() {
+                while (yielded++ < n && source.hasNext()) {
+                    source.next();
+                }
+
+                if (!source.hasNext()) {
+                    done();
+                } else {
+                    setNext(source.next());
+                }
+            }
+        };
+    }
+
+    /**
+     * Returns whether some element match the predicate. If empty then {@code false}
+     * is returned.
+     */
     public static <T> boolean anyMatch(Iterator<? extends T> iterator, Predicate<? super T> pred) {
         return matches(iterator, pred, MATCH_ANY);
     }
 
+    /**
+     * Returns whether all elements match the predicate. If empty then {@code true}
+     * is returned.
+     */
     public static <T> boolean allMatch(Iterator<? extends T> iterator, Predicate<? super T> pred) {
         return matches(iterator, pred, MATCH_ALL);
     }
 
+    /**
+     * Returns whether no elements match the predicate. If empty then {@code true}
+     * is returned.
+     */
     public static <T> boolean noneMatch(Iterator<? extends T> iterator, Predicate<? super T> pred) {
         return matches(iterator, pred, MATCH_NONE);
     }
@@ -328,5 +317,53 @@ public final class IteratorUtil {
                 li.remove();
             }
         };
+    }
+
+    private static abstract class AbstractIterator<T> implements Iterator<T> {
+
+        private State state = State.NOT_READY;
+        private T next = null;
+
+
+        @Override
+        public boolean hasNext() {
+            switch (state) {
+            case FAILED:
+                throw new IllegalStateException(state.toString());
+            case DONE:
+                return false;
+            case READY:
+                return true;
+            default:
+                state = State.FAILED;
+                computeNext();
+                return state == State.READY;
+            }
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            state = State.NOT_READY;
+            return next;
+        }
+
+        protected final void setNext(T t) {
+            next = t;
+            state = State.READY;
+        }
+
+        protected final void done() {
+            state = State.DONE;
+        }
+
+        protected abstract void computeNext();
+
+        enum State {
+            READY, NOT_READY, FAILED, DONE
+        }
+
     }
 }

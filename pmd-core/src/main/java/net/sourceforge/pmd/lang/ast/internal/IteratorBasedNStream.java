@@ -9,11 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -78,18 +76,13 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     @Override
     public NodeStream<T> drop(int n) {
         AssertionUtil.assertArgNonNegative(n);
-        return n == 0 ? this
-                      : mapIter(iter -> {
-                          IteratorUtil.advance(iter, n);
-                          return iter;
-                      });
+        return n == 0 ? this : mapIter(iter -> IteratorUtil.drop(iter, n));
     }
 
     @Override
     public NodeStream<T> take(int maxSize) {
         AssertionUtil.assertArgNonNegative(maxSize);
-        return maxSize == 0 ? NodeStream.empty()
-                            : mapIter(iter -> IteratorUtil.take(iter, maxSize));
+        return maxSize == 0 ? NodeStream.empty() : mapIter(iter -> IteratorUtil.take(iter, maxSize));
     }
 
     @Override
