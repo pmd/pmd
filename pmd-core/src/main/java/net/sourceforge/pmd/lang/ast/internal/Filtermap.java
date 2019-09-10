@@ -2,11 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
-package net.sourceforge.pmd.internal.util;
+package net.sourceforge.pmd.lang.ast.internal;
 
 
 import java.util.Iterator;
@@ -16,13 +12,14 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Combined filter/map predicate. Cannot accept null values.
  */
 @FunctionalInterface
-public interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O> {
+interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O>, Predicate<@NonNull I> {
 
 
     Filtermap<Node, Node> NODE_IDENTITY = emptyFilter();
@@ -36,6 +33,12 @@ public interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O> {
     @Nullable O apply(@NonNull I i);
 
 
+    @Override
+    default boolean test(@NonNull I i) {
+        return apply(i) != null;
+    }
+
+    /** Filter an iterator. */
     default Iterator<O> filterMap(Iterator<I> iter) {
         return IteratorUtil.mapNotNull(iter, this);
     }
@@ -62,6 +65,7 @@ public interface Filtermap<I, O> extends Function<@NonNull I, @Nullable O> {
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public <R> Filtermap<I, R> then(Filtermap<? super I, ? extends R> then) {
                 return (Filtermap<I, R>) then;
             }
