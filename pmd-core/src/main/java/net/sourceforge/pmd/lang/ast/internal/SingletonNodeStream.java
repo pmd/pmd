@@ -98,7 +98,7 @@ final class SingletonNodeStream<T extends Node> implements NodeStream<T> {
 
     @Override
     public NodeStream<Node> ancestorsOrSelf() {
-        return StreamImpl.ancestorOrSelf(node);
+        return StreamImpl.ancestorsOrSelf(node);
     }
 
     @Override

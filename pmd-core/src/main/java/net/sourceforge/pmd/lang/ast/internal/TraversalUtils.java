@@ -50,8 +50,8 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstParentOfType(final Node node, final Class<T> type) {
-        Node n = node.jjtGetParent();
+    static <T extends Node> T getFirstParentOrSelfOfType(final Node node, final Class<T> type) {
+        Node n = node;
         while (n != null) {
             if (type.isInstance(n)) {
                 return type.cast(n);

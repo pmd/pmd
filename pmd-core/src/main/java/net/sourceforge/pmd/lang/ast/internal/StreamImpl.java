@@ -38,18 +38,6 @@ public final class StreamImpl {
         return Stream::empty;
     }
 
-    public static NodeStream<Node> ancestorOrSelf(Node node) {
-        return new AncestorOrSelfStream(node);
-    }
-
-    public static NodeStream<Node> ancestors(Node node) {
-        return new AncestorStream(node);
-    }
-
-    public static <R extends Node> NodeStream<R> ancestors(Node node, Class<R> target) {
-        return new FilteredAncestorStream<>(node, target);
-    }
-
     public static <R extends Node> NodeStream<R> children(Node node, Class<R> target) {
         return new FilteredChildrenStream<>(node, target);
     }
@@ -81,6 +69,34 @@ public final class StreamImpl {
         return parent == null ? empty()
                               : new SlicedChildrenStream(parent, 0, node.jjtGetChildIndex());
     }
+
+
+    public static NodeStream<Node> ancestorsOrSelf(@Nullable Node node) {
+        if (node == null) {
+            return empty();
+        } else if (node.jjtGetParent() == null) {
+            return singleton(node);
+        }
+        return new AncestorOrSelfStream(node);
+    }
+
+    public static <R extends Node> NodeStream<R> ancestorsOrSelf(@Nullable Node node, Class<R> target) {
+        if (node == null) {
+            return empty();
+        } else if (node.jjtGetParent() == null) {
+            return target.isInstance(node) ? singleton(target.cast(node)) : empty();
+        }
+        return new FilteredAncestorOrSelfStream<>(node, target);
+    }
+
+    public static NodeStream<Node> ancestors(@NonNull Node node) {
+        return ancestorsOrSelf(node.jjtGetParent());
+    }
+
+    public static <R extends Node> NodeStream<R> ancestors(@NonNull Node node, Class<R> target) {
+        return ancestorsOrSelf(node.jjtGetParent(), target);
+    }
+
 
     /**
      * Implementations are based on the iterator rather than the stream.
@@ -204,90 +220,60 @@ public final class StreamImpl {
         }
     }
 
-    private static class FilteredAncestorStream<R extends Node> extends AxisStream<R> {
+    private static class FilteredAncestorOrSelfStream<R extends Node> extends AxisStream<R> {
 
-        private FilteredAncestorStream(@NonNull Node node, Class<R> target) {
+        private FilteredAncestorOrSelfStream(@NonNull Node node, Class<R> target) {
             super(node, target);
         }
 
         @Override
         public Iterator<R> iterator() {
-            AncestorOrSelfIterator iter = new AncestorOrSelfIterator(node);
-            iter.next(); // skip self
-            return IteratorUtil.filterCast(iter, target);
+            return IteratorUtil.filterCast(new AncestorOrSelfIterator(node), target);
         }
+
 
         @Override
         public NodeStream<R> drop(int n) {
-            if (n == 0) {
+            AssertionUtil.assertArgNonNegative(n);
+            switch (n) {
+            case 0:
                 return this;
+            case 1:
+                return StreamImpl.ancestors(node, target);
+            default:
+                // eg for NodeStream.of(a,b,c).drop(2)
+                Node nth = get(n); // get(2) == c
+                return nth == null ? NodeStream.empty() : copy(nth); // c.ancestorsOrSelf() == [c]
             }
-            @Nullable R p = get(n - 1);
-            return p != null ? copy(p) : NodeStream.empty();
         }
+
 
         @Override
         public @Nullable R first() {
-            return TraversalUtils.getFirstParentOfType(node, target);
+            return TraversalUtils.getFirstParentOrSelfOfType(node, target);
         }
 
         protected NodeStream<R> copy(Node start) {
-            return StreamImpl.ancestors(start, target);
+            return StreamImpl.ancestorsOrSelf(start, target);
         }
     }
 
-    private static class AncestorStream extends FilteredAncestorStream<Node> {
 
-        private AncestorStream(@NonNull Node node) {
-            super(node, Node.class);
-        }
-
-        @Override
-        public Iterator<Node> iterator() {
-            AncestorOrSelfIterator iter = new AncestorOrSelfIterator(node);
-            iter.next(); // skip self
-            return iter;
-        }
-
-        @Nullable
-        @Override
-        public Node last() {
-            if (node.jjtGetParent() == null) {
-                return null;
-            }
-            Node last = node.jjtGetParent();
-            while (last.jjtGetParent() != null) {
-                last = last.jjtGetParent();
-            }
-            return last;
-        }
-
-        @Override
-        public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
-            return new FilteredAncestorStream<>(node, r1Class);
-        }
-
-        @Override
-        protected NodeStream<Node> copy(Node start) {
-            return new AncestorStream(start);
-        }
-
-        @Override
-        public boolean nonEmpty() {
-            return node.jjtGetParent() != null;
-        }
-    }
-
-    private static class AncestorOrSelfStream extends AncestorStream {
+    private static class AncestorOrSelfStream extends FilteredAncestorOrSelfStream<Node> {
 
         private AncestorOrSelfStream(@NonNull Node node) {
-            super(node);
+            super(node, Node.class);
         }
 
         @Nullable
         @Override
         public Node first() {
             return node;
+        }
+
+        @Override
+        public boolean nonEmpty() {
+            return true;
         }
 
         @Override
@@ -300,18 +286,13 @@ public final class StreamImpl {
         }
 
         @Override
-        public NodeStream<Node> drop(int n) {
-            AssertionUtil.assertArgNonNegative(n);
-            switch (n) {
-            case 0:
-                return this;
-            case 1:
-                return new AncestorStream(node);
-            default:
-                // eg for NodeStream.of(a,b,c).drop(2)
-                Node nth = get(n); // get(2) == c
-                return nth == null ? NodeStream.empty() : nth.ancestorsOrSelf(); // b.ancestorsOrSelf() == [c]
-            }
+        public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
+            return new FilteredAncestorOrSelfStream<>(node, r1Class);
+        }
+
+        @Override
+        protected NodeStream<Node> copy(Node start) {
+            return StreamImpl.ancestorsOrSelf(start);
         }
 
         @Override
@@ -376,10 +357,10 @@ public final class StreamImpl {
         }
     }
 
-    private static final class DescendantOrSelfStream extends DescendantStream {
+    private static final class DescendantOrSelfStream extends AxisStream<Node> {
 
         DescendantOrSelfStream(Node node) {
-            super(node);
+            super(node, Node.class);
         }
 
         @Override
@@ -396,6 +377,14 @@ public final class StreamImpl {
         @Override
         public boolean nonEmpty() {
             return true;
+        }
+
+        @Override
+        public List<Node> toList() {
+            List<Node> result = new ArrayList<>();
+            result.add(node);
+            TraversalUtils.findDescendantsOfType(node, target, result, false);
+            return result;
         }
     }
 
@@ -463,18 +452,6 @@ public final class StreamImpl {
             return StreamImpl.children(node, r1Class);
         }
 
-        @Nullable
-        @Override
-        public Node first() {
-            return node.jjtGetNumChildren() > 0 ? node.jjtGetChild(0) : null;
-        }
-
-        @Nullable
-        @Override
-        public Node last() {
-            return node.jjtGetNumChildren() > 0 ? node.jjtGetChild(node.jjtGetNumChildren() - 1) : null;
-        }
-
         @Override
         public <R extends Node> @Nullable R first(Class<R> rClass) {
             return TraversalUtils.getFirstChildOfType(node, rClass);
@@ -483,16 +460,6 @@ public final class StreamImpl {
         @Override
         public <R extends Node> @Nullable R last(Class<R> rClass) {
             return TraversalUtils.getLastChildOfType(node, rClass);
-        }
-
-        @Override
-        public boolean nonEmpty() {
-            return node.jjtGetNumChildren() > 0;
-        }
-
-        @Override
-        public int count() {
-            return node.jjtGetNumChildren();
         }
     }
 

@@ -444,7 +444,7 @@ public interface Node {
      * @see NodeStream#ancestorsOrSelf()
      */
     default NodeStream<Node> ancestorsOrSelf() {
-        return StreamImpl.ancestorOrSelf(this);
+        return StreamImpl.ancestorsOrSelf(this);
     }
 
 
