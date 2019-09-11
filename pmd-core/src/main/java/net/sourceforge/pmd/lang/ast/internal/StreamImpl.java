@@ -102,14 +102,28 @@ public final class StreamImpl {
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
         Node parent = node.jjtGetParent();
-        return parent == null ? empty()
-                              : new SlicedChildrenStream(parent, node.jjtGetChildIndex() + 1, parent.jjtGetNumChildren());
+        if (parent == null) {
+            return NodeStream.empty();
+        }
+        return sliceChildren(parent, node.jjtGetChildIndex() + 1,
+                             parent.jjtGetNumChildren() - node.jjtGetChildIndex());
     }
 
     public static NodeStream<Node> precedingSiblings(@NonNull Node node) {
-        Node parent = node.jjtGetParent();
-        return parent == null ? empty()
-                              : new SlicedChildrenStream(parent, 0, node.jjtGetChildIndex());
+        return sliceChildren(node.jjtGetParent(), 0, node.jjtGetChildIndex());
+    }
+
+    static NodeStream<Node> sliceChildren(Node parent, int from, int length) {
+        if (parent == null || length <= 0 || from < 0 || from >= parent.jjtGetNumChildren()) {
+            return empty();
+        }
+        int realLen = Math.min(from + length, parent.jjtGetNumChildren()) - from;
+
+        if (realLen == 1) {
+            return singleton(parent.jjtGetChild(from));
+        } else {
+            return new SlicedChildrenStream(parent, from, realLen);
+        }
     }
 
 

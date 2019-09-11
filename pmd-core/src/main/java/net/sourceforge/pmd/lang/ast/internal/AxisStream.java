@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
+import static java.lang.Math.min;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -311,12 +313,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         private final Node node;
         private final int low; // inclusive
-        private final int high; // exclusive
+        private final int len;
 
-        SlicedChildrenStream(@NonNull Node root, int low, int high) {
+        SlicedChildrenStream(@NonNull Node root, int low, int len) {
             this.node = root;
             this.low = low;
-            this.high = high;
+            this.len = len;
         }
 
 
@@ -327,40 +329,32 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public Iterator<Node> iterator() {
-            return count() > 0 ? TraversalUtils.childrenIterator(node, low, high)
+            return count() > 0 ? TraversalUtils.childrenIterator(node, low, low + len)
                                : Collections.emptyIterator();
         }
 
         @Nullable
         @Override
         public Node first() {
-            return low < high && low >= 0 ? node.jjtGetChild(low) : null;
+            return low >= 0 && count() > 0 ? node.jjtGetChild(low) : null;
         }
 
         @Nullable
         @Override
         public Node last() {
-            return low < high && high <= node.jjtGetNumChildren() ? node.jjtGetChild(high - 1) : null;
+            return low + len <= node.jjtGetNumChildren() ? node.jjtGetChild(low + len - 1) : null;
         }
 
         @Override
         public NodeStream<Node> take(int maxSize) {
             AssertionUtil.assertArgNonNegative(maxSize);
-            if (maxSize == 0) {
-                return NodeStream.empty();
-            } else {
-                return new SlicedChildrenStream(node, low, Math.min(low + maxSize, high));
-            }
+            return StreamImpl.sliceChildren(node, low, min(maxSize, len));
         }
 
         @Override
         public NodeStream<Node> drop(int n) {
             AssertionUtil.assertArgNonNegative(n);
-            if (n == 0) {
-                return this;
-            } else {
-                return new SlicedChildrenStream(node, low + n, high);
-            }
+            return n == 0 ? this : StreamImpl.sliceChildren(node, low + n, len - n);
         }
 
         @Override
@@ -370,12 +364,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public int count() {
-            return Math.min(high, node.jjtGetNumChildren()) - Math.max(low, 0);
+            return len;
         }
 
         @Override
         public String toString() {
-            return "Slice[" + node + ", " + low + ".." + high + "] -> " + toList();
+            return "Slice[" + node + ", " + low + ".." + (low + len) + "] -> " + toList();
         }
     }
 }
