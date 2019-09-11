@@ -32,6 +32,14 @@ variable `PMD_JAVA_OPTS` and select the new language version `13-preview`:
 Note: Support for the extended break statement introduced in Java 12 as a preview language feature
 will be removed with the next PMD version 6.19.0.
 
+#### Full support for Scala
+
+Thanks to [Chris Smith](https://github.com/tophersmith) PMD now fully supports Scala. Now rules for analyzing Scala
+code can be developed in addition to the Copy-Paste-Detection (CPD) functionality. There are no rules yet, so
+contributions are welcome.
+
+Additionally Scala support has been upgraded from 2.12.4 to 2.13.
+
 #### New rule designer documentation
 
 The documentation for the rule designer is now available on the main PMD documentation page:
@@ -61,6 +69,8 @@ about the usage and features of the rule designer.
     *   [#1923](https://github.com/pmd/pmd/issues/1923): \[core] Incremental analysis does not work with shortnames
     *   [#1983](https://github.com/pmd/pmd/pull/1983): \[core] Avoid crashes with analysis cache when classpath references non-existing directories
     *   [#1990](https://github.com/pmd/pmd/pull/1990): \[core] Incremental analysis mixes XPath rule violations
+*   apex
+    *   [#1901](https://github.com/pmd/pmd/issues/1901): \[apex] Expose super type name of UserClass
 *   java
     *   [#1930](https://github.com/pmd/pmd/issues/1930): \[java] Add Java 13 support
 *   java-bestpractices
@@ -72,6 +82,15 @@ about the usage and features of the rule designer.
     *   [#1922](https://github.com/pmd/pmd/issues/1922): \[java] CloseResource possible false positive with Streams
     *   [#1966](https://github.com/pmd/pmd/issues/1966): \[java] CloseResource false positive if Stream is passed as method parameter
     *   [#1967](https://github.com/pmd/pmd/issues/1967): \[java] CloseResource false positive with late assignment of variable
+*   plsql
+    *   [#1933](https://github.com/pmd/pmd/issues/1933): \[plsql] ParseException with cursor declared in anonymous block
+    *   [#1935](https://github.com/pmd/pmd/issues/1935): \[plsql] ParseException with SELECT INTO record defined as global variable
+    *   [#1936](https://github.com/pmd/pmd/issues/1936): \[plslq] ParseException with cursor inside procedure declaration
+    *   [#1946](https://github.com/pmd/pmd/issues/1946): \[plsql] ParseException with using TRIM inside IF statements condition
+    *   [#1947](https://github.com/pmd/pmd/issues/1947): \[plsql] ParseError - SELECT with FOR UPDATE OF
+    *   [#1948](https://github.com/pmd/pmd/issues/1948): \[plsql] ParseException with INSERT INTO using package global variables
+    *   [#1950](https://github.com/pmd/pmd/issues/1950): \[plsql] ParseException with UPDATE and package record variable
+    *   [#1953](https://github.com/pmd/pmd/issues/1953): \[plsql] ParseException with WITH in CURSOR
 
 ### API Changes
 
@@ -100,7 +119,9 @@ about the usage and features of the rule designer.
 *   The method {% jdoc !!core::processor.AbstractPMDProcessor#filenameFrom(DataSource) %} has been
     deprecated. It was used to determine a "short name" of the file being analyzed, so that the report
     can use short names. However, this logic has been moved to the renderers.
-
+*   The method {% jdoc !!core::Report#metrics() %} and {% jdoc core::Report::hasMetrics() %} have
+    been deprecated. They were leftovers from a previous deprecation round targeting
+    {% jdoc core::lang.rule.stat.StatisticalRule %}.
 
 ##### Internal APIs
 
@@ -109,8 +130,15 @@ about the usage and features of the rule designer.
 
 ### External Contributions
 
+*   [#1965](https://github.com/pmd/pmd/pull/1965): \[scala] Use Scalameta for parsing - [Chris Smith](https://github.com/tophersmith)
 *   [#1970](https://github.com/pmd/pmd/pull/1970): \[java] DoubleBraceInitialization: Fix example - [Tobias Weimer](https://github.com/tweimer)
 *   [#1971](https://github.com/pmd/pmd/pull/1971): \[java] 1862 - Message Digest should not be used as class field - [AnthonyKot](https://github.com/AnthonyKot)
+*   [#1972](https://github.com/pmd/pmd/pull/1972): \[plsql] ParseError - SELECT with FOR UPDATE OF - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1974](https://github.com/pmd/pmd/pull/1974): \[plsql] Fixes for referencing record type variables - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1975](https://github.com/pmd/pmd/pull/1975): \[plsql] TRIM function with record type variables - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1976](https://github.com/pmd/pmd/pull/1976): \[plsql] Fix for mistaking / for MultiplicativeExpression - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1977](https://github.com/pmd/pmd/pull/1977): \[plsql] fix for skipping sql starting with WITH - [Piotr Szymanski](https://github.com/szyman23)
+*   [#1986](https://github.com/pmd/pmd/pull/1986): \[plsql] Fix for cursors in anonymous blocks - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
 
 {% endtocmaker %}

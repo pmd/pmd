@@ -228,7 +228,7 @@ public class MissingOverrideRule extends AbstractJavaRule {
             // may happen in the body of an enum constant,
             // because the method lookup used is the one of
             // the parent class.
-            LOG.warning("MissingOverride encountered unexpected method " + node.getMethodName());
+            LOG.fine("MissingOverride encountered unexpected method " + node.getMethodName());
             // throw new RuntimeException(e); // uncomment when enum constants are handled by typeres
         }
         return super.visit(node, data);

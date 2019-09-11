@@ -212,7 +212,7 @@ Many interfaces (e.g. Batch) required global modifiers in the past but don't req
 As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
 Therefore delegate the triggers work to a regular class (often called Trigger handler class).
 
-See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+See more here: <https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices>
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.apex.rule.bestpractices.AvoidLogicInTriggerRule](https://github.com/pmd/pmd/blob/master/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/bestpractices/AvoidLogicInTriggerRule.java)
 

@@ -147,7 +147,7 @@ global class Unchangeable {
 As triggers do not allow methods like regular classes they are less flexible and suited to apply good encapsulation style.
 Therefore delegate the triggers work to a regular class (often called Trigger handler class).
 
-See more here: https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices
+See more here: &lt;https://developer.salesforce.com/page/Trigger_Frameworks_and_Apex_Trigger_Best_Practices&gt;
         </description>
         <priority>3</priority>
         <example>
