@@ -31,7 +31,7 @@ public class Java12Test {
 
     @Test
     public void testMultipleCaseLabels() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12",
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
                 loadSource("MultipleCaseLabels.java"));
         Assert.assertNotNull(compilationUnit);
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
@@ -48,7 +48,7 @@ public class Java12Test {
 
     @Test
     public void testSwitchRules() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12",
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
                 loadSource("SwitchRules.java"));
         Assert.assertNotNull(compilationUnit);
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
@@ -77,7 +77,7 @@ public class Java12Test {
 
     @Test
     public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12",
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
                 loadSource("SwitchExpressions.java"));
         Assert.assertNotNull(compilationUnit);
 
@@ -94,7 +94,7 @@ public class Java12Test {
 
     @Test
     public void testSwitchExpressionsBreak() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12",
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("12-preview",
                 loadSource("SwitchExpressionsBreak.java"));
         Assert.assertNotNull(compilationUnit);
 

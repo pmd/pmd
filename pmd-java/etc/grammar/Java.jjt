@@ -227,9 +227,14 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class JavaParser {
 
   private int jdkVersion = 0;
+  private boolean preview = false;
 
   public void setJdkVersion(int jdkVersion) {
    this.jdkVersion = jdkVersion;
+  }
+
+  public void setPreview(boolean preview) {
+    this.preview = preview;
   }
 
   private void throwParseException(String message) {
@@ -392,8 +397,8 @@ public class JavaParser {
     }
   }
   private void checkForMultipleCaseLabels() {
-    if (jdkVersion < 12) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 12");
+    if (jdkVersion < 12 || !preview) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 12 Preview");
     }
   }
   /**
@@ -406,31 +411,31 @@ public class JavaParser {
    */
   private boolean inSwitchLabel = false;
   private void checkForSwitchRules() {
-    if (jdkVersion < 12) {
-      throwParseException("Switch rules in switch statements are only supported with Java 12");
+    if (jdkVersion < 12 || !preview) {
+      throwParseException("Switch rules in switch statements are only supported with Java 12 Preview");
     }
   }
   private void checkForSwitchExpression() {
-    if (jdkVersion < 12) {
-      throwParseException("Switch expressions are only supported with Java 12");
+    if (jdkVersion < 12 || !preview) {
+      throwParseException("Switch expressions are only supported with Java 12 Preview");
     }
   }
 
   private void checkForBreakExpression() {
-    if (jdkVersion < 12) {
-      throwParseException("Expressions in break statements are only supported with Java 12");
+    if (jdkVersion < 12 || !preview) {
+      throwParseException("Expressions in break statements are only supported with Java 12 Preview");
     }
   }
 
   private void checkForYieldStatement() {
-    if (jdkVersion < 13) {
-      throwParseException("Yield statements are only supported with Java 13");
+    if (jdkVersion < 13 || !preview) {
+      throwParseException("Yield statements are only supported with Java 13 Preview");
     }
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion < 13) {
-      throwParseException("Text block literals are only supported with Java 13");
+    if (jdkVersion < 13 || !preview) {
+      throwParseException("Text block literals are only supported with Java 13 Preview");
     }
   }
 

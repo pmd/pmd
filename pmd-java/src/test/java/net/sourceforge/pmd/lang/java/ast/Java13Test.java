@@ -27,7 +27,7 @@ public class Java13Test {
 
     @Test
     public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13",
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
                 loadSource("SwitchExpressions.java"));
         Assert.assertNotNull(compilationUnit);
 
@@ -43,7 +43,7 @@ public class Java13Test {
 
     @Test
     public void testSwitchExpressionsYield() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13",
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
                 loadSource("SwitchExpressionsYield.java"));
         Assert.assertNotNull(compilationUnit);
 
@@ -71,7 +71,8 @@ public class Java13Test {
 
     @Test
     public void testTextBlocks() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13", loadSource("TextBlocks.java"));
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
+                loadSource("TextBlocks.java"));
         Assert.assertNotNull(compilationUnit);
         List<ASTLiteral> literals = compilationUnit.findDescendantsOfType(ASTLiteral.class);
         Assert.assertEquals(10, literals.size());
