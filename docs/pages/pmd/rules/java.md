@@ -254,7 +254,7 @@ folder: pmd/rules
 *   [IdempotentOperations](pmd_rules_java_errorprone.html#idempotentoperations): Avoid idempotent operations - they have no effect.
 *   [ImportFromSamePackage](pmd_rules_java_errorprone.html#importfromsamepackage): There is no need to import a type that lives in the same package.
 *   [InstantiationToGetClass](pmd_rules_java_errorprone.html#instantiationtogetclass): Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
-*   [InvalidSlf4jMessageFormat](pmd_rules_java_errorprone.html#invalidslf4jmessageformat): Check for messages in slf4j and log4j2 loggers with non matching number of arguments and placehol...
+*   [InvalidSlf4jMessageFormat](pmd_rules_java_errorprone.html#invalidslf4jmessageformat): Check for messages in slf4j and log4j2 loggers with non matching number of arguments and placeholders.
 *   [JumbledIncrementer](pmd_rules_java_errorprone.html#jumbledincrementer): Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 *   [JUnitSpelling](pmd_rules_java_errorprone.html#junitspelling): Some JUnit framework methods are easy to misspell.
 *   [JUnitStaticSuite](pmd_rules_java_errorprone.html#junitstaticsuite): The suite() method in a JUnit test needs to be both public and static.
