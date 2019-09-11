@@ -75,4 +75,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Add log4j2 Logger type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+public class Foo {
+    Logger log;
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Logger type log4j2: Two Loggers</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+public class Foo {
+    Logger log;
+    Logger log2;
+}
+        ]]></code>
+    </test-code>
 </test-data>
