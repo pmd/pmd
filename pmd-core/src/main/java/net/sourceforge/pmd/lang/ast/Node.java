@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
@@ -57,6 +58,7 @@ public interface Node {
      *
      * @return The parent of the node
      */
+    @Nullable
     Node jjtGetParent();
 
     /**

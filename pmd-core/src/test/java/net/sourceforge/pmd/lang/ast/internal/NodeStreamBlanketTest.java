@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * messages are not great but coverage is.
  */
 @RunWith(Parameterized.class)
-public class NodeStreamImplTest<T extends Node> {
+public class NodeStreamBlanketTest<T extends Node> {
 
     private static final List<Node> ASTS = Arrays.asList(
         tree(
@@ -40,7 +40,9 @@ public class NodeStreamImplTest<T extends Node> {
                         node(),
                         node(
                             node()
-                        )
+                        ),
+                        node(),
+                        node()
                     ),
                     node()
                 )
@@ -59,7 +61,7 @@ public class NodeStreamImplTest<T extends Node> {
     );
     private final NodeStream<T> stream;
 
-    public NodeStreamImplTest(NodeStream<T> stream) {
+    public NodeStreamBlanketTest(NodeStream<T> stream) {
         this.stream = stream;
     }
 

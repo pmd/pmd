@@ -81,4 +81,8 @@ public final class DummyTreeUtil {
         }
     }
 
+    /** List of the images of the stream. */
+    public static List<String> pathsOf(NodeStream<?> stream) {
+        return stream.toList(Node::getImage);
+    }
 }

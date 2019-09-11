@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class TraversalUtils {
@@ -123,9 +124,10 @@ public final class TraversalUtils {
     }
 
     static Iterator<Node> childrenIterator(Node parent, final int from, final int to) {
+        AssertionUtil.assertArgNonNegative(from);
         return new Iterator<Node>() {
 
-            private int i = Math.max(from, 0);
+            private int i = from;
 
             @Override
             public boolean hasNext() {
