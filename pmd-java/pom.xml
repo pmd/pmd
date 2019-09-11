@@ -4,7 +4,6 @@
     <artifactId>pmd-java</artifactId>
     <name>PMD Java</name>
 
-
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
@@ -182,5 +181,5 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-     </dependencies>
+    </dependencies>
 </project>
