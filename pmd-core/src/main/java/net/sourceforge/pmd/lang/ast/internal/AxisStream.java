@@ -349,7 +349,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             if (maxSize == 0) {
                 return NodeStream.empty();
             } else {
-                return new SlicedChildrenStream(node, low, low + maxSize);
+                return new SlicedChildrenStream(node, low, Math.min(low + maxSize, high));
             }
         }
 
@@ -370,7 +370,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public int count() {
-            return Math.min(Math.max(high - low, 0), node.jjtGetNumChildren());
+            return Math.min(high, node.jjtGetNumChildren()) - Math.max(low, 0);
         }
 
         @Override

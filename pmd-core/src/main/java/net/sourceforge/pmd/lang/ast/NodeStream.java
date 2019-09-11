@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 
 
@@ -67,6 +66,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * <li><tt>node.{@link Node#getNthParent(int) getNthParent(n)} === node.{@link Node#ancestors() ancestors()}.{@link #get(int) get(n - 1)}</tt></li>
  * <li><tt>node.{@link Node#hasDescendantOfType(Class) hasDescendantOfType(t)} === node.{@link Node#descendants(Class) descendants(t)}.{@link #nonEmpty()}</tt>.</li>
  * </ul>
+ * The new way to write those is as efficient as the old way.
  *
  * <p>Unlike {@link Stream}s, NodeStreams can be iterated multiple times. That means, that the operations
  * that are <i>terminal</i> in the Stream interface (i.e. consume the stream) don't consume NodeStreams.
@@ -81,11 +81,15 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  *
  * <h1>Details</h1>
  *
- * <p>NodeStream is a functional interface, equivalent to {@code Supplier<Stream<T>>}.
- * Its only abstract member is {@link #toStream()}.
+ * <p>NodeStreams are not necessarily implemented with {@link Stream}, but
+ * when there a method has an equivalent in the {@link Stream} API, their
+ * contract is identical. The same guidelines about statefulness and
+ * side-effects apply.
  *
  * <p>Node streams are meant to be sequential streams, so there is no equivalent to {@link Stream#findAny()}.
  * The method {@link #first()} is an equivalent to {@link Stream#findFirst()}.
+ * There is however a {@link #last()} method, which may be implemented
+ * efficiently on some streams (eg {@link #children()}).
  *
  * <p>Node streams are most of the time ordered in document order (w.r.t. the XPath specification),
  * a.k.a. prefix order. Some operations which explicitly manipulate the order of nodes, like
@@ -558,8 +562,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      */
     @SuppressWarnings("unchecked")
     default <R extends Node> NodeStream<R> filterIs(Class<R> rClass) {
-        return rClass == Node.class ? (NodeStream<R>) this
-                                    : (NodeStream<R>) filter(rClass::isInstance);
+        return (NodeStream<R>) filter(rClass::isInstance);
     }
 
 
@@ -580,10 +583,12 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     }
 
 
-    @Override
-    void forEach(Consumer<? super @NonNull T> action);
 
     // "terminal" operations
+
+
+    @Override
+    void forEach(Consumer<? super @NonNull T> action);
 
 
     /**
@@ -629,9 +634,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #all(Predicate)
      * @see #none(Predicate)
      */
-    default boolean any(Predicate<? super T> predicate) {
-        return toStream().anyMatch(predicate);
-    }
+    boolean any(Predicate<? super T> predicate);
 
 
     /**
@@ -697,9 +700,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #first(Class)
      * @see #firstOpt()
      */
-    default @Nullable T first() {
-        return toStream().findFirst().orElse(null);
-    }
+    @Nullable T first();
 
 
     /**
@@ -756,13 +757,12 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
 
     /**
      * Returns the last element of this stream, or {@code null} if the
-     * stream is empty.
+     * stream is empty. This may or may not require traversing all the
+     * elements of the stream.
      *
      * @return the last element of this stream, or {@code null} if it doesn't exist
      */
-    default @Nullable T last() {
-        return IteratorUtil.last(iterator());
-    }
+    @Nullable T last();
 
 
     /**
@@ -796,9 +796,7 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
      * @see #toList()
      * @see #toList(Function)
      */
-    default <R, A> R collect(Collector<? super T, A, R> collector) {
-        return toStream().collect(collector);
-    }
+    <R, A> R collect(Collector<? super T, A, R> collector);
 
 
     /**
@@ -833,9 +831,6 @@ public interface NodeStream<T extends Node> extends Iterable<@NonNull T> {
     default <R> List<R> toList(Function<? super T, ? extends R> mapper) {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
     }
-
-    // Iterable methods
-
 
     /**
      * Returns a node stream containing zero or one node,

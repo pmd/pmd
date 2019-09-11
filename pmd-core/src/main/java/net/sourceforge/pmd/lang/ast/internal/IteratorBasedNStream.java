@@ -141,6 +141,53 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
         return IteratorUtil.allMatch(iterator(), predicate);
     }
 
+
+    @Override
+    public int count() {
+        return IteratorUtil.count(iterator());
+    }
+
+    @Override
+    public boolean nonEmpty() {
+        return iterator().hasNext();
+    }
+
+    @Override
+    public @Nullable T first() {
+        Iterator<T> iter = iterator();
+        return iter.hasNext() ? iter.next() : null;
+    }
+
+    @Override
+    public @Nullable T last() {
+        return IteratorUtil.last(iterator());
+    }
+
+    @Override
+    public List<T> toList() {
+        return IteratorUtil.toList(iterator());
+    }
+
+    @Override
+    public <R extends Node> @Nullable R first(Class<R> r1Class) {
+        for (T t : this) {
+            if (r1Class.isInstance(t)) {
+                return r1Class.cast(t);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public @Nullable T first(Predicate<? super T> predicate) {
+        for (T t : this) {
+            if (predicate.test(t)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     @Override
     public NodeStream<T> cached() {
         return new IteratorBasedNStream<T>() {
@@ -170,47 +217,6 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
                 return "CachedStream[" + IteratorBasedNStream.this + "]";
             }
         };
-    }
-
-    @Override
-    public int count() {
-        return IteratorUtil.count(iterator());
-    }
-
-    @Override
-    public boolean nonEmpty() {
-        return iterator().hasNext();
-    }
-
-    @Override
-    public @Nullable T first() {
-        Iterator<T> iter = iterator();
-        return iter.hasNext() ? iter.next() : null;
-    }
-
-    @Override
-    public List<T> toList() {
-        return IteratorUtil.toList(iterator());
-    }
-
-    @Override
-    public <R extends Node> @Nullable R first(Class<R> r1Class) {
-        for (T t : this) {
-            if (r1Class.isInstance(t)) {
-                return r1Class.cast(t);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public @Nullable T first(Predicate<? super T> predicate) {
-        for (T t : this) {
-            if (predicate.test(t)) {
-                return t;
-            }
-        }
-        return null;
     }
 
     private <R extends Node> IteratorMapping<R> mapIter(Function<Iterator<T>, Iterator<R>> fun) {
