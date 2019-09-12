@@ -50,7 +50,8 @@ public enum PropertyTypeId {
     LONG("Long", LongProperty.extractor(), ValueParserConstants.LONG_PARSER),
     LONG_LIST("List[Long]", LongMultiProperty.extractor(), ValueParserConstants.LONG_PARSER),
     DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
-    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER);
+    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
+    ;
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;

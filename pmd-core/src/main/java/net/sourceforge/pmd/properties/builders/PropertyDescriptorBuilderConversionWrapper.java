@@ -73,12 +73,6 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
     }
 
 
-    protected static String[] legalPackageNamesIn(Map<PropertyDescriptorField, String> valuesById, char delimiter) {
-        String names = valuesById.get(LEGAL_PACKAGES);
-        return StringUtils.isBlank(names) ? null : StringUtils.split(names, delimiter);
-    }
-
-
     private static char delimiterIn(Map<PropertyDescriptorField, String> valuesById, char defalt) {
         String characterStr = "";
         if (valuesById.containsKey(DELIMITER)) {
