@@ -105,8 +105,15 @@ about the usage and features of the rule designer.
 
 ##### Internal APIs
 
-* The contents of the package {% jdoc_package core::cache %} have been marked `@InternalApi`. That subsystem is very low-level and is not intended for public use. It will be hidden with PMD 7.0.0. 
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
 
+* pmd-core
+  * {% jdoc_package core::cache %}
+* pmd-java
+  * {% jdoc_package java::lang.java.typeresolution %}: Everything, including
+    subpackages, except {% jdoc java::lang.java.typeresolution.TypeHelper %} and
+    {% jdoc java::lang.java.typeresolution.typedefinition.JavaTypeDefinition %}.
+  * {% jdoc !c!java::lang.java.ast.ASTCompilationUnit#getClassTypeResolver() %}
 
 ### External Contributions
 

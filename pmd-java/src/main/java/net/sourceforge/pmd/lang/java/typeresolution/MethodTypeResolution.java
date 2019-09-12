@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -33,6 +34,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.typeinference.TypeInferenceR
 import net.sourceforge.pmd.lang.java.typeresolution.typeinference.Variable;
 
 
+@Deprecated
+@InternalApi
 public final class MethodTypeResolution {
     private MethodTypeResolution() {}
 
