@@ -32,4 +32,10 @@ public abstract class XmlSyntax<T> {
         return eltName;
     }
 
+    public abstract String example();
+
+    @Override
+    public String toString() {
+        return example();
+    }
 }

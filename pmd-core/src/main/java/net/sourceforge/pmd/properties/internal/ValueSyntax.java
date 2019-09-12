@@ -50,4 +50,9 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
             throw err.error(element, e);
         }
     }
+
+    @Override
+    public String example() {
+        return "<" + getElementName() + ">data</" + getElementName() + ">";
+    }
 }

@@ -49,4 +49,12 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
         });
         return result;
     }
+
+    @Override
+    public String example() {
+        return "<" + getElementName() + ">\n"
+            + "   " + itemSyntax.toString() + "\n"
+            + "   ..."
+            + "</" + getElementName() + ">";
+    }
 }
