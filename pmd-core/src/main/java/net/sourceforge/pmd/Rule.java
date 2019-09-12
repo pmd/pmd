@@ -33,7 +33,7 @@ public interface Rule extends PropertySource {
      */
     // TODO 7.0.0 use PropertyDescriptor<Optional<Pattern>>
     StringProperty VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = new StringProperty("violationSuppressRegex",
-            "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
+                                                                            "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
 
     /**
      * Name of the property to universally suppress violations on nodes which

@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.internal.StringParser;
+import net.sourceforge.pmd.properties.internal.ValueSyntax;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
 
 
 /**
@@ -57,18 +59,18 @@ public final class ValueParserConstants {
     }
 
 
-    static <T> StringParser<T> enumerationParser(final Map<String, T> mappings) {
+    static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings) {
 
         if (mappings.containsValue(null)) {
             throw new IllegalArgumentException("Map may not contain entries with null values");
         }
 
-        return value -> {
+        return new ValueSyntax<>(value -> {
             if (!mappings.containsKey(value)) {
                 throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
             }
             return mappings.get(value);
-        };
+        });
     }
 
 
