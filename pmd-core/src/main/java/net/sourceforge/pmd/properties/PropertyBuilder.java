@@ -236,27 +236,12 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          */
         /* package private */ GenericCollectionPropertyBuilder<T, List<T>> toList() {
 
-            Supplier<List<T>> listSupplier = new Supplier<List<T>>() {
-                @Override
-                public List<T> get() {
-                    return new ArrayList<>();
-                }
-            };
-
-            return toCollection(listSupplier);
-        }
-
-
-        // TODO 7.0.0 this can be inlined
-        private <C extends Collection<T>> GenericCollectionPropertyBuilder<T, C> toCollection(Supplier<C> emptyCollSupplier) {
             if (isDefaultValueSet()) {
                 throw new IllegalStateException("The default value is already set!");
             }
 
-            GenericCollectionPropertyBuilder<T, C> result = new GenericCollectionPropertyBuilder<>(getName(),
-                                                                                                   getParser(),
-                                                                                                   emptyCollSupplier,
-                                                                                                   getType());
+            GenericCollectionPropertyBuilder<T, List<T>> result =
+                new GenericCollectionPropertyBuilder<>(getName(), getParser(), ArrayList::new, getType());
 
             for (PropertyConstraint<? super T> validator : getConstraints()) {
                 result.require(validator.toCollectionConstraint());

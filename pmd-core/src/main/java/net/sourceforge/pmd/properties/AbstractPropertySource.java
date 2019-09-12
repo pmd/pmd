@@ -87,8 +87,6 @@ public abstract class AbstractPropertySource implements PropertySource {
 
         }
         propertyDescriptors.add(propertyDescriptor);
-        // Sort in UI order
-        Collections.sort(propertyDescriptors);
     }
 
 
