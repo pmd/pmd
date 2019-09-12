@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 
 
 /**
- * Strategy to serialize a property to and from XML.
+ * Strategy to serialize a value to and from XML.
  *
  * @author Clément Fournier
  */
