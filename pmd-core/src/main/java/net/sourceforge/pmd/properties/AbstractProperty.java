@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VAL
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -99,14 +98,6 @@ import org.apache.commons.lang3.StringUtils;
     @Override
     public String name() {
         return name;
-    }
-
-
-    @Override
-    public final Map<PropertyDescriptorField, String> attributeValuesById() {
-        Map<PropertyDescriptorField, String> values = new HashMap<>();
-        addAttributesTo(values);
-        return values;
     }
 
 

@@ -173,14 +173,4 @@ public interface PropertyDescriptor<T> {
     String propertyErrorFor(Rule rule);
 
 
-    /**
-     * Returns a map representing all the property attributes of the receiver in string form.
-     *
-     * @deprecated Will be removed with 7.0.0
-     * @return map
-     */
-    @Deprecated
-    Map<PropertyDescriptorField, String> attributeValuesById();
-
-
 }
