@@ -24,11 +24,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.FooRule;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
@@ -42,7 +42,7 @@ import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
  */
 public class PropertyDescriptorTest {
 
-    @Rule
+    @org.junit.Rule
     public ExpectedException thrown = ExpectedException.none();
 
 
@@ -59,7 +59,7 @@ public class PropertyDescriptorTest {
         rule.setProperty(intProperty, 1000);
         RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(rule);
 
-        List<net.sourceforge.pmd.Rule> dysfunctional = new ArrayList<>();
+        List<Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
 
         assertEquals(1, dysfunctional.size());
@@ -80,7 +80,7 @@ public class PropertyDescriptorTest {
         rule.setProperty(descriptor, Collections.singletonList(1000d)); // not in range
         RuleSet ruleSet = new RuleSetFactory().createSingleRuleRuleSet(rule);
 
-        List<net.sourceforge.pmd.Rule> dysfunctional = new ArrayList<>();
+        List<Rule> dysfunctional = new ArrayList<>();
         ruleSet.removeDysfunctionalRules(dysfunctional);
 
         assertEquals(1, dysfunctional.size());
