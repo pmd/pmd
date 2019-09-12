@@ -525,17 +525,14 @@ public class RuleDocGenerator {
             && propertyDescriptor.description().toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER);
     }
 
-    private String determineDefaultValueAsString(PropertyDescriptor<?> propertyDescriptor, Rule rule, boolean pad) {
+    private <T> String determineDefaultValueAsString(PropertyDescriptor<T> propertyDescriptor, Rule rule, boolean pad) {
         String defaultValue = "";
-        Object realDefaultValue = rule.getProperty(propertyDescriptor);
-        @SuppressWarnings("unchecked") // just force it, we know it's the right type
-        PropertyDescriptor<Object> captured = (PropertyDescriptor<Object>) propertyDescriptor;
+        T realDefaultValue = rule.getProperty(propertyDescriptor);
 
         if (realDefaultValue != null) {
-            defaultValue = captured.asDelimitedString(realDefaultValue);
+            defaultValue = propertyDescriptor.asDelimitedString(realDefaultValue);
 
             if (pad && propertyDescriptor.isMultiValue()) {
-                @SuppressWarnings("unchecked") // multi valued properties are using a List
                 MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
 
                 // surround the delimiter with spaces, so that the browser can wrap

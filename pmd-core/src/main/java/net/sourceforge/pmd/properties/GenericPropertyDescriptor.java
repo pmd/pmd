@@ -9,7 +9,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.StringParser;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
 
 
 /**
@@ -18,29 +18,30 @@ import net.sourceforge.pmd.properties.internal.StringParser;
  * @author Clément Fournier
  * @since 6.10.0
  */
-final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> {
+final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
 
 
-    private final StringParser<T> parser;
+    private final XmlSyntax<T> parser;
     private final PropertyTypeId typeId;
-    private final Class<T> type;
+    private final String name;
+    private final String description;
+    private final T defaultValue;
     private final Set<PropertyConstraint<? super T>> constraints;
 
 
     GenericPropertyDescriptor(String name,
                               String description,
-                              float uiOrder,
                               T defaultValue,
                               Set<PropertyConstraint<? super T>> constraints,
-                              StringParser<T> parser,
-                              @Nullable PropertyTypeId typeId,
-                              Class<T> type) {
+                              XmlSyntax<T> parser,
+                              @Nullable PropertyTypeId typeId) {
 
-        super(name, description, defaultValue, uiOrder, typeId != null);
+        this.name = name;
+        this.description = description;
+        this.defaultValue = defaultValue;
         this.constraints = constraints;
         this.parser = parser;
         this.typeId = typeId;
-        this.type = type;
 
         String dftValueError = errorFor(defaultValue);
         if (dftValueError != null) {
@@ -61,15 +62,34 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
         return null;
     }
 
-
     @Override
-    public Class<T> type() {
-        return type;
+    public String name() {
+        return name;
     }
 
+    @Override
+    public String description() {
+        return description;
+    }
 
     @Override
-    protected T createFrom(String toParse) {
-        return parser.valueOf(toParse);
+    public T defaultValue() {
+        return defaultValue;
+    }
+
+    @Override
+    public boolean isMultiValue() {
+        return false;
+    }
+
+    @Override
+    public XmlSyntax<T> xmlStrategy() {
+        return parser;
+    }
+
+    @Nullable
+    @Override
+    public PropertyTypeId getTypeId() {
+        return typeId;
     }
 }

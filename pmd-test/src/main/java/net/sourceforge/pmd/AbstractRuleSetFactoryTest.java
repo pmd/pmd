@@ -486,7 +486,7 @@ public abstract class AbstractRuleSetFactoryTest {
                 Object value1 = rule1.getProperty(propertyDescriptors1.get(j));
                 Object value2 = rule2.getProperty(propertyDescriptors2.get(j));
                 // special case for Pattern, there is no equals method
-                if (propertyDescriptors1.get(j).type() == Pattern.class) {
+                if (value1 instanceof Pattern && value2 instanceof Pattern) {
                     value1 = ((Pattern) value1).pattern();
                     value2 = ((Pattern) value2).pattern();
                 }

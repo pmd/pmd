@@ -42,12 +42,6 @@ public final class StringProperty extends AbstractSingleValueProperty<String> {
 
 
     @Override
-    public Class<String> type() {
-        return String.class;
-    }
-
-
-    @Override
     public String createFrom(String valueString) {
         return valueString;
     }

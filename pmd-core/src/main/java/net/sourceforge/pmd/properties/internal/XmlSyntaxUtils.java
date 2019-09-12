@@ -57,15 +57,15 @@ public final class XmlSyntaxUtils {
     private static <T> XmlSyntax<List<T>> otherList(ValueSyntax<T> valueSyntax) {
         return withSeq(valueSyntax,
                        ArrayList::new,
-                       true,
+                       true, // for now
                        "|"
         );
     }
 
-    static <T, C extends Collection<T>> XmlSyntax<C> withSeq(ValueSyntax<T> itemSyntax,
-                                                             Supplier<C> emptyCollSupplier,
-                                                             boolean preferOldSyntax,
-                                                             String delimiter) {
+    public static <T, C extends Collection<T>> XmlSyntax<C> withSeq(ValueSyntax<T> itemSyntax,
+                                                                    Supplier<C> emptyCollSupplier,
+                                                                    boolean preferOldSyntax,
+                                                                    String delimiter) {
         return new SyntaxSet<>(
             new SeqSyntax<>(itemSyntax, emptyCollSupplier),
             delimitedString(itemSyntax::toString, itemSyntax::fromString, delimiter, emptyCollSupplier),

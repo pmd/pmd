@@ -63,7 +63,6 @@ public abstract class PropertyDescriptorBuilder<E, T extends PropertyDescriptorB
      * @param f The UI order
      *
      * @return The same builder
-     * @deprecated See {@link PropertyDescriptor#uiOrder()}
      */
     @SuppressWarnings("unchecked")
     @Deprecated

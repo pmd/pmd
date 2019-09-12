@@ -59,12 +59,6 @@ public final class BooleanProperty extends AbstractSingleValueProperty<Boolean> 
 
 
     @Override
-    public Class<Boolean> type() {
-        return Boolean.class;
-    }
-
-
-    @Override
     public Boolean createFrom(String propertyString) throws IllegalArgumentException {
         return BOOLEAN_PARSER.valueOf(propertyString);
     }

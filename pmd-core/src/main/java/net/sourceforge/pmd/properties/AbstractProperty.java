@@ -59,14 +59,6 @@ import org.apache.commons.lang3.StringUtils;
 
 
     @Override
-    public float uiOrder() {
-        return uiOrder;
-    }
-
-
-
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -90,7 +82,6 @@ import org.apache.commons.lang3.StringUtils;
     @Override
     public String toString() {
         return "[PropertyDescriptor: name=" + name() + ','
-               + " type=" + (isMultiValue() ? "List<" + type() + '>' : type()) + ','
                + " value=" + defaultValue() + ']';
     }
 

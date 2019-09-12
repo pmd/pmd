@@ -37,16 +37,26 @@ public abstract class XmlSyntax<T> {
     /** Write the value into the given XML element. */
     public abstract void toXml(Element container, T value);
 
-    public boolean supportsFromString() {
+    public boolean supportsStringMapping() {
         return false;
     }
 
     /**
      * Read the value from a string.
-     * @throws UnsupportedOperationException if unsupported, see {@link #supportsFromString()}
+     * @throws UnsupportedOperationException if unsupported, see {@link #supportsStringMapping()}
      * @throws IllegalArgumentException if something goes wrong (but should be reported on the error reporter)
      */
     public T fromString(String attributeData) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Format the value to a string.
+     *
+     * @throws UnsupportedOperationException if unsupported, see {@link #supportsStringMapping()}
+     * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
+     */
+    public String toString(T value) {
         throw new UnsupportedOperationException();
     }
 

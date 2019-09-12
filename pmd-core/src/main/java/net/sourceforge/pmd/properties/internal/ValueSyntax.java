@@ -43,7 +43,7 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
     }
 
     @Override
-    public boolean supportsFromString() {
+    public boolean supportsStringMapping() {
         return true;
     }
 
@@ -52,6 +52,7 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
         return fromString.apply(attributeData);
     }
 
+    @Override
     public String toString(T data) {
         return toString.apply(data);
     }

@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.properties;
 
-import net.sourceforge.pmd.Rule;
-
 
 /**
  * Single value property.
@@ -72,27 +70,8 @@ import net.sourceforge.pmd.Rule;
 
 
     @Override
-    public String propertyErrorFor(Rule rule) {
-        T realValue = rule.getProperty(this);
-        return realValue == null ? null : errorFor(realValue);
-    }
-
-
-    @Override
     public String errorFor(T value) {
-        String typeError = typeErrorFor(value);
-        if (typeError != null) {
-            return typeError;
-        }
         return valueErrorFor(value);
-    }
-
-
-    private String typeErrorFor(T value) {
-        if (value != null && !type().isAssignableFrom(value.getClass())) {
-            return value + " is not an instance of " + type();
-        }
-        return null;
     }
 
 

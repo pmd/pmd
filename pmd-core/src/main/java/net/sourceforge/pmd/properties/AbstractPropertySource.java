@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.properties;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -148,14 +147,6 @@ public abstract class AbstractPropertySource implements PropertySource {
         } else {
             propertyValuesByDescriptor.put(propertyDescriptor, value);
         }
-    }
-
-
-    @Override
-    @Deprecated
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        checkValidPropertyDescriptor(propertyDescriptor);
-        propertyValuesByDescriptor.put(propertyDescriptor, Collections.unmodifiableList(Arrays.asList(values)));
     }
 
 

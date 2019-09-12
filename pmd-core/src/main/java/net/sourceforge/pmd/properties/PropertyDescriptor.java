@@ -71,20 +71,9 @@ public interface PropertyDescriptor<T> {
      * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
      */
     @Deprecated
-    String errorFor(T value); // TODO Java 1.8 make optional
-
-
-    /**
-     * Denotes the value datatype. For multi value properties, this is not the List class but the list's component
-     * class.
-     *
-     * @return Class literal of the value type
-     *
-     * @deprecated This method is mainly used for documentation, but will not prove general enough
-     * to support PMD 7.0.0's improved property types.
-     */
-    @Deprecated
-    Class<?> type();
+    default String errorFor(T value) {
+        return null;
+    }
 
 
     /**
@@ -111,21 +100,6 @@ public interface PropertyDescriptor<T> {
 
 
     /**
-     * Denotes the relative order the property field should occupy if we are using an auto-generated UI to display and
-     * edit property values. If the value returned has a non-zero fractional part then this is can be used to place
-     * adjacent fields on the same row.
-     *
-     * @return The relative order compared to other properties of the same rule
-     *
-     * @deprecated This method confuses the presentation layer and the business logic. The order of the
-     * property in a UI is irrelevant to the functioning of the property in PMD. With PMD 7.0.0, this
-     * method will be removed. UI and documentation tools will decide on their own convention.
-     */
-    @Deprecated
-    float uiOrder();
-
-
-    /**
      * Returns the value represented by this string.
      *
      * @param propertyString The string to parse
@@ -133,11 +107,14 @@ public interface PropertyDescriptor<T> {
      * @return The value represented by the string
      *
      * @throws IllegalArgumentException if the given string cannot be parsed
+     * @throws UnsupportedOperationException If operation is not supported
      * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
      * simple strings, this method won't be general enough
      */
     @Deprecated
-    T valueFrom(String propertyString) throws IllegalArgumentException;
+    default T valueFrom(String propertyString) throws IllegalArgumentException {
+        return xmlStrategy().fromString(propertyString);
+    }
 
 
     /**
@@ -151,22 +128,9 @@ public interface PropertyDescriptor<T> {
      * simple strings, this method won't be general enough
      */
     @Deprecated
-    String asDelimitedString(T value);
-
-
-    /**
-     * A convenience method that returns an error string if the rule holds onto a property value that has a problem.
-     * Returns null otherwise.
-     *
-     * @param rule Rule
-     *
-     * @return String
-     *
-     * @deprecated Used nowhere, and fails if the rule doesn't define the property descriptor
-     * A better solution will be added on property source
-     */
-    @Deprecated
-    String propertyErrorFor(Rule rule);
+    default String asDelimitedString(T value) {
+        return xmlStrategy().toString(value);
+    }
 
 
 }

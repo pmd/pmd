@@ -65,7 +65,7 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     public @Nullable T fromString(String attributeData) {
 
         for (XmlSyntax<T> syntax : supportedReadStrategies()) {
-            if (syntax.supportsFromString()) {
+            if (syntax.supportsStringMapping()) {
                 return syntax.fromString(attributeData);
             }
         }
@@ -78,8 +78,8 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     }
 
     @Override
-    public boolean supportsFromString() {
-        return supportedReadStrategies().stream().anyMatch(XmlSyntax::supportsFromString);
+    public boolean supportsStringMapping() {
+        return supportedReadStrategies().stream().anyMatch(XmlSyntax::supportsStringMapping);
     }
 
     @Override

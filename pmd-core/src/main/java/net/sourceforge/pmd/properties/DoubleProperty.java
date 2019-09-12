@@ -6,8 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import static net.sourceforge.pmd.properties.ValueParserConstants.DOUBLE_PARSER;
 
-import net.sourceforge.pmd.properties.builders.SingleNumericPropertyBuilder;
-
 
 /**
  * Defines a property type that support single double-type property values within an upper and lower boundary.
@@ -71,12 +69,6 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
 
 
     @Override
-    public Class<Double> type() {
-        return Double.class;
-    }
-
-
-    @Override
     protected Double createFrom(String value) {
         return doubleFrom(value);
     }
@@ -93,30 +85,5 @@ public final class DoubleProperty extends AbstractNumericProperty<Double> {
         return DOUBLE_PARSER.valueOf(numberString);
     }
 
-
-    /**
-     * @deprecated Use {@link PropertyFactory#doubleProperty(String)}.
-     */
-    @Deprecated
-    public static DoublePBuilder named(String name) {
-        return new DoublePBuilder(name);
-    }
-
-
-    /**
-     * @deprecated Use {@link PropertyFactory#doubleProperty(String)}.
-     */
-    @Deprecated
-    public static final class DoublePBuilder extends SingleNumericPropertyBuilder<Double, DoublePBuilder> {
-        private DoublePBuilder(String name) {
-            super(name);
-        }
-
-
-        @Override
-        public DoubleProperty build() {
-            return new DoubleProperty(name, description, lowerLimit, upperLimit, defaultValue, uiOrder, isDefinedInXML);
-        }
-    }
 
 }

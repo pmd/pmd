@@ -59,12 +59,6 @@ public final class CharacterProperty extends AbstractSingleValueProperty<Charact
 
 
     @Override
-    public Class<Character> type() {
-        return Character.class;
-    }
-
-
-    @Override
     public Character createFrom(String valueString) throws IllegalArgumentException {
         return charFrom(valueString);
     }

@@ -33,12 +33,6 @@ public final class RegexProperty extends AbstractSingleValueProperty<Pattern> {
     }
 
 
-    @Override
-    public Class<Pattern> type() {
-        return Pattern.class;
-    }
-
-
     /**
      * Creates a new builder for a regex property.
      *

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.properties;
 
 /**
  * Specializes property descriptors for single valued descriptors. For this type of property, the return value of the
- * {@link #type()} method must be the class literal of the type parameter of the interface {@link PropertyDescriptor}.
  *
  * @param <T> The type of value this descriptor works with. Cannot be a list.
  *
@@ -18,7 +17,4 @@ package net.sourceforge.pmd.properties;
 @Deprecated
 public interface SingleValuePropertyDescriptor<T> extends PropertyDescriptor<T> {
 
-    @Override
-    @Deprecated
-    Class<T> type();
 }

@@ -42,12 +42,6 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
 
 
     @Override
-    public Class<File> type() {
-        return File.class;
-    }
-
-
-    @Override
     public File createFrom(String propertyString) {
         return StringUtils.isBlank(propertyString) ? null : new File(propertyString);
     }

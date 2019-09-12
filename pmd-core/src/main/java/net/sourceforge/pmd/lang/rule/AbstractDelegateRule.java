@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
@@ -212,11 +211,6 @@ public abstract class AbstractDelegateRule implements Rule {
         rule.setProperty(propertyDescriptor, value);
     }
 
-
-    @Override
-    public <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values) {
-        rule.setProperty(propertyDescriptor, values);
-    }
 
     @Override
     public boolean isPropertyOverridden(PropertyDescriptor<?> propertyDescriptor) {

@@ -105,20 +105,6 @@ public interface PropertySource {
 
 
     /**
-     * Sets the value of a multi value property descriptor with a variable number of arguments.
-     * This is also referred to as "overriding" the (default) value of a property.
-     *
-     * @param propertyDescriptor The property descriptor for which to add a value
-     * @param values             Values
-     * @param <V>                The type of the values
-     *
-     * @deprecated {@link MultiValuePropertyDescriptor} is deprecated
-     */
-    @Deprecated
-    <V> void setProperty(MultiValuePropertyDescriptor<V> propertyDescriptor, V... values);
-
-
-    /**
      * Returns an unmodifiable map of descriptors to property values
      * for the current receiver. The returned map has an entry for
      * every defined descriptor ({@link #getPropertyDescriptors()}),

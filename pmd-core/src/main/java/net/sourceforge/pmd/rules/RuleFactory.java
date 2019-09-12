@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -356,7 +355,7 @@ public class RuleFactory {
 
         String defaultAttr = DEFAULT_VALUE.getOptional(propertyElement);
         if (!StringUtils.isBlank(defaultAttr)) {
-            if (syntax.supportsFromString()) {
+            if (syntax.supportsStringMapping()) {
                 defaultValue = syntax.fromString(defaultAttr);
             } else {
                 throw err.error(propertyElement.getAttributeNode(DEFAULT_VALUE.attributeName()),
