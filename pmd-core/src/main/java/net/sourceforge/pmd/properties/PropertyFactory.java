@@ -4,8 +4,20 @@
 
 package net.sourceforge.pmd.properties;
 
+import static net.sourceforge.pmd.properties.ValueParserConstants.BOOLEAN_PARSER;
+import static net.sourceforge.pmd.properties.ValueParserConstants.CHARACTER_PARSER;
+import static net.sourceforge.pmd.properties.ValueParserConstants.DOUBLE_PARSER;
+import static net.sourceforge.pmd.properties.ValueParserConstants.INTEGER_PARSER;
+import static net.sourceforge.pmd.properties.ValueParserConstants.LONG_PARSER;
+import static net.sourceforge.pmd.properties.ValueParserConstants.STRING_PARSER;
+import static net.sourceforge.pmd.properties.ValueParserConstants.enumerationParser;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.EnumUtils;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
@@ -97,7 +109,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Integer> intProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.INTEGER_PARSER, Integer.class);
+        return new GenericPropertyBuilder<>(name, INTEGER_PARSER, Integer.class);
     }
 
 
@@ -134,7 +146,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Long> longIntProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.LONG_PARSER, Long.class);
+        return new GenericPropertyBuilder<>(name, LONG_PARSER, Long.class);
     }
 
 
@@ -166,7 +178,7 @@ public final class PropertyFactory {
      * @see NumericConstraints
      */
     public static GenericPropertyBuilder<Double> doubleProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.DOUBLE_PARSER, Double.class);
+        return new GenericPropertyBuilder<>(name, DOUBLE_PARSER, Double.class);
     }
 
 
@@ -214,7 +226,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<String> stringProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.STRING_PARSER, String.class);
+        return new GenericPropertyBuilder<>(name, STRING_PARSER, String.class);
     }
 
 
@@ -245,7 +257,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<Character> charProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.CHARACTER_PARSER, Character.class);
+        return new GenericPropertyBuilder<>(name, CHARACTER_PARSER, Character.class);
     }
 
 
@@ -272,7 +284,7 @@ public final class PropertyFactory {
      * @return A new builder
      */
     public static GenericPropertyBuilder<Boolean> booleanProperty(String name) {
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.BOOLEAN_PARSER, Boolean.class);
+        return new GenericPropertyBuilder<>(name, BOOLEAN_PARSER, Boolean.class);
     }
 
     // We can add more useful factories with Java 8.
@@ -301,7 +313,25 @@ public final class PropertyFactory {
         // TODO find solution to document the set of possible values
         // At best, map that requirement to a constraint (eg make parser return null if not found, and
         // add a non-null constraint with the right description.)
-        return new GenericPropertyBuilder<>(name, ValueParserConstants.enumerationParser(nameToValue), (Class<T>) Object.class);
+        return new GenericPropertyBuilder<>(name, enumerationParser(nameToValue), (Class<T>) Object.class);
+    }
+
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
+        return new GenericPropertyBuilder<>(
+            name,
+            enumerationParser(EnumUtils.getEnumMap(enumClass)),
+            enumClass
+        );
+    }
+
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
+        Map<String, T> labels = new HashMap<>();
+        for (T constant : enumClass.getEnumConstants()) {
+            labels.put(labelMaker.apply(constant), constant);
+        }
+
+
+        return new GenericPropertyBuilder<>(name, enumerationParser(labels), enumClass);
     }
 
 
