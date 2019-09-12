@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.properties.internal;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
 /**
@@ -53,6 +51,7 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
 
     @Override
     public void toXml(Element container, T value) {
+        // TODO CDATA/ xml escape
         container.setTextContent(toString.apply(value));
     }
 

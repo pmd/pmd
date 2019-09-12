@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -33,10 +35,10 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -125,6 +127,14 @@ public class RuleSetWriter {
 
     private Element createDescriptionElement(String description) {
         return createTextElement("description", description);
+    }
+
+    private Element createPropertyValueElement(String name) {
+        return document.createElementNS(RULESET_2_0_0_NS_URI, name);
+    }
+
+    private Element createPropertyDefaultElement() {
+        return document.createElementNS(RULESET_2_0_0_NS_URI, "default");
     }
 
     private Element createExcludePatternElement(String excludePattern) {
@@ -271,20 +281,22 @@ public class RuleSetWriter {
             for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
                 // For each provided PropertyDescriptor
 
-                if (propertyDescriptor.isDefinedExternally()) {
+                PropertyTypeId typeId = propertyDescriptor.getTypeId();
+
+                if (typeId != null) {
                     // Any externally defined property needs to go out as a definition.
                     if (propertiesElement == null) {
                         propertiesElement = createPropertiesElement();
                     }
 
-                    Element propertyElement = createPropertyDefinitionElementBR(propertyDescriptor);
+                    Element propertyElement = createPropertyDefinitionElementBR(propertyDescriptor, typeId);
                     propertiesElement.appendChild(propertyElement);
                 } else {
                     if (propertiesByPropertyDescriptor != null) {
                         // Otherwise, any property which has a value different than the default needs to go out as a value.
                         Object defaultValue = propertyDescriptor.defaultValue();
                         Object value = propertiesByPropertyDescriptor.get(propertyDescriptor);
-                        if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
+                        if (!Objects.equals(value, defaultValue)) {
                             if (propertiesElement == null) {
                                 propertiesElement = createPropertiesElement();
                             }
@@ -308,7 +320,7 @@ public class RuleSetWriter {
                     // default needs to go out as a value.
                     Object defaultValue = propertyDescriptor.defaultValue();
                     Object value = entry.getValue();
-                    if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
+                    if (!Objects.equals(value, defaultValue)) {
                         if (propertiesElement == null) {
                             propertiesElement = createPropertiesElement();
                         }
@@ -321,35 +333,33 @@ public class RuleSetWriter {
         return propertiesElement;
     }
 
-    private Element createPropertyValueElement(PropertyDescriptor propertyDescriptor, Object value) {
-        Element propertyElement = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
-        propertyElement.setAttribute("name", propertyDescriptor.name());
-        String valueString = propertyDescriptor.asDelimitedString(value);
-        if (XPathRule.XPATH_DESCRIPTOR.equals(propertyDescriptor)) {
-            Element valueElement = createCDATASectionElement("value", valueString);
-            propertyElement.appendChild(valueElement);
-        } else {
-            propertyElement.setAttribute("value", valueString);
-        }
+    private <T> Element createPropertyValueElement(PropertyDescriptor<T> propertyDescriptor, T value) {
+        Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
+        PropertyDescriptorField.NAME.setOn(element, propertyDescriptor.name());
 
-        return propertyElement;
+        XmlSyntax<T> xmlStrategy = propertyDescriptor.xmlStrategy();
+
+        Element valueElt = createPropertyValueElement(xmlStrategy.getWriteElementName());
+        xmlStrategy.toXml(valueElt, value);
+        element.appendChild(valueElt);
+
+        return element;
     }
 
+    private <T> Element createPropertyDefinitionElementBR(PropertyDescriptor<T> propertyDescriptor, @NonNull PropertyTypeId typeId) {
 
-    private Element createPropertyDefinitionElementBR(PropertyDescriptor<?> propertyDescriptor) {
+        final Element element = createPropertyValueElement(propertyDescriptor, propertyDescriptor.defaultValue());
 
-        final Element propertyElement = createPropertyValueElement(propertyDescriptor,
-                propertyDescriptor.defaultValue());
-        propertyElement.setAttribute(PropertyDescriptorField.TYPE.attributeName(),
-                                     PropertyTypeId.typeIdFor(propertyDescriptor.type(),
-                                                                      propertyDescriptor.isMultiValue()));
+        PropertyDescriptorField.NAME.setOn(element, propertyDescriptor.name());
+        PropertyDescriptorField.TYPE.setOn(element, typeId.getStringId());
+        PropertyDescriptorField.DESCRIPTION.setOn(element, propertyDescriptor.description());
 
         Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();
         for (Map.Entry<PropertyDescriptorField, String> entry : propertyValuesById.entrySet()) {
-            propertyElement.setAttribute(entry.getKey().attributeName(), entry.getValue());
+            element.setAttribute(entry.getKey().attributeName(), entry.getValue());
         }
 
-        return propertyElement;
+        return element;
     }
 
     private Element createTextElement(String name, String value) {

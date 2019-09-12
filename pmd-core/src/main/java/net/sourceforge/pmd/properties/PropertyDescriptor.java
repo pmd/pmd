@@ -6,6 +6,8 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -90,6 +92,14 @@ public interface PropertyDescriptor<T> {
 
 
     /**
+     * Returns the type ID which was used to define this property. Returns
+     * null if this property was defined in Java code and not in XML.
+     */
+    default @Nullable PropertyTypeId getTypeId() {
+        return null;
+    }
+
+    /**
      * Returns whether the property is multi-valued, i.e. an array of strings,
      *
      * <p>As unary property rule properties will return a value of one, you must use the get/setProperty accessors when
@@ -172,17 +182,5 @@ public interface PropertyDescriptor<T> {
     @Deprecated
     Map<PropertyDescriptorField, String> attributeValuesById();
 
-
-    /**
-     * True if this descriptor was defined in the ruleset xml. This precision is necessary for the {@link RuleSetWriter}
-     * to write out the property correctly: if it was defined externally, then its definition must be written out,
-     * otherwise only its value.
-     *
-     * @deprecated May be removed with 7.0.0
-     * @return True if the descriptor was defined in xml
-     */
-    @Deprecated
-    @InternalApi
-    boolean isDefinedExternally();
 
 }

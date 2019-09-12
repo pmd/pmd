@@ -32,8 +32,6 @@ public enum PropertyDescriptorField {
     NAME("name"),
     /** The description of the property. */
     DESCRIPTION("description"),
-    /** The UI order. */
-    UI_ORDER("uiOrder"),
     /** The default value. */
     DEFAULT_VALUE("value"),
     /** For multi-valued properties, this defines the delimiter of the single values. */
@@ -71,6 +69,10 @@ public enum PropertyDescriptorField {
     @Nullable
     public String getOptional(Element element) {
         return element.getAttribute(attributeName);
+    }
+
+    public void setOn(Element element, String value) {
+        element.setAttribute(attributeName, value);
     }
 
     /**

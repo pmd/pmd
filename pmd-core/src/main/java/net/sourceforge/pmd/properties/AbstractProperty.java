@@ -131,12 +131,6 @@ import org.apache.commons.lang3.StringUtils;
     protected abstract String defaultAsString();
 
 
-    @Override
-    public boolean isDefinedExternally() {
-        return isDefinedExternally;
-    }
-
-
     private static String checkNotEmpty(String arg, PropertyDescriptorField argId) throws IllegalArgumentException {
         if (StringUtils.isBlank(arg)) {
             throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");

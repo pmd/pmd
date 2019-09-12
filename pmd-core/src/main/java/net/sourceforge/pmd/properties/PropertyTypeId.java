@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
-import net.sourceforge.pmd.properties.internal.StringParser;
 import net.sourceforge.pmd.properties.internal.XmlSyntax;
 import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
 
@@ -28,7 +27,6 @@ import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
  * See {@link PropertyDescriptor} for more info about property framework changes with 7.0.0.
  *
  * @author Clément Fournier
- * @see PropertyDescriptorExternalBuilder
  * @since 6.0.0
  */
 public enum PropertyTypeId {
@@ -93,48 +91,6 @@ public enum PropertyTypeId {
         return factory.apply(name);
     }
 
-    /**
-     * Returns true if the property corresponding to this factory takes
-     * lists of values as its value.
-     *
-     * @return whether the property is multivalue
-     *
-     * @deprecated see {@link PropertyDescriptor#isMultiValue()}
-     */
-    @Deprecated
-    public boolean isPropertyMultivalue() {
-        return factory.isMultiValue();
-    }
-
-
-    /**
-     * Returns the value type of the property corresponding to this factory.
-     * This is the component type of the list if the property is multivalued.
-     *
-     * @return The value type of the property
-     *
-     * @deprecated see {@link PropertyDescriptor#type()}
-     */
-    @Deprecated
-    public Class<?> propertyValueType() {
-        return factory.valueType();
-    }
-
-
-    /**
-     * Gets the object used to parse the values of this property from a string.
-     * If the property is multivalued, the parser only parses individual components
-     * of the list. A list parser can be obtained with {@link ValueParserConstants#multi(StringParser, char)}.
-     *
-     * @return The value parser
-     *
-     * @deprecated see {@link PropertyDescriptor#valueFrom(String)}
-     */
-    @Deprecated
-    public StringParser<?> getStringParser() {
-        return stringParser;
-    }
-
 
     /**
      * Returns the full mappings from type ids to enum constants.
@@ -143,22 +99,6 @@ public enum PropertyTypeId {
      */
     public static Map<String, PropertyTypeId> typeIdsToConstants() {
         return CONSTANTS_BY_MNEMONIC;
-    }
-
-
-    /**
-     * Gets the factory for the descriptor identified by the string id.
-     *
-     * @param stringId The identifier of the type
-     *
-     * @return The factory used to build new instances of a descriptor
-     *
-     * @deprecated See {@link PropertyDescriptorExternalBuilder}
-     */
-    @Deprecated
-    public static PropertyDescriptorExternalBuilder<?> factoryFor(String stringId) {
-        PropertyTypeId cons = CONSTANTS_BY_MNEMONIC.get(stringId);
-        return cons == null ? null : cons.factory;
     }
 
 
@@ -174,25 +114,4 @@ public enum PropertyTypeId {
     }
 
 
-    /**
-     * Gets the string representation of this type, as it should be given
-     * when defining a descriptor in the xml.
-     *
-     * @param valueType  The type to look for
-     * @param multiValue Whether the descriptor is multivalued or not
-     *
-     * @return The string id
-     *
-     * @deprecated The signature will probably be altered in 7.0.0 but a similar functionality will be available
-     */
-    @Deprecated
-    public static String typeIdFor(Class<?> valueType, boolean multiValue) {
-        for (Map.Entry<String, PropertyTypeId> entry : CONSTANTS_BY_MNEMONIC.entrySet()) {
-            if (entry.getValue().propertyValueType() == valueType
-                && entry.getValue().isPropertyMultivalue() == multiValue) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
 }

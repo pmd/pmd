@@ -6,6 +6,8 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.internal.StringParser;
 
@@ -20,6 +22,7 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
 
 
     private final StringParser<T> parser;
+    private final PropertyTypeId typeId;
     private final Class<T> type;
     private final Set<PropertyConstraint<? super T>> constraints;
 
@@ -30,12 +33,13 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
                               T defaultValue,
                               Set<PropertyConstraint<? super T>> constraints,
                               StringParser<T> parser,
-                              boolean isDefinedExternally,
+                              @Nullable PropertyTypeId typeId,
                               Class<T> type) {
 
-        super(name, description, defaultValue, uiOrder, isDefinedExternally);
+        super(name, description, defaultValue, uiOrder, typeId != null);
         this.constraints = constraints;
         this.parser = parser;
+        this.typeId = typeId;
         this.type = type;
 
         String dftValueError = errorFor(defaultValue);

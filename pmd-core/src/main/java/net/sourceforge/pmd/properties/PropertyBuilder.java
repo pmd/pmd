@@ -55,10 +55,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-Z][\\w-]*");
     private final Set<PropertyConstraint<? super T>> validators = new LinkedHashSet<>();
-    protected boolean isDefinedExternally;
     private String name;
     private String description;
     private T defaultValue;
+    protected PropertyTypeId typeId;
 
 
     PropertyBuilder(String name) {
@@ -69,11 +69,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             throw new IllegalArgumentException("Invalid name '" + name + "'");
         }
         this.name = name;
-    }
-
-
-    void setDefinedExternally(boolean bool) {
-        this.isDefinedExternally = bool;
     }
 
 
@@ -123,6 +118,12 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             throw new IllegalArgumentException("Description must be provided");
         }
         this.description = desc;
+        return (B) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    B typeId(PropertyTypeId typeId) {
+        this.typeId = typeId;
         return (B) this;
     }
 
@@ -255,14 +256,14 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         @Override
         public PropertyDescriptor<T> build() {
             return new GenericPropertyDescriptor<>(
-                    getName(),
-                    getDescription(),
-                    0f,
-                    getDefaultValue(),
-                    getConstraints(),
-                    parser,
-                    isDefinedExternally,
-                    type
+                getName(),
+                getDescription(),
+                0f,
+                getDefaultValue(),
+                getConstraints(),
+                parser,
+                typeId,
+                type
             );
         }
     }
