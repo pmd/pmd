@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.properties.internal;
 
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
 /**
@@ -16,25 +21,30 @@ import org.w3c.dom.Element;
  *  <value>someString</value>
  *  <value>1,2,3</value>
  * }</pre>
+ *
+ * <pre>This class is special because it enables compatibility with the
+ * pre 7.0.0 XML syntax.
  */
 public final class ValueSyntax<T> extends XmlSyntax<T> {
 
+    private static final String VALUE_NAME = "value";
     private final Function<? super T, String> toString;
     private final Function<String, ? extends T> fromString;
 
     public ValueSyntax(Function<? super T, String> toString,
                        Function<String, ? extends T> fromString) {
-        super("value");
+        super(VALUE_NAME);
         this.toString = toString;
         this.fromString = fromString;
     }
 
-    public final String toString(T t) {
-        return toString.apply(t);
-    }
-
-    public final T fromString(String string) {
-        return fromString.apply(string);
+    @Override
+    public @Nullable T fromString(Element owner, String attributeData, XmlErrorReporter err) {
+        try {
+            return fromString.apply(attributeData);
+        } catch (IllegalArgumentException e) {
+            throw err.error(owner, e);
+        }
     }
 
     @Override
@@ -44,15 +54,30 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
 
     @Override
     public T fromXml(Element element, XmlErrorReporter err) {
-        try {
-            return fromString.apply(element.getTextContent());
-        } catch (IllegalArgumentException e) {
-            throw err.error(element, e);
-        }
+        return fromString(element, element.getTextContent(), err);
     }
 
     @Override
     public String example() {
-        return "<" + getElementName() + ">data</" + getElementName() + ">";
+        return "<" + getWriteElementName() + ">data</" + getWriteElementName() + ">";
+    }
+
+    public static <T, C extends Collection<T>> ValueSyntax<C> delimitedString(
+        Function<? super T, String> toString,
+        Function<String, ? extends T> fromString,
+        String delimiter,
+        Supplier<C> emptyCollSupplier
+    ) {
+
+        return new ValueSyntax<>(
+            coll -> coll.stream().map(toString).collect(Collectors.joining(delimiter)),
+            string -> {
+                C coll = emptyCollSupplier.get();
+                for (String item : string.split(Pattern.quote(delimiter))) {
+                    coll.add(fromString.apply(item));
+                }
+                return coll;
+            }
+        );
     }
 }

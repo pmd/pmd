@@ -31,7 +31,7 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
     @Override
     public void toXml(Element container, C value) {
         for (T v : value) {
-            Element item = container.getOwnerDocument().createElement(itemSyntax.getElementName());
+            Element item = container.getOwnerDocument().createElement(itemSyntax.getWriteElementName());
             itemSyntax.toXml(item, v);
             container.appendChild(item);
         }
@@ -52,9 +52,9 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
 
     @Override
     public String example() {
-        return "<" + getElementName() + ">\n"
+        return "<" + getWriteElementName() + ">\n"
             + "   " + itemSyntax.toString() + "\n"
             + "   ..."
-            + "</" + getElementName() + ">";
+            + "</" + getWriteElementName() + ">";
     }
 }
