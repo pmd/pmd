@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -324,12 +323,7 @@ public class RuleSetWriter {
         PropertyDescriptorField.NAME.setOn(element, propertyDescriptor.name());
         PropertyDescriptorField.TYPE.setOn(element, typeId.getStringId());
         PropertyDescriptorField.DESCRIPTION.setOn(element, propertyDescriptor.description());
-
-        Map<PropertyDescriptorField, String> propertyValuesById = propertyDescriptor.attributeValuesById();
-        for (Map.Entry<PropertyDescriptorField, String> entry : propertyValuesById.entrySet()) {
-            element.setAttribute(entry.getKey().attributeName(), entry.getValue());
-        }
-
+        // TODO support property constraints in XML
         return element;
     }
 
