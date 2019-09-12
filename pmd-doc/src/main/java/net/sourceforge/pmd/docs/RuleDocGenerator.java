@@ -28,7 +28,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +41,6 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
-import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class RuleDocGenerator {
@@ -460,12 +458,13 @@ public class RuleDocGenerator {
                             String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, true);
 
                             String multiValued = "no";
-                            if (propertyDescriptor.isMultiValue()) {
-                                MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
-                                        (MultiValuePropertyDescriptor<?>) propertyDescriptor;
-                                multiValued = "yes. Delimiter is '"
-                                        + multiValuePropertyDescriptor.multiValueDelimiter() + "'.";
-                            }
+                            // TODO document property syntax
+                            // if (propertyDescriptor.isMultiValue()) {
+                            //     MultiValuePropertyDescriptor<?> multiValuePropertyDescriptor =
+                            //             (MultiValuePropertyDescriptor<?>) propertyDescriptor;
+                            //     multiValued = "yes. Delimiter is '"
+                            //             + multiValuePropertyDescriptor.multiValueDelimiter() + "'.";
+                            // }
 
                             lines.add("|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
                                     + "|" + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue)) + "|"
@@ -531,16 +530,15 @@ public class RuleDocGenerator {
 
         if (realDefaultValue != null) {
             defaultValue = propertyDescriptor.asDelimitedString(realDefaultValue);
-
-            if (pad && propertyDescriptor.isMultiValue()) {
-                MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
-
-                // surround the delimiter with spaces, so that the browser can wrap
-                // the value nicely
-                defaultValue = defaultValue.replaceAll(Pattern.quote(
-                        String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
-                        " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
-            }
+            // TODO document multi value properties
+            //  if (pad && propertyDescriptor.isMultiValue()) {
+            //      MultiValuePropertyDescriptor<List<?>> multiPropertyDescriptor = (MultiValuePropertyDescriptor<List<?>>) propertyDescriptor;
+            //      // surround the delimiter with spaces, so that the browser can wrap
+            //      // the value nicely
+            //      defaultValue = defaultValue.replaceAll(Pattern.quote(
+            //              String.valueOf(multiPropertyDescriptor.multiValueDelimiter())),
+            //              " " + multiPropertyDescriptor.multiValueDelimiter() + " ");
+            //  }
         }
         return defaultValue;
     }

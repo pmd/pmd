@@ -62,11 +62,23 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     }
 
     @Override
-    public @Nullable T fromString(String attributeData) {
+    public @Nullable T fromString(String string) {
 
         for (XmlSyntax<T> syntax : supportedReadStrategies()) {
             if (syntax.supportsStringMapping()) {
-                return syntax.fromString(attributeData);
+                return syntax.fromString(string);
+            }
+        }
+
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String toString(T value) {
+
+        for (XmlSyntax<T> syntax : supportedReadStrategies()) {
+            if (syntax.supportsStringMapping()) {
+                return syntax.toString(value);
             }
         }
 

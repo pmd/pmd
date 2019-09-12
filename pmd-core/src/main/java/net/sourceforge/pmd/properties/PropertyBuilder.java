@@ -433,8 +433,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
 
         /**
-         * Specify a delimiter character. By default it's {@link MultiValuePropertyDescriptor#DEFAULT_DELIMITER}, or {@link
-         * MultiValuePropertyDescriptor#DEFAULT_NUMERIC_DELIMITER} for numeric properties.
+         * Specify a delimiter character. By default it's {@value PropertyFactory#DEFAULT_DELIMITER},
+         * or {@value PropertyFactory#DEFAULT_NUMERIC_DELIMITER} for numeric properties.
          *
          * @param delim Delimiter
          *
