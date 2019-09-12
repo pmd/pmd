@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.internal.parsers;
+package net.sourceforge.pmd.properties.internal;
 
 import org.w3c.dom.Element;
 
@@ -27,10 +27,9 @@ public abstract class XmlSyntax<T> {
     /** Write the value into the given XML element. */
     public abstract void toXml(Element container, T value);
 
-
+    /** Get the preferred name used to write elements. */
     public final String getElementName() {
         return eltName;
     }
-
 
 }

@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.internal.parsers;
+package net.sourceforge.pmd.properties.internal;
 
 import java.util.Collection;
 import java.util.function.Supplier;

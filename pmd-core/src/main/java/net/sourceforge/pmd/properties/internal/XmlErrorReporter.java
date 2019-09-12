@@ -1,4 +1,8 @@
-package net.sourceforge.pmd.properties.internal.parsers;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.properties.internal;
 
 import org.w3c.dom.Node;
 
