@@ -7,6 +7,7 @@ package net.sourceforge.pmd.properties.internal;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,12 +62,11 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     }
 
     @Override
-    public @Nullable T fromString(Element owner, String attributeData, XmlErrorReporter err) {
+    public @Nullable T fromString(String attributeData) {
 
         for (XmlSyntax<T> syntax : supportedReadStrategies()) {
             if (syntax.supportsFromString()) {
-                // do not catch any exception, it will already have been reported on the error reporter.
-                return syntax.fromString(owner, attributeData, err);
+                return syntax.fromString(attributeData);
             }
         }
 
@@ -121,10 +121,7 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     private static String enquote(String it) {return "'" + it + "'";}
 
     @Override
-    public String example() {
-        if (readIndex.size() == 1) {
-            return readIndex.values().iterator().next().example();
-        }
-        return "One of:\n" + readIndex.values().stream().map(XmlSyntax::example).collect(Collectors.joining("\nor\n"));
+    public List<String> examples() {
+        return readIndex.values().stream().flatMap(it -> it.examples().stream()).collect(Collectors.toList());
     }
 }

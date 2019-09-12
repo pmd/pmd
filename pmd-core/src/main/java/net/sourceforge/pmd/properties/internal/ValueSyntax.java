@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties.internal;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -41,6 +43,11 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
     }
 
     @Override
+    public boolean supportsFromString() {
+        return true;
+    }
+
+    @Override
     public T fromString(String attributeData) {
         return fromString.apply(attributeData);
     }
@@ -65,8 +72,8 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
     }
 
     @Override
-    public String example() {
-        return "<" + getWriteElementName() + ">data</" + getWriteElementName() + ">";
+    public List<String> examples() {
+        return Collections.singletonList("<" + getWriteElementName() + ">data</" + getWriteElementName() + ">");
     }
 
 }

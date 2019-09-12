@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.properties.internal;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Element;
@@ -59,10 +60,10 @@ public abstract class XmlSyntax<T> {
         return readNames;
     }
 
-    public abstract String example();
+    public abstract List<String> examples();
 
     @Override
     public String toString() {
-        return example();
+        return examples().get(0);
     }
 }

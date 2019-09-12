@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.properties.internal;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.w3c.dom.Element;
@@ -51,10 +53,10 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
     }
 
     @Override
-    public String example() {
-        return "<" + getWriteElementName() + ">\n"
+    public List<String> examples() {
+        return Collections.singletonList("<" + getWriteElementName() + ">\n"
             + "   " + itemSyntax.toString() + "\n"
             + "   ..."
-            + "</" + getWriteElementName() + ">";
+            + "</" + getWriteElementName() + ">");
     }
 }

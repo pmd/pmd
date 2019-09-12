@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -360,7 +361,7 @@ public class RuleFactory {
             } else {
                 throw err.error(propertyElement.getAttributeNode(DEFAULT_VALUE.attributeName()),
                                 "Type " + typeId + " cannot be parsed from a string, use a nested element, e.g. "
-                                    + syntax.example());
+                                    + String.join("\nor\n", syntax.examples()));
             }
         } else {
             NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
