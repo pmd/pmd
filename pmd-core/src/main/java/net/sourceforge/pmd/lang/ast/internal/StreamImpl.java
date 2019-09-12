@@ -106,23 +106,30 @@ public final class StreamImpl {
             return NodeStream.empty();
         }
         return sliceChildren(parent, node.jjtGetChildIndex() + 1,
-                             parent.jjtGetNumChildren() - node.jjtGetChildIndex());
+                             parent.jjtGetNumChildren() - node.jjtGetChildIndex() - 1);
     }
 
     public static NodeStream<Node> precedingSiblings(@NonNull Node node) {
-        return sliceChildren(node.jjtGetParent(), 0, node.jjtGetChildIndex());
+        Node parent = node.jjtGetParent();
+        if (parent == null) {
+            return NodeStream.empty();
+        }
+        return sliceChildren(parent, 0, parent.jjtGetNumChildren());
     }
 
     static NodeStream<Node> sliceChildren(Node parent, int from, int length) {
-        if (parent == null || length <= 0 || from < 0 || from >= parent.jjtGetNumChildren()) {
-            return empty();
-        }
-        int realLen = Math.min(from + length, parent.jjtGetNumChildren()) - from;
+        // these assertions are just for tests
+        assert parent != null;
+        assert from >= 0 && from <= parent.jjtGetNumChildren() : "from should be a valid index";
+        assert length >= 0 : "length should not be negative";
+        assert from + length >= 0 && from + length <= parent.jjtGetNumChildren() : "from+length should be a valid index";
 
-        if (realLen == 1) {
+        if (length == 0) {
+            return empty();
+        } else if (length == 1) {
             return singleton(parent.jjtGetChild(from));
         } else {
-            return new SlicedChildrenStream(parent, from, realLen);
+            return new SlicedChildrenStream(parent, from, length);
         }
     }
 

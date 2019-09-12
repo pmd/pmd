@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.internal.util.AssertionUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public final class TraversalUtils {
@@ -120,11 +120,20 @@ public final class TraversalUtils {
 
 
     static Iterator<Node> childrenIterator(Node parent) {
+        assert parent != null : "parent should not be null";
         return childrenIterator(parent, 0, parent.jjtGetNumChildren());
     }
 
     static Iterator<Node> childrenIterator(Node parent, final int from, final int to) {
-        AssertionUtil.assertArgNonNegative(from);
+        assert parent != null : "parent should not be null";
+        assert from >= 0 && from <= parent.jjtGetNumChildren() : "'from' should be a valid index";
+        assert to >= 0 && to <= parent.jjtGetNumChildren() : "'to' should be a valid index";
+        assert from <= to : "'from' should be lower than 'to'";
+
+        if (parent.jjtGetNumChildren() == 0 || to == from) {
+            return Collections.emptyIterator();
+        }
+
         return new Iterator<Node>() {
 
             private int i = from;

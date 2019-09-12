@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.lang.ast.internal;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
@@ -27,7 +27,9 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
+    /** Spec of this field depends on the subclass. */
     protected final Node node;
+    /** Filter, for no filter, this is {@link Filtermap#NODE_IDENTITY}. */
     protected final Filtermap<Node, T> target;
 
     AxisStream(@NonNull Node root, Filtermap<Node, T> target) {
@@ -329,20 +331,19 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public Iterator<Node> iterator() {
-            return count() > 0 ? TraversalUtils.childrenIterator(node, low, low + len)
-                               : Collections.emptyIterator();
+            return TraversalUtils.childrenIterator(node, low, low + len);
         }
 
         @Nullable
         @Override
         public Node first() {
-            return low >= 0 && count() > 0 ? node.jjtGetChild(low) : null;
+            return len > 0 ? node.jjtGetChild(low) : null;
         }
 
         @Nullable
         @Override
         public Node last() {
-            return low + len <= node.jjtGetNumChildren() ? node.jjtGetChild(low + len - 1) : null;
+            return len > 0 ? node.jjtGetChild(low + len - 1) : null;
         }
 
         @Override
@@ -354,7 +355,10 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public NodeStream<Node> drop(int n) {
             AssertionUtil.assertArgNonNegative(n);
-            return n == 0 ? this : StreamImpl.sliceChildren(node, low + n, len - n);
+            int newLow = min(low + n, node.jjtGetNumChildren());
+            int newLen = max(len - n, 0);
+
+            return n == 0 ? this : StreamImpl.sliceChildren(node, newLow, newLen);
         }
 
         @Override
