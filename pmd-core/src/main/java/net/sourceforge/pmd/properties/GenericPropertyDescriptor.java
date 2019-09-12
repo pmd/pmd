@@ -78,11 +78,6 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
     }
 
     @Override
-    public boolean isMultiValue() {
-        return false;
-    }
-
-    @Override
     public XmlSyntax<T> xmlStrategy() {
         return parser;
     }

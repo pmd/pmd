@@ -84,20 +84,6 @@ public interface PropertyDescriptor<T> {
         return null;
     }
 
-    /**
-     * Returns whether the property is multi-valued, i.e. an array of strings,
-     *
-     * <p>As unary property rule properties will return a value of one, you must use the get/setProperty accessors when
-     * working with the actual values. When working with multi-value properties then the get/setProperties accessors
-     * must be used.</p>
-     *
-     * @return boolean
-     *
-     * @deprecated The hard divide between multi- and single-value properties will be removed with 7.0.0
-     */
-    @Deprecated
-    boolean isMultiValue();
-
 
     /**
      * Returns the value represented by this string.

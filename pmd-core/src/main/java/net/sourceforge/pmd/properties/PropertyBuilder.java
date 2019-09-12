@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
@@ -170,7 +171,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @throws IllegalArgumentException If the argument is null
      */
     @SuppressWarnings("unchecked")
-    public B defaultValue(T val) {
+    public B defaultValue(@NonNull T val) {
+        //noinspection ConstantConditions
         if (val == null) {
             throw new IllegalArgumentException("Property values may not be null.");
         }

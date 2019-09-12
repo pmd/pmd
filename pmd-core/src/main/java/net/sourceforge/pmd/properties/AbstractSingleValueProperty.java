@@ -46,12 +46,6 @@ package net.sourceforge.pmd.properties;
 
 
     @Override
-    public final boolean isMultiValue() {
-        return false;
-    }
-
-
-    @Override
     public String asDelimitedString(T value) {
         return asString(value);
     }
