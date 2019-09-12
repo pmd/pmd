@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.properties.internal.ValueParser;
 
 // @formatter:off
 /**

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.properties.internal.ValueParser;
 
 
 /**

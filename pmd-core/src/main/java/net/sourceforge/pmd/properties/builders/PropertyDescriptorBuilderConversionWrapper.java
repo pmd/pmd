@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.ValueParser;
+import net.sourceforge.pmd.properties.internal.ValueParser;
 import net.sourceforge.pmd.properties.ValueParserConstants;
 
 

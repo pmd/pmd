@@ -1,21 +1,25 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties;
+package net.sourceforge.pmd.properties.internal;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
+import java.util.function.Function;
 
 /**
  * Parses a value from a string.
  *
  * @param <U> The type of the value to parse
  */
-// FUTURE @FunctionalInterface
-@Deprecated
-@InternalApi
-public interface ValueParser<U> {
+@FunctionalInterface
+public interface ValueParser<U> extends Function<String, U> {
+
+    /** An alias for {@link #valueOf(String)}. */
+    @Override
+    default U apply(String s) throws IllegalArgumentException {
+        return valueOf(s);
+    }
+
 
     /**
      * Extracts a primitive from a string.

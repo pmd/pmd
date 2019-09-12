@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.properties.internal.ValueParser;
 
 
 /**
@@ -22,80 +24,33 @@ import net.sourceforge.pmd.annotation.InternalApi;
  *
  * @author Clément Fournier
  * @since 6.0.0
- * @deprecated Was internal API
  */
-@Deprecated
-@InternalApi
 public final class ValueParserConstants {
 
 
     /** Extracts characters. */
-    static final ValueParser<Character> CHARACTER_PARSER = new ValueParser<Character>() {
-        @Override
-        public Character valueOf(String value) {
-            if (value == null || value.length() != 1) {
-                throw new IllegalArgumentException("missing/ambiguous character value");
-            }
-            return value.charAt(0);
+    static final ValueParser<Character> CHARACTER_PARSER = value -> {
+        if (value == null || value.length() != 1) {
+            throw new IllegalArgumentException("missing/ambiguous character value for string \"" + value + "\"");
         }
+        return value.charAt(0);
     };
     /** Extracts strings. That's a dummy used to return a list in StringMultiProperty. */
-    static final ValueParser<String> STRING_PARSER = new ValueParser<String>() {
-        @Override
-        public String valueOf(String value) {
-            return value;
-        }
-    };
+    static final ValueParser<String> STRING_PARSER = value -> value;
     /** Extracts integers. */
-    static final ValueParser<Integer> INTEGER_PARSER = new ValueParser<Integer>() {
-        @Override
-        public Integer valueOf(String value) {
-            return Integer.valueOf(value);
-        }
-    };
+    static final ValueParser<Integer> INTEGER_PARSER = Integer::valueOf;
     /** Extracts booleans. */
-    static final ValueParser<Boolean> BOOLEAN_PARSER = new ValueParser<Boolean>() {
-        @Override
-        public Boolean valueOf(String value) {
-            return Boolean.valueOf(value);
-        }
-    };
+    static final ValueParser<Boolean> BOOLEAN_PARSER = Boolean::valueOf;
     /** Extracts floats. */
-    static final ValueParser<Float> FLOAT_PARSER = new ValueParser<Float>() {
-        @Override
-        public Float valueOf(String value) {
-            return Float.valueOf(value);
-        }
-    };
+    static final ValueParser<Float> FLOAT_PARSER = Float::valueOf;
     /** Extracts longs. */
-    static final ValueParser<Long> LONG_PARSER = new ValueParser<Long>() {
-        @Override
-        public Long valueOf(String value) {
-            return Long.valueOf(value);
-        }
-    };
+    static final ValueParser<Long> LONG_PARSER = Long::valueOf;
     /** Extracts doubles. */
-    static final ValueParser<Double> DOUBLE_PARSER = new ValueParser<Double>() {
-        @Override
-        public Double valueOf(String value) {
-            return Double.valueOf(value);
-        }
-    };
+    static final ValueParser<Double> DOUBLE_PARSER = Double::valueOf;
     /** Extracts files */
-    static final ValueParser<File> FILE_PARSER = new ValueParser<File>() {
-        @Override
-        public File valueOf(String value) throws IllegalArgumentException {
-            return new File(value);
-        }
-    };
-
+    static final ValueParser<File> FILE_PARSER = File::new;
     /** Compiles a regex. */
-    static final ValueParser<Pattern> REGEX_PARSER = new ValueParser<Pattern>() {
-        @Override
-        public Pattern valueOf(String value) throws IllegalArgumentException {
-            return Pattern.compile(value);
-        }
-    };
+    static final ValueParser<Pattern> REGEX_PARSER = Pattern::compile;
 
 
     private ValueParserConstants() {
@@ -109,14 +64,11 @@ public final class ValueParserConstants {
             throw new IllegalArgumentException("Map may not contain entries with null values");
         }
 
-        return new ValueParser<T>() {
-            @Override
-            public T valueOf(String value) throws IllegalArgumentException {
-                if (!mappings.containsKey(value)) {
-                    throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
-                }
-                return mappings.get(value);
+        return value -> {
+            if (!mappings.containsKey(value)) {
+                throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
             }
+            return mappings.get(value);
         };
     }
 
@@ -131,12 +83,7 @@ public final class ValueParserConstants {
      * @return A list of values
      */
     public static <U> ValueParser<List<U>> multi(final ValueParser<U> parser, final char delimiter) {
-        return new ValueParser<List<U>>() {
-            @Override
-            public List<U> valueOf(String value) throws IllegalArgumentException {
-                return parsePrimitives(value, delimiter, parser);
-            }
-        };
+        return value -> parsePrimitives(value, delimiter, parser);
     }
 
 
@@ -150,13 +97,11 @@ public final class ValueParserConstants {
      *
      * @return A list of values
      */
-    // FUTURE 1.8 : use java.util.function.Function<String, U> in place of ValueParser<U>,
-    // replace ValueParser constants with static functions
-    static <U> List<U> parsePrimitives(String toParse, char delimiter, ValueParser<U> extractor) {
+    private static <U> List<U> parsePrimitives(String toParse, char delimiter, Function<? super String, ? extends U> extractor) {
         String[] values = StringUtils.split(toParse, delimiter);
         List<U> result = new ArrayList<>();
         for (String s : values) {
-            result.add(extractor.valueOf(s));
+            result.add(extractor.apply(s));
         }
         return result;
     }

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
+import net.sourceforge.pmd.properties.internal.ValueParser;
 
 
 /**
