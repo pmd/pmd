@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -23,7 +25,6 @@ import net.sourceforge.pmd.lang.ast.internal.AxisStream.DescendantStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredAncestorOrSelfStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredChildrenStream;
 import net.sourceforge.pmd.lang.ast.internal.AxisStream.FilteredDescendantStream;
-import net.sourceforge.pmd.lang.ast.internal.AxisStream.SlicedChildrenStream;
 
 public final class StreamImpl {
 
@@ -31,6 +32,16 @@ public final class StreamImpl {
         @Override
         public Iterator iterator() {
             return Collections.emptyIterator();
+        }
+
+        @Override
+        public List toList() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List toList(Function mapper) {
+            return Collections.emptyList();
         }
 
         @Override
@@ -81,43 +92,49 @@ public final class StreamImpl {
     }
 
     public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
-        return new FilteredChildrenStream<>(node, Filtermap.isInstance(target));
+        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
+                                             : new FilteredChildrenStream<>(node, Filtermap.isInstance(target), 0, node.jjtGetNumChildren());
     }
 
-    public static NodeStream<Node> children(@NonNull Node root) {
-        return new ChildrenStream(root);
+    public static NodeStream<Node> children(@NonNull Node node) {
+        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
+                                             : new ChildrenStream(node, 0, node.jjtGetNumChildren());
     }
 
     public static NodeStream<Node> descendants(@NonNull Node node) {
-        return new DescendantStream(node);
+        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
+                                             : new DescendantStream(node);
     }
 
     public static <R extends Node> NodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
-        return new FilteredDescendantStream<>(node, Filtermap.isInstance(rClass));
+        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
+                                             : new FilteredDescendantStream<>(node, Filtermap.isInstance(rClass));
     }
 
     public static NodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return new DescendantOrSelfStream(node);
+        return node.jjtGetNumChildren() == 0 ? NodeStream.empty() : new DescendantOrSelfStream(node);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
         Node parent = node.jjtGetParent();
-        if (parent == null) {
+        if (parent == null || parent.jjtGetNumChildren() == 1) {
             return NodeStream.empty();
         }
-        return sliceChildren(parent, node.jjtGetChildIndex() + 1,
-                             parent.jjtGetNumChildren() - node.jjtGetChildIndex() - 1);
+        return sliceChildren(parent, Filtermap.NODE_IDENTITY,
+                             node.jjtGetChildIndex() + 1,
+                             parent.jjtGetNumChildren() - node.jjtGetChildIndex() - 1
+        );
     }
 
     public static NodeStream<Node> precedingSiblings(@NonNull Node node) {
         Node parent = node.jjtGetParent();
-        if (parent == null) {
+        if (parent == null || parent.jjtGetNumChildren() == 1) {
             return NodeStream.empty();
         }
-        return sliceChildren(parent, 0, parent.jjtGetNumChildren());
+        return sliceChildren(parent, Filtermap.NODE_IDENTITY, 0, node.jjtGetChildIndex());
     }
 
-    static NodeStream<Node> sliceChildren(Node parent, int from, int length) {
+    static <T extends Node> NodeStream<T> sliceChildren(Node parent, Filtermap<Node, T> filtermap, int from, int length) {
         // these assertions are just for tests
         assert parent != null;
         assert from >= 0 && from <= parent.jjtGetNumChildren() : "from should be a valid index";
@@ -126,10 +143,13 @@ public final class StreamImpl {
 
         if (length == 0) {
             return empty();
-        } else if (length == 1) {
-            return singleton(parent.jjtGetChild(from));
+        } else if (filtermap == Filtermap.NODE_IDENTITY) {
+            @SuppressWarnings("unchecked")
+            NodeStream<T> res = length == 1 ? (NodeStream<T>) singleton(parent.jjtGetChild(from))
+                                           : (NodeStream<T>) new ChildrenStream(parent, from, length);
+            return res;
         } else {
-            return new SlicedChildrenStream(parent, from, length);
+            return new FilteredChildrenStream<>(parent, filtermap, from, length);
         }
     }
 

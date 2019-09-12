@@ -39,10 +39,10 @@ public class NodeStreamTest {
 
     private final DummyNode tree1 = tree(
         () ->
-            node( // ""
-                  node( // 0
+            node(// ""
+                  node(// 0
                         node(), // 00
-                        node(   // 01
+                        node(// 01
                                 node(), // 010
                                 node(), // 011
                                 node(), // 012

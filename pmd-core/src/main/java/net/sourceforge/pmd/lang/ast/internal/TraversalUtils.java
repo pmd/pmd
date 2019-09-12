@@ -69,8 +69,8 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<Node, T> filter) {
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+    static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+        for (int i = from, last = from + len; i < last; i++) {
             Node c = node.jjtGetChild(i);
             T t = filter.apply(c);
             if (t != null) {
@@ -80,8 +80,8 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<Node, T> filter) {
-        for (int i = node.jjtGetNumChildren() - 1; i >= 0; i--) {
+    static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+        for (int i = from + len - 1; i >= from; i--) {
             Node c = node.jjtGetChild(i);
             T t = filter.apply(c);
             if (t != null) {
@@ -91,9 +91,9 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> List<T> findChildrenMatching(final Node node, final Filtermap<Node, T> filter) {
+    static <T extends Node> List<T> findChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
         List<T> list = new ArrayList<>();
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+        for (int i = from, last = from + len; i < last; i++) {
             Node c = node.jjtGetChild(i);
             T t = filter.apply(c);
             if (t != null) {
@@ -103,12 +103,12 @@ public final class TraversalUtils {
         return list;
     }
 
-    static <T extends Node> int countChildrenMatching(final Node node, final Filtermap<Node, T> filter) {
-        if (filter == Filtermap.NODE_IDENTITY) {
+    static <T extends Node> int countChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+        if (filter == Filtermap.NODE_IDENTITY && from == 0 && len == node.jjtGetNumChildren()) {
             return node.jjtGetNumChildren();
         }
         int sum = 0;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+        for (int i = from, last = from + len; i < last; i++) {
             Node c = node.jjtGetChild(i);
             T t = filter.apply(c);
             if (t != null) {
