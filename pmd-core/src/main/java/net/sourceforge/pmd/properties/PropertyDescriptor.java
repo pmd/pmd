@@ -25,7 +25,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
  * @author Clément Fournier
  * @version Refactored June 2017 (6.0.0)
  */
-public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>> {
+public interface PropertyDescriptor<T> {
 
     /**
      * The name of the property without spaces as it serves as the key into the property map.
@@ -109,14 +109,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
 
 
     /**
-     * @deprecated Comparing property descriptors is not useful within PMD
-     */
-    @Deprecated
-    @Override
-    int compareTo(PropertyDescriptor<?> o);
-
-
-    /**
      * Returns the value represented by this string.
      *
      * @param propertyString The string to parse
@@ -158,17 +150,6 @@ public interface PropertyDescriptor<T> extends Comparable<PropertyDescriptor<?>>
      */
     @Deprecated
     String propertyErrorFor(Rule rule);
-
-
-    /**
-     * If the datatype is a String then return the preferred number of rows to allocate in the text widget, returns a
-     * value of one for all other types. Useful for multi-line XPATH editors.
-     *
-     * @deprecated Was never implemented, and is none of the descriptor's concern. Will be removed with 7.0.0
-     * @return int
-     */
-    @Deprecated
-    int preferredRowCount();
 
 
     /**

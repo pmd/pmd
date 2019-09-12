@@ -65,17 +65,6 @@ import org.apache.commons.lang3.StringUtils;
     }
 
 
-    @Override
-    public final int compareTo(PropertyDescriptor<?> otherProperty) {
-        float otherOrder = otherProperty.uiOrder();
-        return (int) (otherOrder - uiOrder);
-    }
-
-
-    @Override
-    public int preferredRowCount() {
-        return 1;
-    }
 
 
     @Override

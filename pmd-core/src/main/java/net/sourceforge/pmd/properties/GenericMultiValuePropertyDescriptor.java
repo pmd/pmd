@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.ValueParser;
+import net.sourceforge.pmd.properties.internal.StringParser;
 
 
 /**
@@ -25,14 +25,14 @@ final class GenericMultiValuePropertyDescriptor<V, C extends Collection<V>> exte
 
 
     private final Set<PropertyConstraint<? super C>> listValidators;
-    private final ValueParser<V> parser;
+    private final StringParser<V> parser;
     private final Class<V> type;
 
 
     GenericMultiValuePropertyDescriptor(String name, String description, float uiOrder,
                                         Collection<V> defaultValue,
                                         Set<PropertyConstraint<? super C>> listValidators,
-                                        ValueParser<V> parser,
+                                        StringParser<V> parser,
                                         char delim,
                                         Class<V> type) {
         // this cast is safe until 7.0.0

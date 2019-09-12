@@ -7,7 +7,7 @@ package net.sourceforge.pmd.properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.ValueParser;
+import net.sourceforge.pmd.properties.internal.StringParser;
 
 
 /**
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.properties.internal.ValueParser;
 final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> {
 
 
-    private final ValueParser<T> parser;
+    private final StringParser<T> parser;
     private final Class<T> type;
     private final Set<PropertyConstraint<? super T>> constraints;
 
@@ -29,7 +29,7 @@ final class GenericPropertyDescriptor<T> extends AbstractSingleValueProperty<T> 
                               float uiOrder,
                               T defaultValue,
                               Set<PropertyConstraint<? super T>> constraints,
-                              ValueParser<T> parser,
+                              StringParser<T> parser,
                               boolean isDefinedExternally,
                               Class<T> type) {
 

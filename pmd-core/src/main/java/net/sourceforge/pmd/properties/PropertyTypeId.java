@@ -8,9 +8,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
-import net.sourceforge.pmd.properties.internal.ValueParser;
+import net.sourceforge.pmd.properties.internal.StringParser;
 
 
 /**
@@ -50,10 +49,6 @@ public enum PropertyTypeId {
     INTEGER_LIST("List[Integer]", IntegerMultiProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
     LONG("Long", LongProperty.extractor(), ValueParserConstants.LONG_PARSER),
     LONG_LIST("List[Long]", LongMultiProperty.extractor(), ValueParserConstants.LONG_PARSER),
-    @Deprecated
-    FLOAT("Float", FloatProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
-    @Deprecated
-    FLOAT_LIST("List[Float]", FloatMultiProperty.extractor(), ValueParserConstants.FLOAT_PARSER),
     DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
     DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER);
 
@@ -61,7 +56,7 @@ public enum PropertyTypeId {
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
     private final String stringId;
     private final PropertyDescriptorExternalBuilder<?> factory;
-    private final ValueParser<?> valueParser;
+    private final StringParser<?> stringParser;
 
     static {
         Map<String, PropertyTypeId> temp = new HashMap<>();
@@ -72,10 +67,10 @@ public enum PropertyTypeId {
     }
 
 
-    PropertyTypeId(String id, PropertyDescriptorExternalBuilder<?> factory, ValueParser<?> valueParser) {
+    PropertyTypeId(String id, PropertyDescriptorExternalBuilder<?> factory, StringParser<?> stringParser) {
         this.stringId = id;
         this.factory = factory;
-        this.valueParser = valueParser;
+        this.stringParser = stringParser;
     }
 
 
@@ -98,19 +93,6 @@ public enum PropertyTypeId {
     @Deprecated
     public PropertyDescriptorExternalBuilder<?> getFactory() {
         return factory;
-    }
-
-
-    /**
-     * Returns true if the property corresponding to this factory is numeric,
-     * which means it can be safely cast to a {@link NumericPropertyDescriptor}.
-     *
-     * @return whether the property is numeric
-     */
-    @Deprecated
-    public boolean isPropertyNumeric() {
-        return factory instanceof PropertyDescriptorBuilderConversionWrapper.SingleValue.Numeric
-               || factory instanceof PropertyDescriptorBuilderConversionWrapper.MultiValue.Numeric;
     }
 
 
@@ -145,15 +127,15 @@ public enum PropertyTypeId {
     /**
      * Gets the object used to parse the values of this property from a string.
      * If the property is multivalued, the parser only parses individual components
-     * of the list. A list parser can be obtained with {@link ValueParserConstants#multi(ValueParser, char)}.
+     * of the list. A list parser can be obtained with {@link ValueParserConstants#multi(StringParser, char)}.
      *
      * @return The value parser
      *
      * @deprecated see {@link PropertyDescriptor#valueFrom(String)}
      */
     @Deprecated
-    public ValueParser<?> getValueParser() {
-        return valueParser;
+    public StringParser<?> getStringParser() {
+        return stringParser;
     }
 
 

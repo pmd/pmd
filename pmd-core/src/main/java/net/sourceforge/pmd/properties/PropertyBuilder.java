@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.ValueParser;
+import net.sourceforge.pmd.properties.internal.StringParser;
 
 // @formatter:off
 /**
@@ -202,19 +202,19 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // then the <seq> syntax should be the only one available.
     // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look clumsy
     abstract static class BaseSinglePropertyBuilder<B extends PropertyBuilder<B, T>, T> extends PropertyBuilder<B, T> {
-        private final ValueParser<T> parser;
+        private final StringParser<T> parser;
         private final Class<T> type;
 
 
         // Class is not final but a package-private constructor restricts inheritance
-        BaseSinglePropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
+        BaseSinglePropertyBuilder(String name, StringParser<T> parser, Class<T> type) {
             super(name);
             this.parser = parser;
             this.type = type;
         }
 
 
-        protected ValueParser<T> getParser() {
+        protected StringParser<T> getParser() {
             return parser;
         }
 
@@ -293,7 +293,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // Note: This type is used to fix the first type parameter for classes that don't need more API.
     public static final class GenericPropertyBuilder<T> extends BaseSinglePropertyBuilder<GenericPropertyBuilder<T>, T> {
 
-        GenericPropertyBuilder(String name, ValueParser<T> parser, Class<T> type) {
+        GenericPropertyBuilder(String name, StringParser<T> parser, Class<T> type) {
             super(name, parser, type);
         }
     }
@@ -365,7 +365,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @since 6.10.0
      */
     public static final class GenericCollectionPropertyBuilder<V, C extends Collection<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
-        private final ValueParser<V> parser;
+        private final StringParser<V> parser;
         private final Supplier<C> emptyCollSupplier;
         private final Class<V> type;
         private char multiValueDelimiter = MultiValuePropertyDescriptor.DEFAULT_DELIMITER;
@@ -375,7 +375,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * Builds a new builder for a collection type. Package-private.
          */
         GenericCollectionPropertyBuilder(String name,
-                                         ValueParser<V> parser,
+                                         StringParser<V> parser,
                                          Supplier<C> emptyCollSupplier,
                                          Class<V> type) {
             super(name);

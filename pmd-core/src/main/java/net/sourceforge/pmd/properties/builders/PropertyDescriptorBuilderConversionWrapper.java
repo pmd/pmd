@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.properties.MultiValuePropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
-import net.sourceforge.pmd.properties.internal.ValueParser;
+import net.sourceforge.pmd.properties.internal.StringParser;
 import net.sourceforge.pmd.properties.ValueParserConstants;
 
 
@@ -105,10 +105,10 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
     public abstract static class MultiValue<V, T extends MultiValuePropertyBuilder<V, T>>
         extends PropertyDescriptorBuilderConversionWrapper<List<V>, T> {
 
-        protected final ValueParser<V> parser;
+        protected final StringParser<V> parser;
 
 
-        protected MultiValue(Class<V> valueType, ValueParser<V> parser) {
+        protected MultiValue(Class<V> valueType, StringParser<V> parser) {
             super(valueType);
             this.parser = parser;
         }
@@ -138,7 +138,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         public abstract static class Numeric<V, T extends MultiNumericPropertyBuilder<V, T>>
             extends MultiValue<V, T> {
 
-            protected Numeric(Class<V> valueType, ValueParser<V> parser) {
+            protected Numeric(Class<V> valueType, StringParser<V> parser) {
                 super(valueType, parser);
             }
 
@@ -162,7 +162,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         public abstract static class Packaged<V, T extends MultiPackagedPropertyBuilder<V, T>>
             extends MultiValue<V, T> {
 
-            protected Packaged(Class<V> valueType, ValueParser<V> parser) {
+            protected Packaged(Class<V> valueType, StringParser<V> parser) {
                 super(valueType, parser);
             }
 
@@ -187,10 +187,10 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
     public abstract static class SingleValue<E, T extends SingleValuePropertyBuilder<E, T>>
         extends PropertyDescriptorBuilderConversionWrapper<E, T> {
 
-        protected final ValueParser<E> parser;
+        protected final StringParser<E> parser;
 
 
-        protected SingleValue(Class<E> valueType, ValueParser<E> parser) {
+        protected SingleValue(Class<E> valueType, StringParser<E> parser) {
             super(valueType);
             this.parser = parser;
         }
@@ -218,7 +218,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         public abstract static class Numeric<V, T extends SingleNumericPropertyBuilder<V, T>>
             extends SingleValue<V, T> {
 
-            protected Numeric(Class<V> valueType, ValueParser<V> parser) {
+            protected Numeric(Class<V> valueType, StringParser<V> parser) {
                 super(valueType, parser);
             }
 
@@ -242,7 +242,7 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         public abstract static class Packaged<E, T extends SinglePackagedPropertyBuilder<E, T>>
             extends SingleValue<E, T> {
 
-            protected Packaged(Class<E> valueType, ValueParser<E> parser) {
+            protected Packaged(Class<E> valueType, StringParser<E> parser) {
                 super(valueType, parser);
             }
 

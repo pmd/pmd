@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.properties.internal.ValueParser;
+import net.sourceforge.pmd.properties.internal.StringParser;
 
 
 /**
@@ -29,28 +28,28 @@ public final class ValueParserConstants {
 
 
     /** Extracts characters. */
-    static final ValueParser<Character> CHARACTER_PARSER = value -> {
+    static final StringParser<Character> CHARACTER_PARSER = value -> {
         if (value == null || value.length() != 1) {
             throw new IllegalArgumentException("missing/ambiguous character value for string \"" + value + "\"");
         }
         return value.charAt(0);
     };
     /** Extracts strings. That's a dummy used to return a list in StringMultiProperty. */
-    static final ValueParser<String> STRING_PARSER = value -> value;
+    static final StringParser<String> STRING_PARSER = value -> value;
     /** Extracts integers. */
-    static final ValueParser<Integer> INTEGER_PARSER = Integer::valueOf;
+    static final StringParser<Integer> INTEGER_PARSER = Integer::valueOf;
     /** Extracts booleans. */
-    static final ValueParser<Boolean> BOOLEAN_PARSER = Boolean::valueOf;
+    static final StringParser<Boolean> BOOLEAN_PARSER = Boolean::valueOf;
     /** Extracts floats. */
-    static final ValueParser<Float> FLOAT_PARSER = Float::valueOf;
+    static final StringParser<Float> FLOAT_PARSER = Float::valueOf;
     /** Extracts longs. */
-    static final ValueParser<Long> LONG_PARSER = Long::valueOf;
+    static final StringParser<Long> LONG_PARSER = Long::valueOf;
     /** Extracts doubles. */
-    static final ValueParser<Double> DOUBLE_PARSER = Double::valueOf;
+    static final StringParser<Double> DOUBLE_PARSER = Double::valueOf;
     /** Extracts files */
-    static final ValueParser<File> FILE_PARSER = File::new;
+    static final StringParser<File> FILE_PARSER = File::new;
     /** Compiles a regex. */
-    static final ValueParser<Pattern> REGEX_PARSER = Pattern::compile;
+    static final StringParser<Pattern> REGEX_PARSER = Pattern::compile;
 
 
     private ValueParserConstants() {
@@ -58,7 +57,7 @@ public final class ValueParserConstants {
     }
 
 
-    static <T> ValueParser<T> enumerationParser(final Map<String, T> mappings) {
+    static <T> StringParser<T> enumerationParser(final Map<String, T> mappings) {
 
         if (mappings.containsValue(null)) {
             throw new IllegalArgumentException("Map may not contain entries with null values");
@@ -82,7 +81,7 @@ public final class ValueParserConstants {
      *
      * @return A list of values
      */
-    public static <U> ValueParser<List<U>> multi(final ValueParser<U> parser, final char delimiter) {
+    public static <U> StringParser<List<U>> multi(final StringParser<U> parser, final char delimiter) {
         return value -> parsePrimitives(value, delimiter, parser);
     }
 

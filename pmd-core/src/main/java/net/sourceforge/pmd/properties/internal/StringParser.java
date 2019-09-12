@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @param <U> The type of the value to parse
  */
 @FunctionalInterface
-public interface ValueParser<U> extends Function<String, U> {
+public interface StringParser<U> extends Function<String, U> {
 
     /** An alias for {@link #valueOf(String)}. */
     @Override
