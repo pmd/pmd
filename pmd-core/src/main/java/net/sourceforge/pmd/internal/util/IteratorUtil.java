@@ -294,6 +294,32 @@ public final class IteratorUtil {
         return !kindAny;
     }
 
+    public static <T> Iterator<T> singletonIterator(T value) {
+        class SingletonIterator implements Iterator<T> {
+            private boolean done;
+
+            @Override
+            public boolean hasNext() {
+                return !done;
+            }
+
+            @Override
+            public T next() {
+                if (done) {
+                    throw new NoSuchElementException();
+                }
+                done = true;
+                return value;
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super T> action) {
+                action.accept(value);
+            }
+        }
+        return new SingletonIterator();
+    }
+
     public static <T> Iterable<T> asReversed(final List<T> lst) {
 
         return () -> new Iterator<T>() {
@@ -329,15 +355,16 @@ public final class IteratorUtil {
         @Override
         public boolean hasNext() {
             switch (state) {
-            case FAILED:
-                throw new IllegalStateException(state.toString());
             case DONE:
                 return false;
             case READY:
                 return true;
             default:
-                state = State.FAILED;
+                state = null;
                 computeNext();
+                if (state == null) {
+                    throw new IllegalStateException("Should have called done or setNext");
+                }
                 return state == State.READY;
             }
         }
@@ -363,7 +390,7 @@ public final class IteratorUtil {
         protected abstract void computeNext();
 
         enum State {
-            READY, NOT_READY, FAILED, DONE
+            READY, NOT_READY, DONE
         }
 
     }
