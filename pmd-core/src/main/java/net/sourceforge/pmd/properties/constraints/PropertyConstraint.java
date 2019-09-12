@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.properties.constraints;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,11 +27,6 @@ import net.sourceforge.pmd.annotation.Experimental;
  */
 @Experimental
 public interface PropertyConstraint<T> {
-
-    default boolean test(T t) {
-        return validate(t) == null;
-    }
-
 
     /**
      * Returns a diagnostic message if the value
@@ -62,34 +55,12 @@ public interface PropertyConstraint<T> {
 
     /**
      * Returns a constraint that validates a collection of Ts
-     * by checking each component conforms to this constraint.
+     * by checking each component conforms to this conforms.
+     *
+     * @return A collection validator
      */
     @Experimental
-    default PropertyConstraint<Iterable<? extends T>> toCollectionConstraint() {
-        return new PropertyConstraint<Iterable<? extends T>>() {
-            private final PropertyConstraint<? super T> itemConstraint = PropertyConstraint.this;
-
-            @Override
-            public @Nullable String validate(Iterable<? extends T> value) {
-                List<String> errors = new ArrayList<>();
-                int i = 0;
-                for (T u : value) {
-                    String err = itemConstraint.validate(u);
-                    if (err != null) {
-                        errors.add("Item " + i + " " + StringUtils.uncapitalize(err));
-                    }
-                    i++;
-                }
-
-                return errors.isEmpty() ? null : String.join("; ", errors);
-            }
-
-            @Override
-            public String getConstraintDescription() {
-                return "Components " + StringUtils.uncapitalize(itemConstraint.getConstraintDescription());
-            }
-        };
-    }
+    PropertyConstraint<Iterable<? extends T>> toCollectionConstraint();
 
 
     /**
@@ -119,6 +90,23 @@ public interface PropertyConstraint<T> {
             @Override
             public String getConstraintDescription() {
                 return StringUtils.capitalize(constraintDescription);
+            }
+
+
+            @Override
+            public PropertyConstraint<Iterable<? extends U>> toCollectionConstraint() {
+                final PropertyConstraint<U> thisValidator = this;
+                return fromPredicate(
+                    us -> {
+                        for (U u : us) {
+                            if (!pred.test(u)) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    },
+                    "Components " + StringUtils.uncapitalize(thisValidator.getConstraintDescription())
+                );
             }
         };
     }
