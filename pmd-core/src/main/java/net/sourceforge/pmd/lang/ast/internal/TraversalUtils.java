@@ -57,10 +57,10 @@ public final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<Node, T> filtermap) {
+    static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<Node, T> filter) {
         Node n = node;
         while (n != null) {
-            T t = filtermap.apply(n);
+            T t = filter.apply(n);
             if (t != null) {
                 return t;
             }
@@ -140,7 +140,7 @@ public final class TraversalUtils {
 
             @Override
             public boolean hasNext() {
-                return i < to && i < parent.jjtGetNumChildren();
+                return i < to;
             }
 
             @Override

@@ -30,17 +30,17 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
     /** Spec of this field depends on the subclass. */
     protected final Node node;
     /** Filter, for no filter, this is {@link Filtermap#NODE_IDENTITY}. */
-    protected final Filtermap<Node, T> target;
+    protected final Filtermap<Node, T> filter;
 
-    AxisStream(@NonNull Node root, Filtermap<Node, T> target) {
+    AxisStream(@NonNull Node root, Filtermap<Node, T> filter) {
         super();
         this.node = root;
-        this.target = target;
+        this.filter = filter;
     }
 
     @Override
     public final Iterator<T> iterator() {
-        return target.filterMap(baseIterator());
+        return filter.filterMap(baseIterator());
     }
 
     protected abstract Iterator<Node> baseIterator();
@@ -48,17 +48,17 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
     @Override
     public <R extends Node> NodeStream<@NonNull R> map(Function<? super T, ? extends @Nullable R> mapper) {
-        return copyWithFilter(target.thenApply(mapper));
+        return copyWithFilter(filter.thenApply(mapper));
     }
 
     @Override
     public NodeStream<T> filter(Predicate<? super T> predicate) {
-        return copyWithFilter(target.thenApply(Filtermap.filter(predicate)));
+        return copyWithFilter(filter.thenApply(Filtermap.filter(predicate)));
     }
 
     @Override
     public <S extends Node> NodeStream<S> filterIs(Class<S> r1Class) {
-        return copyWithFilter(target.thenCast(r1Class));
+        return copyWithFilter(filter.thenCast(r1Class));
     }
 
     @Override
@@ -66,6 +66,11 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         return getClass().getSimpleName() + "[" + node + "] -> " + toList();
     }
 
+    /**
+     * Returns a copy of this instance, with the given filter.
+     * Implementations of this method should not compose the given filter
+     * with their current filter.
+     */
     protected abstract <S extends Node> NodeStream<S> copyWithFilter(Filtermap<Node, S> filterMap);
 
     static class FilteredAncestorOrSelfStream<T extends Node> extends AxisStream<T> {
@@ -86,11 +91,12 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             case 0:
                 return this;
             case 1:
-                return StreamImpl.ancestors(node, target);
+                return StreamImpl.ancestors(node, filter);
             default:
                 // eg for NodeStream.of(a,b,c).drop(2)
                 Node nth = get(n); // get(2) == c
-                return nth == null ? NodeStream.empty() : copy(nth); // c.ancestorsOrSelf() == [c]
+                return nth == null ? NodeStream.empty()
+                                   : StreamImpl.ancestorsOrSelf(nth, filter); // c.ancestorsOrSelf() == [c]
             }
         }
 
@@ -101,11 +107,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public @Nullable T first() {
-            return TraversalUtils.getFirstParentOrSelfMatching(node, target);
-        }
-
-        protected NodeStream<T> copy(Node start) {
-            return StreamImpl.ancestorsOrSelf(start, target);
+            return TraversalUtils.getFirstParentOrSelfMatching(node, filter);
         }
     }
 
@@ -134,11 +136,6 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             }
             return last;
         }
-
-        @Override
-        protected NodeStream<Node> copy(Node start) {
-            return StreamImpl.ancestorsOrSelf(start);
-        }
     }
 
     static class FilteredDescendantStream<T extends Node> extends AxisStream<T> {
@@ -161,18 +158,18 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public @Nullable T first() {
-            return TraversalUtils.getFirstDescendantOfType(node, target);
+            return TraversalUtils.getFirstDescendantOfType(node, filter);
         }
 
         @Override
         public boolean nonEmpty() {
-            return TraversalUtils.getFirstDescendantOfType(node, target) != null;
+            return TraversalUtils.getFirstDescendantOfType(node, filter) != null;
         }
 
         @Override
         public List<T> toList() {
             List<T> result = new ArrayList<>();
-            TraversalUtils.findDescendantsOfType(node, target, result, false);
+            TraversalUtils.findDescendantsOfType(node, filter, result, false);
             return result;
         }
     }
@@ -208,11 +205,11 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
         @Override
         public List<T> toList() {
             List<T> result = new ArrayList<>();
-            T top = target.apply(node);
+            T top = filter.apply(node);
             if (top != null) {
                 result.add(top);
             }
-            TraversalUtils.findDescendantsOfType(node, target, result, false);
+            TraversalUtils.findDescendantsOfType(node, filter, result, false);
             return result;
         }
     }
@@ -237,7 +234,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
 
     /**
-     * Implements following/preceding sibling streams.
+     * Implements following/preceding sibling streams, and children streams.
      */
     static class FilteredChildrenStream<T extends Node> extends AxisStream<T> {
 
@@ -248,6 +245,10 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             super(root, filtermap);
             this.low = low;
             this.len = len;
+        }
+
+        FilteredChildrenStream(Node root, Filtermap<Node, T> filtermap) {
+            this(root, filtermap, 0, root.jjtGetNumChildren());
         }
 
         @Override
@@ -268,28 +269,28 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public @Nullable T first() {
-            return TraversalUtils.getFirstChildMatching(node, target, low, len);
+            return TraversalUtils.getFirstChildMatching(node, filter, low, len);
         }
 
         @Override
         public @Nullable T last() {
-            return TraversalUtils.getLastChildMatching(node, target, low, len);
+            return TraversalUtils.getLastChildMatching(node, filter, low, len);
         }
 
 
         @Override
         public <R extends Node> @Nullable R first(Class<R> rClass) {
-            return TraversalUtils.getFirstChildMatching(node, target.thenCast(rClass), low, len);
+            return TraversalUtils.getFirstChildMatching(node, filter.thenCast(rClass), low, len);
         }
 
         @Override
         public <R extends Node> @Nullable R last(Class<R> rClass) {
-            return TraversalUtils.getLastChildMatching(node, target.thenCast(rClass), low, len);
+            return TraversalUtils.getLastChildMatching(node, filter.thenCast(rClass), low, len);
         }
 
         @Override
         public int count() {
-            return TraversalUtils.countChildrenMatching(node, target, low, len);
+            return TraversalUtils.countChildrenMatching(node, filter, low, len);
         }
 
         @Override
@@ -299,14 +300,14 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         @Override
         public List<T> toList() {
-            return TraversalUtils.findChildrenMatching(node, target, low, len);
+            return TraversalUtils.findChildrenMatching(node, filter, low, len);
         }
 
 
         @Override
         public NodeStream<T> take(int maxSize) {
             AssertionUtil.assertArgNonNegative(maxSize);
-            return StreamImpl.sliceChildren(node, target, low, min(maxSize, len));
+            return StreamImpl.sliceChildren(node, filter, low, min(maxSize, len));
         }
 
         @Override
@@ -315,7 +316,7 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
             int newLow = min(low + n, node.jjtGetNumChildren());
             int newLen = max(len - n, 0);
 
-            return n == 0 ? this : StreamImpl.sliceChildren(node, target, newLow, newLen);
+            return n == 0 ? this : StreamImpl.sliceChildren(node, filter, newLow, newLen);
         }
 
         @Override
@@ -330,6 +331,10 @@ abstract class AxisStream<T extends Node> extends IteratorBasedNStream<T> {
 
         ChildrenStream(@NonNull Node root, int low, int len) {
             super(root, Filtermap.NODE_IDENTITY, low, len);
+        }
+
+        ChildrenStream(@NonNull Node root) {
+            super(root, Filtermap.NODE_IDENTITY);
         }
 
         @Nullable

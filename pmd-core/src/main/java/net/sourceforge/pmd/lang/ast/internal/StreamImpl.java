@@ -92,27 +92,23 @@ public final class StreamImpl {
     }
 
     public static <R extends Node> NodeStream<R> children(@NonNull Node node, Class<R> target) {
-        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
-                                             : new FilteredChildrenStream<>(node, Filtermap.isInstance(target), 0, node.jjtGetNumChildren());
+        return node.jjtGetNumChildren() == 0 ? empty() : new FilteredChildrenStream<>(node, Filtermap.isInstance(target));
     }
 
     public static NodeStream<Node> children(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
-                                             : new ChildrenStream(node, 0, node.jjtGetNumChildren());
+        return node.jjtGetNumChildren() == 0 ? empty() : new ChildrenStream(node);
     }
 
     public static NodeStream<Node> descendants(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
-                                             : new DescendantStream(node);
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantStream(node);
     }
 
     public static <R extends Node> NodeStream<R> descendants(@NonNull Node node, Class<R> rClass) {
-        return node.jjtGetNumChildren() == 0 ? NodeStream.empty()
-                                             : new FilteredDescendantStream<>(node, Filtermap.isInstance(rClass));
+        return node.jjtGetNumChildren() == 0 ? empty() : new FilteredDescendantStream<>(node, Filtermap.isInstance(rClass));
     }
 
     public static NodeStream<Node> descendantsOrSelf(@NonNull Node node) {
-        return node.jjtGetNumChildren() == 0 ? NodeStream.empty() : new DescendantOrSelfStream(node);
+        return node.jjtGetNumChildren() == 0 ? empty() : new DescendantOrSelfStream(node);
     }
 
     public static NodeStream<Node> followingSiblings(@NonNull Node node) {
@@ -155,12 +151,7 @@ public final class StreamImpl {
 
 
     public static NodeStream<Node> ancestorsOrSelf(@Nullable Node node) {
-        if (node == null) {
-            return empty();
-        } else if (node.jjtGetParent() == null) {
-            return singleton(node);
-        }
-        return new AncestorOrSelfStream(node);
+        return ancestorsOrSelf(node, Filtermap.NODE_IDENTITY);
     }
 
     static <T extends Node> NodeStream<T> ancestorsOrSelf(@Nullable Node node, Filtermap<Node, T> target) {
@@ -170,7 +161,8 @@ public final class StreamImpl {
             T apply = target.apply(node);
             return apply != null ? singleton(apply) : empty();
         }
-        return new FilteredAncestorOrSelfStream<>(node, target);
+        return target == Filtermap.NODE_IDENTITY ? (NodeStream<T>) new AncestorOrSelfStream(node)
+                                                 : new FilteredAncestorOrSelfStream<>(node, target);
     }
 
     public static NodeStream<Node> ancestors(@NonNull Node node) {
