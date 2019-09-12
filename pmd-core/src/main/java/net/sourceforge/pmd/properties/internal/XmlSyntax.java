@@ -41,11 +41,11 @@ public abstract class XmlSyntax<T> {
     }
 
     /**
-     * Read the value from a string, returns null if unsupported.
-     * @throws UnsupportedOperationException if unsupported
-     * @throws IllegalArgumentException if something goes wrong (but should report on the error reporter)
+     * Read the value from a string.
+     * @throws UnsupportedOperationException if unsupported, see {@link #supportsFromString()}
+     * @throws IllegalArgumentException if something goes wrong (but should be reported on the error reporter)
      */
-    public T fromString(Element owner, String attributeData, XmlErrorReporter err) {
+    public T fromString(String attributeData) {
         throw new UnsupportedOperationException();
     }
 

@@ -6,7 +6,12 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Objects;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.w3c.dom.Element;
+
 import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.properties.internal.XmlErrorReporter;
 
 
 /**
@@ -53,6 +58,20 @@ public enum PropertyDescriptorField {
         this.attributeName = attributeName;
     }
 
+    @NonNull
+    public String getOrThrow(Element element, XmlErrorReporter err) {
+        String attribute = element.getAttribute(attributeName);
+        if (attribute == null) {
+            throw err.error(element, "Missing attribute '" + attributeName + "'");
+        }
+
+        return attribute;
+    }
+
+    @Nullable
+    public String getOptional(Element element) {
+        return element.getAttribute(attributeName);
+    }
 
     /**
      * Returns the String name of this attribute.

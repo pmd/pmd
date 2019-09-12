@@ -21,8 +21,8 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
     private final XmlSyntax<T> itemSyntax;
     private final Supplier<C> emptyCollSupplier;
 
-    SeqSyntax(XmlSyntax<T> itemSyntax, Supplier<C> emptyCollSupplier, String name) {
-        super(name);
+    SeqSyntax(XmlSyntax<T> itemSyntax, Supplier<C> emptyCollSupplier) {
+        super("seq");
         this.itemSyntax = itemSyntax;
         this.emptyCollSupplier = emptyCollSupplier;
     }

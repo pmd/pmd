@@ -14,13 +14,19 @@ import org.w3c.dom.Node;
  */
 public interface XmlErrorReporter {
 
-    void warn(Node node, String message, Object... args);
+    default void warn(Node node, String message, Object... args) {
+        throw new UnsupportedOperationException("TODO");
+    }
 
 
-    RuntimeException error(Node node, String message, Object... args);
+    default RuntimeException error(Node node, String message, Object... args) {
+        return new IllegalArgumentException(String.format(message, args));
+    }
 
 
-    RuntimeException error(Node node, Throwable ex);
+    default RuntimeException error(Node node, Throwable ex) {
+        return new IllegalArgumentException(ex);
+    }
 
 
 }

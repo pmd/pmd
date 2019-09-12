@@ -17,9 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -28,10 +26,12 @@ import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
+import net.sourceforge.pmd.properties.internal.XmlErrorReporter;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -321,34 +321,59 @@ public class RuleFactory {
      * @return The property descriptor
      */
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
-        String typeId = propertyElement.getAttribute(PropertyDescriptorField.TYPE.attributeName());
+        XmlErrorReporter err = new XmlErrorReporter() {};
 
-        PropertyDescriptorExternalBuilder<?> pdFactory = PropertyTypeId.factoryFor(typeId);
-        if (pdFactory == null) {
+        String typeId = PropertyDescriptorField.TYPE.getOrThrow(propertyElement, err);
+
+        PropertyTypeId factory = PropertyTypeId.lookupMnemonic(typeId);
+        if (factory == null) {
             throw new IllegalArgumentException("No property descriptor factory for type: " + typeId);
         }
 
-        Map<PropertyDescriptorField, String> values = new HashMap<>();
-        NamedNodeMap atts = propertyElement.getAttributes();
+        PropertyBuilder<?, ?> builder =
+            factory.newBuilder(PropertyDescriptorField.NAME.getOrThrow(propertyElement, err));
 
-        /// populate a map of values for an individual descriptor
-        for (int i = 0; i < atts.getLength(); i++) {
-            Attr a = (Attr) atts.item(i);
-            values.put(PropertyDescriptorField.getConstant(a.getName()), a.getValue());
-        }
+        builder.desc(PropertyDescriptorField.DESCRIPTION.getOrThrow(propertyElement, err));
 
-        if (StringUtils.isBlank(values.get(DEFAULT_VALUE))) {
+        propertyValueCapture(propertyElement, typeId, factory.getXmlSyntax(), builder, err);
+
+        // TODO support constraints like numeric range
+
+        return builder.build();
+    }
+
+
+    private static <T> void propertyValueCapture(Element propertyElement,
+                                                 String typeId,
+                                                 XmlSyntax<?> baseSyntax,
+                                                 PropertyBuilder<?, T> builder,
+                                                 XmlErrorReporter err) {
+        @SuppressWarnings("unchecked")
+        XmlSyntax<T> syntax = (XmlSyntax<T>) baseSyntax;
+        T defaultValue;
+
+
+        String defaultAttr = DEFAULT_VALUE.getOptional(propertyElement);
+        if (!StringUtils.isBlank(defaultAttr)) {
+            if (syntax.supportsFromString()) {
+                defaultValue = syntax.fromString(defaultAttr);
+            } else {
+                throw err.error(propertyElement.getAttributeNode(DEFAULT_VALUE.attributeName()),
+                                "Type " + typeId + " cannot be parsed from a string, use a nested element, e.g. "
+                                    + syntax.example());
+            }
+        } else {
             NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
             if (children.getLength() == 1) {
-                values.put(DEFAULT_VALUE, children.item(0).getTextContent());
+                defaultValue = syntax.fromXml((Element) children.item(0), err);
             } else {
                 throw new IllegalArgumentException("No value defined!");
             }
         }
 
-        // casting is not pretty but prevents the interface from having this method
-        return pdFactory.build(values);
+        builder.defaultValue(defaultValue);
     }
+
 
     /** Gets the string value from a property node. */
     private static String valueFrom(Element propertyNode) {

@@ -9,6 +9,8 @@ import java.util.Map;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.properties.internal.ValueSyntax;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
 
 
 /**
@@ -49,6 +51,15 @@ public interface PropertyDescriptor<T> {
      * @return Object
      */
     T defaultValue();
+
+
+    /**
+     * Returns the strategy used to read and write this property to XML.
+     * May support strings too.
+     */
+    default XmlSyntax<T> xmlStrategy() {
+        return new ValueSyntax<>(this::asDelimitedString, this::valueFrom);
+    }
 
 
     /**

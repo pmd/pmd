@@ -7,9 +7,12 @@ package net.sourceforge.pmd.properties;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
 import net.sourceforge.pmd.properties.internal.StringParser;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
+import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
 
 
 /**
@@ -33,31 +36,28 @@ public enum PropertyTypeId {
     // property types around XML Schema Datatypes (XSD) 1.0 or 1.1 instead of Java datatypes (save for
     // e.g. the Class type), including the mnemonics (eg. xs:integer instead of Integer)
 
-    BOOLEAN("Boolean", BooleanProperty.extractor(), ValueParserConstants.BOOLEAN_PARSER),
-    /** @deprecated see {@link BooleanMultiProperty} */
-    @Deprecated
-    BOOLEAN_LIST("List[Boolean]", BooleanMultiProperty.extractor(), ValueParserConstants.BOOLEAN_PARSER),
+    BOOLEAN("Boolean", XmlSyntaxUtils.BOOLEAN, PropertyFactory::booleanProperty),
+    STRING("String", XmlSyntaxUtils.STRING, PropertyFactory::stringProperty),
+    STRING_LIST("List[String]", XmlSyntaxUtils.STRING_LIST, PropertyFactory::stringListProperty),
+    CHARACTER("Character", XmlSyntaxUtils.CHARACTER, PropertyFactory::charProperty),
+    CHARACTER_LIST("List[Character]", XmlSyntaxUtils.CHAR_LIST, PropertyFactory::charListProperty),
 
-    STRING("String", StringProperty.extractor(), ValueParserConstants.STRING_PARSER),
-    STRING_LIST("List[String]", StringMultiProperty.extractor(), ValueParserConstants.STRING_PARSER),
-    CHARACTER("Character", CharacterProperty.extractor(), ValueParserConstants.CHARACTER_PARSER),
-    CHARACTER_LIST("List[Character]", CharacterMultiProperty.extractor(), ValueParserConstants.CHARACTER_PARSER),
+    REGEX("Regex", XmlSyntaxUtils.REGEX, PropertyFactory::regexProperty),
 
-    REGEX("Regex", RegexProperty.extractor(), ValueParserConstants.REGEX_PARSER),
-
-    INTEGER("Integer", IntegerProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
-    INTEGER_LIST("List[Integer]", IntegerMultiProperty.extractor(), ValueParserConstants.INTEGER_PARSER),
-    LONG("Long", LongProperty.extractor(), ValueParserConstants.LONG_PARSER),
-    LONG_LIST("List[Long]", LongMultiProperty.extractor(), ValueParserConstants.LONG_PARSER),
-    DOUBLE("Double", DoubleProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
-    DOUBLE_LIST("List[Double]", DoubleMultiProperty.extractor(), ValueParserConstants.DOUBLE_PARSER),
+    INTEGER("Integer", XmlSyntaxUtils.INTEGER, PropertyFactory::intProperty),
+    INTEGER_LIST("List[Integer]", XmlSyntaxUtils.INTEGER_LIST, PropertyFactory::intListProperty),
+    LONG("Long", XmlSyntaxUtils.LONG, PropertyFactory::longIntProperty),
+    LONG_LIST("List[Long]", XmlSyntaxUtils.LONG_LIST, PropertyFactory::longIntListProperty),
+    DOUBLE("Double", XmlSyntaxUtils.DOUBLE, PropertyFactory::doubleProperty),
+    DOUBLE_LIST("List[Double]", XmlSyntaxUtils.DOUBLE_LIST, PropertyFactory::doubleListProperty),
     ;
 
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
     private final String stringId;
-    private final PropertyDescriptorExternalBuilder<?> factory;
-    private final StringParser<?> stringParser;
+    private final XmlSyntax<?> xmlSyntax;
+    private final Function<String, ? extends PropertyBuilder<?, ?>> factory;
+
 
     static {
         Map<String, PropertyTypeId> temp = new HashMap<>();
@@ -68,10 +68,14 @@ public enum PropertyTypeId {
     }
 
 
-    PropertyTypeId(String id, PropertyDescriptorExternalBuilder<?> factory, StringParser<?> stringParser) {
+    <T> PropertyTypeId(String id, XmlSyntax<T> syntax, Function<String, PropertyBuilder<?, T>> factory) {
         this.stringId = id;
+        this.xmlSyntax = syntax;
         this.factory = factory;
-        this.stringParser = stringParser;
+    }
+
+    public XmlSyntax<?> getXmlSyntax() {
+        return xmlSyntax;
     }
 
 
@@ -85,17 +89,9 @@ public enum PropertyTypeId {
     }
 
 
-    /**
-     * Gets the factory associated to the type id, that can build the
-     * property from strings extracted from the XML.
-     *
-     * @return The factory
-     */
-    @Deprecated
-    public PropertyDescriptorExternalBuilder<?> getFactory() {
-        return factory;
+    public PropertyBuilder<?, ?> newBuilder(String name) {
+        return factory.apply(name);
     }
-
 
     /**
      * Returns true if the property corresponding to this factory takes

@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.properties.internal;
 
-import java.util.Collection;
+import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
@@ -38,13 +36,19 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
         this.fromString = fromString;
     }
 
+    public ValueSyntax(Function<String, ? extends T> fromString) {
+        super(VALUE_NAME);
+        this.toString = Objects::toString;
+        this.fromString = fromString;
+    }
+
     @Override
-    public @Nullable T fromString(Element owner, String attributeData, XmlErrorReporter err) {
-        try {
-            return fromString.apply(attributeData);
-        } catch (IllegalArgumentException e) {
-            throw err.error(owner, e);
-        }
+    public T fromString(String attributeData) {
+        return fromString.apply(attributeData);
+    }
+
+    public String toString(T data) {
+        return toString.apply(data);
     }
 
     @Override
@@ -54,7 +58,11 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
 
     @Override
     public T fromXml(Element element, XmlErrorReporter err) {
-        return fromString(element, element.getTextContent(), err);
+        try {
+            return fromString.apply(element.getTextContent());
+        } catch (IllegalArgumentException e) {
+            throw err.error(element, e);
+        }
     }
 
     @Override
@@ -62,22 +70,4 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
         return "<" + getWriteElementName() + ">data</" + getWriteElementName() + ">";
     }
 
-    public static <T, C extends Collection<T>> ValueSyntax<C> delimitedString(
-        Function<? super T, String> toString,
-        Function<String, ? extends T> fromString,
-        String delimiter,
-        Supplier<C> emptyCollSupplier
-    ) {
-
-        return new ValueSyntax<>(
-            coll -> coll.stream().map(toString).collect(Collectors.joining(delimiter)),
-            string -> {
-                C coll = emptyCollSupplier.get();
-                for (String item : string.split(Pattern.quote(delimiter))) {
-                    coll.add(fromString.apply(item));
-                }
-                return coll;
-            }
-        );
-    }
 }
