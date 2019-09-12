@@ -9,7 +9,7 @@ import java.io.File;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
-import net.sourceforge.pmd.properties.builders.SinglePackagedPropertyBuilder;
+import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
 /**
@@ -69,7 +69,7 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     }
 
 
-    public static final class FilePBuilder extends SinglePackagedPropertyBuilder<File, FilePBuilder> {
+    public static final class FilePBuilder extends SingleValuePropertyBuilder<File, FilePBuilder> {
         private FilePBuilder(String name) {
             super(name);
         }

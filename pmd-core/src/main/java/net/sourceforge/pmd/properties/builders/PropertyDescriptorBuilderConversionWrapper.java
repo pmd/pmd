@@ -153,28 +153,6 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
         }
 
 
-        /**
-         * For single-value packaged properties.
-         *
-         * @param <V> Element type of the list
-         * @param <T> Concrete type of the underlying builder
-         */
-        public abstract static class Packaged<V, T extends MultiPackagedPropertyBuilder<V, T>>
-            extends MultiValue<V, T> {
-
-            protected Packaged(Class<V> valueType, StringParser<V> parser) {
-                super(valueType, parser);
-            }
-
-
-            @Override
-            protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
-                super.populate(builder, fields);
-                builder.legalPackages(legalPackageNamesIn(fields, PropertyDescriptorBuilderConversionWrapper.delimiterIn(fields,
-                    MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
-            }
-        }
-
     }
 
 
@@ -229,29 +207,6 @@ public abstract class PropertyDescriptorBuilderConversionWrapper<E, T extends Pr
                 V min = parser.valueOf(fields.get(PropertyDescriptorField.MIN));
                 V max = parser.valueOf(fields.get(PropertyDescriptorField.MAX));
                 builder.range(min, max);
-            }
-        }
-
-
-        /**
-         * For single-value packaged properties.
-         *
-         * @param <E> Element type of the list
-         * @param <T> Concrete type of the underlying builder
-         */
-        public abstract static class Packaged<E, T extends SinglePackagedPropertyBuilder<E, T>>
-            extends SingleValue<E, T> {
-
-            protected Packaged(Class<E> valueType, StringParser<E> parser) {
-                super(valueType, parser);
-            }
-
-
-            @Override
-            protected void populate(T builder, Map<PropertyDescriptorField, String> fields) {
-                super.populate(builder, fields);
-                builder.legalPackageNames(legalPackageNamesIn(fields, PropertyDescriptorBuilderConversionWrapper.delimiterIn(fields,
-                    MultiValuePropertyDescriptor.DEFAULT_DELIMITER)));
             }
         }
 
