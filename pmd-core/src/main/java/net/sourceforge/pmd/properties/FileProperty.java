@@ -8,7 +8,6 @@ import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
 
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
@@ -51,16 +50,6 @@ public final class FileProperty extends AbstractSingleValueProperty<File> {
     @Override
     public File createFrom(String propertyString) {
         return StringUtils.isBlank(propertyString) ? null : new File(propertyString);
-    }
-
-
-    static PropertyDescriptorBuilderConversionWrapper.SingleValue<File, FilePBuilder> extractor() {
-        return new PropertyDescriptorBuilderConversionWrapper.SingleValue<File, FilePBuilder>(File.class, ValueParserConstants.FILE_PARSER) {
-            @Override
-            protected FilePBuilder newBuilder(String name) {
-                return new FilePBuilder(name);
-            }
-        };
     }
 
 

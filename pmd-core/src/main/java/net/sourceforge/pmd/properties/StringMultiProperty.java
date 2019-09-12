@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.builders.MultiValuePropertyBuilder;
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
 
 
 /**
@@ -141,16 +140,6 @@ public final class StringMultiProperty extends AbstractMultiValueProperty<String
                 throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
             }
         }
-    }
-
-
-    static PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder> extractor() {
-        return new PropertyDescriptorBuilderConversionWrapper.MultiValue<String, StringMultiPBuilder>(String.class, ValueParserConstants.STRING_PARSER) {
-            @Override
-            protected StringMultiPBuilder newBuilder(String name) {
-                return new StringMultiPBuilder(name);
-            }
-        };
     }
 
 

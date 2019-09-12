@@ -6,8 +6,6 @@ package net.sourceforge.pmd.properties;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper;
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilderConversionWrapper.SingleValue;
 import net.sourceforge.pmd.properties.builders.SingleValuePropertyBuilder;
 
 
@@ -38,16 +36,6 @@ public final class RegexProperty extends AbstractSingleValueProperty<Pattern> {
     @Override
     public Class<Pattern> type() {
         return Pattern.class;
-    }
-
-
-    static SingleValue<Pattern, RegexPBuilder> extractor() {
-        return new PropertyDescriptorBuilderConversionWrapper.SingleValue<Pattern, RegexPBuilder>(Pattern.class, ValueParserConstants.REGEX_PARSER) {
-            @Override
-            protected RegexPBuilder newBuilder(String name) {
-                return new RegexPBuilder(name);
-            }
-        };
     }
 
 

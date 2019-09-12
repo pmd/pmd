@@ -4,13 +4,9 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.Map;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSetWriter;
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.properties.internal.ValueSyntax;
 import net.sourceforge.pmd.properties.internal.XmlSyntax;
 
