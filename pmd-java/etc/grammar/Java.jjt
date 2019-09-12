@@ -397,8 +397,8 @@ public class JavaParser {
     }
   }
   private void checkForMultipleCaseLabels() {
-    if (jdkVersion < 12 || !preview) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 12 Preview");
+    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 12 or 13 Preview");
     }
   }
   /**
@@ -411,30 +411,30 @@ public class JavaParser {
    */
   private boolean inSwitchLabel = false;
   private void checkForSwitchRules() {
-    if (jdkVersion < 12 || !preview) {
-      throwParseException("Switch rules in switch statements are only supported with Java 12 Preview");
+    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
+      throwParseException("Switch rules in switch statements are only supported with Java 12 or 13 Preview");
     }
   }
   private void checkForSwitchExpression() {
-    if (jdkVersion < 12 || !preview) {
-      throwParseException("Switch expressions are only supported with Java 12 Preview");
+    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
+      throwParseException("Switch expressions are only supported with Java 12 or 13 Preview");
     }
   }
 
   private void checkForBreakExpression() {
-    if (jdkVersion < 12 || !preview) {
+    if (jdkVersion != 12 || !preview) {
       throwParseException("Expressions in break statements are only supported with Java 12 Preview");
     }
   }
 
   private void checkForYieldStatement() {
-    if (jdkVersion < 13 || !preview) {
+    if (jdkVersion != 13 || !preview) {
       throwParseException("Yield statements are only supported with Java 13 Preview");
     }
   }
 
   private void checkForTextBlockLiteral() {
-    if (jdkVersion < 13 || !preview) {
+    if (jdkVersion != 13 || !preview) {
       throwParseException("Text block literals are only supported with Java 13 Preview");
     }
   }

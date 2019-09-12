@@ -20,6 +20,10 @@ public class JavaLanguageParser extends AbstractJavaParser {
     private final int jdkVersion;
     private final boolean preview;
 
+    public JavaLanguageParser(int jdkVersion, ParserOptions parserOptions) {
+        this(jdkVersion, false, parserOptions);
+    }
+
     public JavaLanguageParser(int jdkVersion, boolean preview, ParserOptions parserOptions) {
         super(parserOptions);
         this.jdkVersion = jdkVersion;
