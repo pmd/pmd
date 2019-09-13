@@ -14,6 +14,24 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Java 13 Support
+
+This release of PMD brings support for Java 13. PMD can parse [Switch Expressions](http://openjdk.java.net/jeps/354)
+with the new `yield` statement and resolve the type of such an expression.
+
+PMD also parses [Text Blocks](http://openjdk.java.net/jeps/355) as String literals.
+
+Note: The Switch Expressions and Text Blocks are a preview language feature of OpenJDK 13
+and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you'll need to enable it via the environment
+variable `PMD_JAVA_OPTS` and select the new language version `13-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    ./run.sh pmd -language java -version 13-preview ...
+
+Note: Support for the extended break statement introduced in Java 12 as a preview language feature
+will be removed with the next PMD version 6.19.0.
+
 #### Full support for Scala
 
 Thanks to [Chris Smith](https://github.com/tophersmith) PMD now fully supports Scala. Now rules for analyzing Scala
@@ -53,6 +71,8 @@ about the usage and features of the rule designer.
     *   [#1990](https://github.com/pmd/pmd/pull/1990): \[core] Incremental analysis mixes XPath rule violations
 *   apex
     *   [#1901](https://github.com/pmd/pmd/issues/1901): \[apex] Expose super type name of UserClass
+*   java
+    *   [#1930](https://github.com/pmd/pmd/issues/1930): \[java] Add Java 13 support
 *   java-bestpractices
     *   [#1862](https://github.com/pmd/pmd/issues/1862): \[java] New rule for MessageDigest.getInstance
     *   [#1952](https://github.com/pmd/pmd/issues/1952): \[java] UnusedPrivateField not triggering if @Value annotation present

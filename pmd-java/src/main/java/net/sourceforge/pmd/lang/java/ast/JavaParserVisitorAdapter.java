@@ -620,4 +620,9 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTSwitchLabeledThrowStatement node, Object data) {
         return visit((JavaNode) node, data);
     }
+
+    @Override
+    public Object visit(ASTYieldStatement node, Object data) {
+        return visit((JavaNode) node, data);
+    }
 }

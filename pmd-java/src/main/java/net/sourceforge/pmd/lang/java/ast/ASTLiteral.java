@@ -251,4 +251,7 @@ public class ASTLiteral extends AbstractJavaTypeNode {
         return false;
     }
 
+    public boolean isTextBlock() {
+        return isString && getImage().startsWith("\"\"\"");
+    }
 }
