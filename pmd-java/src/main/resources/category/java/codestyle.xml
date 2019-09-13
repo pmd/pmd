@@ -2164,34 +2164,6 @@ Foo[] x = { ... }; //Equivalent to above line
         </example>
     </rule>
 
-    <rule name="VariableNamingConventions"
-          since="1.2"
-          deprecated="true"
-          message="{0} variable {1} should begin with {2}"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableNamingConventionsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variablenamingconventions">
-        <description>
-A variable naming conventions rule - customize this to your liking.  Currently, it
-checks for final variables that should be fully capitalized and non-final variables
-that should not include underscores.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rules {% rule java/codestyle/FieldNamingConventions %},
-{% rule java/codestyle/FormalParameterNamingConventions %}, and
-{% rule java/codestyle/LocalVariableNamingConventions %}.
-        </description>
-        <priority>1</priority>
-        <example>
-<![CDATA[
-public class Foo {
-    public static final int MY_NUM = 0;
-    public String myTest = "";
-    DataModule dmTest = new DataModule();
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="WhileLoopsMustUseBraces"
           language="java"
           since="0.7"
