@@ -4,11 +4,8 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.DESCRIPTION;
 import static net.sourceforge.pmd.properties.PropertyDescriptorField.NAME;
-
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,8 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 
     private final String name;
     private final String description;
-    private final float uiOrder;
-    private final boolean isDefinedExternally;
 
 
     /**
@@ -40,15 +35,13 @@ import org.apache.commons.lang3.StringUtils;
      *
      * @throws IllegalArgumentException If name or description are empty, or UI order is negative.
      */
-    protected AbstractProperty(String theName, String theDescription, float theUIOrder, boolean isDefinedExternally) {
+    protected AbstractProperty(String theName, String theDescription, float theUIOrder) {
         if (theUIOrder < 0) {
             throw new IllegalArgumentException("Property attribute 'UI order' cannot be null or blank");
         }
 
         name = checkNotEmpty(theName, NAME);
         description = checkNotEmpty(theDescription, DESCRIPTION);
-        uiOrder = theUIOrder;
-        this.isDefinedExternally = isDefinedExternally;
     }
 
 
@@ -90,27 +83,6 @@ import org.apache.commons.lang3.StringUtils;
     public String name() {
         return name;
     }
-
-
-    /**
-     * Adds this property's attributes to the map. Subclasses can override this to add more {@link
-     * PropertyDescriptorField}.
-     *
-     * @param attributes The map to fill
-     */
-    protected void addAttributesTo(Map<PropertyDescriptorField, String> attributes) {
-        attributes.put(NAME, name);
-        attributes.put(DESCRIPTION, description);
-        attributes.put(DEFAULT_VALUE, defaultAsString());
-    }
-
-
-    /**
-     * Returns a string representation of the default value.
-     *
-     * @return A string representation of the default value.
-     */
-    protected abstract String defaultAsString();
 
 
     private static String checkNotEmpty(String arg, PropertyDescriptorField argId) throws IllegalArgumentException {

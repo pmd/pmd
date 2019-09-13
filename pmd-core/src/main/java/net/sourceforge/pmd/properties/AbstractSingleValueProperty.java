@@ -33,7 +33,7 @@ package net.sourceforge.pmd.properties;
      */
     protected AbstractSingleValueProperty(String theName, String theDescription, T theDefault,
                                           float theUIOrder, boolean isDefinedExternally) {
-        super(theName, theDescription, theUIOrder, isDefinedExternally);
+        super(theName, theDescription, theUIOrder);
 
         defaultValue = theDefault;
     }
@@ -88,12 +88,6 @@ package net.sourceforge.pmd.properties;
      */
     private boolean defaultHasNullValue() {
         return defaultValue == null;
-    }
-
-
-    @Override
-    protected final String defaultAsString() {
-        return asString(defaultValue);
     }
 
 

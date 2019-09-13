@@ -36,6 +36,11 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     }
 
     /**
+     * TODO This constructor is a bit too general for now. The other constructor
+     *  is the only one that's public. The problem with publishing this constructor,
+     *  is that there may be a SyntaxSet somewhere in the 'forRead' set, and some
+     *  overlapping values may be unlocked
+     *
      * @param forWrite Designated strategy for writing
      * @param forRead  Set of supported syntaxes, must have pairwise different read names
      */

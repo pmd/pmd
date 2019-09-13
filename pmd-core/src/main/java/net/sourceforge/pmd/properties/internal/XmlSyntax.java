@@ -70,6 +70,10 @@ public abstract class XmlSyntax<T> {
         return readNames;
     }
 
+    /**
+     * Returns some examples for what XML output this strategy produces.
+     * For example, {@code <value>1</value>}.
+     */
     public abstract List<String> examples();
 
     @Override
