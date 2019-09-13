@@ -187,7 +187,8 @@ Having the Logging Level specified provides a cleaner log, and improves readabil
           <property name="xpath">
              <value>
 <![CDATA[
-//MethodCallExpression[@FullMethodName='System.debug'][count(*)=2]
+//MethodCallExpression[lower-case(@FullMethodName)='system.debug'][count(*)=2
+    or ($strictMode=true() and count(*)=3 and lower-case(VariableExpression/@Image)='debug')]
 ]]>
              </value>
           </property>

@@ -49,4 +49,31 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Any other method of System is allowed - avoiding false positives</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        System.otherMethod();
+        System.otherMethod('test');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case insensitivity</description>
+        <rule-property name="strictMode">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        SyStEm.DeBuG('test');
+        SyStEm.DeBuG(LoGiNgLeVeL.dEbUg, 'test');
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
