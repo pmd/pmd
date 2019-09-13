@@ -1413,8 +1413,22 @@ been deprecated. They were leftovers from a previous deprecation round targeting
 
 <h5 id="internal-apis">Internal APIs</h5>
 
+<p>Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the <code class="highlighter-rouge">@InternalApi</code> annotation. You’ll also get a deprecation warning.</p>
+
 <ul>
-  <li>The contents of the package <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/cache/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.cache</code></a> have been marked <code class="highlighter-rouge">@InternalApi</code>. That subsystem is very low-level and is not intended for public use. It will be hidden with PMD 7.0.0.</li>
+  <li>pmd-core
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.18.0/net/sourceforge/pmd/cache/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.cache</code></a></li>
+    </ul>
+  </li>
+  <li>pmd-java
+    <ul>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.18.0/net/sourceforge/pmd/lang/java/typeresolution/package-summary.html#"><code class="highlighter-rouge">net.sourceforge.pmd.lang.java.typeresolution</code></a>: Everything, including
+subpackages, except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.18.0/net/sourceforge/pmd/lang/java/typeresolution/TypeHelper.html#"><code class="highlighter-rouge">TypeHelper</code></a> and
+<a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.18.0/net/sourceforge/pmd/lang/java/typeresolution/typedefinition/JavaTypeDefinition.html#"><code class="highlighter-rouge">JavaTypeDefinition</code></a>.</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.18.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#getClassTypeResolver()"><code class="highlighter-rouge">ASTCompilationUnit#getClassTypeResolver</code></a></li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="external-contributions">External Contributions</h3>
@@ -1448,7 +1462,7 @@ been deprecated. They were leftovers from a previous deprecation round targeting
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 12, 2019 <br />
+ Site last generated: Sep 13, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
