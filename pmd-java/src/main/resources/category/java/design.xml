@@ -894,65 +894,6 @@ public class Bar {
         </example>
     </rule>
 
-    <rule name="ModifiedCyclomaticComplexity"
-          since="5.1.2"
-          message = "The {0} ''{1}'' has a Modified Cyclomatic Complexity of {2}."
-          class="net.sourceforge.pmd.lang.java.rule.design.ModifiedCyclomaticComplexityRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#modifiedcyclomaticcomplexity"
-          deprecated="true">
-        <description>
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
-Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-high complexity, and 11+ is very high complexity. Modified complexity treats switch statements as a single
-decision point.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/design/CyclomaticComplexity %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {    // This has a Cyclomatic Complexity = 9
-1   public void example()  {
-2       if (a == b)  {
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-9           switch (z) {
-                case 1:
-                    fiddle();
-                    break;
-                case 2:
-                    fiddle();
-                    break;
-                case 3:
-                    fiddle();
-                    break;
-                default:
-                    fiddle();
-                    break;
-            }
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="6.0.0"
@@ -1315,64 +1256,6 @@ public class Foo {
     public void foo(int y) {
      x = y + 5;
      return x;
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="StdCyclomaticComplexity"
-          since="5.1.2"
-          message = "The {0} ''{1}'' has a Standard Cyclomatic Complexity of {2}."
-          class="net.sourceforge.pmd.lang.java.rule.design.StdCyclomaticComplexityRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#stdcyclomaticcomplexity"
-          deprecated="true">
-        <description>
-Complexity directly affects maintenance costs is determined by the number of decision points in a method 
-plus one for the method entry.  The decision points include 'if', 'while', 'for', and 'case labels' calls.  
-Generally, numbers ranging from 1-4 denote low complexity, 5-7 denote moderate complexity, 8-10 denote
-high complexity, and 11+ is very high complexity.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/design/CyclomaticComplexity %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {    // This has a Cyclomatic Complexity = 12
-1   public void example()  {
-2       if (a == b || (c == d && e == f))  { // Only one
-3           if (a1 == b1) {
-                fiddle();
-4           } else if a2 == b2) {
-                fiddle();
-            }  else {
-                fiddle();
-            }
-5       } else if (c == d) {
-6           while (c == d) {
-                fiddle();
-            }
-7        } else if (e == f) {
-8           for (int n = 0; n < h; n++) {
-                fiddle();
-            }
-        } else{
-            switch (z) {
-9               case 1:
-                    fiddle();
-                    break;
-10              case 2:
-                    fiddle();
-                    break;
-11              case 3:
-                    fiddle();
-                    break;
-12              default:
-                    fiddle();
-                    break;
-            }
-        }
     }
 }
 ]]>
