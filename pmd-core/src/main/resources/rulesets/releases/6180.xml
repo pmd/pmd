@@ -8,6 +8,8 @@
 This ruleset contains links to rules that are new in PMD v6.18.0
   </description>
 
-    <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
-</ruleset>
+    <rule ref="category/apex/bestpractices.xml/DebugsShouldUseLoggingLevel"/>
 
+    <rule ref="category/java/bestpractices.xml/AvoidMessageDigestField"/>
+
+</ruleset>

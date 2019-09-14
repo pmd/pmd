@@ -475,4 +475,15 @@
          <property name="cc_block_highlighting" value="false" />
       </properties>
    </rule>
+
+   <!-- CLARITY / BEST PRACTICES -->
+   <rule ref="category/apex/bestpractices.xml/DebugsShouldUseLoggingLevel">
+      <priority>3</priority>
+      <properties>
+         <!-- relevant for Code Climate output only -->
+         <property name="cc_categories" value="Clarity" />
+         <property name="cc_remediation_points_multiplier" value="5" />
+         <property name="cc_block_highlighting" value="false" />
+      </properties>
+   </rule>
 </ruleset>

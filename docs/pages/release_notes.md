@@ -54,6 +54,10 @@ about the usage and features of the rule designer.
     be entirely wrong. Instead of declaring this as a field and synchronize access to use it from multiple threads,
     a new instance should be created when needed. This rule is also active when using java's quickstart ruleset.
 
+*   The Apex rule {% rule "apex/bestpractices/DebugsShouldUseLoggingLevel" %} (`apex-bestpractices`) detects
+    usages of `System.debug()` method calls that are used without specifying the log level. Having the log
+    level specified provides a cleaner log, and improves readability of it.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/CloseResource" %} (`java-errorprone`) now ignores by default instances
@@ -71,6 +75,7 @@ about the usage and features of the rule designer.
     *   [#1990](https://github.com/pmd/pmd/pull/1990): \[core] Incremental analysis mixes XPath rule violations
 *   apex
     *   [#1901](https://github.com/pmd/pmd/issues/1901): \[apex] Expose super type name of UserClass
+    *   [#1942](https://github.com/pmd/pmd/issues/1942): \[apex] Add best practice rule for debug statements in Apex
 *   java
     *   [#1930](https://github.com/pmd/pmd/issues/1930): \[java] Add Java 13 support
 *   java-bestpractices
@@ -137,6 +142,7 @@ Those APIs are not intended to be used by clients, and will be hidden or removed
 
 ### External Contributions
 
+*   [#1943](https://github.com/pmd/pmd/pull/1943): \[apex] Adds "debug should use logging level" best practice rule for Apex - [Renato Oliveira](https://github.com/renatoliveira)
 *   [#1965](https://github.com/pmd/pmd/pull/1965): \[scala] Use Scalameta for parsing - [Chris Smith](https://github.com/tophersmith)
 *   [#1970](https://github.com/pmd/pmd/pull/1970): \[java] DoubleBraceInitialization: Fix example - [Tobias Weimer](https://github.com/tweimer)
 *   [#1971](https://github.com/pmd/pmd/pull/1971): \[java] 1862 - Message Digest should not be used as class field - [AnthonyKot](https://github.com/AnthonyKot)
