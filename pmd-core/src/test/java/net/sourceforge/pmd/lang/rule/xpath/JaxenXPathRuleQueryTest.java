@@ -22,13 +22,15 @@ public class JaxenXPathRuleQueryTest {
         DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
 
         assertQuery(1, "//dummyNode[@SimpleAtt = \"foo\"]", dummy);
-        assertQuery(1, "//dummyNode[@List = \"[A, B]\"]", dummy);
-        assertQuery(1, "//dummyNode[contains(@List, \"B\")]", dummy);
-        assertQuery(0, "//dummyNode[@List = \"C\"]", dummy);
         assertQuery(1, "//dummyNode[@Enum = \"FOO\"]", dummy);
         assertQuery(0, "//dummyNode[@Enum = \"BAR\"]", dummy);
-        assertQuery(1, "//dummyNode[@EnumList = \"[FOO, BAR]\"]", dummy);
-        assertQuery(1, "//dummyNode[contains(@EnumList, \"BAR\")]", dummy);
+
+        // queries with lists are not supported with xpath 1.0
+        assertQuery(0, "//dummyNode[@List = \"[A, B]\"]", dummy);
+        assertQuery(0, "//dummyNode[contains(@List, \"B\")]", dummy);
+        assertQuery(0, "//dummyNode[@List = \"C\"]", dummy);
+        assertQuery(0, "//dummyNode[@EnumList = \"[FOO, BAR]\"]", dummy);
+        assertQuery(0, "//dummyNode[contains(@EnumList, \"BAR\")]", dummy);
         assertQuery(0, "//dummyNode[@EmptyList = \"A\"]", dummy);
     }
 

@@ -13,6 +13,10 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 public class DummyNodeWithListAndEnum extends DummyNode {
     public DummyNodeWithListAndEnum(int id) {
         super(id);
+        beginLine = 1;
+        beginColumn = 1;
+        endLine = 1;
+        endColumn = 2;
     }
 
     public enum MyEnum {
