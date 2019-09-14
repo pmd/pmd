@@ -265,6 +265,15 @@
 "url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
 "summary": "Rules which enforce generally accepted best practices."
 }
+,
+
+{
+"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
+"tags": "",
+"keywords": "DebugsShouldUseLoggingLevel",
+"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
+"summary": "Rules which enforce generally accepted best practices."
+}
 
 
 

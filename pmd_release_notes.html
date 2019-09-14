@@ -1328,11 +1328,18 @@ about the usage and features of the rule designer.</p>
 <h4 id="new-rules">New rules</h4>
 
 <ul>
-  <li>The Java rule <a href="pmd_rules_java_bestpractices.html#avoidmessagedigestfield"><code class="highlighter-rouge">AvoidMessageDigestField</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) detects fields
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_bestpractices.html#avoidmessagedigestfield"><code class="highlighter-rouge">AvoidMessageDigestField</code></a> (<code class="highlighter-rouge">java-bestpractices</code>) detects fields
 of the type <code class="highlighter-rouge">java.security.MessageDigest</code>. Using a message digest instance as a field would need to be
 synchronized, as it can easily be used by multiple threads. Without synchronization the calculated hash could
 be entirely wrong. Instead of declaring this as a field and synchronize access to use it from multiple threads,
-a new instance should be created when needed. This rule is also active when using java’s quickstart ruleset.</li>
+a new instance should be created when needed. This rule is also active when using java’s quickstart ruleset.</p>
+  </li>
+  <li>
+    <p>The Apex rule <a href="pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel"><code class="highlighter-rouge">DebugsShouldUseLoggingLevel</code></a> (<code class="highlighter-rouge">apex-bestpractices</code>) detects
+usages of <code class="highlighter-rouge">System.debug()</code> method calls that are used without specifying the log level. Having the log
+level specified provides a cleaner log, and improves readability of it.</p>
+  </li>
 </ul>
 
 <h4 id="modified-rules">Modified Rules</h4>
@@ -1359,6 +1366,7 @@ won’t be found by default by the rule anymore.</li>
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1901">#1901</a>: [apex] Expose super type name of UserClass</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1942">#1942</a>: [apex] Add best practice rule for debug statements in Apex</li>
     </ul>
   </li>
   <li>java
@@ -1458,6 +1466,7 @@ subpackages, except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jav
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/1943">#1943</a>: [apex] Adds “debug should use logging level” best practice rule for Apex - <a href="https://github.com/renatoliveira">Renato Oliveira</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1965">#1965</a>: [scala] Use Scalameta for parsing - <a href="https://github.com/tophersmith">Chris Smith</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1970">#1970</a>: [java] DoubleBraceInitialization: Fix example - <a href="https://github.com/tweimer">Tobias Weimer</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/1971">#1971</a>: [java] 1862 - Message Digest should not be used as class field - <a href="https://github.com/AnthonyKot">AnthonyKot</a></li>
