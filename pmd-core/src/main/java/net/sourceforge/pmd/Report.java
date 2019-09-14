@@ -69,7 +69,6 @@ public class Report implements Iterable<RuleViolation> {
         report.addListeners(ctx.getReport().getListeners());
 
         ctx.setReport(report);
-        ctx.setSourceCodeFilename(fileName);
         ctx.setSourceCodeFile(new File(fileName));
         return report;
     }
@@ -418,7 +417,10 @@ public class Report implements Iterable<RuleViolation> {
      *
      * @return <code>true</code> if there are metrics, <code>false</code>
      *         otherwise
+     *
+     * @deprecated see {@link StatisticalRule}
      */
+    @Deprecated
     public boolean hasMetrics() {
         return !metrics.isEmpty();
     }
@@ -427,7 +429,10 @@ public class Report implements Iterable<RuleViolation> {
      * Iterate over the metrics.
      *
      * @return an iterator over the metrics
+     *
+     * @deprecated see {@link StatisticalRule}
      */
+    @Deprecated
     public Iterator<Metric> metrics() {
         return metrics.iterator();
     }

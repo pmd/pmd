@@ -7,6 +7,7 @@ package net.sourceforge.pmd.testframework;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -275,7 +276,7 @@ public abstract class RuleTst {
             }
             RuleContext ctx = new RuleContext();
             ctx.setReport(report);
-            ctx.setSourceCodeFilename("n/a");
+            ctx.setSourceCodeFile(new File("n/a"));
             ctx.setLanguageVersion(languageVersion);
             ctx.setIgnoreExceptions(false);
             RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);

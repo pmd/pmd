@@ -72,13 +72,14 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         while (violations.hasNext()) {
             buf.setLength(0);
             RuleViolation rv = violations.next();
-            if (!rv.getFilename().equals(filename)) {
+            String nextFilename = determineFileName(rv.getFilename());
+            if (!nextFilename.equals(filename)) {
                 // New File
                 if (filename != null) {
                     // Not first file ?
                     buf.append("</file>").append(PMD.EOL);
                 }
-                filename = rv.getFilename();
+                filename = nextFilename;
                 buf.append("<file name=\"");
                 StringUtil.appendXmlEscaped(buf, filename, useUTF8);
                 buf.append("\">").append(PMD.EOL);
@@ -122,7 +123,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
         for (Report.ProcessingError pe : errors) {
             buf.setLength(0);
             buf.append("<error ").append("filename=\"");
-            StringUtil.appendXmlEscaped(buf, pe.getFile(), useUTF8);
+            StringUtil.appendXmlEscaped(buf, determineFileName(pe.getFile()), useUTF8);
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg(), useUTF8);
             buf.append("\">").append(PMD.EOL);
@@ -136,7 +137,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             for (Report.SuppressedViolation s : suppressed) {
                 buf.setLength(0);
                 buf.append("<suppressedviolation ").append("filename=\"");
-                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getFilename(), useUTF8);
+                StringUtil.appendXmlEscaped(buf, determineFileName(s.getRuleViolation().getFilename()), useUTF8);
                 buf.append("\" suppressiontype=\"");
                 StringUtil.appendXmlEscaped(buf, s.suppressedByNOPMD() ? "nopmd" : "annotation", useUTF8);
                 buf.append("\" msg=\"");

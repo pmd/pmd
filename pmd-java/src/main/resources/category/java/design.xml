@@ -953,39 +953,6 @@ public class Foo {    // This has a Cyclomatic Complexity = 9
         </example>
     </rule>
 
-    <rule name="NcssConstructorCount"
-          message="The constructor with {0} parameters has an NCSS line count of {1}"
-          since="3.9"
-          deprecated="true"
-          class="net.sourceforge.pmd.lang.java.rule.design.NcssConstructorCountRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncssconstructorcount">
-        <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/design/NcssCount %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo extends Bar {
-    public Foo() {
-        super();
-
-
-
-
-
-        //this constructor only has 1 NCSS lines
-        super.foo();
-    }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="NcssCount"
           message="The {0} ''{1}'' has a NCSS line count of {2}."
           since="6.0.0"
@@ -1024,73 +991,6 @@ class Foo {                         // +1, total Ncss = 12
       assert false;                 // +1
     }
   }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="NcssMethodCount"
-          message="The method {0}() has an NCSS line count of {1}"
-          deprecated="true"
-          since="3.9"
-          class="net.sourceforge.pmd.lang.java.rule.design.NcssMethodCountRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncssmethodcount">
-        <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/design/NcssCount %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo extends Bar {
-    public int methd() {
-        super.methd();
-
-
-
-
-
-
-        //this method only has 1 NCSS lines
-        return 1;
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="NcssTypeCount"
-          message="The type has an NCSS line count of {0}"
-          since="3.9"
-          deprecated="true"
-          class="net.sourceforge.pmd.lang.java.rule.design.NcssTypeCountRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#ncsstypecount">
-        <description>
-This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
-of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
-lines of code that are split are counted as one.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/design/NcssCount %}.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo extends Bar {
-    public Foo() {
-        //this class only has 6 NCSS lines
-        super();
-
-
-
-
-
-        super.foo();
-    }
 }
 ]]>
         </example>
