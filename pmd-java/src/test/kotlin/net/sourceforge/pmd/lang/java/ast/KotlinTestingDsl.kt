@@ -11,10 +11,10 @@ import io.kotlintest.should as kotlintestShould
  * Represents the different Java language versions.
  */
 enum class JavaVersion : Comparable<JavaVersion> {
-    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11, J12;
+    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11, J12, J12__PREVIEW, J13, J13__PREVIEW;
 
     /** Name suitable for use with e.g. [ParserTstUtil.parseAndTypeResolveJava] */
-    val pmdName: String = name.removePrefix("J").replace('_', '.')
+    val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
 
     /**
      * Overloads the range operator, e.g. (`J9..J11`).

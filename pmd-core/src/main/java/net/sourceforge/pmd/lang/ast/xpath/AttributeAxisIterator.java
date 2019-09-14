@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,7 +40,8 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
 
     /* Constants used to determine which methods are accessors */
     private static final Set<Class<?>> CONSIDERED_RETURN_TYPES
-            = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class, Long.TYPE, Character.TYPE, Float.TYPE));
+            = new HashSet<>(Arrays.<Class<?>>asList(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class,
+                    Long.TYPE, Character.TYPE, Float.TYPE));
     private static final Set<String> FILTERED_OUT_NAMES
             = new HashSet<>(Arrays.asList("toString", "getClass", "getXPathNodeName", "getTypeNameNode", "hashCode", "getImportedNameNode", "getScope"));
 
@@ -73,12 +77,31 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     protected boolean isAttributeAccessor(Class<?> nodeClass, Method method) {
         String methodName = method.getName();
 
-        return isConsideredReturnType(method.getReturnType())
+        return !methodName.startsWith("jjt")
+                && !FILTERED_OUT_NAMES.contains(methodName)
                 && method.getParameterTypes().length == 0
-                && !methodName.startsWith("jjt")
-                && !isIgnored(nodeClass, method)
-                && !FILTERED_OUT_NAMES.contains(methodName);
+                && isConsideredReturnType(method)
+                && !isIgnored(nodeClass, method);
     }
+
+    private boolean isConsideredReturnType(Method method) {
+        return isSimpleType(method.getReturnType()) || isSequence(method.getGenericReturnType());
+    }
+
+    private boolean isSimpleType(Class<?> klass) {
+        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
+    }
+
+    private boolean isSequence(Type returnType) {
+        if (returnType instanceof ParameterizedType && ((ParameterizedType) returnType).getRawType() == List.class) {
+            Type[] actualTypeArguments = ((ParameterizedType) returnType).getActualTypeArguments();
+            return actualTypeArguments.length == 1
+                    && actualTypeArguments[0] instanceof Class
+                    && isSimpleType((Class<?>) actualTypeArguments[0]);
+        }
+        return false;
+    }
+
 
     private boolean isIgnored(Class<?> nodeClass, Method method) {
         Class<?> declaration = method.getDeclaringClass();
@@ -111,10 +134,6 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             return localAnnot.scope() == NoAttrScope.ALL;
 
         }
-    }
-
-    private boolean isConsideredReturnType(Class<?> klass) {
-        return CONSIDERED_RETURN_TYPES.contains(klass) || klass.isEnum();
     }
 
 

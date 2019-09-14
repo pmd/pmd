@@ -39,18 +39,18 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     public abstract <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
 
     @Override
-    public <D, R> R childrenAccept(ScalaParserVisitor<D, R> visitor, D data) {
-        int numChildren = jjtGetNumChildren();
-        R returnValue = null;
-        for (int i = 0; i < numChildren; ++i) {
-            returnValue = ((ScalaNode<?>) jjtGetChild(i)).accept(visitor, data);
-        }
-        return returnValue;
+    public T getNode() {
+        return node;
     }
 
     @Override
-    public T getNode() {
-        return node;
+    public ScalaNode<?> jjtGetChild(int index) {
+        return (ScalaNode<?>) super.jjtGetChild(index);
+    }
+
+    @Override
+    public ScalaNode<?> jjtGetParent() {
+        return (ScalaNode<?>) super.jjtGetParent();
     }
 
     @Override
