@@ -1292,6 +1292,25 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="java-13-support">Java 13 Support</h4>
+
+<p>This release of PMD brings support for Java 13. PMD can parse <a href="http://openjdk.java.net/jeps/354">Switch Expressions</a>
+with the new <code class="highlighter-rouge">yield</code> statement and resolve the type of such an expression.</p>
+
+<p>PMD also parses <a href="http://openjdk.java.net/jeps/355">Text Blocks</a> as String literals.</p>
+
+<p>Note: The Switch Expressions and Text Blocks are a preview language feature of OpenJDK 13
+and are not enabled by default. In order to
+analyze a project with PMD that uses these language features, you’ll need to enable it via the environment
+variable <code class="highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language version <code class="highlighter-rouge">13-preview</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
+./run.sh pmd -language java -version 13-preview ...
+</code></pre></div></div>
+
+<p>Note: Support for the extended break statement introduced in Java 12 as a preview language feature
+will be removed with the next PMD version 6.19.0.</p>
+
 <h4 id="full-support-for-scala">Full support for Scala</h4>
 
 <p>Thanks to <a href="https://github.com/tophersmith">Chris Smith</a> PMD now fully supports Scala. Now rules for analyzing Scala
@@ -1340,6 +1359,11 @@ won’t be found by default by the rule anymore.</li>
   <li>apex
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1901">#1901</a>: [apex] Expose super type name of UserClass</li>
+    </ul>
+  </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1930">#1930</a>: [java] Add Java 13 support</li>
     </ul>
   </li>
   <li>java-bestpractices
@@ -1462,7 +1486,7 @@ subpackages, except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-jav
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 13, 2019 <br />
+ Site last generated: Sep 14, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
