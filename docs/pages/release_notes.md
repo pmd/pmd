@@ -23,6 +23,12 @@ Being based on a proper Antlr grammar, CPD can:
 *   ignore comments
 *   honor [comment-based suppressions](pmd_userdocs_cpd.html#suppression)
 
+#### New Rules
+
+*   The Apex rule {% rule "apex/bestpractices/DebugsShouldUseLoggingLevel" %} [`apex-bestpractices`] detects
+    usages of `System.debug()` method calls that are used without specifying the log level. Having the log
+    level specified provides a cleaner log, and improves readability of it.
+
 #### Modified Rules
 
 *   The Java rule {% rule "java/errorprone/CloseResource" %} [`java-errorprone`] now ignores by default
@@ -36,6 +42,8 @@ Being based on a proper Antlr grammar, CPD can:
 
 ### Fixed Issues
 
+*   apex
+    *   [#1942](https://github.com/pmd/pmd/issues/1942): \[apex] Add best practice rule for debug statements in Apex
 *   core
     *   [#1913](https://github.com/pmd/pmd/issues/1913): \[core] "-help" CLI option ends with status code != 0
 *   doc
@@ -66,6 +74,7 @@ Being based on a proper Antlr grammar, CPD can:
 *   [#1908](https://github.com/pmd/pmd/pull/1908): \[doc] Update ruleset filename from deprecated basic.xml to quickstart.xml - [crunsk](https://github.com/crunsk)
 *   [#1916](https://github.com/pmd/pmd/pull/1916): \[java] Exclude Autowired and Inject for MissingStaticMethodInNonInstantiatableClass - [AnthonyKot](https://github.com/AnthonyKot)
 *   [#1917](https://github.com/pmd/pmd/pull/1917): \[core] Add 'no error' return option, and assign it to the cli when the help command is invoked - [Renato Oliveira](https://github.com/renatoliveira)
+*   [#1943](https://github.com/pmd/pmd/pull/1943): \[apex] Adds "debug should use logging level" best practice rule for Apex - [Renato Oliveira](https://github.com/renatoliveira)
 
 {% endtocmaker %}
 
