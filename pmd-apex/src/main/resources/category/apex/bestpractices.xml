@@ -180,7 +180,7 @@ The first parameter of System.debug, when using the signature with two parameter
 
 Having the Logging Level specified provides a cleaner log, and improves readability of it.
        </description>
-       <priority>5</priority>
+       <priority>3</priority>
        <properties>
           <property name="strictMode" type="Boolean" value="false" description="If true, mark statements that use the DEBUG enum of LoggingLevel."/>
           <property name="version" value="2.0"/>
