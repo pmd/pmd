@@ -19,7 +19,8 @@ public class Java13Test {
     private static String loadSource(String name) {
         try {
             return IOUtils.toString(Java13Test.class.getResourceAsStream("jdkversiontests/java13/" + name),
-                    StandardCharsets.UTF_8);
+                                    StandardCharsets.UTF_8)
+                .replaceAll("\\R", "\n"); // normalize line separators to \n
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -71,8 +72,7 @@ public class Java13Test {
 
     @Test
     public void testTextBlocks() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("TextBlocks.java"));
+        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview", loadSource("TextBlocks.java"));
         Assert.assertNotNull(compilationUnit);
         List<ASTLiteral> literals = compilationUnit.findDescendantsOfType(ASTLiteral.class);
         Assert.assertEquals(10, literals.size());
@@ -80,9 +80,14 @@ public class Java13Test {
             ASTLiteral literal = literals.get(i);
             Assert.assertTrue(literal.isTextBlock());
         }
-        Assert.assertEquals("\"\"\"\n" + "                <html>\n" + "                    <body>\n"
-                + "                        <p>Hello, world</p>\n" + "                    </body>\n"
-                + "                </html>\n" + "                \"\"\"", literals.get(0).getImage());
+        Assert.assertEquals("\"\"\"\n"
+                                + "                <html>\n"
+                                + "                    <body>\n"
+                                + "                        <p>Hello, world</p>\n"
+                                + "                    </body>\n"
+                                + "                </html>\n"
+                                + "                \"\"\"",
+                            literals.get(0).getImage());
         Assert.assertFalse(literals.get(8).isTextBlock());
         Assert.assertTrue(literals.get(9).isTextBlock());
     }
