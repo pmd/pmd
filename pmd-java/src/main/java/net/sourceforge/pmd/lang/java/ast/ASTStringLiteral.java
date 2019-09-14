@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  */
 public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
 
+    private boolean isTextBlock;
 
     ASTStringLiteral(int id) {
         super(id);
@@ -61,10 +62,15 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         return javaccEscaped;
     }
 
+    void setTextBlock() {
+        this.isTextBlock = true;
+    }
 
-    /**
-     * Accept the visitor. *
-     */
+    /** Returns true if this is a text block (currently Java 13 preview feature). */
+    public boolean isTextBlock() {
+        return isTextBlock;
+    }
+
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);

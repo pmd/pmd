@@ -205,7 +205,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         }
 
         boolean result = false;
-        ASTVariableInitializer initializer = var.getInitializer();
+        ASTExpression initializer = var.getInitializer();
         ASTName name = initializer.getFirstDescendantOfType(ASTName.class);
         if (name != null) {
             ASTFormalParameters formalParameters = null;
