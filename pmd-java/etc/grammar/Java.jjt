@@ -2801,7 +2801,7 @@ void StringLiteral():
 {}
 {
    ( <STRING_LITERAL>
-   | <TEXT_BLOCK_LITERAL> { jjtThis.setTextBlock(); })
+   | <TEXT_BLOCK_LITERAL> { jjtThis.setTextBlock(); checkForTextBlockLiteral(); })
    { jjtThis.setImage(getToken(0).getImage()); }
 }
 

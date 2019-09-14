@@ -70,31 +70,5 @@ public class Java13Test {
         ParserTstUtil.parseAndTypeResolveJava("12", loadSource("SwitchExpressions.java"));
     }
 
-    @Test
-    public void testTextBlocks() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview", loadSource("TextBlocks.java"));
-        Assert.assertNotNull(compilationUnit);
-        List<ASTLiteral> literals = compilationUnit.findDescendantsOfType(ASTLiteral.class);
-        Assert.assertEquals(10, literals.size());
-        for (int i = 0; i < 8; i++) {
-            ASTLiteral literal = literals.get(i);
-            Assert.assertTrue(literal.isTextBlock());
-        }
-        Assert.assertEquals("\"\"\"\n"
-                                + "                <html>\n"
-                                + "                    <body>\n"
-                                + "                        <p>Hello, world</p>\n"
-                                + "                    </body>\n"
-                                + "                </html>\n"
-                                + "                \"\"\"",
-                            literals.get(0).getImage());
-        Assert.assertFalse(literals.get(8).isTextBlock());
-        Assert.assertTrue(literals.get(9).isTextBlock());
-    }
-
-    @Test(expected = ParseException.class)
-    public void testTextBlocksBeforeJava13() {
-        ParserTstUtil.parseAndTypeResolveJava("12", loadSource("TextBlocks.java"));
-    }
 
 }

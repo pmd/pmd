@@ -21,6 +21,9 @@ enum class JavaVersion : Comparable<JavaVersion> {
     /** Name suitable for use with e.g. [ParserTstUtil.parseAndTypeResolveJava] */
     val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
 
+
+    operator fun not(): List<JavaVersion> = values().toList() - this
+
     /**
      * Overloads the range operator, e.g. (`J9..J11`).
      * If both operands are the same, a singleton list is returned.
@@ -352,13 +355,13 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
             override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
                 """
-                ${ctx.imports.joinToString(separator = "\n")}
-                ${ctx.genClassHeader} {
-                    {
-                        Object o = $construct;
-                    }
-                }
-                """.trimIndent()
+${ctx.imports.joinToString(separator = "\n")}
+${ctx.genClassHeader} {
+    {
+        Object o = $construct;
+    }
+}
+                """
 
 
             override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTExpression::class.java)!!

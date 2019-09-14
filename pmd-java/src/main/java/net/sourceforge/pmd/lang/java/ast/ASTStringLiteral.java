@@ -33,7 +33,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     @Override
     public String getImage() {
         if (reconstructedImage == null) {
-            reconstructedImage = getEscapedStringLiteral(super.getImage());
+            reconstructedImage = isTextBlock ? super.getImage() : getEscapedStringLiteral(super.getImage());
         }
         return reconstructedImage;
     }
