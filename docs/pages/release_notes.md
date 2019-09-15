@@ -79,6 +79,7 @@ about the usage and features of the rule designer.
 *   java
     *   [#1930](https://github.com/pmd/pmd/issues/1930): \[java] Add Java 13 support
 *   java-bestpractices
+    *   [#1227](https://github.com/pmd/pmd/issues/1227): \[java] UnusedFormalParameter should explain checkAll better
     *   [#1862](https://github.com/pmd/pmd/issues/1862): \[java] New rule for MessageDigest.getInstance
     *   [#1952](https://github.com/pmd/pmd/issues/1952): \[java] UnusedPrivateField not triggering if @Value annotation present
 *   java-codestyle
@@ -153,6 +154,7 @@ Those APIs are not intended to be used by clients, and will be hidden or removed
 *   [#1977](https://github.com/pmd/pmd/pull/1977): \[plsql] fix for skipping sql starting with WITH - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1986](https://github.com/pmd/pmd/pull/1986): \[plsql] Fix for cursors in anonymous blocks - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
+*   [#2015](https://github.com/pmd/pmd/pull/2015): \[java] Update doc for unused formal parameter - [Amish Shah](https://github.com/shahamish150294)
 
 {% endtocmaker %}
 
