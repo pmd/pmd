@@ -41,6 +41,7 @@ about the usage and features of the rule designer.
 *   all
     *   [#1983](https://github.com/pmd/pmd/pull/1983): \[core] Avoid crashes with analysis cache when classpath references non-existing directories
 *   java-bestpractices
+    *   [#1227](https://github.com/pmd/pmd/issues/1227): \[java] UnusedFormalParameter should explain checkAll better
     *   [#1862](https://github.com/pmd/pmd/issues/1862): \[java] New rule for MessageDigest.getInstance
 *   java-codestyle
     *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
@@ -63,6 +64,7 @@ about the usage and features of the rule designer.
 
 *   [#1970](https://github.com/pmd/pmd/pull/1970): \[java] DoubleBraceInitialization: Fix example - [Tobias Weimer](https://github.com/tweimer)
 *   [#1971](https://github.com/pmd/pmd/pull/1971): \[java] 1862 - Message Digest should not be used as class field - [AnthonyKot](https://github.com/AnthonyKot)
+*   [#2015](https://github.com/pmd/pmd/pull/2015): \[java] Update doc for unused formal parameter - [Amish Shah](https://github.com/shahamish150294)
 
 {% endtocmaker %}
 
