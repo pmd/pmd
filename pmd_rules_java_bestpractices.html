@@ -2756,7 +2756,10 @@ will (and by priority) and avoid clogging the Standard out log.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid passing parameters to methods or constructors without actually referencing them in the method body.</p>
+<p>Avoid passing parameters to methods or constructors without actually referencing them in the method body. 
+Removing unused formal parameters from public methods could cause a ripple effect through the code base. 
+Hence, by default, this rule only considers private methods. To include non-private methods, set the
+<code class="highlighter-rouge">checkAll</code> property to <code class="highlighter-rouge">true</code>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedFormalParameterRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule</a></p>
 
@@ -3336,7 +3339,7 @@ a block <code class="highlighter-rouge">{}</code> is sufficient.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Sep 14, 2019 <br />
+ Site last generated: Sep 15, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
