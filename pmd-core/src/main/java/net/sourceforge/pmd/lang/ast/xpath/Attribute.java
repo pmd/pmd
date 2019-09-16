@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -63,8 +64,14 @@ public class Attribute {
         return parent;
     }
 
+    /** Returns the most general type that the value may be. */
+    @Experimental
+    public Class<?> getType() {
+        return method == null ? String.class : method.getReturnType();
+    }
+
     public Object getValue() {
-        if (value != null) {
+        if (value != null) { // TODO if the method returned null we'll call it again...
             return value;
         }
 

@@ -179,7 +179,8 @@ public class DocumentNavigator extends DefaultNavigator {
             Attribute result = null;
             while (baseIterator.hasNext() && result == null) {
                 Attribute candidate = baseIterator.next();
-                if (!(candidate.getValue() instanceof List)) {
+                // Calling getValue() here would break laziness
+                if (!List.class.isAssignableFrom(candidate.getType())) {
                     result = candidate;
                 }
             }
