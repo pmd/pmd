@@ -155,7 +155,6 @@ public class AbstractVmNode extends AbstractNode implements VmNode {
      */
     @Deprecated
     public void dump(final String prefix, final boolean recurse, final Writer writer) {
-        @SuppressWarnings("PMD.CloseResource")
         final PrintWriter printWriter = writer instanceof PrintWriter ? (PrintWriter) writer : new PrintWriter(writer);
         printWriter.println(toString(prefix));
         if (children != null && recurse) {
