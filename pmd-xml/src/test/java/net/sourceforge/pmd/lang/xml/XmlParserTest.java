@@ -181,7 +181,15 @@ public class XmlParserTest {
         assertNode(child1, "child1", 3, "test", "1");
         assertTextNode(child1.jjtGetChild(0), "entity: ");
         assertNode(child1.jjtGetChild(1), "pmd", 0);
-        assertTextNode(child1.jjtGetChild(2), "Copyright: PMD\\n    ");
+        // with java13, expandEntityReferences=false works correctly, and the
+        // entity &pmd; is not expanded
+        String text = child1.jjtGetChild(2).getImage();
+        if ("\n    ".equals(text)) {
+            // java13 and later
+            assertTextNode(child1.jjtGetChild(2), "\\n    ");
+        } else {
+            assertTextNode(child1.jjtGetChild(2), "Copyright: PMD\\n    ");
+        }
         assertTextNode(rootElement.jjtGetChild(4), "\\n    ");
         Node child2 = rootElement.jjtGetChild(5);
         assertNode(child2, "child2", 3);

@@ -31,21 +31,6 @@ public interface ScalaNode<T extends Tree> extends Node {
      */
     <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
 
-    /**
-     * Accept the visitor against all children of this node if there are any and
-     * return.
-     * 
-     * @param <D>
-     *            The type of the data input
-     * @param <R>
-     *            The type of the returned data
-     * @param visitor
-     *            the visitor to visit this node's children with
-     * @param data
-     *            context-specific data to pass along
-     * @return context-specific data for this Visitor pattern
-     */
-    <D, R> R childrenAccept(ScalaParserVisitor<D, R> visitor, D data);
 
     /**
      * Get the underlying Scala Node.
@@ -53,4 +38,12 @@ public interface ScalaNode<T extends Tree> extends Node {
      * @return the Scala Node for this node
      */
     T getNode();
+
+
+    @Override
+    ScalaNode<?> jjtGetChild(int idx);
+
+
+    @Override
+    ScalaNode<?> jjtGetParent();
 }
