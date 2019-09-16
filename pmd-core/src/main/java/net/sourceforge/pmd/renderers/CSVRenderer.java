@@ -40,7 +40,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "csv";
 
     @SuppressWarnings("unchecked")
-    private static final ColumnDescriptor<RuleViolation>[] ALL_COLUMNS = new ColumnDescriptor[] {
+    private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
         new ColumnDescriptor<>("problem", "Problem", new Accessor<RuleViolation>() {
             @Override
             public String get(int idx, RuleViolation rv, String cr) {
@@ -54,7 +54,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         }), new ColumnDescriptor<>("file", "File", new Accessor<RuleViolation>() {
             @Override
             public String get(int idx, RuleViolation rv, String cr) {
-                return rv.getFilename();
+                return CSVRenderer.this.determineFileName(rv.getFilename());
             }
         }), new ColumnDescriptor<>("priority", "Priority", new Accessor<RuleViolation>() {
             @Override
@@ -95,7 +95,14 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     }
 
     public CSVRenderer() {
-        this(ALL_COLUMNS, DEFAULT_SEPARATOR, PMD.EOL);
+        super(NAME, "Comma-separated values tabular format.");
+
+        separator = DEFAULT_SEPARATOR;
+        cr = PMD.EOL;
+
+        for (ColumnDescriptor<RuleViolation> desc : allColumns) {
+            definePropertyDescriptor(booleanPropertyFor(desc.id, desc.title));
+        }
     }
 
     private static PropertyDescriptor<Boolean> booleanPropertyFor(String id, String label) {
@@ -114,7 +121,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
         List<ColumnDescriptor<RuleViolation>> actives = new ArrayList<>();
 
-        for (ColumnDescriptor<RuleViolation> desc : ALL_COLUMNS) {
+        for (ColumnDescriptor<RuleViolation> desc : allColumns) {
             PropertyDescriptor<Boolean> prop = booleanPropertyFor(desc.id, null);
             if (getProperty(prop)) {
                 actives.add(desc);

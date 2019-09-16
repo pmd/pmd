@@ -10,12 +10,17 @@ import java.util.List;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ThreadSafeReportListener;
+import net.sourceforge.pmd.annotation.InternalApi;
 
 /**
  * An analysis cache for incremental analysis.
  * Simultaneously manages the old version of the cache,
  * and the new, most up-to-date violation cache.
+ *
+ * @deprecated This is internal API, will be hidden with 7.0.0
  */
+@Deprecated
+@InternalApi
 public interface AnalysisCache extends ThreadSafeReportListener {
 
     /**

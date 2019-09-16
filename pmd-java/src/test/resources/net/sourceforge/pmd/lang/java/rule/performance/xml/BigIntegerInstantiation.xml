@@ -9,6 +9,8 @@ Fail, BigInteger(1)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
  BigInteger b = new BigInteger("1");
 }
@@ -21,6 +23,8 @@ Pass, BigInteger(10)
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
  BigInteger b = new BigInteger("10");
 }
@@ -33,6 +37,8 @@ Fail, BigInteger(0)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
  BigInteger b = new BigInteger("0");
 }
@@ -45,6 +51,8 @@ Pass, BigDecimal(i - 1)
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
  int i = 42;
  BigDecimal b = new BigDecimal(i - 1);
@@ -58,6 +66,9 @@ Pass, BigInteger("10") and BigDecimal in 1.4 mode
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+import java.math.BigDecimal;
+
 public class Foo {
  void test14() {
   BigInteger b = new BigInteger("10");
@@ -79,6 +90,8 @@ Fail, BigInteger(10) 1.5 mode
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigInteger;
+
 public class Foo {
  BigInteger b = new BigInteger("10");
 }
@@ -91,6 +104,8 @@ Fail, BigDecimal(1)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
  BigDecimal b = new BigDecimal(1);
 }
@@ -103,6 +118,8 @@ Fail, BigDecimal(10)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
  BigDecimal b = new BigDecimal(10);
 }
@@ -115,6 +132,8 @@ Fail, BigDecimal(0)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import java.math.BigDecimal;
+
 public class Foo {
  BigDecimal b = new BigDecimal(0);
 }

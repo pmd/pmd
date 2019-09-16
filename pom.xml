@@ -9,12 +9,12 @@
 
     <description>
 PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex, PLSQL,
-Salesforce.com Visualforce, Apache Velocity, XML, XSL.
+unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+PLSQL, Apache Velocity, XML, XSL, Scala.
 
-Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in Java, C, C++, C#,
-Groovy, PHP, Ruby, Fortran, JavaScript, PLSQL, Apache Velocity, Scala, Objective C, Matlab, Python,
-Go, Swift and Salesforce.com Apex.
+Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
+C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab,
+Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -86,7 +86,7 @@ Go, Swift and Salesforce.com Apex.
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.2.61</kotlin.version>
+        <kotlin.version>1.3.0</kotlin.version>
         <dokka.version>0.9.18</dokka.version>
 
 
@@ -778,6 +778,13 @@ Go, Swift and Salesforce.com Apex.
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>

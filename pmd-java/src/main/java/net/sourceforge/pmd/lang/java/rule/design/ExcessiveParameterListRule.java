@@ -4,24 +4,27 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
  * This rule detects an abnormally long parameter list. Note: This counts Nodes,
  * and not necessarily parameters, so the numbers may not match up. (But
  * topcount and sigma should work.)
  */
-public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
+public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<ASTFormalParameters> {
     public ExcessiveParameterListRule() {
         super(ASTFormalParameters.class);
-        setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
-    // Count these nodes, but no others.
     @Override
-    public Object visit(ASTFormalParameter node, Object data) {
-        return NumericConstants.ONE;
+    protected int defaultReportLevel() {
+        return 10;
     }
+
+    @Override
+    protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
+        return node.getParameterCount() > reportLevel;
+    }
+
 }

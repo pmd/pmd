@@ -254,7 +254,7 @@ public class PMDTaskImpl {
         if (failOnError) {
             throw new BuildException(pmde);
         }
-        errorReport.addError(new Report.ProcessingError(pmde, ctx.getSourceCodeFilename()));
+        errorReport.addError(new Report.ProcessingError(pmde, String.valueOf(ctx.getSourceCodeFile())));
     }
 
     private void setupClassLoader() {

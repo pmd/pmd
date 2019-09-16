@@ -103,7 +103,7 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     }
 
     private CodeClimateIssue.Location getLocation(RuleViolation rv) {
-        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(rv.getFilename(), "/code/");
+        String pathWithoutCcRoot = StringUtils.removeStartIgnoreCase(determineFileName(rv.getFilename()), "/code/");
         return new CodeClimateIssue.Location(pathWithoutCcRoot, rv.getBeginLine(), rv.getEndLine());
     }
 
