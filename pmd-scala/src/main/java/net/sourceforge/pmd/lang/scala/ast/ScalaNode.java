@@ -45,7 +45,7 @@ public interface ScalaNode<T extends Tree> extends Node {
      * descendant, then its text bounds identify an empty region of the source
      * document. In that case, the {@linkplain #getEndColumn() end column} is
      * smaller than the {@linkplain #getBeginColumn() begin column}. That's
-     * because the end column is inclusive.
+     * because the end column index is inclusive.
      */
     // TODO this would be useful on the node interface for 7.0.0.
     //  we could filter them out from violations transparently

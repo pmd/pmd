@@ -30,10 +30,6 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
         super(0);
         node = treeNode;
         pos = node.pos();
-        beginLine = pos.startLine() + 1;
-        endLine = pos.endLine() + 1;
-        beginColumn = pos.startColumn() + 1;
-        endColumn = pos.endColumn();
     }
 
     @Override
@@ -59,6 +55,26 @@ abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements
     @Override
     public int getEndColumn() {
         return pos.endColumn(); // no +1
+    }
+
+    @Override
+    public void testingOnlySetBeginColumn(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void testingOnlySetBeginLine(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void testingOnlySetEndColumn(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void testingOnlySetEndLine(int i) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
