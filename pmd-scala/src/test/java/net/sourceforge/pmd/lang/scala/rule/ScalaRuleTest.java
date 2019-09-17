@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.scala.rule;
+package net.sourceforge.pmd.lang.scala.rule;
 
 import java.io.File;
 import java.io.StringReader;
@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermApply;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
-import net.sourceforge.pmd.lang.scala.rule.ScalaRule;
 
 public class ScalaRuleTest {
     private static final String SCALA_TEST = "/parserFiles/helloworld.scala";

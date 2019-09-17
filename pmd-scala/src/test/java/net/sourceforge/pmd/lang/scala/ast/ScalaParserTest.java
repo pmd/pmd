@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.scala;
+package net.sourceforge.pmd.lang.scala.ast;
 
 import java.io.StringReader;
 import java.util.ArrayList;
