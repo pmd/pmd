@@ -33,7 +33,7 @@ public class ScalaParser extends AbstractParser {
 
     /**
      * Create a parser using the given Scala Dialect and set of parser options.
-     * 
+     *
      * @param scalaDialect
      *            the Scala Dialect for this parser
      * @param parserOptions
@@ -50,7 +50,7 @@ public class ScalaParser extends AbstractParser {
     }
 
     @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
+    public ASTSource parse(String fileName, Reader source) throws ParseException {
         Input.VirtualFile virtualFile;
         try {
             String sourceString = IOUtils.toString(source);

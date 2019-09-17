@@ -303,9 +303,6 @@ class ScalaTreeBuilder {
     // The nodes having children built.
     private Stack<Node> nodes = new Stack<>();
 
-    // The Scala nodes with children to build.
-    private Stack<Tree> parents = new Stack<>();
-
     private static <T extends Tree> void register(Class<T> nodeType,
             Class<? extends ScalaNode<T>> nodeAdapterType) {
         try {
@@ -316,7 +313,7 @@ class ScalaTreeBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    static <T extends Tree> ScalaNode<T> createNodeAdapter(T node) {
+    private static <T extends Tree> ScalaNode<T> createNodeAdapter(T node) {
         try {
 
             Constructor<? extends ScalaNode<T>> constructor = null;
@@ -338,7 +335,7 @@ class ScalaTreeBuilder {
                         "There is no Node adapter class registered for the Node class: " + node.getClass());
             }
             return constructor.newInstance(node);
-            
+
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -348,21 +345,20 @@ class ScalaTreeBuilder {
 
     /**
      * Construct a matching tree that implements the PMD Node interface.
-     * 
+     *
      * @param <T>
      *            the scala node that extends the Tree trait
      * @param astNode
      *            the Java node that extends the PMD Node interface
      * @return a PMD compatible node representing the Scala AST node
      */
-    public <T extends Tree> ScalaNode<T> build(T astNode) {
+    <T extends Tree> ScalaNode<T> build(T astNode) {
         return buildInternal(astNode);
     }
 
     private <T extends Tree> ScalaNode<T> buildInternal(T astNode) {
         // Create a Node
         ScalaNode<T> node = createNodeAdapter(astNode);
-
         // Append to parent
         Node parent = nodes.isEmpty() ? null : nodes.peek();
         if (parent != null) {
@@ -372,13 +368,11 @@ class ScalaTreeBuilder {
 
         // Build the children...
         nodes.push(node);
-        parents.push(astNode);
         int childrenNum = astNode.children().size();
         for (int i = 0; i < childrenNum; i++) {
             buildInternal(astNode.children().apply(i));
         }
         nodes.pop();
-        parents.pop();
 
         return node;
     }
