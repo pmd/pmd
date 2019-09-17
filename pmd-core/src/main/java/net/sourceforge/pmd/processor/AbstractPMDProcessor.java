@@ -26,7 +26,6 @@ import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.datasource.DataSource;
-import net.sourceforge.pmd.util.datasource.ZipDataSource;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -106,6 +105,9 @@ public abstract class AbstractPMDProcessor {
         return brokenRules;
     }
 
+    @SuppressWarnings("PMD.CloseResource")
+    // the data sources must only be closed after the threads are finished
+    // this is done manually without a try-with-resources
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers) {
         RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
@@ -119,18 +121,17 @@ public abstract class AbstractPMDProcessor {
             runAnalysis(new PmdRunnable(dataSource, realFileName, renderers, ctx, rs, processor));
         }
 
-        // in case we analyzed files within Zip Files/Jars, we need to close them now...
-        for (DataSource dataSource : files) {
-            if (dataSource instanceof ZipDataSource) {
-                IOUtils.closeQuietly((ZipDataSource) dataSource);
-            }
-        }
-
         // render base report first - general errors
         renderReports(renderers, ctx.getReport());
         
         // then add analysis results per file
         collectReports(renderers);
+
+        // in case we analyzed files within Zip Files/Jars, we need to close them after
+        // the analysis is finished
+        for (DataSource dataSource : files) {
+            IOUtils.closeQuietly(dataSource);
+        }
     }
 
     protected abstract void runAnalysis(PmdRunnable runnable);

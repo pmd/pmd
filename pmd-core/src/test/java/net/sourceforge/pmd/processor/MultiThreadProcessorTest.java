@@ -29,6 +29,7 @@ import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 
 public class MultiThreadProcessorTest {
 
@@ -85,7 +86,7 @@ public class MultiThreadProcessorTest {
         Assert.assertEquals("Missing violation", 1, reportListener.violations.get());
     }
 
-    private static class StringDataSource implements DataSource {
+    private static class StringDataSource extends AbstractDataSource {
         private final String data;
         private final String name;
 

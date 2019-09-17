@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.util.datasource;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
+
 /**
  * DataSource implementation to read data from an entry in a zip or jar file.
  */
-public class ZipDataSource implements DataSource, Closeable {
+public class ZipDataSource extends AbstractDataSource {
     private final ZipFile zipFile;
     private final ZipEntry zipEntry;
 
