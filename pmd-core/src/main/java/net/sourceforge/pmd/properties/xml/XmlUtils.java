@@ -16,7 +16,7 @@ public final class XmlUtils {
 
     static final String UNEXPECTED_ELEMENT = "Unexpected element '%s', expecting %s";
     static final String MISSING_REQUIRED_ATTRIBUTE = "Required attribute '%s' is missing";
-    static final String MISSING_REQUIRED_ATTRIBUTE = "Required attribute '%s' is missing";
+    static final String PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE = "The type %s does not support the attribute syntax.\nUse a nested element, e.g. %s";
 
     private XmlUtils() {
 
@@ -36,7 +36,7 @@ public final class XmlUtils {
                                              .map(Element.class::cast);
     }
 
-    public static <T> T expectElement(XmlErrorReporter err, Element elt, XmlSyntax<T> syntax) {
+    public static <T> T expectElement(XmlErrorReporter err, Element elt, XmlMapper<T> syntax) {
 
         if (!syntax.getReadElementNames().contains(elt.getTagName())) {
             err.warn(elt, "Wrong name, expect " + XmlSyntaxUtils.formatPossibilities(syntax.getReadElementNames()));

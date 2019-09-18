@@ -11,6 +11,8 @@ import java.util.function.Function;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+
 /**
  * Serialize to and from a simple string. Examples:
  *
@@ -23,7 +25,7 @@ import org.w3c.dom.Element;
  * <pre>This class is special because it enables compatibility with the
  * pre 7.0.0 XML syntax.
  */
-final class ValueSyntax<T> extends XmlSyntax.StableXmlSyntax<T> {
+final class ValueSyntax<T> extends StableXmlMapper<T> {
 
     private static final String VALUE_NAME = "value";
     private final Function<? super T, String> toString;

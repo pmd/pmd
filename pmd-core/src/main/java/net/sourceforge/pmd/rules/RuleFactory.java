@@ -31,7 +31,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.xml.SchemaConstants;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
-import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -335,7 +335,7 @@ public class RuleFactory {
 
         builder.desc(SchemaConstants.DESCRIPTION.getAttributeOrThrow(propertyElement, err));
 
-        propertyValueCapture(propertyElement, typeId, factory.getXmlSyntax(), builder, err);
+        propertyValueCapture(propertyElement, typeId, factory.getXmlMapper(), builder, err);
 
         // TODO support constraints like numeric range
 
@@ -345,11 +345,11 @@ public class RuleFactory {
 
     private static <T> void propertyValueCapture(Element propertyElement,
                                                  String typeId,
-                                                 XmlSyntax<?> baseSyntax,
+                                                 XmlMapper<?> baseSyntax,
                                                  PropertyBuilder<?, T> builder,
                                                  XmlErrorReporter err) {
         @SuppressWarnings("unchecked")
-        XmlSyntax<T> syntax = (XmlSyntax<T>) baseSyntax;
+        XmlMapper<T> syntax = (XmlMapper<T>) baseSyntax;
         T defaultValue;
 
 

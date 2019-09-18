@@ -9,7 +9,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 
 /**
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.properties.xml.XmlSyntax;
 final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
 
 
-    private final XmlSyntax<T> parser;
+    private final XmlMapper<T> parser;
     private final PropertyTypeId typeId;
     private final String name;
     private final String description;
@@ -33,7 +33,7 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
                               String description,
                               T defaultValue,
                               Set<PropertyConstraint<? super T>> constraints,
-                              XmlSyntax<T> parser,
+                              XmlMapper<T> parser,
                               @Nullable PropertyTypeId typeId) {
 
         this.name = name;
@@ -78,7 +78,7 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
     }
 
     @Override
-    public XmlSyntax<T> xmlStrategy() {
+    public XmlMapper<T> xmlStrategy() {
         return parser;
     }
 

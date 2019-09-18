@@ -38,7 +38,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.xml.SchemaConstants;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -307,7 +307,7 @@ public class RuleSetWriter {
         Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
 
-        XmlSyntax<T> xmlStrategy = propertyDescriptor.xmlStrategy();
+        XmlMapper<T> xmlStrategy = propertyDescriptor.xmlStrategy();
 
         Element valueElt = createPropertyValueElement(xmlStrategy.getWriteElementName(value));
         xmlStrategy.toXml(valueElt, value);

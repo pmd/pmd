@@ -21,16 +21,16 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * A set of syntaxes for read and write. One special syntax is designated
  * as the one used to write elements, the others are used to read.
  */
-final class SyntaxSet<T> extends XmlSyntax<T> {
+final class MapperSet<T> extends XmlMapper<T> {
 
-    private final XmlSyntax<T> forWrite;
-    private final Map<String, XmlSyntax<T>> readIndex;
+    private final XmlMapper<T> forWrite;
+    private final Map<String, XmlMapper<T>> readIndex;
 
     /**
      * @param newSyntax Newer syntax (eg seq)
      * @param compat    Value syntax (eg delimited string for sequence)
      */
-    SyntaxSet(XmlSyntax<T> newSyntax, ValueSyntax<T> compat, boolean preferNew) {
+    MapperSet(XmlMapper<T> newSyntax, ValueSyntax<T> compat, boolean preferNew) {
         // the set here prunes duplicates
         this(preferNew ? newSyntax : compat, CollectionUtil.setOf(newSyntax, compat));
     }
@@ -44,7 +44,7 @@ final class SyntaxSet<T> extends XmlSyntax<T> {
      * @param forWrite Designated strategy for writing
      * @param forRead  Set of supported syntaxes, must have pairwise different read names
      */
-    private SyntaxSet(XmlSyntax<T> forWrite, Collection<? extends XmlSyntax<T>> forRead) {
+    private MapperSet(XmlMapper<T> forWrite, Collection<? extends XmlMapper<T>> forRead) {
         super();
         this.forWrite = forWrite;
 
@@ -52,8 +52,8 @@ final class SyntaxSet<T> extends XmlSyntax<T> {
             throw new IllegalArgumentException("Empty set of reads strategies!");
         }
 
-        Map<String, XmlSyntax<T>> map = new LinkedHashMap<>();
-        for (XmlSyntax<T> syntax : forRead) {
+        Map<String, XmlMapper<T>> map = new LinkedHashMap<>();
+        for (XmlMapper<T> syntax : forRead) {
             for (String name : syntax.getReadElementNames()) {
 
                 map.merge(name, syntax, (a, b) -> {
@@ -80,7 +80,7 @@ final class SyntaxSet<T> extends XmlSyntax<T> {
     @Override
     public @Nullable T fromString(String string) {
 
-        for (XmlSyntax<T> syntax : supportedReadStrategies()) {
+        for (XmlMapper<T> syntax : supportedReadStrategies()) {
             if (syntax.supportsStringMapping()) {
                 return syntax.fromString(string);
             }
@@ -92,7 +92,7 @@ final class SyntaxSet<T> extends XmlSyntax<T> {
     @Override
     public String toString(T value) {
 
-        for (XmlSyntax<T> syntax : supportedReadStrategies()) {
+        for (XmlMapper<T> syntax : supportedReadStrategies()) {
             if (syntax.supportsStringMapping()) {
                 return syntax.toString(value);
             }
@@ -101,18 +101,18 @@ final class SyntaxSet<T> extends XmlSyntax<T> {
         throw new UnsupportedOperationException();
     }
 
-    public Set<XmlSyntax<T>> supportedReadStrategies() {
+    public Set<XmlMapper<T>> supportedReadStrategies() {
         return new LinkedHashSet<>(readIndex.values());
     }
 
     @Override
     public boolean supportsStringMapping() {
-        return supportedReadStrategies().stream().anyMatch(XmlSyntax::supportsStringMapping);
+        return supportedReadStrategies().stream().anyMatch(XmlMapper::supportsStringMapping);
     }
 
     @Override
     public T fromXml(Element element, XmlErrorReporter err) {
-        XmlSyntax<T> syntax = readIndex.get(element.getTagName());
+        XmlMapper<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {
             throw err.error(element, XmlUtils.UNEXPECTED_ELEMENT, element.getTagName(), XmlSyntaxUtils.formatPossibilities(readIndex.keySet()));
         } else {

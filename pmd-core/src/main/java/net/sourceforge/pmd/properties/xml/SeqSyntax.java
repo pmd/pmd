@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 
 import org.w3c.dom.Element;
 
+import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+
 /**
  * Serialize to and from a simple string. Examples:
  *
@@ -18,12 +20,12 @@ import org.w3c.dom.Element;
  *  <seq>1</seq>
  * }</pre>
  */
-final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax.StableXmlSyntax<C> {
+final class SeqSyntax<T, C extends Collection<T>> extends StableXmlMapper<C> {
 
-    private final XmlSyntax<T> itemSyntax;
+    private final XmlMapper<T> itemSyntax;
     private final Supplier<C> emptyCollSupplier;
 
-    SeqSyntax(XmlSyntax<T> itemSyntax, Supplier<C> emptyCollSupplier) {
+    SeqSyntax(XmlMapper<T> itemSyntax, Supplier<C> emptyCollSupplier) {
         super("seq");
         this.itemSyntax = itemSyntax;
         this.emptyCollSupplier = emptyCollSupplier;

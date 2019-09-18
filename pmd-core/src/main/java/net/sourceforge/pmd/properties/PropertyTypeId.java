@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
@@ -52,7 +52,7 @@ public enum PropertyTypeId {
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
     private final String stringId;
-    private final XmlSyntax<?> xmlSyntax;
+    private final XmlMapper<?> xmlMapper;
     private final Function<String, ? extends PropertyBuilder<?, ?>> factory;
 
 
@@ -65,14 +65,14 @@ public enum PropertyTypeId {
     }
 
 
-    <T> PropertyTypeId(String id, XmlSyntax<T> syntax, Function<String, PropertyBuilder<?, T>> factory) {
+    <T> PropertyTypeId(String id, XmlMapper<T> syntax, Function<String, PropertyBuilder<?, T>> factory) {
         this.stringId = id;
-        this.xmlSyntax = syntax;
+        this.xmlMapper = syntax;
         this.factory = factory;
     }
 
-    public XmlSyntax<?> getXmlSyntax() {
-        return xmlSyntax;
+    public XmlMapper<?> getXmlMapper() {
+        return xmlMapper;
     }
 
 

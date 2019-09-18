@@ -17,12 +17,12 @@ import org.w3c.dom.Element;
  * then mentioning {@code </none>} will yield a toplevel empty optional. So
  * having a non-empty optional with an empty optional inside is disallowed.
  */
-final class OptionalSyntax<T> extends XmlSyntax<Optional<T>> {
+final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
 
     private static final String EMPTY_NAME = "none";
-    private final XmlSyntax<T> itemSyntax;
+    private final XmlMapper<T> itemSyntax;
 
-    OptionalSyntax(XmlSyntax<T> itemSyntax) {
+    OptionalSyntax(XmlMapper<T> itemSyntax) {
         this.itemSyntax = itemSyntax;
 
     }

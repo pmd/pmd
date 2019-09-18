@@ -6,7 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 
 /**
@@ -53,7 +53,7 @@ public interface PropertyDescriptor<T> {
      * Returns the strategy used to read and write this property to XML.
      * May support strings too.
      */
-    XmlSyntax<T> xmlStrategy();
+    XmlMapper<T> xmlStrategy();
 
 
     /**

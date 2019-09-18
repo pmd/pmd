@@ -16,9 +16,9 @@ import org.w3c.dom.Element;
  *
  * @author Clément Fournier
  */
-public abstract class XmlSyntax<T> {
+public abstract class XmlMapper<T> {
 
-    /* package */ XmlSyntax() {
+    /* package */ XmlMapper() {
     }
 
     /** Extract the value from an XML element. */
@@ -75,16 +75,16 @@ public abstract class XmlSyntax<T> {
         return examples().get(0);
     }
 
-    abstract static class StableXmlSyntax<T> extends XmlSyntax<T> {
+    abstract static class StableXmlMapper<T> extends XmlMapper<T> {
 
         private final String eltName;
         private final Set<String> readNames;
 
-        /* package */ StableXmlSyntax(String eltName) {
+        /* package */ StableXmlMapper(String eltName) {
             this(eltName, Collections.singleton(eltName));
         }
 
-        /* package */ StableXmlSyntax(String eltName, Set<String> readNames) {
+        /* package */ StableXmlMapper(String eltName, Set<String> readNames) {
             this.eltName = eltName;
             this.readNames = readNames;
         }

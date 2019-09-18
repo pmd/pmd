@@ -38,14 +38,14 @@ public final class XmlSyntaxUtils {
     public static final ValueSyntax<Double> DOUBLE = new ValueSyntax<>(Double::valueOf);
 
 
-    public static final XmlSyntax<List<Integer>> INTEGER_LIST = numberList(INTEGER);
-    public static final XmlSyntax<List<Double>> DOUBLE_LIST = numberList(DOUBLE);
-    public static final XmlSyntax<List<Long>> LONG_LIST = numberList(LONG);
+    public static final XmlMapper<List<Integer>> INTEGER_LIST = numberList(INTEGER);
+    public static final XmlMapper<List<Double>> DOUBLE_LIST = numberList(DOUBLE);
+    public static final XmlMapper<List<Long>> LONG_LIST = numberList(LONG);
 
-    public static final XmlSyntax<List<Character>> CHAR_LIST = otherList(CHARACTER);
-    public static final XmlSyntax<List<String>> STRING_LIST = otherList(STRING);
+    public static final XmlMapper<List<Character>> CHAR_LIST = otherList(CHARACTER);
+    public static final XmlMapper<List<String>> STRING_LIST = otherList(STRING);
 
-    public static final XmlSyntax<List<Pattern>> REGEX_LIST = new SeqSyntax<>(REGEX, ArrayList::new);
+    public static final XmlMapper<List<Pattern>> REGEX_LIST = new SeqSyntax<>(REGEX, ArrayList::new);
 
 
     private XmlSyntaxUtils() {
@@ -53,15 +53,15 @@ public final class XmlSyntaxUtils {
     }
 
 
-    private static <T extends Number> XmlSyntax<List<T>> numberList(ValueSyntax<T> valueSyntax) {
+    private static <T extends Number> XmlMapper<List<T>> numberList(ValueSyntax<T> valueSyntax) {
         return seqAndDelimited(valueSyntax, ArrayList::new, true, ',');
     }
 
-    private static <T> XmlSyntax<List<T>> otherList(ValueSyntax<T> valueSyntax) {
+    private static <T> XmlMapper<List<T>> otherList(ValueSyntax<T> valueSyntax) {
         return seqAndDelimited(valueSyntax, ArrayList::new, true /* for now */, '|');
     }
 
-    public static <T> XmlSyntax<Optional<T>> toOptional(XmlSyntax<T> itemSyntax) {
+    public static <T> XmlMapper<Optional<T>> toOptional(XmlMapper<T> itemSyntax) {
         return new OptionalSyntax<>(itemSyntax);
     }
 
@@ -79,21 +79,21 @@ public final class XmlSyntaxUtils {
      *
      * @throws IllegalArgumentException If the item syntax doesn't support string mapping
      */
-    public static <T, C extends Collection<T>> XmlSyntax<C> seqAndDelimited(XmlSyntax<T> itemSyntax,
+    public static <T, C extends Collection<T>> XmlMapper<C> seqAndDelimited(XmlMapper<T> itemSyntax,
                                                                             Supplier<C> emptyCollSupplier,
                                                                             boolean preferOldSyntax,
                                                                             char delimiter) {
         if (!itemSyntax.supportsStringMapping()) {
             throw new IllegalArgumentException("Item syntax does not support string mapping " + itemSyntax);
         }
-        return new SyntaxSet<>(
+        return new MapperSet<>(
             new SeqSyntax<>(itemSyntax, emptyCollSupplier),
             delimitedString(itemSyntax::toString, itemSyntax::fromString, delimiter, emptyCollSupplier),
             preferOldSyntax
         );
     }
 
-    public static <T, C extends Collection<T>> XmlSyntax<C> onlySeq(XmlSyntax<T> itemSyntax,
+    public static <T, C extends Collection<T>> XmlMapper<C> onlySeq(XmlMapper<T> itemSyntax,
                                                                     Supplier<C> emptyCollSupplier) {
         return new SeqSyntax<>(itemSyntax, emptyCollSupplier);
     }

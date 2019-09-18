@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlMapper;
 import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 // @formatter:off
@@ -207,17 +207,17 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look clumsy
     abstract static class BaseSinglePropertyBuilder<B extends PropertyBuilder<B, T>, T> extends PropertyBuilder<B, T> {
 
-        private final XmlSyntax<T> parser;
+        private final XmlMapper<T> parser;
 
 
         // Class is not final but a package-private constructor restricts inheritance
-        BaseSinglePropertyBuilder(String name, XmlSyntax<T> parser) {
+        BaseSinglePropertyBuilder(String name, XmlMapper<T> parser) {
             super(name);
             this.parser = parser;
         }
 
 
-        protected XmlSyntax<T> getParser() {
+        protected XmlMapper<T> getParser() {
             return parser;
         }
 
@@ -306,7 +306,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // Note: This type is used to fix the first type parameter for classes that don't need more API.
     public static class GenericPropertyBuilder<T> extends BaseSinglePropertyBuilder<GenericPropertyBuilder<T>, T> {
 
-        GenericPropertyBuilder(String name, XmlSyntax<T> parser) {
+        GenericPropertyBuilder(String name, XmlMapper<T> parser) {
             super(name, parser);
         }
     }
@@ -379,7 +379,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      */
     public static final class GenericCollectionPropertyBuilder<V, C extends Collection<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
 
-        private final XmlSyntax<V> parser;
+        private final XmlMapper<V> parser;
         private final Supplier<C> emptyCollSupplier;
         private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
 
@@ -388,7 +388,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * Builds a new builder for a collection type. Package-private.
          */
         GenericCollectionPropertyBuilder(String name,
-                                         XmlSyntax<V> parser,
+                                         XmlMapper<V> parser,
                                          Supplier<C> emptyCollSupplier) {
             super(name);
             this.parser = parser;
@@ -489,7 +489,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             // and C will be the actual type parameter of the returned property
             // descriptor
 
-            XmlSyntax<C> syntax = parser.supportsStringMapping()
+            XmlMapper<C> syntax = parser.supportsStringMapping()
                                   ? XmlSyntaxUtils.seqAndDelimited(parser, emptyCollSupplier, false, multiValueDelimiter)
                                   : XmlSyntaxUtils.onlySeq(parser, emptyCollSupplier);
 
