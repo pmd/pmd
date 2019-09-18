@@ -56,7 +56,7 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
 
         Map<String, XmlSyntax<T>> map = new LinkedHashMap<>();
         for (XmlSyntax<T> syntax : forRead) {
-            for (String name : syntax.getSupportedReadElementNames()) {
+            for (String name : syntax.getReadElementNames()) {
 
                 map.merge(name, syntax, (a, b) -> {
                     // merge function
@@ -70,7 +70,7 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
     }
 
     @Override
-    public Set<String> getSupportedReadElementNames() {
+    public Set<String> getReadElementNames() {
         return readIndex.keySet();
     }
 

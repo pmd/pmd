@@ -52,11 +52,12 @@ public abstract class XmlSyntax<T> {
     }
 
 
-    /** Get the preferred name used to write elements. */
+    /** Get the name that should be used for the element to represent [value]. */
     public abstract String getWriteElementName(T value);
 
 
-    public abstract Set<String> getSupportedReadElementNames();
+    /** Get all names that can be read using this syntax. */
+    public abstract Set<String> getReadElementNames();
 
 
     /**
@@ -90,7 +91,7 @@ public abstract class XmlSyntax<T> {
         }
 
         @Override
-        public Set<String> getSupportedReadElementNames() {
+        public Set<String> getReadElementNames() {
             return readNames;
         }
     }

@@ -47,8 +47,8 @@ final class OptionalSyntax<T> extends XmlSyntax<Optional<T>> {
     }
 
     @Override
-    public Set<String> getSupportedReadElementNames() {
-        HashSet<String> strings = new HashSet<>(itemSyntax.getSupportedReadElementNames());
+    public Set<String> getReadElementNames() {
+        HashSet<String> strings = new HashSet<>(itemSyntax.getReadElementNames());
         strings.add(EMPTY_NAME);
         return strings;
     }
