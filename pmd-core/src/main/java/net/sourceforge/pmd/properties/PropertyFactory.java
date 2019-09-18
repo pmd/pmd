@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.ValueParserConstants.enumerationParser;
+import static net.sourceforge.pmd.properties.internal.XmlSyntaxUtils.enumerationParser;
 
 import java.util.HashMap;
 import java.util.List;

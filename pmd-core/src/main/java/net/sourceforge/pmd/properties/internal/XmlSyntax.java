@@ -28,6 +28,10 @@ public abstract class XmlSyntax<T> {
     /** Write the value into the given XML element. */
     public abstract void toXml(Element container, T value);
 
+    /**
+     * Returns true if this syntax knows how to map values of type {@code T}
+     * from and to a simple string, without XML.
+     */
     public boolean supportsStringMapping() {
         return false;
     }
@@ -38,7 +42,7 @@ public abstract class XmlSyntax<T> {
      * @throws IllegalArgumentException if something goes wrong (but should be reported on the error reporter)
      */
     public T fromString(String attributeData) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Check #supportsStringMapping()");
     }
 
     /**
@@ -48,7 +52,7 @@ public abstract class XmlSyntax<T> {
      * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
      */
     public String toString(T value) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Check #supportsStringMapping()");
     }
 
 

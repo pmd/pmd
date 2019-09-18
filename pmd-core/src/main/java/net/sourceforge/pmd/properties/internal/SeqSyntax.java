@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  *  <seq>1</seq>
  * }</pre>
  */
-public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax.StableXmlSyntax<C> {
+final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax.StableXmlSyntax<C> {
 
     private final XmlSyntax<T> itemSyntax;
     private final Supplier<C> emptyCollSupplier;

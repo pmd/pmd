@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.properties;
 
-import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
@@ -35,19 +33,7 @@ public enum PropertyDescriptorField {
     /** The default value. */
     DEFAULT_VALUE("value"),
     /** For multi-valued properties, this defines the delimiter of the single values. */
-    DELIMITER("delimiter"),
-    /** The minimum allowed value for numeric properties. */
-    MIN("min"),
-    /** The maximum allowed value for numeric properties. */
-    MAX("max"),
-    /** To limit the range of valid values, package names. */
-    LEGAL_PACKAGES("legalPackages"),
-    /** Labels for enumerated properties. */
-    LABELS("labels"),
-    /** Choices for enumerated properties. */
-    CHOICES("choices"),
-    /** Default index for enumerated properties. */
-    DEFAULT_INDEX("defaultIndex");
+    DELIMITER("delimiter");
 
     private final String attributeName;
 
@@ -60,7 +46,7 @@ public enum PropertyDescriptorField {
     public String getOrThrow(Element element, XmlErrorReporter err) {
         String attribute = element.getAttribute(attributeName);
         if (attribute == null) {
-            throw err.error(element, "Missing attribute '" + attributeName + "'");
+            throw err.error(element, "Attribute '" + attributeName + "' is required, but missing");
         }
 
         return attribute;
@@ -90,14 +76,5 @@ public enum PropertyDescriptorField {
         return attributeName();
     }
 
-
-    public static PropertyDescriptorField getConstant(String name) {
-        for (PropertyDescriptorField f : values()) {
-            if (Objects.equals(f.attributeName, name)) {
-                return f;
-            }
-        }
-        return null;
-    }
 
 }

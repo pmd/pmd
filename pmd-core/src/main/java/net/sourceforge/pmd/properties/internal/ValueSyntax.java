@@ -23,20 +23,20 @@ import org.w3c.dom.Element;
  * <pre>This class is special because it enables compatibility with the
  * pre 7.0.0 XML syntax.
  */
-public final class ValueSyntax<T> extends XmlSyntax.StableXmlSyntax<T> {
+final class ValueSyntax<T> extends XmlSyntax.StableXmlSyntax<T> {
 
     private static final String VALUE_NAME = "value";
     private final Function<? super T, String> toString;
     private final Function<String, ? extends T> fromString;
 
-    public ValueSyntax(Function<? super T, String> toString,
-                       Function<String, ? extends T> fromString) {
+    ValueSyntax(Function<? super T, String> toString,
+                Function<String, ? extends T> fromString) {
         super(VALUE_NAME);
         this.toString = toString;
         this.fromString = fromString;
     }
 
-    public ValueSyntax(Function<String, ? extends T> fromString) {
+    ValueSyntax(Function<String, ? extends T> fromString) {
         super(VALUE_NAME);
         this.toString = Objects::toString;
         this.fromString = fromString;

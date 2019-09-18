@@ -494,7 +494,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             // descriptor
 
             XmlSyntax<C> syntax = parser.supportsStringMapping()
-                                  ? XmlSyntaxUtils.seqAndDelimited(parser, emptyCollSupplier, false, Character.toString(multiValueDelimiter))
+                                  ? XmlSyntaxUtils.seqAndDelimited(parser, emptyCollSupplier, false, multiValueDelimiter)
                                   : XmlSyntaxUtils.onlySeq(parser, emptyCollSupplier);
 
             return new GenericPropertyDescriptor<>(

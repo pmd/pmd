@@ -23,7 +23,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * A set of syntaxes for read and write. One special syntax is designated
  * as the one used to write elements, the others are used to read.
  */
-public final class SyntaxSet<T> extends XmlSyntax<T> {
+final class SyntaxSet<T> extends XmlSyntax<T> {
 
     private final XmlSyntax<T> forWrite;
     private final Map<String, XmlSyntax<T>> readIndex;
@@ -32,7 +32,7 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
      * @param newSyntax Newer syntax (eg seq)
      * @param compat    Value syntax (eg delimited string for sequence)
      */
-    public SyntaxSet(XmlSyntax<T> newSyntax, ValueSyntax<T> compat, boolean preferNew) {
+    SyntaxSet(XmlSyntax<T> newSyntax, ValueSyntax<T> compat, boolean preferNew) {
         // the set here prunes duplicates
         this(preferNew ? newSyntax : compat, CollectionUtil.setOf(newSyntax, compat));
     }

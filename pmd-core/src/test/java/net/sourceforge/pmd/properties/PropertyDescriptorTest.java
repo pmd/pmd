@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -34,6 +35,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
+import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
 
 
 /**
@@ -337,7 +339,7 @@ public class PropertyDescriptorTest {
 
 
     private static List<String> parseEscaped(String s, char d) {
-        return ValueParserConstants.parseListWithEscapes(s, d, ValueParserConstants.STRING_PARSER);
+        return XmlSyntaxUtils.parseListWithEscapes(s, d, Function.identity());
     }
 
     @Test

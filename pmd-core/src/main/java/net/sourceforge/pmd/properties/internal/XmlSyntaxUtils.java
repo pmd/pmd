@@ -7,7 +7,9 @@ package net.sourceforge.pmd.properties.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -49,11 +51,11 @@ public final class XmlSyntaxUtils {
 
 
     private static <T extends Number> XmlSyntax<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, ArrayList::new, true, ",");
+        return seqAndDelimited(valueSyntax, ArrayList::new, true, ',');
     }
 
     private static <T> XmlSyntax<List<T>> otherList(ValueSyntax<T> valueSyntax) {
-        return seqAndDelimited(valueSyntax, ArrayList::new, true /* for now */, "|");
+        return seqAndDelimited(valueSyntax, ArrayList::new, true /* for now */, '|');
     }
 
     public static <T> XmlSyntax<Optional<T>> toOptional(XmlSyntax<T> itemSyntax) {
@@ -63,7 +65,7 @@ public final class XmlSyntaxUtils {
     public static <T, C extends Collection<T>> XmlSyntax<C> seqAndDelimited(XmlSyntax<T> itemSyntax,
                                                                             Supplier<C> emptyCollSupplier,
                                                                             boolean preferOldSyntax,
-                                                                            String delimiter) {
+                                                                            char delimiter) {
         if (!itemSyntax.supportsStringMapping()) {
             throw new IllegalArgumentException("Item syntax does not support string mapping " + itemSyntax);
         }
@@ -83,21 +85,70 @@ public final class XmlSyntaxUtils {
     public static <T, C extends Collection<T>> ValueSyntax<C> delimitedString(
         Function<? super T, String> toString,
         Function<String, ? extends T> fromString,
-        String delimiter,
+        char delimiter,
         Supplier<C> emptyCollSupplier
     ) {
-
+        String delim = "" + delimiter;
         return new ValueSyntax<>(
-            coll -> coll.stream().map(toString).collect(Collectors.joining(delimiter)),
+            coll -> coll.stream().map(toString).collect(Collectors.joining(delim)),
             string -> {
                 C coll = emptyCollSupplier.get();
-                for (String item : string.split(Pattern.quote(delimiter))) {
-                    coll.add(fromString.apply(item));
-                }
+                coll.addAll(parseListWithEscapes(string, delimiter, fromString));
                 return coll;
             }
         );
     }
+
+    private static final char ESCAPE_CHAR = '\\';
+
+    /**
+     * Parse a list delimited with the given delimiter, converting individual
+     * values to type {@code <U>} with the given extractor. Any character is
+     * escaped with a backslash. This is useful to escape the delimiter, and
+     * to escape the backslash. For example:
+     * <pre>{@code
+     *
+     * "a,c"  -> [ "a", "c" ]
+     * "a\,c" -> [ "a,c" ]
+     * "a\c"  -> [ "ac" ]
+     * "a\\c" -> [ "a\c" ]
+     * "a\"   -> [ "a\"  ]   (a backslash at the end of the string is just a backslash)
+     *
+     * }</pre>
+     */
+    public static <U> List<U> parseListWithEscapes(String str, char delimiter, Function<? super String, ? extends U> extractor) {
+        if (str.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<U> result = new ArrayList<>();
+        StringBuilder currentToken = new StringBuilder();
+        boolean inEscapeMode = false;
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
+            if (inEscapeMode) {
+                inEscapeMode = false;
+                currentToken.append(c);
+            } else if (c == delimiter) {
+                result.add(extractor.apply(currentToken.toString()));
+                currentToken = new StringBuilder();
+            } else if (c == ESCAPE_CHAR && i < str.length() - 1) {
+                // this is ordered this way so that if the delimiter is
+                // itself a backslash, no escapes are processed.
+                inEscapeMode = true;
+            } else {
+                currentToken.append(c);
+            }
+        }
+
+        if (currentToken.length() > 0) {
+            result.add(extractor.apply(currentToken.toString()));
+        }
+        return result;
+    }
+
 
     static String enquote(String it) {return "'" + it + "'";}
 
@@ -111,5 +162,19 @@ public final class XmlSyntaxUtils {
         } else {
             return "one of " + names.stream().map(XmlSyntaxUtils::enquote).collect(Collectors.joining(", "));
         }
+    }
+
+    public static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings) {
+
+        if (mappings.containsValue(null)) {
+            throw new IllegalArgumentException("Map may not contain entries with null values");
+        }
+
+        return new ValueSyntax<>(value -> {
+            if (!mappings.containsKey(value)) {
+                throw new IllegalArgumentException("Value was not in the set " + mappings.keySet());
+            }
+            return mappings.get(value);
+        });
     }
 }
