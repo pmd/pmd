@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.scala.rule;
+package net.sourceforge.pmd.lang.scala.rule;
 
 import static org.junit.Assert.assertEquals;
 
