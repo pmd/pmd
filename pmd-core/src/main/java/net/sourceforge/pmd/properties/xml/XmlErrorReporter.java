@@ -4,18 +4,22 @@
 
 package net.sourceforge.pmd.properties.xml;
 
+import java.util.logging.Logger;
+
 import org.w3c.dom.Node;
 
 /**
  * Reports errors in an XML document. Implementations have a way to
  * associate nodes with their location in the document.
  *
- * TODO this is a placeholder for now.
+ * TODO this is a placeholder for now, I need to publish the impl to maven
  */
 public interface XmlErrorReporter {
 
+    Logger LOGGER = Logger.getLogger(XmlErrorReporter.class.getName());
+
     default void warn(Node node, String message, Object... args) {
-        throw new UnsupportedOperationException("TODO");
+        LOGGER.warning(String.format(message, args));
     }
 
 

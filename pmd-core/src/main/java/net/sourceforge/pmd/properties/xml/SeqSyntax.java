@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.properties.xml.XmlMapper.StableXmlMapper;
+import net.sourceforge.pmd.properties.xml.internal.XmlUtils;
 
 /**
  * Serialize to and from a simple string. Examples:
@@ -54,10 +55,13 @@ final class SeqSyntax<T, C extends Collection<T>> extends StableXmlMapper<C> {
     }
 
     @Override
-    public List<String> examples() {
-        return Collections.singletonList("<seq>\n"
-            + "   " + String.join("\n    ", itemSyntax.examples()) + "\n"
-            + "   ..."
-            + "</seq>");
+    protected List<String> examples(String curIndent, String baseIndent) {
+        String newIndent = curIndent + baseIndent;
+        return Collections.singletonList(
+            curIndent + "<seq>\n"
+                + newIndent + String.join("\n", itemSyntax.examples(newIndent, baseIndent)) + "\n"
+                + newIndent + "..."
+                + curIndent + "</seq>"
+        );
     }
 }

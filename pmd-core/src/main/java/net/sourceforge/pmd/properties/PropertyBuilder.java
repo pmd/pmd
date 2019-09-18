@@ -266,15 +266,16 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         public GenericPropertyBuilder<Optional<T>> toOptional() {
             return new GenericPropertyBuilder<Optional<T>>(this.getName(), XmlSyntaxUtils.toOptional(getParser())) {
                 {
-                    if (isDefaultValueSet()) {
-                        this.defaultValue(Optional.ofNullable(BaseSinglePropertyBuilder.this.getDefaultValue()));
+                    BaseSinglePropertyBuilder<B, T> base = BaseSinglePropertyBuilder.this;
+                    if (base.isDefaultValueSet()) {
+                        this.defaultValue(Optional.ofNullable(base.getDefaultValue()));
                     }
 
-                    if (isDescriptionSet()) {
-                        this.desc(BaseSinglePropertyBuilder.this.getDescription());
+                    if (base.isDescriptionSet()) {
+                        this.desc(base.getDescription());
                     }
 
-                    for (PropertyConstraint<? super T> validator : BaseSinglePropertyBuilder.this.getConstraints()) {
+                    for (PropertyConstraint<? super T> validator : base.getConstraints()) {
                         this.require(validator.toOptionalConstraint());
                     }
                 }

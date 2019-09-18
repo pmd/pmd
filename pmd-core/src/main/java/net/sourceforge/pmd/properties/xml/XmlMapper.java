@@ -68,7 +68,11 @@ public abstract class XmlMapper<T> {
      * Returns some examples for what XML output this strategy produces.
      * For example, {@code <value>1</value>}.
      */
-    public abstract List<String> examples();
+    public final List<String> examples() {
+        return examples("", "    ");
+    }
+
+    protected abstract List<String> examples(String curIndent, String baseIndent);
 
     @Override
     public String toString() {

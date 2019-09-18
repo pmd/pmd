@@ -54,9 +54,9 @@ final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
     }
 
     @Override
-    public List<String> examples() {
-        ArrayList<String> list = new ArrayList<>(itemSyntax.examples());
-        list.add("<none/>");
+    protected List<String> examples(String curIndent, String baseIndent) {
+        ArrayList<String> list = new ArrayList<>(itemSyntax.examples(curIndent, baseIndent));
+        list.add(curIndent + "<none/>");
         return list;
     }
 }

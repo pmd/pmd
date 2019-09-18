@@ -114,7 +114,7 @@ final class MapperSet<T> extends XmlMapper<T> {
     public T fromXml(Element element, XmlErrorReporter err) {
         XmlMapper<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {
-            throw err.error(element, XmlUtils.UNEXPECTED_ELEMENT, element.getTagName(), XmlSyntaxUtils.formatPossibilities(readIndex.keySet()));
+            throw err.error(element, XmlErrorMessages.UNEXPECTED_ELEMENT, element.getTagName(), XmlSyntaxUtils.formatPossibilities(readIndex.keySet()));
         } else {
             return syntax.fromXml(element, err);
         }
@@ -127,7 +127,7 @@ final class MapperSet<T> extends XmlMapper<T> {
 
 
     @Override
-    public List<String> examples() {
-        return readIndex.values().stream().flatMap(it -> it.examples().stream()).collect(Collectors.toList());
+    protected List<String> examples(String curIndent, String baseIndent) {
+        return readIndex.values().stream().flatMap(it -> it.examples(curIndent, baseIndent).stream()).collect(Collectors.toList());
     }
 }

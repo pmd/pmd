@@ -17,9 +17,13 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 
-
+/**
+ * This is internal API and shouldn't be used directly by clients.
+ */
 @InternalApi
 public final class XmlSyntaxUtils {
 
@@ -167,19 +171,14 @@ public final class XmlSyntaxUtils {
     }
 
 
-    static String enquote(String it) {
-        return "'" + it + "'";
-    }
-
-
-    // nullable
-    static String formatPossibilities(Set<String> names) {
+    @Nullable
+    public static String formatPossibilities(Set<String> names) {
         if (names.isEmpty()) {
             return null;
         } else if (names.size() == 1) {
-            return enquote(names.iterator().next());
+            return "'" + names.iterator().next() + "'";
         } else {
-            return "one of " + names.stream().map(XmlSyntaxUtils::enquote).collect(Collectors.joining(", "));
+            return "one of " + names.stream().map(it -> "'" + it + "'").collect(Collectors.joining(", "));
         }
     }
 

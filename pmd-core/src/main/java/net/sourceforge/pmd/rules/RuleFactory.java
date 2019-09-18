@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.rules;
 
-import static net.sourceforge.pmd.properties.xml.SchemaConstants.PROPERTY_VALUE;
+import static net.sourceforge.pmd.properties.xml.internal.SchemaConstants.PROPERTY_VALUE;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -28,10 +30,11 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.xml.SchemaConstants;
 import net.sourceforge.pmd.properties.PropertyTypeId;
+import net.sourceforge.pmd.properties.xml.XmlErrorMessages;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
+import net.sourceforge.pmd.properties.xml.internal.SchemaConstants;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 
@@ -353,22 +356,26 @@ public class RuleFactory {
         T defaultValue;
 
 
-        String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElement);
-        if (!StringUtils.isBlank(defaultAttr)) {
-            if (syntax.supportsStringMapping()) {
+        @Nullable String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElement);
+        if (defaultAttr != null) {
+            Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElement);
+            try {
                 defaultValue = syntax.fromString(defaultAttr);
-            } else {
-                throw err.error(propertyElement.getAttributeNode(PROPERTY_VALUE.attributeName()),
-                                "Type " + typeId + " cannot be parsed from a string, use a nested element, e.g. "
-                                    + String.join("\nor\n", syntax.examples()));
+            } catch (IllegalArgumentException e) {
+                throw err.error(attrNode, e);
+            } catch (UnsupportedOperationException e) {
+                throw err.error(attrNode,
+                                XmlErrorMessages.PROPERTY_DOESNT_SUPPORT_VALUE_ATTRIBUTE,
+                                typeId,
+                                String.join("\nor\n", syntax.examples()));
             }
+            err.warn(attrNode,
+                     XmlErrorMessages.DEPRECATED_USE_OF_ATTRIBUTE,
+                     PROPERTY_VALUE.attributeName(),
+                     String.join("\nor\n", syntax.examples()));
         } else {
-            NodeList children = propertyElement.getElementsByTagName(PROPERTY_VALUE.attributeName());
-            if (children.getLength() == 1) {
-                defaultValue = syntax.fromXml((Element) children.item(0), err);
-            } else {
-                throw new IllegalArgumentException("No value defined!");
-            }
+            Element child = PROPERTY_VALUE.getSingleChildIn(propertyElement, err);
+            defaultValue = syntax.fromXml(child, err);
         }
 
         builder.defaultValue(defaultValue);
