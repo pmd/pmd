@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.rules;
 
-import static net.sourceforge.pmd.properties.PropertyDescriptorField.DEFAULT_VALUE;
+import static net.sourceforge.pmd.properties.xml.SchemaConstants.PROPERTY_VALUE;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorField;
+import net.sourceforge.pmd.properties.xml.SchemaConstants;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 import net.sourceforge.pmd.properties.xml.XmlSyntax;
@@ -274,7 +274,7 @@ public class RuleFactory {
      * @return An entry of property name to its value
      */
     private Entry<String, String> getPropertyValue(Element propertyElement) {
-        String name = propertyElement.getAttribute(PropertyDescriptorField.NAME.attributeName());
+        String name = propertyElement.getAttribute(SchemaConstants.NAME.attributeName());
         return new SimpleEntry<>(name, valueFrom(propertyElement));
     }
 
@@ -310,7 +310,7 @@ public class RuleFactory {
      * @return True if this element defines a new property, false if this is just stating a value
      */
     private static boolean isPropertyDefinition(Element node) {
-        return node.hasAttribute(PropertyDescriptorField.TYPE.attributeName());
+        return node.hasAttribute(SchemaConstants.TYPE.attributeName());
     }
 
     /**
@@ -321,9 +321,9 @@ public class RuleFactory {
      * @return The property descriptor
      */
     private static PropertyDescriptor<?> parsePropertyDefinition(Element propertyElement) {
-        XmlErrorReporter err = new XmlErrorReporter() {};
+        XmlErrorReporter err = new XmlErrorReporter() { }; // TODO this is a fake instance, should be provided by context
 
-        String typeId = PropertyDescriptorField.TYPE.getOrThrow(propertyElement, err);
+        String typeId = SchemaConstants.TYPE.getAttributeOrThrow(propertyElement, err);
 
         PropertyTypeId factory = PropertyTypeId.lookupMnemonic(typeId);
         if (factory == null) {
@@ -331,9 +331,9 @@ public class RuleFactory {
         }
 
         PropertyBuilder<?, ?> builder =
-            factory.newBuilder(PropertyDescriptorField.NAME.getOrThrow(propertyElement, err));
+            factory.newBuilder(SchemaConstants.NAME.getAttributeOrThrow(propertyElement, err));
 
-        builder.desc(PropertyDescriptorField.DESCRIPTION.getOrThrow(propertyElement, err));
+        builder.desc(SchemaConstants.DESCRIPTION.getAttributeOrThrow(propertyElement, err));
 
         propertyValueCapture(propertyElement, typeId, factory.getXmlSyntax(), builder, err);
 
@@ -353,17 +353,17 @@ public class RuleFactory {
         T defaultValue;
 
 
-        String defaultAttr = DEFAULT_VALUE.getOptional(propertyElement);
+        String defaultAttr = PROPERTY_VALUE.getAttributeOpt(propertyElement);
         if (!StringUtils.isBlank(defaultAttr)) {
             if (syntax.supportsStringMapping()) {
                 defaultValue = syntax.fromString(defaultAttr);
             } else {
-                throw err.error(propertyElement.getAttributeNode(DEFAULT_VALUE.attributeName()),
+                throw err.error(propertyElement.getAttributeNode(PROPERTY_VALUE.attributeName()),
                                 "Type " + typeId + " cannot be parsed from a string, use a nested element, e.g. "
                                     + String.join("\nor\n", syntax.examples()));
             }
         } else {
-            NodeList children = propertyElement.getElementsByTagName(DEFAULT_VALUE.attributeName());
+            NodeList children = propertyElement.getElementsByTagName(PROPERTY_VALUE.attributeName());
             if (children.getLength() == 1) {
                 defaultValue = syntax.fromXml((Element) children.item(0), err);
             } else {
@@ -377,7 +377,7 @@ public class RuleFactory {
 
     /** Gets the string value from a property node. */
     private static String valueFrom(Element propertyNode) {
-        String strValue = propertyNode.getAttribute(DEFAULT_VALUE.attributeName());
+        String strValue = propertyNode.getAttribute(PROPERTY_VALUE.attributeName());
 
         if (StringUtils.isNotBlank(strValue)) {
             return strValue;

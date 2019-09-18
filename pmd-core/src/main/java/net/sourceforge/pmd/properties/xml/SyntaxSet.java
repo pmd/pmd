@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.properties.xml;
 
-import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enquote;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -116,11 +114,7 @@ final class SyntaxSet<T> extends XmlSyntax<T> {
     public T fromXml(Element element, XmlErrorReporter err) {
         XmlSyntax<T> syntax = readIndex.get(element.getTagName());
         if (syntax == null) {
-            throw err.error(
-                element,
-                "Unexpected element name " + enquote(element.getTagName()) + ", expecting "
-                    + XmlSyntaxUtils.formatPossibilities(readIndex.keySet())
-            );
+            throw err.error(element, XmlUtils.UNEXPECTED_ELEMENT, element.getTagName(), XmlSyntaxUtils.formatPossibilities(readIndex.keySet()));
         } else {
             return syntax.fromXml(element, err);
         }

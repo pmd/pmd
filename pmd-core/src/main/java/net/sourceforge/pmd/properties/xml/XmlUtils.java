@@ -14,6 +14,10 @@ import org.w3c.dom.NodeList;
 
 public final class XmlUtils {
 
+    static final String UNEXPECTED_ELEMENT = "Unexpected element '%s', expecting %s";
+    static final String MISSING_REQUIRED_ATTRIBUTE = "Required attribute '%s' is missing";
+    static final String MISSING_REQUIRED_ATTRIBUTE = "Required attribute '%s' is missing";
+
     private XmlUtils() {
 
     }

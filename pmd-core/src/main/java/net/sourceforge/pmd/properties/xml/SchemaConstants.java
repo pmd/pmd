@@ -1,28 +1,19 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties;
+
+package net.sourceforge.pmd.properties.xml;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
-
 
 /**
- * Field names for parsing the properties out of the ruleset xml files. These are intended to be used as the keys to a
- * map of fields to values. Most property descriptors can be built directly from such a map using their factory.
- *
- * @author Brian Remedios
- * @see RuleSetFactory
- * @see PropertyTypeId
- * @deprecated Will be removed with 7.0.0
+ * Constants of the ruleset schema.
  */
-@Deprecated
-public enum PropertyDescriptorField {
+public enum SchemaConstants {
 
     /** The type of the property. */
     TYPE("type"),
@@ -31,29 +22,29 @@ public enum PropertyDescriptorField {
     /** The description of the property. */
     DESCRIPTION("description"),
     /** The default value. */
-    DEFAULT_VALUE("value"),
+    PROPERTY_VALUE("value"),
     /** For multi-valued properties, this defines the delimiter of the single values. */
     DELIMITER("delimiter");
 
     private final String attributeName;
 
 
-    PropertyDescriptorField(String attributeName) {
+    SchemaConstants(String attributeName) {
         this.attributeName = attributeName;
     }
 
     @NonNull
-    public String getOrThrow(Element element, XmlErrorReporter err) {
+    public String getAttributeOrThrow(Element element, XmlErrorReporter err) {
         String attribute = element.getAttribute(attributeName);
         if (attribute == null) {
-            throw err.error(element, "Attribute '" + attributeName + "' is required, but missing");
+            throw err.error(element, XmlUtils.MISSING_REQUIRED_ATTRIBUTE, attributeName);
         }
 
         return attribute;
     }
 
     @Nullable
-    public String getOptional(Element element) {
+    public String getAttributeOpt(Element element) {
         return element.getAttribute(attributeName);
     }
 

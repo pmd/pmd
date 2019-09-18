@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyDescriptorField;
+import net.sourceforge.pmd.properties.xml.SchemaConstants;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.xml.XmlSyntax;
@@ -305,7 +305,7 @@ public class RuleSetWriter {
 
     private <T> Element createPropertyValueElement(PropertyDescriptor<T> propertyDescriptor, T value) {
         Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
-        PropertyDescriptorField.NAME.setOn(element, propertyDescriptor.name());
+        SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
 
         XmlSyntax<T> xmlStrategy = propertyDescriptor.xmlStrategy();
 
@@ -320,9 +320,9 @@ public class RuleSetWriter {
 
         final Element element = createPropertyValueElement(propertyDescriptor, propertyDescriptor.defaultValue());
 
-        PropertyDescriptorField.NAME.setOn(element, propertyDescriptor.name());
-        PropertyDescriptorField.TYPE.setOn(element, typeId.getStringId());
-        PropertyDescriptorField.DESCRIPTION.setOn(element, propertyDescriptor.description());
+        SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
+        SchemaConstants.TYPE.setOn(element, typeId.getStringId());
+        SchemaConstants.DESCRIPTION.setOn(element, propertyDescriptor.description());
         // TODO support property constraints in XML
         return element;
     }
