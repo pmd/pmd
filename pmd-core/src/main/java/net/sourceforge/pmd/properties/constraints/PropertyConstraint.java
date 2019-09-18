@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties.constraints;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,15 +53,25 @@ public interface PropertyConstraint<T> {
      */
     String getConstraintDescription();
 
-
     /**
-     * Returns a constraint that validates a collection of Ts
-     * by checking each component conforms to this conforms.
-     *
-     * @return A collection validator
+     * Returns a constraint that validates an {@code Optional<T>}
+     * by checking that the value conforms to this constraint if
+     * it is non-empty.
      */
     @Experimental
-    PropertyConstraint<Iterable<? extends T>> toCollectionConstraint();
+    default PropertyConstraint<Optional<? extends T>> toOptionalConstraint() {
+        return new PropertyConstraint<Optional<? extends T>>() {
+            @Override
+            public @Nullable String validate(Optional<? extends T> value) {
+                return value.map(PropertyConstraint.this::validate).orElse(null);
+            }
+
+            @Override
+            public String getConstraintDescription() {
+                return PropertyConstraint.this.getConstraintDescription();
+            }
+        };
+    }
 
 
     /**

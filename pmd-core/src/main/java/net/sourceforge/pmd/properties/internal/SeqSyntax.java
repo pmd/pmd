@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  *  <seq>1</seq>
  * }</pre>
  */
-public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
+public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax.StableXmlSyntax<C> {
 
     private final XmlSyntax<T> itemSyntax;
     private final Supplier<C> emptyCollSupplier;
@@ -29,11 +29,10 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
         this.emptyCollSupplier = emptyCollSupplier;
     }
 
-
     @Override
     public void toXml(Element container, C value) {
         for (T v : value) {
-            Element item = container.getOwnerDocument().createElement(itemSyntax.getWriteElementName());
+            Element item = container.getOwnerDocument().createElement(itemSyntax.getWriteElementName(v));
             itemSyntax.toXml(item, v);
             container.appendChild(item);
         }
@@ -54,9 +53,9 @@ public final class SeqSyntax<T, C extends Collection<T>> extends XmlSyntax<C> {
 
     @Override
     public List<String> examples() {
-        return Collections.singletonList("<" + getWriteElementName() + ">\n"
-            + "   " + itemSyntax.toString() + "\n"
+        return Collections.singletonList("<seq>\n"
+            + "   " + String.join("\n    ", itemSyntax.examples()) + "\n"
             + "   ..."
-            + "</" + getWriteElementName() + ">");
+            + "</seq>");
     }
 }

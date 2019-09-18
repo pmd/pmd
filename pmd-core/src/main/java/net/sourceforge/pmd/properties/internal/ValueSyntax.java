@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
  * <pre>This class is special because it enables compatibility with the
  * pre 7.0.0 XML syntax.
  */
-public final class ValueSyntax<T> extends XmlSyntax<T> {
+public final class ValueSyntax<T> extends XmlSyntax.StableXmlSyntax<T> {
 
     private static final String VALUE_NAME = "value";
     private final Function<? super T, String> toString;
@@ -74,7 +74,7 @@ public final class ValueSyntax<T> extends XmlSyntax<T> {
 
     @Override
     public List<String> examples() {
-        return Collections.singletonList("<" + getWriteElementName() + ">data</" + getWriteElementName() + ">");
+        return Collections.singletonList("<value>data</value>");
     }
 
 }

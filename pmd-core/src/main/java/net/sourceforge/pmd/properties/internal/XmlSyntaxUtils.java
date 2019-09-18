@@ -8,6 +8,7 @@ package net.sourceforge.pmd.properties.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -47,30 +48,34 @@ public final class XmlSyntaxUtils {
 
 
     private static <T extends Number> XmlSyntax<List<T>> numberList(ValueSyntax<T> valueSyntax) {
-        return withSeq(valueSyntax,
-                       ArrayList::new,
-                       true,
-                       ","
-        );
+        return seqAndDelimited(valueSyntax, ArrayList::new, true, ",");
     }
 
     private static <T> XmlSyntax<List<T>> otherList(ValueSyntax<T> valueSyntax) {
-        return withSeq(valueSyntax,
-                       ArrayList::new,
-                       true, // for now
-                       "|"
-        );
+        return seqAndDelimited(valueSyntax, ArrayList::new, true /* for now */, "|");
     }
 
-    public static <T, C extends Collection<T>> XmlSyntax<C> withSeq(ValueSyntax<T> itemSyntax,
-                                                                    Supplier<C> emptyCollSupplier,
-                                                                    boolean preferOldSyntax,
-                                                                    String delimiter) {
+    public static <T> XmlSyntax<Optional<T>> toOptional(XmlSyntax<T> itemSyntax) {
+        return new OptionalSyntax<>(itemSyntax);
+    }
+
+    public static <T, C extends Collection<T>> XmlSyntax<C> seqAndDelimited(XmlSyntax<T> itemSyntax,
+                                                                            Supplier<C> emptyCollSupplier,
+                                                                            boolean preferOldSyntax,
+                                                                            String delimiter) {
+        if (!itemSyntax.supportsStringMapping()) {
+            throw new IllegalArgumentException("Item syntax does not support string mapping " + itemSyntax);
+        }
         return new SyntaxSet<>(
             new SeqSyntax<>(itemSyntax, emptyCollSupplier),
             delimitedString(itemSyntax::toString, itemSyntax::fromString, delimiter, emptyCollSupplier),
             preferOldSyntax
         );
+    }
+
+    public static <T, C extends Collection<T>> XmlSyntax<C> onlySeq(XmlSyntax<T> itemSyntax,
+                                                                    Supplier<C> emptyCollSupplier) {
+        return new SeqSyntax<>(itemSyntax, emptyCollSupplier);
     }
 
 

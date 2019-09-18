@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -19,7 +20,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.ValueSyntax;
+import net.sourceforge.pmd.properties.internal.XmlSyntax;
 import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
 
 // @formatter:off
@@ -80,10 +81,14 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
 
 
     String getDescription() {
-        if (StringUtils.isBlank(description)) {
+        if (!isDescriptionSet()) {
             throw new IllegalArgumentException("Description must be provided");
         }
         return description;
+    }
+
+    boolean isDescriptionSet() {
+        return StringUtils.isNotBlank(description);
     }
 
 
@@ -99,7 +104,6 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     boolean isDefaultValueSet() {
         return defaultValue != null;
     }
-
 
     /**
      * Specify the description of the property. This is used for documentation.
@@ -207,25 +211,18 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look clumsy
     abstract static class BaseSinglePropertyBuilder<B extends PropertyBuilder<B, T>, T> extends PropertyBuilder<B, T> {
 
-        private final ValueSyntax<T> parser;
-        private final Class<T> type;
+        private final XmlSyntax<T> parser;
 
 
         // Class is not final but a package-private constructor restricts inheritance
-        BaseSinglePropertyBuilder(String name, ValueSyntax<T> parser, Class<T> type) {
+        BaseSinglePropertyBuilder(String name, XmlSyntax<T> parser) {
             super(name);
             this.parser = parser;
-            this.type = type;
         }
 
 
-        protected ValueSyntax<T> getParser() {
+        protected XmlSyntax<T> getParser() {
             return parser;
-        }
-
-
-        protected Class<T> getType() {
-            return type;
         }
 
 
@@ -248,12 +245,44 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             GenericCollectionPropertyBuilder<T, List<T>> result =
                 new GenericCollectionPropertyBuilder<>(getName(), getParser(), ArrayList::new);
 
+            if (isDescriptionSet()) {
+                result.desc(getDescription());
+            }
+
             for (PropertyConstraint<? super T> validator : getConstraints()) {
                 result.require(validator.toCollectionConstraint());
             }
 
             return result;
 
+        }
+
+        /**
+         * Returns a new builder that can be used to build a property
+         * handling {@code Optional<T>}. The validators already added
+         * are used on the validator property. If the default value was
+         * previously set, it is converted to an optional with {@link Optional#ofNullable(Object)}.
+         *
+         * @return A new list property builder
+         *
+         * @throws IllegalStateException if the default value has already been set
+         */
+        public GenericPropertyBuilder<Optional<T>> toOptional() {
+            return new GenericPropertyBuilder<Optional<T>>(this.getName(), XmlSyntaxUtils.toOptional(getParser())) {
+                {
+                    if (isDefaultValueSet()) {
+                        this.defaultValue(Optional.ofNullable(BaseSinglePropertyBuilder.this.getDefaultValue()));
+                    }
+
+                    if (isDescriptionSet()) {
+                        this.desc(BaseSinglePropertyBuilder.this.getDescription());
+                    }
+
+                    for (PropertyConstraint<? super T> validator : BaseSinglePropertyBuilder.this.getConstraints()) {
+                        this.require(validator.toOptionalConstraint());
+                    }
+                }
+            };
         }
 
 
@@ -279,10 +308,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @since 6.10.0
      */
     // Note: This type is used to fix the first type parameter for classes that don't need more API.
-    public static final class GenericPropertyBuilder<T> extends BaseSinglePropertyBuilder<GenericPropertyBuilder<T>, T> {
+    public static class GenericPropertyBuilder<T> extends BaseSinglePropertyBuilder<GenericPropertyBuilder<T>, T> {
 
-        GenericPropertyBuilder(String name, ValueSyntax<T> parser, Class<T> type) {
-            super(name, parser, type);
+        GenericPropertyBuilder(String name, XmlSyntax<T> parser) {
+            super(name, parser);
         }
     }
 
@@ -297,7 +326,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     public static final class RegexPropertyBuilder extends BaseSinglePropertyBuilder<RegexPropertyBuilder, Pattern> {
 
         RegexPropertyBuilder(String name) {
-            super(name, XmlSyntaxUtils.REGEX, Pattern.class);
+            super(name, XmlSyntaxUtils.REGEX);
         }
 
 
@@ -354,7 +383,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      */
     public static final class GenericCollectionPropertyBuilder<V, C extends Collection<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
 
-        private final ValueSyntax<V> parser;
+        private final XmlSyntax<V> parser;
         private final Supplier<C> emptyCollSupplier;
         private char multiValueDelimiter = PropertyFactory.DEFAULT_DELIMITER;
 
@@ -363,7 +392,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * Builds a new builder for a collection type. Package-private.
          */
         GenericCollectionPropertyBuilder(String name,
-                                         ValueSyntax<V> parser,
+                                         XmlSyntax<V> parser,
                                          Supplier<C> emptyCollSupplier) {
             super(name);
             this.parser = parser;
@@ -464,23 +493,16 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             // and C will be the actual type parameter of the returned property
             // descriptor
 
-            /*
-            (String name,
-                              String description,
-                              float uiOrder,
-                              T defaultValue,
-                              Set<PropertyConstraint<? super T>> constraints,
-                              StringParser<T> parser,
-                              @Nullable PropertyTypeId typeId,
-                              Class<T> type
-             */
+            XmlSyntax<C> syntax = parser.supportsStringMapping()
+                                  ? XmlSyntaxUtils.seqAndDelimited(parser, emptyCollSupplier, false, Character.toString(multiValueDelimiter))
+                                  : XmlSyntaxUtils.onlySeq(parser, emptyCollSupplier);
 
             return new GenericPropertyDescriptor<>(
                 getName(),
                 getDescription(),
                 getDefaultValue(),
                 getConstraints(),
-                XmlSyntaxUtils.withSeq(parser, emptyCollSupplier, false, Character.toString(multiValueDelimiter)),
+                syntax,
                 typeId
             );
         }

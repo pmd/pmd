@@ -45,25 +45,36 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
      * @param forRead  Set of supported syntaxes, must have pairwise different read names
      */
     private SyntaxSet(XmlSyntax<T> forWrite, Collection<? extends XmlSyntax<T>> forRead) {
-        super(forWrite.getWriteElementName(), readNames(forRead));
+        super();
         this.forWrite = forWrite;
 
         if (forRead.isEmpty()) {
             throw new IllegalArgumentException("Empty set of reads strategies!");
         }
 
+        Map<String, XmlSyntax<T>> map = new LinkedHashMap<>();
+        for (XmlSyntax<T> syntax : forRead) {
+            for (String name : syntax.getSupportedReadElementNames()) {
 
-        this.readIndex = forRead.stream().collect(Collectors.toMap(
-            XmlSyntax::getWriteElementName,
-            it -> it,
-            (a, b) -> {
-                // merge function
-                throw new IllegalArgumentException(
-                    "Duplicate name '" + a.getWriteElementName() + "', for syntaxes " + a + " and " + b
-                );
-            },
-            LinkedHashMap::new
-        ));
+                map.merge(name, syntax, (a, b) -> {
+                    // merge function
+                    throw new IllegalArgumentException(
+                        "Duplicate name '" + name + "', for syntaxes " + a + " and " + b
+                    );
+                });
+            }
+        }
+        this.readIndex = map;
+    }
+
+    @Override
+    public Set<String> getSupportedReadElementNames() {
+        return readIndex.keySet();
+    }
+
+    @Override
+    public String getWriteElementName(T value) {
+        return forWrite.getWriteElementName(value);
     }
 
     @Override

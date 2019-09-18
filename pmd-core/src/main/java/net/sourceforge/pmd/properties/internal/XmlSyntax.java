@@ -18,16 +18,7 @@ import org.w3c.dom.Element;
  */
 public abstract class XmlSyntax<T> {
 
-    private final String eltName;
-    private final Set<String> readNames;
-
-    /* package */ XmlSyntax(String eltName) {
-        this(eltName, Collections.singleton(eltName));
-    }
-
-    /* package */ XmlSyntax(String eltName, Set<String> readNames) {
-        this.eltName = eltName;
-        this.readNames = readNames;
+    /* package */ XmlSyntax() {
     }
 
     /** Extract the value from an XML element. */
@@ -62,13 +53,11 @@ public abstract class XmlSyntax<T> {
 
 
     /** Get the preferred name used to write elements. */
-    public final String getWriteElementName() {
-        return eltName;
-    }
+    public abstract String getWriteElementName(T value);
 
-    public final Set<String> getSupportedReadElementNames() {
-        return readNames;
-    }
+
+    public abstract Set<String> getSupportedReadElementNames();
+
 
     /**
      * Returns some examples for what XML output this strategy produces.
@@ -79,5 +68,30 @@ public abstract class XmlSyntax<T> {
     @Override
     public String toString() {
         return examples().get(0);
+    }
+
+    abstract static class StableXmlSyntax<T> extends XmlSyntax<T> {
+
+        private final String eltName;
+        private final Set<String> readNames;
+
+        /* package */ StableXmlSyntax(String eltName) {
+            this(eltName, Collections.singleton(eltName));
+        }
+
+        /* package */ StableXmlSyntax(String eltName, Set<String> readNames) {
+            this.eltName = eltName;
+            this.readNames = readNames;
+        }
+
+        @Override
+        public String getWriteElementName(T value) {
+            return eltName;
+        }
+
+        @Override
+        public Set<String> getSupportedReadElementNames() {
+            return readNames;
+        }
     }
 }
