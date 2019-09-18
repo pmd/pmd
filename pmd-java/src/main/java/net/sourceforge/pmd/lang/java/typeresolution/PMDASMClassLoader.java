@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.objectweb.asm.ClassReader;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
 
 /*
@@ -33,6 +34,8 @@ import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
  * Note: since git show 46ad3a4700b7a233a177fa77d08110127a85604c the cache is using
  * a concurrent hash map to avoid synchronizing on the class loader instance.
  */
+@InternalApi
+@Deprecated
 public final class PMDASMClassLoader extends ClassLoader {
 
     private static PMDASMClassLoader cachedPMDASMClassLoader;

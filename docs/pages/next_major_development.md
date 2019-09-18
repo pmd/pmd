@@ -73,6 +73,50 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.18.0
+
+##### Changes to Renderer
+
+*   Each renderer has now a new method {% jdoc !!core::renderers.Renderer#setUseShortNames(List) %} which
+    is used for implementing the "shortnames" CLI option. The method is automatically called by PMD, if this
+    CLI option is in use. When rendering filenames to the report, the new helper method
+    {% jdoc !!core::renderers.AbstractRenderer#determineFileName(String) %} should be used. This will change
+    the filename to a short name, if the CLI option "shortnames" is used.
+    
+    Not adjusting custom renderers will make them render always the full file names and not honoring the
+    CLI option "shortnames".
+
+##### Deprecated APIs
+
+###### For removal
+
+*   The methods {% jdoc java::lang.java.ast.ASTImportDeclaration#getImportedNameNode() %} and
+    {% jdoc java::lang.java.ast.ASTImportDeclaration#getPackage() %} have been deprecated and
+    will be removed with PMD 7.0.0.
+*   The method {% jdoc !!core::RuleContext#setSourceCodeFilename(String) %} has been deprecated
+    and will be removed. The already existing method {% jdoc !!core::RuleContext#setSourceCodeFile(File) %}
+    should be used instead. The method {% jdoc !!core::RuleContext#getSourceCodeFilename() %} still
+    exists and returns just the filename without the full path.
+*   The method {% jdoc !!core::processor.AbstractPMDProcessor#filenameFrom(DataSource) %} has been
+    deprecated. It was used to determine a "short name" of the file being analyzed, so that the report
+    can use short names. However, this logic has been moved to the renderers.
+*   The method {% jdoc !!core::Report#metrics() %} and {% jdoc core::Report::hasMetrics() %} have
+    been deprecated. They were leftovers from a previous deprecation round targeting
+    {% jdoc core::lang.rule.stat.StatisticalRule %}.
+
+###### Internal APIs
+
+Those APIs are not intended to be used by clients, and will be hidden or removed with PMD 7.0.0. You can identify them with the `@InternalApi` annotation. You'll also get a deprecation warning.
+
+* pmd-core
+  * {% jdoc_package core::cache %}
+* pmd-java
+  * {% jdoc_package java::lang.java.typeresolution %}: Everything, including
+    subpackages, except {% jdoc java::lang.java.typeresolution.TypeHelper %} and
+    {% jdoc java::lang.java.typeresolution.typedefinition.JavaTypeDefinition %}.
+  * {% jdoc !c!java::lang.java.ast.ASTCompilationUnit#getClassTypeResolver() %}
+
+
 #### 6.17.0
 
 No changes.

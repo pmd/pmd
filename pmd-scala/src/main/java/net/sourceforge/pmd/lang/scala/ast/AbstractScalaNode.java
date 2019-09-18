@@ -18,39 +18,81 @@ import scala.meta.inputs.Position;
  */
 abstract class AbstractScalaNode<T extends Tree> extends AbstractNode implements ScalaNode<T> {
     private final T node;
+    private final Position pos;
 
     /**
      * Create the node and configure line numbers.
-     * 
+     *
      * @param treeNode
      *            the scala tree node this node wraps
      */
     AbstractScalaNode(T treeNode) {
         super(0);
         node = treeNode;
-        Position pos = node.pos();
-        beginLine = pos.startLine() + 1;
-        endLine = pos.endLine() + 1;
-        beginColumn = pos.startColumn() + 1;
-        endColumn = pos.endColumn() + 1;
+        pos = node.pos();
+    }
+
+    @Override
+    public boolean isImplicit() {
+        return pos.end() - pos.start() == 0;
+    }
+
+    @Override
+    public int getBeginLine() {
+        return pos.startLine() + 1;
+    }
+
+    @Override
+    public int getBeginColumn() {
+        return pos.startColumn() + 1;
+    }
+
+    @Override
+    public int getEndLine() {
+        return pos.endLine() + 1;
+    }
+
+    @Override
+    public int getEndColumn() {
+        return pos.endColumn(); // no +1
+    }
+
+    @Override
+    public void testingOnlySetBeginColumn(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void testingOnlySetBeginLine(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void testingOnlySetEndColumn(int i) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void testingOnlySetEndLine(int i) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public abstract <D, R> R accept(ScalaParserVisitor<D, R> visitor, D data);
 
     @Override
-    public <D, R> R childrenAccept(ScalaParserVisitor<D, R> visitor, D data) {
-        int numChildren = jjtGetNumChildren();
-        R returnValue = null;
-        for (int i = 0; i < numChildren; ++i) {
-            returnValue = ((ScalaNode<?>) jjtGetChild(i)).accept(visitor, data);
-        }
-        return returnValue;
+    public T getNode() {
+        return node;
     }
 
     @Override
-    public T getNode() {
-        return node;
+    public ScalaNode<?> jjtGetChild(int index) {
+        return (ScalaNode<?>) super.jjtGetChild(index);
+    }
+
+    @Override
+    public ScalaNode<?> jjtGetParent() {
+        return (ScalaNode<?>) super.jjtGetParent();
     }
 
     @Override
