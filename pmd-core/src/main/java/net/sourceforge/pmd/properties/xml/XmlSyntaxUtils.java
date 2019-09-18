@@ -17,6 +17,10 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+
+@InternalApi
 public final class XmlSyntaxUtils {
 
     public static final ValueSyntax<String> STRING = new ValueSyntax<>(Function.identity());
@@ -40,7 +44,6 @@ public final class XmlSyntaxUtils {
 
     public static final XmlSyntax<List<Character>> CHAR_LIST = otherList(CHARACTER);
     public static final XmlSyntax<List<String>> STRING_LIST = otherList(STRING);
-    public static final XmlSyntax<List<Boolean>> BOOLEAN_LIST = otherList(BOOLEAN);
 
     public static final XmlSyntax<List<Pattern>> REGEX_LIST = new SeqSyntax<>(REGEX, ArrayList::new);
 
@@ -62,6 +65,20 @@ public final class XmlSyntaxUtils {
         return new OptionalSyntax<>(itemSyntax);
     }
 
+    /**
+     * Builds an XML syntax that understands a {@code <seq>} syntax and
+     * a delimited {@code <value>} syntax.
+     *
+     * @param itemSyntax        Serializer for the items, must support string mapping
+     * @param emptyCollSupplier Supplier for the collection
+     * @param preferOldSyntax   If true, the property will be written with {@code <value>},
+     *                          otherwise with {@code <seq>}.
+     * @param delimiter         Delimiter for the {@code <value>} syntax
+     * @param <T>               Type of items
+     * @param <C>               Type of collection to handle
+     *
+     * @throws IllegalArgumentException If the item syntax doesn't support string mapping
+     */
     public static <T, C extends Collection<T>> XmlSyntax<C> seqAndDelimited(XmlSyntax<T> itemSyntax,
                                                                             Supplier<C> emptyCollSupplier,
                                                                             boolean preferOldSyntax,
@@ -82,7 +99,7 @@ public final class XmlSyntaxUtils {
     }
 
 
-    public static <T, C extends Collection<T>> ValueSyntax<C> delimitedString(
+    private static <T, C extends Collection<T>> ValueSyntax<C> delimitedString(
         Function<? super T, String> toString,
         Function<String, ? extends T> fromString,
         char delimiter,
@@ -150,7 +167,9 @@ public final class XmlSyntaxUtils {
     }
 
 
-    static String enquote(String it) {return "'" + it + "'";}
+    static String enquote(String it) {
+        return "'" + it + "'";
+    }
 
 
     // nullable

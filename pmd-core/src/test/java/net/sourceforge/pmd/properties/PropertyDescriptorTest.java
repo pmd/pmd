@@ -35,7 +35,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
+import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
 /**

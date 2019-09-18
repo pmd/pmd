@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
  * Reports errors in an XML document. Implementations have a way to
  * associate nodes with their location in the document.
  *
- * TODO this is an interface I ripped off another project. It's a placeholder for now
+ * TODO this is a placeholder for now.
  */
 public interface XmlErrorReporter {
 
