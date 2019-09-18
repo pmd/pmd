@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -30,7 +32,7 @@ public class ReportTest extends RuleTst {
     public void testExclusionsInReportWithRuleViolationSuppressRegex() {
         Report rpt = new Report();
         Rule rule = new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, ".*No Foo.*");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, Optional.of(".*No Foo.*"));
         runTestFromString(TEST1, rule, rpt, defaultLanguage);
         assertTrue(rpt.getViolations().isEmpty());
         assertEquals(1, rpt.getSuppressedViolations().size());
@@ -40,7 +42,7 @@ public class ReportTest extends RuleTst {
     public void testExclusionsInReportWithRuleViolationSuppressXPath() {
         Report rpt = new Report();
         Rule rule = new FooRule();
-        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@SimpleName = 'Foo']");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, Optional.of(".[@SimpleName = 'Foo']"));
         runTestFromString(TEST1, rule, rpt, defaultLanguage);
         assertTrue(rpt.getViolations().isEmpty());
         assertEquals(1, rpt.getSuppressedViolations().size());

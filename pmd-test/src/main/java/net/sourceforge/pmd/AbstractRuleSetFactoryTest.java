@@ -176,7 +176,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(PMD.EOL);
                 }
                 // Should not have violation suppress regex property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
+                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
                     invalidRegexSuppress++;
                     messages.append("Rule ")
                             .append(fileName)
@@ -188,7 +188,7 @@ public abstract class AbstractRuleSetFactoryTest {
                             .append(PMD.EOL);
                 }
                 // Should not have violation suppress xpath property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
+                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
                     invalidXPathSuppress++;
                     messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(PMD.EOL);
                 }

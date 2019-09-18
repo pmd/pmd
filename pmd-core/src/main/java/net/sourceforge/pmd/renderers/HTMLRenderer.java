@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +33,11 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "html";
 
     // TODO use PropertyDescriptor<Optional<String>> : we need a "blank" default value
-    public static final StringProperty LINE_PREFIX = new StringProperty("linePrefix",
-                                                                        "Prefix for line number anchor in the source file.", null, 1);
+    public static final PropertyDescriptor<Optional<String>> LINE_PREFIX =
+        PropertyFactory.stringProperty("linePrefix").desc("Prefix for line number anchor in the source file.")
+                       .toOptional()
+                       .defaultValue(Optional.empty())
+                       .build();
 
     public static final PropertyDescriptor<String> LINK_PREFIX =
         PropertyFactory.stringProperty("linkPrefix").desc("Path to HTML source.").defaultValue("").build();
@@ -74,7 +78,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
      */
     public void renderBody(Writer writer, Report report) throws IOException {
         linkPrefix = getProperty(LINK_PREFIX);
-        linePrefix = getProperty(LINE_PREFIX);
+        linePrefix = getProperty(LINE_PREFIX).orElse(null);
         replaceHtmlExtension = getProperty(HTML_EXTENSION);
 
         writer.write("<center><h3>PMD report</h3></center>");
@@ -94,7 +98,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public void start() throws IOException {
         linkPrefix = getProperty(LINK_PREFIX);
-        linePrefix = getProperty(LINE_PREFIX);
+        linePrefix = getProperty(LINE_PREFIX).orElse(null);
         replaceHtmlExtension = getProperty(HTML_EXTENSION);
 
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);

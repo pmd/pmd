@@ -34,8 +34,8 @@ public final class XmlUtils {
 
     public static <T> T expectElement(XmlErrorReporter err, Element elt, XmlSyntax<T> syntax) {
 
-        if (!elt.getTagName().equals(syntax.getWriteElementName())) {
-            err.warn(elt, "Expecting an element with name '" + syntax.getWriteElementName() + "'");
+        if (!syntax.getSupportedReadElementNames().contains(elt.getTagName())) {
+            err.warn(elt, "Wrong name, expect " + XmlSyntaxUtils.formatPossibilities(syntax.getSupportedReadElementNames()));
         } else {
             return syntax.fromXml(elt, err);
         }

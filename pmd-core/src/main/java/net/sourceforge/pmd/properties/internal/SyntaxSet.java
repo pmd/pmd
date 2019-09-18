@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.properties.internal;
 
+import static net.sourceforge.pmd.properties.internal.XmlSyntaxUtils.enquote;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -116,7 +118,8 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
         if (syntax == null) {
             throw err.error(
                 element,
-                "Unexpected element name " + enquote(element.getTagName()) + ", expecting " + formatPossibilities()
+                "Unexpected element name " + enquote(element.getTagName()) + ", expecting "
+                    + XmlSyntaxUtils.formatPossibilities(readIndex.keySet())
             );
         } else {
             return syntax.fromXml(element, err);
@@ -128,25 +131,6 @@ public final class SyntaxSet<T> extends XmlSyntax<T> {
         forWrite.toXml(container, value);
     }
 
-    // nullable
-    private String formatPossibilities() {
-        Set<String> strings = readIndex.keySet();
-        if (strings.isEmpty()) {
-            return null;
-        } else if (strings.size() == 1) {
-            return enquote(strings.iterator().next());
-        } else {
-            return "one of " + strings.stream().map(SyntaxSet::enquote).collect(Collectors.joining(", "));
-        }
-    }
-
-    private static Set<String> readNames(Collection<? extends XmlSyntax<?>> syntaxes) {
-        return syntaxes.stream()
-                       .flatMap(it -> it.getSupportedReadElementNames().stream())
-                       .collect(Collectors.toSet());
-    }
-
-    private static String enquote(String it) {return "'" + it + "'";}
 
     @Override
     public List<String> examples() {

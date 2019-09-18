@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -96,5 +97,19 @@ public final class XmlSyntaxUtils {
                 return coll;
             }
         );
+    }
+
+    static String enquote(String it) {return "'" + it + "'";}
+
+
+    // nullable
+    static String formatPossibilities(Set<String> names) {
+        if (names.isEmpty()) {
+            return null;
+        } else if (names.size() == 1) {
+            return enquote(names.iterator().next());
+        } else {
+            return "one of " + names.stream().map(XmlSyntaxUtils::enquote).collect(Collectors.joining(", "));
+        }
     }
 }

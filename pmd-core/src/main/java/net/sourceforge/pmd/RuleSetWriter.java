@@ -309,7 +309,7 @@ public class RuleSetWriter {
 
         XmlSyntax<T> xmlStrategy = propertyDescriptor.xmlStrategy();
 
-        Element valueElt = createPropertyValueElement(xmlStrategy.getWriteElementName());
+        Element valueElt = createPropertyValueElement(xmlStrategy.getWriteElementName(value));
         xmlStrategy.toXml(valueElt, value);
         element.appendChild(valueElt);
 
