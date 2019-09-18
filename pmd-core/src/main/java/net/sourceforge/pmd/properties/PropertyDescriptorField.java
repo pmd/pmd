@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Element;
 
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.properties.internal.XmlErrorReporter;
+import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
 
 
 /**

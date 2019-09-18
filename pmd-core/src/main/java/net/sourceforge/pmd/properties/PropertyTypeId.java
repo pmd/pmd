@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.sourceforge.pmd.properties.internal.XmlSyntax;
-import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
+import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 
 /**

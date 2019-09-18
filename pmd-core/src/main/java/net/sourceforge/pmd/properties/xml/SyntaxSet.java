@@ -2,9 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.internal;
+package net.sourceforge.pmd.properties.xml;
 
-import static net.sourceforge.pmd.properties.internal.XmlSyntaxUtils.enquote;
+import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enquote;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

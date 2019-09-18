@@ -30,8 +30,8 @@ import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.internal.XmlErrorReporter;
-import net.sourceforge.pmd.properties.internal.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlErrorReporter;
+import net.sourceforge.pmd.properties.xml.XmlSyntax;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 

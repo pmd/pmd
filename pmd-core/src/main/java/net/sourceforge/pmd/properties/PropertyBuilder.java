@@ -19,8 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.XmlSyntax;
-import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
+import net.sourceforge.pmd.properties.xml.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 // @formatter:off
 /**

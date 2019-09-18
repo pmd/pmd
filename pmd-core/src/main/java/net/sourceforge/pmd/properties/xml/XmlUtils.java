@@ -2,7 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.properties.internal;
+package net.sourceforge.pmd.properties.xml;
 
 import java.util.ArrayList;
 import java.util.List;

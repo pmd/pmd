@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.properties;
 
-import static net.sourceforge.pmd.properties.internal.XmlSyntaxUtils.enumerationParser;
+import static net.sourceforge.pmd.properties.xml.XmlSyntaxUtils.enumerationParser;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.constraints.NumericConstraints;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
+import net.sourceforge.pmd.properties.xml.XmlSyntaxUtils;
 
 //@formatter:off
 /**

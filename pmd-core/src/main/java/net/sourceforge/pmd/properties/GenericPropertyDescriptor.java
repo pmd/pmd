@@ -9,7 +9,7 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
-import net.sourceforge.pmd.properties.internal.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlSyntax;
 
 
 /**

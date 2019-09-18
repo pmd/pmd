@@ -38,7 +38,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.PropertyTypeId;
-import net.sourceforge.pmd.properties.internal.XmlSyntax;
+import net.sourceforge.pmd.properties.xml.XmlSyntax;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
