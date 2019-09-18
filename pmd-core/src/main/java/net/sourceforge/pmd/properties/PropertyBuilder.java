@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.properties.builders.PropertyDescriptorBuilder;
 import net.sourceforge.pmd.properties.constraints.PropertyConstraint;
 import net.sourceforge.pmd.properties.internal.XmlSyntax;
 import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
@@ -43,9 +42,6 @@ import net.sourceforge.pmd.properties.internal.XmlSyntaxUtils;
  * <p>A property builder may throw {@link IllegalArgumentException} at any
  * stage during the build process to indicate invalid input. It usually tries
  * to do so as early as possible, rather than waiting for the call to {@link #build()}.
- *
- * <p>Note: from 7.0.0 on, all property builders will
- * extend this class instead of {@link PropertyDescriptorBuilder}.
  *
  * @param <B> Concrete type of this builder instance
  * @param <T> Type of values the property handles
