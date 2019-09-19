@@ -382,7 +382,7 @@ public final class Main {
     </test-code>
     <test-code>
         <description><![CDATA[
-missing argument
+log4j2: missing argument
         ]]></description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
@@ -402,7 +402,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-too many arguments
+log4j2: too many arguments
          ]]></description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
@@ -422,7 +422,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-Logger without problems
+log4j2: Logger without problems
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -441,7 +441,7 @@ public class Foo {
     </test-code>
     <test-code>
          <description><![CDATA[
-ignore the exception param
+log4j2: ignore the exception param
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -459,7 +459,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Class cast exception with Method calls</description>
+        <description>log4j2: Class cast exception with Method calls</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MethodCallClassCastExceptionProblem {
@@ -475,7 +475,7 @@ public class MethodCallClassCastExceptionProblem {
     </test-code>
 
     <test-code>
-        <description>Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
+        <description>log4j2: Null pointer with VariableNameDeclaration / VariableDeclaratorId</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class NullPointerTypeProblem {
@@ -648,7 +648,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>NPE in static block (see #1512)</description>
+        <description>log4j2: NPE in static block (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.apache.logging.log4j.Logger;
@@ -663,7 +663,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>missing argument in static block</description>
+        <description>log4j2: missing argument in static block</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <code><![CDATA[
@@ -681,7 +681,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>NPE in lambda call (see #1512)</description>
+        <description>log4j2: NPE in lambda call (see #1512)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.apache.logging.log4j.Logger;
@@ -695,7 +695,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>missing argument in lambda call</description>
+        <description>log4j2: missing argument in lambda call</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>9</expected-linenumbers>
         <code><![CDATA[
@@ -714,7 +714,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>NPE in enums (see #1549)</description>
+        <description>log4j2: NPE in enums (see #1549)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             import org.apache.logging.log4j.Logger;
@@ -737,7 +737,7 @@ public final class Main {
     </test-code>
 
     <test-code>
-        <description>missing argument in enum</description>
+        <description>log4j2: missing argument in enum</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[

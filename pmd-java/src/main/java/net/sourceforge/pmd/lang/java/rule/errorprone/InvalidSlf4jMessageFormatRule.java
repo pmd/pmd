@@ -55,8 +55,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         loggersMap.put("org.apache.logging.log4j.Logger", Collections
                 .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error", "fatal", "all"))));
 
-        LOGGERS = Collections
-                .unmodifiableMap(new HashMap<String, Set<String>>(loggersMap));
+        LOGGERS = loggersMap;
     }
 
     public InvalidSlf4jMessageFormatRule() {
