@@ -10,18 +10,23 @@ import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 
 /**
- * Property value descriptor that defines the use &amp; requirements for setting property values for use within PMD and
- * any associated GUIs. While concrete descriptor instances are static and immutable they provide validation,
- * serialization, and default values for any specific datatypes.
+ * Describes a property of a rule or a renderer. Provides validation,
+ * serialization, and default values for a datatype {@code <T>}.
+ * Property descriptors are immutable and can be shared freely.
+ *
+ * <p>Usage of this API is described on {@link PropertyFactory}.
  *
  * <h1>Upcoming API changes to the properties framework</h1>
  * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
  *
- * @param <T> type of the property's value. This is a list type for multi-valued properties.
+ * @param <T> Type of the property's value.
+ *
+ * @see PropertyFactory
+ * @see PropertyBuilder
  *
  * @author Brian Remedios
  * @author Clément Fournier
- * @version Refactored June 2017 (6.0.0)
+ * @version 7.0.0
  */
 public interface PropertyDescriptor<T> {
 

@@ -24,12 +24,35 @@ final class OptionalSyntax<T> extends XmlMapper<Optional<T>> {
 
     OptionalSyntax(XmlMapper<T> itemSyntax) {
         this.itemSyntax = itemSyntax;
+    }
 
+    // TODO this scheme for string mapping is lossy, and is there just
+    //  for compatibility with CodeClimateRenderer
+
+    @Override
+    public boolean supportsStringMapping() {
+        return itemSyntax.supportsStringMapping();
+    }
+
+    @Override
+    public String toString(Optional<T> value) {
+        return value.map(itemSyntax::toString).orElse("");
+    }
+
+    @Override
+    public Optional<T> fromString(String attributeData) {
+        return attributeData.isEmpty() ? Optional.empty()
+                                       : Optional.ofNullable(itemSyntax.fromString(attributeData));
     }
 
     @Override
     public void toXml(Element container, Optional<T> value) {
-
+        if (value.isPresent()) {
+            itemSyntax.toXml(container, value.get());
+        } else {
+            Element none = container.getOwnerDocument().createElement(EMPTY_NAME);
+            container.appendChild(none);
+        }
     }
 
     @Override
