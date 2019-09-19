@@ -12,6 +12,15 @@ if ! travis_isPush; then
     exit 0
 fi
 
+
+#
+# First step: build pmd with profile "generate-rule-docs"
+# The docs should appear under "docs/pages/rules/..." for each language
+#
+./mvnw clean package -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -P generate-rule-docs
+
+
+
 pushd docs
 
 # run jekyll
