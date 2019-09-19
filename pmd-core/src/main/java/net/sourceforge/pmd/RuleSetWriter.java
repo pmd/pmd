@@ -307,7 +307,7 @@ public class RuleSetWriter {
         Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
 
-        XmlMapper<T> xmlStrategy = propertyDescriptor.xmlStrategy();
+        XmlMapper<T> xmlStrategy = propertyDescriptor.xmlMapper();
 
         Element valueElt = createPropertyValueElement(xmlStrategy.getWriteElementName(value));
         xmlStrategy.toXml(valueElt, value);

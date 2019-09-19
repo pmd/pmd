@@ -6,27 +6,31 @@ package net.sourceforge.pmd.properties;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.properties.xml.XmlMapper;
 
 
 /**
- * Describes a property of a rule or a renderer. Provides validation,
+ * Describes a property of a rule or a renderer.
+ * <p>Usage of this API is described on {@link PropertyFactory}.
+ *
+ * <p>A property descriptor provides validation,
  * serialization, and default values for a datatype {@code <T>}.
  * Property descriptors are immutable and can be shared freely.
- *
- * <p>Usage of this API is described on {@link PropertyFactory}.
+ * Property descriptors do not override {@link Object#equals(Object)}
+ * or {@link Object#hashCode()}. Pre 6.0.0 two descriptors were equal
+ * if they had the same name.
  *
  * <h1>Upcoming API changes to the properties framework</h1>
  * see <a href="https://github.com/pmd/pmd/issues/1432">pmd/pmd#1432</a>
  *
  * @param <T> Type of the property's value.
  *
- * @see PropertyFactory
- * @see PropertyBuilder
- *
  * @author Brian Remedios
  * @author Clément Fournier
  * @version 7.0.0
+ * @see PropertyFactory
+ * @see PropertyBuilder
  */
 public interface PropertyDescriptor<T> {
 
@@ -58,16 +62,14 @@ public interface PropertyDescriptor<T> {
      * Returns the strategy used to read and write this property to XML.
      * May support strings too.
      */
-    XmlMapper<T> xmlStrategy();
+    XmlMapper<T> xmlMapper();
 
 
     /**
-     * Validation function that returns a diagnostic error message for a sample property value. Returns null if the
-     * value is acceptable.
-     *
-     * @param value The value to check.
-     *
-     * @return A diagnostic message.
+     * TODO
+     *  this needs to go away. Property constraints should be checked
+     *  at the time the ruleset is parsed, to report error messages
+     *  targeted on each node. They could simply decorate the XmlMapper.
      *
      * @deprecated PMD 7.0.0 will change the return type to {@code Optional<String>}
      */
@@ -80,43 +82,44 @@ public interface PropertyDescriptor<T> {
     /**
      * Returns the type ID which was used to define this property. Returns
      * null if this property was defined in Java code and not in XML.
+     *
+     * TODO this replaces isDefinedExternally for the RulesetWriter.
+     * I still don't like it.
      */
+    @InternalApi
     default @Nullable PropertyTypeId getTypeId() {
         return null;
     }
 
 
     /**
-     * Returns the value represented by this string.
+     * TODO port tests to use the mapper directly.
      *
-     * @param propertyString The string to parse
-     *
-     * @return The value represented by the string
-     *
-     * @throws IllegalArgumentException if the given string cannot be parsed
+     * @throws IllegalArgumentException      if the given string cannot be parsed
      * @throws UnsupportedOperationException If operation is not supported
      * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
-     * simple strings, this method won't be general enough
+     *     simple strings, this method won't be general enough
      */
     @Deprecated
     default T valueFrom(String propertyString) throws IllegalArgumentException {
-        return xmlStrategy().fromString(propertyString);
+        return xmlMapper().fromString(propertyString);
     }
 
 
     /**
-     * Formats the object onto a string suitable for storage within the property map.
+     * TODO port tests to use the mapper directly.
      *
      * @param value Object
      *
      * @return String
      *
+     * @throws UnsupportedOperationException If operation is not supported
      * @deprecated PMD 7.0.0 will use a more powerful scheme to represent values than
-     * simple strings, this method won't be general enough
+     *     simple strings, this method won't be general enough
      */
     @Deprecated
     default String asDelimitedString(T value) {
-        return xmlStrategy().toString(value);
+        return xmlMapper().toString(value);
     }
 
 

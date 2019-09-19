@@ -259,27 +259,24 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          * are used on the validator property. If the default value was
          * previously set, it is converted to an optional with {@link Optional#ofNullable(Object)}.
          *
-         * @return A new list property builder
-         *
-         * @throws IllegalStateException if the default value has already been set
+         * @return A new property builder for an optional.
          */
         public GenericPropertyBuilder<Optional<T>> toOptional() {
-            return new GenericPropertyBuilder<Optional<T>>(this.getName(), XmlSyntaxUtils.toOptional(getParser())) {
-                {
-                    BaseSinglePropertyBuilder<B, T> base = BaseSinglePropertyBuilder.this;
-                    if (base.isDefaultValueSet()) {
-                        this.defaultValue(Optional.ofNullable(base.getDefaultValue()));
-                    }
+            GenericPropertyBuilder<Optional<T>> result = new GenericPropertyBuilder<>(this.getName(), XmlSyntaxUtils.toOptional(getParser()));
 
-                    if (base.isDescriptionSet()) {
-                        this.desc(base.getDescription());
-                    }
+            if (isDefaultValueSet()) {
+                result.defaultValue(Optional.ofNullable(getDefaultValue()));
+            }
 
-                    for (PropertyConstraint<? super T> validator : base.getConstraints()) {
-                        this.require(validator.toOptionalConstraint());
-                    }
-                }
-            };
+            if (isDescriptionSet()) {
+                result.desc(getDescription());
+            }
+
+            for (PropertyConstraint<? super T> validator : getConstraints()) {
+                result.require(validator.toOptionalConstraint());
+            }
+
+            return result;
         }
 
 
@@ -479,17 +476,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
 
 
-        @SuppressWarnings("unchecked")
         @Override
         public PropertyDescriptor<C> build() {
-            // Note: the unchecked cast is safe because pre-7.0.0,
-            // we only allow building property descriptors for lists.
-            // C is thus always List<V>, and the cast doesn't fail
-
-            // Post-7.0.0, the multi-value property classes will be removed
-            // and C will be the actual type parameter of the returned property
-            // descriptor
-
             XmlMapper<C> syntax = parser.supportsStringMapping()
                                   ? XmlSyntaxUtils.seqAndDelimited(parser, emptyCollSupplier, false, multiValueDelimiter)
                                   : XmlSyntaxUtils.onlySeq(parser, emptyCollSupplier);

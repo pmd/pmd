@@ -78,7 +78,7 @@ final class GenericPropertyDescriptor<T> implements PropertyDescriptor<T> {
     }
 
     @Override
-    public XmlMapper<T> xmlStrategy() {
+    public XmlMapper<T> xmlMapper() {
         return parser;
     }
 
