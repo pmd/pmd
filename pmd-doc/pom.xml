@@ -41,50 +41,38 @@
                                     </arguments>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>check-dead-links</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>check-rule-tags</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <phase>verify</phase>
+                                <configuration>
+                                    <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
+                                    <arguments>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>check-dead-links</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <phase>verify</phase>
-                        <configuration>
-                            <mainClass>net.sourceforge.pmd.docs.DeadLinksChecker</mainClass>
-                            <arguments>
-                                <argument>${project.basedir}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>check-rule-tags</id>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <phase>verify</phase>
-                        <configuration>
-                            <mainClass>net.sourceforge.pmd.docs.RuleTagChecker</mainClass>
-                            <arguments>
-                                <argument>${project.basedir}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
