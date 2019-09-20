@@ -28,38 +28,6 @@ if [ "${BUILD}" = "deploy" ]; then
     true
 )
 
-# renders, and skips the first 6 lines - the Jekyll front-matter
-RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-
-# Assumes, the release has already been created by travis github releases provider
-RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
-RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
-RELEASE_BODY="$RENDERED_RELEASE_NOTES"
-RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
-RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
-RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
-RELEASE_BODY="${RELEASE_BODY//'"'/\\\"}"
-cat > release-edit-request.json <<EOF
-{
-  "name": "$RELEASE_NAME",
-  "body": "$RELEASE_BODY"
-}
-EOF
-log_info "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
-
-
-RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
-if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
-    log_error "Github Request failed!"
-    echo "Request:"
-    cat release-edit-request.json
-    echo
-    echo "Response:"
-    echo "$RESPONSE"
-else
-    log_success "Update OK"
-fi
-
 fi
 
 
@@ -106,6 +74,40 @@ mkdir pmd.github.io
     echo "Executing: git push origin master"
     git push origin master
 )
+
+# renders, and skips the first 6 lines - the Jekyll front-matter
+RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
+
+# Assumes, the release has already been created by travis github releases provider
+RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" https://api.github.com/repos/pmd/pmd/releases/tags/pmd_releases/${RELEASE_VERSION}|jq ".id")
+RELEASE_NAME="PMD ${RELEASE_VERSION} ($(date -u +%d-%B-%Y))"
+RELEASE_BODY="$RENDERED_RELEASE_NOTES"
+RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
+RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
+RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
+RELEASE_BODY="${RELEASE_BODY//'"'/\\\"}"
+cat > release-edit-request.json <<EOF
+{
+  "name": "$RELEASE_NAME",
+  "body": "$RELEASE_BODY",
+  "draft": false
+}
+EOF
+echo -e "\n\n"
+log_info "Updating and publishing release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
+
+
+RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
+if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
+    log_error "Github Request failed!"
+    echo "Request:"
+    cat release-edit-request.json
+    echo
+    echo "Response:"
+    echo "$RESPONSE"
+else
+    log_success "Update OK"
+fi
 
 
 

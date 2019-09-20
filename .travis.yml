@@ -58,6 +58,7 @@ deploy:
   - pmd-dist/target/pmd-*.zip
   - docs/pmd-doc-*.zip
   skip_cleanup: true
+  draft: true
   on:
     tags: true
     repo: pmd/pmd
