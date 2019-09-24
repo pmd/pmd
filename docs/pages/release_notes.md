@@ -21,6 +21,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+
+#### Deprecated APIs
+
+##### For removal
+
+* pmd-java
+  * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
+  * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
+
+
 ### External Contributions
 
 {% endtocmaker %}
