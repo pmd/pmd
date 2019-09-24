@@ -11,11 +11,13 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Unit test for {@link SimpleTypedNameDeclaration}
  */
+@Ignore
 public class SimpleTypedNameDeclarationTest {
 
     /**
