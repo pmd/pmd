@@ -317,6 +317,7 @@ public final class IteratorUtil {
                 action.accept(value);
             }
         }
+
         return new SingletonIterator();
     }
 
