@@ -31,8 +31,8 @@ public class RuleApplicator {
     // towards the final topology (all node types have been encountered)
     // and there's no need to perform more topological checks when freezing
     // it
-    // This has a cache hit ratio of more than 99%, making the indexing
-    // less than 2% of the total runtime of the apply method.
+    // This has a cache hit ratio of more than 99% on longer runs, making
+    // the indexing less than 2% of the total runtime of the apply method.
     private final NodeIdx idx = new NodeIdx();
 
     public void apply(Collection<? extends Node> nodes, Collection<? extends Rule> rules, RuleContext ctx) {
@@ -109,6 +109,7 @@ public class RuleApplicator {
             byName.clear();
         }
 
+        // TODO this could definitely be parameterized by a DataKey and extensible
         Stream<Node> getByName(String n) {
             return byName.getOrDefault(n, Collections.emptyList()).stream();
         }

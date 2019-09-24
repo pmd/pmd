@@ -133,8 +133,7 @@ class LatticeRelation<T, @NonNull U> {
         }
 
         for (LNode value : nodes.values()) {
-            value.frozenVal = null;
-            value.properVal = accumulate.zero();
+            value.resetValue();
         }
     }
 
@@ -162,7 +161,7 @@ class LatticeRelation<T, @NonNull U> {
         }
 
         for (LNode node : nodes.values()) {
-            node.reset();
+            node.resetFrozenData();
         }
 
         /*
@@ -311,9 +310,16 @@ class LatticeRelation<T, @NonNull U> {
     }
 
     //test only
-    class LNode {
+    final class LNode {
 
-        // topological state, to be reset
+        private final T key;
+        /** Proper value associated with this node (independent of topology). */
+        private @NonNull U properVal = accumulate.zero();
+
+        // topological state, to be reset between freeze cycles
+
+        /** Cached value */
+        private @Nullable U frozenVal;
 
         // before freezing this contains the successors of a node
         // after, it contains its direct predecessors
@@ -321,15 +327,6 @@ class LatticeRelation<T, @NonNull U> {
         boolean hasDiamond = false;
         private int topoMark = UNDEFINED_TOPOMARK;
         private int idx = -1;
-
-
-        private final T key;
-
-
-        /** Proper value associated with this node (independent of topology). */
-        private @NonNull U properVal = accumulate.zero();
-        /** Cached value. */
-        private @Nullable U frozenVal;
 
         private LNode(T key) {
             this.key = key;
@@ -343,24 +340,32 @@ class LatticeRelation<T, @NonNull U> {
         }
 
         private U computeVal() {
-            // we use the combine monoid here
+            // we use the combine monoid here, but properVal's default value is accumulate#zero
+            U zero = combine.apply(combine.zero(), properVal);
 
             if (hasDiamond) {
                 // then we can't reuse values of children, because some
                 // descendants are reachable through several paths
-                return descendantsAndSelf().distinct()
-                                           .map(it -> it.properVal)
-                                           .reduce(combine.zero(), combine);
+                return descendantsAndSelf().distinct().map(it -> it.properVal).reduce(zero, combine);
             }
-            return succ.stream().map(LNode::computeValue).reduce(properVal, combine);
+
+            return succ.stream().map(LNode::computeValue).reduce(zero, combine);
         }
 
         private Stream<LNode> descendantsAndSelf() {
             return Stream.concat(Stream.of(this), succ.stream().flatMap(LNode::descendantsAndSelf));
         }
 
+        private void resetValue() {
+            frozenVal = null;
+            properVal = accumulate.zero();
+        }
 
-        private void reset() {
+        /**
+         * Resets the data that was frozen in the last freeze cycle,
+         * Does not clear the proper value.
+         */
+        private void resetFrozenData() {
             topoMark = UNDEFINED_TOPOMARK;
             idx = -1;
             hasDiamond = false;
