@@ -78,7 +78,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
      *
      * @param node
      *
-     * @deprecated Is internal API, not useful, there's a typo in there. See <a href="https://github.com/pmd/pmd/pull/1927">#1927</a>
+     * @deprecated Is internal API, not useful, there's a typo. See <a href="https://github.com/pmd/pmd/pull/1927">#1927</a>
      */
     @Deprecated
     public static boolean isSupressed(Node node, Rule rule) {

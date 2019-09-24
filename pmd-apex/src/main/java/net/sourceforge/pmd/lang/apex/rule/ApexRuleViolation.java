@@ -44,9 +44,10 @@ public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
     /**
      * Check for suppression on this node, on parents, and on contained types
      * for ASTCompilationUnit
-     * 
-     * @param node
+     *
+     * @deprecated Is internal API, not useful, there's a typo. See <a href="https://github.com/pmd/pmd/pull/1927">#1927</a>
      */
+    @Deprecated
     public static boolean isSupressed(Node node, Rule rule) {
         boolean result = suppresses(node, rule);
 
@@ -57,7 +58,7 @@ public class ApexRuleViolation<T> extends ParametricRuleViolation<Node> {
                 parent = parent.jjtGetParent();
             }
         }
-        
+
         return result;
     }
 
