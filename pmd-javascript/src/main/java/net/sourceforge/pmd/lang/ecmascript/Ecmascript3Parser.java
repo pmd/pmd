@@ -32,11 +32,6 @@ public class Ecmascript3Parser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         return ecmascriptParser.parse(source);
     }
