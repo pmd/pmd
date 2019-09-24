@@ -32,11 +32,7 @@ public enum UnaryOp {
     /** "~" */
     BITWISE_INVERSE("~"),
     /** "!" */
-    BOOLEAN_NOT("!"),
-    /** "++" */
-    INCREMENT("++"),
-    /** "--" */
-    DECREMENT("--");
+    BOOLEAN_NOT("!");
 
     private static final Map<String, UnaryOp> LOOKUP =
         Arrays.stream(values())

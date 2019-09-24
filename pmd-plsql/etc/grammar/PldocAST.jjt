@@ -27,6 +27,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /**
+ * Add basic support for with clause in select statements
+ *
+ * Andreas Dangel 09/2019
+ *====================================================================
+ * Add support for SELECT with FOR UPDATE OF
+ *
+ * Piotr Szymanski 08/2019
+ *====================================================================
  * Various fixes for expression lists, join clauses, case expression
  *
  * Hugo Araya Nash 06/2019
@@ -251,7 +259,7 @@ ASTInput Input(String sourcecode) : {}
 	 | LOOKAHEAD(6) Directory()
 	 | LOOKAHEAD(6) DatabaseLink()
 	 | LOOKAHEAD(6) Global()
-         | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
+     | LOOKAHEAD(6) DDLCommand() //Ignore any other DDL Event
 	 | LOOKAHEAD(2) SqlPlusCommand()
 	 | UpdateStatement()
 	 | DeleteStatement()
@@ -351,20 +359,18 @@ ASTGlobal Global()  :
 {
 }
 {
-
 	/*
 	  Remove triggers from global processing because their schema may be defined in the trigger code itself
 	  Still wrap the trigger in a fake package but make the package name dependent on the actual schema
 	  defaulting to the globalPackageName if it cannot be found
 	*/
-	(LOOKAHEAD ( ( Label() )* [<DECLARE> DeclarativeSection()] <BEGIN>) ( Label() )* Block() ";" | LOOKAHEAD (4) ProgramUnit()
+	(
+	LOOKAHEAD ( ( Label() )* ( <DECLARE> | <BEGIN> ) ) ( Label() )* Block() ";"
+	|
+	LOOKAHEAD (4) ProgramUnit()
 	)
-
-
       { return jjtThis ; }
 }
-
-
 
 ASTBlock Block()  :
 {
@@ -996,7 +1002,8 @@ void Skip2NextTerminator(String initiator,String terminator) :
     t = getToken(1);
 	  if(t.image.equals(initiator)) count++;
 	  if(t.image.equals(terminator)) count--;
-    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE && beginToken.kind != MERGE && beginToken.kind != EXECUTE) || t.kind == EOF)
+    if((null != t.specialToken && beginToken.kind != SELECT && beginToken.kind != INSERT && beginToken.kind != UPDATE && beginToken.kind != DELETE
+        && beginToken.kind != MERGE && beginToken.kind != EXECUTE && beginToken.kind != WITH) || t.kind == EOF)
         return;
     if (t.specialToken != null && "/".equals(t.image))
 	    return;
@@ -1186,6 +1193,28 @@ void RestOfStatement() #void :
 
     [ OrderByClause() ]
     [ RowLimitingClause() ]
+    [ LOOKAHEAD(2) ForUpdateClause() ]
+}
+
+/**
+ * @see https://docs.oracle.com/database/121/SQLRF/statements_10002.htm#i2126016
+ */
+void ForUpdateClause() :
+{}
+{
+  <FOR> <UPDATE>
+  [<OF> ColumnPath() (LOOKAHEAD(2) "," ColumnPath())* ]
+  [ <NOWAIT>
+  | LOOKAHEAD({isKeyword("WAIT")}) KEYWORD("WAIT") <UNSIGNED_NUMERIC_LITERAL>
+  | LOOKAHEAD({isKeyword("SKIP")}) KEYWORD("SKIP") KEYWORD("LOCKED") ]
+}
+
+void ColumnPath() #void :
+{}
+{
+    [ LOOKAHEAD(6) SchemaName() "." ]
+    [ LOOKAHEAD(4) TableName() "." ]
+    Column()
 }
 
 void Subquery() #void :
@@ -1248,7 +1277,7 @@ ASTRowLimitingClause RowLimitingClause() :
 ASTQueryBlock QueryBlock() :
 {}
 {
-    // [ WithClause() ]
+    [ WithClause() ]
     AbstractSelectStatement(jjtThis)
     SelectList()
     FromClause()
@@ -1885,6 +1914,7 @@ ASTVariableName VariableName() :
 {
     id = ID() { name.append(id.getImage()); }
     [ "." id = ID() { name.append('.').append(id.getImage()); } ]
+    [ "." id = ID() { name.append('.').append(id.getImage()); } ]
     {
         jjtThis.setImage(name.toString());
         return jjtThis;
@@ -2325,7 +2355,7 @@ ASTValuesClause ValuesClause() :
     (
         "(" ( Expression() | <_DEFAULT> ) ( "," ( Expression() | <_DEFAULT> ) )* ")"
     |
-        ID() // that's a record variable name
+        Name() // that's a record variable name
     )
     { return jjtThis; }
 }
@@ -2348,9 +2378,14 @@ ASTConditionalInsertClause ConditionalInsertClause() :
     { return jjtThis; }
 }
 
+/**
+ * https://docs.oracle.com/en/database/oracle/oracle-database/18/sqlrf/SELECT.html#GUID-CFA006CA-6FF1-4972-821E-6996142A51C6
+ */
 ASTSelectStatement SelectStatement() :
 {}
 {
+    [ WithClause() ]
+
     AbstractSelectStatement(jjtThis)
 
     SelectList()
@@ -2364,6 +2399,28 @@ ASTSelectStatement SelectStatement() :
     RestOfStatement()
 
     { return jjtThis; }
+}
+
+ASTWithClause WithClause() :
+{}
+{
+    <WITH>
+    (MethodDeclarator())* // plsql_declarations
+    [
+        SubqueryFactoringClause()
+        ("," SubqueryFactoringClause() )*
+    ]
+    { return jjtThis; }
+}
+
+void SubqueryFactoringClause() #void :
+{}
+{
+    Name() // query_name
+    <AS>
+    "(" Subquery() ")"
+    // [ SearchClause() ]
+    // [ CycleClause() ]
 }
 
 ASTUpdateStatement UpdateStatement() :
@@ -2409,7 +2466,7 @@ ASTUpdateSetClause UpdateSetClause() :
 {
     <SET>
     (
-        LOOKAHEAD(1) <ROW> "=" ID()
+        LOOKAHEAD(1) <ROW> "=" Name()
     |
         "VALUE" "(" TableAlias() ")" "=" ( LOOKAHEAD(1) "(" Subquery() ")" | Expression() )
     |
@@ -2431,7 +2488,7 @@ ASTUpdateSetClause UpdateSetClause() :
 ASTReturningClause ReturningClause() :
 {}
 {
-    ( <RETURN> | <RETURNING> ) ( Expression() (",")? )+ <INTO> ( ID() (",")? )+
+    ( <RETURN> | <RETURNING> ) ( Expression() (",")? )+ <INTO> ( Name() (",")? )+
     { return jjtThis; }
 }
 
@@ -2785,20 +2842,24 @@ ASTCallSpecTail CallSpecTail() : {
 
 
 
-/** Cursor (common part of specification and body) */
+/**
+ * Cursor (common part of specification and body)
+ *
+ * See https://docs.oracle.com/en/database/oracle/oracle-database/18/lnpls/explicit-cursor-declaration-and-definition.html#GUID-38C5DBA3-9DEC-4AF2-9B5E-7B721D11A77C
+ */
 ASTCursorUnit CursorUnit()  :
 {
  PLSQLNode simpleNode = null ;
 }
 {
-	(
-	<CURSOR> simpleNode = ID()
-	[ FormalParameters() ]
-	[<RETURN> Datatype()
-	]
-	)
-	[<IS> ("(")* SqlStatement(null,";")] ";"
-      { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
+    <CURSOR> simpleNode = ID()
+    [ FormalParameters() ]
+    [ <RETURN> Datatype() ]
+    // cursor definition
+    [<IS> SelectStatement() ]
+    ";"
+
+    { jjtThis.setImage(simpleNode.getImage()) ;  return jjtThis ; }
 }
 
 ASTCursorSpecification CursorSpecification()  : {}
@@ -2937,20 +2998,17 @@ ASTTrimExpression TrimExpression() :
 { PLSQLNode simpleNode = null; StringBuilder sb = new StringBuilder() ; }
 {
   (
-    "(" { sb.append("(");}
-     [ LOOKAHEAD(2)
-        [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
-        [ simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
-        ( <FROM> ) { sb.append(" ").append(token.image); }
-     ]
+     "(" { sb.append("(");}
+     [ ( <LEADING> | <TRAILING> | <BOTH> ) { sb.append(" "); sb.append(token.toString()); } ]
+     [ LOOKAHEAD(StringExpression() <FROM>) simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); } ]
+     [ <FROM> { sb.append(" ").append(token.image); } ]
      simpleNode = StringExpression() { sb.append(" "); sb.append(simpleNode.getImage()); }
-    ")" { sb.append(")");}
+     ")" { sb.append(")");}
   )
  {
  jjtThis.setImage(sb.toString()); return jjtThis;
  }
 }
-
 
 /*
 TREAT ( Expression AS datatype)
@@ -3136,7 +3194,7 @@ ASTMultiplicativeExpression MultiplicativeExpression() #MultiplicativeExpression
   //UnaryExpression() ( ( "*" | "/" | <MOD> ) UnaryExpression() )*
  (
   (simpleNode = UnaryExpression(true) ) { sb.append(simpleNode.getImage()); }
-  (
+  ( LOOKAHEAD(2)
     ( ("**"  ) { sb.append(" ** "); } //Exponentiation
     | ("*"  ) { sb.append(" * "); }
     | ("/"  ) { sb.append(" / "); }
@@ -5204,7 +5262,7 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 {
 // PL/SQL UNRESERVED KEYWORDS - V$RESERVED.RESERVED='N'
 (
- "REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
+"REF" | "LAST" | "TRIM" | "OVER" | "UNBOUNDED" | "PRECEDING" | "FOLLOWING" | "WITHIN" |
 "OVERFLOW" | "ERROR" | "WITHOUT" | "COUNT" | "VALUE" | "SUBPARTITION" | "LOG" | "ERRORS" | "REJECT" | "UNLIMITED" |
 <FALSE>
  | <TRUE>
@@ -5507,7 +5565,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <FREEPOOLS>
 //| <FRESH>
 | <FULL>
-| <FUNCTION>
 //| <FUNCTIONS>
 //| <G>
 //| <GATHER_PLAN_STATISTICS>
@@ -5637,7 +5694,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <LOCALTIMESTAMP>
 //| <LOCATION>
 //| <LOCATOR>
-//| <LOCKED>
 //| <LOGFILE>
 //| <LOGGING>
 //| <LOGICAL>
@@ -5934,7 +5990,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <PRIVATE_SGA>
 //| <PRIVILEGE>
 //| <PRIVILEGES>
-| <PROCEDURE>
 //| <PROFILE>
 //| <PROGRAM>
 //| <PROJECT>
@@ -6078,7 +6133,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <SIMPLE>
 //| <SINGLE>
 //| <SINGLETASK>
-//| <K_SKIP>
 //| <SKIP_EXT_OPTIMIZER>
 //| <SKIP_UNQ_UNUSABLE_IDX>
 //| <SKIP_UNUSABLE_INDEXES>
@@ -6244,7 +6298,6 @@ ASTKEYWORD_UNRESERVED KEYWORD_UNRESERVED (): {}
 //| <VECTOR_READ_TRACE>
 //| <VERSION>
 //| <VERSIONS>
-//| <WAIT>
 //| <WALLET>
 //| <WELLFORMED>
 //| <WHEN>
@@ -6351,11 +6404,10 @@ ASTID ID(): {}
 		//20120501 | <EXTENDS>
 		| <FETCH> //SYNTAX
 		| <FLOAT> //SYNTAX //RESERVED WORD
-		| <FOR>  //RESERVED WORD
 		| <FORALL> //SYNTAX
 		//| <FROM>  //RESERVED WORD
 
-		// <COMMIT> | <FUNCTION> |	// this causes bug 643043 Procedure w/o params appears as variable
+		// <COMMIT> |
 		| <GOTO> //SYNTAX
 		| <HAVING>  //RESERVED WORD
 		//20120501 | <HEAP>
@@ -6385,7 +6437,6 @@ ASTID ID(): {}
 		//20120501 | <NATURAL>
 		| <NATURALN> | <NEXTVAL> | <NOCOPY>
 		| <NOT> //SYNTAX  //RESERVED WORD
-		| <NOWAIT>  //RESERVED WORD
 		| <NULL>  //RESERVED WORD
 		//| <NULLIF>
 		| <NUMBER>  //RESERVED WORD
@@ -6411,7 +6462,6 @@ ASTID ID(): {}
 		| <PRIVATE>
 		| <PROMPT> //SYNTAX
 
-		//	<PROCEDURE> | // this causes bug 643043 Procedure w/o params appears as variable
 		| <PUBLIC>  //RESERVED WORD
 		| <RAISE> //SYNTAX
 		| <RAW>  //RESERVED WORD
@@ -6593,10 +6643,8 @@ ASTQualifiedID QualifiedID(): {}
 		//20120501 | <EXTENDS>
 		//<FETCH>
 		| <FLOAT>
-		//<FOR>
 		| <FORALL>
 		//<FROM>
-		//| <FUNCTION>
 		//<GOTO>
 		//<HAVING>
 		//20120501 | <HEAP>
@@ -6632,7 +6680,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <NEXTVAL>
 		| <NOCOPY>
 		//<NOT>
-		//<NOWAIT>
 		//<NULL>
 		//| <NULLIF>
 		| <NUMBER>
@@ -6663,7 +6710,6 @@ ASTQualifiedID QualifiedID(): {}
 		| <PRIOR>
 		| <PRIVATE>
 		| <PROMPT>
-		//<PROCEDURE>
 		//<PUBLIC>
 		| <RAISE>
 		//| <RANGE>

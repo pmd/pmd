@@ -30,14 +30,14 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
         """.trimIndent() should matchExpr<ASTSwitchExpression> {
-            it::getTestedExpression shouldBe variableRef("day")
+            it::getTestedExpression shouldBe variableAccess("day")
 
             child<ASTSwitchLabeledExpression> {
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("FRIDAY")
-                    variableRef("SUNDAY")
+                    variableAccess("FRIDAY")
+                    variableAccess("SUNDAY")
                 }
                 int(6)
             }
@@ -46,7 +46,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("WEDNESDAY")
+                    variableAccess("WEDNESDAY")
                 }
                 int(9)
             }
@@ -55,7 +55,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("SONNABEND")
+                    variableAccess("SONNABEND")
                 }
                 child<ASTThrowStatement> {
                     child<ASTConstructorCall> {
@@ -95,7 +95,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
             }
         """ should matchExpr<ASTSwitchExpression> {
 
-            it::getTestedExpression shouldBe variableRef("day")
+            it::getTestedExpression shouldBe variableAccess("day")
 
             child<ASTSwitchLabeledExpression> {
 
@@ -103,8 +103,8 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                     it::isDefault shouldBe false
 
                     additiveExpr(ADD) {
-                        variableRef("a")
-                        variableRef("b")
+                        variableAccess("a")
+                        variableAccess("b")
                     }
                     multiplicativeExpr(DIV) {
                         multiplicativeExpr(MUL) {
@@ -167,14 +167,14 @@ class ASTSwitchExpressionTests : ParserTestSpec({
             }
         """.trimIndent() should matchExpr<ASTSwitchExpression> {
 
-            it::getTestedExpression shouldBe variableRef("day")
+            it::getTestedExpression shouldBe variableAccess("day")
 
             child<ASTSwitchLabeledExpression> {
 
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("FRIDAY")
+                    variableAccess("FRIDAY")
                 }
                 int(6)
             }
@@ -184,12 +184,12 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("WEDNESDAY")
+                    variableAccess("WEDNESDAY")
                 }
 
                 child<ASTSwitchExpression> {
 
-                    it::getTestedExpression shouldBe variableRef("foo")
+                    it::getTestedExpression shouldBe variableAccess("foo")
 
                     child<ASTSwitchLabeledExpression> {
                         child<ASTSwitchLabel> {
@@ -232,7 +232,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """.trimIndent() should matchStmt<ASTSwitchStatement> {
             it::isExhaustiveEnumSwitch shouldBe false
 
-            it::getTestedExpression shouldBe variableRef("day")
+            it::getTestedExpression shouldBe variableAccess("day")
 
             child<ASTSwitchLabel> {
                 it::isDefault shouldBe false
@@ -290,14 +290,14 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """.trimIndent() should matchStmt<ASTSwitchStatement> {
             it::isExhaustiveEnumSwitch shouldBe false
 
-            it::getTestedExpression shouldBe variableRef("day")
+            it::getTestedExpression shouldBe variableAccess("day")
 
             child<ASTSwitchLabeledExpression> {
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("THURSDAY")
-                    variableRef("SATURDAY")
+                    variableAccess("THURSDAY")
+                    variableAccess("SATURDAY")
                 }
                 child<ASTMethodCall>(ignoreChildren = true) {
                     it::getMethodName shouldBe "println"
@@ -307,7 +307,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 child<ASTSwitchLabel> {
                     it::isDefault shouldBe false
 
-                    variableRef("WEDNESDAY")
+                    variableAccess("WEDNESDAY")
                 }
                 child<ASTMethodCall>(ignoreChildren = true) {
                     it::getMethodName shouldBe "println"
@@ -327,13 +327,13 @@ class ASTSwitchExpressionTests : ParserTestSpec({
         """.trimIndent() should matchStmt<ASTSwitchStatement> {
             it::isExhaustiveEnumSwitch shouldBe false
 
-            it::getTestedExpression shouldBe variableRef("day")
+            it::getTestedExpression shouldBe variableAccess("day")
 
 
             child<ASTSwitchLabel> {
                 it::isDefault shouldBe false
 
-                variableRef("TUESDAY")
+                variableAccess("TUESDAY")
             }
             child<ASTBlockStatement>(ignoreChildren = true) { }
 

@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotlintest.*
 import io.kotlintest.specs.IntelliMarker
 import net.sourceforge.pmd.lang.ast.Node

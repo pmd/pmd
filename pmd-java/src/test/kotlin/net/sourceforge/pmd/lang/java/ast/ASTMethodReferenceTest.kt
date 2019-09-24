@@ -14,80 +14,71 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
     parserTest("Method reference") {
 
-        "this::foo" should matchExpr<ASTMethodReference> {
+        inContext(ExpressionParsingCtx) {
 
-            it::getImage shouldBe "foo"
-            it::getMethodName shouldBe "foo"
-            it::getLhsType shouldBe null
-            it::isConstructorReference shouldBe false
-            it::getTypeArguments shouldBe null
+            "this::foo" should parseAs {
 
-            it::getLhsExpression shouldBe child<ASTThisExpression> {
+                methodRef("foo") {
+                    it::getLhsType shouldBe null
+                    it::getTypeArguments shouldBe null
 
-            }
-        }
-
-        "foobar.b::foo" should matchExpr<ASTMethodReference> {
-
-            it::getImage shouldBe "foo"
-            it::getMethodName shouldBe "foo"
-            it::isConstructorReference shouldBe false
-            it::getTypeArguments shouldBe null
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe null
-
-            it::getAmbiguousLhs shouldBe ambiguousName("foobar.b")
-
-        }
-
-        "foobar.b::<B>foo" should matchExpr<ASTMethodReference> {
-
-            it::getImage shouldBe "foo"
-            it::getMethodName shouldBe "foo"
-            it::isConstructorReference shouldBe false
-            it::getLhsExpression shouldBe null
-            it::getLhsType shouldBe null
-
-            it::getAmbiguousLhs shouldBe ambiguousName("foobar.b")
-
-            it::getTypeArguments shouldBe child {
-                unspecifiedChild()
-            }
-
-        }
-
-
-        "foobar.b<B>::foo" should matchExpr<ASTMethodReference> {
-
-            it::getImage shouldBe "foo"
-            it::getMethodName shouldBe "foo"
-            it::isConstructorReference shouldBe false
-            it::getLhsExpression shouldBe null
-            it::getTypeArguments shouldBe null
-
-            it::getLhsType shouldBe child<ASTClassOrInterfaceType> {
-
-                it::getImage shouldBe "b"
-
-                it::getAmbiguousLhs shouldBe child {
-                    it::getName shouldBe "foobar"
+                    it::getLhsExpression shouldBe thisExpr()
                 }
+            }
 
-                it::getTypeArguments shouldBe child {
-                    child<ASTClassOrInterfaceType> {
-                        it::getTypeImage shouldBe "B"
+            "foobar.b::foo" should parseAs {
+
+                methodRef("foo") {
+                    it::getTypeArguments shouldBe null
+                    it::getLhsExpression shouldBe null
+                    it::getLhsType shouldBe null
+
+                    it::getAmbiguousLhs shouldBe ambiguousName("foobar.b")
+                }
+            }
+
+            "foobar.b::<B>foo" should parseAs {
+
+                methodRef("foo") {
+                    it::getLhsExpression shouldBe null
+                    it::getLhsType shouldBe null
+
+                    it::getAmbiguousLhs shouldBe ambiguousName("foobar.b")
+
+                    it::getTypeArguments shouldBe child {
+                        classType("B")
                     }
                 }
             }
-        }
 
-        "java.util.Map<String, String>.Entry<String, String>::foo" should matchExpr<ASTMethodReference> {
 
-            it::getMethodName shouldBe "foo"
-            it::getLhsType shouldBe classType("Entry") // ignore the rest
-        }
+            "foobar.b<B>::foo" should parseAs {
 
-        inContext(ExpressionParsingCtx) {
+                methodRef("foo") {
+                    it::getLhsExpression shouldBe null
+                    it::getTypeArguments shouldBe null
+
+                    it::getLhsType shouldBe classType("b") {
+
+                        it::getAmbiguousLhs shouldBe child {
+                            it::getName shouldBe "foobar"
+                        }
+
+                        it::getTypeArguments shouldBe child {
+                            child<ASTClassOrInterfaceType> {
+                                it::getTypeImage shouldBe "B"
+                            }
+                        }
+                    }
+                }
+            }
+
+            "java.util.Map<String, String>.Entry<String, String>::foo" should parseAs {
+
+                methodRef("foo") {
+                    it::getLhsType shouldBe classType("Entry") // ignore the rest
+                }
+            }
 
             "super::foo" should parseAs {
                 methodRef("foo") {

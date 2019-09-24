@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.cpd;
 
-import org.sonar.plugins.scala.cpd.ScalaTokenizer;
-
 /**
- * Language implementation for Scala
+ * Language implementation for Scala.
  */
 public class ScalaLanguage extends AbstractLanguage {
 

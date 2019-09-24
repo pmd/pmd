@@ -76,7 +76,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
         } else if (node instanceof ASTFieldDeclaration) {
             return ((ASTFieldDeclaration) node).getVariableName();
         } else if (node instanceof ASTResource) {
-            return ((ASTResource) node).getVariableDeclaratorId().getImage();
+            return ((ASTResource) node).getStableName();
         } else {
             return node.getImage();
         }
@@ -215,7 +215,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
 
     @Override
     public Object visit(final ASTResource node, final Object data) {
-        if (node.isFinal()) {
+        if (!node.isConciseResource() && node.asLocalVariableDeclaration().isFinal()) {
             reportUnnecessaryModifiers(data, node, Modifier.FINAL, "resource specifications are implicitly final");
         }
 

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
  * ExcessiveImports attempts to count all unique imports a class contains. This
@@ -17,22 +17,19 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author aglover
  * @since Feb 21, 2003
  */
-public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
+public class ExcessiveImportsRule extends AbstractJavaCounterCheckRule<ASTCompilationUnit> {
 
     public ExcessiveImportsRule() {
         super(ASTCompilationUnit.class);
-        setProperty(MINIMUM_DESCRIPTOR, 30d);
     }
 
-    /**
-     * Hook method to count imports. This is a user defined value.
-     *
-     * @param node
-     * @param data
-     * @return Object
-     */
     @Override
-    public Object visit(ASTImportDeclaration node, Object data) {
-        return NumericConstants.ONE;
+    protected int defaultReportLevel() {
+        return 30;
+    }
+
+    @Override
+    protected boolean isViolation(ASTCompilationUnit node, int reportLevel) {
+        return node.findChildrenOfType(ASTImportDeclaration.class).size() >= reportLevel;
     }
 }

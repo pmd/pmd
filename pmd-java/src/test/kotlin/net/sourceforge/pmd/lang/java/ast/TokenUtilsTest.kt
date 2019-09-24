@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.test.Assertions
 import net.sourceforge.pmd.lang.ast.test.containingFile
 import net.sourceforge.pmd.lang.ast.test.firstToken
-import java.lang.IllegalArgumentException
 
 /**
  * @author Clément Fournier

@@ -16,10 +16,13 @@ import io.kotlintest.should as kotlintestShould
  * Represents the different Java language versions.
  */
 enum class JavaVersion : Comparable<JavaVersion> {
-    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11, J12;
+    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11, J12, J12__PREVIEW, J13, J13__PREVIEW;
 
     /** Name suitable for use with e.g. [ParserTstUtil.parseAndTypeResolveJava] */
-    val pmdName: String = name.removePrefix("J").replace('_', '.')
+    val pmdName: String = name.removePrefix("J").replaceFirst("__", "-").replace('_', '.').toLowerCase()
+
+
+    operator fun not(): List<JavaVersion> = values().toList() - this
 
     /**
      * Overloads the range operator, e.g. (`J9..J11`).
@@ -76,6 +79,7 @@ object CustomTreePrinter : KotlintestBeanTreePrinter<Node>(NodeTreeLikeAdapter) 
 
 }
 
+// invariants that should be preserved always
 private val javaImplicitAssertions: Assertions<Node> = {
     DefaultMatchingConfig.implicitAssertions(it)
 
@@ -86,6 +90,11 @@ private val javaImplicitAssertions: Assertions<Node> = {
         it::isBooleanLiteral shouldBe (it is ASTBooleanLiteral)
         it::isNullLiteral shouldBe (it is ASTNullLiteral)
     }
+
+    if (it is ASTExpression) run {
+        it::isParenthesized shouldBe (it.parenthesisDepth > 0)
+    }
+
 }
 
 
@@ -346,13 +355,13 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
             override fun getTemplate(construct: String, ctx: ParserTestCtx): String =
                 """
-                ${ctx.imports.joinToString(separator = "\n")}
-                ${ctx.genClassHeader} {
-                    {
-                        Object o = $construct;
-                    }
-                }
-                """.trimIndent()
+${ctx.imports.joinToString(separator = "\n")}
+${ctx.genClassHeader} {
+    {
+        Object o = $construct;
+    }
+}
+                """
 
 
             override fun retrieveNode(acu: ASTCompilationUnit): ASTExpression = acu.getFirstDescendantOfType(ASTExpression::class.java)!!

@@ -47,7 +47,7 @@ import java.util.function.Function;
  * followed by "." "new" and a constructor call. But as soon as the
  * {@link ASTConstructorCall} is pushed, we know that the LHS must be an
  * expression. In that case, the name can be reclassified, and e.g. if
- * it's a simple name be promoted to {@link ASTVariableReference}. This
+ * it's a simple name be promoted to {@link ASTVariableAccess}. This
  * type of immediate disambiguation is carried out by the {@link AbstractJavaNode#jjtClose()}
  * method of those nodes that do force a specific context on their
  * left-hand side. See also {@link LeftRecursiveNode}.
@@ -117,7 +117,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
      * can do some preliminary reclassification:
      * <ul>
      *     <li>If the name is a single identifier, then this can be
-     *       reclassified as an {@link ASTVariableReference}
+     *       reclassified as an {@link ASTVariableAccess}
      *     <li>If the name is a sequence of identifiers, then the last
      *       segment can be reclassified as an {@link ASTFieldAccess},
      *       and the rest of the sequence (to the left) is left ambiguous.
@@ -128,7 +128,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
     ASTExpression forceExprContext() {
         // by the time this is called, this node is on top of the stack,
         // meaning, it has no parent
-        return shrinkOneSegment(ASTVariableReference::new, ASTFieldAccess::new);
+        return shrinkOneSegment(ASTVariableAccess::new, ASTFieldAccess::new);
     }
 
 

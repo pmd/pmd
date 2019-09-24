@@ -37,6 +37,8 @@ The basic steps involved in writing XPath rules are these:
 3.  Write an XPath expression that matches the violation you are searching
 4.  Modify the Java class and go back to previous step to refine the XPath expression
 
+See [Designer Reference](pmd_userdocs_extending_designer_reference.html) for a more detailed explanation on how to use the designer.
+
 ## Simple XPath expressions
 
 This section provides hands-on examples of XPath queries over the AST. You will probably find this section more useful if you follow it with Designer and copy/paste the examples.

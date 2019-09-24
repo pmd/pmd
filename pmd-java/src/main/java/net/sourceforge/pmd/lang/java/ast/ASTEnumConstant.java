@@ -4,16 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
  *
  * <pre class="grammar">
  *
- * EnumConstant ::= {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
+ * EnumConstant ::= {@link ASTAnnotation Annotation}* {@link ASTVariableDeclaratorId VariableDeclaratorId} {@linkplain ASTArgumentList ArgumentList}? {@linkplain ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
-public final class ASTEnumConstant extends AbstractJavaNode {
+public final class ASTEnumConstant extends AbstractJavaNode implements Annotatable {
 
 
     ASTEnumConstant(int id) {
@@ -37,12 +39,20 @@ public final class ASTEnumConstant extends AbstractJavaNode {
 
 
     public ASTVariableDeclaratorId getId() {
-        return (ASTVariableDeclaratorId) jjtGetChild(0);
+        return getFirstChildOfType(ASTVariableDeclaratorId.class);
     }
 
     @Override
     public String getImage() {
         return getId().getImage();
+    }
+
+    /**
+     * Returns the arguments list passed to the constructor call, if any.
+     */
+    @Nullable
+    public ASTArgumentList getArguments() {
+        return getFirstChildOfType(ASTArgumentList.class);
     }
 
     /**
@@ -57,7 +67,15 @@ public final class ASTEnumConstant extends AbstractJavaNode {
      * which is compiled like an anonymous class.
      */
     public boolean isAnonymousClass() {
-        return getFirstChildOfType(ASTAnonymousClassDeclaration.class) != null;
+        return getLastChild() instanceof ASTAnonymousClassDeclaration;
+    }
+
+    /**
+     * Returns the anonymous class declaration, or null if
+     * there is none.
+     */
+    public ASTAnonymousClassDeclaration getAnonymousClass() {
+        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTAnonymousClassDeclaration.class);
     }
 
 }

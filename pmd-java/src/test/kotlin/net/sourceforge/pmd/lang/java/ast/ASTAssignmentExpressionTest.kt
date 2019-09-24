@@ -1,7 +1,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
-import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.WRITE
 
 /**
  * @author Clément Fournier
@@ -15,9 +16,7 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe child<ASTVariableReference> {
-                it::getImage shouldBe "a"
-            }
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
             it::getRightHandSide shouldBe child<ASTLambdaExpression> {
                 unspecifiedChildren(2)
@@ -28,24 +27,17 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe child<ASTVariableReference> {
-                it::getImage shouldBe "a"
-            }
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
-            it::getRightHandSide shouldBe child<ASTNumericLiteral> {}
+            it::getRightHandSide shouldBe int(2)
         }
 
         "a.b().f *= 2" should matchExpr<ASTAssignmentExpression> {
             it::getOp shouldBe AssignmentOp.MUL_EQ
             it::isCompound shouldBe true
 
-            it::getLeftHandSide shouldBe child<ASTFieldAccess> {
-                it.fieldName shouldBe "f"
-
-                unspecifiedChild()
-            }
-
-            it::getRightHandSide shouldBe child<ASTNumericLiteral> {}
+            it::getLeftHandSide shouldBe fieldAccess("f", WRITE)
+            it::getRightHandSide shouldBe int(2)
 
         }
 
@@ -54,34 +46,26 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::isCompound shouldBe true
 
 
-            it::getLeftHandSide shouldBe child<ASTVariableReference> {
-                it::getImage shouldBe "a"
-            }
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
-            it::getRightHandSide shouldBe child<ASTNumericLiteral> {}
+            it::getRightHandSide shouldBe int(2)
         }
 
     }
 
     parserTest("Right associativity") {
 
-        "a = b = 3" should matchExpr<ASTAssignmentExpression> {
+        "a = b = c" should matchExpr<ASTAssignmentExpression> {
             it::getOp shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLeftHandSide shouldBe child<ASTVariableReference> {
-                it::getImage shouldBe "a"
-            }
+            it::getLeftHandSide shouldBe variableAccess("a", WRITE)
 
-            it::getRightHandSide shouldBe child<ASTAssignmentExpression> {
-                it::getOp shouldBe AssignmentOp.EQ
+            it::getRightHandSide shouldBe assignmentExpr(AssignmentOp.EQ) {
                 it::isCompound shouldBe false
 
-                it::getLeftHandSide shouldBe child<ASTVariableReference> {
-                    it::getImage shouldBe "b"
-                }
-
-                it::getRightHandSide shouldBe child<ASTNumericLiteral> {}
+                it::getLeftHandSide shouldBe variableAccess("b", WRITE)
+                it::getRightHandSide shouldBe variableAccess("c", READ)
             }
         }
     }

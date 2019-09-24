@@ -37,7 +37,7 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaExpr
         // they could be of different types, but the getOp check ensures
         // they are of the same type
         if (first instanceof AbstractLrBinaryExpr
-            && ((AbstractLrBinaryExpr) first).getOp() == getOp()
+            && ((AbstractLrBinaryExpr) first).getOperator() == getOperator()
             && !((AbstractLrBinaryExpr) first).isParenthesized()) {
             flatten(0);
         }
@@ -55,23 +55,9 @@ abstract class AbstractLrBinaryExpr extends AbstractJavaExpr
     }
 
     /**
-     * Returns the image of the operator.
-     *
-     * @deprecated Use {@link #getOp()}
-     */
-    @Deprecated
-    public String getOperator() {
-        return getImage();
-    }
-
-    /**
      * Returns the operator.
      */
-    public BinaryOp getOp() {
+    public BinaryOp getOperator() {
         return operator;
-    }
-
-    public String getOpName() {
-        return operator.name();
     }
 }

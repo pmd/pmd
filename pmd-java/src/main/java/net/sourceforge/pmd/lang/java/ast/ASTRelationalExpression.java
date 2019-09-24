@@ -18,9 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTRelationalExpression extends AbstractJavaExpr implements ASTExpression {
-
-    private BinaryOp op;
+public final class ASTRelationalExpression extends AbstractLrBinaryExpr implements ASTExpression {
 
     ASTRelationalExpression(int id) {
         super(id);
@@ -39,20 +37,6 @@ public final class ASTRelationalExpression extends AbstractJavaExpr implements A
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
-    }
-
-    @Override
-    public void setImage(String image) {
-        super.setImage(image);
-        op = BinaryOp.fromImage(image);
-    }
-
-    public BinaryOp getOp() {
-        return op;
-    }
-
-    public String getOpName() {
-        return op.name();
     }
 
 }

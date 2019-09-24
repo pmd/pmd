@@ -161,24 +161,10 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     }
 
     @Override
-    public Object visit(ASTPreIncrementExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTPreDecrementExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
     public Object visit(ASTCastExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
 
-    @Override
-    public Object visit(ASTPostfixExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
 
     @Override
     public Object visit(ASTSwitchExpression node, Object data) {
@@ -220,7 +206,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     @Override
-    public Object visit(ASTVariableReference node, Object data) {
+    public Object visit(ASTVariableAccess node, Object data) {
         return visit((ASTPrimaryExpression) node, data);
     }
 
@@ -323,6 +309,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     // deprecated stuff kept for compatibility with existing visitors, not matched by anything
 
     @Deprecated
+    public Object visit(ASTArguments node, Object data) {
+        return null;
+    }
+
+    @Deprecated
     public Object visit(ASTAllocationExpression node, Object data) {
         return null;
     }
@@ -341,4 +332,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
         return null;
     }
+
+
 }

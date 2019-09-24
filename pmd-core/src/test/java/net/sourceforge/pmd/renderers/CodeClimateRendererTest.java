@@ -6,6 +6,8 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -90,7 +92,7 @@ public class CodeClimateRendererTest extends AbstractRendererTst {
     public void testXPathRule() throws Exception {
         DummyNode node = createNode(1);
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename(getSourceCodeFilename());
+        ctx.setSourceCodeFile(new File(getSourceCodeFilename()));
         Report report = new Report();
         XPathRule theRule = new XPathRule();
         theRule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//dummyNode");

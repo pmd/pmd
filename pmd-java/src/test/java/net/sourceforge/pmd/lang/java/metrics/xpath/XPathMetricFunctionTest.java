@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.metrics.xpath;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.Iterator;
 
@@ -52,7 +53,7 @@ public class XPathMetricFunctionTest {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFile(new File("n/a"));
         ctx.setIgnoreExceptions(false); // for test, we want immediate exceptions thrown and not collect them
         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(rule);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(code), new RuleSets(rules), ctx);

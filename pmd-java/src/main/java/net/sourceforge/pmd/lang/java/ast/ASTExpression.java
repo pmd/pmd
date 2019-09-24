@@ -28,9 +28,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *              | {@link ASTShiftExpression ShiftExpression}
  *              | {@link ASTAdditiveExpression AdditiveExpression}
  *              | {@link ASTMultiplicativeExpression MultiplicativeExpression}
- *              | {@link ASTUnaryExpression UnaryExpression} | {@link ASTPreIncrementExpression PreIncrementExpression} | {@link ASTPreDecrementExpression PreDecrementExpression} | {@link ASTCastExpression CastExpression}
- *              | {@link ASTPostfixExpression PostfixExpression}
- *              | {@link ASTSwitchExpression PostfixExpression}
+ *              | {@link ASTUnaryExpression UnaryExpression} | {@link ASTIncrementExpression PrefixIncrement} | {@link ASTCastExpression CastExpression}
+ *              | {@link ASTIncrementExpression PostfixIncrement}
+ *              | {@link ASTSwitchExpression SwitchExpression}
  *              | {@link ASTPrimaryExpression PrimaryExpression}
  *
  * </pre>

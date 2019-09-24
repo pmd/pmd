@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
@@ -14,6 +16,7 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaProcessingStage;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -79,8 +82,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return null;
     }
 
-    public static boolean isQualifiedName(Node node) {
-        return node.getImage().indexOf('.') != -1;
+    public static boolean isQualifiedName(@Nullable String node) {
+        return node != null && node.indexOf('.') != -1;
     }
 
     public static boolean importsPackage(ASTCompilationUnit node, String packageName) {
@@ -163,4 +166,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return null;
     }
 
+    @Deprecated
+    public Object visit(ASTArguments node, Object data) {
+        return null;
+    }
 }

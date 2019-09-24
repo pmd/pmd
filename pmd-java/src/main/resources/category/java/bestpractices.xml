@@ -131,6 +131,58 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidMessageDigestField"
+          language="java"
+          since="6.18.0"
+          message="You shouldn't declare field of MessageDigest type, because unsynchronized access could cause problems"
+          typeResolution="true"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidmessagedigestfield">
+        <description>
+            Declaring a MessageDigest instance as a field make this instance directly available to multiple threads.
+            Such sharing of MessageDigest instances should be avoided if possible since it leads to wrong results
+            if the access is not synchronized correctly.
+            Just create a new instance and use it locally, where you need it.
+            Creating a new instance is easier than synchronizing access to a shared instance.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="version" value="2.0"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//FieldDeclaration[pmd-java:typeIs('java.security.MessageDigest')]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.security.MessageDigest;
+public class AvoidMessageDigestFieldExample {
+    private final MessageDigest sharedMd;
+    public AvoidMessageDigestFieldExample() throws Exception {
+        sharedMd = MessageDigest.getInstance("SHA-256");
+    }
+    public byte[] calculateHashShared(byte[] data) {
+        // sharing a MessageDigest like this without synchronizing access
+        // might lead to wrong results
+        sharedMd.reset();
+        sharedMd.update(data);
+        return sharedMd.digest();
+    }
+
+    // better
+    public byte[] calculateHash(byte[] data) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(data);
+        return md.digest();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidPrintStackTrace"
           language="java"
           since="3.2"
@@ -426,11 +478,17 @@ public class Foo {
         </properties>
         <example><![CDATA[
 // this is double-brace initialization
-return new ArrayList<String>(){{ addAll("a","b","c"); }};
+return new ArrayList<String>(){{
+    add("a");
+    add("b");
+    add("c");
+}};
 
 // the better way is to not create an anonymous class:
 List<String> a = new ArrayList<>();
-a.addAll("a","b","c");
+a.add("a");
+a.add("b");
+a.add("c");
 return a;
 ]]>
         </example>
@@ -1242,7 +1300,10 @@ class Foo{
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedformalparameter">
         <description>
-Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Avoid passing parameters to methods or constructors without actually referencing them in the method body. 
+Removing unused formal parameters from public methods could cause a ripple effect through the code base. 
+Hence, by default, this rule only considers private methods. To include non-private methods, set the
+`checkAll` property to `true`.
         </description>
         <priority>3</priority>
         <example>

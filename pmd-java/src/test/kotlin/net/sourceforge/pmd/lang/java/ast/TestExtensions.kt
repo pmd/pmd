@@ -1,11 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
+import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.ast.test.NodeSpec
-import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
-import net.sourceforge.pmd.lang.ast.test.shouldBe
-import net.sourceforge.pmd.lang.ast.test.shouldMatch
+import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
@@ -26,6 +24,17 @@ fun KCallable<Optional<*>>.shouldBeEmpty() = this shouldMatch {
 infix fun <T, U : T> KCallable<Optional<T>>.shouldBePresent(any: U) = this shouldMatch {
     ::isPresent shouldBe true
     ::get shouldBe any
+}
+
+fun JavaNode.tokenList(): List<GenericToken> {
+    val lst = mutableListOf<GenericToken>()
+    var t = firstToken
+    lst += t
+    while (t != lastToken) {
+        t = t.next
+        lst += t
+    }
+    return lst
 }
 
 fun String.addArticle() = when (this[0].toLowerCase()) {
@@ -51,6 +60,13 @@ fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumCo
             spec()
         }
 
+fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: (ASTThisExpression) -> ASTClassOrInterfaceType? = { null }) =
+        child<ASTThisExpression> {
+            qualifier(it).let { qual ->
+                it::getQualifier shouldBe qual
+            }
+        }
+
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
         child<ASTVariableDeclaratorId>(ignoreChildren = true) {
             it::getVariableName shouldBe name
@@ -64,14 +80,22 @@ fun TreeNodeWrapper<Node, *>.variableDeclarator(name: String, spec: NodeSpec<AST
         }
 
 
-fun TreeNodeWrapper<Node, *>.variableRef(name: String, otherAssertions: (ASTVariableReference) -> Unit = {}) =
-        child<ASTVariableReference> {
+fun TreeNodeWrapper<Node, *>.variableAccess(name: String, accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: (ASTVariableAccess) -> Unit = {}) =
+        child<ASTVariableAccess> {
             it::getVariableName shouldBe name
+            if (accessType != null) {
+                it::getAccessType shouldBe accessType
+            }
             otherAssertions(it)
         }
-fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
+
+fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: NodeSpec<ASTFieldAccess> = EmptyAssertions) =
         child<ASTFieldAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
             it::getFieldName shouldBe name
+            if (accessType != null) {
+                it::getAccessType shouldBe accessType
+            }
+
             otherAssertions()
         }
 
@@ -84,24 +108,26 @@ fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: 
 
 
 fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, out ASTExpression>.() -> ASTExpression): ASTExpression =
-        when (op) {
-            UnaryOp.INCREMENT -> child<ASTPreIncrementExpression> {
-                baseExpr()
-            }
-            UnaryOp.DECREMENT -> child<ASTPreDecrementExpression> {
-                baseExpr()
-            }
-            else -> child<ASTUnaryExpression> {
-                it::getOp shouldBe op
-                it::getBaseExpression shouldBe baseExpr()
-            }
+        child<ASTUnaryExpression> {
+            it::getOperator shouldBe op
+            it::getOperand shouldBe baseExpr()
         }
 
 
-fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp, baseExpr: ValuedNodeSpec<ASTPostfixExpression, ASTPrimaryExpression>) =
-        child<ASTPostfixExpression> {
+fun TreeNodeWrapper<Node, *>.postfixMutation(op: IncrementOp, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
+        incrementExpr(op, isPrefix = false, baseExpr = baseExpr)
+
+fun TreeNodeWrapper<Node, *>.prefixMutation(op: IncrementOp, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
+        incrementExpr(op, isPrefix = true, baseExpr = baseExpr)
+
+fun TreeNodeWrapper<Node, *>.incrementExpr(op: IncrementOp, isPrefix: Boolean, baseExpr: ValuedNodeSpec<ASTIncrementExpression, ASTPrimaryExpression>) =
+        child<ASTIncrementExpression> {
             it::getOp shouldBe op
-            it::getBaseExpression shouldBe baseExpr()
+            it::isPostfix shouldBe !isPrefix
+            it::isPrefix shouldBe isPrefix
+            it::isDecrement shouldBe (op == IncrementOp.DECREMENT)
+            it::isIncrement shouldBe (op == IncrementOp.INCREMENT)
+            it::getOperand shouldBe baseExpr()
         }
 
 fun TreeNodeWrapper<Node, *>.typeParamList(contents: NodeSpec<ASTTypeParameters>) =
@@ -160,6 +186,13 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: NodeSpec<ASTCastExpression>) =
 fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
             it::getImage shouldBe image
+            it::isTextBlock shouldBe false
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
+        child<ASTStringLiteral> {
+            it::isTextBlock shouldBe true
             contents()
         }
 
@@ -186,13 +219,36 @@ fun TreeNodeWrapper<Node, *>.memberValuePair(name: String, contents: ValuedNodeS
 
 fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<ASTAdditiveExpression>) =
         child<ASTAdditiveExpression> {
+            it::getOperator shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSpec<ASTAssignmentExpression> = EmptyAssertions) =
+        child<ASTAssignmentExpression>(ignoreChildren = assertions == EmptyAssertions) {
             it::getOp shouldBe op
             assertions()
         }
 
 fun TreeNodeWrapper<Node, *>.equalityExpr(op: BinaryOp, assertions: NodeSpec<ASTEqualityExpression>) =
         child<ASTEqualityExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.shiftExpr(op: BinaryOp, assertions: NodeSpec<ASTShiftExpression>) =
+        child<ASTShiftExpression> {
+            it::getOperator shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.compExpr(op: BinaryOp, assertions: NodeSpec<ASTRelationalExpression>) =
+        child<ASTRelationalExpression> {
+            it::getOperator shouldBe op
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInstanceOfExpression>) =
+        child<ASTInstanceOfExpression> {
             assertions()
         }
 
@@ -204,7 +260,7 @@ fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTAndExpression>) =
 
 fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSpec<ASTMultiplicativeExpression>) =
         child<ASTMultiplicativeExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 
@@ -225,7 +281,7 @@ fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethod
             it::getLhsType shouldBe assertions()
         }
 
-private val EmptyAssertions: NodeSpec<out Node> = {}
+val EmptyAssertions: NodeSpec<out Node> = {}
 
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =
         child(ignoreChildren = assertions == EmptyAssertions) {

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsin
 class ParenthesesTest : ParserTestSpec({
 
 
-    parserTest("Class literals") {
+    parserTest("Test parens") {
 
         inContext(StatementParsingCtx) {
             // we use a statement context to avoid the findFirstNodeOnStraightLine skipping parentheses
@@ -46,6 +47,8 @@ class ParenthesesTest : ParserTestSpec({
                     it::getInitializer shouldBe int(3) {
                         it::getParenthesisDepth shouldBe 2
                         it::isParenthesized shouldBe true
+
+                        it.tokenList().map { it.image } shouldBe listOf("(", "(", "3", ")", ")")
                     }
                 }
             }
@@ -57,9 +60,11 @@ class ParenthesesTest : ParserTestSpec({
                         it::getParenthesisDepth shouldBe 0
                         it::isParenthesized shouldBe false
 
-                        it::getLhsExpression shouldBe variableRef("a") {
+                        it::getLhsExpression shouldBe variableAccess("a") {
                             it::getParenthesisDepth shouldBe 2
                             it::isParenthesized shouldBe true
+
+                            it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ")")
                         }
                     }
                 }
@@ -71,9 +76,13 @@ class ParenthesesTest : ParserTestSpec({
                         it::getParenthesisDepth shouldBe 1
                         it::isParenthesized shouldBe true
 
-                        it::getLhsExpression shouldBe variableRef("a") {
+                        it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ".", "f", ")")
+
+                        it::getLhsExpression shouldBe variableAccess("a") {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
+
+                            it.tokenList().map { it.image } shouldBe listOf("(", "a", ")")
                         }
                     }
                 }
@@ -87,15 +96,25 @@ class ParenthesesTest : ParserTestSpec({
                         it::getParenthesisDepth shouldBe 1
                         it::isParenthesized shouldBe true
 
+                        it.tokenList().map { it.image } shouldBe
+                                listOf("(", "(", "1", "+", "2", ")", "+", "f", ")")
+
                         additiveExpr(BinaryOp.ADD) {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
+
+
+                            it.tokenList().map { it.image } shouldBe
+                                    listOf("(", "1", "+", "2", ")")
 
                             int(1)
                             int(2)
                         }
 
-                        variableRef("f")
+                        variableAccess("f") {
+                            it::isParenthesized shouldBe false
+                            it::getParenthesisDepth shouldBe 0
+                        }
                     }
                 }
             }
@@ -114,7 +133,7 @@ class ParenthesesTest : ParserTestSpec({
                             it::isParenthesized shouldBe true
 
                             int(2)
-                            variableRef("f")
+                            variableAccess("f")
                         }
                     }
                 }

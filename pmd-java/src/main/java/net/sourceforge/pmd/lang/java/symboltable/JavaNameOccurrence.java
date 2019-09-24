@@ -7,11 +7,9 @@ package net.sourceforge.pmd.lang.java.symboltable;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -122,7 +120,7 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     private boolean isStandAlonePostfix(Node primaryExpression) {
-        if (!(primaryExpression instanceof ASTPostfixExpression)
+        if (!(primaryExpression instanceof ASTIncrementExpression && ((ASTIncrementExpression) primaryExpression).isPostfix())
                 || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
             return false;
         }
@@ -154,8 +152,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             Node p = l.jjtGetParent();
             Node gp = p.jjtGetParent();
             Node node = gp.jjtGetParent();
-            if (node instanceof ASTPreDecrementExpression || node instanceof ASTPreIncrementExpression
-                    || node instanceof ASTPostfixExpression) {
+            if (node instanceof ASTIncrementExpression) {
                 return true;
             }
 
@@ -177,8 +174,7 @@ public class JavaNameOccurrence implements NameOccurrence {
             }
 
             // catch this.i++ or ++this.i
-            return gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression
-                    || gp instanceof ASTPostfixExpression;
+            return gp instanceof ASTIncrementExpression;
         }
     }
 
