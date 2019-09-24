@@ -387,7 +387,7 @@ END;
     </rule>
 
     <rule name="NcssObjectCount"
-          message="The Oracle object has an NCSS line count of {0}"
+          message="The Oracle object {0} has a NCSS line count of {1}"
           language="plsql"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssObjectCountRule"

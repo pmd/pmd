@@ -5,7 +5,6 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -22,49 +21,14 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.stat.Metric;
 
 public class ReportTest implements ThreadSafeReportListener {
 
     private boolean violationSemaphore;
-    private boolean metricSemaphore;
 
     @Override
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         violationSemaphore = true;
-    }
-
-    @Override
-    public void metricAdded(Metric metric) {
-        metricSemaphore = true;
-    }
-
-    @Test
-    public void testMetric0() {
-        Report r = new Report();
-        assertFalse("Default report shouldn't contain metrics", r.hasMetrics());
-    }
-
-    @Test
-    public void testMetric1() {
-        Report r = new Report();
-        assertFalse("Default report shouldn't contain metrics", r.hasMetrics());
-
-        r.addMetric(new Metric("m1", 0, 0.0, 1.0, 2.0, 3.0, 4.0));
-        assertTrue("Expected metrics weren't there", r.hasMetrics());
-
-        Iterator<Metric> ms = r.metrics();
-        assertTrue("Should have some metrics in there now", ms.hasNext());
-
-        Object o = ms.next();
-        assertTrue("Expected Metric, got " + o.getClass(), o instanceof Metric);
-
-        Metric m = (Metric) o;
-        assertEquals("metric name mismatch", "m1", m.getMetricName());
-        assertEquals("wrong low value", 1.0, m.getLowValue(), 0.05);
-        assertEquals("wrong high value", 2.0, m.getHighValue(), 0.05);
-        assertEquals("wrong avg value", 3.0, m.getAverage(), 0.05);
-        assertEquals("wrong std dev value", 4.0, m.getStandardDeviation(), 0.05);
     }
 
     // Files are grouped together now.
@@ -114,11 +78,6 @@ public class ReportTest implements ThreadSafeReportListener {
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
         rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
         assertTrue(violationSemaphore);
-
-        metricSemaphore = false;
-        rpt.addMetric(new Metric("test", 0, 0.0, 0.0, 0.0, 0.0, 0.0));
-
-        assertTrue("no metric", metricSemaphore);
     }
 
     @Test
