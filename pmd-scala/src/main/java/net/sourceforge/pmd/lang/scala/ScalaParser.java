@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 
@@ -33,7 +32,7 @@ public class ScalaParser extends AbstractParser {
 
     /**
      * Create a parser using the given Scala Dialect and set of parser options.
-     * 
+     *
      * @param scalaDialect
      *            the Scala Dialect for this parser
      * @param parserOptions
@@ -50,7 +49,7 @@ public class ScalaParser extends AbstractParser {
     }
 
     @Override
-    public Node parse(String fileName, Reader source) throws ParseException {
+    public ASTSource parse(String fileName, Reader source) throws ParseException {
         Input.VirtualFile virtualFile;
         try {
             String sourceString = IOUtils.toString(source);

@@ -122,6 +122,7 @@ public interface Node {
 
     int getEndLine();
 
+    // FIXME should not be inclusive
     int getEndColumn();
 
     DataFlowNode getDataFlowNode();

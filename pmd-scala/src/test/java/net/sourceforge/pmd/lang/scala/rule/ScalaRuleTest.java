@@ -1,13 +1,12 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.scala.rule;
+package net.sourceforge.pmd.lang.scala.rule;
 
 import java.io.File;
 import java.io.StringReader;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.IOUtils;
@@ -22,7 +21,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
@@ -30,7 +29,6 @@ import net.sourceforge.pmd.lang.scala.ScalaLanguageModule;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermApply;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
-import net.sourceforge.pmd.lang.scala.rule.ScalaRule;
 
 public class ScalaRuleTest {
     private static final String SCALA_TEST = "/parserFiles/helloworld.scala";
@@ -70,14 +68,7 @@ public class ScalaRuleTest {
         Report report = getReportForTestString(rule,
                 IOUtils.toString(getClass().getResourceAsStream(SCALA_TEST), "UTF-8"));
 
-        int vioCount = 0;
-        Iterator<RuleViolation> rvIter = report.iterator();
-        while (rvIter.hasNext()) {
-            rvIter.next();
-            vioCount++;
-        }
-
-        Assert.assertEquals(1, vioCount);
+        Assert.assertEquals(1, IteratorUtil.count(report.iterator()));
     }
 
     private static Report getReportForTestString(Rule r, String test) throws PMDException {

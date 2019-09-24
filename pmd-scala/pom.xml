@@ -25,6 +25,12 @@
                     </delimiters>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -45,8 +51,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>net.sourceforge.pmd</groupId>
             <artifactId>pmd-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-lang-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -27,7 +27,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.datasource.DataSource;
 
 public class MultiThreadProcessorTest {
@@ -160,9 +159,6 @@ public class MultiThreadProcessorTest {
             violations.incrementAndGet();
         }
 
-        @Override
-        public void metricAdded(Metric metric) {
-        }
     }
     
     private static class SimpleRenderer extends AbstractAccumulatingRenderer {
