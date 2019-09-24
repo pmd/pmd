@@ -6,13 +6,12 @@ package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,10 +28,8 @@ public final class LanguageRegistry {
         List<Language> languagesList = new ArrayList<>();
         // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
-        Iterator<Language> iterator = languageLoader.iterator();
-        while (iterator.hasNext()) {
+        for (Language language : languageLoader) {
             try {
-                Language language = iterator.next();
                 languagesList.add(language);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
@@ -56,8 +53,8 @@ public final class LanguageRegistry {
         return instance;
     }
 
-    public static List<Language> getLanguages() {
-        return new ArrayList<>(getInstance().languages.values());
+    public static Set<Language> getLanguages() {
+        return new LinkedHashSet<>(getInstance().languages.values());
     }
 
     public static Language getLanguage(String languageName) {
@@ -113,38 +110,6 @@ public final class LanguageRegistry {
             }
         }
         return languages;
-    }
-
-    public static List<LanguageVersion> findAllVersions() {
-        List<LanguageVersion> versions = new ArrayList<>();
-        for (Language language : getLanguages()) {
-            versions.addAll(language.getVersions());
-        }
-        return versions;
-    }
-
-    public static String commaSeparatedTerseNamesForLanguage(List<Language> languages) {
-        StringBuilder builder = new StringBuilder();
-        for (Language language : languages) {
-            if (builder.length() > 0) {
-                builder.append(", ");
-            }
-            builder.append(language.getTerseName());
-        }
-        return builder.toString();
-    }
-
-    public static String commaSeparatedTerseNamesForLanguageVersion(List<LanguageVersion> languageVersions) {
-        if (languageVersions == null || languageVersions.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(languageVersions.get(0).getTerseName());
-        for (int i = 1; i < languageVersions.size(); i++) {
-            builder.append(", ").append(languageVersions.get(i).getTerseName());
-        }
-        return builder.toString();
     }
 
 }

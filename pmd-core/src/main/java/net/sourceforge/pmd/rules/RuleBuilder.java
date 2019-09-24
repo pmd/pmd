@@ -6,6 +6,7 @@ package net.sourceforge.pmd.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -74,7 +75,8 @@ public class RuleBuilder {
         if (lang == null) {
             throw new IllegalArgumentException(
                     "Unknown Language '" + languageName + "' for rule" + name + ", supported Languages are "
-                    + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.getLanguages()));
+                    + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
+            );
         }
         language = lang;
     }
@@ -173,7 +175,7 @@ public class RuleBuilder {
                                            + "' for Language '" + language.getTerseName()
                                            + "' for Rule " + name
                                            + "; supported Language Versions are: "
-                                           + LanguageRegistry.commaSeparatedTerseNamesForLanguageVersion(language.getVersions()));
+                                           + language.getVersions().stream().map(LanguageVersion::getTerseName).collect(Collectors.joining(", ")));
     }
 
     public Rule build() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
