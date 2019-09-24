@@ -54,11 +54,11 @@ val Node.endPosition: TextPosition
 
 fun Node.assertTextRangeIsOk() {
 
-    // they're defined
-    assert(beginLine >= 0) { "Begin line is not set" }
-    assert(endLine >= 0) { "End line is not set" }
-    assert(beginColumn >= 0) { "Begin column is not set" }
-    assert(endColumn >= 0) { "End column is not set" }
+    // they're defined, and 1-based
+    assert(beginLine >= 1) { "Begin line is not set" }
+    assert(endLine >= 1) { "End line is not set" }
+    assert(beginColumn >= 1) { "Begin column is not set" }
+    assert(endColumn >= 1) { "End column is not set" }
 
     // they're in the right order
     textRange.assertOrdered()
@@ -85,8 +85,14 @@ data class TextPosition(val line: Int, val column: Int) : Comparable<TextPositio
 
 data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
 
+    // fixme, the end column should be exclusive
+    fun isEmpty(): Boolean =
+            beginPos.line == endPos.line
+                    && beginPos.column - 1 == endPos.column
+
     fun assertOrdered() {
-        assert(beginPos <= endPos) {
+        assert(beginPos <= endPos || isEmpty()) {
+            // range may be empty
             "The begin position should be lower than the end position"
         }
     }
@@ -94,6 +100,8 @@ data class TextRange(val beginPos: TextPosition, val endPos: TextPosition) {
     operator fun contains(position: TextPosition): Boolean = position in beginPos..endPos
 
     /** Result makes no sense if either of those text bounds is not ordered. */
-    operator fun contains(other: TextRange): Boolean = other.beginPos in this && other.endPos in this
+    operator fun contains(other: TextRange): Boolean =
+            other.beginPos in this && other.endPos in this
+                    || this.isEmpty() && other == this
 
 }

@@ -1447,7 +1447,10 @@ will (and by priority) and avoid clogging the Standard out log.
 
 **Priority:** Medium (3)
 
-Avoid passing parameters to methods or constructors without actually referencing them in the method body.
+Avoid passing parameters to methods or constructors without actually referencing them in the method body. 
+Removing unused formal parameters from public methods could cause a ripple effect through the code base. 
+Hence, by default, this rule only considers private methods. To include non-private methods, set the
+`checkAll` property to `true`.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedFormalParameterRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/UnusedFormalParameterRule.java)
 
