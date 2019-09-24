@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.dfa;
 
 import static net.sourceforge.pmd.lang.java.ParserTstUtil.getOrderedNodes;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -14,6 +15,7 @@ import net.sourceforge.pmd.lang.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
+@Ignore
 public class DAAPathFinderTest implements Executable {
 
     @Test

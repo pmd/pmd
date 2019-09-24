@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jaxen.JaxenException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.typeresolution.testdata.java8.ThisExpression;
 
 
 
+@Ignore
 public class ClassTypeResolverJava8Test {
     @Test
     public void testThisExpression() throws JaxenException {
