@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.stat.Metric;
-
 /**
  * Marker interface for report listeners that, being thread-safe, need not
  * extra synchronization.
@@ -22,13 +20,4 @@ public interface ThreadSafeReportListener {
      */
     void ruleViolationAdded(RuleViolation ruleViolation);
 
-    /**
-     * A new metric point has been reported.
-     *
-     * @param metric
-     *            the metric
-     * @deprecated see {@link net.sourceforge.pmd.lang.rule.stat.StatisticalRule}
-     */
-    @Deprecated
-    void metricAdded(Metric metric);
 }

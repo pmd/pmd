@@ -34,7 +34,6 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.stat.Metric;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -235,11 +234,6 @@ public abstract class AbstractAnalysisCache implements AnalysisCache {
         final AnalysisResult analysisResult = updatedResultsCache.get(ruleViolation.getFilename());
 
         analysisResult.addViolation(ruleViolation);
-    }
-
-    @Override
-    public void metricAdded(final Metric metric) {
-        // Not interested in metrics
     }
 
 }
