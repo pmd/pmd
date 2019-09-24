@@ -8,8 +8,8 @@
 This ruleset contains links to rules that are new in PMD v5.1.2
   </description>
 
-    <rule ref="rulesets/java/codesize.xml/StdCyclomaticComplexity"/>
-    <rule ref="rulesets/java/codesize.xml/ModifiedCyclomaticComplexity"/>
+<!--    <rule ref="rulesets/java/codesize.xml/StdCyclomaticComplexity"/>-->
+<!--    <rule ref="rulesets/java/codesize.xml/ModifiedCyclomaticComplexity"/>-->
 
 </ruleset>
 

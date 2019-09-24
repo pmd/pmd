@@ -9,45 +9,6 @@
         Rules which enforce a specific coding style.
     </description>
 
-    <rule name="AbstractNaming"
-          language="java"
-          since="1.4"
-          deprecated="true"
-          message="Abstract classes should be named 'AbstractXXX'"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#abstractnaming">
-        <description>
-Abstract classes should be named 'AbstractXXX'.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by {% rule java/codestyle/ClassNamingConventions %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration
- [@Abstract='true' and @Interface='false']
- [not (starts-with(@Image,'Abstract'))]
-|
-//ClassOrInterfaceDeclaration
- [@Abstract='false']
- [$strict='true']
- [starts-with(@Image, 'Abstract')]
-]]>
-                </value>
-            </property>
-            <property name="strict" type="Boolean" value="true" description="Also flag classes, that are named Abstract, but are not abstract."/>
-        </properties>
-        <example>
-<![CDATA[
-public abstract class Foo { // should be AbstractFoo
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="AtLeastOneConstructor"
           language="java"
           since="1.04"
@@ -84,115 +45,6 @@ Avoid using dollar signs in variable/method/class/interface names.
         <example>
 <![CDATA[
 public class Fo$o {  // not a recommended name
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidFinalLocalVariable"
-          language="java"
-          since="4.1"
-          deprecated="true"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="Avoid using final local variables, turn them into fields"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidfinallocalvariable">
-        <description>
-Avoid using final local variables, turn them into fields.
-
-Note that this is a controversial rule which is merely useful to enforce a certain code style
-(which is contradictory to good coding practices in most of the cases it's applied to) and
-avoid local literals being declared in a scope smaller than the class.
-
-Also note, that this rule is the opposite of {% rule "java/codestyle/LocalVariableCouldBeFinal" %}.
-Having both rules enabled results in contradictory violations being reported.
-
-This rule is deprecated and will be removed with PMD 7.0.0. There is no replacement planned.
-If the goal is to avoid defining constants in a scope smaller than the class, then the rule
-{% rule "java/errorprone/AvoidDuplicateLiterals" %} should be used instead.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//LocalVariableDeclaration[
-  @Final = 'true'
-  and not(../../ForStatement)
-  and
-  (
-    (count(VariableDeclarator/VariableInitializer) = 0)
-    or
-    (VariableDeclarator/VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/Literal)
-  )
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class MyClass {
-    public void foo() {
-        final String finalLocalVariable;
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidPrefixingMethodParameters"
-          language="java"
-          since="5.0"
-          deprecated="true"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          message="Avoid prefixing parameters by in, out or inOut. Uses Javadoc to document this behavior."
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#avoidprefixingmethodparameters">
-        <description>
-Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability.
-To indicate whether or not a parameter will be modify in a method, its better to document method
-behavior with Javadoc.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule {% rule java/codestyle/FormalParameterNamingConventions %}.
-        </description>
-        <priority>4</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
-        pmd:matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
-]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-// Not really clear
-public class Foo {
-  public void bar(
-      int inLeftOperand,
-      Result outRightOperand) {
-      outRightOperand.setValue(inLeftOperand * outRightOperand.getValue());
-  }
-}
-]]>
-        </example>
-        <example>
-<![CDATA[
-// Far more useful
-public class Foo {
-  /**
-   *
-   * @param leftOperand, (purpose), not modified by method.
-   * @param rightOperand (purpose), will be modified by the method: contains the result.
-   */
-  public void bar(
-        int leftOperand,
-        Result rightOperand) {
-        rightOperand.setValue(leftOperand * rightOperand.getValue());
-  }
 }
 ]]>
         </example>
@@ -395,7 +247,7 @@ public class Foo extends Bar{
         <example>
 <![CDATA[
 // This is Pascal case, the recommended naming convention in Java
-// Note that the default values of this rule don't allow underscores 
+// Note that the default values of this rule don't allow underscores
 // or accented characters in type names
 public class FooBar {}
 
@@ -781,35 +633,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="ForLoopsMustUseBraces"
-          language="java"
-          since="0.7"
-          deprecated="true"
-          message="Avoid using 'for' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#forloopsmustusebraces">
-        <description>
-Avoid using 'for' statements without using curly braces. If the code formatting or 
-indentation is lost then it becomes difficult to separate the code being controlled 
-from the rest.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/codestyle/ControlStatementBraces %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>//ForStatement[not(Statement/Block)]</value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-for (int i = 0; i < 42; i++)
-   foo();
-]]>
-        </example>
-    </rule>
-
     <rule name="FormalParameterNamingConventions"
           since="6.6.0"
           message="The {0} name ''{1}'' doesn''t match ''{2}''"
@@ -864,7 +687,7 @@ Names for references to generic values should be limited to a single uppercase l
                 <value>
 <![CDATA[
 //TypeDeclaration/ClassOrInterfaceDeclaration/TypeParameters/TypeParameter[
-  string-length(@Image) > 1 
+  string-length(@Image) > 1
   or
   string:upper-case(@Image) != @Image
 ]
@@ -923,86 +746,6 @@ try {
     throw e;
 }
             ]]>
-        </example>
-    </rule>
-
-    <rule name="IfElseStmtsMustUseBraces"
-          language="java"
-          since="0.2"
-          deprecated="true"
-          message="Avoid using 'if...else' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifelsestmtsmustusebraces">
-        <description>
-Avoid using if..else statements without using surrounding braces. If the code formatting 
-or indentation is lost then it becomes difficult to separate the code being controlled 
-from the rest.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/codestyle/ControlStatementBraces %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Statement
- [parent::IfStatement[@Else='true']]
- [not(child::Block)]
- [not(child::IfStatement)]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-   // this is OK
-if (foo) x++;
-
-   // but this is not
-if (foo)
-       x = x+1;
-   else
-       x = x-1;
-]]>
-        </example>
-    </rule>
-
-    <rule name="IfStmtsMustUseBraces"
-          language="java"
-          since="1.0"
-          deprecated="true"
-          message="Avoid using if statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#ifstmtsmustusebraces">
-        <description>
-Avoid using if statements without using braces to surround the code block. If the code 
-formatting or indentation is lost then it becomes difficult to separate the code being
-controlled from the rest.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/codestyle/ControlStatementBraces %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//IfStatement[count(*) < 3][not(Statement/Block)]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
- <![CDATA[
-if (foo)    // not recommended
-    x++;
-
-if (foo) {  // preferred approach
-    x++;
-}
-
- ]]>
         </example>
     </rule>
 
@@ -1317,44 +1060,6 @@ public void foo2 (final String param) { // better, do stuff with param never ass
 <![CDATA[
 public class Foo {
     public void fooStuff() {
-    }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="MIsLeadingVariableName"
-          language="java"
-          since="3.4"
-          deprecated="true"
-          message="Avoid naming non-fields with the prefix 'm_'"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#misleadingvariablename">
-        <description>
-Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule
-{% rule java/codestyle/LocalVariableNamingConventions %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//VariableDeclaratorId
-[starts-with(@Image, 'm_')]
-[not (../../../FieldDeclaration)]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
-    private int m_foo; // OK
-    public void bar(String m_baz) { // Bad
-      int m_boz = 42; // Bad
     }
 }
 ]]>
@@ -1709,45 +1414,6 @@ public class Something {
         </example>
     </rule>
 
-    <rule name="SuspiciousConstantFieldName"
-          language="java"
-          since="2.0"
-          deprecated="true"
-          message="The field name indicates a constant but its modifiers do not"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#suspiciousconstantfieldname">
-        <description>
-Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should
-be declared as final.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the more general rule {% rule java/codestyle/FieldNamingConventions %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
- /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
-  [@Final='false']
-  [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo {
- // this is bad, since someone could accidentally
- // do PI = 2.71828; which is actually e
- // final double PI = 3.16; is ok
-  double PI = 3.16;
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="TooManyStaticImports"
           language="java"
           since="4.1"
@@ -1755,14 +1421,14 @@ public class Foo {
           message="Too many static imports may lead to messy code"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#toomanystaticimports">
         <description>
-If you overuse the static import feature, it can make your program unreadable and 
-unmaintainable, polluting its namespace with all the static members you import. 
-Readers of your code (including you, a few months after you wrote it) will not know 
+If you overuse the static import feature, it can make your program unreadable and
+unmaintainable, polluting its namespace with all the static members you import.
+Readers of your code (including you, a few months after you wrote it) will not know
 which class a static member comes from (Sun 1.5 Language Guide).
         </description>
         <priority>3</priority>
         <properties>
-            <property name="maximumStaticImports" type="Integer" 
+            <property name="maximumStaticImports" type="Integer"
                       description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
             <property name="xpath">
                 <value>
@@ -2160,39 +1826,6 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
 <![CDATA[
 Foo[] x = new Foo[] { ... }; // Overly verbose
 Foo[] x = { ... }; //Equivalent to above line
-]]>
-        </example>
-    </rule>
-
-    <rule name="WhileLoopsMustUseBraces"
-          language="java"
-          since="0.7"
-          deprecated="true"
-          message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#whileloopsmustusebraces">
-        <description>
-Avoid using 'while' statements without using braces to surround the code block. If the code 
-formatting or indentation is lost then it becomes difficult to separate the code being
-controlled from the rest.
-
-This rule is deprecated and will be removed with PMD 7.0.0. The rule is replaced
-by the rule {% rule java/codestyle/ControlStatementBraces %}.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>//WhileStatement[not(Statement/Block)]</value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-while (true)    // not recommended
-      x++;
-      
-while (true) {  // preferred approach
-      x++;
-}
 ]]>
         </example>
     </rule>

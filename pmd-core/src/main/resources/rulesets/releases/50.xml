@@ -25,7 +25,7 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/java/android.xml/CallSuperLast"/>
 	<rule ref="rulesets/java/basic.xml/CheckSkipResult"/>
 	<rule ref="rulesets/java/basic.xml/ExtendsObject"/>
-	<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>
+<!--	<rule ref="rulesets/java/controversial.xml/AvoidPrefixingMethodParameters"/>-->
 	<rule ref="rulesets/java/controversial.xml/AvoidLiteralsInIfCondition"/>
 	<rule ref="rulesets/java/controversial.xml/OneDeclarationPerLine"/>
   	<rule ref="rulesets/java/coupling.xml/LoosePackageCoupling"/>
