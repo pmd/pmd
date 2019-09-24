@@ -2196,45 +2196,6 @@ public class Foo extends TestCase {
         </example>
     </rule>
 
-    <rule name="LoggerIsNotStaticFinal"
-          language="java"
-          since="2.0"
-          message="The Logger variable declaration does not contain the static and final modifiers"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#loggerisnotstaticfinal"
-          deprecated="true">
-        <description>
-In most cases, the Logger reference can be declared as static and final.
-
-This rule is deprecated and will be removed with PMD 7.0.0.
-The rule is replaced by {% rule java/errorprone/ProperLogger %}.
-        </description>
-        <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//VariableDeclarator
- [parent::FieldDeclaration]
- [../Type/ReferenceType
-  /ClassOrInterfaceType[@Image='Logger']
-   and
-  (..[@Final='false'] or ..[@Static = 'false'] ) ]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-public class Foo{
-    Logger log = Logger.getLogger(Foo.class.getName());                 // not recommended
-
-    static final Logger log = Logger.getLogger(Foo.class.getName());    // preferred approach
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="MethodWithSameNameAsEnclosingClass"
           since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
