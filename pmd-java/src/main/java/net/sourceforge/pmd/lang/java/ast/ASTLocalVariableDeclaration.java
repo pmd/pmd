@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.Rule;
-
 
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTBlockStatement block statement},
@@ -24,7 +22,7 @@ import net.sourceforge.pmd.Rule;
  *
  * </pre>
  */
-public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings, Iterable<ASTVariableDeclaratorId> {
+public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, Iterable<ASTVariableDeclaratorId> {
 
     ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -45,19 +43,6 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaAccessNode im
         visitor.visit(this, data);
     }
 
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
-                if (a.suppresses(rule)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * If true, this local variable declaration represents a declaration,

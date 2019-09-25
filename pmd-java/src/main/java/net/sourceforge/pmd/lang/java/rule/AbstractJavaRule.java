@@ -96,8 +96,12 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return false;
     }
 
+    /**
+     * @deprecated Used in only one deprecated rule, which is removed by pending PR #2022
+     */
+    @Deprecated
     protected boolean isSuppressed(Node node) {
-        return JavaRuleViolation.isSupressed(node, this);
+        return false;
     }
 
 
