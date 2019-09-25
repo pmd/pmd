@@ -26,10 +26,10 @@ import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
  */
 public class JavaLanguageParser extends AbstractParser {
 
-    private final LanguageLevelChecker checker;
+    private final LanguageLevelChecker<?> checker;
     private JavaParser javaParser;
 
-    public JavaLanguageParser(LanguageLevelChecker checker, ParserOptions parserOptions) {
+    JavaLanguageParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
         super(parserOptions);
         this.checker = checker;
     }
@@ -60,7 +60,7 @@ public class JavaLanguageParser extends AbstractParser {
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         ASTCompilationUnit acu = createJavaParser(source).CompilationUnit();
-        acu.jjtAccept(checker, null);
+        checker.check(acu);
         return acu;
     }
 

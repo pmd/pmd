@@ -47,7 +47,11 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 
-public abstract class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
+/**
+ * Checks that an AST conforms to some language level. The reporting
+ * behaviour is left to be completed by implementations.
+ */
+public abstract class LanguageLevelChecker<T> {
 
     private final int jdkVersion;
     private final boolean preview;
@@ -65,218 +69,248 @@ public abstract class LanguageLevelChecker extends SideEffectingVisitorAdapter<V
         return preview;
     }
 
+
+    public void check(JavaNode node) {
+        T accumulator = createAccumulator();
+        node.jjtAccept(new CheckVisitor(), accumulator);
+        done(accumulator);
+    }
+
+    /** Create a blank accumulator before performing the check. */
+    protected abstract T createAccumulator();
+
+
+    /** Consume the accumulator, after all violations have been reported. */
+    protected abstract void done(T accumulator);
+
+
     /**
      * Report that a node violates a language feature. This doesn't have
-     * to throw an exception, we could also just warn.
+     * to throw an exception, we could also just warn, or accumulate into
+     * the parameter.
      */
-    abstract void report(Node node, String message);
+    protected abstract void report(Node node, String message, T acc);
 
-    private boolean check(Node node, LanguageFeature message) {
+
+    private boolean check(Node node, LanguageFeature message, T acc) {
         if (message.isAvailable(this.jdkVersion, this.preview)) {
             return true;
         }
 
-        throw new ParseException(
-            "Line " + node.getBeginLine() + ", Column " + node.getBeginColumn() + ": "
-                + message.whenUnavailableMessage());
+        report(node, message.whenUnavailableMessage(), acc);
+        return false;
     }
 
-    @Override
-    public void visit(ASTStringLiteral node, Void data) {
-        if (jdkVersion != 13 || !preview) {
-            if (node.isTextBlock()) {
-                check(node, PreviewFeature.TEXT_BLOCK_LITERALS);
-            }
-        }
-    }
-
-    @Override
-    public void visit(ASTImportDeclaration node, Void data) {
-        if (node.isStatic()) {
-            check(node, RegularLanguageFeature.STATIC_IMPORT);
-        }
-    }
-
-    @Override
-    public void visit(ASTYieldStatement node, Void data) {
-        check(node, PreviewFeature.YIELD_STATEMENTS);
-    }
-
-    @Override
-    public void visit(ASTBreakStatement node, Void data) {
-        if (node.jjtGetNumChildren() > 0) {
-            check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS);
-        }
-    }
-
-    @Override
-    public void visit(ASTSwitchExpression node, Void data) {
-        check(node, PreviewFeature.SWITCH_EXPRESSIONS);
-    }
-
-    @Override
-    public void visit(ASTConstructorCall node, Void data) {
-        if (node.isDiamond()) {
-            if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS) && node.isAnonymousClass()) {
-                check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES);
-            }
-        }
-    }
-
-    @Override
-    public void visit(ASTTypeArguments node, Void data) {
-        check(node, RegularLanguageFeature.GENERICS);
-    }
-
-    @Override
-    public void visit(ASTTypeParameters node, Void data) {
-        check(node, RegularLanguageFeature.GENERICS);
-    }
-
-    @Override
-    public void visit(ASTFormalParameter node, Void data) {
-        if (node.isVarargs()) {
-            check(node, RegularLanguageFeature.VARARGS_PARAMETERS);
-        } else if (node.isExplicitReceiverParameter()) {
-            check(node, RegularLanguageFeature.RECEIVER_PARAMETERS);
-        }
-    }
-
-    @Override
-    public void visit(ASTAnnotation node, Void data) {
-        if (node.jjtGetParent() instanceof ASTType) {
-            check(node, RegularLanguageFeature.TYPE_ANNOTATIONS);
-        } else {
-            check(node, RegularLanguageFeature.ANNOTATIONS);
-        }
-    }
-
-    @Override
-    public void visit(ASTForStatement node, Void data) {
-        if (node.isForeach()) {
-            check(node, RegularLanguageFeature.FOREACH_LOOPS);
-        }
-    }
-
-    @Override
-    public void visit(ASTEnumDeclaration node, Void data) {
-        check(node, RegularLanguageFeature.ENUMS);
-    }
-
-    @Override
-    public void visit(ASTNumericLiteral node, Void data) {
-        int base = node.getBase();
-        if (base == 16 && !node.isIntegral()) {
-            check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS);
-        } else if (base == 2) {
-            check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS);
-        } else if (node.getImage().indexOf('_') >= 0) {
-            check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS);
-        }
-    }
-
-    @Override
-    public void visit(ASTMethodReference node, Void data) {
-        check(node, RegularLanguageFeature.METHOD_REFERENCES);
-    }
-
-    @Override
-    public void visit(ASTLambdaExpression node, Void data) {
-        check(node, RegularLanguageFeature.LAMBDA_EXPRESSIONS);
-    }
-
-    @Override
-    public void visit(ASTMethodDeclaration node, Void data) {
-        if (node.isDefault()) {
-            check(node, RegularLanguageFeature.DEFAULT_METHODS);
-        }
-
-        if (node.isPrivate() && node.isInterfaceMember()) {
-            check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES);
-        }
-
-        checkIdent(node, node.getMethodName());
-    }
-
-    @Override
-    public void visit(ASTAssertStatement node, Void data) {
-        check(node, RegularLanguageFeature.ASSERT_STATEMENTS);
-    }
-
-    @Override
-    public void visit(ASTTryStatement node, Void data) {
-        if (node.isTryWithResources()) {
-            if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES)) {
-                for (ASTResource resource : node.getResources()) {
-                    if (resource.isConciseResource()) {
-                        check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void visit(ASTIntersectionType node, Void data) {
-        if (node.jjtGetParent() instanceof ASTCastExpression) {
-            check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS);
-        }
-    }
-
-    @Override
-    public void visit(ASTCatchStatement node, Void data) {
-        if (node.isMulticatchStatement()) {
-            check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES);
-        }
-    }
-
-    @Override
-    public void visit(ASTSwitchLabel node, Void data) {
-        if (IteratorUtil.count(node.iterator()) > 1) {
-            check(node, PreviewFeature.COMPOSITE_CASE_LABEL);
-        }
-    }
-
-    @Override
-    public void visit(ASTModuleDeclaration node, Void data) {
-        check(node, RegularLanguageFeature.MODULE_DECLARATIONS);
-    }
-
-    @Override
-    public void visit(ASTSwitchLabeledRule node, Void data) {
-        check(node, PreviewFeature.SWITCH_RULES);
-    }
-
-    @Override
-    public void visit(ASTVariableDeclaratorId node, Void data) {
-        checkIdent(node, node.getVariableName());
-    }
-
-    @Override
-    public void visit(ASTAnyTypeDeclaration node, Void data) {
-        checkIdent(node, node.getSimpleName());
-    }
-
-    private void checkIdent(JavaNode node, String simpleName) {
-        if ("var".equals(simpleName)) {
-            check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME);
-        } else if ("enum".equals(simpleName)) {
-            check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER);
-        } else if ("assert".equals(simpleName)) {
-            check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER);
-        }
-    }
-
-    public static LanguageLevelChecker checkerThatThrows(int languageLevel, boolean previewEnabled) {
-        return new LanguageLevelChecker(languageLevel, previewEnabled) {
+    public static LanguageLevelChecker<Void> checkerThatThrows(int languageLevel, boolean previewEnabled) {
+        return new LanguageLevelChecker<Void>(languageLevel, previewEnabled) {
 
             @Override
-            void report(Node node, String message) {
+            public Void createAccumulator() {
+                return null;
+            }
+
+            @Override
+            protected void done(Void accumulator) {
+                // do nothing
+            }
+
+            @Override
+            protected void report(Node node, String message, Void acc) {
                 throw new ParseException(
                     "Line " + node.getBeginLine() + ", Column " + node.getBeginColumn() + ": " + message);
             }
         };
+    }
+
+    class CheckVisitor extends SideEffectingVisitorAdapter<T> {
+
+        @Override
+        public void visit(ASTStringLiteral node, T data) {
+            if (jdkVersion != 13 || !preview) {
+                if (node.isTextBlock()) {
+                    check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
+                }
+            }
+        }
+
+        @Override
+        public void visit(ASTImportDeclaration node, T data) {
+            if (node.isStatic()) {
+                check(node, RegularLanguageFeature.STATIC_IMPORT, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTYieldStatement node, T data) {
+            check(node, PreviewFeature.YIELD_STATEMENTS, data);
+        }
+
+        @Override
+        public void visit(ASTBreakStatement node, T data) {
+            if (node.jjtGetNumChildren() > 0) {
+                check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTSwitchExpression node, T data) {
+            check(node, PreviewFeature.SWITCH_EXPRESSIONS, data);
+        }
+
+        @Override
+        public void visit(ASTConstructorCall node, T data) {
+            if (node.isDiamond()) {
+                if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
+                    check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
+                }
+            }
+        }
+
+        @Override
+        public void visit(ASTTypeArguments node, T data) {
+            check(node, RegularLanguageFeature.GENERICS, data);
+        }
+
+        @Override
+        public void visit(ASTTypeParameters node, T data) {
+            check(node, RegularLanguageFeature.GENERICS, data);
+        }
+
+        @Override
+        public void visit(ASTFormalParameter node, T data) {
+            if (node.isVarargs()) {
+                check(node, RegularLanguageFeature.VARARGS_PARAMETERS, data);
+            } else if (node.isExplicitReceiverParameter()) {
+                check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTAnnotation node, T data) {
+            if (node.jjtGetParent() instanceof ASTType) {
+                check(node, RegularLanguageFeature.TYPE_ANNOTATIONS, data);
+            } else {
+                check(node, RegularLanguageFeature.ANNOTATIONS, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTForStatement node, T data) {
+            if (node.isForeach()) {
+                check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTEnumDeclaration node, T data) {
+            check(node, RegularLanguageFeature.ENUMS, data);
+        }
+
+        @Override
+        public void visit(ASTNumericLiteral node, T data) {
+            int base = node.getBase();
+            if (base == 16 && !node.isIntegral()) {
+                check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
+            } else if (base == 2) {
+                check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
+            } else if (node.getImage().indexOf('_') >= 0) {
+                check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTMethodReference node, T data) {
+            check(node, RegularLanguageFeature.METHOD_REFERENCES, data);
+        }
+
+        @Override
+        public void visit(ASTLambdaExpression node, T data) {
+            check(node, RegularLanguageFeature.LAMBDA_EXPRESSIONS, data);
+        }
+
+        @Override
+        public void visit(ASTMethodDeclaration node, T data) {
+            if (node.isDefault()) {
+                check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
+            }
+
+            if (node.isPrivate() && node.isInterfaceMember()) {
+                check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
+            }
+
+            checkIdent(node, node.getMethodName(), data);
+        }
+
+        @Override
+        public void visit(ASTAssertStatement node, T data) {
+            check(node, RegularLanguageFeature.ASSERT_STATEMENTS, data);
+        }
+
+        @Override
+        public void visit(ASTTryStatement node, T data) {
+            if (node.isTryWithResources()) {
+                if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES, data)) {
+                    for (ASTResource resource : node.getResources()) {
+                        if (resource.isConciseResource()) {
+                            check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void visit(ASTIntersectionType node, T data) {
+            if (node.jjtGetParent() instanceof ASTCastExpression) {
+                check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTCatchStatement node, T data) {
+            if (node.isMulticatchStatement()) {
+                check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTSwitchLabel node, T data) {
+            if (IteratorUtil.count(node.iterator()) > 1) {
+                check(node, PreviewFeature.COMPOSITE_CASE_LABEL, data);
+            }
+        }
+
+        @Override
+        public void visit(ASTModuleDeclaration node, T data) {
+            check(node, RegularLanguageFeature.MODULE_DECLARATIONS, data);
+        }
+
+        @Override
+        public void visit(ASTSwitchLabeledRule node, T data) {
+            check(node, PreviewFeature.SWITCH_RULES, data);
+        }
+
+        @Override
+        public void visit(ASTVariableDeclaratorId node, T data) {
+            checkIdent(node, node.getVariableName(), data);
+        }
+
+        @Override
+        public void visit(ASTAnyTypeDeclaration node, T data) {
+            checkIdent(node, node.getSimpleName(), data);
+        }
+
+        private void checkIdent(JavaNode node, String simpleName, T acc) {
+            if ("var".equals(simpleName)) {
+                check(node, ReservedIdentifiers.VAR_AS_A_TYPE_NAME, acc);
+            } else if ("enum".equals(simpleName)) {
+                check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER, acc);
+            } else if ("assert".equals(simpleName)) {
+                check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER, acc);
+            }
+        }
+
     }
 
     private static String displayNameLower(String name) {
