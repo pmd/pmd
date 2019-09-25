@@ -5,16 +5,16 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a type test on an object. This has a precedence greater than {@link ASTEqualityExpression},
- * and lower than {@link ASTShiftExpression}. This has the same precedence as a {@link ASTRelationalExpression}.
+ * Represents a type test on an object. This has a precedence greater
+ * than equality expressions ({@link BinaryOp#EQ}, {@link BinaryOp#NE}),
+ * and lower than shift expressions (e.g. {@link BinaryOp#RIGHT_SHIFT}).
+ * This has the same precedence as relational expressions (e.g. {@link BinaryOp#LE}).
  *
- * <p>Note that the children of this node are not necessarily {@link ASTRelationalExpression},
- * rather, they are expressions with an operator precedence greater or equal to RelationalExpression.
- *
+ * TODO represent that with an InfixExpr too
  *
  * <pre class="grammar">
  *
- * InstanceOfExpression ::=  {@linkplain ASTRelationalExpression RelationalExpression} "instanceof" {@linkplain ASTType Type}
+ * InstanceOfExpression ::=  {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTType Type}
  *
  * </pre>
  */
@@ -41,10 +41,12 @@ public final class ASTInstanceOfExpression extends AbstractJavaExpr implements A
         visitor.visit(this, data);
     }
 
+    /** Returns the expression whose type is being tested. */
+    public ASTExpression getLhs() {
+        return (ASTExpression) jjtGetChild(0);
+    }
 
-    /**
-     * Gets the type against which the expression is tested.
-     */
+    /** Gets the type against which the expression is tested. */
     public ASTType getTypeNode() {
         return (ASTType) jjtGetChild(1);
     }

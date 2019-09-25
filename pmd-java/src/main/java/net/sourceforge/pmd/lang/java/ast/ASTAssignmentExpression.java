@@ -32,13 +32,14 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements A
         this.operator = op;
     }
 
-
-    public ASTAssignableExpr getLeftHandSide() {
+    /** Returns the left-hand side, ie the expression being assigned to. */
+    public ASTAssignableExpr getLhs() {
         return (ASTAssignableExpr) jjtGetChild(0);
     }
 
 
-    public ASTExpression getRightHandSide() {
+    /** Returns the right-hand side. */
+    public ASTExpression getRhs() {
         return (ASTExpression) jjtGetChild(1);
     }
 

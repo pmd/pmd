@@ -4,20 +4,19 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
-
 /**
- * Represents a conditional expression, aka ternary expression. This operation has
- * a greater precedence as {@linkplain ASTExpression assignment expressions},
- * and lower as {@link ASTConditionalOrExpression}.
- *
- * <p>Note that the children of this node are not necessarily {@link ASTConditionalOrExpression},
- * rather, they are expressions with an operator precedence greater or equal to ConditionalOrExpression.
+ * Represents a conditional expression, aka ternary expression. This expression
+ * obeys the following precedence rules (which are overridden by parentheses):
+ * <ul>
+ * <li>The condition and the first branch ("then") must be expressions
+ * of strictly lower precedence as a conditional expression.
+ * <li>The second branch ("else") must be an expression of lower or equal
+ * precedence as a conditional expression.
+ * </ul>
  *
  * <pre class="grammar">
  *
- * ConditionalExpression ::= {@linkplain ASTConditionalOrExpression ConditionalOrExpression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTConditionalExpression ConditionalExpression}
+ * ConditionalExpression ::= {@linkplain ASTExpression Expression} "?"  {@linkplain ASTExpression Expression} ":" {@linkplain ASTExpression Expression}
  *
  * </pre>
  */
@@ -37,8 +36,8 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
      * Returns the node that represents the guard of this conditional.
      * That is the expression before the '?'.
      */
-    public Node getGuardExpressionNode() {
-        return jjtGetChild(0);
+    public ASTExpression getCondition() {
+        return (ASTExpression) jjtGetChild(0);
     }
 
 
@@ -46,7 +45,7 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to true.
      */
-    public ASTExpression getTrueAlternative() {
+    public ASTExpression getThenBranch() {
         return (ASTExpression) jjtGetChild(1);
     }
 
@@ -55,8 +54,8 @@ public final class ASTConditionalExpression extends AbstractJavaExpr implements 
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to false.
      */
-    public Node getFalseAlternative() {
-        return jjtGetChild(2);
+    public ASTExpression getElseBranch() {
+        return (ASTExpression) jjtGetChild(2);
     }
 
 
