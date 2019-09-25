@@ -5,14 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a conditional expression, aka ternary expression. This expression
- * obeys the following precedence rules (which are overridden by parentheses):
- * <ul>
- * <li>The condition and the first branch ("then") must be expressions
- * of strictly lower precedence as a conditional expression.
- * <li>The second branch ("else") must be an expression of lower or equal
- * precedence as a conditional expression.
- * </ul>
+ * Represents a conditional expression, aka ternary expression.
  *
  * <pre class="grammar">
  *

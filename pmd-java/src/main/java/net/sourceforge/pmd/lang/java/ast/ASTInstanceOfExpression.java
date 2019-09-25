@@ -5,14 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a type test on an object. This has a precedence greater
- * than equality expressions ({@link BinaryOp#EQ}, {@link BinaryOp#NE}),
- * and lower than shift expressions (e.g. {@link BinaryOp#RIGHT_SHIFT}).
- * This has the same precedence as relational expressions (e.g. {@link BinaryOp#LE}).
+ * Represents a type test on an object.
  *
  * <pre class="grammar">
  *
- * InstanceOfExpression ::=  {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTType Type}
+ * InstanceOfExpression ::= {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTTypeExpression TypeExpression}
  *
  * </pre>
  */

@@ -15,7 +15,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhs shouldBe child<ASTThisExpression>(ignoreChildren = true) {}
+            it::getLhs shouldBe thisExpr { classType("Type") }
 
             it::getArguments shouldBe child {}
 
@@ -52,14 +52,10 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "f"
             it::getImage shouldBe "f"
 
-            it::getLhs shouldBe child<ASTAmbiguousName> {
-                it::getImage shouldBe "foo"
-            }
+            it::getLhs shouldBe ambiguousName("foo")
 
-            it::getExplicitTypeArguments shouldBe child {
-                child<ASTClassOrInterfaceType> {
-                    it::getTypeImage shouldBe "B"
-                }
+            it::getExplicitTypeArguments shouldBe typeArgList {
+                classType("B")
             }
 
             it::getArguments shouldBe child {}
@@ -70,9 +66,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhs shouldBe child<ASTAmbiguousName> {
-                it::getImage shouldBe "foo"
-            }
+            it::getLhs shouldBe ambiguousName("foo")
 
             it::getArguments shouldBe child {
                 child<ASTLambdaExpression>(ignoreChildren = true) {}
@@ -88,12 +82,12 @@ class ASTMethodCallTest : ParserTestSpec({
                 it::getMethodName shouldBe "bar"
                 it::getImage shouldBe "bar"
 
-                it::getLhs shouldBe child<ASTAmbiguousName> {
-                    it::getImage shouldBe "foo"
-                }
+                it::getLhs shouldBe ambiguousName("foo")
 
                 it::getArguments shouldBe child {
-                    child<ASTMethodReference>(ignoreChildren = true) {}
+                    methodRef("println") {
+                        ambiguousName("System.out")
+                    }
                 }
             }
 

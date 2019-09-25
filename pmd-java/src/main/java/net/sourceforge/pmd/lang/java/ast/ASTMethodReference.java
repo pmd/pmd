@@ -13,10 +13,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <pre class="grammar">
  *
  * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
- *                   | {@link ASTReferenceType ReferenceType} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
- *                   | {@link ASTClassOrInterfaceType ClassType} "::" {@link ASTTypeArguments TypeArguments}? "new"
- *                   | {@link ASTArrayType ArrayType} "::" "new"
- *                   | ({@link ASTClassOrInterfaceType TypeName} ".")? {@link ASTSuperExpression "super"} :: {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
+ *                   | {@link ASTTypeExpression TypeExpression} "::" {@link ASTTypeArguments TypeArguments}? "new"
+ *
  * </pre>
  */
 public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {

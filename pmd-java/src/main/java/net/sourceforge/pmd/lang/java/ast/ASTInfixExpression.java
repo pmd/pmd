@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
 
+import net.sf.saxon.expr.InstanceOfExpression;
+
 /**
  * Represents a binary infix expression. {@linkplain ASTAssignmentExpression Assignment expressions}
  * are not represented by this node, because they're right-associative.
@@ -18,6 +20,8 @@ import java.util.Objects;
  * InfixExpression ::= {@link ASTExpression Expression} {@link BinaryOp} {@link ASTExpression Expression}
  *
  * </pre>
+ *
+ * <p>Additionally, {@link InstanceOfExpression} specializes this type.
  *
  * <p>Binary expressions are all left-associative, and are parsed left-recursively.
  * For example, the expression {@code 1 * 2 * 3 % 4} parses as the following tree:

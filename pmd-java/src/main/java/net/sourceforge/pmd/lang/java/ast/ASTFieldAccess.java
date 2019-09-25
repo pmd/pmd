@@ -9,9 +9,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
- *               |  {@link ASTClassOrInterfaceType TypeName} "." &lt;IDENTIFIER&gt;
- *               |  {@link ASTAmbiguousName AmbiguousName} "." &lt;IDENTIFIER&gt;
+ * FieldAccess ::= {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
+ *
  * </pre>
  */
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, ASTQualifiableExpression, LeftRecursiveNode {

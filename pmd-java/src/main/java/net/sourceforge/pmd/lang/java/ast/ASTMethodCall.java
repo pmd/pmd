@@ -14,9 +14,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  *
  * MethodCall ::=  &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
- *              |  Lhs "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
+ *              |  {@link ASTPrimaryExpression PrimaryExpression} "." {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt; {@link ASTArgumentList ArgumentList}
  *
- * Lhs        ::= {@link ASTPrimaryExpression PrimaryExpression} | {@link ASTClassOrInterfaceType ClassName} | {@link ASTAmbiguousName AmbiguousName}
  * </pre>
  */
 public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
