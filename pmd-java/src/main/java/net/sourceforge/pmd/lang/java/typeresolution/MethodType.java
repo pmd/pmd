@@ -9,11 +9,14 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * This is really just a POJO.
  */
+@Deprecated
+@InternalApi
 public final class MethodType {
     private final JavaTypeDefinition returnType;
     private final List<JavaTypeDefinition> argTypes;

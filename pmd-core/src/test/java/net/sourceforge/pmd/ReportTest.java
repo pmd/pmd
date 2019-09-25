@@ -5,9 +5,9 @@
 package net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;
@@ -21,49 +21,14 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.stat.Metric;
 
 public class ReportTest implements ThreadSafeReportListener {
 
     private boolean violationSemaphore;
-    private boolean metricSemaphore;
 
     @Override
     public void ruleViolationAdded(RuleViolation ruleViolation) {
         violationSemaphore = true;
-    }
-
-    @Override
-    public void metricAdded(Metric metric) {
-        metricSemaphore = true;
-    }
-
-    @Test
-    public void testMetric0() {
-        Report r = new Report();
-        assertFalse("Default report shouldn't contain metrics", r.hasMetrics());
-    }
-
-    @Test
-    public void testMetric1() {
-        Report r = new Report();
-        assertFalse("Default report shouldn't contain metrics", r.hasMetrics());
-
-        r.addMetric(new Metric("m1", 0, 0.0, 1.0, 2.0, 3.0, 4.0));
-        assertTrue("Expected metrics weren't there", r.hasMetrics());
-
-        Iterator<Metric> ms = r.metrics();
-        assertTrue("Should have some metrics in there now", ms.hasNext());
-
-        Object o = ms.next();
-        assertTrue("Expected Metric, got " + o.getClass(), o instanceof Metric);
-
-        Metric m = (Metric) o;
-        assertEquals("metric name mismatch", "m1", m.getMetricName());
-        assertEquals("wrong low value", 1.0, m.getLowValue(), 0.05);
-        assertEquals("wrong high value", 2.0, m.getHighValue(), 0.05);
-        assertEquals("wrong avg value", 3.0, m.getAverage(), 0.05);
-        assertEquals("wrong std dev value", 4.0, m.getStandardDeviation(), 0.05);
     }
 
     // Files are grouped together now.
@@ -71,11 +36,11 @@ public class ReportTest implements ThreadSafeReportListener {
     public void testSortedReportFile() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("foo");
+        ctx.setSourceCodeFile(new File("foo"));
         Node s = getNode(10, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
-        ctx.setSourceCodeFilename("bar");
+        ctx.setSourceCodeFile(new File("bar"));
         Node s1 = getNode(10, 5);
         Rule rule2 = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, s1, rule2.getMessage()));
@@ -88,12 +53,12 @@ public class ReportTest implements ThreadSafeReportListener {
     public void testSortedReportLine() throws IOException {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("foo1"); // same file!!
+        ctx.setSourceCodeFile(new File("foo1")); // same file!!
         Node node1 = getNode(20, 5); // line 20: after rule2 violation
         Rule rule1 = new MockRule("rule1", "rule1", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, node1, rule1.getMessage()));
 
-        ctx.setSourceCodeFilename("foo1"); // same file!!
+        ctx.setSourceCodeFile(new File("foo1")); // same file!!
         Node node2 = getNode(10, 5); // line 10: before rule1 violation
         Rule rule2 = new MockRule("rule2", "rule2", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<>(rule2, ctx, node2, rule2.getMessage()));
@@ -108,27 +73,22 @@ public class ReportTest implements ThreadSafeReportListener {
         rpt.addListener(this);
         violationSemaphore = false;
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("file");
+        ctx.setSourceCodeFile(new File("file"));
         Node s = getNode(5, 5);
         Rule rule1 = new MockRule("name", "desc", "msg", "rulesetname");
         rpt.addRuleViolation(new ParametricRuleViolation<>(rule1, ctx, s, rule1.getMessage()));
         assertTrue(violationSemaphore);
-
-        metricSemaphore = false;
-        rpt.addMetric(new Metric("test", 0, 0.0, 0.0, 0.0, 0.0, 0.0));
-
-        assertTrue("no metric", metricSemaphore);
     }
 
     @Test
     public void testSummary() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("foo1");
+        ctx.setSourceCodeFile(new File("foo1"));
         Node s = getNode(5, 5);
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new ParametricRuleViolation<>(rule, ctx, s, rule.getMessage()));
-        ctx.setSourceCodeFilename("foo2");
+        ctx.setSourceCodeFile(new File("foo2"));
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
         Node s1 = getNode(20, 5);
         Node s2 = getNode(30, 5);

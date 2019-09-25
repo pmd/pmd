@@ -4,11 +4,16 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import java.util.Objects;
+
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
  * Rule attempts to count all public methods and public attributes
@@ -25,44 +30,30 @@ import net.sourceforge.pmd.util.NumericConstants;
  *
  * @author aglover
  */
-public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
+public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTAnyTypeDeclaration> {
 
     public ExcessivePublicCountRule() {
-        super(ASTCompilationUnit.class);
-        setProperty(MINIMUM_DESCRIPTOR, 45d);
+        super(ASTAnyTypeDeclaration.class,
+              ASTEnumDeclaration.class,
+              ASTClassOrInterfaceDeclaration.class,
+              ASTAnnotationTypeDeclaration.class);
     }
 
-    /**
-     * Method counts ONLY public methods.
-     */
     @Override
-    public Object visit(ASTMethodDeclarator node, Object data) {
-        return this.getTallyOnAccessType((AccessNode) node.jjtGetParent());
+    protected int defaultReportLevel() {
+        return 45;
     }
 
-    /**
-     * Method counts ONLY public class attributes which are not PUBLIC and
-     * static- these usually represent constants....
-     */
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
-        if (node.isFinal() && node.isStatic()) {
-            return NumericConstants.ZERO;
-        }
-        return this.getTallyOnAccessType(node);
-    }
+    protected boolean isViolation(ASTAnyTypeDeclaration node, int reportLevel) {
+        long publicCount = node.getDeclarations().stream()
+                               .map(ASTAnyTypeBodyDeclaration::getDeclarationNode)
+                               .filter(Objects::nonNull)
+                               .filter(it -> it instanceof AccessNode && ((AccessNode) it).isPublic())
+                               // filter out constants
+                               .filter(it -> !(it instanceof ASTFieldDeclaration && ((ASTFieldDeclaration) it).isFinal() && ((ASTFieldDeclaration) it).isStatic()))
+                               .count();
 
-    /**
-     * Method counts a node if it is public
-     *
-     * @param node
-     *            The access node.
-     * @return Integer 1 if node is public 0 otherwise
-     */
-    private Integer getTallyOnAccessType(AccessNode node) {
-        if (node.isPublic()) {
-            return NumericConstants.ONE;
-        }
-        return NumericConstants.ZERO;
+        return publicCount >= reportLevel;
     }
 }

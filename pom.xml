@@ -8,9 +8,13 @@
     <name>PMD</name>
 
     <description>
-PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks, unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex, PLSQL, Salesforce.com Visualforce, Apache Velocity, XML, XSL.
+PMD is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
+unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+PLSQL, Apache Velocity, XML, XSL, Scala.
 
-Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in Java, C, C++, C#, Groovy, PHP, Ruby, Fortran, JavaScript, PLSQL, Apache Velocity, Scala, Objective C, Matlab, Python, Go, Swift and Salesforce.com Apex.
+Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code in
+C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab,
+Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift and Visualforce.
     </description>
 
     <url>https://pmd.github.io/</url>
@@ -41,193 +45,10 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
     </mailingLists>
     <developers>
         <developer>
-            <id>tomcopeland</id>
-            <name>Tom Copeland</name>
-            <email>tom@infoether.com</email>
-            <organization>InfoEther</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>dpeugh</id>
-            <name>David Dixon-Peugh</name>
-            <email>ddp@apache.org</email>
-            <organization>Lockheed Martin Corporation</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>olemartin</id>
-            <name>Ole-Martin Mork</name>
-            <email>olemartin@users.sourceforge.net</email>
-            <organization>Bekk Consulting</organization>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>mikkey</id>
-            <name>Miguel Griffa</name>
-            <email>mikkey@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>phherlin</id>
-            <name>Philippe Herlin</name>
-            <email>phherlin@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>jigerjava</id>
-            <name>Jiger Patel</name>
-            <email>jigerjava@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>kubacki</id>
-            <name>Radim Kubacki</name>
-            <email>kubacki@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>tomslot</id>
-            <name>Tomasz Slota</name>
-            <email>tomslot@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>ezust</id>
-            <name>Alan Ezust</name>
-            <email>ezust@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>nascif</id>
-            <name>Nascif Abousalh Neto</name>
-            <email>nascif@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>allancaplan</id>
-            <name>Allan Caplan</name>
-            <email>allancaplan@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>holobender</id>
-            <name>Sven Jacob</name>
-            <email>holobender@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>wfzelle</id>
-            <name>Wouter Zelle</name>
-            <email>wfzelle@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>hooperbloob</id>
-            <name>Brian Remedios</name>
-            <email>hooperbloob@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>xlv</id>
-            <name>Xavier Le Vourch</name>
-            <email>xlv@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>rgustav</id>
-            <name>Ryan Gustafson</name>
-            <email>rgustav@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>bluejohn</id>
-            <name>Johan Nagels</name>
-            <email>bluejohn@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>tkleiber</id>
-            <name>Torsten Kleiber</name>
-            <url>http://develishdevelopment.wordpress.com</url>
-            <email>tkleiber@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>rpelisse</id>
-            <name>Romain Pelisse</name>
-            <email>rpelisse@users.sourceforge.net</email>
-            <url>http://belaran.eu/</url>
-            <organization>Atos Origin</organization>
-            <organizationUrl>https://osc-service.si.fr.atosorigin.com/</organizationUrl>
-            <roles>
-                <role>Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-            <properties>
-                <picUrl>http://belaran.eu/wordpress/wp-content/uploads/2008/05/RomainPELISSE.jpg</picUrl>
-            </properties>
-        </developer>
-        <developer>
-            <id>adangel</id>
-            <name>Andreas Dangel</name>
-            <email>adangel@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <id>acanda</id>
-            <name>Philip Graf</name>
-            <email>acanda@users.sourceforge.net</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>jsotuyod</id>
-            <name>Juan Martín Sotuyo Dodero</name>
-            <email>juansotuyo@gmail.com</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
-            <timezone>-3</timezone>
+            <id>github</id>
+            <name>github contributors</name>
+            <organization>github</organization>
+            <organizationUrl>https://github.com/pmd/pmd/graphs/contributors</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -265,7 +86,7 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
 
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.2.61</kotlin.version>
+        <kotlin.version>1.3.0</kotlin.version>
         <dokka.version>0.9.18</dokka.version>
 
 
@@ -958,6 +779,13 @@ Additionally it includes CPD, the copy-paste-detector. CPD finds duplicated code
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
             </dependency>

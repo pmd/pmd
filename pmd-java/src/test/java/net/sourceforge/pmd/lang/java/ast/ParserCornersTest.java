@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -41,7 +42,7 @@ public class ParserCornersTest {
                 + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
                 + "        };\n" + "    }\n" + "}\n");
     }
-    
+
     /**
      * #888 PMD 6.0.0 can't parse valid <> under 1.8.
      */
@@ -181,7 +182,7 @@ public class ParserCornersTest {
         String c = readAsString("Bug1530.java");
         parseJava18(c);
     }
-    
+
     @Test
     public void testGitHubBug207() {
         String c = readAsString("GitHubBug207.java");
@@ -202,7 +203,7 @@ public class ParserCornersTest {
         String c = readAsString("GitHubBug208.java");
         parseJava15(c);
     }
-    
+
     @Test
     public void testGitHubBug257NonExistingCast() throws Exception {
         String code = "public class Test {" + PMD.EOL
@@ -227,7 +228,7 @@ public class ParserCornersTest {
     /**
      * This triggered bug #1484 UnusedLocalVariable - false positive -
      * parenthesis
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -262,6 +263,7 @@ public class ParserCornersTest {
     }
 
     @Test
+    @Ignore("this test depends on usage resolution")
     public void testMethodReferenceConfused() throws Exception {
         String code = readAsString("MethodReferenceConfused.java");
         ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("10", code);
