@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
@@ -21,7 +20,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  * FormalParameter ::= ( "final" | {@link ASTAnnotation Annotation} )* {@link ASTType Type} ( "|" {@link ASTType Type} )* [ "..." ] {@link ASTVariableDeclaratorId VariableDeclaratorId}
  * </pre>
  */
-public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable, CanSuppressWarnings {
+public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Dimensionable {
 
     private boolean isVarargs;
 
@@ -76,16 +75,6 @@ public class ASTFormalParameter extends AbstractJavaAccessTypeNode implements Di
      */
     public ASTVariableDeclaratorId getVariableDeclaratorId() {
         return getFirstChildOfType(ASTVariableDeclaratorId.class);
-    }
-
-    @Override
-    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (ASTAnnotation a : findChildrenOfType(ASTAnnotation.class)) {
-            if (a.suppresses(rule)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 

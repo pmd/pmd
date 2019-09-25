@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.ParserTstUtil.parseJava15;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 
+@Ignore
 public class StatementAndBraceFinderTest {
 
     @Test

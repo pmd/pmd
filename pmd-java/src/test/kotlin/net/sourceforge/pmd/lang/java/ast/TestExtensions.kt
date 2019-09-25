@@ -109,7 +109,7 @@ fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: 
 
 fun TreeNodeWrapper<Node, *>.unaryExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, out ASTExpression>.() -> ASTExpression): ASTExpression =
         child<ASTUnaryExpression> {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             it::getOperand shouldBe baseExpr()
         }
 
@@ -186,6 +186,13 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: NodeSpec<ASTCastExpression>) =
 fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
             it::getImage shouldBe image
+            it::isTextBlock shouldBe false
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
+        child<ASTStringLiteral> {
+            it::isTextBlock shouldBe true
             contents()
         }
 
@@ -274,7 +281,7 @@ fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethod
             it::getLhsType shouldBe assertions()
         }
 
-private val EmptyAssertions: NodeSpec<out Node> = {}
+val EmptyAssertions: NodeSpec<out Node> = {}
 
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =
         child(ignoreChildren = assertions == EmptyAssertions) {

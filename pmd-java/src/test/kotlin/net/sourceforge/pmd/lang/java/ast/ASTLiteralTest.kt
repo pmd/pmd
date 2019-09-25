@@ -5,10 +5,9 @@ import net.sourceforge.pmd.lang.ast.test.ValuedNodeSpec
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_6
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_7
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 /**
@@ -36,6 +35,112 @@ class ASTLiteralTest : ParserTestSpec({
         }
 
     }
+
+    parserTest("Text block literal", javaVersion = J13__PREVIEW) {
+
+        val delim = "\"\"\""
+
+        inContext(ExpressionParsingCtx) {
+
+
+            fun String.testTextBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) {
+
+                this should parseAs {
+
+                    textBlock {
+                        it::getImage shouldBe this@testTextBlock.trim()
+                        contents()
+                    }
+                }
+            }
+
+            """
+$delim
+<html>
+    <body>
+        <p>Hello, world</p>
+    </body>
+</html>
+$delim
+
+            """.testTextBlock()
+
+            """ 
+   $delim
+   winter$delim
+            """.testTextBlock()
+
+            """
+   $delim
+   winter
+   $delim
+            """.testTextBlock()
+
+            """
+   $delim
+            Hi, "Bob"
+       $delim
+            """.testTextBlock()
+
+
+            """
+    $delim
+    Hi,
+     "Bob"
+    $delim                
+            """.testTextBlock()
+
+            """
+    $delim  
+    "
+    $delim
+            """.testTextBlock()
+
+            """
+    $delim
+    \\
+    $delim
+            """.testTextBlock()
+
+            """
+    $delim
+    String text = \$delim
+    A text block inside a text block
+    \$delim;
+    $delim
+            """.testTextBlock()
+
+        }
+
+    }
+
+
+    parserTest("Text block literal on non-JDK13 preview", javaVersions = !J13__PREVIEW) {
+
+        val delim = "\"\"\""
+
+        inContext(ExpressionParsingCtx) {
+
+            """
+$delim
+<html>
+    <body>
+        <p>Hello, world</p>
+    </body>
+</html>
+$delim
+
+            """ shouldNot parse()
+
+            """ 
+   $delim
+   winter$delim
+            """ shouldNot parse()
+
+        }
+
+    }
+
 
 
     parserTest("String literal escapes") {
@@ -128,7 +233,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
 
         "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getOperator shouldBe UnaryOp.UNARY_MINUS
             it::getOperand shouldBe number(INT) {
                 it::getImage shouldBe "0X0000_000f"
                 it::getValueAsInt shouldBe 15
@@ -178,7 +283,7 @@ class ASTLiteralTest : ParserTestSpec({
         }
 
         "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
-            it::getOp shouldBe UnaryOp.UNARY_MINUS
+            it::getOperator shouldBe UnaryOp.UNARY_MINUS
 
             it::getOperand shouldBe number(DOUBLE) {
                 it::getValueAsInt shouldBe 3456

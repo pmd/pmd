@@ -499,11 +499,11 @@ public class RuleSet implements ChecksumAware {
                         rule.apply(acuList, ctx);
                     } catch (RuntimeException e) {
                         if (ctx.isIgnoreExceptions()) {
-                            ctx.getReport().addError(new Report.ProcessingError(e, ctx.getSourceCodeFilename()));
+                            ctx.getReport().addError(new Report.ProcessingError(e, String.valueOf(ctx.getSourceCodeFile())));
 
                             if (LOG.isLoggable(Level.WARNING)) {
                                 LOG.log(Level.WARNING, "Exception applying rule " + rule.getName() + " on file "
-                                        + ctx.getSourceCodeFilename() + ", continuing with next rule", e);
+                                        + ctx.getSourceCodeFile() + ", continuing with next rule", e);
                             }
                         } else {
                             throw e;

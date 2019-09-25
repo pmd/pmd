@@ -4,16 +4,23 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 
 /**
  * This rule detects when a method exceeds a certain threshold. i.e. if a method
  * has more than x lines of code.
  */
-public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
+public class ExcessiveMethodLengthRule extends AbstractJavaCounterCheckRule.AbstractLineLengthCheckRule<ASTMethodOrConstructorDeclaration> {
     public ExcessiveMethodLengthRule() {
-        super(ASTMethodOrConstructorDeclaration.class);
-        setProperty(MINIMUM_DESCRIPTOR, 100d);
+        super(ASTMethodOrConstructorDeclaration.class, ASTMethodDeclaration.class, ASTConstructorDeclaration.class);
+    }
+
+    @Override
+    protected int defaultReportLevel() {
+        return 100;
     }
 }

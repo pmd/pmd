@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
@@ -84,6 +85,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
+import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -100,6 +102,8 @@ import net.sourceforge.pmd.lang.symboltable.Scope;
 // http://java.sun.com/docs/books/jls/second_edition/html/conversions.doc.html
 //
 
+@Deprecated
+@InternalApi
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private static final Logger LOG = Logger.getLogger(ClassTypeResolver.class.getName());
@@ -780,7 +784,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTUnaryExpression node, Object data) {
         super.visit(node, data);
 
-        switch (node.getOp()) {
+        switch (node.getOperator()) {
         case BOOLEAN_NOT:
             populateType(node, "boolean");
             break;
@@ -1125,7 +1129,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         super.visit(node, data);
 
         JavaTypeDefinition type = null;
-        // first try to determine the type based on the first expression/break of a switch rule
+        // first try to determine the type based on the first expression/break/yield of a switch rule
         List<ASTSwitchLabeledRule> rules = node.findChildrenOfType(ASTSwitchLabeledRule.class);
         for (ASTSwitchLabeledRule rule : rules) {
             Node body = rule.jjtGetChild(1); // second child is either Expression, Block, ThrowStatement
@@ -1141,10 +1145,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                         break;
                     }
                 }
+                List<ASTYieldStatement> yields = body.findDescendantsOfType(ASTYieldStatement.class);
+                if (!yields.isEmpty()) {
+                    ASTExpression expression = yields.get(0).getFirstChildOfType(ASTExpression.class);
+                    if (expression != null) {
+                        type = expression.getTypeDefinition();
+                        break;
+                    }
+                }
             }
         }
         if (type == null) {
-            // now check the labels and their expressions of break statements
+            // now check the labels and their expressions of break/yield statements
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
                 Node child = node.jjtGetChild(i);
                 if (child instanceof ASTBlockStatement) {
@@ -1152,6 +1164,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     if (!breaks.isEmpty()) {
                         ASTExpression expression = breaks.get(0).getFirstChildOfType(ASTExpression.class);
                         if (expression != null) {
+                            type = expression.getTypeDefinition();
+                            break;
+                        }
+                    }
+                    List<ASTYieldStatement> yields = child.findDescendantsOfType(ASTYieldStatement.class);
+                    if (!yields.isEmpty()) {
+                        ASTExpression expression = yields.get(0).getFirstChildOfType(ASTExpression.class);
+                        if (expression != null && expression.getTypeDefinition() != null) {
                             type = expression.getTypeDefinition();
                             break;
                         }

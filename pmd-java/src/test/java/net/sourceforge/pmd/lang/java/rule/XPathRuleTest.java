@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -211,7 +212,7 @@ public class XPathRuleTest extends RuleTst {
         RuleContext ctx = new RuleContext();
         Report report = new Report();
         ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
+        ctx.setSourceCodeFile(new File("n/a"));
         RuleSet rules = new RuleSetFactory().createSingleRuleRuleSet(r);
         p.getSourceCodeProcessor().processSourceCode(new StringReader(test), new RuleSets(rules), ctx);
         return report;

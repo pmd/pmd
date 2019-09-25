@@ -26,6 +26,12 @@
  *   #497  [java] RFC: new layer of abstraction atop PrimaryExpressions
  * Clément Fournier 04/2019
  *====================================================================
+ * Add support for the yield statement introduced as a preview language
+ * feature with Java 13. See JEP 354.
+ * Add support for text block literals introduces as a preview language
+ * feature with Java 13. See JEP 355.
+ * Andreas Dangel 08/2019
+ *====================================================================
  * Fix #1848 Local classes should preserve their modifiers
  * Clément Fournier 05/2019
  *====================================================================
@@ -235,6 +241,7 @@ options {
 
   //DEBUG_PARSER = true;
   //DEBUG_LOOKAHEAD = true;
+  //DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(JavaParser)
@@ -249,9 +256,14 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class JavaParser {
 
   private int jdkVersion = 0;
+  private boolean preview = false;
 
   public void setJdkVersion(int jdkVersion) {
    this.jdkVersion = jdkVersion;
+  }
+
+  public void setPreview(boolean preview) {
+    this.preview = preview;
   }
 
   private void throwParseException(String message) {
@@ -422,8 +434,8 @@ public class JavaParser {
     }
   }
   private void checkForMultipleCaseLabels() {
-    if (jdkVersion < 12) {
-      throwParseException("Multiple case labels in switch statements are only supported with Java 12");
+    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
+      throwParseException("Multiple case labels in switch statements are only supported with Java 12 or 13 Preview");
     }
   }
   /**
@@ -436,21 +448,34 @@ public class JavaParser {
    */
   private boolean inSwitchLabel = false;
   private void checkForSwitchRules() {
-    if (jdkVersion < 12) {
-      throwParseException("Switch rules in switch statements are only supported with Java 12");
+    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
+      throwParseException("Switch rules in switch statements are only supported with Java 12 or 13 Preview");
     }
   }
   private void checkForSwitchExpression() {
-    if (jdkVersion < 12) {
-      throwParseException("Switch expressions are only supported with Java 12");
+    if ((jdkVersion != 12 && jdkVersion != 13) || !preview) {
+      throwParseException("Switch expressions are only supported with Java 12 or 13 Preview");
     }
   }
 
   private void checkForBreakExpression() {
-    if (jdkVersion < 12) {
-      throwParseException("Expressions in break statements are only supported with Java 12");
+    if (jdkVersion != 12 || !preview) {
+      throwParseException("Expressions in break statements are only supported with Java 12 Preview");
     }
   }
+
+  private void checkForYieldStatement() {
+    if (jdkVersion != 13 || !preview) {
+      throwParseException("Yield statements are only supported with Java 13 Preview");
+    }
+  }
+
+  private void checkForTextBlockLiteral() {
+    if (jdkVersion != 13 || !preview) {
+      throwParseException("Text block literals are only supported with Java 13 Preview");
+    }
+  }
+
 
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
@@ -556,12 +581,20 @@ TOKEN_MGR_DECLS :
 
 SPECIAL_TOKEN :
 {
-  " " | "\t" | "\n" | "\r" | "\f"
+  // those are private, just for code organisation
+  < #HORIZONTAL_WHITESPACE: [" ", "\t", "\f"] >
+| < #LINE_TERMINATOR: "\n" | "\r" | "\r\n" >
+  // this one is pushed, notice the (..)+ construct, to avoid
+  // creating one token per character
+| < WHITESPACE: ([" ", "\t", "\f", "\n", "\r"])+ >
 }
+
+/* COMMENTS */
+
 
 SPECIAL_TOKEN :
 {
-< SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+  < SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
     {
         int startOfNOPMD = matchedToken.image.indexOf(suppressMarker);
         if (startOfNOPMD != -1) {
@@ -571,7 +604,6 @@ SPECIAL_TOKEN :
     }
 }
 
-/* COMMENTS */
 
 MORE :
 {
@@ -720,18 +752,27 @@ TOKEN :
       )
       "'"
   >
+| < #STRING_ESCAPE:
+      "\\"
+      ( ["n","t","b","r","f","\\","'","\""]
+      // octal escapes
+      | ["0"-"7"] ( ["0"-"7"] )?
+      | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+      )
+  >
 |
   < STRING_LITERAL:
       "\""
       (   (~["\"","\\","\n","\r"])
-        | ("\\"
-            ( ["n","t","b","r","f","\\","'","\""]
-            | ["0"-"7"] ( ["0"-"7"] )?
-            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-            )
-          )
+        | <STRING_ESCAPE>
       )*
       "\""
+  >
+|
+  < TEXT_BLOCK_LITERAL:
+     "\"\"\"" (<HORIZONTAL_WHITESPACE>)* <LINE_TERMINATOR>
+        ( ~["\"", "\\"] | "\"" ~["\""] | "\"\"" ~["\""] | <STRING_ESCAPE> )*
+     "\"\"\""
   >
 }
 
@@ -2734,9 +2775,7 @@ void Literal() #void :
 
 
 void NumericLiteral():
-{
-  Token t;
-}
+{ Token t; }
 {
   ( t=<INTEGER_LITERAL>             {  jjtThis.setIntLiteral();}
   | t=<FLOATING_POINT_LITERAL>      {  jjtThis.setFloatLiteral();}
@@ -2757,7 +2796,9 @@ void CharLiteral():
 void StringLiteral():
 {}
 {
-   <STRING_LITERAL> { jjtThis.setImage(getToken(0).getImage()); }
+   ( <STRING_LITERAL>
+   | <TEXT_BLOCK_LITERAL> { jjtThis.setTextBlock(); checkForTextBlockLiteral(); })
+   { jjtThis.setImage(getToken(0).getImage()); }
 }
 
 void ArgumentList() :
@@ -2888,6 +2929,7 @@ void BlockStatement():
 {}
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
+| LOOKAHEAD({ jdkVersion >= 13 && isKeyword("yield") }) YieldStatement()
 |
   LOOKAHEAD(( "final" | Annotation() )* Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
@@ -3019,6 +3061,12 @@ void SwitchLabel() :
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
+}
+
+void YieldStatement() :
+{ checkForYieldStatement(); }
+{
+  <IDENTIFIER> Expression() ";"
 }
 
 void IfStatement() :

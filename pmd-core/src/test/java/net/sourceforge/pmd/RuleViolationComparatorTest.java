@@ -7,6 +7,7 @@ package net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,8 +20,6 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class RuleViolationComparatorTest {
 
@@ -65,7 +64,7 @@ public class RuleViolationComparatorTest {
         int count = 0;
         for (int i = 0; i < expectedOrder.length; i++) {
             count++;
-            assertSame("Wrong RuleViolation " + i + ", usind seed: " + seed, expectedOrder[i], ruleViolations.get(i));
+            assertSame("Wrong RuleViolation " + i + ", used seed: " + seed, expectedOrder[i], ruleViolations.get(i));
         }
         assertEquals("Missing assertion for every RuleViolation", expectedOrder.length, count);
     }
@@ -73,7 +72,7 @@ public class RuleViolationComparatorTest {
     private RuleViolation createJavaRuleViolation(Rule rule, String fileName, int beginLine, String description,
             int beginColumn, int endLine, int endColumn) {
         RuleContext ruleContext = new RuleContext();
-        ruleContext.setSourceCodeFilename(fileName);
+        ruleContext.setSourceCodeFile(new File(fileName));
         DummyNode simpleNode = new DummyNode(1);
         simpleNode.testingOnlySetBeginLine(beginLine);
         simpleNode.testingOnlySetBeginColumn(beginColumn);
@@ -81,9 +80,5 @@ public class RuleViolationComparatorTest {
         simpleNode.testingOnlySetEndColumn(endColumn);
         RuleViolation ruleViolation = new ParametricRuleViolation<Node>(rule, ruleContext, simpleNode, description);
         return ruleViolation;
-    }
-
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(RuleViolationComparatorTest.class);
     }
 }

@@ -67,6 +67,9 @@ entries:
         - title: Writing XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
           output: web, pdf
+        - title: Rule designer reference
+          url: /pmd_userdocs_extending_designer_reference.html
+          output: web, pdf
         - title: Defining rule properties
           url: /pmd_userdocs_extending_defining_properties.html
           output: web, pdf
@@ -253,6 +256,21 @@ entries:
         - title: Security
           output: web, pdf
           url: /pmd_rules_vf_security.html
+    - title: null
+      output: web, pdf
+      subfolders:
+      - title: Swift Rules
+        output: web, pdf
+        subfolderitems:
+        - title: Index
+          output: web, pdf
+          url: /pmd_rules_swift.html
+        - title: Best Practices
+          output: web, pdf
+          url: /pmd_rules_swift_bestpractices.html
+        - title: Error Prone
+          output: web, pdf
+          url: /pmd_rules_swift_errorprone.html
     - title: null
       output: web, pdf
       subfolders:

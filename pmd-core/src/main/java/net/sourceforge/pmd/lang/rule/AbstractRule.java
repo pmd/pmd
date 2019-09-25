@@ -317,11 +317,17 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void addRuleChainVisit(Class<? extends Node> nodeClass) {
-        if (!nodeClass.getSimpleName().startsWith("AST")) {
+        // FIXME : These assume the implementation of getXPathNodeName() for all nodes…
+        final String simpleName = nodeClass.getSimpleName();
+        
+        if (simpleName.startsWith("AST")) { // JavaCC node
             // Classes under the Comment hierarchy and stuff need to be refactored in the Java AST
-            throw new IllegalArgumentException("Node class does not start with 'AST' prefix: " + nodeClass);
+            addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
+        } else if (nodeClass.getSimpleName().endsWith("Context")) { // Antlr node
+            addRuleChainVisit(nodeClass.getSimpleName().substring(0, simpleName.length() - "Context".length()));
+        } else {
+            throw new IllegalArgumentException("Node class does not start with 'AST' prefix nor ends with 'Context' suffix: " + nodeClass);
         }
-        addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
     }
 
     @Override

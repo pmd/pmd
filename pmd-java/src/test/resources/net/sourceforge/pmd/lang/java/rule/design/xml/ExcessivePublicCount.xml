@@ -31,9 +31,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-Static final
-     ]]></description>
+        <description>Static final</description>
         <rule-property name="minimum">1</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

@@ -8,8 +8,8 @@
 ## About
 
 **PMD** is a source code analyzer. It finds common programming flaws like unused variables, empty catch blocks,
-unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce, PLSQL, Apache Velocity,
-XML, XSL.
+unnecessary object creation, and so forth. It supports Java, JavaScript, Salesforce.com Apex and Visualforce,
+PLSQL, Apache Velocity, XML, XSL, Scala.
 
 Additionally it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
 C/C++, C#, Dart, Fortran, Go, Groovy, Java, JavaScript, JSP, Kotlin, Lua, Matlab,

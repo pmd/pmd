@@ -92,5 +92,4 @@ public interface ASTLiteral extends ASTPrimaryExpression {
         return false;
     }
 
-
 }

@@ -18,16 +18,23 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  */
 public class JavaLanguageParser extends AbstractJavaParser {
     private final int jdkVersion;
+    private final boolean preview;
 
     public JavaLanguageParser(int jdkVersion, ParserOptions parserOptions) {
+        this(jdkVersion, false, parserOptions);
+    }
+
+    public JavaLanguageParser(int jdkVersion, boolean preview, ParserOptions parserOptions) {
         super(parserOptions);
         this.jdkVersion = jdkVersion;
+        this.preview = preview;
     }
 
     @Override
     protected JavaParser createJavaParser(Reader source) throws ParseException {
         JavaParser javaParser = super.createJavaParser(source);
         javaParser.setJdkVersion(jdkVersion);
+        javaParser.setPreview(preview);
         return javaParser;
     }
 }
