@@ -232,7 +232,7 @@ options {
   STATIC = false;
   USER_CHAR_STREAM = true;
   JDK_VERSION = "1.5";
-  
+
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
@@ -323,25 +323,25 @@ public class JavaParser {
       throwParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
     }
   }
-  
+
   private void checkForBadNumericalLiteralslUsage(Token token) {
     if (jdkVersion < 7) {
       if (token.image.contains("_")) {
         throwParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
       }
-      	
+
       if (token.image.startsWith("0b") || token.image.startsWith("0B")) {
-        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");	
+        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");
       }
     }
   }
-  
+
   private void checkForBadDiamondUsage() {
   	if (jdkVersion < 7) {
       throwParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
   	}
   }
-  
+
   private void checkForBadTryWithResourcesUsage() {
   	if (jdkVersion < 7) {
       throwParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
@@ -484,7 +484,7 @@ public class JavaParser {
     if (jdkVersion <= 3) {
       return false;
     }
-    
+
     return getToken(1).image.equals("assert");
   }
 
@@ -2417,10 +2417,10 @@ void EqualityExpression() #void:
   )*
 }
 
-void InstanceOfExpression() #InstanceOfExpression(>1):
+void InstanceOfExpression() #void:
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(1) "instanceof" AnnotatedRefType() ]
+  RelationalExpression() [ LOOKAHEAD(1) "instanceof" (AnnotatedRefType() #TypeExpression) #InstanceOfExpression(2) ]
 }
 
 void RelationalExpression() #void:
@@ -2915,7 +2915,7 @@ void Block() :
 {Token t;}
 {
       "{"
-       
+
       ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
 }
 

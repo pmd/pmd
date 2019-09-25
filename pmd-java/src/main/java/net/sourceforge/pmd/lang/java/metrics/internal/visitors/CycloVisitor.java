@@ -80,7 +80,7 @@ public class CycloVisitor extends JavaParserVisitorAdapter {
     public Object visit(ASTConditionalExpression node, Object data) {
         ((MutableInt) data).increment();
         if (considerBooleanPaths) {
-            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getGuardExpressionNode()));
+            ((MutableInt) data).add(CycloMetric.booleanExpressionComplexity(node.getCondition()));
         }
         return super.visit(node, data);
     }

@@ -10,15 +10,13 @@ package net.sourceforge.pmd.lang.java.ast;
  * and lower than shift expressions (e.g. {@link BinaryOp#RIGHT_SHIFT}).
  * This has the same precedence as relational expressions (e.g. {@link BinaryOp#LE}).
  *
- * TODO represent that with an InfixExpr too
- *
  * <pre class="grammar">
  *
  * InstanceOfExpression ::=  {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTType Type}
  *
  * </pre>
  */
-public final class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpression {
+public final class ASTInstanceOfExpression extends ASTInfixExpression implements ASTExpression {
 
     ASTInstanceOfExpression(int id) {
         super(id);
@@ -29,6 +27,17 @@ public final class ASTInstanceOfExpression extends AbstractJavaExpr implements A
         super(p, id);
     }
 
+    @Override
+    public BinaryOp getOperator() {
+        return BinaryOp.INSTANCEOF;
+    }
+
+    @Override
+    void setOp(BinaryOp op) {
+        if (op != BinaryOp.INSTANCEOF) {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -41,14 +50,18 @@ public final class ASTInstanceOfExpression extends AbstractJavaExpr implements A
         visitor.visit(this, data);
     }
 
-    /** Returns the expression whose type is being tested. */
-    public ASTExpression getLhs() {
-        return (ASTExpression) jjtGetChild(0);
+    @Override
+    public ASTTypeExpression getRhs() {
+        return (ASTTypeExpression) jjtGetChild(1);
     }
 
-    /** Gets the type against which the expression is tested. */
+    /** Gets the wrapped type node. */
     public ASTType getTypeNode() {
-        return (ASTType) jjtGetChild(1);
+        return getRhs().getTypeNode();
     }
 
+    @Override
+    public String getXPathNodeName() {
+        return "InfixExpression";
+    }
 }

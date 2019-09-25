@@ -1,9 +1,11 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
+import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
+import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
@@ -165,6 +167,12 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
         }
 
 
+fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression, ASTType>) =
+        child<ASTTypeExpression>(ignoreChildren = contents == EmptyAssertions) {
+            it::getTypeNode shouldBe contents()
+        }
+
+
 fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
         child<ASTArrayType>(ignoreChildren = contents == EmptyAssertions) {
             contents()
@@ -249,9 +257,12 @@ fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInf
         }
 
 
-fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInstanceOfExpression>) =
+fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: ValuedNodeSpec<ASTInstanceOfExpression, ASTTypeExpression>) =
         child<ASTInstanceOfExpression> {
-            assertions()
+            it::getOperator shouldBe BinaryOp.INSTANCEOF
+            val rhs = assertions()
+            it::getRhs shouldBe rhs
+            it::getTypeNode shouldBe rhs.typeNode
         }
 
 fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTInfixExpression>) =
