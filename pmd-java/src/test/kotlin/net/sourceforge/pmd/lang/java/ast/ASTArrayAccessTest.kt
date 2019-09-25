@@ -15,7 +15,7 @@ class ASTArrayAccessTest : ParserTestSpec({
         "a.b[0]" should matchExpr<ASTArrayAccess> {
 
             it::getLhsExpression shouldBe fieldAccess("b") {
-                it::getLhsExpression shouldBe ambiguousName("a")
+                it::getLhs shouldBe ambiguousName("a")
             }
 
             it::getIndexExpression shouldBe int(0)

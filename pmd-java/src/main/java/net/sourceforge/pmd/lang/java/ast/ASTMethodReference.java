@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -37,10 +38,14 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
     @Override
     public void jjtClose() {
         super.jjtClose();
-        ASTAmbiguousName lhs = getAmbiguousLhs();
+        JavaNode lhs = jjtGetChild(0);
         // if constructor ref, then the LHS is unambiguously a type.
-        if (isConstructorReference() && lhs != null) {
-            replaceChildAt(0, lhs.forceTypeContext());
+        if (lhs instanceof ASTAmbiguousName) {
+            if (isConstructorReference()) {
+                replaceChildAt(0, new ASTTypeExpression(((ASTAmbiguousName) lhs).forceTypeContext()));
+            }
+        } else if (lhs instanceof ASTType) {
+            replaceChildAt(0, new ASTTypeExpression((ASTType) lhs));
         }
     }
 
@@ -53,56 +58,24 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
     }
 
     /**
-     * Returns the ambiguous name to the left of the "::" if it exists.
-     * If the LHS has been disambiguated, then this returns null and either
-     * {@link #getLhsExpression()} or {@link #getLhsType()} will return a value.
+     * Returns the node to the left of the "::". This may be a
+     * {@link ASTTypeExpression type expression}, or an
+     * {@link ASTAmbiguousName ambiguous name}.
      *
      * <p>Note that if this is a {@linkplain #isConstructorReference() constructor reference},
-     * then this can only return non-null.
+     * then this can only return a {@linkplain ASTTypeExpression type expression}.
      */
-    @Nullable
-    public ASTAmbiguousName getAmbiguousLhs() {
-        return AstImplUtil.getChildAs(this, 0, ASTAmbiguousName.class);
-    }
-
-    /**
-     * Returns the type node to the left of the "::" if it exists and is
-     * unambiguous. If ambiguous, then this method returns {@code null}
-     * and {@link #getAmbiguousLhs()} will return the LHS. If the LHS
-     * is an unambiguous expression, then {@link #getLhsExpression()}
-     * will return it.
-     *
-     * <p>Note that if this is a {@linkplain #isConstructorReference() constructor reference},
-     * then this can only return non-null.
-     */
-    @Nullable
-    public ASTReferenceType getLhsType() {
-        ASTReferenceType lhs = AstImplUtil.getChildAs(this, 0, ASTReferenceType.class);
-        return lhs instanceof ASTAmbiguousName ? null : lhs;
-    }
-
-
-    /**
-     * Returns the expression to the left of the "::" if it exists and is
-     * unambiguous. If ambiguous, then this method returns {@code null}
-     * and {@link #getAmbiguousLhs()} will return the LHS. If the LHS
-     * is an unambiguous type, then {@link #getLhsType()} will return it.
-     *
-     * <p>Note that if this is a {@linkplain #isConstructorReference() constructor reference},
-     * then this can only return null.
-     */
+    @NonNull
     @Override
-    @Nullable
-    public ASTPrimaryExpression getLhsExpression() {
-        ASTPrimaryExpression lhs = ASTQualifiableExpression.super.getLhsExpression();
-        return lhs instanceof ASTAmbiguousName ? null : lhs;
+    public ASTPrimaryExpression getLhs() {
+        return (ASTPrimaryExpression) jjtGetChild(0);
     }
 
 
     /**
      * Returns the explicit type arguments mentioned after the "::" if they exist.
      * Type arguments mentioned before the "::", if any, are contained within
-     * the {@linkplain #getLhsType() lhs type}.
+     * the {@linkplain #getLhs() lhs type}.
      */
     @Nullable
     public ASTTypeArguments getTypeArguments() {

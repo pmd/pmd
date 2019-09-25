@@ -1,11 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
-import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.*
 import java.util.*
 import kotlin.reflect.KCallable
@@ -280,14 +278,12 @@ fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTReferenceType>) =
+fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTTypeExpression>) =
         child<ASTMethodReference> {
             it::getMethodName shouldBe null
             it::getImage shouldBe "new"
             it::isConstructorReference shouldBe true
-            it::getLhsExpression shouldBe null
-            it::getAmbiguousLhs shouldBe null
-            it::getLhsType shouldBe assertions()
+            it::getLhs shouldBe assertions()
         }
 
 val EmptyAssertions: NodeSpec<out Node> = {}

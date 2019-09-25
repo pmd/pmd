@@ -34,9 +34,14 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
     public void jjtClose() {
         super.jjtClose();
 
+        // we need to set the name.
+
         if (getImage() != null || jjtGetChild(0) instanceof ASTSuperExpression) {
             return;
         }
+
+        // Otherwise, the method call was parsed as an ambiguous name followed by arguments
+        // The LHS stays ambiguous
 
         // the cast serves as an assert
         ASTAmbiguousName fstChild = (ASTAmbiguousName) jjtGetChild(0);
@@ -53,19 +58,6 @@ public final class ASTMethodCall extends AbstractJavaExpr implements ASTPrimaryE
     public String getMethodName() {
         return getImage();
     }
-
-    /**
-     * Gets the type name preceding the ".", if any. May return empty if
-     * this call is not qualified (no "."), or if the qualifier is a type
-     * instead of an expression.
-     *
-     * <p>If the LHS is an {@link ASTAmbiguousName}, returns it.
-     */
-    @Nullable
-    public ASTClassOrInterfaceType getLhsType() {
-        return AstImplUtil.getChildAs(this, 0, ASTClassOrInterfaceType.class);
-    }
-
 
     public ASTArgumentList getArguments() {
         return (ASTArgumentList) jjtGetChild(jjtGetNumChildren() - 1);

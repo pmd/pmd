@@ -15,7 +15,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBe child<ASTThisExpression>(ignoreChildren = true) {}
+            it::getLhs shouldBe child<ASTThisExpression>(ignoreChildren = true) {}
 
             it::getArguments shouldBe child {}
 
@@ -25,11 +25,11 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhsExpression shouldBe child<ASTMethodCall> {
+            it::getLhs shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "foo"
                 it::getImage shouldBe "foo"
 
-                it::getLhsExpression shouldBe null
+                it::getLhs shouldBe null
 
                 it::getArguments shouldBe child {}
             }
@@ -41,7 +41,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "baz"
             it::getImage shouldBe "baz"
 
-            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
+            it::getLhs shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo.bar"
             }
 
@@ -52,7 +52,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "f"
             it::getImage shouldBe "f"
 
-            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
+            it::getLhs shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo"
             }
 
@@ -70,7 +70,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
+            it::getLhs shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo"
             }
 
@@ -83,12 +83,12 @@ class ASTMethodCallTest : ParserTestSpec({
 
             it::getMethodName shouldBe "foreach"
 
-            it::getLhsExpression shouldBe child<ASTMethodCall> {
+            it::getLhs shouldBe child<ASTMethodCall> {
 
                 it::getMethodName shouldBe "bar"
                 it::getImage shouldBe "bar"
 
-                it::getLhsExpression shouldBe child<ASTAmbiguousName> {
+                it::getLhs shouldBe child<ASTAmbiguousName> {
                     it::getImage shouldBe "foo"
                 }
 

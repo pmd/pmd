@@ -14,12 +14,11 @@ interface ASTQualifiableExpression extends ASTExpression {
 
     /**
      * Returns the expression to the left of the "." if it exists.
-     * That may be an {@linkplain ASTAmbiguousName ambiguous name}.
-     * May return null if this call is not qualified (no "."), or
-     * if the qualifier is a type instead of an expression.
+     * This may be a {@link ASTTypeExpression type expression}, or
+     * an {@link ASTAmbiguousName ambiguous name}.
      */
     @Nullable
-    default ASTPrimaryExpression getLhsExpression() {
+    default ASTPrimaryExpression getLhs() {
         return AstImplUtil.getChildAs(this, 0, ASTPrimaryExpression.class);
     }
 }

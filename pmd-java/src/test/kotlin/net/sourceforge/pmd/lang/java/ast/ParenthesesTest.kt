@@ -60,7 +60,7 @@ class ParenthesesTest : ParserTestSpec({
                         it::getParenthesisDepth shouldBe 0
                         it::isParenthesized shouldBe false
 
-                        it::getLhsExpression shouldBe variableAccess("a") {
+                        it::getLhs shouldBe variableAccess("a") {
                             it::getParenthesisDepth shouldBe 2
                             it::isParenthesized shouldBe true
 
@@ -78,7 +78,7 @@ class ParenthesesTest : ParserTestSpec({
 
                         it.tokenList().map { it.image } shouldBe listOf("(", "(", "a", ")", ".", "f", ")")
 
-                        it::getLhsExpression shouldBe variableAccess("a") {
+                        it::getLhs shouldBe variableAccess("a") {
                             it::getParenthesisDepth shouldBe 1
                             it::isParenthesized shouldBe true
 

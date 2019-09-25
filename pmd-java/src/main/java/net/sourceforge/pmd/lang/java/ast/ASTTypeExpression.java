@@ -15,10 +15,12 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaExpr implements ASTExpression, JSingleChildNode<ASTType> {
+public final class ASTTypeExpression extends AbstractJavaExpr implements ASTPrimaryExpression, JSingleChildNode<ASTType> {
 
-    ASTTypeExpression(int id) {
-        super(id);
+    ASTTypeExpression(ASTType wrapped) {
+        super(JavaParserTreeConstants.JJTTYPEEXPRESSION);
+        this.jjtAddChild(wrapped, 0);
+        copyTextCoordinates((AbstractJavaNode) wrapped);
     }
 
 
@@ -43,7 +45,7 @@ public final class ASTTypeExpression extends AbstractJavaExpr implements ASTExpr
         return (ASTType) super.jjtGetChild(index);
     }
 
-    /** Gets the type against which the expression is tested. */
+    /** Gets the wrapped type node. */
     public ASTType getTypeNode() {
         return jjtGetChild(0);
     }

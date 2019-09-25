@@ -56,6 +56,16 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
         return jjtGetChild(0) instanceof ASTPrimaryExpression;
     }
 
+    /**
+     * Returns the outer instance expression, if this is a {@linkplain #isQualifiedInstanceCreation() qualified}
+     * constructor call. Otherwise returns null. This can never be a
+     * {@linkplain ASTTypeExpression type expression}, and is never
+     * {@linkplain ASTAmbiguousName ambiguous}.
+     */
+    @Override
+    public @Nullable ASTPrimaryExpression getLhs() {
+        return ASTQualifiableExpression.super.getLhs();
+    }
 
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {

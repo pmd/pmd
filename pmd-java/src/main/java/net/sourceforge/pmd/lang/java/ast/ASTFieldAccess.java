@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 /**
  * A field access expression.
  *
@@ -36,21 +34,8 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssigna
         this.setImage(fieldName);
     }
 
-    /**
-     * Returns the type to the left of the "." if it exists.
-     * That may be an {@linkplain ASTAmbiguousName ambiguous name}.
-     * May return empty if this call is not qualified (no "."),
-     * or if the qualifier is an expression instead of a type.
-     */
-    @Nullable
-    public ASTClassOrInterfaceType getLhsType() {
-        return AstImplUtil.getChildAs(this, 0, ASTClassOrInterfaceType.class);
-    }
 
-
-    /**
-     * Returns the name of the field.
-     */
+    /** Returns the name of the field. */
     public String getFieldName() {
         return getImage();
     }
