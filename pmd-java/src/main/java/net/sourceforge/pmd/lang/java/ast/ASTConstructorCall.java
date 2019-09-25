@@ -80,6 +80,11 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
         return (ASTArgumentList) jjtGetChild(idx);
     }
 
+    public boolean isDiamond() {
+        ASTTypeArguments targs = getTypeNode().getTypeArguments();
+        return targs != null && targs.isDiamond();
+    }
+
 
     /**
      * Returns the type node.

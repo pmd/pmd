@@ -4,7 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 
 
 /**
@@ -49,6 +54,16 @@ public final class ASTTryStatement extends AbstractJavaNode {
      */
     public boolean isTryWithResources() {
         return jjtGetChild(0) instanceof ASTResourceList;
+    }
+
+    @Nullable
+    public ASTResourceList getResourceList() {
+        return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
+    }
+
+    public List<ASTResource> getResources() {
+        ASTResourceList list = getResourceList();
+        return list == null ? Collections.emptyList() : IteratorUtil.toList(list.iterator());
     }
 
 
