@@ -40,7 +40,6 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.FileUtil;
 import net.sourceforge.pmd.util.IOUtil;
@@ -231,10 +230,6 @@ public class PMD {
                     violations.getAndIncrement();
                 }
 
-                @Override
-                public void metricAdded(final Metric metric) {
-                    // ignored - not needed for counting violations
-                }
             });
 
             try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING)) {
