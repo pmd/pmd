@@ -55,6 +55,7 @@ public abstract class LanguageLevelChecker<T> {
 
     private final int jdkVersion;
     private final boolean preview;
+    private final CheckVisitor visitor = new CheckVisitor();
 
     public LanguageLevelChecker(int jdkVersion, boolean preview) {
         this.jdkVersion = jdkVersion;
@@ -72,7 +73,7 @@ public abstract class LanguageLevelChecker<T> {
 
     public void check(JavaNode node) {
         T accumulator = createAccumulator();
-        node.jjtAccept(new CheckVisitor(), accumulator);
+        node.jjtAccept(visitor, accumulator);
         done(accumulator);
     }
 
@@ -131,6 +132,7 @@ public abstract class LanguageLevelChecker<T> {
                     check(node, PreviewFeature.TEXT_BLOCK_LITERALS, data);
                 }
             }
+            visitChildren(node, data);
         }
 
         @Override
@@ -138,11 +140,13 @@ public abstract class LanguageLevelChecker<T> {
             if (node.isStatic()) {
                 check(node, RegularLanguageFeature.STATIC_IMPORT, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTYieldStatement node, T data) {
             check(node, PreviewFeature.YIELD_STATEMENTS, data);
+            visitChildren(node, data);
         }
 
         @Override
@@ -150,11 +154,13 @@ public abstract class LanguageLevelChecker<T> {
             if (node.jjtGetNumChildren() > 0) {
                 check(node, PreviewFeature.BREAK__WITH__VALUE_STATEMENTS, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTSwitchExpression node, T data) {
             check(node, PreviewFeature.SWITCH_EXPRESSIONS, data);
+            visitChildren(node, data);
         }
 
         @Override
@@ -164,16 +170,19 @@ public abstract class LanguageLevelChecker<T> {
                     check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
                 }
             }
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTTypeArguments node, T data) {
             check(node, RegularLanguageFeature.GENERICS, data);
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTTypeParameters node, T data) {
             check(node, RegularLanguageFeature.GENERICS, data);
+            visitChildren(node, data);
         }
 
         @Override
@@ -183,6 +192,7 @@ public abstract class LanguageLevelChecker<T> {
             } else if (node.isExplicitReceiverParameter()) {
                 check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
@@ -192,6 +202,7 @@ public abstract class LanguageLevelChecker<T> {
             } else {
                 check(node, RegularLanguageFeature.ANNOTATIONS, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
@@ -199,11 +210,13 @@ public abstract class LanguageLevelChecker<T> {
             if (node.isForeach()) {
                 check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTEnumDeclaration node, T data) {
             check(node, RegularLanguageFeature.ENUMS, data);
+            visitChildren(node, data);
         }
 
         @Override
@@ -216,16 +229,19 @@ public abstract class LanguageLevelChecker<T> {
             } else if (node.getImage().indexOf('_') >= 0) {
                 check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTMethodReference node, T data) {
             check(node, RegularLanguageFeature.METHOD_REFERENCES, data);
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTLambdaExpression node, T data) {
             check(node, RegularLanguageFeature.LAMBDA_EXPRESSIONS, data);
+            visitChildren(node, data);
         }
 
         @Override
@@ -239,11 +255,13 @@ public abstract class LanguageLevelChecker<T> {
             }
 
             checkIdent(node, node.getMethodName(), data);
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTAssertStatement node, T data) {
             check(node, RegularLanguageFeature.ASSERT_STATEMENTS, data);
+            visitChildren(node, data);
         }
 
         @Override
@@ -253,11 +271,12 @@ public abstract class LanguageLevelChecker<T> {
                     for (ASTResource resource : node.getResources()) {
                         if (resource.isConciseResource()) {
                             check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
-                            return;
+                            break;
                         }
                     }
                 }
             }
+            visitChildren(node, data);
         }
 
         @Override
@@ -265,6 +284,7 @@ public abstract class LanguageLevelChecker<T> {
             if (node.jjtGetParent() instanceof ASTCastExpression) {
                 check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
@@ -272,6 +292,7 @@ public abstract class LanguageLevelChecker<T> {
             if (node.isMulticatchStatement()) {
                 check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
@@ -279,26 +300,37 @@ public abstract class LanguageLevelChecker<T> {
             if (IteratorUtil.count(node.iterator()) > 1) {
                 check(node, PreviewFeature.COMPOSITE_CASE_LABEL, data);
             }
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTModuleDeclaration node, T data) {
             check(node, RegularLanguageFeature.MODULE_DECLARATIONS, data);
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTSwitchLabeledRule node, T data) {
             check(node, PreviewFeature.SWITCH_RULES, data);
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTVariableDeclaratorId node, T data) {
             checkIdent(node, node.getVariableName(), data);
+            visitChildren(node, data);
         }
 
         @Override
         public void visit(ASTAnyTypeDeclaration node, T data) {
             checkIdent(node, node.getSimpleName(), data);
+            visitChildren(node, data);
+        }
+
+        private void visitChildren(JavaNode node, T data) {
+            for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+                node.jjtGetChild(i).jjtAccept(visitor, data);
+            }
         }
 
         private void checkIdent(JavaNode node, String simpleName, T acc) {
@@ -308,6 +340,8 @@ public abstract class LanguageLevelChecker<T> {
                 check(node, ReservedIdentifiers.ENUM_AS_AN_IDENTIFIER, acc);
             } else if ("assert".equals(simpleName)) {
                 check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER, acc);
+            } else if ("_".equals(simpleName)) {
+                check(node, ReservedIdentifiers.UNDERSCORE_AS_AN_IDENTIFIER, acc);
             }
         }
 
@@ -393,9 +427,10 @@ public abstract class LanguageLevelChecker<T> {
 
     /** Those use a min valid version. */
     private enum RegularLanguageFeature implements LanguageFeature {
-        ASSERT_STATEMENTS(4),
-        STATIC_IMPORT(4),
 
+        ASSERT_STATEMENTS(4),
+
+        STATIC_IMPORT(5),
         ENUMS(5),
         GENERICS(5),
         ANNOTATIONS(5),
@@ -438,7 +473,7 @@ public abstract class LanguageLevelChecker<T> {
         @Override
         public String whenUnavailableMessage() {
             return StringUtils.capitalize(displayNameLower(name()))
-                + " is a feature of JDK >= " + versionDisplayName(minJdkLevel)
+                + " are a feature of " + versionDisplayName(minJdkLevel)
                 + ", you should select your language version accordingly";
         }
 

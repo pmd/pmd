@@ -39,11 +39,6 @@ public class JavaLanguageParser extends AbstractParser {
         return new JavaTokenManager(source);
     }
 
-    @Override
-    public boolean canParse() {
-        return true;
-    }
-
     private JavaParser createJavaParser(Reader source) throws ParseException {
         javaParser = new JavaParser(new JavaCharStream(source));
         javaParser.setJdkVersion(checker.getJdkVersion());

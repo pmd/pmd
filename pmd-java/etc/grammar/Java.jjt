@@ -2964,6 +2964,12 @@ void Resource() :
         ) #LocalVariableDeclaration
    |
    PrimaryExpression()
+   {
+    Node top = jjtree.peekNode();
+    if (!(top instanceof ASTVariableAccess || top instanceof ASTFieldAccess))
+      throwParseException("Expected a variable access, but was a " + top.getXPathNodeName());
+   }
+   {}
 }
 
 void CatchStatement() :

@@ -9,8 +9,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 
 public class JavaLanguageHandler extends AbstractJavaHandler {
-    private final int jdkVersion;
-    private final boolean preview;
+
     private final LanguageLevelChecker levelChecker;
 
     public JavaLanguageHandler(int jdkVersion) {
@@ -18,8 +17,6 @@ public class JavaLanguageHandler extends AbstractJavaHandler {
     }
 
     public JavaLanguageHandler(int jdkVersion, boolean preview) {
-        this.jdkVersion = jdkVersion;
-        this.preview = preview;
         levelChecker = LanguageLevelChecker.checkerThatThrows(jdkVersion, preview);
     }
 
