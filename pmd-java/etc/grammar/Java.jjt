@@ -1679,10 +1679,6 @@ jjtThis.setModifiers(modifiers);
     if (!"enum".equals(t.image)) {
       throw new ParseException("ERROR: expecting enum");
     }
-
-    if (jdkVersion < 5) {
-      throw new ParseException("ERROR: Can't use enum as a keyword in pre-JDK 1.5 target");
-    }
   }
   t=<IDENTIFIER> {jjtThis.setImage(t.image);}
   [ ImplementsList() ]
@@ -2985,11 +2981,7 @@ void FinallyStatement() :
 }
 
 void AssertStatement() :
-{
-    if (jdkVersion <= 3) {
-        throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
-    }
-}
+{}
 {
   <IDENTIFIER> Expression() [ ":" Expression() ] ";"
 }

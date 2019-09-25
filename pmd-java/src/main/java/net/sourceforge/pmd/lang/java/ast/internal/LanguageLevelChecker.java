@@ -2,7 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.ast;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.ast.internal;
 
 
 import java.util.Locale;
@@ -11,8 +15,39 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIntersectionType;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTResource;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabeledRule;
+import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 
-final class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
+public abstract class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
 
     private final int jdkVersion;
     private final boolean preview;
@@ -21,6 +56,20 @@ final class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
         this.jdkVersion = jdkVersion;
         this.preview = preview;
     }
+
+    public int getJdkVersion() {
+        return jdkVersion;
+    }
+
+    public boolean isPreviewEnabled() {
+        return preview;
+    }
+
+    /**
+     * Report that a node violates a language feature. This doesn't have
+     * to throw an exception, we could also just warn.
+     */
+    abstract void report(Node node, String message);
 
     private boolean check(Node node, LanguageFeature message) {
         if (message.isAvailable(this.jdkVersion, this.preview)) {
@@ -175,14 +224,12 @@ final class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
         }
     }
 
-
     @Override
     public void visit(ASTCatchStatement node, Void data) {
         if (node.isMulticatchStatement()) {
             check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES);
         }
     }
-
 
     @Override
     public void visit(ASTSwitchLabel node, Void data) {
@@ -196,12 +243,10 @@ final class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
         check(node, RegularLanguageFeature.MODULE_DECLARATIONS);
     }
 
-
     @Override
     public void visit(ASTSwitchLabeledRule node, Void data) {
         check(node, PreviewFeature.SWITCH_RULES);
     }
-
 
     @Override
     public void visit(ASTVariableDeclaratorId node, Void data) {
@@ -221,6 +266,17 @@ final class LanguageLevelChecker extends SideEffectingVisitorAdapter<Void> {
         } else if ("assert".equals(simpleName)) {
             check(node, ReservedIdentifiers.ASSERT_AS_AN_IDENTIFIER);
         }
+    }
+
+    public static LanguageLevelChecker checkerThatThrows(int languageLevel, boolean previewEnabled) {
+        return new LanguageLevelChecker(languageLevel, previewEnabled) {
+
+            @Override
+            void report(Node node, String message) {
+                throw new ParseException(
+                    "Line " + node.getBeginLine() + ", Column " + node.getBeginColumn() + ": " + message);
+            }
+        };
     }
 
     private static String displayNameLower(String name) {
