@@ -83,15 +83,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return false;
     }
 
-    /**
-     * @deprecated Not useful, and suppression should happen transparently to rule implementations.
-     *             This will be removed with 7.0.0
-     */
-    @Deprecated
-    protected boolean isSuppressed(Node node) {
-        return JavaRuleViolation.isSupressed(node, this);
-    }
-
 
     @Override
     public final boolean dependsOn(AstProcessingStage<?> stage) {
