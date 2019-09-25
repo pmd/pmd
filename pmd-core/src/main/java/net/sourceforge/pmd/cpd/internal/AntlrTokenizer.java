@@ -1,25 +1,24 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.cpd;
+package net.sourceforge.pmd.cpd.internal;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 
-import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.cpd.SourceCode;
+import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.cpd.Tokenizer;
+import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.cpd.token.AntlrToken;
 import net.sourceforge.pmd.cpd.token.AntlrTokenFilter;
-import net.sourceforge.pmd.lang.antlr.AntlrTokenManager;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 
 /**
  * Generic implementation of a {@link Tokenizer} useful to any Antlr grammar.
- * 
- * @deprecated This is an internal API.
  */
-@Deprecated
-@InternalApi
 public abstract class AntlrTokenizer implements Tokenizer {
 
     protected abstract AntlrTokenManager getLexerForSource(SourceCode sourceCode);
@@ -53,7 +52,7 @@ public abstract class AntlrTokenizer implements Tokenizer {
         return new AntlrTokenFilter(tokenManager);
     }
 
-    /* default */ static CharStream getCharStreamFromSourceCode(final SourceCode sourceCode) {
+    public static CharStream getCharStreamFromSourceCode(final SourceCode sourceCode) {
         StringBuilder buffer = sourceCode.getCodeBuffer();
         return CharStreams.fromString(buffer.toString());
     }

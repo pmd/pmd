@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.antlr.AntlrRuleViolationFactory;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 

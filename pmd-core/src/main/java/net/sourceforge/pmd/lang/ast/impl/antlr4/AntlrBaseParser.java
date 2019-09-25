@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.antlr;
+package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -14,7 +14,6 @@ import org.antlr.v4.runtime.Lexer;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AntlrBaseNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 

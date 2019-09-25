@@ -1,14 +1,13 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.antlr;
+package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.AntlrBaseNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.XPathRule;
