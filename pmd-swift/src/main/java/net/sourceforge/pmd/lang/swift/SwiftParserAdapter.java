@@ -12,8 +12,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseNode;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
 import net.sourceforge.pmd.lang.swift.ast.SwiftLexer;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
 
