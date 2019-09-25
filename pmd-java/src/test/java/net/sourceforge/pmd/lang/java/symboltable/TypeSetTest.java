@@ -10,11 +10,13 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
+@Ignore
 public class TypeSetTest {
     private PMDASMClassLoader pmdClassLoader = PMDASMClassLoader.getInstance(TypeSetTest.class.getClassLoader());
 

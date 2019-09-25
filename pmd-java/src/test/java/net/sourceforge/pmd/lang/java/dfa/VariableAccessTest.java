@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.dfa.VariableAccess;
 
+@Ignore
 public class VariableAccessTest {
 
     @Test

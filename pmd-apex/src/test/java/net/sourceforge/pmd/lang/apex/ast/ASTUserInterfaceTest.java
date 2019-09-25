@@ -28,4 +28,20 @@ public class ASTUserInterfaceTest {
         Assert.assertNotNull(innerNode);
         Assert.assertEquals("Bar", innerNode.getImage());
     }
+
+    @Test
+    public void testSuperInterface() {
+        ApexNode<?> node = parse("public interface CustomInterface extends A {}");
+        Assert.assertSame(ASTUserInterface.class, node.getClass());
+        ASTUserInterface toplevel = (ASTUserInterface) node;
+        Assert.assertEquals("A", toplevel.getSuperInterfaceName());
+    }
+
+    @Test
+    public void testSuperInterface2() {
+        ApexNode<?> node = parse("public interface CustomInterface extends Other.A {}");
+        Assert.assertSame(ASTUserInterface.class, node.getClass());
+        ASTUserInterface toplevel = (ASTUserInterface) node;
+        Assert.assertEquals("Other.A", toplevel.getSuperInterfaceName());
+    }
 }

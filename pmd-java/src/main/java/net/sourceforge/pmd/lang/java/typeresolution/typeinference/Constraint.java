@@ -7,9 +7,12 @@ package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
+@Deprecated
+@InternalApi
 public class Constraint extends BoundOrConstraint {
     public Constraint(JavaTypeDefinition leftProperType, JavaTypeDefinition rightProperType, InferenceRuleType
             ruleType) {

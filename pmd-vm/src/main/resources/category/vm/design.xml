@@ -40,9 +40,6 @@ Sometimes two consecutive 'if' statements can be consolidated by separating thei
 The template is too long. It should be broken up into smaller pieces.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="minimum" value="1000"/>
-        </properties>
     </rule>
 
     <rule name="NoInlineJavaScript"

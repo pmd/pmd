@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.dfa;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -14,6 +15,7 @@ import net.sourceforge.pmd.lang.dfa.Structure;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
+@Ignore
 public class StructureTest {
 
     @Test

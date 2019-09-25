@@ -38,6 +38,7 @@ import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.SequenceExtent;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.UntypedAtomicValue;
+import net.sf.saxon.value.Value;
 
 /**
  * This is a Saxon based XPathRule query.
@@ -128,15 +129,7 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 
     private ValueRepresentation getRepresentation(final PropertyDescriptor<?> descriptor, final Object value) {
         if (descriptor.isMultiValue()) {
-            final List<?> val = (List<?>) value;
-            if (val.isEmpty()) {
-                return EmptySequence.getInstance();
-            }
-            final Item[] converted = new Item[val.size()];
-            for (int i = 0; i < val.size(); i++) {
-                converted[i] = getAtomicRepresentation(val.get(i));
-            }
-            return new SequenceExtent(converted);
+            return getSequenceRepresentation((List<?>) value);
         } else {
             return getAtomicRepresentation(value);
         }
@@ -262,5 +255,16 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
             // We could maybe use UntypedAtomicValue
             throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());
         }
+    }
+
+    public static Value getSequenceRepresentation(List<?> list) {
+        if (list == null || list.isEmpty()) {
+            return EmptySequence.getInstance();
+        }
+        final Item[] converted = new Item[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            converted[i] = getAtomicRepresentation(list.get(i));
+        }
+        return new SequenceExtent(converted);
     }
 }

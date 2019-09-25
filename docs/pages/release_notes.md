@@ -23,13 +23,6 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
-#### Deprecated APIs
-
-##### For removal
-
-*   The method {% jdoc java::ast.ASTImportDeclaration#getPackage() %} has been deprecated and
-    will be removed with PMD 7.0.0.
-
 ### External Contributions
 
 {% endtocmaker %}

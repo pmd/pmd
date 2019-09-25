@@ -20,3 +20,35 @@
     bottom: 0px;
     width: 100%;
 }
+
+details {
+    border-radius: 3px;
+    background: #EEE;
+    margin-left: 10px;
+}
+
+details p {
+    padding: 5px 10px 5px;
+    background: white;
+}
+
+details summary {
+    font-size: 11pt;
+    vertical-align: top;
+    background: #d2d2d2;
+    color: black;
+    border-radius: 3px;
+    padding: 5px 10px;
+    outline: none;
+    cursor: pointer;
+    display: list-item;
+}
+
+details summary::after {
+    content: "...";
+}
+
+details[open] summary {
+    background-color: #347DBE;
+    color: white;
+}

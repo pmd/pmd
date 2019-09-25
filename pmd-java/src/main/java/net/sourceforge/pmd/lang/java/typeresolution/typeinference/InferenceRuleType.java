@@ -7,10 +7,13 @@ package net.sourceforge.pmd.lang.java.typeresolution.typeinference;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.typeresolution.MethodTypeResolution;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 
+@Deprecated
+@InternalApi
 public enum InferenceRuleType {
 
     /**

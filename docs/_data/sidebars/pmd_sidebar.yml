@@ -67,6 +67,9 @@ entries:
         - title: Writing XPath rules
           url: /pmd_userdocs_extending_writing_xpath_rules.html
           output: web, pdf
+        - title: Rule designer reference
+          url: /pmd_userdocs_extending_designer_reference.html
+          output: web, pdf
         - title: Defining rule properties
           url: /pmd_userdocs_extending_defining_properties.html
           output: web, pdf

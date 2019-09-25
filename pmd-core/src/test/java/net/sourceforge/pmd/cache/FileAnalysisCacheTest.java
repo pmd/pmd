@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +32,7 @@ import org.mockito.Mockito;
 
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.Language;
 
 public class FileAnalysisCacheTest {
     
@@ -99,6 +101,7 @@ public class FileAnalysisCacheTest {
         final RuleViolation rv = mock(RuleViolation.class);
         when(rv.getFilename()).thenReturn(sourceFile.getPath());
         final net.sourceforge.pmd.Rule rule = mock(net.sourceforge.pmd.Rule.class, Mockito.RETURNS_SMART_NULLS);
+        when(rule.getLanguage()).thenReturn(mock(Language.class));
         when(rv.getRule()).thenReturn(rule);
 
         cache.ruleViolationAdded(rv);
@@ -186,6 +189,7 @@ public class FileAnalysisCacheTest {
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.isDfa()).thenReturn(true);
+        when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         reloadedCache.checkValidity(rs, cl);
         assertFalse("Cache believes unmodified file is up to date after auxclasspath changed",
@@ -202,6 +206,7 @@ public class FileAnalysisCacheTest {
         
         final net.sourceforge.pmd.Rule r = mock(net.sourceforge.pmd.Rule.class);
         when(r.isDfa()).thenReturn(true);
+        when(r.getLanguage()).thenReturn(mock(Language.class));
         when(rs.getAllRules()).thenReturn(Collections.singleton(r));
         
         setupCacheWithFiles(newCacheFile, rs, cl, sourceFile);
@@ -215,6 +220,22 @@ public class FileAnalysisCacheTest {
                 reloadedCache.isUpToDate(sourceFile));
     }
 
+    @Test
+    public void testClasspathNonExistingEntryIsIgnored() throws MalformedURLException, IOException {
+        final RuleSets rs = mock(RuleSets.class);
+        final ClassLoader cl = mock(ClassLoader.class);
+        
+        System.setProperty("java.class.path", System.getProperty("java.class.path") + File.pathSeparator
+                + tempFolder.getRoot().getAbsolutePath() + File.separator + "non-existing-dir");
+        
+        final FileAnalysisCache reloadedCache = new FileAnalysisCache(newCacheFile);
+        try {
+            reloadedCache.checkValidity(rs, cl);
+        } catch (final Exception e) {
+            fail("Validity check failed when classpath includes non-existing directories");
+        }
+    }
+    
     @Test
     public void testClasspathChangeInvalidatesCache() throws MalformedURLException, IOException {
         final RuleSets rs = mock(RuleSets.class);

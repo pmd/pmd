@@ -187,6 +187,13 @@ fun TreeNodeWrapper<Node, *>.castExpr(contents: NodeSpec<ASTCastExpression>) =
 fun TreeNodeWrapper<Node, *>.stringLit(image: String, contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
         child<ASTStringLiteral> {
             it::getImage shouldBe image
+            it::isTextBlock shouldBe false
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.textBlock(contents: NodeSpec<ASTStringLiteral> = EmptyAssertions) =
+        child<ASTStringLiteral> {
+            it::isTextBlock shouldBe true
             contents()
         }
 
@@ -275,7 +282,7 @@ fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethod
             it::getLhsType shouldBe assertions()
         }
 
-private val EmptyAssertions: NodeSpec<out Node> = {}
+val EmptyAssertions: NodeSpec<out Node> = {}
 
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =
         child(ignoreChildren = assertions == EmptyAssertions) {

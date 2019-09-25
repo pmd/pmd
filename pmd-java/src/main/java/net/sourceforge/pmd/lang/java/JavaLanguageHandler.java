@@ -9,13 +9,19 @@ import net.sourceforge.pmd.lang.ParserOptions;
 
 public class JavaLanguageHandler extends AbstractJavaHandler {
     private final int jdkVersion;
+    private final boolean preview;
 
     public JavaLanguageHandler(int jdkVersion) {
+        this(jdkVersion, false);
+    }
+
+    public JavaLanguageHandler(int jdkVersion, boolean preview) {
         this.jdkVersion = jdkVersion;
+        this.preview = preview;
     }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {
-        return new JavaLanguageParser(jdkVersion, parserOptions);
+        return new JavaLanguageParser(jdkVersion, preview, parserOptions);
     }
 }
