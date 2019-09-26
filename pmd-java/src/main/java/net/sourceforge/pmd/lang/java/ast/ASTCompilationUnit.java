@@ -74,7 +74,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
      */
     public List<ASTAnyTypeDeclaration> getTypeDeclarations() {
         List<ASTTypeDeclaration> tds = findChildrenOfType(ASTTypeDeclaration.class);
-        return tds.stream().map(it-> (ASTAnyTypeDeclaration) it.getFirstChild()).collect(Collectors.toList());
+        return tds.stream().map(it -> (ASTAnyTypeDeclaration) it.getFirstChild()).collect(Collectors.toList());
     }
 
     @InternalApi

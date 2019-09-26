@@ -73,7 +73,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                            .filter(AccessNode::isPublic)
                            .findFirst()
                            .orElseGet(
-                               () -> tds.size() > 0 ? tds.get(0) : null
+                               () -> tds.isEmpty() ? null : tds.get(0)
                            );
         }
 
