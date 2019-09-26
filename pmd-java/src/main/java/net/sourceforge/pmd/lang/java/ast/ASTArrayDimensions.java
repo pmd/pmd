@@ -17,23 +17,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * <li>TODO After a {@link ASTVariableDeclaratorId variable declarator id}</li>
  * </ul>
  *
- * <p>In the case of {@linkplain ASTArrayAllocation array creation expressions}, the
- * node {@link ASTArrayAllocationDims} is used instead, since the dimensions
- * may be initialized with an expression.
+ * <p>Some dimensions may be initialized with an expression, but only in
+ * the array type of an {@link ASTArrayAllocation array allocation expression}.
  *
  * <pre class="grammar">
  *
- * ArrayTypeDims ::= {@link ASTArrayTypeDim ArrayTypeDim}+
+ * ArrayDimensions ::= {@link ASTArrayTypeDim ArrayTypeDim}+ {@link ASTArrayDimExpr ArrayDimExpr}*
  *
  * </pre>
  */
-public final class ASTArrayTypeDims extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, JSingleChildNode<ASTArrayTypeDim> {
-    ASTArrayTypeDims(int id) {
+public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, JSingleChildNode<ASTArrayTypeDim> {
+
+    ASTArrayDimensions(int id) {
         super(id);
     }
 
 
-    ASTArrayTypeDims(JavaParser p, int id) {
+    ASTArrayDimensions(JavaParser p, int id) {
         super(p, id);
     }
 

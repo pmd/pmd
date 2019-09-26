@@ -171,10 +171,11 @@ fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyA
         }
 
 
-fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType) =
+fun TreeNodeWrapper<Node, *>.primitiveType(type: ASTPrimitiveType.PrimitiveType, assertions: NodeSpec<ASTPrimitiveType> = EmptyAssertions) =
         child<ASTPrimitiveType> {
             it::getModelConstant shouldBe type
             it::getTypeImage shouldBe type.token
+            assertions()
         }
 
 
@@ -312,6 +313,14 @@ fun TreeNodeWrapper<Node, *>.dimExpr(assertions: NodeSpec<ASTArrayDimExpr> = Emp
         child<ASTArrayDimExpr> {
             assertions()
             it::getLengthExpression shouldBe lengthExpr()
+        }
+
+fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
+        child<ASTArrayType> {
+            it::getElementType shouldBe elementType()
+            it::getDimensions shouldBe child {
+                dims()
+            }
         }
 
 fun TreeNodeWrapper<Node, *>.arrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =

@@ -6,7 +6,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 /**
  * Represents an array dimension in an {@linkplain ASTArrayType array type},
- * or in an {@linkplain ASTArrayAllocationDims array allocation expression}.
+ * or in an {@linkplain ASTArrayAllocation array allocation expression}.
+ *
+ * <p>{@linkplain ASTArrayDimExpr ArrayDimExpr} represents array dimensions
+ * that are initialized with a length, in array allocation expressions.
  *
  * <pre class="grammar">
  *
@@ -15,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public final class ASTArrayTypeDim extends AbstractJavaTypeNode implements Annotatable {
+public class ASTArrayTypeDim extends AbstractJavaNode implements Annotatable {
 
     ASTArrayTypeDim(int id) {
         super(id);

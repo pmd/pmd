@@ -1958,7 +1958,7 @@ void VariableDeclarator() :
   VariableDeclaratorId() [ "=" VariableInitializer() ]
 }
 
-// TODO use ArrayTypeDims
+// TODO use ArrayDimensions
 void VariableDeclaratorId() :
 {
   String image;
@@ -2012,7 +2012,7 @@ void MethodDeclarator() :
     checkForBadEnumUsage(t.image, "a method name");
     jjtThis.setImage( t.image );
   }
-  FormalParameters() ( "[" "]" )* // TODO use ArrayTypeDims
+  FormalParameters() ( "[" "]" )* // TODO use ArrayDimensions
 }
 
 
@@ -2171,7 +2171,7 @@ void Type() #void:
  | PrimitiveType()
 }
 
-void Dims() #ArrayTypeDims:
+void Dims() #ArrayDimensions:
 {}
 {
   // the list of dimensions is flat, but annotations are
@@ -2859,17 +2859,17 @@ void UnqualifiedAllocationExpr() #void :
 
 
 /*
- * The second LOOKAHEAD specification below is to parse to PrimarySuffix
- * if there is an expression between the "[...]".
+ * The array dimensions are appended to the array type and they're both
+ * enclosed into an ArrayType node.
  */
 void ArrayDimsAndInits() #void:
 {}
 {
-   LOOKAHEAD(TypeAnnotationList() "[" "]" ) ((ArrayTypeDim())+) #ArrayAllocationDims [ ArrayInitializer() ]
-     | (ArrayDimExpr())+ #ArrayAllocationDims
+   LOOKAHEAD(TypeAnnotationList() "[" "]" ) (((ArrayTypeDim())+) #ArrayDimensions) #ArrayType(2) [ ArrayInitializer() ]
+     | ( (ArrayDimExpr())+ #ArrayDimensions ) #ArrayType(2)
 }
 
-
+// may push either an ArrayDimExpr or ArrayTypeDim
 void ArrayDimExpr() #void:
 {boolean hasExpr=false;}
 {
