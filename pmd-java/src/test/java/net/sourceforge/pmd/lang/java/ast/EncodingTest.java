@@ -16,7 +16,7 @@ public class EncodingTest {
     @Test
     public void testDecodingOfUTF8() throws Exception {
         ASTCompilationUnit acu = parseJava14(TEST_UTF8);
-        String methodName = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0).getImage();
+        String methodName = acu.getFirstDescendantOfType(ASTMethodDeclaration.class).getImage();
         assertEquals("é", methodName);
     }
 

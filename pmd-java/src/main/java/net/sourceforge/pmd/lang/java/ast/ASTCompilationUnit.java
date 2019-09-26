@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
@@ -53,11 +54,27 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
 
     @Nullable
     public ASTPackageDeclaration getPackageDeclaration() {
-        if (jjtGetNumChildren() > 0) {
-            Node n = jjtGetChild(0);
-            return n instanceof ASTPackageDeclaration ? (ASTPackageDeclaration) n : null;
-        }
-        return null;
+        return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
+    }
+
+    /**
+     * Returns the package name of this compilation unit. If there is no
+     * package declaration, then returns the empty string.
+     */
+    @NonNull
+    public String getPackageName() {
+        ASTPackageDeclaration pack = getPackageDeclaration();
+        return pack == null ? "" : pack.getPackageNameImage();
+    }
+
+    /**
+     * Returns the type declarations declared in this compilation unit.
+     * This may be empty if this a package-info.java, or a modular
+     * compilation unit.
+     */
+    public List<ASTAnyTypeDeclaration> getTypeDeclarations() {
+        List<ASTTypeDeclaration> tds = findChildrenOfType(ASTTypeDeclaration.class);
+        return tds.stream().map(it-> (ASTAnyTypeDeclaration) it.getFirstChild()).collect(Collectors.toList());
     }
 
     @InternalApi

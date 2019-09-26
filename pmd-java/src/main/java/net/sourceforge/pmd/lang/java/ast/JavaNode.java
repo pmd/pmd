@@ -89,6 +89,23 @@ public interface JavaNode extends ScopedNode {
 
     GenericToken jjtGetLastToken();
 
+
+    /**
+     * Returns the node representing the type declaration this node is
+     * found in. The type of that node is the type of the {@code this}
+     * expression.
+     *
+     * <p>This returns null for nodes that aren't enclosed in a type declaration.
+     * This includes {@linkplain ASTPackageDeclaration PackageDeclaration},
+     * This includes {@linkplain ASTImportDeclaration ImportDeclaration},
+     * {@linkplain ASTCompilationUnit CompilationUnit}, and top-level
+     * {@linkplain ASTAnyTypeDeclaration AnyTypeDeclaration}s.
+     */
+    default ASTAnyTypeDeclaration getEnclosingType() {
+        return getFirstParentOfType(ASTAnyTypeDeclaration.class);
+    }
+
+
     /**
      * FIXME figure that out
      */
