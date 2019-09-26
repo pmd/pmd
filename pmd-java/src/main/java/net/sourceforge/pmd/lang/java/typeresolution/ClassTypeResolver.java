@@ -292,7 +292,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // First try: com.package.SomeClass.staticField.otherField
         // Second try: com.package.SomeClass.staticField
         // Third try: com.package.SomeClass <- found a class!
-        for (String reducedImage = node.getImage(); ; ) {
+        for (String reducedImage = node.getImage(); ;) {
             populateType(node, reducedImage);
             if (node.getType() != null) {
                 break; // we found a class!
