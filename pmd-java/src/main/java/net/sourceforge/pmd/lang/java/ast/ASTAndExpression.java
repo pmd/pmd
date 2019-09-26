@@ -18,7 +18,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * AndExpression ::=  {@linkplain ASTEqualityExpression EqualityExpression} ( "&" {@linkplain ASTEqualityExpression EqualityExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
+@Deprecated
 public final class ASTAndExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTAndExpression(int id) {

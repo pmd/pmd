@@ -7,14 +7,13 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An array creation expression.
+ * An array creation expression. The dimensions of the array type may
+ * be initialized with a length expression (in which case they're
+ * {@link ASTArrayDimExpr ArrayDimExpr} nodes).
  *
  * <pre class="grammar">
  *
- * ArrayCreationExpression ::= "new" {@link ASTAnnotation TypeAnnotation}*
- *                             ({@link ASTPrimitiveType PrimitiveType} | {@link ASTClassOrInterfaceType ClassOrInterfaceType})
- *                             {@link ASTArrayAllocationDims ArrayAllocationDims}
- *                             ({@link ASTArrayInitializer ArrayInitializer})
+ * ArrayCreationExpression ::= "new" {@link ASTArrayType ArrayType} ({@link ASTArrayInitializer ArrayInitializer})
  *
  * </pre>
  */
@@ -44,20 +43,10 @@ public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPri
 
 
     /**
-     * Returns the node representing the element type of the array. This
-     * is never an {@link ASTArrayType array type}. The dimensions of the
-     * instantiated array are carried by {@link #getArrayDims() another node}.
+     * Returns the node representing the array type being instantiated.
      */
-    public ASTType getElementTypeNode() {
-        return getFirstChildOfType(ASTType.class);
-    }
-
-
-    /**
-     * Returns the dimensions of the array.
-     */
-    public ASTArrayAllocationDims getArrayDims() {
-        return getFirstChildOfType(ASTArrayAllocationDims.class);
+    public ASTArrayType getTypeNode() {
+        return getFirstChildOfType(ASTArrayType.class);
     }
 
     @Nullable
@@ -69,7 +58,7 @@ public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPri
      * Returns the number of dimensions of the created array.
      */
     public int getArrayDepth() {
-        return getArrayDims().getArrayDepth();
+        return getTypeNode().getArrayDepth();
     }
 
 }

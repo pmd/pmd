@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
 
 /**
  * Nodes that previously corresponded to ASTAllocationExpression.
@@ -13,15 +14,7 @@ class ASTArrayAllocationTest : ParserTestSpec({
     parserTest("Array creation") {
 
         "new int[2][]" should matchExpr<ASTArrayAllocation> {
-
-            it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
-                it::getTypeImage shouldBe "int"
-            }
-
-            it::getArrayDims shouldBe child {
-                it::getArrayDepth shouldBe 2
-
+            it::getTypeNode shouldBe arrayType({ primitiveType(INT) }) {
                 dimExpr {
                     int(2)
                 }
@@ -31,18 +24,11 @@ class ASTArrayAllocationTest : ParserTestSpec({
 
         "new @Foo int[3][2]" should matchExpr<ASTArrayAllocation> {
 
-
-
-            it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
-                it::getTypeImage shouldBe "int"
-
-                it::getDeclaredAnnotations shouldBe listOf(annotation("Foo"))
-            }
-
-            it::getArrayDims shouldBe child {
-                it::getArrayDepth shouldBe 2
-
+            it::getTypeNode shouldBe arrayType({
+                primitiveType(INT) {
+                    annotation("Foo")
+                }
+            }) {
                 dimExpr {
                     int(3)
                 }
@@ -54,20 +40,13 @@ class ASTArrayAllocationTest : ParserTestSpec({
         "new @Foo int @Bar [3][2]" should matchExpr<ASTArrayAllocation> {
 
 
-
-            it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
-                it::getTypeImage shouldBe "int"
-
-                it::getDeclaredAnnotations shouldBe listOf(annotation("Foo"))
-            }
-
-            it::getArrayDims shouldBe child {
-                it::getArrayDepth shouldBe 2
-
+            it::getTypeNode shouldBe arrayType({
+                primitiveType(INT) {
+                    annotation("Foo")
+                }
+            }) {
                 dimExpr {
-                    it::getDeclaredAnnotations shouldBe listOf(annotation("Bar"))
-
+                    annotation("Bar")
                     int(3)
                 }
                 dimExpr {
@@ -80,33 +59,22 @@ class ASTArrayAllocationTest : ParserTestSpec({
             parenthesized {
 
                 child<ASTArrayAllocation> {
-
-                    it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                        it::getTypeImage shouldBe "int"
-                    }
-
-                    it::getArrayDims shouldBe child {
-                        it::getArrayDepth shouldBe 1
-
+                    it::getTypeNode shouldBe arrayType({ primitiveType(INT) }) {
                         dimExpr {
                             int(3)
                         }
                     }
                 }
             }
+
             it::getIndexExpression shouldBe int(2)
         }
 
         "new Foo[0]" should matchExpr<ASTArrayAllocation> {
-            it::getElementTypeNode shouldBe child<ASTClassOrInterfaceType> {
-                it::isAnonymousClass shouldBe false
-                it::isReferenceToClassSameCompilationUnit shouldBe true
-                it::getTypeImage shouldBe "Foo"
-            }
-
-            it::getArrayDims shouldBe child {
+            it::getTypeNode shouldBe arrayType({
                 it::getArrayDepth shouldBe 1
-
+                classType("Foo")
+            }) {
                 dimExpr {
                     int(0)
                 }
@@ -121,14 +89,10 @@ class ASTArrayAllocationTest : ParserTestSpec({
 
             it::getArrayDepth shouldBe 1
 
-            it::getElementTypeNode shouldBe child<ASTClassOrInterfaceType> {
-                it::isAnonymousClass shouldBe false
-                it::isReferenceToClassSameCompilationUnit shouldBe true
-                it::getTypeImage shouldBe "Foo"
-            }
-
-            it::getArrayDims shouldBe child {
+            it::getTypeNode shouldBe arrayType({
                 it::getArrayDepth shouldBe 1
+                classType("Foo")
+            }) {
                 arrayDim()
             }
 
@@ -139,15 +103,12 @@ class ASTArrayAllocationTest : ParserTestSpec({
         }
 
         "new int[][] { { 1 }, { 2 } }" should matchExpr<ASTArrayAllocation> {
+            it::getArrayDepth shouldBe 2
 
-            it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::getModelConstant shouldBe ASTPrimitiveType.PrimitiveType.INT
-                it::getTypeImage shouldBe "int"
-            }
-
-            it::getArrayDims shouldBe child {
+            it::getTypeNode shouldBe arrayType({
                 it::getArrayDepth shouldBe 2
-
+                primitiveType(INT)
+            }) {
                 arrayDim()
                 arrayDim()
             }
@@ -164,14 +125,12 @@ class ASTArrayAllocationTest : ParserTestSpec({
         }
 
         "new int[][] { { 1 , 2 }, null }" should matchExpr<ASTArrayAllocation> {
+            it::getArrayDepth shouldBe 2
 
-            it::getElementTypeNode shouldBe child<ASTPrimitiveType> {
-                it::getTypeImage shouldBe "int"
-            }
-
-            it::getArrayDims shouldBe child {
+            it::getTypeNode shouldBe arrayType({
                 it::getArrayDepth shouldBe 2
-
+                primitiveType(INT)
+            }) {
                 arrayDim()
                 arrayDim()
             }

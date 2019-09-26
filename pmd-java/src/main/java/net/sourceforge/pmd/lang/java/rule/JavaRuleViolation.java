@@ -11,14 +11,12 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
-import net.sourceforge.pmd.lang.java.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
@@ -67,36 +65,14 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
             setVariableNameIfExists(node);
 
             if (!suppressed) {
-                suppressed = isSupressed(node, getRule());
+                suppressed = AnnotationSuppressionUtil.contextSuppresses(node, getRule());
             }
         }
     }
 
-    /**
-     * Check for suppression on this node, on parents, and on contained types
-     * for ASTCompilationUnit
-     *
-     * @param node
-     */
-    public static boolean isSupressed(Node node, Rule rule) {
-        boolean result = suppresses(node, rule);
-
-        if (!result && node instanceof ASTCompilationUnit) {
-            for (int i = 0; !result && i < node.jjtGetNumChildren(); i++) {
-                result = suppresses(node.jjtGetChild(i), rule);
-            }
-        }
-        if (!result) {
-            Node parent = node.jjtGetParent();
-            while (!result && parent != null) {
-                result = suppresses(parent, rule);
-                parent = parent.jjtGetParent();
-            }
-        }
-        return result;
-    }
 
     private void setClassNameFrom(JavaNode node) {
+        // TODO this can use regular qualified names (those would also consider anon classes)
         String qualifiedName = null;
         for (ASTAnyTypeDeclaration parent : node.getParentsOfType(ASTAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
@@ -119,7 +95,7 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
                     }
                 }
             }
-            
+
             // Still not found?
             if (qualifiedName == null) {
                 for (ClassNameDeclaration c : classes) {
@@ -137,11 +113,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
         if (qualifiedName != null) {
             className = qualifiedName;
         }
-    }
-
-    private static boolean suppresses(final Node node, Rule rule) {
-        return node instanceof CanSuppressWarnings
-                && ((CanSuppressWarnings) node).hasSuppressWarningsAnnotationFor(rule);
     }
 
     private String getVariableNames(Iterable<ASTVariableDeclaratorId> iterable) {

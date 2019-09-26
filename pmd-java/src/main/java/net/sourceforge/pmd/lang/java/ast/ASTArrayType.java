@@ -11,8 +11,8 @@ import java.util.List;
  *
  * <pre class="grammar">
  *
- * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayTypeDims ArrayTypeDims}
- *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayTypeDims ArrayTypeDims}
+ * ArrayType ::= {@link ASTPrimitiveType PrimitiveType} {@link ASTArrayDimensions ArrayDimensions}
+ *             | {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArrayDimensions ArrayDimensions}
  *
  * </pre>
  */
@@ -34,8 +34,8 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         return getDimensions().getLastChild().getDeclaredAnnotations();
     }
 
-    public ASTArrayTypeDims getDimensions() {
-        return (ASTArrayTypeDims) jjtGetChild(1);
+    public ASTArrayDimensions getDimensions() {
+        return (ASTArrayDimensions) jjtGetChild(1);
     }
 
 

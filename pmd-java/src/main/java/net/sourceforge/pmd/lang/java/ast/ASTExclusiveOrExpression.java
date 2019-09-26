@@ -17,7 +17,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * ExclusiveOrExpression ::=  {@linkplain ASTAndExpression AndExpression} ( "^" {@linkplain ASTAndExpression AndExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
+@Deprecated
 public final class ASTExclusiveOrExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTExclusiveOrExpression(int id) {

@@ -10,22 +10,26 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsi
 
 class ASTEqualityExpressionTest : ParserTestSpec({
 
-    parserTest("Simple equality expression should be flat") {
+    parserTest("Test equality expressions") {
 
         inContext(ExpressionParsingCtx) {
 
             "1 == 2 == 3" should parseAs {
                 equalityExpr(EQ) {
-                    int(1)
-                    int(2)
+                    equalityExpr(EQ) {
+                        int(1)
+                        int(2)
+                    }
                     int(3)
                 }
             }
 
             "1 != 2 != 3 * 5" should parseAs {
                 equalityExpr(NE) {
-                    int(1)
-                    int(2)
+                    equalityExpr(NE) {
+                        int(1)
+                        int(2)
+                    }
 
                     multiplicativeExpr(MUL) {
                         int(3)
@@ -33,12 +37,7 @@ class ASTEqualityExpressionTest : ParserTestSpec({
                     }
                 }
             }
-        }
-    }
 
-    parserTest("Changing operators should push a new node") {
-
-        inContext(ExpressionParsingCtx) {
             "1 == 2 != 3" should parseAs {
                 equalityExpr(NE) {
                     equalityExpr(EQ) {
@@ -52,22 +51,25 @@ class ASTEqualityExpressionTest : ParserTestSpec({
             "1 == 4 == 2 != 3" should parseAs {
                 equalityExpr(NE) {
                     equalityExpr(EQ) {
-                        int(1)
-                        int(4)
+                        equalityExpr(EQ) {
+                            int(1)
+                            int(4)
+                        }
                         int(2)
                     }
                     int(3)
                 }
             }
 
-            // ((((1 + 4 + 2) - 3) + 4) - 1)
             "1 == 4 == 2 != 3 == 4 != 1" should parseAs {
                 equalityExpr(NE) {
                     equalityExpr(EQ) {
                         equalityExpr(NE) {
                             equalityExpr(EQ) {
-                                int(1)
-                                int(4)
+                                equalityExpr(EQ) {
+                                    int(1)
+                                    int(4)
+                                }
                                 int(2)
                             }
                             int(3)

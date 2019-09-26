@@ -10,12 +10,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 
+@Ignore
 public class DataFlowNodeTest {
 
     @Test

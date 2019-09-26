@@ -20,14 +20,17 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -40,6 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
@@ -89,7 +93,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             stringListProperty("allowedResourceTypes")
             .desc("Exact class names that do not need to be closed")
             .defaultValues("java.io.ByteArrayOutputStream", "java.io.ByteArrayInputStream", "java.io.StringWriter",
-                    "java.io.CharArrayWriter")
+                    "java.io.CharArrayWriter", "java.util.stream.Stream")
             .build();
 
 
@@ -141,7 +145,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
-    private void checkForResources(Node node, Object data) {
+    private void checkForResources(ASTMethodOrConstructorDeclaration node, Object data) {
         List<ASTLocalVariableDeclaration> localVars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         List<ASTVariableDeclarator> vars = new ArrayList<>();
         Map<ASTVariableDeclaratorId, TypeNode> ids = new HashMap<>();
@@ -174,18 +178,53 @@ public class CloseResourceRule extends AbstractJavaRule {
                     }
                 }
 
-                if (!isAllowedResourceType(type)) {
+                if (!isAllowedResourceType(type) && !isMethodParameter(var, node)) {
                     ids.put(var.getVariableId(), type);
                 }
             }
         }
 
-        // if there are connections, ensure each is closed.
+        // if there are closables, ensure each is closed.
         for (Map.Entry<ASTVariableDeclaratorId, TypeNode> entry : ids.entrySet()) {
             ASTVariableDeclaratorId variableId = entry.getKey();
             ensureClosed((ASTLocalVariableDeclaration) variableId.jjtGetParent().jjtGetParent(), variableId,
                     entry.getValue(), data);
         }
+    }
+
+    /**
+     * Checks whether the variable is initialized from a method parameter.
+     * @param var the variable that is being initialized
+     * @param methodOrCstor the method or constructor in which the variable is declared
+     * @return <code>true</code> if the variable is initialized from a method parameter. <code>false</code>
+     *         otherwise.
+     */
+    private boolean isMethodParameter(ASTVariableDeclarator var, ASTMethodOrConstructorDeclaration methodOrCstor) {
+        if (!var.hasInitializer()) {
+            return false;
+        }
+
+        boolean result = false;
+        ASTExpression initializer = var.getInitializer();
+        ASTName name = initializer.getFirstDescendantOfType(ASTName.class);
+        if (name != null) {
+            ASTFormalParameters formalParameters = null;
+            if (methodOrCstor.getKind() == MethodLikeKind.METHOD) {
+                formalParameters = ((ASTMethodDeclaration) methodOrCstor).getFormalParameters();
+            } else if (methodOrCstor.getKind() == MethodLikeKind.CONSTRUCTOR) {
+                formalParameters = ((ASTConstructorDeclaration) methodOrCstor).getFormalParameters();
+            }
+            if (formalParameters != null) {
+                List<ASTVariableDeclaratorId> ids = formalParameters.findDescendantsOfType(ASTVariableDeclaratorId.class);
+                for (ASTVariableDeclaratorId id : ids) {
+                    if (id.hasImageEqualTo(name.getImage()) && isResourceTypeOrSubtype(id)) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     private ASTExpression getAllocationFirstArgument(ASTExpression expression) {
@@ -228,7 +267,7 @@ public class CloseResourceRule extends AbstractJavaRule {
                     return true;
                 }
             }
-        } else if (refType.jjtGetChild(0) instanceof ASTReferenceType) {
+        } else if (refType.jjtGetNumChildren() > 0 && refType.jjtGetChild(0) instanceof ASTReferenceType) {
             // no type information (probably missing auxclasspath) - use simple types
             ASTReferenceType ref = (ASTReferenceType) refType.jjtGetChild(0);
             if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
@@ -307,10 +346,14 @@ public class CloseResourceRule extends AbstractJavaRule {
                 boolean criticalStatements = false;
 
                 for (int i = parentBlockIndex + 1; i < tryBlockIndex; i++) {
-                    // assume variable declarations are not critical
-                    ASTLocalVariableDeclaration varDecl = blocks.get(i)
+                    // assume variable declarations are not critical and assignments are not critical
+                    ASTBlockStatement block = blocks.get(i);
+                    ASTLocalVariableDeclaration varDecl = block
                             .getFirstDescendantOfType(ASTLocalVariableDeclaration.class);
-                    if (varDecl == null) {
+                    ASTStatementExpression statementExpression = block.getFirstDescendantOfType(ASTStatementExpression.class);
+
+                    if (varDecl == null && (statementExpression == null
+                            || statementExpression.getFirstChildOfType(ASTAssignmentOperator.class) == null)) {
                         criticalStatements = true;
                         break;
                     }

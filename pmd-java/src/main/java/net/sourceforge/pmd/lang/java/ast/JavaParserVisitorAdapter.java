@@ -100,60 +100,18 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTExpression) node, data);
     }
 
+
     @Override
-    public Object visit(ASTConditionalOrExpression node, Object data) {
+    public Object visit(ASTInfixExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
 
-    @Override
-    public Object visit(ASTConditionalAndExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTInclusiveOrExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTExclusiveOrExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTAndExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTEqualityExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTRelationalExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
 
     @Override
     public Object visit(ASTInstanceOfExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
 
-    @Override
-    public Object visit(ASTShiftExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTAdditiveExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-    @Override
-    public Object visit(ASTMultiplicativeExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
 
     @Override
     public Object visit(ASTUnaryExpression node, Object data) {
@@ -327,6 +285,56 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     @Deprecated
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
         return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTConditionalOrExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTConditionalAndExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTInclusiveOrExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTExclusiveOrExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTAndExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTEqualityExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTRelationalExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTShiftExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTAdditiveExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTMultiplicativeExpression node, Object data) {
+        return visit((ASTExpression) node, data);
     }
 
     @Deprecated
