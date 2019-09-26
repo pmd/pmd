@@ -279,6 +279,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                         <additionalJOptions>
                             <additionalJOption>-html5</additionalJOption>
                         </additionalJOptions>
+                        <docfilessubdirs/>
                         <additionalDependencies>
                             <!-- TODO: this is only needed to make javadoc happy -->
                             <additionalDependency>

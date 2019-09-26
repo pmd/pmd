@@ -4,15 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toMap;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-
 /**
- * Represents a binary operator.
+ * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
+ * Constants are roughly ordered by precedence, except some of them have the same
+ * precedence. TODO add method to compare precedence -> useful for UnnecessaryParenthesesRule
  *
  * @see UnaryOp
  * @see AssignmentOp
@@ -20,50 +15,64 @@ import java.util.Map;
 public enum BinaryOp {
 
     // shortcut boolean ops
-    BOOL_OR("||"),
-    BOOL_AND("&&"),
+
+    /** Conditional (shortcut) OR {@code "||"} operator. */
+    CONDITIONAL_OR("||"),
+    /** Conditional (shortcut) AND {@code "&&"} operator. */
+    CONDITIONAL_AND("&&"),
 
     // non-shortcut (also bitwise)
+
+    /** OR {@code "|"} operator. Either logical or bitwise depending on the type of the operands. */
     OR("|"),
+    /** XOR {@code "^"} operator. Either logical or bitwise depending on the type of the operands. */
     XOR("^"),
+    /** AND {@code "&"} operator. Either logical or bitwise depending on the type of the operands. */
     AND("&"),
 
     // equality
+
+    /** Equals {@code "=="} operator. */
     EQ("=="),
+    /** Not-equals {@code "!="} operator. */
     NE("!="),
 
     // relational
+
+    /** Lower-or-equal {@code "<="} operator. */
     LE("<="),
+    /** Greater-or-equal {@code ">="} operator. */
     GE(">="),
+    /** Greater-than {@code ">"} operator. */
     GT(">"),
+    /** Lower-than {@code "<"} operator. */
     LT("<"),
-    INSTANCEOF("instanceof"),
 
     // shift
+
+    /** Left shift {@code "<<"} operator. */
     LEFT_SHIFT("<<"),
-    /** Token {@code >> } */
+    /** Right shift {@code ">>"} operator. */
     RIGHT_SHIFT(">>"),
-    /** Token {@code >>>} */
+    /** Unsigned right shift {@code ">>>"} operator. */
     UNSIGNED_RIGHT_SHIFT(">>>"),
 
     // additive
+
+    /** Addition {@code "+"} operator. */
     ADD("+"),
+    /** Subtraction {@code "-"} operator. */
     SUB("-"),
 
     // multiplicative
+
+    /** Multiplication {@code "*"} operator. */
     MUL("*"),
+    /** Division {@code "/"} operator. */
     DIV("/"),
+    /** Modulo {@code "%"} operator. */
     MOD("%");
 
-
-    private static final Map<String, BinaryOp> LOOKUP =
-        Arrays.stream(values())
-              .collect(
-                  collectingAndThen(
-                      toMap(Object::toString, op -> op),
-                      Collections::unmodifiableMap
-                  )
-              );
 
     private final String code;
 
@@ -73,6 +82,10 @@ public enum BinaryOp {
     }
 
 
+    /**
+     * Returns true if this is an equality operator, ie one of
+     * {@link #EQ}, or {@link #NE}.
+     */
     public boolean isEquality() {
         switch (this) {
         case EQ:
@@ -83,6 +96,10 @@ public enum BinaryOp {
         }
     }
 
+    /**
+     * Returns true if this is a relational operator, ie one of
+     * {@link #LE}, {@link #GE}, {@link #GT}, or {@link #LT}.
+     */
     public boolean isRelational() {
         switch (this) {
         case LE:
@@ -95,12 +112,15 @@ public enum BinaryOp {
         }
     }
 
-    public boolean isArithmetic() {
+    /**
+     * Returns true if this is a multiplicative operator, ie one of
+     * {@link #MUL}, {@link #DIV}, {@link #MOD}.
+     */
+    public boolean isMultiplicative() {
         switch (this) {
-        case ADD:
-        case SUB:
         case MUL:
         case DIV:
+        case MOD:
             return true;
         default:
             return false;
@@ -108,6 +128,10 @@ public enum BinaryOp {
     }
 
 
+    /**
+     * Returns true if this is a shift operator, ie one of
+     * {@link #LEFT_SHIFT}, {@link #RIGHT_SHIFT}, or {@link #UNSIGNED_RIGHT_SHIFT}.
+     */
     public boolean isShift() {
         switch (this) {
         case LEFT_SHIFT:
@@ -119,7 +143,10 @@ public enum BinaryOp {
         }
     }
 
-
+    /**
+     * Returns true if this is a bitwise (or logical) operator, ie one
+     * of {@link #XOR}, {@link #AND}, or {@link #OR}.
+     */
     public boolean isBitwise() {
         switch (this) {
         case XOR:
@@ -131,16 +158,10 @@ public enum BinaryOp {
         }
     }
 
-
     @Override
     public String toString() {
         return this.code;
     }
 
-
-    // parser only for now
-    static BinaryOp fromImage(String image) {
-        return LOOKUP.get(image);
-    }
 
 }

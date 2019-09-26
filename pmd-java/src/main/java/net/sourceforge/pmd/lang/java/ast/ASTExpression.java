@@ -18,16 +18,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * Expression ::= {@link ASTLambdaExpression LambdaExpression}
  *              | {@link ASTAssignmentExpression AssignmentExpression}
  *              | {@link ASTConditionalExpression ConditionalExpression}
- *              | {@link ASTConditionalOrExpression ConditionalOrExpression}
- *              | {@link ASTConditionalAndExpression ConditionalAndExpression}
- *              | {@link ASTInclusiveOrExpression InclusiveOrExpression}
- *              | {@link ASTExclusiveOrExpression ExclusiveOrExpression}
- *              | {@link ASTAndExpression AndExpression}
- *              | {@link ASTEqualityExpression AndExpression}
- *              | {@link ASTRelationalExpression RelationalExpression} | {@link ASTInstanceOfExpression InstanceOfExpression}
- *              | {@link ASTShiftExpression ShiftExpression}
- *              | {@link ASTAdditiveExpression AdditiveExpression}
- *              | {@link ASTMultiplicativeExpression MultiplicativeExpression}
+ *              | {@link ASTInfixExpression InfixExpression}
+ *              | {@link ASTInstanceOfExpression InstanceOfExpression}
  *              | {@link ASTUnaryExpression UnaryExpression} | {@link ASTIncrementExpression PrefixIncrement} | {@link ASTCastExpression CastExpression}
  *              | {@link ASTIncrementExpression PostfixIncrement}
  *              | {@link ASTSwitchExpression SwitchExpression}

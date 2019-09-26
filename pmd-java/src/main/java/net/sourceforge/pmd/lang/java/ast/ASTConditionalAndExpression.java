@@ -17,7 +17,10 @@ package net.sourceforge.pmd.lang.java.ast;
  * ConditionalAndExpression ::=  {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} ( "&amp;&amp;" {@linkplain ASTInclusiveOrExpression InclusiveOrExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
+@Deprecated
 public final class ASTConditionalAndExpression extends AbstractJavaExpr implements ASTExpression {
     ASTConditionalAndExpression(int id) {
         super(id);

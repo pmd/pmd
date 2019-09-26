@@ -17,8 +17,11 @@ package net.sourceforge.pmd.lang.java.ast;
  * RelationalExpression ::=  {@linkplain ASTShiftExpression ShiftExpression} ( ( "&lt;" | "&gt;" | "&lt;=" | "&gt;=" ) {@linkplain ASTShiftExpression ShiftExpression} )+
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public final class ASTRelationalExpression extends AbstractLrBinaryExpr implements ASTExpression {
+@Deprecated
+public final class ASTRelationalExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTRelationalExpression(int id) {
         super(id);
