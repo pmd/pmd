@@ -108,6 +108,10 @@ public class FullTypeAnnotations {
     Document @Readonly [][] docs2 = new Document@Readonly[2][12]; // read-only array of arrays of documents
     Document[] @Readonly [] docs3 = new Document[2]@Readonly[12]; // array of read-only arrays of documents
 
+    // TODO mixed array notation, for now syntax error
+    // Document [] docs2 @Readonly[] = new Document@Readonly[2][12]; // read-only array of arrays of documents
+    // Document @Readonly [] docs3[] = new Document[2]@Readonly[12]; // array of read-only arrays of documents
+
     class MyClass {
 
         public String toString(@Readonly MyClass this) { }

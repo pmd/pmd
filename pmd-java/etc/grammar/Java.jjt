@@ -1961,20 +1961,22 @@ void VariableDeclarator() :
 // TODO use ArrayTypeDims
 void VariableDeclaratorId() :
 {
-  Token t;
   String image;
 }
 {
-  (LOOKAHEAD(2) t=<IDENTIFIER> "." <THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image=t.image + ".this"; }
-   | t=<THIS> { checkforBadExplicitReceiverParameter(); jjtThis.setExplicitReceiverParameter(); image = t.image;}
-   | t=<IDENTIFIER> { image = t.image; } ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
-  )
+  <IDENTIFIER> { image = getToken(0).getImage(); }  ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
   {
     checkForBadAssertUsage(image, "a variable name");
     checkForBadEnumUsage(image, "a variable name");
     checkForBadIdentifier(image);
-    jjtThis.setImage( image );
+    jjtThis.setImage(image);
   }
+}
+
+void ReceiverParameter():
+{}
+{
+    AnnotatedClassOrInterfaceType() [ <IDENTIFIER> "." ] "this"
 }
 
 void VariableInitializer() #void:
@@ -2017,7 +2019,7 @@ void MethodDeclarator() :
 void FormalParameters() :
 {}
 {
-  "(" [ FormalParameter() ( "," FormalParameter() )* ] ")"
+  "(" [ ( LOOKAHEAD(ReceiverParameter()) ReceiverParameter() | FormalParameter() ) ( "," FormalParameter() )* ] ")"
 }
 
 void FormalParameter() :
@@ -2705,13 +2707,7 @@ void MethodReference(): // LHS is injected
 private void LambdaLahead() #void :
 {}
 {
-  LOOKAHEAD({!inSwitchLabel})
-(
-  <IDENTIFIER>
-| "(" <IDENTIFIER> ( "," <IDENTIFIER> )* ")"
-| LambdaParameterList()
-)
-"->"
+  LOOKAHEAD({!inSwitchLabel}) LambdaParameterList() "->"
 }
 
 // Lambda expressions are not a PrimaryExpression in the JLS, instead they're

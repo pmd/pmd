@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
@@ -89,8 +90,6 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             }
 
             it::getMethodDeclarator shouldBe child {
-                it::getParameterCount shouldBe 0
-
                 it::getFormalParameters shouldBe child {
                     it::getParameterCount shouldBe 0
                 }
@@ -98,8 +97,82 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             it::getThrows shouldBe child(ignoreChildren = true) {} //TODO
 
-            it::getBlock shouldBe child {}
+            it::getBlock shouldBe block()
+        }
+    }
 
+    parserTest("Receiver parameters") {
+
+        /*
+            Notice the parameterCount is 0 - receiver parameters don't affect arity.
+         */
+
+        "void bar(@A Foo this);" should matchDeclaration<ASTMethodDeclaration> {
+            it::isAbstract shouldBe false
+            it::getMethodName shouldBe "bar"
+            it::getTypeParameters shouldBe null
+            it::isVoid shouldBe true
+
+            it::getResultType shouldBe child {
+                it::getTypeNode shouldBe null
+                it::isVoid shouldBe true
+            }
+
+            it::getMethodDeclarator shouldBe child {
+                it::getParameterCount shouldBe 0
+
+                it::getFormalParameters shouldBe child {
+                    it::getParameterCount shouldBe 0
+                    it::toList shouldBe emptyList()
+
+                    it::getReceiverParameter shouldBe child {
+                        classType("Foo") {
+                            annotation("A")
+                        }
+                    }
+                }
+            }
+
+            it::getThrows shouldBe null
+            it::getBlock shouldBe null
+        }
+
+        "void bar(@A Foo this, int other);" should matchDeclaration<ASTMethodDeclaration> {
+            it::isAbstract shouldBe false
+            it::getMethodName shouldBe "bar"
+            it::getTypeParameters shouldBe null
+            it::isVoid shouldBe true
+
+            it::getResultType shouldBe child {
+                it::getTypeNode shouldBe null
+                it::isVoid shouldBe true
+            }
+
+            it::getMethodDeclarator shouldBe child {
+                it::getParameterCount shouldBe 1
+
+                it::getFormalParameters shouldBe child {
+                    it::getParameterCount shouldBe 1
+
+                    it::getReceiverParameter shouldBe child {
+                        classType("Foo") {
+                            annotation("A")
+                        }
+                    }
+
+                    it::toList shouldBe listOf(
+                            child {
+                                primitiveType(PrimitiveType.INT)
+                                variableId("other")
+                            }
+                    )
+
+
+                }
+            }
+
+            it::getThrows shouldBe null
+            it::getBlock shouldBe null
         }
     }
 

@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
  *    <li> Field and enum constant declarations;
  *    <li> Local variable declarations;
  *    <li> Method, constructor and lambda parameter declarations;
- *    <li> Method and constructor explicit receiver parameter declarations;
  *    <li> Exception parameter declarations occurring in catch clauses;
  *    <li> Resource declarations occurring in try-with-resources statements.
  * </ul>
@@ -40,7 +39,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
     private int arrayDepth;
     private VariableNameDeclaration nameDeclaration;
-    private boolean explicitReceiverParameter = false;
 
     @InternalApi
     @Deprecated
@@ -121,8 +119,7 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
 
     /**
      * Returns true if this node declares a formal parameter for a method
-     * declaration or a lambda expression. In particular, returns false
-     * if the node is a receiver parameter (see {@link #isExplicitReceiverParameter()}).
+     * declaration or a lambda expression.
      */
     public boolean isFormalParameter() {
         return jjtGetParent() instanceof ASTFormalParameter && !isExceptionBlockParameter() && !isResourceDeclaration()
@@ -198,27 +195,6 @@ public final class ASTVariableDeclaratorId extends AbstractJavaTypeNode implemen
         }
 
         throw new IllegalStateException("All cases should be handled");
-    }
-
-
-    /**
-     *  FIXME deal with that otherwise
-     */
-    void setExplicitReceiverParameter() {
-        explicitReceiverParameter = true;
-    }
-
-
-    /**
-     * Returns true if this node is a receiver parameter for a method or constructor
-     * declaration. The receiver parameter has the name {@code this}, and must be declared
-     * at the beginning of the parameter list. Its only purpose is to annotate
-     * the type of the object on which the method call is issued. It was introduced
-     * in Java 8.
-     */
-    public boolean isExplicitReceiverParameter() {
-        // TODO this could be inferred from the image tbh
-        return explicitReceiverParameter;
     }
 
 

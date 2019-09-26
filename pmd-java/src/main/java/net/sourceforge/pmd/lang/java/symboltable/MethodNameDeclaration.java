@@ -4,8 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symboltable;
 
+import java.util.List;
 import java.util.Objects;
 
+import net.sourceforge.pmd.internal.util.IteratorUtil;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
@@ -82,12 +84,12 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
         // compare parameter types
 
-        ASTFormalParameters myParams = getDeclarator().getFormalParameters();
-        ASTFormalParameters otherParams = other.getDeclarator().getFormalParameters();
+        List<ASTFormalParameter> myParams = IteratorUtil.toList(getDeclarator().getFormalParameters().iterator());
+        List<ASTFormalParameter> otherParams = IteratorUtil.toList(other.getDeclarator().getFormalParameters().iterator());
 
-        for (int i = 0; i < getParameterCount(); i++) {
-            ASTFormalParameter myParam = myParams.jjtGetChild(i);
-            ASTFormalParameter otherParam = otherParams.jjtGetChild(i);
+        for (int i = 0; i < myParams.size(); i++) {
+            ASTFormalParameter myParam = myParams.get(i);
+            ASTFormalParameter otherParam = otherParams.get(i);
 
             // Compare vararg
             if (myParam.isVarargs() != otherParam.isVarargs()) {

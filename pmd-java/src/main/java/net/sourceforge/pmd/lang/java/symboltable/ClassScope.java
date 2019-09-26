@@ -362,9 +362,6 @@ public class ClassScope extends AbstractJavaScope {
         Map<String, Node> qualifiedTypeNames = fileScope.getQualifiedTypeNames();
 
         for (ASTFormalParameter p : parameters) {
-            if (p.isExplicitReceiverParameter()) {
-                continue;
-            }
 
             String typeImage = p.getTypeNode().getTypeImage();
             // typeImage might be qualified/unqualified. If it refers to a type,
