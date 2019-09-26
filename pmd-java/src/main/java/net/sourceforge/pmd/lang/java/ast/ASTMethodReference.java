@@ -65,7 +65,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      */
     @NonNull
     @Override
-    public ASTPrimaryExpression getLhs() {
+    public ASTPrimaryExpression getQualifier() {
         return (ASTPrimaryExpression) jjtGetChild(0);
     }
 
@@ -73,7 +73,7 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
     /**
      * Returns the explicit type arguments mentioned after the "::" if they exist.
      * Type arguments mentioned before the "::", if any, are contained within
-     * the {@linkplain #getLhs() lhs type}.
+     * the {@linkplain #getQualifier() lhs type}.
      */
     @Nullable
     public ASTTypeArguments getTypeArguments() {

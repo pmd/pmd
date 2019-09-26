@@ -281,7 +281,7 @@ fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethod
             it::getMethodName shouldBe null
             it::getImage shouldBe "new"
             it::isConstructorReference shouldBe true
-            it::getLhs shouldBe assertions()
+            it::getQualifier shouldBe assertions()
         }
 
 val EmptyAssertions: NodeSpec<out Node> = {}

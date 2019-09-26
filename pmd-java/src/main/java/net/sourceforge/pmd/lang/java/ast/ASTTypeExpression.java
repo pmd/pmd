@@ -4,10 +4,21 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
+
 /**
  * Wraps a type node but presents the interface of {@link ASTExpression}.
- * This is used as the right-hand side of {@link ASTInstanceOfExpression instanceof expressions}.
- * TODO use as the LHS of eg field access and method calls
+ * This is only used in the following contexts:
+ * <ul>
+ * <li>As the right-hand side of {@link ASTInstanceOfExpression instanceof expressions},
+ * to make it implement {@link ASTInfixExpression}.
+ * <li>As the qualifier of {@linkplain ASTMethodCall method calls},
+ * {@link ASTFieldAccess field accesses}, when they access a static method or field
+ * <li>As the qualifier of {@linkplain ASTMethodReference method references},
+ * if it references a static method, or is a constructor reference
+ * </ul>
  *
  * <pre class="grammar">
  *
@@ -15,7 +26,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaExpr implements ASTPrimaryExpression, JSingleChildNode<ASTType> {
+public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, JSingleChildNode<ASTType> {
 
     ASTTypeExpression(ASTType wrapped) {
         super(JavaParserTreeConstants.JJTTYPEEXPRESSION);
@@ -50,4 +61,21 @@ public final class ASTTypeExpression extends AbstractJavaExpr implements ASTPrim
         return jjtGetChild(0);
     }
 
+
+    /** Returns 0, type expressions can never be parenthesized. */
+    @Override
+    public int getParenthesisDepth() {
+        return 0;
+    }
+
+    /** Returns false, type expressions can never be parenthesized. */
+    @Override
+    public boolean isParenthesized() {
+        return false;
+    }
+
+    @Override
+    public @Nullable JavaTypeDefinition getTypeDefinition() {
+        return getTypeNode().getTypeDefinition();
+    }
 }

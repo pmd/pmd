@@ -15,7 +15,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhs shouldBe thisExpr { classType("Type") }
+            it::getQualifier shouldBe thisExpr { classType("Type") }
 
             it::getArguments shouldBe child {}
 
@@ -25,11 +25,11 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhs shouldBe child<ASTMethodCall> {
+            it::getQualifier shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "foo"
                 it::getImage shouldBe "foo"
 
-                it::getLhs shouldBe null
+                it::getQualifier shouldBe null
 
                 it::getArguments shouldBe child {}
             }
@@ -41,7 +41,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "baz"
             it::getImage shouldBe "baz"
 
-            it::getLhs shouldBe child<ASTAmbiguousName> {
+            it::getQualifier shouldBe child<ASTAmbiguousName> {
                 it::getImage shouldBe "foo.bar"
             }
 
@@ -52,7 +52,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "f"
             it::getImage shouldBe "f"
 
-            it::getLhs shouldBe ambiguousName("foo")
+            it::getQualifier shouldBe ambiguousName("foo")
 
             it::getExplicitTypeArguments shouldBe typeArgList {
                 classType("B")
@@ -66,7 +66,7 @@ class ASTMethodCallTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getImage shouldBe "bar"
 
-            it::getLhs shouldBe ambiguousName("foo")
+            it::getQualifier shouldBe ambiguousName("foo")
 
             it::getArguments shouldBe child {
                 child<ASTLambdaExpression>(ignoreChildren = true) {}
@@ -77,12 +77,12 @@ class ASTMethodCallTest : ParserTestSpec({
 
             it::getMethodName shouldBe "foreach"
 
-            it::getLhs shouldBe child<ASTMethodCall> {
+            it::getQualifier shouldBe child<ASTMethodCall> {
 
                 it::getMethodName shouldBe "bar"
                 it::getImage shouldBe "bar"
 
-                it::getLhs shouldBe ambiguousName("foo")
+                it::getQualifier shouldBe ambiguousName("foo")
 
                 it::getArguments shouldBe child {
                     methodRef("bar")

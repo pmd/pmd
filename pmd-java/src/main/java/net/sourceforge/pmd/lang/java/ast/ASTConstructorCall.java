@@ -63,8 +63,8 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      * {@linkplain ASTAmbiguousName ambiguous}.
      */
     @Override
-    public @Nullable ASTPrimaryExpression getLhs() {
-        return ASTQualifiableExpression.super.getLhs();
+    public @Nullable ASTPrimaryExpression getQualifier() {
+        return ASTQualifiableExpression.super.getQualifier();
     }
 
     @Nullable

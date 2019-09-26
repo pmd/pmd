@@ -21,7 +21,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 methodRef("foo") {
                     it::getTypeArguments shouldBe null
 
-                    it::getLhs shouldBe thisExpr()
+                    it::getQualifier shouldBe thisExpr()
                 }
             }
 
@@ -30,14 +30,14 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 methodRef("foo") {
                     it::getTypeArguments shouldBe null
 
-                    it::getLhs shouldBe ambiguousName("foobar.b")
+                    it::getQualifier shouldBe ambiguousName("foobar.b")
                 }
             }
 
             "foobar.b::<B>foo" should parseAs {
 
                 methodRef("foo") {
-                    it::getLhs shouldBe ambiguousName("foobar.b")
+                    it::getQualifier shouldBe ambiguousName("foobar.b")
 
                     it::getTypeArguments shouldBe child {
                         classType("B")
@@ -51,7 +51,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                 methodRef("foo") {
                     it::getTypeArguments shouldBe null
 
-                    it::getLhs shouldBe typeExpr {
+                    it::getQualifier shouldBe typeExpr {
                         classType("b") {
 
                             it::getAmbiguousLhs shouldBe child {
@@ -71,7 +71,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
             "java.util.Map<String, String>.Entry<String, String>::foo" should parseAs {
 
                 methodRef("foo") {
-                    it::getLhs shouldBe typeExpr {
+                    it::getQualifier shouldBe typeExpr {
                         classType("Entry") // ignore the rest
                     }
                 }
@@ -79,7 +79,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "super::foo" should parseAs {
                 methodRef("foo") {
-                    it::getLhs shouldBe child<ASTSuperExpression> {
+                    it::getQualifier shouldBe child<ASTSuperExpression> {
 
                     }
                 }
@@ -87,7 +87,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "T.B.super::foo" should parseAs {
                 methodRef("foo") {
-                    it::getLhs shouldBe child<ASTSuperExpression> {
+                    it::getQualifier shouldBe child<ASTSuperExpression> {
                         it::getQualifier shouldBe classType("B") {
                             ambiguousName("T")
                         }
@@ -198,7 +198,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
 
             "@Vernal Date::getDay" should parseAs {
                 methodRef(methodName = "getDay") {
-                    it::getLhs shouldBe typeExpr {
+                    it::getQualifier shouldBe typeExpr {
                         classType("Date") {
                             annotation("Vernal")
                         }
@@ -214,7 +214,7 @@ class ASTMethodReferenceTest : ParserTestSpec({
                     classType("Foo")
 
                     methodRef(methodName = "getDay") {
-                        it::getLhs shouldBe typeExpr {
+                        it::getQualifier shouldBe typeExpr {
                             classType("Date") {
                                 annotation("Vernal")
                             }

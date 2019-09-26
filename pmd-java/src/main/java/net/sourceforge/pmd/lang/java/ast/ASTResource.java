@@ -66,7 +66,7 @@ public final class ASTResource extends AbstractJavaNode {
             while (expr instanceof ASTFieldAccess) {
                 ASTFieldAccess fa = (ASTFieldAccess) expr;
                 builder.insert(0, "." + fa.getFieldName());
-                expr = fa.getLhs();
+                expr = fa.getQualifier();
             }
             // the last one may be ambiguous, or a variable reference
             // the only common interface we have to get their name is

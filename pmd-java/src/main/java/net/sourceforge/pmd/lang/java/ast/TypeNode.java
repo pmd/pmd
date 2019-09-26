@@ -19,7 +19,10 @@ public interface TypeNode extends JavaNode {
      * @return The Java Class, may return <code>null</code>.
      */
     @Nullable
-    Class<?> getType();
+    default Class<?> getType() {
+        JavaTypeDefinition td = getTypeDefinition();
+        return td == null ? null : td.getType();
+    }
 
 
     /**
