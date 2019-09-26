@@ -76,7 +76,7 @@ fun Node.assertTextRangeIsOk() {
     }
 
     if (this is TextAvailableNode && parent is TextAvailableNode) {
-        parent.text.shouldContain(this.text)
+        parent.text.toString().shouldContain(this.text.toString())
     }
 }
 

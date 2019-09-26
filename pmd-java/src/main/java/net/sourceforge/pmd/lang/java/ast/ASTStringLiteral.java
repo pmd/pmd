@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Represents a string literal. The image of this node is the literal as it appeared
- * in the source ({@link #getText()}). {@link #getUnescapedValue()} allows to recover
+ * in the source ({@link #getText()}). {@link #getConstValue()} allows to recover
  * the actual runtime value, by processing escapes.
  */
 public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
@@ -51,13 +51,13 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
 
-    /**
-     * Returns the value without delimiters and unescaped.
-     */
-    public String getUnescapedValue() {
-        String image = super.getImage();
-        String woDelims = image.substring(1, image.length() - 1);
-        return StringEscapeUtils.unescapeJava(woDelims);
+    /** Returns the value without delimiters and unescaped. */
+    @Override
+    public String getConstValue() {
+        // FIXME support text blocks
+        CharSequence image = getText();
+        CharSequence woDelims = image.subSequence(1, image.length() - 1);
+        return StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims);
     }
 
 }

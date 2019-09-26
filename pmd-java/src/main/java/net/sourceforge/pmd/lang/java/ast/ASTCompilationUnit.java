@@ -43,7 +43,7 @@ public final class ASTCompilationUnit extends AbstractJavaTypeNode implements Ro
     }
 
     @Override
-    public String getText() {
+    public CharSequence getText() {
         return tokenDocument.getFullText();
     }
 

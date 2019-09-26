@@ -29,7 +29,7 @@ public interface TextAvailableNode extends Node {
      * particular, for a {@link RootNode}, returns the whole text
      * of the file.
      */
-    String getText();
+    CharSequence getText();
 
 
 }

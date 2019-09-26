@@ -18,11 +18,6 @@ final class JavaTokenFactory {
     static JavaccToken newToken(int kind, CharStream charStream) {
         JavaCharStream jcs = (JavaCharStream) charStream;
 
-        // Most tokens have an entry in there, it's used to share the
-        // image string for keywords & punctuation. Those represent ~40%
-        // of token instances
-        String image = JavaParserTokenManager.jjstrLiteralImages[kind];
-
         switch (kind) {
         case JavaParserConstants.RUNSIGNEDSHIFT:
         case JavaParserConstants.RSIGNEDSHIFT:
@@ -47,7 +42,13 @@ final class JavaTokenFactory {
                 jcs.getEndOffset(),
                 jcs.getTokenDocument()
             );
+
         default:
+            // Most tokens have an entry in there, it's used to share the
+            // image string for keywords & punctuation. Those represent ~40%
+            // of token instances
+            String image = JavaParserTokenManager.jjstrLiteralImages[kind];
+
             return new JavaccToken(
                 kind,
                 image == null ? charStream.GetImage() : image,
@@ -78,9 +79,6 @@ final class JavaTokenFactory {
 
         final int realKind;
 
-        /**
-         * Constructs a new token for the specified Image and Kind.
-         */
         GTToken(int kind, int realKind, CharSequence image, int startOffset, int endOffset, TokenDocument doc) {
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
