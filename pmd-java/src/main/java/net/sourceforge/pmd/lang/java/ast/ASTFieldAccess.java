@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, InternalInterfaces.ASTQualifiableExpression, LeftRecursiveNode {
     ASTFieldAccess(int id) {
         super(id);
     }

@@ -24,7 +24,7 @@ import java.util.Map;
  * @see BinaryOp
  * @see AssignmentOp
  */
-public enum UnaryOp {
+public enum UnaryOp implements InternalInterfaces.OperatorLike {
     /** "+" */
     UNARY_PLUS("+"),
     /** "-" */
@@ -38,7 +38,7 @@ public enum UnaryOp {
         Arrays.stream(values())
               .collect(
                   collectingAndThen(
-                      toMap(Object::toString, op -> op),
+                      toMap(UnaryOp::getToken, op -> op),
                       Collections::unmodifiableMap
                   )
               );
@@ -48,6 +48,11 @@ public enum UnaryOp {
 
     UnaryOp(String code) {
         this.code = code;
+    }
+
+    @Override
+    public String getToken() {
+        return code;
     }
 
     @Override

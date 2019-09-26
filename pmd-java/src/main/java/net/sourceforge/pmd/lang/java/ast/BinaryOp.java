@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see UnaryOp
  * @see AssignmentOp
  */
-public enum BinaryOp {
+public enum BinaryOp implements InternalInterfaces.OperatorLike {
 
     // shortcut boolean ops
 
@@ -83,6 +83,11 @@ public enum BinaryOp {
         this.code = code;
     }
 
+
+    @Override
+    public String getToken() {
+        return code;
+    }
 
     /**
      * Returns true if this is an equality operator, ie one of

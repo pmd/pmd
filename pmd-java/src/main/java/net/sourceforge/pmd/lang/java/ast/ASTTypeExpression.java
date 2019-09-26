@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, JSingleChildNode<ASTType> {
+public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, InternalInterfaces.JSingleChildNode<ASTType> {
 
     ASTTypeExpression(ASTType wrapped) {
         super(JavaParserTreeConstants.JJTTYPEEXPRESSION);

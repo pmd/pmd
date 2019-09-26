@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.JSingleChildNode;
+
 
 /**
  * Represents array type dimensions. This node may occur in several contexts:

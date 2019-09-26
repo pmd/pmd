@@ -230,7 +230,7 @@ fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<AST
 
 fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSpec<ASTAssignmentExpression> = EmptyAssertions) =
         child<ASTAssignmentExpression>(ignoreChildren = assertions == EmptyAssertions) {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 

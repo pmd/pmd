@@ -36,7 +36,7 @@ import net.sf.saxon.expr.InstanceOfExpression;
  * <img src="doc-files/binaryExpr_60x.svg" />
  * </figure>
  */
-public class ASTInfixExpression extends AbstractJavaExpr implements ASTExpression, JSingleChildNode<ASTExpression>, LeftRecursiveNode {
+public class ASTInfixExpression extends AbstractJavaExpr implements InternalInterfaces.JSingleChildNode<ASTExpression>, LeftRecursiveNode, InternalInterfaces.BinaryExpressionLike {
 
     private BinaryOp operator;
 
@@ -52,18 +52,6 @@ public class ASTInfixExpression extends AbstractJavaExpr implements ASTExpressio
     @Override
     public ASTExpression jjtGetChild(int index) {
         return (ASTExpression) super.jjtGetChild(index);
-    }
-
-
-    /** Returns the left-hand-side operand. */
-    public ASTExpression getLhs() {
-        return jjtGetChild(0);
-    }
-
-
-    /** Returns the right-hand-side operand. */
-    public ASTExpression getRhs() {
-        return jjtGetChild(1);
     }
 
 
@@ -86,6 +74,7 @@ public class ASTInfixExpression extends AbstractJavaExpr implements ASTExpressio
 
 
     /** Returns the operator. */
+    @Override
     public BinaryOp getOperator() {
         return operator;
     }

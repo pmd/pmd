@@ -59,6 +59,7 @@ public final class ASTInstanceOfExpression extends ASTInfixExpression implements
 
     @Override
     public String getXPathNodeName() {
+        // keep it uniform for XPath
         return "InfixExpression";
     }
 }

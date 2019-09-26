@@ -16,7 +16,7 @@ import java.util.Iterator;
  *                  | "&lt;" "&gt;"
  * </pre>
  */
-public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType>, JSingleChildNode<ASTType> {
+public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType>, InternalInterfaces.JSingleChildNode<ASTType> {
 
     ASTTypeArguments(int id) {
         super(id);

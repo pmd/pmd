@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see BinaryOp
  * @see UnaryOp
  */
-public enum AssignmentOp {
+public enum AssignmentOp implements InternalInterfaces.OperatorLike {
     EQ("=", null),
     AND_EQ("&=", AND),
     OR_EQ("|=", OR),
@@ -62,6 +62,10 @@ public enum AssignmentOp {
         this.binaryOp = binaryOp;
     }
 
+    @Override
+    public String getToken() {
+        return code;
+    }
 
     @Override
     public String toString() {
