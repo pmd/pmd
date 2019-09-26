@@ -130,7 +130,7 @@ public class CPD {
         }
     }
 
-    private void add(SourceCode sourceCode) throws IOException {
+    public void add(SourceCode sourceCode) throws IOException {
         if (configuration.isSkipLexicalErrors()) {
             addAndSkipLexicalErrors(sourceCode);
         } else {
