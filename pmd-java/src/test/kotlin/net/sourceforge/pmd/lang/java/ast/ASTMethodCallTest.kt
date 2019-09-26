@@ -85,14 +85,12 @@ class ASTMethodCallTest : ParserTestSpec({
                 it::getLhs shouldBe ambiguousName("foo")
 
                 it::getArguments shouldBe child {
-                    methodRef("println") {
-                        ambiguousName("System.out")
-                    }
+                    methodRef("bar")
                 }
             }
 
             it::getArguments shouldBe child {
-                child<ASTMethodReference>(ignoreChildren = true) {}
+                methodRef("println")
             }
         }
     }

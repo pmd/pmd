@@ -60,11 +60,9 @@ fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumCo
             spec()
         }
 
-fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: (ASTThisExpression) -> ASTClassOrInterfaceType? = { null }) =
+fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassOrInterfaceType?> = { null }) =
         child<ASTThisExpression> {
-            qualifier(it).let { qual ->
-                it::getQualifier shouldBe qual
-            }
+            it::getQualifier shouldBe qualifier()
         }
 
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
@@ -271,8 +269,8 @@ fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSp
         infixExpr(op, assertions)
 
 
-fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference>) =
-        child<ASTMethodReference> {
+fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference> = EmptyAssertions) =
+        child<ASTMethodReference>(ignoreChildren = assertions === EmptyAssertions) {
             it::getMethodName shouldBe methodName
             it::isConstructorReference shouldBe false
             assertions()
