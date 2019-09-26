@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpression;
+
 /**
  * Method or constructor reference expression.
  *
@@ -17,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, InternalInterfaces.ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTMethodReference extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
 
     ASTMethodReference(int id) {
         super(id);
