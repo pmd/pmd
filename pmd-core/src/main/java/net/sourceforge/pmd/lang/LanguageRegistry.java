@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,8 +29,11 @@ public final class LanguageRegistry {
         List<Language> languagesList = new ArrayList<>();
         // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
-        for (Language language : languageLoader) {
+        Iterator<Language> iterator = languageLoader.iterator();
+        //noinspection WhileLoopReplaceableByForEach -- https://youtrack.jetbrains.com/issue/IDEA-223743
+        while (iterator.hasNext()) {
             try {
+                Language language = iterator.next();
                 languagesList.add(language);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
