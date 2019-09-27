@@ -85,10 +85,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::isVoid shouldBe true
             it::getArity shouldBe 0
 
-            it::getResultType shouldBe child {
-                it::getTypeNode shouldBe null
-                it::isVoid shouldBe true
-            }
+            it::getResultType shouldBe voidType()
 
 
             it::getFormalParameters shouldBe child {
@@ -99,6 +96,36 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 classType("IOException")
                 classType("Bar") {
                     ambiguousName("java.io")
+                }
+            }
+
+            it::getBody shouldBe block()
+        }
+    }
+
+    parserTest("Throws list can be annotated") {
+
+        "void bar() throws @Oha IOException, @Aha java.io.@Oha Bar { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getResultType shouldBe voidType()
+
+
+            it::getFormalParameters shouldBe child {
+                it::getParameterCount shouldBe 0
+            }
+
+            it::getThrows shouldBe throwsList {
+                classType("IOException") {
+                    annotation("Oha")
+                }
+
+                classType("Bar") {
+                    classType("io") {
+                        classType("java") {
+                            annotation("Oha")
+                        }
+                    }
+                    annotation("Oha")
                 }
             }
 
