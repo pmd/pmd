@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
@@ -76,21 +75,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
                 visit(node, ctx);
             }
         }
-    }
-
-    /**
-     * Gets the Image of the first parent node of type
-     * ASTClassOrInterfaceDeclaration or <code>null</code>
-     *
-     * @param node
-     *            the node which will be searched
-     */
-    protected final String getDeclaringType(Node node) {
-        ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (c != null) {
-            return c.getImage();
-        }
-        return null;
     }
 
     public static boolean isQualifiedName(@Nullable String node) {

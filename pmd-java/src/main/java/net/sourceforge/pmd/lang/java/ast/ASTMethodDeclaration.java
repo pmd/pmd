@@ -69,15 +69,14 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
     /**
      * Returns the simple name of the method.
-     * TODO replace with {@link #getName()}
+     *
+     * @deprecated Use {@link #getName()}
      */
+    @Deprecated
     public String getMethodName() {
         return getName();
     }
 
-    /**
-     * Returns the simple name of the method.
-     */
     @Override
     public String getName() {
         return getImage();
