@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import net.sourceforge.pmd.util.filter.Filters;
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 
 public abstract class AbstractLanguage implements Language {
     private final String name;
@@ -22,7 +22,7 @@ public abstract class AbstractLanguage implements Language {
         this.name = name;
         this.terseName = terseName;
         this.tokenizer = tokenizer;
-        fileFilter = Filters.toFilenameFilter(Filters.getFileExtensionOrDirectoryFilter(extensions));
+        fileFilter = PredicateUtil.toFilenameFilter(PredicateUtil.getFileExtensionOrDirectoryFilter(extensions));
         this.extensions = Arrays.asList(extensions);
     }
 
