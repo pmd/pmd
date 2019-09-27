@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
@@ -35,7 +35,6 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     private String currentPackage;
 
     public UnnecessaryFullyQualifiedNameRule() {
-        super.addRuleChainVisit(ASTCompilationUnit.class);
         super.addRuleChainVisit(ASTPackageDeclaration.class);
         super.addRuleChainVisit(ASTImportDeclaration.class);
         super.addRuleChainVisit(ASTClassOrInterfaceType.class);
@@ -43,10 +42,9 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public void start(final RuleContext ctx) {
         imports.clear();
         currentPackage = null;
-        return data;
     }
 
     @Override
@@ -245,7 +243,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             // with type resolution we can do an exact package match
             Package packageOfType = node.getType().getPackage();
             if (packageOfType != null) {
-                return node.getType().getPackage().getName().equals(currentPackage);
+                
+                // get "package" candidate from name
+                int i = name.lastIndexOf('.');
+                if (i > 0) {
+                    name = name.substring(0, i);
+                }
+                
+                return node.getType().getPackage().getName().equals(currentPackage)
+                        && name.equals(currentPackage);
             }
         }
 

@@ -7,7 +7,7 @@
         <description><![CDATA[
 A too complex procedure which triggers NPathComplexityRule
      ]]></description>
-        <rule-property name="minimum">1.0</rule-property>
+        <rule-property name="minimum">1</rule-property>
         <expected-problems>1</expected-problems>
         <code>
  <![CDATA[

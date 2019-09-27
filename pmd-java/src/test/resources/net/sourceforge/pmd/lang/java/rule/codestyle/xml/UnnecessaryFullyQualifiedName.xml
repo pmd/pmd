@@ -590,4 +590,32 @@ public class FQNTest {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>False positive when same package static method is referenced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package java.util;
+
+public class Problem {
+  {
+    Collections.emptySet(); // false positive for UnnecessaryFullyQualifiedName
+  }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>False positive when same package inner class is referenced</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle;
+
+public class UnnecessaryFullyQualifiedName {
+    public static void main(String[] args) {
+        System.out.println(UnnecessaryFullyQualifiedNameTest.ENUM1.A);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
