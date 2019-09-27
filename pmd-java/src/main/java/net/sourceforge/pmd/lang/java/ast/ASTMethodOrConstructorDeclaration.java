@@ -82,11 +82,11 @@ public interface ASTMethodOrConstructorDeclaration extends MethodLikeNode, Signe
 
     /**
      * Returns the {@code throws} clause of this declaration, or null
-     * if there is none. TODO use ThrowsList instead
+     * if there is none.
      */
     @Nullable
-    default ASTNameList getThrows() {
-        return getFirstChildOfType(ASTNameList.class);
+    default ASTThrowsList getThrows() {
+        return getFirstChildOfType(ASTThrowsList.class);
     }
 
 

@@ -95,7 +95,12 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 it::getParameterCount shouldBe 0
             }
 
-            it::getThrows shouldBe child(ignoreChildren = true) {} //TODO
+            it::getThrows shouldBe throwsList {
+                classType("IOException")
+                classType("Bar") {
+                    ambiguousName("java.io")
+                }
+            }
 
             it::getBody shouldBe block()
         }

@@ -136,6 +136,9 @@ fun TreeNodeWrapper<Node, *>.typeParamList(contents: NodeSpec<ASTTypeParameters>
 fun TreeNodeWrapper<Node, *>.typeArgList(contents: NodeSpec<ASTTypeArguments> = EmptyAssertions) =
         child(ignoreChildren = contents == EmptyAssertions, nodeSpec = contents)
 
+fun TreeNodeWrapper<Node, *>.throwsList(contents: NodeSpec<ASTThrowsList> = EmptyAssertions) =
+        child(ignoreChildren = contents == EmptyAssertions, nodeSpec = contents)
+
 fun TreeNodeWrapper<Node, *>.diamond() =
         child<ASTTypeArguments> {
             it::isDiamond shouldBe true

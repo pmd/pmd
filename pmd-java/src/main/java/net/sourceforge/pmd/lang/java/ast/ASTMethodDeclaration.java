@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
  *                       &lt;IDENTIFIER&gt;
  *                       {@link ASTFormalParameters FormalParameters}
  *                       ( "[" "]" )*
- *                       ("throws" {@link ASTNameList NameList})?
+ *                       ({@link ASTThrowsList ThrowsList})?
  *                       ({@link ASTBlock Block} | ";" )
  *
  *
