@@ -296,11 +296,11 @@ public class RuleSet implements ChecksumAware {
         }
 
         /**
-         * Adds a new file exclusion pattern.
+         * Adds a new file exclusion pattern. The pattern must be a valid
+         * regular expression. If it is not, the pattern is ignored and the
+         * error is logged. With 7.0.0 we'll throw an exception instead.
          *
-         * @param aPattern
-         *            the pattern
-         * @return The same builder, for a fluid programming interface
+         * @param aPattern A valid regular expression
          */
         public RuleSetBuilder addExcludePattern(final String aPattern) {
             try {
@@ -317,12 +317,12 @@ public class RuleSet implements ChecksumAware {
         /**
          * Adds new file exclusion patterns.
          *
-         * @param someExcludePatterns
-         *            the patterns
-         * @return The same builder, for a fluid programming interface
+         * @param patterns A collection of valid regular expressions
+         *
+         * @see #addExcludePattern(String)
          */
-        public RuleSetBuilder addExcludePatterns(final Collection<String> someExcludePatterns) {
-            for (String exclude : someExcludePatterns) {
+        public RuleSetBuilder addExcludePatterns(final Collection<String> patterns) {
+            for (String exclude : patterns) {
                 addExcludePattern(exclude);
             }
             return this;
@@ -331,13 +331,14 @@ public class RuleSet implements ChecksumAware {
         /**
          * Replaces the existing exclusion patterns with the given patterns.
          *
-         * @param theExcludePatterns
-         *            the new patterns
+         * @param patterns A collection of valid regular expressions
+         *
+         * @see #addExcludePattern(String)
          */
-        public RuleSetBuilder setExcludePatterns(final Collection<String> theExcludePatterns) {
-            if (!excludePatterns.equals(theExcludePatterns)) {
+        public RuleSetBuilder setExcludePatterns(final Collection<String> patterns) {
+            if (!excludePatterns.equals(patterns)) {
                 excludePatterns.clear();
-                addExcludePatterns(theExcludePatterns);
+                addExcludePatterns(patterns);
             }
             return this;
         }
@@ -345,12 +346,12 @@ public class RuleSet implements ChecksumAware {
         /**
          * Adds new inclusion patterns.
          *
-         * @param someIncludePatterns
-         *            the patterns
-         * @return The same builder, for a fluid programming interface
+         * @param patterns A collection of valid regular expressions
+         *
+         * @see #addIncludePattern(String)
          */
-        public RuleSetBuilder addIncludePatterns(final Collection<String> someIncludePatterns) {
-            for (String exclude : someIncludePatterns) {
+        public RuleSetBuilder addIncludePatterns(final Collection<String> patterns) {
+            for (String exclude : patterns) {
                 addIncludePattern(exclude);
             }
             return this;
@@ -359,25 +360,25 @@ public class RuleSet implements ChecksumAware {
         /**
          * Replaces the existing inclusion patterns with the given patterns.
          *
-         * @param theIncludePatterns
-         *            the new patterns
-         * @return The same builder, for a fluid programming interface
+         * @param patterns A collection of valid regular expressions
+         *
+         * @see #addIncludePattern(String)
          */
-        public RuleSetBuilder setIncludePatterns(final Collection<String> theIncludePatterns) {
-            if (!includePatterns.equals(theIncludePatterns)) {
+        public RuleSetBuilder setIncludePatterns(final Collection<String> patterns) {
+            if (!includePatterns.equals(patterns)) {
                 includePatterns.clear();
-                addIncludePatterns(theIncludePatterns);
+                addIncludePatterns(patterns);
             }
 
             return this;
         }
 
         /**
-         * Adds a new inclusion pattern.
+         * Adds a new inclusion pattern. The pattern must be a valid
+         * regular expression. If it is not, the pattern is ignored and the
+         * error is logged. With 7.0.0 we'll throw an exception instead.
          *
-         * @param aPattern
-         *            the pattern
-         * @return The same builder, for a fluid programming interface
+         * @param aPattern A valid regular expression
          */
         public RuleSetBuilder addIncludePattern(final String aPattern) {
             try {
