@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -276,41 +277,82 @@ public class RuleSetTest {
     @Test
     public void testAddExcludePattern() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
-                .addExcludePattern("*")
+                .addExcludePattern(".*")
                 .build();
         assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
         assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());
-        
+
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
-                .addExcludePattern("*")
-                .addExcludePattern("*") // try to create a duplicate
+                .addExcludePattern(".*")
+                .addExcludePattern(".*") // try to create a duplicate
                 .build();
         assertEquals("Invalid number of patterns", 1, ruleSet2.getExcludePatterns().size());
-        assertEquals("Exclude pattern", "*", ruleSet2.getExcludePatterns().get(0));
+        assertEquals("Exclude pattern", ".*", ruleSet2.getExcludePatterns().get(0));
         assertNotNull("Include patterns", ruleSet2.getIncludePatterns());
         assertEquals("Invalid number of include patterns", 0, ruleSet2.getIncludePatterns().size());
     }
 
     @Test
-    public void testAddExcludePatterns() {
+    public void testAddInvalidExcludePattern() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
                 .addExcludePattern("*")
+                .build();
+        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
+        assertEquals("Invalid number of patterns", 0, ruleSet.getExcludePatterns().size());
+
+        RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
+                .addExcludePattern(".*")
+                .addExcludePattern(".*") // try to create a duplicate
+                .build();
+        assertEquals("Invalid number of patterns", 1, ruleSet2.getExcludePatterns().size());
+        assertEquals("Exclude pattern", ".*", ruleSet2.getExcludePatterns().get(0));
+        assertNotNull("Include patterns", ruleSet2.getIncludePatterns());
+        assertEquals("Invalid number of include patterns", 0, ruleSet2.getIncludePatterns().size());
+    }
+
+    @Test
+    public void testExcludePatternAreOrdered() {
+
+        RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
+                .addExcludePattern(".*")
+                .addExcludePattern(".*ha")
+                .build();
+        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha"), ruleSet2.getExcludePatterns());
+    }
+
+    @Test
+    public void testIncludePatternsAreOrdered() {
+
+        RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
+                .addIncludePattern(".*")
+                .addIncludePatterns(Arrays.asList(".*ha", ".*hb"))
+                .build();
+        assertEquals("Exclude pattern", Arrays.asList(".*", ".*ha", ".*hb"), ruleSet2.getIncludePatterns());
+    }
+
+    @Test
+    public void testAddExcludePatterns() {
+        RuleSet ruleSet = createRuleSetBuilder("ruleset1")
+                .addExcludePattern("*") // invalid regex
                 .addExcludePattern(".*")
                 .build();
+
+        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
+        assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());
+
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset2")
                 .addExcludePatterns(ruleSet.getExcludePatterns())
                 .build();
         assertNotNull("Exclude patterns", ruleSet2.getExcludePatterns());
-        assertEquals("Invalid number of patterns", 2, ruleSet2.getExcludePatterns().size());
-        
+        assertEquals("Invalid number of patterns", 1, ruleSet2.getExcludePatterns().size());
+
         RuleSet ruleSet3 = createRuleSetBuilder("ruleset3")
-                .addExcludePattern("*")
+                .addExcludePattern("*") // invalid pattern
                 .addExcludePattern(".*")
                 .addExcludePattern(".*") // try to create a duplicate
                 .build();
-        assertEquals("Invalid number of patterns", 2, ruleSet3.getExcludePatterns().size());
-        assertEquals("Exclude pattern", "*", ruleSet3.getExcludePatterns().get(0));
-        assertEquals("Exclude pattern", ".*", ruleSet3.getExcludePatterns().get(1));
+        assertEquals("Invalid number of patterns", 1, ruleSet3.getExcludePatterns().size());
+        assertEquals("Exclude pattern", ".*", ruleSet3.getExcludePatterns().get(0));
         assertNotNull("Include patterns", ruleSet3.getIncludePatterns());
         assertEquals("Invalid number of include patterns", 0, ruleSet3.getIncludePatterns().size());
     }
@@ -318,14 +360,14 @@ public class RuleSetTest {
     @Test
     public void testSetExcludePatterns() {
         List<String> excludePatterns = new ArrayList<>();
-        excludePatterns.add("*");
+        excludePatterns.add("ah*");
         excludePatterns.add(".*");
         RuleSet ruleSet = createRuleSetBuilder("ruleset")
                 .setExcludePatterns(excludePatterns)
                 .build();
         assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
         assertEquals("Invalid number of exclude patterns", 2, ruleSet.getExcludePatterns().size());
-        assertEquals("Exclude pattern", "*", ruleSet.getExcludePatterns().get(0));
+        assertEquals("Exclude pattern", "ah*", ruleSet.getExcludePatterns().get(0));
         assertEquals("Exclude pattern", ".*", ruleSet.getExcludePatterns().get(1));
         assertNotNull("Include patterns", ruleSet.getIncludePatterns());
         assertEquals("Invalid number of include patterns", 0, ruleSet.getIncludePatterns().size());
@@ -334,11 +376,22 @@ public class RuleSetTest {
     @Test
     public void testAddIncludePattern() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset")
-                .addIncludePattern("*")
+                .addIncludePattern(".*")
                 .build();
         assertNotNull("Include patterns", ruleSet.getIncludePatterns());
         assertEquals("Invalid number of patterns", 1, ruleSet.getIncludePatterns().size());
-        assertEquals("Include pattern", "*", ruleSet.getIncludePatterns().get(0));
+        assertEquals("Include pattern", ".*", ruleSet.getIncludePatterns().get(0));
+        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
+        assertEquals("Invalid number of exclude patterns", 0, ruleSet.getExcludePatterns().size());
+    }
+
+    @Test
+    public void testAddInvalidIncludePattern() {
+        RuleSet ruleSet = createRuleSetBuilder("ruleset")
+                .addIncludePattern("*")
+                .build();
+        assertNotNull("Include patterns", ruleSet.getIncludePatterns());
+        assertEquals("Invalid number of patterns", 0, ruleSet.getIncludePatterns().size());
         assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
         assertEquals("Invalid number of exclude patterns", 0, ruleSet.getExcludePatterns().size());
     }
@@ -346,7 +399,7 @@ public class RuleSetTest {
     @Test
     public void testAddIncludePatterns() {
         RuleSet ruleSet = createRuleSetBuilder("ruleset1")
-                .addIncludePattern("*")
+                .addIncludePattern("ah*")
                 .addIncludePattern(".*")
                 .build();
         RuleSet ruleSet2 = createRuleSetBuilder("ruleset1")
@@ -354,7 +407,7 @@ public class RuleSetTest {
                 .build();
         assertNotNull("Include patterns", ruleSet2.getIncludePatterns());
         assertEquals("Invalid number of patterns", 2, ruleSet2.getIncludePatterns().size());
-        assertEquals("Include pattern", "*", ruleSet2.getIncludePatterns().get(0));
+        assertEquals("Include pattern", "ah*", ruleSet2.getIncludePatterns().get(0));
         assertEquals("Include pattern", ".*", ruleSet2.getIncludePatterns().get(1));
         assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
         assertEquals("Invalid number of exclude patterns", 0, ruleSet.getExcludePatterns().size());
@@ -363,15 +416,13 @@ public class RuleSetTest {
     @Test
     public void testSetIncludePatterns() {
         List<String> includePatterns = new ArrayList<>();
-        includePatterns.add("*");
+        includePatterns.add("ah*");
         includePatterns.add(".*");
         RuleSet ruleSet = createRuleSetBuilder("ruleset")
                 .setIncludePatterns(includePatterns)
                 .build();
-        assertNotNull("Include patterns", ruleSet.getIncludePatterns());
-        assertEquals("Invalid number of include patterns", 2, ruleSet.getIncludePatterns().size());
-        assertEquals("Include pattern", "*", ruleSet.getIncludePatterns().get(0));
-        assertEquals("Include pattern", ".*", ruleSet.getIncludePatterns().get(1));
+
+        assertEquals("Include patterns", includePatterns, ruleSet.getIncludePatterns());
         assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
         assertEquals("Invalid number of exclude patterns", 0, ruleSet.getExcludePatterns().size());
     }
@@ -455,7 +506,7 @@ public class RuleSetTest {
         ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
         assertEquals("Violations", 1, r.size());
     }
-    
+
     @Test
     public void copyConstructorDeepCopies() {
         Rule rule = new FooRule();
@@ -466,10 +517,10 @@ public class RuleSetTest {
                 .addRule(rule)
                 .build();
         RuleSet ruleSet2 = new RuleSet(ruleSet1);
-        
+
         assertEquals(ruleSet1, ruleSet2);
         assertNotSame(ruleSet1, ruleSet2);
-        
+
         assertEquals(rule, ruleSet2.getRuleByName("FooRule1"));
         assertNotSame(rule, ruleSet2.getRuleByName("FooRule1"));
     }

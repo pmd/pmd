@@ -13,8 +13,11 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,7 +29,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;
 
@@ -69,24 +71,24 @@ public class RuleSet implements ChecksumAware {
         description = Objects.requireNonNull(builder.description, MISSING_RULESET_DESCRIPTION);
         // TODO: ideally, the rules would be unmodifiable, too. But removeDysfunctionalRules might change the rules.
         rules = builder.rules;
-        excludePatterns = Collections.unmodifiableList(builder.excludePatterns);
-        includePatterns = Collections.unmodifiableList(builder.includePatterns);
+        excludePatterns = Collections.unmodifiableList(new ArrayList<>(builder.excludePatterns));
+        includePatterns = Collections.unmodifiableList(new ArrayList<>(builder.includePatterns));
 
         final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
         filter = Filters.toNormalizedFileFilter(regexFilter);
     }
-    
+
     public RuleSet(final RuleSet rs) {
         checksum = rs.checksum;
         fileName = rs.fileName;
         name = rs.name;
         description = rs.description;
-        
+
         rules = new ArrayList<>(rs.rules.size());
         for (final Rule rule : rs.rules) {
             rules.add(rule.deepCopy());
         }
-        
+
         excludePatterns = rs.excludePatterns; // we can share immutable lists of immutable elements
         includePatterns = rs.includePatterns;
         filter = rs.filter; // filters are immutable, can be shared
@@ -97,8 +99,8 @@ public class RuleSet implements ChecksumAware {
         public String name;
         public String fileName;
         private final List<Rule> rules = new ArrayList<>();
-        private final List<String> excludePatterns = new ArrayList<>(0);
-        private final List<String> includePatterns = new ArrayList<>(0);
+        private final Set<String> excludePatterns = new LinkedHashSet<>();
+        private final Set<String> includePatterns = new LinkedHashSet<>();
         private final long checksum;
 
         /* package */ RuleSetBuilder(final long checksum) {
@@ -301,9 +303,14 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addExcludePattern(final String aPattern) {
-            if (!excludePatterns.contains(aPattern)) {
-                excludePatterns.add(aPattern);
+            try {
+                Pattern.compile(aPattern);
+            } catch (PatternSyntaxException pse) {
+                LOG.warning(pse.getMessage());
+                return this;
             }
+
+            excludePatterns.add(aPattern);
             return this;
         }
 
@@ -315,7 +322,9 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addExcludePatterns(final Collection<String> someExcludePatterns) {
-            CollectionUtil.addWithoutDuplicates(someExcludePatterns, excludePatterns);
+            for (String exclude : someExcludePatterns) {
+                addExcludePattern(exclude);
+            }
             return this;
         }
 
@@ -328,7 +337,7 @@ public class RuleSet implements ChecksumAware {
         public RuleSetBuilder setExcludePatterns(final Collection<String> theExcludePatterns) {
             if (!excludePatterns.equals(theExcludePatterns)) {
                 excludePatterns.clear();
-                CollectionUtil.addWithoutDuplicates(theExcludePatterns, excludePatterns);
+                addExcludePatterns(theExcludePatterns);
             }
             return this;
         }
@@ -341,7 +350,9 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addIncludePatterns(final Collection<String> someIncludePatterns) {
-            CollectionUtil.addWithoutDuplicates(someIncludePatterns, includePatterns);
+            for (String exclude : someIncludePatterns) {
+                addIncludePattern(exclude);
+            }
             return this;
         }
 
@@ -355,7 +366,7 @@ public class RuleSet implements ChecksumAware {
         public RuleSetBuilder setIncludePatterns(final Collection<String> theIncludePatterns) {
             if (!includePatterns.equals(theIncludePatterns)) {
                 includePatterns.clear();
-                CollectionUtil.addWithoutDuplicates(theIncludePatterns, includePatterns);
+                addIncludePatterns(theIncludePatterns);
             }
 
             return this;
@@ -369,9 +380,14 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addIncludePattern(final String aPattern) {
-            if (!includePatterns.contains(aPattern)) {
-                includePatterns.add(aPattern);
+            try {
+                Pattern.compile(aPattern);
+            } catch (PatternSyntaxException pse) {
+                LOG.warning(pse.getMessage());
+                return this;
             }
+
+            includePatterns.add(aPattern);
             return this;
         }
 
