@@ -17,16 +17,12 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
             // notice that arity is zero
             it::getArity shouldBe 0
 
-            it::getFormalParameters shouldBe child {
-                it::getParameterCount shouldBe 0
-                it::toList shouldBe emptyList()
-
+            it::getFormalParameters shouldBe formalsList(0) {
                 it::getReceiverParameter shouldBe child {
                     classType("Foo") {
                         annotation("A")
                     }
                 }
-
             }
 
             it::getBody shouldBe block()
@@ -38,8 +34,7 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
             it::isVarargs shouldBe false
             it::getArity shouldBe 1
 
-            it::getFormalParameters shouldBe child {
-                it::getParameterCount shouldBe 1
+            it::getFormalParameters shouldBe formalsList(1) {
 
                 it::getReceiverParameter shouldBe child {
                     classType("Bar") {
@@ -76,9 +71,7 @@ class ASTConstructorDeclarationTest : ParserTestSpec({
                 }
             }
 
-            child<ASTFormalParameters> {
-
-            }
+            formalsList(0)
 
             block()
         }

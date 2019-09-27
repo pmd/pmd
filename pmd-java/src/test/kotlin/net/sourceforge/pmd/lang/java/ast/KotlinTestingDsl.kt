@@ -10,7 +10,6 @@ import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
 import net.sourceforge.pmd.lang.java.ParserTstUtil
 import java.beans.PropertyDescriptor
-import io.kotlintest.should as kotlintestShould
 
 /**
  * Represents the different Java language versions.
@@ -258,7 +257,7 @@ open class ParserTestCtx(val javaVersion: JavaVersion = JavaVersion.Latest,
 
     fun parseToplevelAnyTypeDeclaration(type: String): ASTAnyTypeDeclaration = TopLevelTypeDeclarationParsingCtx.parseNode(type, this)
 
-    fun parseBodyDeclaration(type: String): ASTAnyTypeBodyDeclaration = EnclosedDeclarationParsingCtx.parseNode(type, this)
+    fun parseBodyDeclaration(type: String): JavaNode = EnclosedDeclarationParsingCtx.parseNode(type, this)
 
     // reified shorthands, fetching the node
 
@@ -383,7 +382,7 @@ ${ctx.genClassHeader} {
             override fun retrieveNode(acu: ASTCompilationUnit): ASTBlockStatement = acu.getFirstDescendantOfType(ASTBlockStatement::class.java)
         }
 
-        object EnclosedDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeBodyDeclaration>("enclosed declaration") {
+        object EnclosedDeclarationParsingCtx : NodeParsingCtx<JavaNode>("enclosed declaration") {
 
             override fun getTemplate(construct: String, ctx: ParserTestCtx): String = """
                 ${ctx.imports.joinToString(separator = "\n")}
@@ -392,8 +391,8 @@ ${ctx.genClassHeader} {
                 }
                 """.trimIndent()
 
-            override fun retrieveNode(acu: ASTCompilationUnit): ASTAnyTypeBodyDeclaration =
-                    acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java)!!
+            override fun retrieveNode(acu: ASTCompilationUnit): JavaNode =
+                    acu.getFirstDescendantOfType(ASTAnyTypeBodyDeclaration::class.java)!!.declarationNode!!
         }
 
         object TopLevelTypeDeclarationParsingCtx : NodeParsingCtx<ASTAnyTypeDeclaration>("top-level declaration") {

@@ -6,6 +6,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.EnclosedDeclarationParsingCtx
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 
@@ -85,12 +86,10 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::isVoid shouldBe true
             it::getArity shouldBe 0
 
-            it::getResultType shouldBe voidType()
+            it::getResultType shouldBe voidResult()
 
 
-            it::getFormalParameters shouldBe child {
-                it::getParameterCount shouldBe 0
-            }
+            it::getFormalParameters shouldBe formalsList(0)
 
             it::getThrows shouldBe throwsList {
                 classType("IOException")
@@ -107,12 +106,9 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "void bar() throws @Oha IOException, @Aha java.io.@Oha Bar { }" should matchDeclaration<ASTMethodDeclaration> {
 
-            it::getResultType shouldBe voidType()
+            it::getResultType shouldBe voidResult()
 
-
-            it::getFormalParameters shouldBe child {
-                it::getParameterCount shouldBe 0
-            }
+            it::getFormalParameters shouldBe formalsList(0)
 
             it::getThrows shouldBe throwsList {
                 classType("IOException") {
@@ -122,7 +118,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
                 classType("Bar") {
                     classType("io") {
                         classType("java") {
-                            annotation("Oha")
+                            annotation("Aha")
                         }
                     }
                     annotation("Oha")
@@ -131,6 +127,64 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             it::getBody shouldBe block()
         }
+    }
+
+    parserTest("Annotation methods") {
+
+        genClassHeader = "@interface Foo"
+
+        inContext(EnclosedDeclarationParsingCtx) {
+
+            "Bar bar() throws IOException;" shouldNot parse()
+            "void bar();" shouldNot parse()
+            "default int bar() { return 1; }" shouldNot parse()
+            "int bar(Foo f);" shouldNot parse()
+            "public int bar();" should parseAs {
+                annotationMethod {
+                    resultType {
+                        primitiveType(PrimitiveType.INT)
+                    }
+                    formalsList(0)
+                }
+            }
+            "int bar() default 2;" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        primitiveType(PrimitiveType.INT)
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe defaultValue { int(2) }
+                }
+            }
+
+            "Override bar() default @Override;" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        classType("Override")
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe defaultValue { annotation("Override") }
+                }
+            }
+
+            "Override bar()[] default { @Override };" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        classType("Override")
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe defaultValue {
+                        memberValueArray {
+                            annotation("Override")
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     parserTest("Receiver parameters") {
@@ -147,10 +201,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             // notice that arity is zero
             it::getArity shouldBe 0
 
-            it::getResultType shouldBe child {
-                it::getTypeNode shouldBe null
-                it::isVoid shouldBe true
-            }
+            it::getResultType shouldBe voidResult()
 
             it::getFormalParameters shouldBe child {
                 it::getParameterCount shouldBe 0
@@ -175,10 +226,7 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::isVoid shouldBe true
             it::getArity shouldBe 1
 
-            it::getResultType shouldBe child {
-                it::getTypeNode shouldBe null
-                it::isVoid shouldBe true
-            }
+            it::getResultType shouldBe voidResult()
 
             it::getFormalParameters shouldBe child {
                 it::getParameterCount shouldBe 1
@@ -212,24 +260,19 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
             annotation("OnDecl")
 
-            typeParamList {
+            it::getTypeParameters shouldBe typeParamList {
                 typeParam("T") {
                     classType("K")
                 }
             }
 
-            child<ASTResultType> {
-                it::isVoid shouldBe false
-
+            it::getResultType shouldBe resultType {
                 classType("Ret") {
                     annotation("OnType")
                 }
             }
 
-            child<ASTFormalParameters> {
-
-            }
-
+            formalsList(0)
             block()
         }
     }

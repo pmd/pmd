@@ -1,6 +1,9 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
+import io.kotlintest.matchers.haveSize
+import io.kotlintest.matchers.types.shouldBeInstanceOf
+import io.kotlintest.should
 import net.sourceforge.pmd.lang.ast.GenericToken
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.test.*
@@ -139,10 +142,28 @@ fun TreeNodeWrapper<Node, *>.typeArgList(contents: NodeSpec<ASTTypeArguments> = 
 fun TreeNodeWrapper<Node, *>.throwsList(contents: NodeSpec<ASTThrowsList> = EmptyAssertions) =
         child(ignoreChildren = contents == EmptyAssertions, nodeSpec = contents)
 
-fun TreeNodeWrapper<Node, *>.voidType() =
+fun TreeNodeWrapper<Node, *>.formalsList(arity: Int, contents: NodeSpec<ASTFormalParameters> = EmptyAssertions) =
+        child<ASTFormalParameters>(ignoreChildren = contents == EmptyAssertions) {
+            it::getParameterCount shouldBe arity
+            it.toList() should haveSize(arity)
+            contents()
+        }
+
+fun TreeNodeWrapper<Node, *>.voidResult() =
         child<ASTResultType> {
             it::getTypeNode shouldBe null
             it::isVoid shouldBe true
+        }
+
+fun TreeNodeWrapper<Node, *>.resultType(contents: ValuedNodeSpec<ASTResultType, ASTType>) =
+        child<ASTResultType>(ignoreChildren = contents == EmptyAssertions) {
+            it::getTypeNode shouldBe contents()
+            it::isVoid shouldBe false
+        }
+
+fun TreeNodeWrapper<Node, *>.defaultValue(contents: ValuedNodeSpec<ASTDefaultValue, ASTMemberValue>) =
+        child<ASTDefaultValue>(ignoreChildren = contents == EmptyAssertions) {
+            it::getConstant shouldBe contents()
         }
 
 fun TreeNodeWrapper<Node, *>.diamond() =
@@ -335,6 +356,28 @@ fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType,
 fun TreeNodeWrapper<Node, *>.arrayDim(assertions: NodeSpec<ASTArrayTypeDim> = EmptyAssertions) =
         child<ASTArrayTypeDim> {
             assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.arrayInitializer(assertions: NodeSpec<ASTArrayInitializer> = EmptyAssertions) =
+        child<ASTArrayInitializer> {
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.memberValueArray(assertions: NodeSpec<ASTMemberValueArrayInitializer> = EmptyAssertions) =
+        child<ASTMemberValueArrayInitializer> {
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.annotationMethod(contents: NodeSpec<ASTMethodDeclaration> = EmptyAssertions) =
+        child<ASTMethodDeclaration>(ignoreChildren = contents == EmptyAssertions) {
+            it.enclosingType.shouldBeInstanceOf<ASTAnnotationTypeDeclaration>()
+            it::getThrows shouldBe null
+            it::getTypeParameters shouldBe null
+            it::getBody shouldBe null
+            it::isAbstract shouldBe true
+            it::getArity shouldBe 0
+
+            contents()
         }
 
 fun TreeNodeWrapper<Node, *>.boolean(value: Boolean) =

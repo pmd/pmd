@@ -137,7 +137,8 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         Node potentialTypeDeclaration = getNthParent(3);
 
         return potentialTypeDeclaration instanceof ASTClassOrInterfaceDeclaration
-            && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
+            && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface()
+            || potentialTypeDeclaration instanceof ASTAnnotationTypeDeclaration;
     }
 
 
