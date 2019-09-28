@@ -14,7 +14,9 @@ import net.sourceforge.pmd.dcd.graph.UsageGraph;
 
 /**
  * Dump a UsageGraph to System.out.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class DumpNodeVisitor extends NodeVisitorAdapter {
 
     @Override

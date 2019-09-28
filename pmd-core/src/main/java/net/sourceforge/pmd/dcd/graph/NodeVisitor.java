@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.dcd.graph;
 
+import net.sourceforge.pmd.dcd.DCD;
+
 /**
  * Visitor for nodes in a UsageGraph.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public interface NodeVisitor {
 
     Object visit(UsageGraph usageGraph, Object data);

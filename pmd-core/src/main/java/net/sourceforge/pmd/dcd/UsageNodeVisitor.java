@@ -19,7 +19,9 @@ import net.sourceforge.pmd.dcd.graph.UsageGraph;
  * Perform a visitation a UsageGraph, looking for <em>dead code</em>, which is
  * essential code which is not used by any other code. There are various options
  * for configuration how this determination is made.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class UsageNodeVisitor extends NodeVisitorAdapter {
 
     /**
