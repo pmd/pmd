@@ -97,11 +97,26 @@ fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: ASTAssignable
             otherAssertions()
         }
 
+fun TreeNodeWrapper<Node, *>.arrayAccess(accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: NodeSpec<ASTArrayAccess> = EmptyAssertions) =
+        child<ASTArrayAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
+            if (accessType != null) {
+                it::getAccessType shouldBe accessType
+            }
+
+            otherAssertions()
+        }
+
 // this isn't a node anymore
 fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: Int = 1, inside: ValuedNodeSpec<T, R>): R =
         inside().also {
             it::isParenthesized shouldBe true
             it::getParenthesisDepth shouldBe depth
+        }
+
+// this isn't a node anymore
+fun TreeNodeWrapper<Node, *>.methodCall(inside: NodeSpec<ASTMethodCall>) =
+        child<ASTMethodCall> {
+            inside()
         }
 
 
@@ -320,7 +335,7 @@ fun TreeNodeWrapper<Node, *>.dimExpr(assertions: NodeSpec<ASTArrayDimExpr> = Emp
             it::getLengthExpression shouldBe lengthExpr()
         }
 
-fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayDimensions>) =
         child<ASTArrayType> {
             it::getElementType shouldBe elementType()
             it::getDimensions shouldBe child {

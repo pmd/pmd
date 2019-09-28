@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpression;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * An array access expression.
  *
  * <pre class="grammar">
  *
- * ArrayAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "["  {@link ASTExpression Expression} "]"
+ * ArrayAccess ::=  {@link ASTExpression Expression} "["  {@link ASTExpression Expression} "]"
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, LeftRecursiveNode {
+public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, LeftRecursiveNode, ASTQualifiableExpression {
     ASTArrayAccess(int id) {
         super(id);
     }
@@ -26,16 +30,18 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
 
     /**
      * Returns the expression to the left of the "[".
+     * This can never be a {@linkplain ASTTypeExpression type},
+     * and is never {@linkplain ASTAmbiguousName ambiguous}.
      */
-    public ASTPrimaryExpression getLhsExpression() {
-        return (ASTPrimaryExpression) jjtGetChild(0);
+    @NonNull
+    @Override
+    public ASTExpression getQualifier() {
+        return (ASTExpression) jjtGetChild(0);
     }
 
-    /**
-     * Returns the expression within the brackets.
-     */
+    /** Returns the expression within the brackets. */
     public ASTExpression getIndexExpression() {
-        return (ASTPrimaryExpression) jjtGetChild(1);
+        return (ASTExpression) jjtGetChild(1);
     }
 
 

@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast
 import io.kotlintest.shouldBe
 import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType.PrimitiveType.INT
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.StatementParsingCtx
 
 /**
@@ -138,10 +139,65 @@ class ParenthesesTest : ParserTestSpec({
                     }
                 }
             }
+        }
+    }
 
+
+    parserTest("Test expressions with complicated LHS") {
+
+        // the qualifier here is not an ASTPrimaryExpression,
+        // since parentheses are flattened.
+        // The API should reflect that
+
+        inContext(ExpressionParsingCtx) {
+
+            "((String) obj).length()" should parseAs {
+                methodCall {
+                    it::getMethodName shouldBe "length"
+
+                    it::getQualifier shouldBe parenthesized {
+                        castExpr {
+                            classType("String")
+                            variableAccess("obj")
+                        }
+                    }
+
+                    it::getArguments shouldBe child {}
+                }
+            }
+
+            "((int[]) obj)[(int) i]" should parseAs {
+                arrayAccess {
+                    it::getQualifier shouldBe parenthesized {
+                        castExpr {
+                            arrayType({ primitiveType(INT) }) {
+                                arrayDim()
+                            }
+                            variableAccess("obj")
+                        }
+                    }
+
+                    it::getIndexExpression shouldBe castExpr {
+                        primitiveType(INT)
+                        variableAccess("i")
+                    }
+                }
+            }
+
+            "(switch (obj) { case a -> 1; default -> 2; }).length()" should parseAs {
+                methodCall {
+                    it::getMethodName shouldBe "length"
+
+                    it::getQualifier shouldBe parenthesized {
+                        switchExpr()
+                    }
+
+                    it::getArguments shouldBe child {}
+                }
+            }
         }
 
-
     }
+
 
 })

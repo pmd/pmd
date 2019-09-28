@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.JSingleChildNode;
+
 
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
@@ -16,7 +18,7 @@ import java.util.Iterator;
  *                  | "&lt;" "&gt;"
  * </pre>
  */
-public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType>, InternalInterfaces.JSingleChildNode<ASTType> {
+public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType>, JSingleChildNode<ASTType> {
 
     ASTTypeArguments(int id) {
         super(id);

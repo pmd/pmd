@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <pre class="grammar">
  *
  * ConstructorCall   ::= UnqualifiedAlloc
- *                     | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc
+ *                     | {@link ASTExpression Expression} "." UnqualifiedAlloc
  *
  * UnqualifiedAlloc                  ::=
  *      "new" {@link ASTTypeArguments TypeArguments}? {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
@@ -65,7 +65,7 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
      * {@linkplain ASTAmbiguousName ambiguous}.
      */
     @Override
-    public @Nullable ASTPrimaryExpression getQualifier() {
+    public @Nullable ASTExpression getQualifier() {
         return ASTQualifiableExpression.super.getQualifier();
     }
 

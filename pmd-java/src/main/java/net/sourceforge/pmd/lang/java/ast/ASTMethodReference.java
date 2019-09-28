@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpres
  *
  * <pre class="grammar">
  *
- * MethodReference ::= {@link ASTPrimaryExpression PrimaryExpression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
+ * MethodReference ::= {@link ASTExpression Expression} "::" {@link ASTTypeArguments TypeArguments}? &lt;IDENTIFIER&gt;
  *                   | {@link ASTTypeExpression TypeExpression} "::" {@link ASTTypeArguments TypeArguments}? "new"
  *
  * </pre>
@@ -67,8 +67,8 @@ public final class ASTMethodReference extends AbstractJavaExpr implements ASTPri
      */
     @NonNull
     @Override
-    public ASTPrimaryExpression getQualifier() {
-        return (ASTPrimaryExpression) jjtGetChild(0);
+    public ASTExpression getQualifier() {
+        return (ASTExpression) jjtGetChild(0);
     }
 
 

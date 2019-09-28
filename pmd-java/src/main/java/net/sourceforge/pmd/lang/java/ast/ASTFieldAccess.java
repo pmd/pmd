@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpres
  *
  * <pre class="grammar">
  *
- * FieldAccess ::= {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
+ * FieldAccess ::= {@link ASTExpression Expression} "." &lt;IDENTIFIER&gt;
  *
  * </pre>
  */

@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * ExplicitConstructorInvocation ::= {@link ASTTypeArguments TypeArguments}? "this" {@link ASTArgumentList ArgumentList} ";"
  *                                 | {@link ASTTypeArguments TypeArguments}? "super" {@link ASTArgumentList ArgumentList} ";"
- *                                 | {@link ASTPrimaryExpression PrimaryExpression} "." {@link ASTTypeArguments TypeArguments}? "super" {@link ASTArgumentList ArgumentList} ";"
+ *                                 | {@link ASTExpression Expression} "." {@link ASTTypeArguments TypeArguments}? "super" {@link ASTArgumentList ArgumentList} ";"
  *
  * </pre>
  */
@@ -104,8 +104,8 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaNode {
      * constructor invocation}.
      */
     @Nullable
-    public ASTPrimaryExpression getLhsExpression() {
+    public ASTExpression getLhsExpression() {
         Node node = getFirstChild();
-        return node instanceof ASTPrimaryExpression ? (ASTPrimaryExpression) node : null;
+        return node instanceof ASTExpression ? (ASTExpression) node : null;
     }
 }
