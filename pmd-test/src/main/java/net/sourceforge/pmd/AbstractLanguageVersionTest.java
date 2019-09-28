@@ -49,7 +49,6 @@ public class AbstractLanguageVersionTest {
     private String name;
     private String version;
     private String simpleTerseName;
-    private String terseName;
     private LanguageVersion expected;
 
     /**
@@ -68,10 +67,6 @@ public class AbstractLanguageVersionTest {
         this.name = name;
         this.version = version;
         this.simpleTerseName = terseName;
-        this.terseName = terseName;
-        if (version != null && !version.isEmpty()) {
-            this.terseName += " " + version;
-        }
         this.expected = expected;
     }
 
