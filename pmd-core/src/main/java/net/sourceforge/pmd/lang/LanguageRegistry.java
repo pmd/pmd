@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,10 +25,14 @@ public final class LanguageRegistry {
 
     private static LanguageRegistry instance = new LanguageRegistry();
 
-    private Map<String, Language> languages;
+    private final Map<String, Language> languagesByName;
+    private final Map<String, Language> languagesByTerseName;
+    private final Set<Language> languages;
 
     private LanguageRegistry() {
-        List<Language> languagesList = new ArrayList<>();
+        // sort languages by terse name. Avoiding differences in the order of languages
+        // across JVM versions / OS.
+        Set<Language> sortedLangs = new TreeSet<>((o1, o2) -> o1.getTerseName().compareToIgnoreCase(o2.getTerseName()));
         // Use current class' classloader instead of the threads context classloader, see https://github.com/pmd/pmd/issues/1377
         ServiceLoader<Language> languageLoader = ServiceLoader.load(Language.class, getClass().getClassLoader());
         Iterator<Language> iterator = languageLoader.iterator();
@@ -34,7 +40,7 @@ public final class LanguageRegistry {
         while (iterator.hasNext()) {
             try {
                 Language language = iterator.next();
-                languagesList.add(language);
+                sortedLangs.add(language);
             } catch (UnsupportedClassVersionError e) {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
@@ -42,15 +48,18 @@ public final class LanguageRegistry {
             }
         }
 
-        // sort languages by terse name. Avoiding differences in the order of languages
-        // across JVM versions / OS.
-        languagesList.sort((o1, o2) -> o1.getTerseName().compareToIgnoreCase(o2.getTerseName()));
+        languages = Collections.unmodifiableSet(new LinkedHashSet<>(sortedLangs));
 
         // using a linked hash map to maintain insertion order
-        languages = new LinkedHashMap<>();
-        for (Language language : languagesList) {
-            languages.put(language.getName(), language);
+        // TODO there may be languages with duplicate names
+        Map<String, Language> byName = new LinkedHashMap<>();
+        Map<String, Language> byTerseName = new LinkedHashMap<>();
+        for (Language language : sortedLangs) {
+            byName.put(language.getName(), language);
+            byTerseName.put(language.getTerseName(), language);
         }
+        languagesByName = Collections.unmodifiableMap(byName);
+        languagesByTerseName = Collections.unmodifiableMap(byTerseName);
     }
 
     public static LanguageRegistry getInstance() {
@@ -58,17 +67,18 @@ public final class LanguageRegistry {
     }
 
     public static Set<Language> getLanguages() {
-        return new LinkedHashSet<>(getInstance().languages.values());
+        return getInstance().languages;
     }
 
+    /** Gets a language from its full name ({@link Language#getName()}). */
     public static Language getLanguage(String languageName) {
-        return getInstance().languages.get(languageName);
+        return getInstance().languagesByName.get(languageName);
     }
 
     public static Language getDefaultLanguage() {
         Language defaultLanguage = getLanguage("Java");
         if (defaultLanguage == null) {
-            Collection<Language> allLanguages = getInstance().languages.values();
+            Collection<Language> allLanguages = getInstance().languagesByName.values();
             if (!allLanguages.isEmpty()) {
                 defaultLanguage = allLanguages.iterator().next();
             }
@@ -77,12 +87,7 @@ public final class LanguageRegistry {
     }
 
     public static Language findLanguageByTerseName(String terseName) {
-        for (Language language : getInstance().languages.values()) {
-            if (language.getTerseName().equals(terseName)) {
-                return language;
-            }
-        }
-        return null;
+        return getInstance().languagesByTerseName.get(terseName);
     }
 
     public static LanguageVersion findLanguageVersionByTerseName(String terseNameAndVersion) {
@@ -108,7 +113,7 @@ public final class LanguageRegistry {
 
     public static List<Language> findByExtension(String extension) {
         List<Language> languages = new ArrayList<>();
-        for (Language language : getInstance().languages.values()) {
+        for (Language language : getLanguages()) {
             if (language.hasExtension(extension)) {
                 languages.add(language);
             }
