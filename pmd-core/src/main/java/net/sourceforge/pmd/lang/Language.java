@@ -92,7 +92,7 @@ public interface Language extends Comparable<Language> {
     boolean hasVersion(String version);
 
     /**
-     * Get the LanguageVersion for the version string from this Language.
+     * Get the LanguageVersion for the {@link LanguageVersion#getVersion() version string} from this Language.
      *
      * @param version
      *            The language version string.

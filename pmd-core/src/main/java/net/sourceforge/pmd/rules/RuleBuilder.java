@@ -171,11 +171,11 @@ public class RuleBuilder {
     }
 
     private void throwUnknownLanguageVersionException(String minOrMax, String unknownVersion) {
-        throw new IllegalArgumentException("Unknown " + minOrMax + " Language Version '" + unknownVersion
-                                           + "' for Language '" + language.getTerseName()
-                                           + "' for Rule " + name
-                                           + "; supported Language Versions are: "
-                                           + language.getVersions().stream().map(LanguageVersion::getTerseName).collect(Collectors.joining(", ")));
+        throw new IllegalArgumentException("Unknown " + minOrMax + " language version '" + unknownVersion
+                                           + "' for language '" + language.getTerseName()
+                                           + "' for rule " + name
+                                           + "; supported language versions are: "
+                                           + language.getVersions().stream().map(LanguageVersion::getVersion).collect(Collectors.joining(", ")));
     }
 
     public Rule build() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
