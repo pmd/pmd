@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * uniform names on related concepts. Maybe it makes sense to publish some of
  * them at some point.
  */
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 final class InternalInterfaces {
 
     private InternalInterfaces() {
