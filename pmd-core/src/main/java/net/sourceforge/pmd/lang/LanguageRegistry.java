@@ -16,8 +16,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Created by christoferdutz on 20.09.14.
  */
@@ -88,27 +86,6 @@ public final class LanguageRegistry {
 
     public static Language findLanguageByTerseName(String terseName) {
         return getInstance().languagesByTerseName.get(terseName);
-    }
-
-    public static LanguageVersion findLanguageVersionByTerseName(String terseNameAndVersion) {
-        String version;
-        String terseName;
-        if (terseNameAndVersion.contains(" ")) {
-            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
-            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
-        } else {
-            version = null;
-            terseName = terseNameAndVersion;
-        }
-        Language language = findLanguageByTerseName(terseName);
-        if (language != null) {
-            if (version == null) {
-                return language.getDefaultVersion();
-            } else {
-                return language.getVersion(version);
-            }
-        }
-        return null;
     }
 
     public static List<Language> findByExtension(String extension) {
