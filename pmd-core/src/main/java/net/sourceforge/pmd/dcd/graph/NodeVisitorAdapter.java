@@ -6,11 +6,15 @@ package net.sourceforge.pmd.dcd.graph;
 
 import java.util.List;
 
+import net.sourceforge.pmd.dcd.DCD;
+
 /**
  * Adapter class for easy implementation of a NodeVisitor. Subclasses need only
  * override methods to add behavior, and call <code>super</code> to continue the
  * visitation.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class NodeVisitorAdapter implements NodeVisitor {
 
     @Override

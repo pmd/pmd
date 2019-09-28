@@ -31,6 +31,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ##### For removal
 
+* pmd-core
+  * All the package {% jdoc_package core::dcd %} and its subpackages. See {% jdoc core::dcd.DCD %}.
 * pmd-java
   * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}

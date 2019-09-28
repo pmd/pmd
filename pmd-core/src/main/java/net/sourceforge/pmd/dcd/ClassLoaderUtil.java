@@ -11,7 +11,9 @@ import java.lang.reflect.Method;
 /**
  * ClassLoader utilities. Useful for extracting additional details from a class
  * hierarchy beyond the basic standard Java Reflection APIs.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public final class ClassLoaderUtil {
 
     public static final String CLINIT = "<clinit>";

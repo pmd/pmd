@@ -10,11 +10,14 @@ import java.lang.reflect.Constructor;
 import org.objectweb.asm.signature.SignatureReader;
 
 import net.sourceforge.pmd.dcd.ClassLoaderUtil;
+import net.sourceforge.pmd.dcd.DCD;
 import net.sourceforge.pmd.dcd.asm.TypeSignatureVisitor;
 
 /**
  * Represents a Class Constructor in a UsageGraph.
+ * @deprecated See {@link DCD}
  */
+@Deprecated
 public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>> {
 
     private WeakReference<Constructor<?>> constructorReference;
