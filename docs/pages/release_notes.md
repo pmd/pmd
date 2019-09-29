@@ -32,6 +32,7 @@ This is a {{ site.pmd.release_type }} release.
 
 *   core
     *   [#2014](https://github.com/pmd/pmd/issues/2014): \[core] Making add(SourceCode sourceCode) public for alternative file systems
+    *   [#2020](https://github.com/pmd/pmd/issues/2020): \[core] Wrong deprecation warnings for unused XPath attributes
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...

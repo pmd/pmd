@@ -90,7 +90,7 @@ public class BinaryDistributionIT {
 
     @Test
     public void runPMD() throws Exception {
-        String srcDir = new File(".", "src/test/resources/sample-source/").getAbsolutePath();
+        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
         ExecutionResult result;
 
@@ -98,10 +98,36 @@ public class BinaryDistributionIT {
         result.assertExecutionResult(0, "apex, ecmascript, java, jsp, plsql, pom, scala, vf, vm, wsdl, xml, xsl");
 
         result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
-        result.assertExecutionResult(4, "JumbledIncrementer.java:8:");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
 
         result = PMDExecutor.runPMDRules(tempDir, srcDir, "rulesets/java/quickstart.xml");
         result.assertExecutionResult(4, "");
+    }
+
+    @Test
+    public void testAllJavaRules() throws Exception {
+        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
+
+        ExecutionResult result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/all-java.xml");
+        assertDefaultExecutionResult(result);
+    }
+
+    @Test
+    public void testAllApexRules() throws Exception {
+        String srcDir = new File(".", "src/test/resources/sample-source/apex/").getAbsolutePath();
+
+        ExecutionResult result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/all-apex.xml");
+        assertDefaultExecutionResult(result);
+    }
+
+    private static void assertDefaultExecutionResult(ExecutionResult result) {
+        result.assertExecutionResult(4, "");
+
+        result.assertNoError("Exception applying rule");
+        result.assertNoError("Ruleset not found");
+        result.assertNoError("Use of deprecated attribute");
+        result.assertNoErrorInReport("Error while processing");
+        result.assertNoErrorInReport("Error while parsing");
     }
 
     @Test
