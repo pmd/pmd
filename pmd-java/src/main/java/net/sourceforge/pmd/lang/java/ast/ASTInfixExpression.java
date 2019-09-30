@@ -34,7 +34,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.BinaryExpressionLike
  * <img src="doc-files/binaryExpr_60x.svg" />
  * </figure>
  */
-public final class ASTInfixExpression extends AbstractJavaExpr implements InternalInterfaces.JSingleChildNode<ASTExpression>, LeftRecursiveNode, InternalInterfaces.BinaryExpressionLike {
+public final class ASTInfixExpression extends AbstractJavaExpr implements LeftRecursiveNode, InternalInterfaces.BinaryExpressionLike {
 
     private BinaryOp operator;
 
@@ -44,12 +44,6 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements Intern
 
     ASTInfixExpression(JavaParser p, int i) {
         super(p, i);
-    }
-
-
-    @Override
-    public ASTExpression jjtGetChild(int index) {
-        return (ASTExpression) super.jjtGetChild(index);
     }
 
 

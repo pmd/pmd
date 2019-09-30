@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.JSingleChildNode;
-
 
 /**
  * Represents a list of type arguments. This is different from {@linkplain ASTTypeParameters type parameters}!
@@ -18,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.JSingleChildNode;
  *                  | "&lt;" "&gt;"
  * </pre>
  */
-public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType>, JSingleChildNode<ASTType> {
+public final class ASTTypeArguments extends AbstractJavaNode implements Iterable<ASTType> {
 
     ASTTypeArguments(int id) {
         super(id);
@@ -39,10 +37,6 @@ public final class ASTTypeArguments extends AbstractJavaNode implements Iterable
         visitor.visit(this, data);
     }
 
-    @Override
-    public ASTType jjtGetChild(int index) {
-        return (ASTType) super.jjtGetChild(index);
-    }
 
     /**
      * Returns true if this is a diamond, that is, the

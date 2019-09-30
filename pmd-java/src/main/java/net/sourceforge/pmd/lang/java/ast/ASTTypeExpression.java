@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, InternalInterfaces.JSingleChildNode<ASTType> {
+public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression {
 
     ASTTypeExpression(ASTType wrapped) {
         super(JavaParserTreeConstants.JJTTYPEEXPRESSION);
@@ -51,14 +51,9 @@ public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrim
         visitor.visit(this, data);
     }
 
-    @Override
-    public ASTType jjtGetChild(int index) {
-        return (ASTType) super.jjtGetChild(index);
-    }
-
     /** Gets the wrapped type node. */
     public ASTType getTypeNode() {
-        return jjtGetChild(0);
+        return (ASTType) jjtGetChild(0);
     }
 
 
