@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -64,6 +65,30 @@ final class InternalInterfaces {
         @Nullable
         default ASTExpression getQualifier() {
             return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
+        }
+    }
+
+    /**
+     * Tags a node that has at least one child, then some methods never
+     * return null.
+     */
+    interface AtLeastOneChild extends JavaNode {
+
+        /** Returns the first child of this node, never null. */
+        @Override
+        @NonNull
+        default JavaNode getFirstChild() {
+            assert jjtGetNumChildren() > 0;
+            return jjtGetChild(0);
+        }
+
+
+        /** Returns the last child of this node, never null. */
+        @Override
+        @NonNull
+        default JavaNode getLastChild() {
+            assert jjtGetNumChildren() > 0;
+            return jjtGetChild(jjtGetNumChildren() - 1);
         }
     }
 

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
+
 
 /**
  * Represents array type dimensions. This node may occur in several contexts:
@@ -24,7 +26,7 @@ import java.util.Iterator;
  *
  * </pre>
  */
-public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim> {
+public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, AtLeastOneChild {
 
     ASTArrayDimensions(int id) {
         super(id);

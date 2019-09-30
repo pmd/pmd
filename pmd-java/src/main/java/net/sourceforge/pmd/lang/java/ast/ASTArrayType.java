@@ -31,7 +31,7 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         // an array type's annotations are on its dimensions
         // any annotations found before the element type apply to the
         // element type
-        return getDimensions().getLastChild().getDeclaredAnnotations();
+        return ((ASTArrayTypeDim) getDimensions().getLastChild()).getDeclaredAnnotations();
     }
 
     public ASTArrayDimensions getDimensions() {

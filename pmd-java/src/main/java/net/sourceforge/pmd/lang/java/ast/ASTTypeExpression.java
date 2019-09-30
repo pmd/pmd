@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 
 /**
  * Wraps a type node but presents the interface of {@link ASTExpression}.
  * This is only used in the following contexts:
  * <ul>
- * <li>As the right-hand side of {@link ASTInstanceOfExpression instanceof expressions},
- * to make it implement {@link ASTInfixExpression}.
+ * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof expressions}.
  * <li>As the qualifier of {@linkplain ASTMethodCall method calls},
  * {@link ASTFieldAccess field accesses}, when they access a static method or field
  * <li>As the qualifier of {@linkplain ASTMethodReference method references},
@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefin
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression {
+public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, AtLeastOneChild {
 
     ASTTypeExpression(ASTType wrapped) {
         super(JavaParserTreeConstants.JJTTYPEEXPRESSION);
