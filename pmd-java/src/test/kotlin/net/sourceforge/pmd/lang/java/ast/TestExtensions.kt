@@ -272,7 +272,7 @@ fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: ValuedNodeSpec<ASTInstan
         child<ASTInstanceOfExpression> {
             it::getOperator shouldBe BinaryOp.INSTANCEOF
             val rhs = assertions()
-            it::getRhs shouldBe rhs
+            it::getRightOperand shouldBe rhs
             it::getTypeNode shouldBe rhs.typeNode
         }
 

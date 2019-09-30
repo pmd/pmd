@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
  * A field access expression.
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpres
  *
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner, LeftRecursiveNode {
     ASTFieldAccess(int id) {
         super(id);
     }

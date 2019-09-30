@@ -48,13 +48,13 @@ public final class ASTInstanceOfExpression extends ASTInfixExpression implements
     }
 
     @Override
-    public ASTTypeExpression getRhs() {
+    public ASTTypeExpression getRightOperand() {
         return (ASTTypeExpression) jjtGetChild(1);
     }
 
     /** Gets the wrapped type node. */
     public ASTType getTypeNode() {
-        return getRhs().getTypeNode();
+        return getRightOperand().getTypeNode();
     }
 
     @Override

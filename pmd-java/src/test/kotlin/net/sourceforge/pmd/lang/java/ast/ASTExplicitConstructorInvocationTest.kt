@@ -24,7 +24,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::isThis shouldBe true
                 it::isSuper shouldBe false
                 it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+                it::getQualifier shouldBe null
 
                 it::getArgumentsList shouldBe child {}
             }
@@ -38,7 +38,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::isThis shouldBe true
                 it::isSuper shouldBe false
                 it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+                it::getQualifier shouldBe null
 
 
                 it::getExplicitTypeArguments shouldBe child {
@@ -60,7 +60,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::isThis shouldBe false
                 it::isSuper shouldBe true
                 it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+                it::getQualifier shouldBe null
                 it::getExplicitTypeArguments shouldBe null
 
                 it::getArgumentsList shouldBe child {}
@@ -76,7 +76,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::isThis shouldBe false
                 it::isSuper shouldBe true
                 it::isQualified shouldBe false
-                it::getLhsExpression shouldBe null
+                it::getQualifier shouldBe null
 
                 it::getExplicitTypeArguments shouldBe child {
                     classType("String")
@@ -101,7 +101,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::getArgumentCount shouldBe 0
 
                 it::getExplicitTypeArguments shouldBe null
-                it::getLhsExpression shouldBe variableAccess("o")
+                it::getQualifier shouldBe variableAccess("o")
 
                 it::getArgumentsList shouldBe child {}
             }
@@ -117,7 +117,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::isQualified shouldBe true
                 it::getArgumentCount shouldBe 0
 
-                it::getLhsExpression shouldBe variableAccess("o")
+                it::getQualifier shouldBe variableAccess("o")
 
                 it::getExplicitTypeArguments shouldBe child {
                     classType("String")
@@ -137,7 +137,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::isQualified shouldBe true
                 it::getArgumentCount shouldBe 0
 
-                it::getLhsExpression shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
+                it::getQualifier shouldBe child<ASTMethodCall>(ignoreChildren = true) { }
 
                 it::getExplicitTypeArguments shouldBe child {
                     classType("String")
@@ -158,7 +158,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::getExplicitTypeArguments shouldBe null
                 it::getArgumentCount shouldBe 0
 
-                it::getLhsExpression shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
+                it::getQualifier shouldBe child<ASTThisExpression>(ignoreChildren = true) { }
 
 
                 it::getArgumentsList shouldBe child { }
@@ -189,7 +189,7 @@ class ASTExplicitConstructorInvocationTest : ParserTestSpec({
                 it::getArgumentCount shouldBe 1
 
                 it::getExplicitTypeArguments shouldBe null
-                it::getLhsExpression shouldBe null
+                it::getQualifier shouldBe null
 
                 it::getArgumentsList shouldBe child {
                     child<ASTMethodCall> {

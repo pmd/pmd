@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.ASTQualifiableExpression;
+import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, LeftRecursiveNode, ASTQualifiableExpression {
+public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssignableExpr, LeftRecursiveNode, QualifierOwner {
     ASTArrayAccess(int id) {
         super(id);
     }

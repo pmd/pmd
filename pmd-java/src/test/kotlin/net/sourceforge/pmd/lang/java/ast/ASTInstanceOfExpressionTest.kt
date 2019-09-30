@@ -17,8 +17,8 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
 
             "f instanceof @A K" should parseAs {
                 child<ASTInstanceOfExpression> {
-                    it::getLhs shouldBe variableAccess("f")
-                    it::getRhs shouldBe typeExpr {
+                    it::getLeftOperand shouldBe variableAccess("f")
+                    it::getRightOperand shouldBe typeExpr {
                         classType("K") {
                             annotation("A")
                         }

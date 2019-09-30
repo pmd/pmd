@@ -34,13 +34,13 @@ final class InternalInterfaces {
     interface BinaryExpressionLike extends ASTExpression {
 
         /** Returns the left-hand-side operand. */
-        default ASTExpression getLhs() {
+        default ASTExpression getLeftOperand() {
             return (ASTExpression) jjtGetChild(0);
         }
 
 
         /** Returns the right-hand side operand. */
-        default ASTExpression getRhs() {
+        default ASTExpression getRightOperand() {
             return (ASTExpression) jjtGetChild(1);
         }
 
@@ -51,9 +51,10 @@ final class InternalInterfaces {
 
     /**
      * Node that may be qualified by an expression, e.g. an instance method call or
-     * inner class constructor invocation.
+     * inner class constructor invocation. This also works for {@link ASTExplicitConstructorInvocation}
+     * which is why this interface does not implement {@link ASTExpression}.
      */
-    interface ASTQualifiableExpression extends ASTExpression {
+    interface QualifierOwner extends JavaNode {
 
         /**
          * Returns the expression to the left of the "." if it exists.

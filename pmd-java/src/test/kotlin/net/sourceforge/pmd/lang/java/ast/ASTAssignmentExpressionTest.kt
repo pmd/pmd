@@ -16,9 +16,9 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOperator shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLhs shouldBe variableAccess("a", WRITE)
+            it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-            it::getRhs shouldBe child<ASTLambdaExpression> {
+            it::getRightOperand shouldBe child<ASTLambdaExpression> {
                 unspecifiedChildren(2)
             }
         }
@@ -27,17 +27,17 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOperator shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLhs shouldBe variableAccess("a", WRITE)
+            it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-            it::getRhs shouldBe int(2)
+            it::getRightOperand shouldBe int(2)
         }
 
         "a.b().f *= 2" should matchExpr<ASTAssignmentExpression> {
             it::getOperator shouldBe AssignmentOp.MUL_EQ
             it::isCompound shouldBe true
 
-            it::getLhs shouldBe fieldAccess("f", WRITE)
-            it::getRhs shouldBe int(2)
+            it::getLeftOperand shouldBe fieldAccess("f", WRITE)
+            it::getRightOperand shouldBe int(2)
 
         }
 
@@ -46,9 +46,9 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::isCompound shouldBe true
 
 
-            it::getLhs shouldBe variableAccess("a", WRITE)
+            it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-            it::getRhs shouldBe int(2)
+            it::getRightOperand shouldBe int(2)
         }
 
     }
@@ -59,13 +59,13 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
             it::getOperator shouldBe AssignmentOp.EQ
             it::isCompound shouldBe false
 
-            it::getLhs shouldBe variableAccess("a", WRITE)
+            it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-            it::getRhs shouldBe assignmentExpr(AssignmentOp.EQ) {
+            it::getRightOperand shouldBe assignmentExpr(AssignmentOp.EQ) {
                 it::isCompound shouldBe false
 
-                it::getLhs shouldBe variableAccess("b", WRITE)
-                it::getRhs shouldBe variableAccess("c", READ)
+                it::getLeftOperand shouldBe variableAccess("b", WRITE)
+                it::getRightOperand shouldBe variableAccess("c", READ)
             }
         }
     }

@@ -197,6 +197,24 @@ class ParenthesesTest : ParserTestSpec({
             }
         }
 
+//        TODO enable when #2034 is merged, grammar is different
+//        inContext(EnclosedDeclarationParsingCtx) {
+//
+//            """ // a constructor
+//                Foo() {
+//                    (a + 1).super();
+//                }
+//            """ should parseAs {
+//                child<ASTConstructorDeclaration> {
+//
+//
+//
+//                }
+//            }
+//
+//
+//        }
+
     }
 
 
