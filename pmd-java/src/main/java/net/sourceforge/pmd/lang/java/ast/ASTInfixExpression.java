@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
 
-import net.sf.saxon.expr.InstanceOfExpression;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.BinaryExpressionLike;
 
 /**
  * Represents a binary infix expression. {@linkplain ASTAssignmentExpression Assignment expressions}
@@ -21,8 +21,6 @@ import net.sf.saxon.expr.InstanceOfExpression;
  *
  * </pre>
  *
- * <p>Additionally, {@link InstanceOfExpression} specializes this type.
- *
  * <p>Binary expressions are all left-associative, and are parsed left-recursively.
  * For example, the expression {@code 1 * 2 * 3 % 4} parses as the following tree:
  *
@@ -36,7 +34,7 @@ import net.sf.saxon.expr.InstanceOfExpression;
  * <img src="doc-files/binaryExpr_60x.svg" />
  * </figure>
  */
-public class ASTInfixExpression extends AbstractJavaExpr implements InternalInterfaces.JSingleChildNode<ASTExpression>, LeftRecursiveNode, InternalInterfaces.BinaryExpressionLike {
+public final class ASTInfixExpression extends AbstractJavaExpr implements InternalInterfaces.JSingleChildNode<ASTExpression>, LeftRecursiveNode, InternalInterfaces.BinaryExpressionLike {
 
     private BinaryOp operator;
 
@@ -72,6 +70,16 @@ public class ASTInfixExpression extends AbstractJavaExpr implements InternalInte
         this.operator = Objects.requireNonNull(op);
     }
 
+    /**
+     * Returns the right-hand side operand.
+     *
+     * <p>If this is an {@linkplain BinaryOp#INSTANCEOF instanceof expression},
+     * then the right operand is a {@linkplain ASTTypeExpression TypeExpression}.
+     */
+    @Override
+    public ASTExpression getRightOperand() {
+        return BinaryExpressionLike.super.getRightOperand();
+    }
 
     /** Returns the operator. */
     @Override

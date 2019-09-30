@@ -268,13 +268,8 @@ fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInf
         }
 
 
-fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: ValuedNodeSpec<ASTInstanceOfExpression, ASTTypeExpression>) =
-        child<ASTInstanceOfExpression> {
-            it::getOperator shouldBe BinaryOp.INSTANCEOF
-            val rhs = assertions()
-            it::getRightOperand shouldBe rhs
-            it::getTypeNode shouldBe rhs.typeNode
-        }
+fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInfixExpression>) =
+        infixExpr(BinaryOp.INSTANCEOF, assertions)
 
 fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTInfixExpression>) =
         infixExpr(BinaryOp.AND, assertions)

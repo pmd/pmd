@@ -12,8 +12,11 @@ package net.sourceforge.pmd.lang.java.ast;
  * InstanceOfExpression ::= {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTTypeExpression TypeExpression}
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public final class ASTInstanceOfExpression extends ASTInfixExpression implements ASTExpression {
+@Deprecated
+public class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTInstanceOfExpression(int id) {
         super(id);
@@ -24,16 +27,8 @@ public final class ASTInstanceOfExpression extends ASTInfixExpression implements
         super(p, id);
     }
 
-    @Override
     public BinaryOp getOperator() {
         return BinaryOp.INSTANCEOF;
-    }
-
-    @Override
-    void setOp(BinaryOp op) {
-        if (op != BinaryOp.INSTANCEOF) {
-            throw new UnsupportedOperationException();
-        }
     }
 
     @Override
@@ -47,7 +42,6 @@ public final class ASTInstanceOfExpression extends ASTInfixExpression implements
         visitor.visit(this, data);
     }
 
-    @Override
     public ASTTypeExpression getRightOperand() {
         return (ASTTypeExpression) jjtGetChild(1);
     }
@@ -57,9 +51,4 @@ public final class ASTInstanceOfExpression extends ASTInfixExpression implements
         return getRightOperand().getTypeNode();
     }
 
-    @Override
-    public String getXPathNodeName() {
-        // keep it uniform for XPath
-        return "InfixExpression";
-    }
 }
