@@ -30,6 +30,12 @@ This is a {{ site.pmd.release_type }} release.
 
 * pmd-core
   * All the package {% jdoc_package core::dcd %} and its subpackages. See {% jdoc core::dcd.DCD %}.
+  * In {% jdoc core::lang.LanguageRegistry %}:
+    * {% jdoc core::lang.LanguageRegistry#commaSeparatedTerseNamesForLanguageVersion(List) %}
+    * {% jdoc core::lang.LanguageRegistry#commaSeparatedTerseNamesForLanguage(List) %}
+    * {% jdoc core::lang.LanguageRegistry#findAllVersions() %}
+    * {% jdoc core::lang.LanguageRegistry#findLanguageVersionByTerseName(String) %}
+    * {% jdoc core::lang.LanguageRegistry#getInstance() %}
 * pmd-java
   * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
