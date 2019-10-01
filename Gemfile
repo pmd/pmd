@@ -2,7 +2,6 @@ source 'https://rubygems.org/'
 
 gem 'pmdtester', :git => 'https://github.com/pmd/pmd-regression-tester.git'
 gem 'danger', '~> 5.6', '>= 5.6'
-gem 'faraday', '<0.16.0' # see pmd/pmd#2040
 
 # This group is only needed for rendering release notes
 # this happens during release (.travis/release.sh and do-release.sh)
