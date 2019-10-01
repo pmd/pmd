@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,9 +51,12 @@ public class RuleSet implements ChecksumAware {
     private final String name;
     private final String description;
 
-    // TODO should these not be Sets or is their order important?
-    private final List<String> excludePatterns;
-    private final List<String> includePatterns;
+    /*
+     * Order is unimportant, but we preserve the order given by the user to be deterministic.
+     * Using Sets is useless, since Pattern does not override #equals anyway.
+     */
+    private final List<Pattern> excludePatterns;
+    private final List<Pattern> includePatterns;
 
     private final Filter<File> filter;
 
@@ -74,7 +76,10 @@ public class RuleSet implements ChecksumAware {
         excludePatterns = Collections.unmodifiableList(new ArrayList<>(builder.excludePatterns));
         includePatterns = Collections.unmodifiableList(new ArrayList<>(builder.includePatterns));
 
-        final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
+        // Remapping back to string is shitty but the Filter API can be replaced
+        // entirely with standard JDK Predicates, so we can forget about this until 7.0.0.
+
+        final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(getIncludePatterns(), getExcludePatterns());
         filter = Filters.toNormalizedFileFilter(regexFilter);
     }
 
@@ -95,12 +100,13 @@ public class RuleSet implements ChecksumAware {
     }
 
     /* package */ static class RuleSetBuilder {
+
         public String description;
         public String name;
         public String fileName;
         private final List<Rule> rules = new ArrayList<>();
-        private final Set<String> excludePatterns = new LinkedHashSet<>();
-        private final Set<String> includePatterns = new LinkedHashSet<>();
+        private final Set<Pattern> excludePatterns = new LinkedHashSet<>();
+        private final Set<Pattern> includePatterns = new LinkedHashSet<>();
         private final long checksum;
 
         /* package */ RuleSetBuilder(final long checksum) {
@@ -113,8 +119,8 @@ public class RuleSet implements ChecksumAware {
             this.withName(original.getName())
                 .withDescription(original.getDescription())
                 .withFileName(original.getFileName())
-                .setExcludePatterns(original.getExcludePatterns())
-                .setIncludePatterns(original.getIncludePatterns());
+                .replaceFileExclusions(original.getFileExclusions())
+                .replaceFileInclusions(original.getFileInclusions());
             addRuleSet(original);
         }
 
@@ -296,34 +302,40 @@ public class RuleSet implements ChecksumAware {
         }
 
         /**
-         * Adds a new file exclusion pattern. The pattern must be a valid
-         * regular expression. If it is not, the pattern is ignored and the
-         * error is logged. With 7.0.0 we'll throw an exception instead.
+         * Adds some new file exclusion patterns.
          *
-         * @param aPattern A valid regular expression
+         * @param p1   The first pattern
+         * @param rest Additional patterns
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addExcludePattern(final String aPattern) {
-            try {
-                Pattern.compile(aPattern);
-            } catch (PatternSyntaxException pse) {
-                LOG.warning(pse.getMessage());
-                return this;
+        public RuleSetBuilder withFileExclusions(Pattern p1, Pattern... rest) {
+            Objects.requireNonNull(p1, "Pattern was null");
+            Objects.requireNonNull(rest, "Other patterns was null");
+            excludePatterns.add(p1);
+            for (Pattern p : rest) {
+                Objects.requireNonNull(p, "Pattern was null");
+                excludePatterns.add(p);
             }
-
-            excludePatterns.add(aPattern);
             return this;
         }
 
         /**
-         * Adds new file exclusion patterns.
+         * Adds some new file exclusion patterns.
          *
-         * @param patterns A collection of valid regular expressions
+         * @param patterns Exclusion patterns to add
          *
-         * @see #addExcludePattern(String)
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addExcludePatterns(final Collection<String> patterns) {
-            for (String exclude : patterns) {
-                addExcludePattern(exclude);
+        public RuleSetBuilder withFileExclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                excludePatterns.add(p);
             }
             return this;
         }
@@ -331,28 +343,58 @@ public class RuleSet implements ChecksumAware {
         /**
          * Replaces the existing exclusion patterns with the given patterns.
          *
-         * @param patterns A collection of valid regular expressions
+         * @param patterns Exclusion patterns to set
          *
-         * @see #addExcludePattern(String)
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder setExcludePatterns(final Collection<String> patterns) {
-            if (!excludePatterns.equals(patterns)) {
-                excludePatterns.clear();
-                addExcludePatterns(patterns);
+        public RuleSetBuilder replaceFileExclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            excludePatterns.clear();
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                excludePatterns.add(p);
+            }
+            return this;
+        }
+
+
+        /**
+         * Adds some new file inclusion patterns.
+         *
+         * @param p1   The first pattern
+         * @param rest Additional patterns
+         *
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
+         */
+        public RuleSetBuilder withFileInclusions(Pattern p1, Pattern... rest) {
+            Objects.requireNonNull(p1, "Pattern was null");
+            Objects.requireNonNull(rest, "Other patterns was null");
+            includePatterns.add(p1);
+            for (Pattern p : rest) {
+                Objects.requireNonNull(p, "Pattern was null");
+                includePatterns.add(p);
             }
             return this;
         }
 
         /**
-         * Adds new inclusion patterns.
+         * Adds some new file inclusion patterns.
          *
-         * @param patterns A collection of valid regular expressions
+         * @param patterns Inclusion patterns to add
          *
-         * @see #addIncludePattern(String)
+         * @return This builder
+         *
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addIncludePatterns(final Collection<String> patterns) {
-            for (String exclude : patterns) {
-                addIncludePattern(exclude);
+        public RuleSetBuilder withFileInclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                includePatterns.add(p);
             }
             return this;
         }
@@ -360,35 +402,19 @@ public class RuleSet implements ChecksumAware {
         /**
          * Replaces the existing inclusion patterns with the given patterns.
          *
-         * @param patterns A collection of valid regular expressions
+         * @param patterns Inclusion patterns to set
          *
-         * @see #addIncludePattern(String)
-         */
-        public RuleSetBuilder setIncludePatterns(final Collection<String> patterns) {
-            if (!includePatterns.equals(patterns)) {
-                includePatterns.clear();
-                addIncludePatterns(patterns);
-            }
-
-            return this;
-        }
-
-        /**
-         * Adds a new inclusion pattern. The pattern must be a valid
-         * regular expression. If it is not, the pattern is ignored and the
-         * error is logged. With 7.0.0 we'll throw an exception instead.
+         * @return This builder
          *
-         * @param aPattern A valid regular expression
+         * @throws NullPointerException If any of the specified patterns is null
          */
-        public RuleSetBuilder addIncludePattern(final String aPattern) {
-            try {
-                Pattern.compile(aPattern);
-            } catch (PatternSyntaxException pse) {
-                LOG.warning(pse.getMessage());
-                return this;
+        public RuleSetBuilder replaceFileInclusions(Collection<? extends Pattern> patterns) {
+            Objects.requireNonNull(patterns, "Pattern collection was null");
+            includePatterns.clear();
+            for (Pattern p : patterns) {
+                Objects.requireNonNull(p, "Pattern was null");
+                includePatterns.add(p);
             }
-
-            includePatterns.add(aPattern);
             return this;
         }
 
@@ -429,6 +455,18 @@ public class RuleSet implements ChecksumAware {
                 }
             }
         }
+    }
+
+    /**
+     * @deprecated Use {@link #getFileExclusions()}
+     */
+    @Deprecated
+    public List<String> getExcludePatterns() {
+        List<String> excludes = new ArrayList<>();
+        for (Pattern p : excludePatterns) {
+            excludes.add(p.pattern());
+        }
+        return excludes;
     }
 
     /**
@@ -605,11 +643,29 @@ public class RuleSet implements ChecksumAware {
         return description;
     }
 
-    public List<String> getExcludePatterns() {
+    /**
+     * @deprecated Use {@link #getFileInclusions()}
+     */
+    @Deprecated
+    public List<String> getIncludePatterns() {
+        List<String> includes = new ArrayList<>();
+        for (Pattern p : includePatterns) {
+            includes.add(p.pattern());
+        }
+        return includes;
+    }
+
+    /**
+     * Returns the file exclusion patterns as an unmodifiable list.
+     */
+    public List<Pattern> getFileExclusions() {
         return excludePatterns;
     }
 
-    public List<String> getIncludePatterns() {
+    /**
+     * Returns the file inclusion patterns as an unmodifiable list.
+     */
+    public List<Pattern> getFileInclusions() {
         return includePatterns;
     }
 
