@@ -47,8 +47,8 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
   * {% jdoc java::lang.java.rule.JavaRuleViolation#isSupressed(Node,Rule) %}
 * pmd-apex
-  * {% jdoc java::lang.apex.ast.CanSuppressWarnings %} and its implementations
-  * {% jdoc java::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}
+  * {% jdoc apex::lang.apex.ast.CanSuppressWarnings %} and its implementations
+  * {% jdoc apex::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}
 
 
 ### External Contributions
