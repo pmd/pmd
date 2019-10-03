@@ -2989,6 +2989,7 @@ void CatchParameter() :
 {boolean isFinal = false;}
 {
    isFinal=LocalVarModifierList() UnionType() VariableDeclaratorId()
+   {jjtThis.setFinal(isFinal);}
 }
 
 // Special type for catch formal parameters

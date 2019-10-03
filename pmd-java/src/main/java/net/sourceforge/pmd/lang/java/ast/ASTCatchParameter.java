@@ -4,15 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.InternalApi;
-
-
 /**
  * Formal parameter of a {@linkplain ASTCatchStatement catch statement}.
  * The type node may be a {@link ASTUnionType union type}, which represents
  * multi-catch clauses.
- *
- * TODO warning suppression
  *
  * <pre class="grammar">
  *
@@ -24,9 +19,7 @@ public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatab
 
     private boolean isFinal;
 
-    @InternalApi
-    @Deprecated
-    public ASTCatchParameter(int id) {
+    ASTCatchParameter(int id) {
         super(id);
     }
 
@@ -43,10 +36,6 @@ public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatab
         isFinal = f;
     }
 
-    public String getName() {
-        return getVariableId().getVariableName();
-    }
-
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
@@ -58,10 +47,12 @@ public class ASTCatchParameter extends AbstractJavaTypeNode implements Annotatab
         visitor.visit(this, data);
     }
 
+    /** Returns the name of the variable. */
+    public String getName() {
+        return getVariableId().getVariableName();
+    }
 
-    /**
-     * Returns the declarator ID of this catch parameter.
-     */
+    /** Returns the declarator ID of this catch parameter. */
     public ASTVariableDeclaratorId getVariableId() {
         return (ASTVariableDeclaratorId) getLastChild();
     }
