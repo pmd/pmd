@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   java-codestyle
     *    [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
+*   java-design
+    *   [#1912](https://github.com/pmd/pmd/issues/1912): \[java] Metrics not computed correctly with annotations
 
 ### API Changes
 
@@ -36,6 +38,8 @@ This is a {{ site.pmd.release_type }} release.
 
 
 ### External Contributions
+
+*   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
 
 {% endtocmaker %}
 
