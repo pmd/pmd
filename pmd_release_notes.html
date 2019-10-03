@@ -1295,6 +1295,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2036">#2036</a>: [core] Wrong include/exclude patterns are silently ignored</li>
+    </ul>
+  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2042">#2042</a>: [java] PMD crashes with ClassFormatError: Absent Code attribute…</li>
@@ -1331,6 +1336,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
           <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getInstance()"><code class="highlighter-rouge">getInstance</code></a></li>
         </ul>
       </li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getExcludePatterns()"><code class="highlighter-rouge">RuleSet#getExcludePatterns</code></a>. Use the new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileExclusions()"><code class="highlighter-rouge">getFileExclusions</code></a> instead.</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getIncludePatterns()"><code class="highlighter-rouge">RuleSet#getIncludePatterns</code></a>. Use the new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileInclusions()"><code class="highlighter-rouge">getFileInclusions</code></a> instead.</li>
     </ul>
   </li>
   <li>pmd-java
@@ -1342,8 +1349,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   </li>
   <li>pmd-apex
     <ul>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/apex/ast/CanSuppressWarnings.html#"><code class="highlighter-rouge">CanSuppressWarnings</code></a> and its implementations</li>
-      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/apex/rule/ApexRuleViolation.html#isSupressed(Node,Rule)"><code class="highlighter-rouge">isSupressed</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.19.0/net/sourceforge/pmd/lang/apex/ast/CanSuppressWarnings.html#"><code class="highlighter-rouge">CanSuppressWarnings</code></a> and its implementations</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.19.0/net/sourceforge/pmd/lang/apex/rule/ApexRuleViolation.html#isSupressed(Node,Rule)"><code class="highlighter-rouge">isSupressed</code></a></li>
     </ul>
   </li>
 </ul>
