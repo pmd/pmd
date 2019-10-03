@@ -76,8 +76,9 @@ public class RuleSet implements ChecksumAware {
         excludePatterns = Collections.unmodifiableList(new ArrayList<>(builder.excludePatterns));
         includePatterns = Collections.unmodifiableList(new ArrayList<>(builder.includePatterns));
 
-        // Remapping back to string is shitty but the Filter API can be replaced
-        // entirely with standard JDK Predicates, so we can forget about this until 7.0.0.
+        // Remapping back to string is not great but the only way to keep the Filter API
+        // compatible in PMD 6. The Filter API can be replaced
+        // entirely with standard JDK Predicates in PMD 7, so we can forget about this until 7.0.0.
 
         final Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(getIncludePatterns(), getExcludePatterns());
         filter = Filters.toNormalizedFileFilter(regexFilter);
