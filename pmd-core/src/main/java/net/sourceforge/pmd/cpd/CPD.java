@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FilenameUtils;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.database.DBMSMetadata;
@@ -130,6 +131,7 @@ public class CPD {
         }
     }
 
+    @Experimental
     public void add(SourceCode sourceCode) throws IOException {
         if (configuration.isSkipLexicalErrors()) {
             addAndSkipLexicalErrors(sourceCode);
