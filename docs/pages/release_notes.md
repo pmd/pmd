@@ -16,6 +16,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
+*   core
+    *   [#2014](https://github.com/pmd/pmd/issues/2014): \[core] Making add(SourceCode sourceCode) public for alternative file systems
 *   java-codestyle
     *    [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
 
@@ -36,6 +38,8 @@ This is a {{ site.pmd.release_type }} release.
 
 
 ### External Contributions
+
+*   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
 
 {% endtocmaker %}
 
