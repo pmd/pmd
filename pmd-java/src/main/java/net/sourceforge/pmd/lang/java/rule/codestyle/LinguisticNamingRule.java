@@ -81,24 +81,24 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
         if (!hasIgnoredAnnotation(node)) {
-            String nameOfMethod = node.getMethodName();
+            String nameOfMethod = node.getName();
 
             if (getProperty(CHECK_BOOLEAN_METHODS)) {
                 checkBooleanMethods(node, data, nameOfMethod);
             }
-    
+
             if (getProperty(CHECK_SETTERS)) {
                 checkSetters(node, data, nameOfMethod);
             }
-    
+
             if (getProperty(CHECK_GETTERS)) {
                 checkGetters(node, data, nameOfMethod);
             }
-    
+
             if (getProperty(CHECK_PREFIXED_TRANSFORM_METHODS)) {
                 checkPrefixedTransformMethods(node, data, nameOfMethod);
             }
-    
+
             if (getProperty(CHECK_TRANSFORM_METHODS)) {
                 checkTransformMethods(node, data, nameOfMethod);
             }

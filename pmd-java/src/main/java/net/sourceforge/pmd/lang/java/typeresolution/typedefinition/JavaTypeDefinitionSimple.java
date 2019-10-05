@@ -65,7 +65,15 @@ import java.util.logging.Logger;
             this.genericArgs = NO_GENERICS;
         }
 
-        enclosingClass = forClass(clazz.getEnclosingClass());
+        Class<?> enclosing = null;
+        try {
+            enclosing = clazz.getEnclosingClass();
+        } catch (LinkageError e) {
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.log(Level.WARNING, "Could not load enclosing class of " + clazz.getName() + ", due to: " + e);
+            }
+        }
+        enclosingClass = forClass(enclosing);
     }
 
     @Override

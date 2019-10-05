@@ -60,6 +60,10 @@ public final class LanguageRegistry {
         languagesByTerseName = Collections.unmodifiableMap(byTerseName);
     }
 
+    /**
+     * @deprecated Use the static methods instead, will be made private
+     */
+    @Deprecated
     public static LanguageRegistry getInstance() {
         return instance;
     }

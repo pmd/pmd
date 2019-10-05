@@ -15,6 +15,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import javax.xml.parsers.DocumentBuilder;
@@ -245,23 +247,39 @@ public class RuleSetFactory {
      * @param name the name of the ruleset
      * @param description the description
      * @param fileName the filename
-     * @param excludePatterns list of exclude patterns
-     * @param includePatterns list of include patterns
+     * @param excludePatterns list of exclude patterns, if any is not a valid regular expression, it will be ignored
+     * @param includePatterns list of include patterns, if any is not a valid regular expression, it will be ignored
      * @param rules the collection with the rules to add to the new ruleset
      * @return the new ruleset
      */
-    public RuleSet createNewRuleSet(String name, String description, String fileName, Collection<String> excludePatterns,
-            Collection<String> includePatterns, Collection<Rule> rules) {
+    public RuleSet createNewRuleSet(String name,
+                                    String description,
+                                    String fileName,
+                                    Collection<String> excludePatterns,
+                                    Collection<String> includePatterns,
+                                    Collection<Rule> rules) {
         RuleSetBuilder builder = new RuleSetBuilder(0L); // TODO: checksum missing
         builder.withName(name)
-            .withDescription(description)
-            .withFileName(fileName)
-            .setExcludePatterns(excludePatterns)
-            .setIncludePatterns(includePatterns);
+               .withDescription(description)
+               .withFileName(fileName)
+               .replaceFileExclusions(toPatterns(excludePatterns))
+               .replaceFileInclusions(toPatterns(includePatterns));
         for (Rule rule : rules) {
             builder.addRule(rule);
         }
         return builder.build();
+    }
+
+    private Collection<Pattern> toPatterns(Collection<String> sources) {
+        List<Pattern> result = new ArrayList<>();
+        for (String s : sources) {
+            try {
+                result.add(Pattern.compile(s));
+            } catch (PatternSyntaxException ignored) {
+
+            }
+        }
+        return result;
     }
 
     /**
@@ -357,12 +375,21 @@ public class RuleSetFactory {
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     String nodeName = node.getNodeName();
+                    String text = parseTextNode(node);
                     if (DESCRIPTION.equals(nodeName)) {
-                        ruleSetBuilder.withDescription(parseTextNode(node));
+                        ruleSetBuilder.withDescription(text);
                     } else if ("include-pattern".equals(nodeName)) {
-                        ruleSetBuilder.addIncludePattern(parseTextNode(node));
+                        final Pattern pattern = parseRegex(text);
+                        if (pattern == null) {
+                            continue;
+                        }
+                        ruleSetBuilder.withFileInclusions(pattern);
                     } else if ("exclude-pattern".equals(nodeName)) {
-                        ruleSetBuilder.addExcludePattern(parseTextNode(node));
+                        final Pattern pattern = parseRegex(text);
+                        if (pattern == null) {
+                            continue;
+                        }
+                        ruleSetBuilder.withFileExclusions(pattern);
                     } else if ("rule".equals(nodeName)) {
                         parseRuleNode(ruleSetReferenceId, ruleSetBuilder, node, withDeprecatedRuleReferences);
                     } else {
@@ -389,9 +416,21 @@ public class RuleSetFactory {
         }
     }
 
+    private Pattern parseRegex(String text) {
+        final Pattern pattern;
+        try {
+            pattern = Pattern.compile(text);
+        } catch (PatternSyntaxException pse) {
+            LOG.warning(pse.getMessage());
+            return null;
+        }
+        return pattern;
+    }
+
+
     private DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        
+
         try {
             /*
              * parser hardening
