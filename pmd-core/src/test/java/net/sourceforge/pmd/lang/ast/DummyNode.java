@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DummyNode extends AbstractNode {
     private final boolean findBoundary;
-    
+    private final Map<String, String> userData = new HashMap<>();
+
     public DummyNode(int id) {
         this(id, false);
     }
@@ -29,5 +33,10 @@ public class DummyNode extends AbstractNode {
     @Override
     public boolean isFindBoundary() {
         return findBoundary;
+    }
+
+    @Override
+    public Map<String, String> getUserData() {
+        return userData;
     }
 }

@@ -68,6 +68,7 @@ public class]]></replacevalue>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTDivNode.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTEscape.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTMethod.java"/>
+        <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTprocess.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTModNode.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTMulNode.java"/>
         <delete file="${target}/net/sourceforge/pmd/lang/vm/ast/ASTReference.java"/>

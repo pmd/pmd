@@ -33,11 +33,13 @@
  */
 grammar Swift;
 
-/*
 @header {
-package com.sleekbyte.tailor.antlr;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.*;
 }
-*/
+
+options {
+    contextSuperClass = AntlrBaseNode;
+}
 
 topLevel : statements? EOF ;
 

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
@@ -78,7 +79,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
+                    DummyNode node = new DummyRootNode(1);
                     node.testingOnlySetBeginLine(1);
                     node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
@@ -96,6 +97,14 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
             };
         }
+    }
+
+    private static class DummyRootNode extends DummyNode implements RootNode {
+
+        DummyRootNode(int id) {
+            super(id);
+        }
+
     }
 
     public static class RuleViolationFactory extends AbstractRuleViolationFactory {

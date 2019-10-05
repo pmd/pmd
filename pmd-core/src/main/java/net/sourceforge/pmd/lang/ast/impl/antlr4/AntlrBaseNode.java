@@ -1,13 +1,14 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.ast;
+package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 
 public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
@@ -101,7 +102,7 @@ public class AntlrBaseNode extends ParserRuleContext implements AntlrNode {
     public int jjtGetNumChildren() {
         return (int) childrenStream().count();
     }
-    
+
     private Stream<Node> childrenStream() {
         return children == null ? Stream.empty() : children.stream().filter(e -> e instanceof Node).map(e -> (Node) e);
     }

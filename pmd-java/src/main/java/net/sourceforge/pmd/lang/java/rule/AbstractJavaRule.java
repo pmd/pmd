@@ -121,7 +121,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         if (!(stage instanceof JavaProcessingStage)) {
             throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
         }
-        return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
+
+        return stage != JavaProcessingStage.DFA || isDfa();
     }
 
     // FIXME those are not in sync with JavaParserVisitorAdapter
