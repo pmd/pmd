@@ -1295,8 +1295,16 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h4 id="modified-rules">Modified Rules</h4>
 
 <ul>
-  <li>The Java rules <a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat"><code class="highlighter-rouge">InvalidSlf4jMessageFormat</code></a> and <a href="pmd_rules_java_errorprone.html#morethanonelogger"><code class="highlighter-rouge">MoreThanOneLogger</code></a>
-(<code class="highlighter-rouge">java-errorprone</code>) now both support <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a>.</li>
+  <li>
+    <p>The Java rules <a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat"><code class="highlighter-rouge">InvalidSlf4jMessageFormat</code></a> and <a href="pmd_rules_java_errorprone.html#morethanonelogger"><code class="highlighter-rouge">MoreThanOneLogger</code></a>
+(<code class="highlighter-rouge">java-errorprone</code>) now both support <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a>.</p>
+  </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_design.html#lawofdemeter"><code class="highlighter-rouge">LawOfDemeter</code></a> (<code class="highlighter-rouge">java-design</code>) ignores now also Builders, that are
+not assigned to a local variable, but just directly used within a method call chain. The method, that creates
+the builder needs to end with “Builder”, e.g. <code class="highlighter-rouge">newBuilder()</code> or <code class="highlighter-rouge">initBuilder()</code> works. This change
+fixes a couple of false positives.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1376,6 +1384,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/2010">#2010</a>: [java] LawOfDemeter to support inner builder pattern - <a href="https://github.com/gregorriegler">Gregor Riegler</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2012">#2012</a>: [java] Fixes 336, slf4j log4j2 support - <a href="https://github.com/markhall82">Mark Hall</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2032">#2032</a>: [core] Allow adding SourceCode directly into CPD - <a href="https://github.com/nbraun-Google">Nathan Braun</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2047">#2047</a>: [java] Fix computation of metrics with annotations - <a href="https://github.com/andipabst">Andi</a></li>
