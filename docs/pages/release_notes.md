@@ -44,6 +44,9 @@ about the usage and features of the rule designer.
     The stream returned by `Files::lines(Path)` is backed by a actual file and needs to be closed. These instances
     won't be found by default by the rule anymore.
 
+*   The Java rules {% rule "java/errorprone/InvalidSlf4jMessageFormat" %} and {% rule "java/errorprone/MoreThanOneLogger" %}
+    (`java-errorprone`) now both support [Log4j2](https://logging.apache.org/log4j/2.x/).
+
 ### Fixed Issues
 
 *   all
@@ -59,6 +62,7 @@ about the usage and features of the rule designer.
 *   java-codestyle
     *   [#1951](https://github.com/pmd/pmd/issues/1951): \[java] UnnecessaryFullyQualifiedName rule triggered when variable name clashes with package name
 *   java-errorprone
+    *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
     *   [#1922](https://github.com/pmd/pmd/issues/1922): \[java] CloseResource possible false positive with Streams
     *   [#1966](https://github.com/pmd/pmd/issues/1966): \[java] CloseResource false positive if Stream is passed as method parameter
     *   [#1967](https://github.com/pmd/pmd/issues/1967): \[java] CloseResource false positive with late assignment of variable
@@ -120,6 +124,7 @@ about the usage and features of the rule designer.
 *   [#1977](https://github.com/pmd/pmd/pull/1977): \[plsql] fix for skipping sql starting with WITH - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1986](https://github.com/pmd/pmd/pull/1986): \[plsql] Fix for cursors in anonymous blocks - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
+*   [#2012](https://github.com/pmd/pmd/pull/2012): \[java] Fixes 336, slf4j log4j2 support - [Mark Hall](https://github.com/markhall82)
 
 {% endtocmaker %}
 
