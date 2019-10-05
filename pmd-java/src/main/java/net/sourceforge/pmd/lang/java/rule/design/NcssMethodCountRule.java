@@ -9,7 +9,7 @@ import net.sourceforge.pmd.stat.DataPoint;
 
 /**
  * Non-commented source statement counter for methods.
- * 
+ *
  * @author Jason Bennett
  */
 @Deprecated
@@ -30,7 +30,7 @@ public class NcssMethodCountRule extends AbstractNcssCountRule {
 
     @Override
     public Object[] getViolationParameters(DataPoint point) {
-        return new String[] { ((ASTMethodDeclaration) point.getNode()).getMethodName(),
-            String.valueOf((int) point.getScore()), };
+        return new String[] {((ASTMethodDeclaration) point.getNode()).getName(),
+                             String.valueOf((int) point.getScore()), };
     }
 }

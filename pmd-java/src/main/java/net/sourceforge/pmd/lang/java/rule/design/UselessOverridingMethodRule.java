@@ -117,12 +117,12 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         // We can also skip the 'clone' method as they are generally
         // 'useless' but as it is considered a 'good practice' to
         // implement them anyway ( see bug 1522517)
-        if (CLONE.equals(node.getMethodName()) && node.isPublic() && !this.hasArguments(node)
+        if (CLONE.equals(node.getName()) && node.isPublic() && !this.hasArguments(node)
                 && this.isMethodType(node, OBJECT) && this.isMethodThrowingType(node, exceptions)) {
             return super.visit(node, data);
         }
 
-        ASTBlock block = node.getBlock();
+        ASTBlock block = node.getBody();
         if (block == null) {
             return super.visit(node, data);
         }
