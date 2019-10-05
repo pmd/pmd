@@ -21,21 +21,15 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     /**
      * Specify the node types to visit as parameters.
      *
-     * FIXME find a clean way to visit abstract node types with the rule chain
-     *
      * @param first  The first node, there must be at least one
      * @param visits The rest
      */
     @SafeVarargs
     @Experimental
     public AbstractJavaRulechainRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {
-        if (!isAbstract(first)) {
-            addRuleChainVisit(first);
-        }
+        addRuleChainVisit(first);
         for (Class<? extends JavaNode> visit : visits) {
-            if (!isAbstract(visit)) {
-                addRuleChainVisit(visit);
-            }
+            addRuleChainVisit(visit);
         }
     }
 

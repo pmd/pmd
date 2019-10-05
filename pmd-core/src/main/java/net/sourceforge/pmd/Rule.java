@@ -349,6 +349,7 @@ public interface Rule extends PropertySource {
      * @param ctx
      *            the rule context
      */
+    // TODO should be apply(Node), apply(List) hides exceptions and implementation is duplicated
     void apply(List<? extends Node> nodes, RuleContext ctx);
 
     /**
