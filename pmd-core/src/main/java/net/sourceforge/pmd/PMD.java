@@ -503,6 +503,7 @@ public class PMD {
                 final TimingReportRenderer renderer = new TextTimingReportRenderer();
                 try {
                     // Don't close this writer, we don't want to close stderr
+                    @SuppressWarnings("PMD.CloseResource")
                     final Writer writer = new OutputStreamWriter(System.err);
                     renderer.render(timingReport, writer);
                 } catch (final IOException e) {

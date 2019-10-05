@@ -164,9 +164,9 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            InputStream stream = rl.loadClassPathResourceAsStream(r);
-            assertNotNull(stream);
-            stream.close();
+            try (InputStream stream = rl.loadClassPathResourceAsStream(r)) {
+                assertNotNull(stream);
+            }
             RuleSet ruleset = factory.createRuleSet(r);
             assertNotNull(ruleset);
         }

@@ -144,8 +144,8 @@ public final class Benchmarker {
 
         long start = System.currentTimeMillis();
 
-        for (DataSource dataSource : dataSources) {
-            try (InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
+        for (DataSource ds : dataSources) {
+            try (DataSource dataSource = ds; InputStreamReader reader = new InputStreamReader(dataSource.getInputStream())) {
                 parser.parse(dataSource.getNiceFileName(false, null), reader);
             }
         }
@@ -188,8 +188,8 @@ public final class Benchmarker {
 
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (DataSource dataSource : dataSources) {
-                try (InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
+            for (DataSource ds : dataSources) {
+                try (DataSource dataSource = ds; InputStream stream = new BufferedInputStream(dataSource.getInputStream())) {
                     ctx.setSourceCodeFile(new File(dataSource.getNiceFileName(false, null)));
                     new SourceCodeProcessor(config).processSourceCode(stream, ruleSets, ctx);
                 }
