@@ -92,6 +92,7 @@ public class SourceCodeProcessor {
             }
 
             try {
+                RuleContextHolder.set(ctx);
                 ruleSets.start(ctx);
                 processSource(sourceCode, ruleSets, ctx);
             } catch (ParseException pe) {
@@ -102,6 +103,7 @@ public class SourceCodeProcessor {
                 throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
             } finally {
                 ruleSets.end(ctx);
+                RuleContextHolder.reset();
             }
         }
     }

@@ -12,6 +12,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleContextHolder;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -76,9 +79,9 @@ public class Attribute {
         }
 
         if (method.isAnnotationPresent(Deprecated.class) && LOG.isLoggable(Level.WARNING)
-                && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getLoggableAttributeName(), Boolean.TRUE) == null) {
+                && DETECTED_DEPRECATED_ATTRIBUTES.putIfAbsent(getRuleName() + ":" + getLoggableAttributeName(), Boolean.TRUE) == null) {
             // this message needs to be kept in sync with PMDCoverageTest
-            LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in XPath query");
+            LOG.warning("Use of deprecated attribute '" + getLoggableAttributeName() + "' in XPath query in rule '" + getRuleName() + "'.");
         }
 
         // this lazy loading reduces calls to Method.invoke() by about 90%
@@ -126,6 +129,15 @@ public class Attribute {
 
     private String getLoggableAttributeName() {
         return parent.getXPathNodeName() + "/@" + name;
+    }
+
+    private String getRuleName() {
+        RuleContext ctx = RuleContextHolder.get();
+        if (ctx != null && ctx.getCurrentRule() != null) {
+            Rule rule = ctx.getCurrentRule();
+            return rule.getRuleSetName() + "/" + rule.getName();
+        }
+        return "unknown rule";
     }
 
     @Override

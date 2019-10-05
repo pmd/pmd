@@ -15,8 +15,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleContextHolder;
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -238,14 +241,23 @@ public class AbstractNodeTest {
             }
         }
 
-        addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
+        try {
+            RuleContext ruleContext = new RuleContext();
+            net.sourceforge.pmd.Rule rule = new XPathRule();
+            rule.setName("RuleName");
+            ruleContext.setCurrentRule(rule);
+            RuleContextHolder.set(ruleContext);
 
-        String log = loggingRule.getLog();
+            addChild(new MyRootNode(nextId()), new DummyNodeWithDeprecatedAttribute(2)).findChildNodesWithXPath("//dummyNode[@Size=1]");
 
-        assertTrue(log.contains("deprecated"));
-        assertTrue(log.contains("attribute"));
-        assertTrue(log.contains("dummyNode/@Size"));
+            String log = loggingRule.getLog();
+
+            assertTrue(log.contains("RuleName"));
+            assertTrue(log.contains("deprecated"));
+            assertTrue(log.contains("attribute"));
+            assertTrue(log.contains("dummyNode/@Size"));
+        } finally {
+            RuleContextHolder.reset();
+        }
     }
-
-
 }

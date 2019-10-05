@@ -552,6 +552,7 @@ public class RuleSet implements ChecksumAware {
                 if (!rule.isRuleChain() && applies(rule, ctx.getLanguageVersion())) {
 
                     try (TimedOperation rto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
+                        ctx.setCurrentRule(rule);
                         rule.apply(acuList, ctx);
                     } catch (RuntimeException e) {
                         if (ctx.isIgnoreExceptions()) {
@@ -564,6 +565,8 @@ public class RuleSet implements ChecksumAware {
                         } else {
                             throw e;
                         }
+                    } finally {
+                        ctx.setCurrentRule(null);
                     }
                 }
             }

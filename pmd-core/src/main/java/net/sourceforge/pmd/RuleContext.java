@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
@@ -36,6 +37,7 @@ public class RuleContext {
     private LanguageVersion languageVersion;
     private final ConcurrentMap<String, Object> attributes;
     private boolean ignoreExceptions = true;
+    private Rule currentRule;
 
     /**
      * Default constructor.
@@ -246,5 +248,15 @@ public class RuleContext {
      */
     public boolean isIgnoreExceptions() {
         return ignoreExceptions;
+    }
+
+    @Experimental
+    public void setCurrentRule(Rule currentRule) {
+        this.currentRule = currentRule;
+    }
+
+    @Experimental
+    public Rule getCurrentRule() {
+        return currentRule;
     }
 }
