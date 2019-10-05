@@ -47,7 +47,6 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     {% include custom/cli_option_row.html options="-benchmark,-b"
                description="Enables benchmark mode, which outputs a benchmark report upon completion.
                             The report is sent to standard error."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-cache"
                option_arg="filepath"
@@ -59,7 +58,6 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-debug,-verbose,-D,-V"
                description="Debug mode. Prints more log output."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-encoding,-e"
                option_arg="charset"
@@ -87,7 +85,6 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-help,-h,-H"
                description="Display help on usage."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-language,-l"
                option_arg="lang"
@@ -99,13 +96,11 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                default="5"
     %}
     {% include custom/cli_option_row.html options="-norulesetcompatibility"
-               description='Disables the ruleset compatibility filter. The filter is active by default and tries to automatically "fix" old ruleset files with old rule names'
-               default="false"
+               description='Disables the ruleset compatibility filter. The filter is active by default. It tries to automatically replace rule references that point to moved or renamed rules with the newer location. Disabling it is not recommended.'
     %}
     {% include custom/cli_option_row.html options="-no-cache"
                description="Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
                and causes the `-cache` option to be discarded if it is provided."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-property,-P"
                option_arg="name>=<value"
@@ -118,15 +113,12 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-shortnames"
                description="Prints shortened filenames in the report."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-showsuppressed"
                description="Causes the suppressed rule violations to be added to the report."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-stress,-S"
                description="Performs a stress test."
-               default="false"
     %}
     {% include custom/cli_option_row.html options="-suppressmarker"
                option_arg="marker"
