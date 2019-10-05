@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.ast.test.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
 
 
@@ -56,7 +55,9 @@ class ASTRelationalExpressionTest : ParserTestSpec({
                         int(3)
                     }
 
-                    it::getTypeNode shouldBe classType("Boolean")
+                    typeExpr {
+                        classType("Boolean")
+                    }
                 }
             }
 
@@ -84,7 +85,9 @@ class ASTRelationalExpressionTest : ParserTestSpec({
                         }
                     }
 
-                    it::getTypeNode shouldBe classType("Boolean")
+                    typeExpr {
+                        classType("Boolean")
+                    }
                 }
             }
         }

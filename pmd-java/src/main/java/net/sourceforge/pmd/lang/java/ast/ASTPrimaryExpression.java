@@ -20,6 +20,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *                     | {@link ASTThisExpression ThisExpression}
  *                     | {@link ASTSuperExpression SuperExpression}
  *
+ *                     | {@link ASTAmbiguousName AmbiguousName}
+ *                     | {@link ASTTypeExpression TypeExpression}
  *
  * </pre>
  *

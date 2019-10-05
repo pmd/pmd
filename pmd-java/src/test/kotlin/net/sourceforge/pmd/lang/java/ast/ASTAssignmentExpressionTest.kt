@@ -20,9 +20,9 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
                 assignmentExpr(ASSIGN) {
                     it::isCompound shouldBe false
 
-                    it::getLeftHandSide shouldBe variableAccess("a", WRITE)
+                    it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-                    it::getRightHandSide shouldBe child<ASTLambdaExpression> {
+                    it::getRightOperand shouldBe child<ASTLambdaExpression> {
                         unspecifiedChildren(2)
                     }
                 }
@@ -32,9 +32,9 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
                 assignmentExpr(ASSIGN) {
                     it::isCompound shouldBe false
 
-                    it::getLeftHandSide shouldBe variableAccess("a", WRITE)
+                    it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-                    it::getRightHandSide shouldBe int(2)
+                    it::getRightOperand shouldBe int(2)
                 }
             }
 
@@ -42,8 +42,8 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
                 assignmentExpr(MUL_ASSIGN) {
                     it::isCompound shouldBe true
 
-                    it::getLeftHandSide shouldBe fieldAccess("f", WRITE)
-                    it::getRightHandSide shouldBe int(2)
+                    it::getLeftOperand shouldBe fieldAccess("f", WRITE)
+                    it::getRightOperand shouldBe int(2)
 
                 }
             }
@@ -53,9 +53,9 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
                     it::isCompound shouldBe true
 
 
-                    it::getLeftHandSide shouldBe variableAccess("a", WRITE)
+                    it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-                    it::getRightHandSide shouldBe int(2)
+                    it::getRightOperand shouldBe int(2)
                 }
             }
 
@@ -106,11 +106,11 @@ class ASTAssignmentExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
             "a = b = c" should parseAs {
                 assignmentExpr(ASSIGN) {
-                    it::getLeftHandSide shouldBe variableAccess("a", WRITE)
+                    it::getLeftOperand shouldBe variableAccess("a", WRITE)
 
-                    it::getRightHandSide shouldBe assignmentExpr(ASSIGN) {
-                        it::getLeftHandSide shouldBe variableAccess("b", WRITE)
-                        it::getRightHandSide shouldBe variableAccess("c", READ)
+                    it::getRightOperand shouldBe assignmentExpr(ASSIGN) {
+                        it::getLeftOperand shouldBe variableAccess("b", WRITE)
+                        it::getRightOperand shouldBe variableAccess("c", READ)
                     }
                 }
             }

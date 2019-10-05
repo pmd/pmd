@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
  * An explicit constructor invocation, occurring at the start of a
@@ -18,11 +18,11 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * ExplicitConstructorInvocation ::= {@link ASTTypeArguments TypeArguments}? "this" {@link ASTArgumentList ArgumentList} ";"
  *                                 | {@link ASTTypeArguments TypeArguments}? "super" {@link ASTArgumentList ArgumentList} ";"
- *                                 | {@link ASTPrimaryExpression PrimaryExpression} "." {@link ASTTypeArguments TypeArguments}? "super" {@link ASTArgumentList ArgumentList} ";"
+ *                                 | {@link ASTExpression Expression} "." {@link ASTTypeArguments TypeArguments}? "super" {@link ASTArgumentList ArgumentList} ";"
  *
  * </pre>
  */
-public final class ASTExplicitConstructorInvocation extends AbstractJavaNode {
+public final class ASTExplicitConstructorInvocation extends AbstractJavaNode implements QualifierOwner {
 
     private boolean isSuper;
 
@@ -104,8 +104,8 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaNode {
      * constructor invocation}.
      */
     @Nullable
-    public ASTPrimaryExpression getLhsExpression() {
-        Node node = getFirstChild();
-        return node instanceof ASTPrimaryExpression ? (ASTPrimaryExpression) node : null;
+    @Override
+    public ASTExpression getQualifier() {
+        return QualifierOwner.super.getQualifier();
     }
 }

@@ -2427,10 +2427,16 @@ void EqualityExpression() #void:
   )*
 }
 
-void InstanceOfExpression() #InstanceOfExpression(>1):
+void InstanceOfExpression() #void:
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(1) "instanceof" AnnotatedRefType() ]
+  RelationalExpression() [
+    LOOKAHEAD(1)
+    ("instanceof"
+        AnnotatedRefType() #TypeExpression
+        {jjtThis.setOp(BinaryOp.INSTANCEOF);}
+    ) #InfixExpression(2) 
+  ]
 }
 
 void RelationalExpression() #void:

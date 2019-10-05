@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.OperatorLike;
+
 /**
  * An increment operator for {@link ASTIncrementExpression IncrementExpression}.
  *
@@ -16,7 +18,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see AssignmentOp
  * @see UnaryOp
  */
-public enum IncrementOp {
+public enum IncrementOp implements OperatorLike {
     /** "++" */
     INCREMENT("++"),
     /** "--" */
@@ -34,4 +36,8 @@ public enum IncrementOp {
         return this.code;
     }
 
+    @Override
+    public String getToken() {
+        return code;
+    }
 }

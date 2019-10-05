@@ -273,7 +273,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     @Override
-    public final String getXPathNodeName() {
+    public String getXPathNodeName() {
         return JavaParserTreeConstants.jjtNodeName[id];
     }
 }

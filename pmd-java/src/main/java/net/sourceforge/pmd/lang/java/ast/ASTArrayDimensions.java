@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 
 
 /**
@@ -26,7 +26,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, JSingleChildNode<ASTArrayTypeDim> {
+public final class ASTArrayDimensions extends AbstractJavaTypeNode implements Iterable<ASTArrayTypeDim>, AtLeastOneChild {
 
     ASTArrayDimensions(int id) {
         super(id);
@@ -49,22 +49,6 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
         return new NodeChildrenIterator<>(this, ASTArrayTypeDim.class);
     }
 
-    @Override
-    public ASTArrayTypeDim jjtGetChild(int index) {
-        return (ASTArrayTypeDim) super.jjtGetChild(index);
-    }
-
-    @Override
-    @NonNull
-    public ASTArrayTypeDim getLastChild() {
-        return jjtGetChild(jjtGetNumChildren() - 1);
-    }
-
-    @Override
-    @NonNull
-    public ASTArrayTypeDim getFirstChild() {
-        return jjtGetChild(0);
-    }
 
     /**
      * Returns the number of array dimensions of this type.
@@ -72,6 +56,6 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
      * is always greater than 0.
      */
     public int getSize() {
-        return findChildrenOfType(ASTArrayTypeDim.class).size();
+        return jjtGetNumChildren();
     }
 }

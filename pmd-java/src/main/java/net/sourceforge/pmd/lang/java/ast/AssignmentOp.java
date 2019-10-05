@@ -15,6 +15,7 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.RIGHT_SHIFT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.UNSIGNED_RIGHT_SHIFT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.XOR;
+import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.OperatorLike;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -31,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see BinaryOp
  * @see UnaryOp
  */
-public enum AssignmentOp {
+public enum AssignmentOp implements OperatorLike {
     ASSIGN("=", null),
     AND_ASSIGN("&=", AND),
     OR_ASSIGN("|=", OR),
@@ -55,6 +56,10 @@ public enum AssignmentOp {
         this.binaryOp = binaryOp;
     }
 
+    @Override
+    public String getToken() {
+        return code;
+    }
 
     @Override
     public String toString() {
