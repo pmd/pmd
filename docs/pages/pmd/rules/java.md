@@ -254,7 +254,8 @@ folder: pmd/rules
 *   [IdempotentOperations](pmd_rules_java_errorprone.html#idempotentoperations): Avoid idempotent operations - they have no effect.
 *   [ImportFromSamePackage](pmd_rules_java_errorprone.html#importfromsamepackage): There is no need to import a type that lives in the same package.
 *   [InstantiationToGetClass](pmd_rules_java_errorprone.html#instantiationtogetclass): Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
-*   [InvalidSlf4jMessageFormat](pmd_rules_java_errorprone.html#invalidslf4jmessageformat): Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of argumen...
+*   [InvalidLogMessageFormat](pmd_rules_java_errorprone.html#invalidlogmessageformat): Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of argumen...
+*   [InvalidSlf4jMessageFormat](pmd_rules_java_errorprone.html#invalidslf4jmessageformat): <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> The rule has been renamed. Use instead [InvalidLogMessageFormat](pmd_rules_java_errorprone.html#invalidlogmessageformat).
 *   [JumbledIncrementer](pmd_rules_java_errorprone.html#jumbledincrementer): Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.
 *   [JUnitSpelling](pmd_rules_java_errorprone.html#junitspelling): Some JUnit framework methods are easy to misspell.
 *   [JUnitStaticSuite](pmd_rules_java_errorprone.html#junitstaticsuite): The suite() method in a JUnit test needs to be both public and static.

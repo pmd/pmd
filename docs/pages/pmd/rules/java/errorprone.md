@@ -5,7 +5,7 @@ permalink: pmd_rules_java_errorprone.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../pmd-java/src/main/resources/category/java/errorprone.xml
-keywords: Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
+keywords: Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BadComparison, BeanMembersShouldSerialize, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloneThrowsCloneNotSupportedException, CloseResource, CompareObjectsWithEquals, ConstructorCallsOverridableMethod, DataflowAnomalyAnalysis, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotCallSystemExit, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EmptyFinallyBlock, EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, EmptyStatementNotInLoop, EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, EmptyWhileStmt, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImportFromSamePackage, InstantiationToGetClass, InvalidSlf4jMessageFormat, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, LoggerIsNotStaticFinal, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingBreakInSwitch, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyArrayRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader
 language: Java
 ---
 <!-- DO NOT EDIT THIS FILE. This file is generated from file ../pmd-java/src/main/resources/category/java/errorprone.xml. -->
@@ -2271,7 +2271,7 @@ Class c = String.class;{%endraw%}
 <rule ref="category/java/errorprone.xml/InstantiationToGetClass" />
 ```
 
-## InvalidSlf4jMessageFormat
+## InvalidLogMessageFormat
 
 **Since:** PMD 5.5.0
 
@@ -2279,7 +2279,36 @@ Class c = String.class;{%endraw%}
 
 Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
 
-**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidSlf4jMessageFormatRule.java)
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidLogMessageFormatRule.java)
+
+**Example(s):**
+
+``` java
+{%raw%}LOGGER.error("forget the arg {}");
+LOGGER.error("too many args {}", "arg1", "arg2");
+LOGGER.error("param {}", "arg1", new IllegalStateException("arg")); //The exception is shown separately, so is correct.{%endraw%}
+```
+
+**Use this rule by referencing it:**
+``` xml
+<rule ref="category/java/errorprone.xml/InvalidLogMessageFormat" />
+```
+
+## InvalidSlf4jMessageFormat
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+This rule has been renamed. Use instead: [InvalidLogMessageFormat](#invalidlogmessageformat)
+
+<span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span> 
+
+**Since:** PMD 5.5.0
+
+**Priority:** Low (5)
+
+Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidLogMessageFormatRule.java)
 
 **Example(s):**
 
