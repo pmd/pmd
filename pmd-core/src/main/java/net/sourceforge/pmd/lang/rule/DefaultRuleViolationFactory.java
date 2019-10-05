@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
@@ -32,6 +33,15 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
     private static final Object[] NO_ARGS = new Object[0];
 
     private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
+    private @NonNull Set<ViolationSuppressor> allSuppressors;
+
+
+    public DefaultRuleViolationFactory() {
+        this.allSuppressors = new LinkedHashSet<>(getSuppressors());
+        allSuppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
+        allSuppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
+        allSuppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
+    }
 
     private String cleanup(String message, Object[] args) {
 
@@ -65,13 +75,12 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
     }
 
     private void maybeSuppress(RuleContext ruleContext, @Nullable Node node, RuleViolation rv) {
-        Set<ViolationSuppressor> suppressors = new LinkedHashSet<>(getSuppressors());
-        suppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
-        suppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
-        suppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
 
         if (node != null) {
-            for (ViolationSuppressor suppressor : suppressors) {
+            // note: no suppression when node is null.
+            // Node should in fact never be null, this is todo for later
+
+            for (ViolationSuppressor suppressor : allSuppressors) {
                 SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
                 if (suppressed != null) {
                     ruleContext.getReport().addSuppressedViolation(suppressed);
@@ -79,6 +88,7 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
                 }
             }
         }
+
         ruleContext.getReport().addRuleViolation(rv);
     }
 

@@ -156,7 +156,7 @@ public class Report implements Iterable<RuleViolation> {
         public String getMsg() {
             return error.getClass().getSimpleName() + ": " + error.getMessage();
         }
-        
+
         public String getDetail() {
             try (StringWriter stringWriter = new StringWriter();
                     PrintWriter writer = new PrintWriter(stringWriter)) {
@@ -247,8 +247,8 @@ public class Report implements Iterable<RuleViolation> {
         /**
          * Creates a suppressed violation.
          *
-         * @param rv The violation, that has been suppressed
-         * @param suppressor The suppressor which suppressed the violation
+         * @param rv          The violation, that has been suppressed
+         * @param suppressor  The suppressor which suppressed the violation
          * @param userMessage Any relevant info given by the suppressor
          */
         public SuppressedViolation(RuleViolation rv, ViolationSuppressor suppressor, String userMessage) {
