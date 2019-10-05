@@ -422,7 +422,7 @@ public class RuleSetTest {
         ctx.setReport(r);
         ctx.setSourceCodeFile(file);
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        ruleSets.apply(makeCompilationUnits(), ctx);
         assertEquals("Violations", 2, r.size());
 
         // One violation
@@ -437,7 +437,7 @@ public class RuleSetTest {
 
         r = new Report();
         ctx.setReport(r);
-        ruleSets.apply(makeCompilationUnits(), ctx, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        ruleSets.apply(makeCompilationUnits(), ctx);
         assertEquals("Violations", 1, r.size());
     }
 
@@ -464,7 +464,7 @@ public class RuleSetTest {
         RuleContext context = new RuleContext();
         Set<RuleViolation> reportedValues = new HashSet<>();
         context.setReport(new Report());
-        ruleset.apply(makeCompilationUnits(), context);
+        new RuleSets(ruleset).apply(makeCompilationUnits(), context);
 
         assertEquals("Invalid number of Violations Reported", size, context.getReport().size());
 
@@ -594,7 +594,7 @@ public class RuleSetTest {
         context.setSourceCodeFile(new File(RuleSetTest.class.getName() + ".ruleExceptionShouldBeReported"));
         context.setIgnoreExceptions(true); // the default
         RuleSets rulesets = new RuleSets(ruleset);
-        rulesets.apply(makeCompilationUnits(), context, LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+        rulesets.apply(makeCompilationUnits(), context);
 
         assertTrue("Report should have processing errors", context.getReport().hasErrors());
         List<ProcessingError> errors = IteratorUtil.toList(context.getReport().errors());

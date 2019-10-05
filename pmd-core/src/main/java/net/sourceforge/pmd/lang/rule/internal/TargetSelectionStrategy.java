@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule.internal;
 
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -20,7 +21,7 @@ public abstract class TargetSelectionStrategy {
     }
 
 
-    abstract Iterable<? extends Node> getVisitedNodes(NodeIdx index);
+    abstract Iterator<? extends Node> getVisitedNodes(NodeIdx index);
 
 
     public static final class StringRulechainVisits extends TargetSelectionStrategy {
@@ -33,8 +34,8 @@ public abstract class TargetSelectionStrategy {
 
 
         @Override
-        Iterable<? extends Node> getVisitedNodes(NodeIdx index) {
-            return index.getByName(visits)::iterator;
+        Iterator<? extends Node> getVisitedNodes(NodeIdx index) {
+            return index.getByName(visits).iterator();
         }
     }
 
@@ -50,8 +51,8 @@ public abstract class TargetSelectionStrategy {
 
 
         @Override
-        Iterable<? extends Node> getVisitedNodes(NodeIdx index) {
-            return index.getByClass(visits)::iterator;
+        Iterator<? extends Node> getVisitedNodes(NodeIdx index) {
+            return index.getByClass(visits).iterator();
         }
     }
 

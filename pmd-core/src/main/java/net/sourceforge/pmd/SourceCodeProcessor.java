@@ -165,7 +165,7 @@ public class SourceCodeProcessor {
 
         List<Node> acus = Collections.singletonList(rootNode);
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.RULE_APP)) {
-            ruleSets.apply(acus, ctx, languageVersion.getLanguage());
+            ruleSets.apply(acus, ctx);
         }
     }
 

@@ -133,10 +133,8 @@ public class RuleSets {
      *            depends on the source language
      * @param ctx
      *            the RuleContext
-     * @param language
-     *            the Language of the source
      */
-    public void apply(List<Node> acuList, RuleContext ctx, Language language) {
+    public void apply(List<? extends Node> acuList, RuleContext ctx) {
         if (filtered == null) {
             filtered = ruleSets.stream()
                                .filter(it -> it.applies(ctx.getSourceCodeFile()))

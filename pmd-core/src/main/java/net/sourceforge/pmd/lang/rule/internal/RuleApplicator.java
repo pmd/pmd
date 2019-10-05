@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import static net.sourceforge.pmd.internal.util.IteratorUtil.toIterable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +52,7 @@ public class RuleApplicator {
     private void applyOnIndex(NodeIdx idx, Collection<? extends Rule> rules, RuleContext ctx) {
         for (Rule rule : rules) {
 
-            for (Node node : rule.getTargetingStrategy().getVisitedNodes(idx)) {
+            for (Node node : toIterable(rule.getTargetingStrategy().getVisitedNodes(idx))) {
 
                 try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
                     rule.apply(Collections.singletonList(node), ctx);
