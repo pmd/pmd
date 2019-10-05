@@ -16,7 +16,7 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Modified Rules
 
-*   The Java rules {% rule "java/errorprone/InvalidSlf4jMessageFormat" %} and {% rule "java/errorprone/MoreThanOneLogger" %}
+*   The Java rules {% rule "java/errorprone/InvalidLogMessageFormat" %} and {% rule "java/errorprone/MoreThanOneLogger" %}
     (`java-errorprone`) now both support [Log4j2](https://logging.apache.org/log4j/2.x/).
 
 *   The Java rule {% rule "java/design/LawOfDemeter" %} (`java-design`) ignores now also Builders, that are
@@ -33,6 +33,11 @@ This is a {{ site.pmd.release_type }} release.
     a new thread. While the check for `Runnable` has been removed, the rule now additionally checks for
     usages of `Executors` and `ExecutorService`. Both create new threads, which are not managed by a J2EE
     server.
+
+#### Deprecated Rules
+
+*   The Java rule {% rule "java/errorprone/InvalidSlf4jMessageFormat" %} has been renamed to
+    {% rule "java/errorprone/InvalidLogMessageFormat" %}.
 
 #### Java Metrics
 

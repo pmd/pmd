@@ -42,8 +42,8 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
-public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
-    private static final Logger LOG = Logger.getLogger(InvalidSlf4jMessageFormatRule.class.getName());
+public class InvalidLogMessageFormatRule extends AbstractJavaRule {
+    private static final Logger LOG = Logger.getLogger(InvalidLogMessageFormatRule.class.getName());
 
     private static final Map<String, Set<String>> LOGGERS;
 
@@ -58,7 +58,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         LOGGERS = loggersMap;
     }
 
-    public InvalidSlf4jMessageFormatRule() {
+    public InvalidLogMessageFormatRule() {
         addRuleChainVisit(ASTName.class);
     }
 
