@@ -185,17 +185,12 @@ public final class CollectionUtil {
 
 
     @SafeVarargs
-    public static <T> Set<T> setOf(T... ts) {
-        LinkedHashSet<T> set = new LinkedHashSet<>(ts.length);
+    public static <T> Set<T> setOf(T first, T... ts) {
+        LinkedHashSet<T> set = new LinkedHashSet<>(ts.length + 1);
+        set.add(first);
         Collections.addAll(set, ts);
         return set;
     }
-
-    @SafeVarargs
-    public static <T> List<T> listOf(T... ts) {
-        return Arrays.asList(ts);
-    }
-
 
     /**
      * Consumes all the elements of the iterator and

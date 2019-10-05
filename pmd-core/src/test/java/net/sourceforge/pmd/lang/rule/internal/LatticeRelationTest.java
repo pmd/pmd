@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.internal;
 
+import static java.util.Collections.emptySet;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,11 +53,16 @@ public class LatticeRelationTest {
         lattice.put(Long.class, setOf("long"));
 
         lattice.freezeTopo();
+
+        assertEquals(setOf("string", "int", "long"), lattice.get(Object.class));
+
+        lattice.unfreezeTopo();
+
         lattice.clearValues();
 
-        Map<Class<?>, LatticeRelation<Class<?>, Set<String>>.LNode> nodes = lattice.getNodes();
+        lattice.freezeTopo();
 
-        nodes.values().forEach(it -> assertEquals(setOf(), it.computeValue()));
+        lattice.getNodes().values().forEach(it -> assertEquals(emptySet(), it.computeValue()));
     }
 
 }

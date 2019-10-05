@@ -22,7 +22,6 @@ public class MonoidTest {
         Monoid<Set<String>> monoid = Monoid.forSet();
 
         this.neutralTest(monoid, Stream.of(
-            setOf(),
             emptySet(),
             setOf("a", "b"),
             setOf("a")
@@ -31,7 +30,6 @@ public class MonoidTest {
         assertEquals(emptySet(), monoid.apply(new HashSet<>(), new HashSet<>()));
         assertEquals(setOf("a", "c"), monoid.apply(setOf("a"), setOf("c")));
         assertEquals(setOf("a", "c"), monoid.apply(setOf("a", "c"), emptySet()));
-        assertEquals(setOf("a", "c"), monoid.apply(setOf("a", "c"), setOf()));
 
     }
 

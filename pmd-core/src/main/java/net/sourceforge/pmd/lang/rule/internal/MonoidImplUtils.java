@@ -12,7 +12,11 @@ import org.pcollections.PSet;
 
 
 @SuppressWarnings("unchecked")
-final class MonoidImpl {
+final class MonoidImplUtils {
+
+    private MonoidImplUtils() {
+        // utility class
+    }
 
     static final Monoid PSET_MONOID = new Monoid<Set>() {
         @Override

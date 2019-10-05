@@ -38,13 +38,13 @@ interface Monoid<U> extends BinaryOperator<U> {
 
     /** Produce a new set, the union of both arguments. */
     static <T> Monoid<Set<T>> forSet() {
-        return (Monoid<Set<T>>) MonoidImpl.PSET_MONOID;
+        return (Monoid<Set<T>>) MonoidImplUtils.PSET_MONOID;
     }
 
 
     /** Accumulates the right argument into the left one (mutating it). */
     static <T> Monoid<Set<T>> forMutableSet() {
-        return (Monoid<Set<T>>) MonoidImpl.MSET_MONOID;
+        return (Monoid<Set<T>>) MonoidImplUtils.MSET_MONOID;
     }
 
 

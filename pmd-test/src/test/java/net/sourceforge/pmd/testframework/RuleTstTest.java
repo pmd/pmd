@@ -9,7 +9,6 @@ import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.internal.TargetSelectionStrategy.ClassRulechainVisits;
 import net.sourceforge.pmd.test.lang.ast.DummyNode;
 
 public class RuleTstTest {
@@ -43,25 +43,25 @@ public class RuleTstTest {
         Report report = new Report();
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.getTargetingStrategy()).thenReturn(ClassRulechainVisits.ROOT_ONLY);
 
         ruleTester.runTestFromString("the code", rule, report, dummyLanguage, false);
 
         verify(rule).start(any(RuleContext.class));
         verify(rule).end(any(RuleContext.class));
-        verify(rule, times(2)).getLanguage();
-        verify(rule, times(2)).isRuleChain();
+        verify(rule).getTargetingStrategy();
         verify(rule).getMinimumLanguageVersion();
         verify(rule).getMaximumLanguageVersion();
         verify(rule).apply(anyList(), any(RuleContext.class));
         verify(rule, times(4)).getName();
         verify(rule).getPropertiesByPropertyDescriptor();
-        verifyNoMoreInteractions(rule);
     }
 
     @Test
     public void shouldAssertLinenumbersSorted() {
         when(rule.getLanguage()).thenReturn(dummyLanguage.getLanguage());
         when(rule.getName()).thenReturn("test rule");
+        when(rule.getTargetingStrategy()).thenReturn(ClassRulechainVisits.ROOT_ONLY);
         Mockito.doAnswer(new Answer<Void>() {
             private RuleViolation createViolation(RuleContext context, int beginLine, String message) {
                 DummyNode node = new DummyNode();

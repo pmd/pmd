@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleApplicator.NodeIdx;
 public abstract class TargetSelectionStrategy {
 
     TargetSelectionStrategy() {
-
+        // package private
     }
 
 
