@@ -273,7 +273,7 @@ public class Test {
         ]]></code>
     </test-code>
     <test-code>
-        <description>#1429 False Positive for Law of Demeter</description>
+        <description>#2010 False Positive for Law of Demeter</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Test {

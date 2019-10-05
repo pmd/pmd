@@ -44,6 +44,11 @@ about the usage and features of the rule designer.
     The stream returned by `Files::lines(Path)` is backed by a actual file and needs to be closed. These instances
     won't be found by default by the rule anymore.
 
+*   The Java rule {% rule "java/design/LawOfDemeter" %} (`java-design`) ignores now also Builders, that are
+    not assigned to a local variable, but just directly used within a method call chain. The method, that creates
+    the builder needs to end with "Builder", e.g. `newBuilder()` or `initBuilder()` works. This change
+    fixes a couple of false positives.
+
 ### Fixed Issues
 
 *   all
@@ -120,6 +125,7 @@ about the usage and features of the rule designer.
 *   [#1977](https://github.com/pmd/pmd/pull/1977): \[plsql] fix for skipping sql starting with WITH - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1986](https://github.com/pmd/pmd/pull/1986): \[plsql] Fix for cursors in anonymous blocks - [Piotr Szymanski](https://github.com/szyman23)
 *   [#1994](https://github.com/pmd/pmd/pull/1994): \[core] Resolve pmd-report failure when java folder in filepath - [Amish Shah](https://github.com/shahamish150294)
+*   [#2010](https://github.com/pmd/pmd/pull/2010): \[java] LawOfDemeter to support inner builder pattern - [Gregor Riegler](https://github.com/gregorriegler)
 
 {% endtocmaker %}
 
