@@ -2278,7 +2278,7 @@ Class c = String.class;{%endraw%}
 
 **Priority:** Low (5)
 
-Check for messages in slf4j loggers with non matching number of arguments and placeholders.
+Check for messages in slf4j and log4j2 loggers with non matching number of arguments and placeholders.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidSlf4jMessageFormatRule.java)
 

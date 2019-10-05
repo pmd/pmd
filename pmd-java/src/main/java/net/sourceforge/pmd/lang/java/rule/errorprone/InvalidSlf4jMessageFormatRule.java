@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,12 +45,17 @@ import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
     private static final Logger LOG = Logger.getLogger(InvalidSlf4jMessageFormatRule.class.getName());
 
-    private static final Set<String> LOGGER_LEVELS;
-    private static final String LOGGER_CLASS = "org.slf4j.Logger";
+    private static final Map<String, Set<String>> LOGGERS;
 
     static {
-        LOGGER_LEVELS = Collections
-                .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error")));
+        Map<String, Set<String>> loggersMap = new HashMap<>();
+
+        loggersMap.put("org.slf4j.Logger", Collections
+                .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error"))));
+        loggersMap.put("org.apache.logging.log4j.Logger", Collections
+                .unmodifiableSet(new HashSet<String>(Arrays.asList("trace", "debug", "info", "warn", "error", "fatal", "all"))));
+
+        LOGGERS = loggersMap;
     }
 
     public InvalidSlf4jMessageFormatRule() {
@@ -62,11 +69,13 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
         if (!(nameDeclaration instanceof VariableNameDeclaration)) {
             return data;
         }
-
-        // ignore non slf4j logger
+        final String loggingClass;
+        // ignore unsupported logger
         Class<?> type = ((VariableNameDeclaration) nameDeclaration).getType();
-        if (type == null || !type.getName().equals(LOGGER_CLASS)) {
+        if (type == null || !LOGGERS.containsKey(type.getName())) {
             return data;
+        } else {
+            loggingClass = type.getName();
         }
 
         // get the node that contains the logger
@@ -77,7 +86,7 @@ public class InvalidSlf4jMessageFormatRule extends AbstractJavaRule {
                 .getImage().replace(nameDeclaration.getImage() + ".", "");
 
         // ignore if not a log level
-        if (!LOGGER_LEVELS.contains(method)) {
+        if (!LOGGERS.get(loggingClass).contains(method)) {
             return data;
         }
 
