@@ -43,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
     * {% jdoc core::lang.LanguageRegistry#getInstance() %}
   * {% jdoc !!core::RuleSet#getExcludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileExclusions() %} instead.
   * {% jdoc !!core::RuleSet#getIncludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileInclusions() %} instead.
+  * {% jdoc !!core::lang.Parser#canParse() %}
 * pmd-java
   * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}

@@ -32,9 +32,15 @@ public interface Parser {
      */
     TokenManager getTokenManager(String fileName, Reader source);
 
+
     /**
      * Indicates if this parser can actual parse, or if it can only tokenize.
+     *
+     * @deprecated With 7.0.0, all parsers will be able to parse and
+     *     this method will be removed. Note that in the meantime, you
+     *     probably still need to check this method.
      */
+    @Deprecated
     boolean canParse();
 
     /**
