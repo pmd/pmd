@@ -8,9 +8,9 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.FunctionHeadContext;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.VariableDeclarationHeadContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionHeadContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.VariableDeclarationHeadContext;
 
 public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Void> {
 
@@ -22,7 +22,7 @@ public class ProhibitedInterfaceBuilderRule extends AbstractSwiftRule<Void> {
         addRuleChainVisit(FunctionHeadContext.class);
         addRuleChainVisit(VariableDeclarationHeadContext.class);
     }
-    
+
     @Override
     public Void visitFunctionHead(FunctionHeadContext ctx) {
         if (ctx == null || ctx.attributes() == null) {

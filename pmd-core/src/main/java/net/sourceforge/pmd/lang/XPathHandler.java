@@ -19,23 +19,6 @@ import net.sf.saxon.sxpath.IndependentContext;
 @Deprecated
 public interface XPathHandler {
 
-    XPathHandler DUMMY = new XPathHandler() {
-        @Override
-        public void initialize() {
-            // empty handler - does nothing
-        }
-
-        @Override
-        public void initialize(IndependentContext context) {
-            // empty handler - does nothing
-        }
-
-        @Override
-        public Navigator getNavigator() {
-            return null;
-        }
-    };
-
     /**
      * Initialize. This is intended to be called by {@link Initializer} to
      * perform Language specific initialization.
