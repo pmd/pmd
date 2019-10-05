@@ -3605,7 +3605,7 @@ other classes may invoke it at inappropriate times.</p>
 
 <p><strong>Priority:</strong> Low (5)</p>
 
-<p>Check for messages in slf4j loggers with non matching number of arguments and placeholders.</p>
+<p>Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidSlf4jMessageFormatRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule</a></p>
 
@@ -4010,7 +4010,8 @@ See the property <code class="highlighter-rouge">annotations</code>.</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
 
-<p>Normally only one logger is used in each class.</p>
+<p>Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
+log4j2 (since 6.19.0).</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/MoreThanOneLoggerRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule</a></p>
 

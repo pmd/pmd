@@ -1543,7 +1543,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#idempotentoperations">IdempotentOperations</a>: Avoid idempotent operations - they have no effect.</li>
   <li><a href="pmd_rules_java_errorprone.html#importfromsamepackage">ImportFromSamePackage</a>: There is no need to import a type that lives in the same package.</li>
   <li><a href="pmd_rules_java_errorprone.html#instantiationtogetclass">InstantiationToGetClass</a>: Avoid instantiating an object just to call getClass() on it; use the .class public member instead.</li>
-  <li><a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat">InvalidSlf4jMessageFormat</a>: Check for messages in slf4j loggers with non matching number of arguments and placeholders.</li>
+  <li><a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat">InvalidSlf4jMessageFormat</a>: Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of argumen…</li>
   <li><a href="pmd_rules_java_errorprone.html#jumbledincrementer">JumbledIncrementer</a>: Avoid jumbled loop incrementers - its usually a mistake, and is confusing even if intentional.</li>
   <li><a href="pmd_rules_java_errorprone.html#junitspelling">JUnitSpelling</a>: Some JUnit framework methods are easy to misspell.</li>
   <li><a href="pmd_rules_java_errorprone.html#junitstaticsuite">JUnitStaticSuite</a>: The suite() method in a JUnit test needs to be both public and static.</li>
@@ -1553,7 +1553,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li><a href="pmd_rules_java_errorprone.html#missingbreakinswitch">MissingBreakInSwitch</a>: Switch statements without break or return statements for each case optionmay indicate problematic…</li>
   <li><a href="pmd_rules_java_errorprone.html#missingserialversionuid">MissingSerialVersionUID</a>: Serializable classes should provide a serialVersionUID field.The serialVersionUID field is also n…</li>
   <li><a href="pmd_rules_java_errorprone.html#missingstaticmethodinnoninstantiatableclass">MissingStaticMethodInNonInstantiatableClass</a>: A class that has private constructors and does not have any static methods or fields cannot be us…</li>
-  <li><a href="pmd_rules_java_errorprone.html#morethanonelogger">MoreThanOneLogger</a>: Normally only one logger is used in each class.</li>
+  <li><a href="pmd_rules_java_errorprone.html#morethanonelogger">MoreThanOneLogger</a>: Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Loggin…</li>
   <li><a href="pmd_rules_java_errorprone.html#noncaselabelinswitchstatement">NonCaseLabelInSwitchStatement</a>: A non-case label (e.g. a named break/continue label) was present in a switch statement.This legal…</li>
   <li><a href="pmd_rules_java_errorprone.html#nonstaticinitializer">NonStaticInitializer</a>: A non-static initializer block will be called any time a constructor is invoked (just prior toinv…</li>
   <li><a href="pmd_rules_java_errorprone.html#nullassignment">NullAssignment</a>: Assigning a "null" to a variable (outside of its declaration) is usually bad form.  Sometimes, th…</li>

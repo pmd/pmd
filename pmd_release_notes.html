@@ -1292,6 +1292,13 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <h3 id="new-and-noteworthy">New and noteworthy</h3>
 
+<h4 id="modified-rules">Modified Rules</h4>
+
+<ul>
+  <li>The Java rules <a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat"><code class="highlighter-rouge">InvalidSlf4jMessageFormat</code></a> and <a href="pmd_rules_java_errorprone.html#morethanonelogger"><code class="highlighter-rouge">MoreThanOneLogger</code></a>
+(<code class="highlighter-rouge">java-errorprone</code>) now both support <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a>.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1314,6 +1321,11 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/1912">#1912</a>: [java] Metrics not computed correctly with annotations</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/336">#336</a>: [java] InvalidSlf4jMessageFormat applies to log4j2</li>
     </ul>
   </li>
 </ul>
@@ -1364,6 +1376,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <h3 id="external-contributions">External Contributions</h3>
 
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/2012">#2012</a>: [java] Fixes 336, slf4j log4j2 support - <a href="https://github.com/markhall82">Mark Hall</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2032">#2032</a>: [core] Allow adding SourceCode directly into CPD - <a href="https://github.com/nbraun-Google">Nathan Braun</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2047">#2047</a>: [java] Fix computation of metrics with annotations - <a href="https://github.com/andipabst">Andi</a></li>
 </ul>
