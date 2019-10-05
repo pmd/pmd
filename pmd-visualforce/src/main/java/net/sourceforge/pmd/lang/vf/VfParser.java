@@ -30,11 +30,6 @@ public class VfParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.vf.ast.VfParser(new VfSimpleCharStream(source)).CompilationUnit();

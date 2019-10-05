@@ -114,7 +114,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         }
         return result;
     }
-    
+
     /**
      * Tells if the node contains a Test annotation with an expected exception.
      */

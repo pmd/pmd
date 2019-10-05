@@ -235,7 +235,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        String opname = getOperationName(node.getMethodName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
+        String opname = getOperationName(node.getName(), node.getFirstDescendantOfType(ASTFormalParameters.class));
         InternalApiBridge.setQname(node, contextOperationQName(opname, false));
         return super.visit(node, data);
     }
@@ -383,7 +383,7 @@ public class QualifiedNameResolver extends JavaParserVisitorAdapter {
                 return "new";
             }
         } else { // ASTMethodDeclaration
-            return ((ASTMethodDeclaration) parent).getMethodName();
+            return ((ASTMethodDeclaration) parent).getName();
         }
     }
 

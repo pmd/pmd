@@ -36,12 +36,25 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
         super(p, id);
     }
 
+    /**
+     * @deprecated Use {@link ASTMethodDeclaration#getArity()}
+     */
+    @Deprecated
     public int getParameterCount() {
         return getFormalParameters().getParameterCount();
     }
 
     public ASTFormalParameters getFormalParameters() {
         return (ASTFormalParameters) jjtGetChild(0);
+    }
+
+    /**
+     * @deprecated Use {@link ASTMethodDeclaration#getName()}
+     */
+    @Deprecated
+    @Override
+    public String getImage() {
+        return super.getImage();
     }
 
     @Override

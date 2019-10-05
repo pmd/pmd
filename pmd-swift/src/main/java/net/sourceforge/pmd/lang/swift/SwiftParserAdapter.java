@@ -41,8 +41,4 @@ public class SwiftParserAdapter extends AntlrBaseParser<SwiftParser> {
         return new SwiftParser(new CommonTokenStream(lexer));
     }
 
-    @Override
-    public boolean canParse() {
-        return true;
-    }
 }

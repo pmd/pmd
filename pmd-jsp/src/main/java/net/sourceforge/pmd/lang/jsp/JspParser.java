@@ -31,11 +31,6 @@ public class JspParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new SimpleCharStream(source)).CompilationUnit();

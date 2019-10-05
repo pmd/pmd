@@ -73,7 +73,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
                     return false;
                 }
                 break;
-                
+
             case INITIALIZER:
                 if (!((ASTInitializer) decl.getDeclarationNode()).isStatic()) {
                     return false;
@@ -101,7 +101,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         ASTMethodDeclaration decl = (ASTMethodDeclaration) bodyDeclaration.getDeclarationNode();
 
         return decl.isStatic()
-                && "main".equals(decl.getMethodName())
+                && "main".equals(decl.getName())
                 && decl.getResultType().isVoid()
                 && decl.getFormalParameters().getParameterCount() == 1
                 && String[].class.equals(decl.getFormalParameters().iterator().next().getType());

@@ -108,11 +108,6 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
 
                 @Override
-                public boolean canParse() {
-                    return true;
-                }
-
-                @Override
                 protected TokenManager createTokenManager(Reader source) {
                     return null;
                 }

@@ -2357,8 +2357,18 @@ void Expression() #AssignmentExpression(>1):
 AssignmentOp AssignmentOperator() #void:
 {}
 {
-    ( "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|=" )
-    {return AssignmentOp.fromImage(getToken(0).getImage());}
+      "="    { return AssignmentOp.ASSIGN; }
+    | "*="   { return AssignmentOp.MUL_ASSIGN; }
+    | "/="   { return AssignmentOp.DIV_ASSIGN; }
+    | "%="   { return AssignmentOp.MOD_ASSIGN; }
+    | "+="   { return AssignmentOp.ADD_ASSIGN; }
+    | "-="   { return AssignmentOp.SUB_ASSIGN; }
+    | "<<="  { return AssignmentOp.LEFT_SHIFT_ASSIGN; }
+    | ">>="  { return AssignmentOp.RIGHT_SHIFT_ASSIGN; }
+    | ">>>=" { return AssignmentOp.UNSIGNED_RIGHT_SHIFT_ASSIGN; }
+    | "&="   { return AssignmentOp.AND_ASSIGN; }
+    | "^="   { return AssignmentOp.XOR_ASSIGN; }
+    | "|="   { return AssignmentOp.OR_ASSIGN; }
 }
 
 void ConditionalExpression() #ConditionalExpression(>1) :

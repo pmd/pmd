@@ -44,11 +44,6 @@ public class ScalaParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public ASTSource parse(String fileName, Reader source) throws ParseException {
         Input.VirtualFile virtualFile;
         try {

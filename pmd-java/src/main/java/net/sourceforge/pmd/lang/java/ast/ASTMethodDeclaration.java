@@ -77,6 +77,8 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getName();
     }
 
+
+    /** Returns the simple name of the method. */
     @Override
     public String getName() {
         return getImage();
