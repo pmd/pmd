@@ -23,7 +23,7 @@ public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory 
     public static final ApexRuleViolationFactory INSTANCE = new ApexRuleViolationFactory();
     private static final ViolationSuppressor APEX_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
-        public String id() {
+        public String getId() {
             return "@SuppressWarnings";
         }
 

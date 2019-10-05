@@ -24,7 +24,7 @@ public interface ViolationSuppressor {
      */
     ViolationSuppressor REGEX_SUPPRESSOR = new ViolationSuppressor() {
         @Override
-        public String id() {
+        public String getId() {
             return "Regex";
         }
 
@@ -45,7 +45,7 @@ public interface ViolationSuppressor {
      */
     ViolationSuppressor XPATH_SUPPRESSOR = new ViolationSuppressor() {
         @Override
-        public String id() {
+        public String getId() {
             return "XPath";
         }
 
@@ -67,7 +67,7 @@ public interface ViolationSuppressor {
      */
     ViolationSuppressor NOPMD_COMMENT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
-        public String id() {
+        public String getId() {
             return "//NOPMD";
         }
 
@@ -85,7 +85,7 @@ public interface ViolationSuppressor {
     /**
      * A name, for reporting and documentation purposes.
      */
-    String id();
+    String getId();
 
 
     /**

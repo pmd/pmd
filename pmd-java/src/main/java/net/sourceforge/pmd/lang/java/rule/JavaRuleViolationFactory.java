@@ -25,7 +25,7 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
     public static final RuleViolationFactory INSTANCE = new JavaRuleViolationFactory();
     private static final ViolationSuppressor JAVA_ANNOT_SUPPRESSOR = new ViolationSuppressor() {
         @Override
-        public String id() {
+        public String getId() {
             return "@SuppressWarnings";
         }
 

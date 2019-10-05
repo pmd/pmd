@@ -192,7 +192,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("<td align=\"left\">").append(determineFileName(sv.getRuleViolation().getFilename())).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(sv.getRuleViolation().getBeginLine()).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(sv.getRuleViolation().getRule().getName()).append("</td>").append(PMD.EOL);
-            buf.append("<td align=\"center\">").append(sv.getSuppressor().id()).append("</td>").append(PMD.EOL);
+            buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(PMD.EOL);
             buf.append("<td align=\"center\">").append(
                 sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(PMD.EOL);
             buf.append("</tr>").append(PMD.EOL);

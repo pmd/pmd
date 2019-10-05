@@ -59,7 +59,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             buf.append(excluded.getRuleViolation().getRule().getName())
                .append(" rule violation suppressed by ")
-               .append(excluded.getSuppressor().id())
+               .append(excluded.getSuppressor().getId())
                .append(" in ")
                .append(determineFileName(excluded.getRuleViolation().getFilename()))
                .append(PMD.EOL);

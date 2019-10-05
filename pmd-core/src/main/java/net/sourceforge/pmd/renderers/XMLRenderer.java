@@ -140,7 +140,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 buf.append("<suppressedviolation ").append("filename=\"");
                 StringUtil.appendXmlEscaped(buf, determineFileName(s.getRuleViolation().getFilename()), useUTF8);
                 buf.append("\" suppressiontype=\"");
-                StringUtil.appendXmlEscaped(buf, s.getSuppressor().id().toLowerCase(Locale.ROOT), useUTF8);
+                StringUtil.appendXmlEscaped(buf, s.getSuppressor().getId().toLowerCase(Locale.ROOT), useUTF8);
                 buf.append("\" msg=\"");
                 StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription(), useUTF8);
                 buf.append("\" usermsg=\"");
@@ -149,7 +149,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 writer.write(buf.toString());
             }
         }
-        
+
         // config errors
         for (final Report.ConfigurationError ce : configErrors) {
             buf.setLength(0);
