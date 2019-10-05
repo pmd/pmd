@@ -108,12 +108,6 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
 
     @Override
-    public Object visit(ASTInstanceOfExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
-
-
-    @Override
     public Object visit(ASTUnaryExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
@@ -334,6 +328,11 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
 
     @Deprecated
     public Object visit(ASTMultiplicativeExpression node, Object data) {
+        return visit((ASTExpression) node, data);
+    }
+
+    @Deprecated
+    public Object visit(ASTInstanceOfExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
 

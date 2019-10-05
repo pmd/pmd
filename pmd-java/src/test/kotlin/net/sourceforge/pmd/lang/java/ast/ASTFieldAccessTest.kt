@@ -15,7 +15,7 @@ class ASTFieldAccessTest : ParserTestSpec({
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBe child<ASTThisExpression> {
+            it::getQualifier shouldBe child<ASTThisExpression> {
                 it::getQualifier shouldBe child {
                     it.typeArguments shouldBe null
                     it.typeImage shouldBe "Type"
@@ -28,8 +28,8 @@ class ASTFieldAccessTest : ParserTestSpec({
             it::getFieldName shouldBe "foo"
             it::getImage shouldBe "foo"
 
-            it::getLhsExpression shouldBe child<ASTMethodCall> {
-                it::getLhsExpression shouldBe null
+            it::getQualifier shouldBe child<ASTMethodCall> {
+                it::getQualifier shouldBe null
                 it::getMethodName shouldBe "foo"
                 it::getImage shouldBe "foo"
 
@@ -44,7 +44,7 @@ class ASTFieldAccessTest : ParserTestSpec({
 
             val fieldAccess = it
 
-            it::getLhsExpression shouldBe child<ASTAmbiguousName> {
+            it::getQualifier shouldBe child<ASTAmbiguousName> {
                 it::getName shouldBe "a.b"
                 // test the parent is set correctly
                 it::parent shouldBe fieldAccess

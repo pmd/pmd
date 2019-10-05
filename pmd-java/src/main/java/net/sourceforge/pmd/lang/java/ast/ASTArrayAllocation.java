@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <pre class="grammar">
  *
- * ArrayCreationExpression ::= "new" {@link ASTArrayType ArrayType} ({@link ASTArrayInitializer ArrayInitializer})
+ * ArrayCreationExpression ::= "new" {@link ASTArrayType ArrayType} {@link ASTArrayInitializer ArrayInitializer}?
  *
  * </pre>
  */
@@ -46,9 +46,10 @@ public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPri
      * Returns the node representing the array type being instantiated.
      */
     public ASTArrayType getTypeNode() {
-        return getFirstChildOfType(ASTArrayType.class);
+        return (ASTArrayType) jjtGetChild(0);
     }
 
+    /** Returns the initializer, if present. */
     @Nullable
     public ASTArrayInitializer getArrayInitializer() {
         return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTArrayInitializer.class);

@@ -68,10 +68,10 @@ class ASTConstructorCallTest : ParserTestSpec({
         "a.g.c.new Foo(a)" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe fieldAccess("c", READ) {
+            it::getQualifier shouldBe fieldAccess("c", READ) {
                 it::getFieldName shouldBe "c"
 
-                it::getLhsExpression shouldBe ambiguousName("a.g")
+                it::getQualifier shouldBe ambiguousName("a.g")
             }
 
             it::getTypeNode shouldBe child {
@@ -88,7 +88,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         "a.new Foo(a)" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe variableAccess("a")
+            it::getQualifier shouldBe variableAccess("a")
 
             it::getTypeNode shouldBe child {
                 it::getTypeImage shouldBe "Foo"
@@ -107,7 +107,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         "new O().new <Bar> Foo<F>()" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe child<ASTConstructorCall> {
+            it::getQualifier shouldBe child<ASTConstructorCall> {
 
                 it::getTypeNode shouldBe classType("O")
 
@@ -129,7 +129,7 @@ class ASTConstructorCallTest : ParserTestSpec({
         "method().new @Lol Foo<F>()" should matchExpr<ASTConstructorCall> {
             it::isQualifiedInstanceCreation shouldBe true
 
-            it::getLhsExpression shouldBe child<ASTMethodCall> {
+            it::getQualifier shouldBe child<ASTMethodCall> {
                 it::getMethodName shouldBe "method"
                 it::getArguments shouldBe child {}
             }

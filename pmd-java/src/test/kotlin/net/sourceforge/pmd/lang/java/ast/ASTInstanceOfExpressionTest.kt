@@ -16,10 +16,12 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         inContext(ExpressionParsingCtx) {
 
             "f instanceof @A K" should parseAs {
-                child<ASTInstanceOfExpression> {
-                    variableAccess("f")
-                    it::getTypeNode shouldBe classType("K") {
-                        annotation("A")
+                instanceOfExpr {
+                    it::getLeftOperand shouldBe variableAccess("f")
+                    it::getRightOperand shouldBe typeExpr {
+                        classType("K") {
+                            annotation("A")
+                        }
                     }
                 }
             }

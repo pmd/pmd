@@ -9,18 +9,14 @@ import java.util.Objects;
 
 /**
  * Represents a unary prefix operation on a value.
- * This has a precedence greater than {@link ASTMultiplicativeExpression}.
+ * This has a precedence greater than {@link ASTInfixExpression}.
  *
  * <p>UnaryExpression has the same precedence as the prefix forms of {@linkplain ASTIncrementExpression IncrementExpression},
  * and {@linkplain ASTCastExpression CastExpression}.
  *
- * <p>Note that the child of this node is not necessarily a UnaryExpression,
- * rather, it can be an expression with an operator precedence greater or equal
- * to a UnaryExpression.
- *
  * <pre class="grammar">
  *
- * UnaryExpression ::= {@link UnaryOp} UnaryExpression
+ * UnaryExpression ::= {@link UnaryOp} {@link ASTExpression Expression}
  *
  * </pre>
  */
@@ -59,9 +55,7 @@ public final class ASTUnaryExpression extends AbstractJavaExpr implements ASTExp
     }
 
 
-    /**
-     * Returns the constant representing the operator of this expression.
-     */
+    /** Returns the constant representing the operator of this expression. */
     public UnaryOp getOperator() {
         return operator;
     }

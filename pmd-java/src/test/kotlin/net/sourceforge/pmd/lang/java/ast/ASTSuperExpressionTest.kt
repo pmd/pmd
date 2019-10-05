@@ -12,7 +12,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
     parserTest("Unqualified super") {
 
         "super.foo()" should matchExpr<ASTMethodCall> {
-            it::getLhsExpression shouldBe child<ASTSuperExpression> {}
+            it::getQualifier shouldBe child<ASTSuperExpression> {}
 
             it::getArguments shouldBe child {  }
 
@@ -37,7 +37,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
     parserTest("Qualified super") {
         "Type.super.foo()" should matchExpr<ASTMethodCall> {
 
-            it::getLhsExpression shouldBe child<ASTSuperExpression> {
+            it::getQualifier shouldBe child<ASTSuperExpression> {
                 it::getQualifier shouldBe child {
                     it::getImage shouldBe "Type"
                 }
@@ -48,7 +48,7 @@ class ASTSuperExpressionTest : ParserTestSpec({
 
         "net.sourceforge.pmd.lang.java.ast.ASTThisExpression.super.foo()" should matchExpr<ASTMethodCall> {
 
-            it::getLhsExpression shouldBe child<ASTSuperExpression> {
+            it::getQualifier shouldBe child<ASTSuperExpression> {
                 it::getQualifier shouldBe child {
                     it::getImage shouldBe "ASTThisExpression"
                     it::getTypeArguments shouldBe null

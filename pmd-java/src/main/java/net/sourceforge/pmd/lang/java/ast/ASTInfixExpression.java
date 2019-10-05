@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
 
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.BinaryExpressionLike;
+
 /**
  * Represents a binary infix expression. {@linkplain ASTAssignmentExpression Assignment expressions}
  * are not represented by this node, because they're right-associative.
@@ -32,7 +35,7 @@ import java.util.Objects;
  * <img src="doc-files/binaryExpr_60x.svg" />
  * </figure>
  */
-public final class ASTInfixExpression extends AbstractJavaExpr implements ASTExpression, JSingleChildNode<ASTExpression>, LeftRecursiveNode {
+public final class ASTInfixExpression extends AbstractJavaExpr implements LeftRecursiveNode, BinaryExpressionLike, AtLeastOneChild {
 
     private BinaryOp operator;
 
@@ -42,24 +45,6 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements ASTExp
 
     ASTInfixExpression(JavaParser p, int i) {
         super(p, i);
-    }
-
-
-    @Override
-    public ASTExpression jjtGetChild(int index) {
-        return (ASTExpression) super.jjtGetChild(index);
-    }
-
-
-    /** Returns the left-hand-side operand. */
-    public ASTExpression getLhs() {
-        return jjtGetChild(0);
-    }
-
-
-    /** Returns the right-hand-side operand. */
-    public ASTExpression getRhs() {
-        return jjtGetChild(1);
     }
 
 
@@ -80,8 +65,19 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements ASTExp
         this.operator = Objects.requireNonNull(op);
     }
 
+    /**
+     * Returns the right-hand side operand.
+     *
+     * <p>If this is an {@linkplain BinaryOp#INSTANCEOF instanceof expression},
+     * then the right operand is a {@linkplain ASTTypeExpression TypeExpression}.
+     */
+    @Override
+    public ASTExpression getRightOperand() {
+        return BinaryExpressionLike.super.getRightOperand();
+    }
 
     /** Returns the operator. */
+    @Override
     public BinaryOp getOperator() {
         return operator;
     }

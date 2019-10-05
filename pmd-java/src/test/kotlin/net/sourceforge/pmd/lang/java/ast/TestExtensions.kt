@@ -63,11 +63,9 @@ fun TreeNodeWrapper<Node, *>.enumConstant(name: String, spec: NodeSpec<ASTEnumCo
             spec()
         }
 
-fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: (ASTThisExpression) -> ASTClassOrInterfaceType? = { null }) =
+fun TreeNodeWrapper<Node, *>.thisExpr(qualifier: ValuedNodeSpec<ASTThisExpression, ASTClassOrInterfaceType?> = { null }) =
         child<ASTThisExpression> {
-            qualifier(it).let { qual ->
-                it::getQualifier shouldBe qual
-            }
+            it::getQualifier shouldBe qualifier()
         }
 
 fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: (ASTVariableDeclaratorId) -> Unit = {}) =
@@ -102,11 +100,26 @@ fun TreeNodeWrapper<Node, *>.fieldAccess(name: String, accessType: ASTAssignable
             otherAssertions()
         }
 
+fun TreeNodeWrapper<Node, *>.arrayAccess(accessType: ASTAssignableExpr.AccessType? = null, otherAssertions: NodeSpec<ASTArrayAccess> = EmptyAssertions) =
+        child<ASTArrayAccess>(ignoreChildren = otherAssertions == EmptyAssertions) {
+            if (accessType != null) {
+                it::getAccessType shouldBe accessType
+            }
+
+            otherAssertions()
+        }
+
 // this isn't a node anymore
 fun <T : Node, R : ASTExpression> TreeNodeWrapper<Node, T>.parenthesized(depth: Int = 1, inside: ValuedNodeSpec<T, R>): R =
         inside().also {
             it::isParenthesized shouldBe true
             it::getParenthesisDepth shouldBe depth
+        }
+
+// this isn't a node anymore
+fun TreeNodeWrapper<Node, *>.methodCall(inside: NodeSpec<ASTMethodCall>) =
+        child<ASTMethodCall> {
+            inside()
         }
 
 
@@ -195,6 +208,12 @@ fun TreeNodeWrapper<Node, *>.classType(simpleName: String, contents: NodeSpec<AS
         }
 
 
+fun TreeNodeWrapper<Node, *>.typeExpr(contents: ValuedNodeSpec<ASTTypeExpression, ASTType>) =
+        child<ASTTypeExpression>(ignoreChildren = contents == EmptyAssertions) {
+            it::getTypeNode shouldBe contents()
+        }
+
+
 fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
         child<ASTArrayType>(ignoreChildren = contents == EmptyAssertions) {
             contents()
@@ -256,7 +275,7 @@ fun TreeNodeWrapper<Node, *>.additiveExpr(op: BinaryOp, assertions: NodeSpec<AST
 
 fun TreeNodeWrapper<Node, *>.assignmentExpr(op: AssignmentOp, assertions: NodeSpec<ASTAssignmentExpression> = EmptyAssertions) =
         child<ASTAssignmentExpression>(ignoreChildren = assertions == EmptyAssertions) {
-            it::getOp shouldBe op
+            it::getOperator shouldBe op
             assertions()
         }
 
@@ -279,10 +298,8 @@ fun TreeNodeWrapper<Node, *>.infixExpr(op: BinaryOp, assertions: NodeSpec<ASTInf
         }
 
 
-fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInstanceOfExpression>) =
-        child<ASTInstanceOfExpression> {
-            assertions()
-        }
+fun TreeNodeWrapper<Node, *>.instanceOfExpr(assertions: NodeSpec<ASTInfixExpression>) =
+        infixExpr(BinaryOp.INSTANCEOF, assertions)
 
 fun TreeNodeWrapper<Node, *>.andExpr(assertions: NodeSpec<ASTInfixExpression>) =
         infixExpr(BinaryOp.AND, assertions)
@@ -292,21 +309,19 @@ fun TreeNodeWrapper<Node, *>.multiplicativeExpr(op: BinaryOp, assertions: NodeSp
         infixExpr(op, assertions)
 
 
-fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference>) =
-        child<ASTMethodReference> {
+fun TreeNodeWrapper<Node, *>.methodRef(methodName: String, assertions: NodeSpec<ASTMethodReference> = EmptyAssertions) =
+        child<ASTMethodReference>(ignoreChildren = assertions === EmptyAssertions) {
             it::getMethodName shouldBe methodName
             it::isConstructorReference shouldBe false
             assertions()
         }
 
-fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTReferenceType>) =
+fun TreeNodeWrapper<Node, *>.constructorRef(assertions: ValuedNodeSpec<ASTMethodReference, ASTTypeExpression>) =
         child<ASTMethodReference> {
             it::getMethodName shouldBe null
             it::getImage shouldBe "new"
             it::isConstructorReference shouldBe true
-            it::getLhsExpression shouldBe null
-            it::getAmbiguousLhs shouldBe null
-            it::getLhsType shouldBe assertions()
+            it::getQualifier shouldBe assertions()
         }
 
 val EmptyAssertions: NodeSpec<out Node> = {}
@@ -345,7 +360,7 @@ fun TreeNodeWrapper<Node, *>.dimExpr(assertions: NodeSpec<ASTArrayDimExpr> = Emp
             it::getLengthExpression shouldBe lengthExpr()
         }
 
-fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayDimensions> = EmptyAssertions) =
+fun TreeNodeWrapper<Node, *>.arrayType(elementType: ValuedNodeSpec<ASTArrayType, ASTType>, dims: NodeSpec<ASTArrayDimensions>) =
         child<ASTArrayType> {
             it::getElementType shouldBe elementType()
             it::getDimensions shouldBe child {

@@ -5,11 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a type cast expression.
+ * Represents a type cast expression. This is syntactically a unary prefix
+ * operation and has the same precedence.
  *
  * <pre class="grammar">
  *
- * CastExpression ::= "(" {@link ASTAnnotation TypeAnnotation} {@link ASTType Type} ")" {@linkplain ASTUnaryExpression UnaryExpression}
+ * CastExpression ::= "(" {@link ASTType Type} ")" {@linkplain ASTExpression Expression}
  *
  * </pre>
  */
@@ -27,7 +28,7 @@ public final class ASTCastExpression extends AbstractJavaExpr implements ASTExpr
         return getFirstChildOfType(ASTType.class);
     }
 
-    public ASTExpression getCastExpression() {
+    public ASTExpression getOperand() {
         return (ASTExpression) jjtGetChild(jjtGetNumChildren() - 1);
     }
 

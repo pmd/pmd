@@ -7,7 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.Iterator;
 
 /**
- * A list of resources in a {@linkplain try-with-resources}.
+ * A list of resources in a {@linkplain ASTTryStatement try-with-resources}.
  *
  * <pre class="grammar">
  *
