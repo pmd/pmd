@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.ant;
 
+import net.sourceforge.pmd.lang.Language;
+
 /**
  * Stores LanguageVersion terse name value.
  */
@@ -20,6 +22,7 @@ public class SourceLanguage {
         this.version = version;
     }
 
+    /** This actually corresponds to a {@link Language#getTerseName()}. */
     public String getName() {
         return name;
     }

@@ -30,11 +30,6 @@ public class XmlParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         return new XmlParserImpl((XmlParserOptions) parserOptions).parse(source);
     }

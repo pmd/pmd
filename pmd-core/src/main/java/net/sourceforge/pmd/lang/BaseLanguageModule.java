@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Created by christoferdutz on 21.09.14.
  */
@@ -59,6 +61,7 @@ public abstract class BaseLanguageModule implements Language {
         return terseName;
     }
 
+    @NonNull
     @Override
     public Class<?> getRuleChainVisitorClass() {
         return ruleChainVisitorClass;

@@ -49,11 +49,6 @@ public abstract class AbstractJavaParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return createJavaParser(source).CompilationUnit();
