@@ -43,7 +43,7 @@ public class ArrayIsStoredDirectlyRule extends AbstractSunSecureRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        ASTFormalParameter[] arrs = getArrays(node.getParameters());
+        ASTFormalParameter[] arrs = getArrays(node.getFormalParameters());
         // TODO check if one of these arrays is stored in a non local
         // variable
         List<ASTBlockStatement> bs = node.findDescendantsOfType(ASTBlockStatement.class);

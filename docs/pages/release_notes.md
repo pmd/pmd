@@ -55,6 +55,10 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
   * {% jdoc java::lang.java.rule.JavaRuleViolation#isSupressed(Node,Rule) %}
+  * {% jdoc java::lang.java.ast.ASTMethodDeclarator %}
+  * {% jdoc java::lang.java.ast.ASTMethodDeclaration#getMethodName() %}
+  * {% jdoc java::lang.java.ast.ASTMethodDeclaration#getBlock() %}
+  * {% jdoc java::lang.java.ast.ASTConstructorDeclaration#getParameterCount() %}
 * pmd-apex
   * {% jdoc apex::lang.apex.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc apex::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}

@@ -275,7 +275,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 ``` xpath
 //ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
+/MethodDeclaration[@Protected='true' and @Name != 'finalize']
 ```
 
 **Example(s):**

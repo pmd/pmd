@@ -53,7 +53,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
 
     private boolean isJunit3Test(ASTMethodDeclaration node) {
-        if (!node.getMethodName().startsWith("test")) {
+        if (!node.getName().startsWith("test")) {
             return false;
         }
 
@@ -105,7 +105,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
     @Override
     String nameExtractor(ASTMethodDeclaration node) {
-        return node.getMethodName();
+        return node.getName();
     }
 
     @Override

@@ -129,7 +129,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
         } else if (node instanceof ASTConditionalExpression) {
             extras.add("ternary");
         } else if (node instanceof ASTConstructorDeclaration) {
-            extras.add(String.valueOf(((ASTConstructorDeclaration) node).getParameterCount()));
+            extras.add(String.valueOf(((ASTConstructorDeclaration) node).getArity()));
             if (((ASTConstructorDeclaration) node).containsComment()) {
                 extras.add("contains comment");
             }

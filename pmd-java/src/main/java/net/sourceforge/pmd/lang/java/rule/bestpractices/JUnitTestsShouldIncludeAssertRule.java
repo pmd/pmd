@@ -47,7 +47,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
                 Scope classScope = method.getScope().getParent();
                 Map<String, List<NameOccurrence>> expectables = getRuleAnnotatedExpectedExceptions(classScope);
 
-                if (!containsExpectOrAssert(method.getBlock(), expectables, variables)) {
+                if (!containsExpectOrAssert(method.getBody(), expectables, variables)) {
                     addViolation(data, method);
                 }
             }
@@ -114,7 +114,7 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
         }
         return result;
     }
-    
+
     /**
      * Tells if the node contains a Test annotation with an expected exception.
      */

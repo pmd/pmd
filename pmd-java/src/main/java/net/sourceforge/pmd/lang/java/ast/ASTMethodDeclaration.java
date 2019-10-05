@@ -38,15 +38,18 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
 
     /**
      * Returns the simple name of the method.
+     *
+     * @deprecated Use {@link #getName()}
      */
+    @Deprecated
     public String getMethodName() {
-        return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
+        return getName();
     }
 
-
+    /** Returns the simple name of the method. */
     @Override
     public String getName() {
-        return getMethodName();
+        return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
     }
 
 
@@ -127,9 +130,28 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
     /**
      * Returns the block defined by this method, or
      * null if the method is abstract.
+     *
+     * @deprecated Use {@link #getBody()}
      */
+    @Deprecated
     public ASTBlock getBlock() {
+        return getBody();
+    }
+
+    /**
+     * Returns the block defined by this method, or
+     * null if the method is abstract.
+     */
+    public ASTBlock getBody() {
         return getFirstChildOfType(ASTBlock.class);
+    }
+
+    /**
+     * Returns the number of formal parameters expected by this method
+     * (excluding any receiver parameter). A varargs parameter counts as one.
+     */
+    public int getArity() {
+        return getFormalParameters().getParameterCount();
     }
 
 
@@ -155,7 +177,10 @@ public class ASTMethodDeclaration extends AbstractMethodOrConstructorDeclaration
 
     /**
      * Returns the method declarator. Never null.
+     *
+     * @deprecated Method declarator nodes will be removed with 7.0.0
      */
+    @Deprecated
     public ASTMethodDeclarator getMethodDeclarator() {
         return getFirstChildOfType(ASTMethodDeclarator.class);
     }
