@@ -64,13 +64,6 @@ public interface ViolationSuppressor {
      *
      * @implNote This requires special support from the language, namely
      *     an implementation of {@link RootNode#getNoPmdComments()}.
-     *
-     * - TODO this could replace the ParserOptions + RootNode#getNoPmdComments
-     *    Just make a custom suppressor with constructor params
-     *     * the suppress marker
-     *     * a lang-specific strategy to get the comments
-     *
-     *    This would require the service architecture I'd like to put forward.
      */
     ViolationSuppressor NOPMD_COMMENT_SUPPRESSOR = new ViolationSuppressor() {
         @Override

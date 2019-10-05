@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -18,7 +17,6 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
 
     protected final Rule rule;
     protected final String description;
-    protected boolean suppressed;
     protected String filename;
 
     protected int beginLine;
@@ -54,28 +52,6 @@ public class ParametricRuleViolation<T extends Node> implements RuleViolation {
             endColumn = node.getEndColumn();
         }
 
-        // Apply Rule specific suppressions
-        if (node != null && rule != null) {
-            setSuppression(rule, node);
-        }
-
-    }
-
-    private void setSuppression(Rule rule, T node) {
-
-        String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR); // Regex
-        if (regex != null && description != null) {
-            if (Pattern.matches(regex, description)) {
-                suppressed = true;
-            }
-        }
-
-        if (!suppressed) { // XPath
-            String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
-            if (xpath != null) {
-                suppressed = node.hasDescendantMatchingXPath(xpath);
-            }
-        }
     }
 
     protected String expandVariables(String message) {

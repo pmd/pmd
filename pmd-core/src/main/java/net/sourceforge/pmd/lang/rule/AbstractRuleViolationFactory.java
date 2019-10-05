@@ -5,9 +5,10 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -65,7 +66,7 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     }
 
     private void maybeSuppress(RuleContext ruleContext, @Nullable Node node, RuleViolation rv) {
-        List<ViolationSuppressor> suppressors = new ArrayList<>(getSuppressors());
+        Set<ViolationSuppressor> suppressors = new LinkedHashSet<>(getSuppressors());
         suppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
         suppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
         suppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
