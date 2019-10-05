@@ -1409,7 +1409,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <td><a style="pointer-events: none; cursor: default;" name="benchmark"><code>-benchmark</code><br /><code>-b</code></a></td>
     <td>Enables benchmark mode, which outputs a benchmark report upon completion.
                             The report is sent to standard error.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1457,7 +1457,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="debug"><code>-debug</code><br /><code>-verbose</code><br /><code>-D</code><br /><code>-V</code></a></td>
     <td>Debug mode. Prints more log output.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1573,7 +1573,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="help"><code>-help</code><br /><code>-h</code><br /><code>-H</code></a></td>
     <td>Display help on usage.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1638,8 +1638,8 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="norulesetcompatibility"><code>-norulesetcompatibility</code></a></td>
-    <td>Disables the ruleset compatibility filter. The filter is active by default and tries to automatically "fix" old ruleset files with old rule names</td>
-    <td><code>false</code></td>
+    <td>Disables the ruleset compatibility filter. The filter is active by default. It tries to automatically replace rule references that point to moved or renamed rules with the newer location. Disabling it is not recommended.</td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1662,7 +1662,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
     <td><a style="pointer-events: none; cursor: default;" name="no-cache"><code>-no-cache</code></a></td>
     <td>Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
                and causes the <code>-cache</code> option to be discarded if it is provided.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1728,7 +1728,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="shortnames"><code>-shortnames</code></a></td>
     <td>Prints shortened filenames in the report.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1750,7 +1750,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="showsuppressed"><code>-showsuppressed</code></a></td>
     <td>Causes the suppressed rule violations to be added to the report.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -1772,7 +1772,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="stress"><code>-stress</code><br /><code>-S</code></a></td>
     <td>Performs a stress test.</td>
-    <td><code>false</code></td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
