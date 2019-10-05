@@ -134,6 +134,7 @@ public class RuleTestRunner extends ParentRunner<TestDescriptor> {
 
     @Override
     protected boolean isIgnored(final TestDescriptor child) {
-        return TestDescriptor.inRegressionTestMode() && !child.isRegressionTest();
+        return child.isIgnored()
+            || getChildren().stream().filter(it -> !it.equals(child)).anyMatch(TestDescriptor::isFocused);
     }
 }
