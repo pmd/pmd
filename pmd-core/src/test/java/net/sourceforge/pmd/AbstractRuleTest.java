@@ -20,9 +20,9 @@ import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.DummyRuleViolationFactory;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -128,7 +128,7 @@ public class AbstractRuleTest {
         ctx.setSourceCodeFile(new File("filename"));
         DummyRoot n = new DummyRoot(m);
         n.setCoords(5, 1, 6, 0);
-        DummyRuleViolationFactory.INSTANCE.addViolation(ctx, r, n, "specificdescription", new Object[0]);
+        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, r, n, "specificdescription", new Object[0]);
 
         assertTrue(ctx.getReport().isEmpty());
     }

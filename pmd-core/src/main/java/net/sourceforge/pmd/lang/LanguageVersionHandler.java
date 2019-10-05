@@ -9,9 +9,10 @@ import java.util.List;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 
@@ -31,7 +32,9 @@ public interface LanguageVersionHandler {
     /**
      * Get the XPathHandler.
      */
-    XPathHandler getXPathHandler();
+    default XPathHandler getXPathHandler() {
+        return new DefaultASTXPathHandler();
+    }
 
 
     /**
@@ -63,7 +66,7 @@ public interface LanguageVersionHandler {
      * Get the RuleViolationFactory.
      */
     default RuleViolationFactory getRuleViolationFactory() {
-        return new AbstractRuleViolationFactory() {};
+        return DefaultRuleViolationFactory.defaultInstance();
     }
 
 

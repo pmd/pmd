@@ -14,9 +14,9 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 
-public class AbstractRuleViolationFactoryTest {
+public class DefaultRuleViolationFactoryTest {
     private RuleContext ruleContext;
-    private RuleViolationFactory factory;
+    private RuleViolationFactory factory = DefaultRuleViolationFactory.defaultInstance();
 
     private static class TestRule extends AbstractRule {
         @Override
@@ -28,9 +28,8 @@ public class AbstractRuleViolationFactoryTest {
     @Before
     public void setup() {
         ruleContext = new RuleContext();
-        factory = new AbstractRuleViolationFactory() {};
     }
-    
+
     @Test
     public void testMessage() {
         factory.addViolation(ruleContext, new TestRule(), null, "message with \"'{'\"", null);

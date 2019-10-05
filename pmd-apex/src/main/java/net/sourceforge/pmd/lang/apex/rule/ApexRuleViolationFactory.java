@@ -16,9 +16,9 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.apex.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
 
-public final class ApexRuleViolationFactory extends AbstractRuleViolationFactory {
+public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory {
 
     public static final ApexRuleViolationFactory INSTANCE = new ApexRuleViolationFactory();
     private static final ViolationSuppressor APEX_ANNOT_SUPPRESSOR = new ViolationSuppressor() {

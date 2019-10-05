@@ -26,12 +26,12 @@ import net.sourceforge.pmd.lang.ast.Node;
  * It may be extended to add more suppression options.
  *
  * <p>Implementations should be internal. Only the interface should be exposed.
- *
- * TODO this should not be an abstract class anymore
  */
-public abstract class AbstractRuleViolationFactory implements RuleViolationFactory {
+public class DefaultRuleViolationFactory implements RuleViolationFactory {
 
     private static final Object[] NO_ARGS = new Object[0];
+
+    private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
 
     private String cleanup(String message, Object[] args) {
 
@@ -45,7 +45,6 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         }
     }
 
-    // TODO why do we need those two overloads??
 
     @Override
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args) {
@@ -100,5 +99,10 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
         ParametricRuleViolation<Node> rv = new ParametricRuleViolation<>(rule, ruleContext, node, message);
         rv.setLines(beginLine, endLine);
         return rv;
+    }
+
+    /** Returns the default instance (no additional suppressors, creates a ParametricRuleViolation). */
+    public static RuleViolationFactory defaultInstance() {
+        return DEFAULT;
     }
 }

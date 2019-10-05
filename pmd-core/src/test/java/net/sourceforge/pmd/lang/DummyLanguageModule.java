@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
 /**
@@ -93,7 +93,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    public static class RuleViolationFactory extends AbstractRuleViolationFactory {
+    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);
@@ -103,6 +103,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
                 int beginLine, int endLine) {
             ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
+                @Override
                 public String getPackageName() {
                     this.packageName = "foo"; // just for testing variable expansion
                     return super.getPackageName();

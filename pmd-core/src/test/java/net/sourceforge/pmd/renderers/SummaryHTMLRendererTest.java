@@ -19,7 +19,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.ast.DummyRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTst {
 
@@ -93,7 +93,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 + "<td>file</td>" + PMD.EOL + "<td><pre>" + error.getDetail() + "</pre></td>" + PMD.EOL + "</tr>" + PMD.EOL
                 + "</table></tr></table></body></html>" + PMD.EOL;
     }
-    
+
     @Override
     public String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
@@ -146,7 +146,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         RuleContext ctx = new RuleContext();
         DummyRoot root = new DummyRoot(suppressions);
         root.setCoords(1, 10, 4, 5);
-        DummyRuleViolationFactory.INSTANCE.addViolation(ctx, new FooRule(), root, "suppress test", 1, 1, new Object[0]);
+        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, new FooRule(), root, "suppress test", 1, 1, new Object[0]);
         return ctx.getReport();
     }
 }
