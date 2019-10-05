@@ -28,7 +28,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  * is unclear which exceptions that can be thrown from the methods. It might be
  * difficult to document and understand such vague interfaces. Use either a class
  * derived from RuntimeException or a checked exception.
- * 
+ *
  * <p>This rule uses PMD's type resolution facilities, and can detect
  * if the class implements or extends TestCase class
  *
@@ -66,7 +66,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
                 return super.visit(node, data);
             }
         }
-        
+
         ASTClassOrInterfaceType type = node.getSuperClassTypeNode();
         if (type != null && isJUnitTest(type)) {
             junitImported = true;
@@ -115,10 +115,10 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(methodDeclaration, o);
         }
 
-        if (methodDeclaration.getMethodName().startsWith("test")) {
+        if (methodDeclaration.getName().startsWith("test")) {
             return super.visit(methodDeclaration, o);
         }
-        
+
         // Ignore overridden methods, the issue should be marked on the method definition
         final List<ASTAnnotation> methodAnnotations = methodDeclaration.jjtGetParent().findChildrenOfType(ASTAnnotation.class);
         for (final ASTAnnotation annotation : methodAnnotations) {
@@ -137,8 +137,8 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
             return true;
         } else {
-            return methodDeclaration.getMethodName().equals("setUp")
-                    || methodDeclaration.getMethodName().equals("tearDown");
+            return methodDeclaration.getName().equals("setUp")
+                    || methodDeclaration.getName().equals("tearDown");
         }
     }
 
@@ -197,7 +197,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     /**
      * Checks if the given exception is declared in the method or constructor
      * signature.
-     * 
+     *
      * @param exception
      *            to evaluate
      * @return true if parent node is either a method or constructor declaration

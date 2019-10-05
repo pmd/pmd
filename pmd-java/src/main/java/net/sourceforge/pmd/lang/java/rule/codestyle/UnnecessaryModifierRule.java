@@ -69,7 +69,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private String getNodeName(Node node) {
         // constructors are differentiated by their parameters, while we only use method name for methods
         if (node instanceof ASTMethodDeclaration) {
-            return ((ASTMethodDeclaration) node).getMethodName();
+            return ((ASTMethodDeclaration) node).getName();
         } else if (node instanceof ASTMethodOrConstructorDeclaration) {
             // constructors are differentiated by their parameters, while we only use method name for methods
             return ((ASTConstructorDeclaration) node).getQualifiedName().getOperation();

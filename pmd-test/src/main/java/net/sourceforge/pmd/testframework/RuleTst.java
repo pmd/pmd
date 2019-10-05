@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,6 +45,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -462,8 +464,8 @@ public abstract class RuleTst {
             if (languageVersionString == null) {
                 tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
             } else {
-                LanguageVersion languageVersion = LanguageRegistry
-                        .findLanguageVersionByTerseName(languageVersionString);
+
+                LanguageVersion languageVersion = parseSourceType(languageVersionString);
                 if (languageVersion != null) {
                     tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
                 } else {
@@ -479,6 +481,28 @@ public abstract class RuleTst {
             tests[i].setNumberInDocument(i + 1);
         }
         return tests;
+    }
+
+    /** FIXME this is stupid, the language version may be of a different language than the Rule... */
+    private static LanguageVersion parseSourceType(String terseNameAndVersion) {
+        final String version;
+        final String terseName;
+        if (terseNameAndVersion.contains(" ")) {
+            version = StringUtils.trimToNull(terseNameAndVersion.substring(terseNameAndVersion.lastIndexOf(' ') + 1));
+            terseName = terseNameAndVersion.substring(0, terseNameAndVersion.lastIndexOf(' '));
+        } else {
+            version = null;
+            terseName = terseNameAndVersion;
+        }
+        Language language = LanguageRegistry.findLanguageByTerseName(terseName);
+        if (language != null) {
+            if (version == null) {
+                return language.getDefaultVersion();
+            } else {
+                return language.getVersion(version);
+            }
+        }
+        return null;
     }
 
     private String getNodeValue(Element parentElm, String nodeName, boolean required) {

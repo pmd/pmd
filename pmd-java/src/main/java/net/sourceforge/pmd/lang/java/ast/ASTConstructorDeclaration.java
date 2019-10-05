@@ -70,7 +70,19 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         return getFormalParameters();
     }
 
+    /**
+     * @deprecated Use {@link #getArity()}
+     */
+    @Deprecated
     public int getParameterCount() {
+        return getArity();
+    }
+
+    /**
+     * Returns the number of formal parameters expected by this constructor
+     * (excluding any receiver parameter). A varargs parameter counts as one.
+     */
+    public int getArity() {
         return getFormalParameters().getParameterCount();
     }
 

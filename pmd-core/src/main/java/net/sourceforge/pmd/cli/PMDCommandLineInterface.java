@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.cli;
 
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -120,7 +122,7 @@ public final class PMDCommandLineInterface {
 
     private static String supportedVersions() {
         return "Languages and version suported:" + PMD.EOL
-                + LanguageRegistry.commaSeparatedTerseNamesForLanguage(LanguageRegistry.findWithRuleSupport())
+                + LanguageRegistry.getLanguages().stream().map(Language::getTerseName).collect(Collectors.joining(", "))
                 + PMD.EOL;
     }
 

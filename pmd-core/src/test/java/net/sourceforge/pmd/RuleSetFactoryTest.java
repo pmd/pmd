@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -31,10 +32,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 public class RuleSetFactoryTest {
-    
+
     @org.junit.Rule
     public ExpectedException ex = ExpectedException.none();
-    
+
     @Test
     public void testRuleSetFileName() throws RuleSetNotFoundException {
         RuleSet rs = loadRuleSet(EMPTY_RULESET);
@@ -449,31 +450,35 @@ public class RuleSetFactoryTest {
     }
 
     @Test
-    public void testMinimumLanugageVersion() throws RuleSetNotFoundException {
+    public void testMinimumLanguageVersion() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(MINIMUM_LANGUAGE_VERSION);
         assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.4"),
                 r.getMinimumLanguageVersion());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectMinimumLanugageVersion() throws RuleSetNotFoundException {
+    @Test
+    public void testIncorrectMinimumLanguageVersion() throws RuleSetNotFoundException {
+        ex.expect(IllegalArgumentException.class);
+        ex.expectMessage(Matchers.containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
         loadFirstRule(INCORRECT_MINIMUM_LANGUAGE_VERSION);
     }
 
     @Test
-    public void testMaximumLanugageVersion() throws RuleSetNotFoundException {
+    public void testMaximumLanguageVersion() throws RuleSetNotFoundException {
         Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);
         assertEquals(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"),
                 r.getMaximumLanguageVersion());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectMaximumLanugageVersion() throws RuleSetNotFoundException {
+    @Test
+    public void testIncorrectMaximumLanguageVersion() throws RuleSetNotFoundException {
+        ex.expect(IllegalArgumentException.class);
+        ex.expectMessage(Matchers.containsString("1.0, 1.1, 1.2")); // and not "dummy 1.0, dummy 1.1, ..."
         loadFirstRule(INCORRECT_MAXIMUM_LANGUAGE_VERSION);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testInvertedMinimumMaximumLanugageVersions() throws RuleSetNotFoundException {
+    public void testInvertedMinimumMaximumLanguageVersions() throws RuleSetNotFoundException {
         loadFirstRule(INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS);
     }
 
@@ -785,7 +790,7 @@ public class RuleSetFactoryTest {
                                                            + "  <properties>" + PMD.EOL
                                                            + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" + PMD.EOL // inexistent property
                                                            + "  </properties>" + PMD.EOL + " </rule>" + PMD.EOL + "</ruleset>";
-    
+
     private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>" + PMD.EOL
             + "<ruleset name=\"test\">" + PMD.EOL + " <description>testdesc</description>" + PMD.EOL + "<rule "
             + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL

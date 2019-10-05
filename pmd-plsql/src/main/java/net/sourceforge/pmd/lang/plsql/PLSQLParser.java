@@ -43,11 +43,6 @@ public class PLSQLParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         try {
             String sourcecode = IOUtils.toString(source);

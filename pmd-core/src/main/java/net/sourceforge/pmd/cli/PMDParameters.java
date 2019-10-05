@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.RulePriority;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -200,8 +203,7 @@ public class PMDParameters {
         configuration.setAnalysisCacheLocation(this.cacheLocation);
         configuration.setIgnoreIncrementalAnalysis(this.isIgnoreIncrementalAnalysis());
 
-        LanguageVersion languageVersion = LanguageRegistry
-                .findLanguageVersionByTerseName(this.getLanguage() + ' ' + this.getVersion());
+        LanguageVersion languageVersion = getLangVersion();
         if (languageVersion != null) {
             configuration.getLanguageVersionDiscoverer().setDefaultLanguageVersion(languageVersion);
         }
@@ -278,6 +280,15 @@ public class PMDParameters {
 
     public String getReportfile() {
         return reportfile;
+    }
+
+    @Nullable
+    private LanguageVersion getLangVersion() {
+        Language lang = language != null ? LanguageRegistry.findLanguageByTerseName(language)
+                                         : LanguageRegistry.getDefaultLanguage();
+
+        return version != null ? lang.getVersion(version)
+                               : lang.getDefaultVersion();
     }
 
     public String getVersion() {

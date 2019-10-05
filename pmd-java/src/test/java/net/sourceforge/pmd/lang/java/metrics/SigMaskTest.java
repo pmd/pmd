@@ -178,7 +178,7 @@ public class SigMaskTest {
                 assertFalse(mask.covers(JavaFieldSignature.buildFor(node)));
             }
         }
-        
+
     }
 
 
@@ -261,7 +261,7 @@ public class SigMaskTest {
 
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node instanceof ASTMethodDeclaration
-                && ((ASTMethodDeclaration) node).getMethodName().matches("(get|set).*")) {
+                && ((ASTMethodDeclaration) node).getName().matches("(get|set).*")) {
                 assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
                 assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));
@@ -273,7 +273,7 @@ public class SigMaskTest {
         for (ASTMethodOrConstructorDeclaration node : nodes) {
             if (node instanceof ASTMethodDeclaration
                 && !node.isStatic()
-                && !((ASTMethodDeclaration) node).getMethodName().matches("(get|set).*")) {
+                && !((ASTMethodDeclaration) node).getName().matches("(get|set).*")) {
                 assertTrue(mask.covers(JavaOperationSignature.buildFor(node)));
             } else {
                 assertFalse(mask.covers(JavaOperationSignature.buildFor(node)));

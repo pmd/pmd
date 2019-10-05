@@ -31,7 +31,7 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
             return super.visit(node, data);
         }
 
-        if ("getInstance".equals(node.getMethodName())) {
+        if ("getInstance".equals(node.getName())) {
             List<ASTReturnStatement> rsl = node.findDescendantsOfType(ASTReturnStatement.class);
             if (rsl.isEmpty()) {
                 return super.visit(node, data);
@@ -49,13 +49,13 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRule {
 
             /*
              * public class Singleton {
-             * 
+             *
              * private static Singleton m_instance=null;
-             * 
+             *
              * public static Singleton getInstance() {
-             * 
+             *
              * Singleton m_instance=null;
-             * 
+             *
              * if ( m_instance == null ) { synchronized(Singleton.class) {
              * if(m_instance == null) { m_instance = new Singleton(); } } }
              * return m_instance; } }

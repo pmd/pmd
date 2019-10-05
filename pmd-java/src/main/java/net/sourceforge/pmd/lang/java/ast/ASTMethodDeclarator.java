@@ -8,18 +8,12 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 
 /**
- * Child of an {@link ASTMethodDeclaration}.
- *
- * TODO This is not useful, remove
- *
- * <p>
- *
- * MethodDeclarator ::=  &lt;IDENTIFIER&gt; {@link ASTFormalParameters FormalParameters} ( "[" "]" )*
- *
- * </p>
- *
+ * @deprecated This node will be removed with 7.0.0. You
+ *     can directly use {@link ASTMethodDeclaration#getName()},
+ *     {@link ASTMethodDeclaration#getFormalParameters()}, {@link ASTMethodDeclaration#getArity()} instead.
  */
-public final class ASTMethodDeclarator extends AbstractJavaNode {
+@Deprecated
+public class ASTMethodDeclarator extends AbstractJavaNode {
 
     /**
      * @deprecated Made public for one shady usage in {@link ClassScope}
@@ -34,12 +28,25 @@ public final class ASTMethodDeclarator extends AbstractJavaNode {
         super(p, id);
     }
 
+    /**
+     * @deprecated Use {@link ASTMethodDeclaration#getArity()}
+     */
+    @Deprecated
     public int getParameterCount() {
         return getFormalParameters().getParameterCount();
     }
 
     public ASTFormalParameters getFormalParameters() {
         return (ASTFormalParameters) jjtGetChild(0);
+    }
+
+    /**
+     * @deprecated Use {@link ASTMethodDeclaration#getName()}
+     */
+    @Deprecated
+    @Override
+    public String getImage() {
+        return super.getImage();
     }
 
     @Override
