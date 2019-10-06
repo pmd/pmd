@@ -39,6 +39,7 @@ public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory 
     };
 
     private JavaRuleViolationFactory() {
+        // singleton
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Report.SuppressedViolation;
@@ -33,15 +32,7 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
     private static final Object[] NO_ARGS = new Object[0];
 
     private static final DefaultRuleViolationFactory DEFAULT = new DefaultRuleViolationFactory();
-    private @NonNull Set<ViolationSuppressor> allSuppressors;
-
-
-    public DefaultRuleViolationFactory() {
-        this.allSuppressors = new LinkedHashSet<>(getSuppressors());
-        allSuppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
-        allSuppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
-        allSuppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
-    }
+    private Set<ViolationSuppressor> allSuppressors;
 
     private String cleanup(String message, Object[] args) {
 
@@ -80,7 +71,7 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
             // note: no suppression when node is null.
             // Node should in fact never be null, this is todo for later
 
-            for (ViolationSuppressor suppressor : allSuppressors) {
+            for (ViolationSuppressor suppressor : getAllSuppressors()) {
                 SuppressedViolation suppressed = suppressor.suppressOrNull(rv, node);
                 if (suppressed != null) {
                     ruleContext.getReport().addSuppressedViolation(suppressed);
@@ -109,6 +100,19 @@ public class DefaultRuleViolationFactory implements RuleViolationFactory {
         ParametricRuleViolation<Node> rv = new ParametricRuleViolation<>(rule, ruleContext, node, message);
         rv.setLines(beginLine, endLine);
         return rv;
+    }
+
+    private Set<ViolationSuppressor> getAllSuppressors() {
+        if (allSuppressors == null) {
+            // lazy loaded because calling getSuppressors in constructor
+            // is not safe wrt initialization of static constants
+            // (order dependent otherwise)
+            this.allSuppressors = new LinkedHashSet<>(getSuppressors());
+            allSuppressors.add(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR);
+            allSuppressors.add(ViolationSuppressor.REGEX_SUPPRESSOR);
+            allSuppressors.add(ViolationSuppressor.XPATH_SUPPRESSOR);
+        }
+        return allSuppressors;
     }
 
     /** Returns the default instance (no additional suppressors, creates a ParametricRuleViolation). */
