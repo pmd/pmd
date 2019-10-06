@@ -13,10 +13,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
  */
 public interface JAccessibleElementSymbol extends JElementSymbol {
 
-    // TODO #905 is an enormous hole is this architecture
-    // one cannot build a JClassSymbol from an anonymous class because
-    // it's not an ASTAnyTypeDeclaration
-
     /**
      * Returns the class that directly encloses this declaration.
      * This is equivalent to {@link Class#getEnclosingClass()}.
@@ -28,7 +24,6 @@ public interface JAccessibleElementSymbol extends JElementSymbol {
      * know about it
      */
     JClassSymbol getEnclosingClass();
-
 
     boolean isPublic();
 

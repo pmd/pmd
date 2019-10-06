@@ -16,8 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 public interface JMethodSymbol extends JTypeParameterOwnerSymbol,
                                        JFormalParameterOwnerSymbol,
                                        BoundToNode<ASTMethodDeclaration> {
-    // FIXME should also represent annotation methods. We need another interface
-    // between ASTMethodDeclaration and ASTMethodOrConstructorDeclaration
 
 
     /** Returns true if this declaration is declared final. */

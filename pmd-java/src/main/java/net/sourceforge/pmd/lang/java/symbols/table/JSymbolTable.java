@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table;
 
-import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.symbols.internal.JClassSymbol;
@@ -90,9 +91,10 @@ public interface JSymbolTable {
      *
      * @param simpleName Simple name of the type to look for
      *
-     * @return The type reference if it can be found, otherwise an empty optional
+     * @return The type reference if it can be found, otherwise {@code null}
      */
-    Optional<? extends JSimpleTypeSymbol> resolveTypeName(String simpleName);
+    @Nullable
+    JSimpleTypeSymbol resolveTypeName(String simpleName);
 
 
     /**
@@ -101,15 +103,22 @@ public interface JSymbolTable {
      *
      * @param simpleName simple name of the value to find
      *
-     * @return The reference to the variable if it can be found, otherwise an empty optional
+     * @return The reference to the variable if it can be found, otherwise {@code null}
      */
-    Optional<JValueSymbol> resolveValueName(String simpleName);
+    @Nullable
+    JValueSymbol resolveValueName(String simpleName);
 
 
     /**
      * Finds all accessible methods that can be called with the given simple name
      * on an implicit receiver in the scope of this symbol table. The returned methods may
      * have different arity and parameter types.
+     *
+     * <p>Possibly, looking up a method may involve exploring all the
+     * supertypes of the implicit receiver (and the enclosing classes
+     * and their supertypes, for inner/anonymous classes). Since this
+     * might be costly, the method returns a lazy stream that should be
+     * filtered down to exactly what you want.
      *
      * @param simpleName Simple name of the method
      *

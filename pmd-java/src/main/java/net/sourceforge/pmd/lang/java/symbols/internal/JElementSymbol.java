@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
-import java.util.Optional;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -79,9 +79,10 @@ public interface JElementSymbol {
      * If the element was declared outside of the analysed sources (considering
      * incremental analysis), its AST is not available.
      *
-     * @return the AST node representing the declaration, or an empty optional if it can't be found
+     * @return the AST node representing the declaration, or null
      */
-    Optional<? extends Node> getDeclaration();
+    @Nullable
+    Node getDeclaration();
 
 
     /**
