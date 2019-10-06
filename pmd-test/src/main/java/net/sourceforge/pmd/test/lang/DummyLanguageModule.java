@@ -92,6 +92,15 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
+    private static class DummyRootNode extends DummyNode implements RootNode {
+
+        DummyRootNode(int id) {
+            super(id);
+        }
+
+    }
+
+
     public static class RuleViolationFactory extends DefaultRuleViolationFactory {
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {

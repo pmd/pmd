@@ -64,14 +64,8 @@
                  token="throw new Error"
                  value="throw new RuntimeException" />
         <replace file="${target-package-dir}/ParseException.java"
-                 token="public class ParseException extends Exception"
-                 value="class ParseException extends net.sourceforge.pmd.lang.ast.ParseException" />
-
-        <replace file="${target-package-dir}/JavaParserTreeConstants.java"
-                 token="public interface"
-                 value="interface" />
-
-
+                 token="extends Exception"
+                 value="extends net.sourceforge.pmd.lang.ast.ParseException" />
 
         <!-- VISITORS -->
 
@@ -110,7 +104,7 @@
             <replacetoken>public class</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
 
-class]]></replacevalue>
+public class]]></replacevalue>
         </replace>
 
         <replace file="${target-package-dir}/Token.java">
@@ -136,10 +130,10 @@ class]]></replacevalue>
         </replace>
 
         <replace file="${target-package-dir}/Token.java">
-            <replacetoken>class Token implements java.io.Serializable</replacetoken>
+            <replacetoken>public class Token implements java.io.Serializable</replacetoken>
             <replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.GenericToken;
 
-class Token implements GenericToken, java.io.Serializable]]></replacevalue>
+public class Token implements GenericToken, java.io.Serializable]]></replacevalue>
         </replace>
 
         <!--Add implementation methods of GenericToken-->
