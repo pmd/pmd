@@ -40,9 +40,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode implements Dim
     private VariableNameDeclaration nameDeclaration;
     private boolean explicitReceiverParameter = false;
 
-    @InternalApi
-    @Deprecated
-    public ASTVariableDeclaratorId(int id) {
+    ASTVariableDeclaratorId(int id) {
         super(id);
     }
 
