@@ -111,7 +111,8 @@ public class AbstractRuleTest {
         RuleContext ctx = new RuleContext();
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ctx.setReport(new Report());
-        ctx.setSourceCodeFile(new File("filename"));        DummyNode s = new DummyRoot();
+        ctx.setSourceCodeFile(new File("filename"));
+        DummyNode s = new DummyRoot();
         s.setCoords(5, 1, 6, 0);
         s.setImage("TestImage");
         r.addViolation(ctx, s);

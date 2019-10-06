@@ -8,8 +8,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
-import java.util.Collections;
-
 import org.junit.Test;
 
 import net.sourceforge.pmd.lang.ast.DummyNode;

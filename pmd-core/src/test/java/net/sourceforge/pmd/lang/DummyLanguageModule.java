@@ -17,7 +17,6 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;

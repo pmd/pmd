@@ -15,6 +15,7 @@ public class DummyRoot extends DummyNode implements RootNode {
         super(0);
         this.suppressMap = suppressMap;
     }
+
     public DummyRoot() {
         this(Collections.emptyMap());
     }

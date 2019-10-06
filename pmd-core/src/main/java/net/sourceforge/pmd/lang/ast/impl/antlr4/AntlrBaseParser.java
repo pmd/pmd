@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.antlr.v4.runtime.Lexer;
 

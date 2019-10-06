@@ -121,7 +121,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("<td width=\"*%\">")
                .append(maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(rv.getFilename())), linePrefix == null ? "" : linePrefix + rv.getBeginLine()))
                .append("</td>")
-               .append(PMD.EOL);
+                .append(PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(PMD.EOL);
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
