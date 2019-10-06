@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.jsp;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 
 /**
  * Implementation of LanguageVersionHandler for the JSP parser.
@@ -16,12 +14,6 @@ import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspHandler extends AbstractPmdLanguageVersionHandler {
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
-
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {

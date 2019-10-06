@@ -7,15 +7,8 @@ package net.sourceforge.pmd.lang.vf;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 
 public class VfHandler extends AbstractPmdLanguageVersionHandler {
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 
     @Override
     public Parser getParser(ParserOptions parserOptions) {

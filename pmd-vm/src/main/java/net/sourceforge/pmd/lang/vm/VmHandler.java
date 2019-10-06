@@ -7,19 +7,12 @@ package net.sourceforge.pmd.lang.vm;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.XPathHandler;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 
 /**
  * Implementation of LanguageVersionHandler for the VM parser.
  *
  */
 public class VmHandler extends AbstractPmdLanguageVersionHandler {
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 
 
     @Override
