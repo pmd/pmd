@@ -7,11 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
-import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.symboltable.Scope;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
@@ -65,9 +61,6 @@ public interface JavaNode extends ScopedNode {
      */
     <T> void childrenAccept(SideEffectingVisitor<T> visitor, T data);
 
-
-
-    void setScope(Scope scope);
 
 
     /** Returns the last child of this node, or null if this node has no children. */
