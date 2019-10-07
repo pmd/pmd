@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,12 +55,15 @@ public abstract class BaseCLITest {
 
     @After
     public void tearDown() {
+        IOUtils.closeQuietly(System.out);
+
         System.setOut(originalOut);
         System.setErr(originalErr);
     }
 
     protected void createTestOutputFile(String filename) {
         try {
+            @SuppressWarnings("PMD.CloseResource")
             PrintStream out = new PrintStream(Files.newOutputStream(new File(filename).toPath()));
             System.setOut(out);
             System.setErr(out);

@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -103,6 +105,9 @@ public abstract class AbstractPMDProcessor {
         return brokenRules;
     }
 
+    @SuppressWarnings("PMD.CloseResource")
+    // the data sources must only be closed after the threads are finished
+    // this is done manually without a try-with-resources
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers) {
         RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
@@ -121,6 +126,12 @@ public abstract class AbstractPMDProcessor {
         
         // then add analysis results per file
         collectReports(renderers);
+
+        // in case we analyzed files within Zip Files/Jars, we need to close them after
+        // the analysis is finished
+        for (DataSource dataSource : files) {
+            IOUtils.closeQuietly(dataSource);
+        }
     }
 
     protected abstract void runAnalysis(PmdRunnable runnable);

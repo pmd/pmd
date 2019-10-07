@@ -19,6 +19,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Modified Rules
+
+*   The Java rules {% rule "java/errorprone/InvalidSlf4jMessageFormat" %} and {% rule "java/errorprone/MoreThanOneLogger" %}
+    (`java-errorprone`) now both support [Log4j2](https://logging.apache.org/log4j/2.x/).
+
+*   The Java rule {% rule "java/design/LawOfDemeter" %} (`java-design`) ignores now also Builders, that are
+    not assigned to a local variable, but just directly used within a method call chain. The method, that creates
+    the builder needs to end with "Builder", e.g. `newBuilder()` or `initBuilder()` works. This change
+    fixes a couple of false positives.
+
 ### Fixed Issues
 
 *   core
@@ -30,6 +40,8 @@ This is a {{ site.pmd.release_type }} release.
     *    [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
 *   java-design
     *   [#1912](https://github.com/pmd/pmd/issues/1912): \[java] Metrics not computed correctly with annotations
+*   java-errorprone
+    *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
 
 ### API Changes
 
@@ -64,6 +76,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### External Contributions
 
+*   [#2010](https://github.com/pmd/pmd/pull/2010): \[java] LawOfDemeter to support inner builder pattern - [Gregor Riegler](https://github.com/gregorriegler)
+*   [#2012](https://github.com/pmd/pmd/pull/2012): \[java] Fixes 336, slf4j log4j2 support - [Mark Hall](https://github.com/markhall82)
 *   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
 *   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
 

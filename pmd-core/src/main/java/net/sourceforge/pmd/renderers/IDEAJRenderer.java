@@ -51,7 +51,6 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         classAndMethodName = getProperty(CLASS_AND_METHOD_NAME);
         fileName = getProperty(FILE_NAME);
 
-        Writer writer = getWriter();
         if (".method".equals(classAndMethodName)) {
             // working on a directory tree
             renderDirectoy(writer, violations);

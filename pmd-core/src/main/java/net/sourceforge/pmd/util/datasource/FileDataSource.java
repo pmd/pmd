@@ -12,11 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.internal.util.ShortFilenameUtil;
+import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
 
 /**
  * DataSource implementation to read data from a file.
  */
-public class FileDataSource implements DataSource {
+public class FileDataSource extends AbstractDataSource {
     private final File file;
 
     /**
@@ -84,6 +85,7 @@ public class FileDataSource implements DataSource {
         if (getClass() != obj.getClass()) {
             return false;
         }
+        @SuppressWarnings("PMD.CloseResource")
         FileDataSource other = (FileDataSource) obj;
         if (file == null) {
             if (other.file != null) {

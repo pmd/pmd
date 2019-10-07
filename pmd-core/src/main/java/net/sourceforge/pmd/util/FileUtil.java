@@ -100,6 +100,9 @@ public final class FileUtil {
         }
         if (!file.isDirectory()) {
             if (fileLocation.endsWith(".zip") || fileLocation.endsWith(".jar")) {
+                @SuppressWarnings("PMD.CloseResource")
+                // the zip file can't be closed here, it needs to be closed at the end of the PMD run
+                // see net.sourceforge.pmd.processor.AbstractPMDProcessor#processFiles(...)
                 ZipFile zipFile;
                 try {
                     zipFile = new ZipFile(fileLocation);

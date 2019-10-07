@@ -51,23 +51,24 @@ public class CPPTokenizer extends JavaCCTokenizer {
             return test;
         }
 
-        BufferedReader reader = new BufferedReader(new StringReader(test));
-        StringBuilder filtered = new StringBuilder(test.length());
-        String line;
-        boolean skip = false;
-        while ((line = reader.readLine()) != null) {
-            if (skipBlocksStart.equalsIgnoreCase(line.trim())) {
-                skip = true;
-            } else if (skip && skipBlocksEnd.equalsIgnoreCase(line.trim())) {
-                skip = false;
+        try (BufferedReader reader = new BufferedReader(new StringReader(test))) {
+            StringBuilder filtered = new StringBuilder(test.length());
+            String line;
+            boolean skip = false;
+            while ((line = reader.readLine()) != null) {
+                if (skipBlocksStart.equalsIgnoreCase(line.trim())) {
+                    skip = true;
+                } else if (skip && skipBlocksEnd.equalsIgnoreCase(line.trim())) {
+                    skip = false;
+                }
+                if (!skip) {
+                    filtered.append(line);
+                }
+                // always add a new line to keep the line-numbering
+                filtered.append(PMD.EOL); 
             }
-            if (!skip) {
-                filtered.append(line);
-            }
-            // always add a new line to keep the line-numbering
-            filtered.append(PMD.EOL); 
+            return filtered.toString();
         }
-        return filtered.toString();
     }
 
     @Override

@@ -685,8 +685,8 @@ through the @RunWith(Suite.class) annotation.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
-[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
+//ClassOrInterfaceBodyDeclaration
+[MethodDeclaration[@Name='suite']/ResultType/Type/ReferenceType/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.Test')]]
 [not(MethodDeclaration/Block//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.JUnit4TestAdapter')])]
 ```
 
@@ -724,7 +724,7 @@ JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration/MethodDeclarator[@Image='tearDown']]
+    [MethodDeclaration[@Name='tearDown']]
     [count(Annotation//Name[
            pmd-java:typeIs('org.junit.After')
         or pmd-java:typeIs('org.junit.jupiter.api.AfterEach')
@@ -765,7 +765,7 @@ JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods bef
 **This rule is defined by the following XPath expression:**
 ``` xpath
 //ClassOrInterfaceBodyDeclaration
-    [MethodDeclaration/MethodDeclarator[@Image='setUp']]
+    [MethodDeclaration[@Name='setUp']]
     [count(Annotation//Name[
            pmd-java:typeIs('org.junit.Before')
         or pmd-java:typeIs('org.junit.jupiter.api.BeforeEach')
@@ -809,7 +809,7 @@ In JUnit 5, one of the following annotations should be used for tests: @Test, @R
        matches(@Image, $testClassPattern)
         or ExtendsList/ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]]
 
-    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true()]/MethodDeclarator[starts-with(@Image, 'test')]]
+    /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[MethodDeclaration[@Public=true() and starts-with(@Name, 'test')]]
     [not(Annotation//Name[
         pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test') or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -896,7 +896,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//MethodDeclarator[@Image[matches(.,'^test')] or ../../Annotation/MarkerAnnotation/Name[
+//MethodDeclaration[@Name[matches(.,'^test')] or ../Annotation/MarkerAnnotation/Name[
            pmd-java:typeIs('org.junit.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.Test')
         or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
@@ -905,7 +905,7 @@ This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods startin
         or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
         or pmd-java:typeIs('org.testng.annotations.Test')
     ]]
-    [count(..//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
+    [count(.//PrimaryPrefix/Name[@Image[matches(.,'^assert')]]) > $maximumAsserts]
 ```
 
 **Example(s):**
@@ -1925,12 +1925,15 @@ having to deal with the creation of an array.
     [not (./Type/PrimitiveType[@Image='byte'])]
     [not (ancestor::MethodDeclaration/preceding-sibling::Annotation/*/Name[@Image='Override'])]
     [not(
-        ancestor::MethodDeclaration
-            [@Public=true() and @Static=true()]
-            [child::ResultType[@Void=true()]] and
-        ancestor::MethodDeclarator[@Image='main'] and
-        ..[@ParameterCount=1] and
-        ./Type/ReferenceType[ClassOrInterfaceType[@Image='String']]
+         ancestor::MethodDeclaration
+            [    @Public=true()
+             and @Static=true()
+             and child::ResultType[@Void=true()]
+             and @Name = 'main'
+             and @Arity = 1
+            ]
+         (: Type of the formal parameter here. :)
+         and pmd-java:typeIs('java.lang.String[]')
     )]
 ```
 
