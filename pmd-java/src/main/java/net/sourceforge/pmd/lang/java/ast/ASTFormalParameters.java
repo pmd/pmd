@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.checkerframework.checker.nullness.qual.Nullable;

@@ -101,6 +101,10 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
         this.symbolTable = table;
     }
 
+    @Override
+    public JSymbolTable getSymbolTable() {
+        return symbolTable;
+    }
 
     @Override
     public Scope getScope() {
