@@ -133,6 +133,7 @@ public class CPDTask extends Task {
         CPDRenderer renderer = createRenderer();
         
         try {
+            // will be closed via BufferedWriter/OutputStreamWriter chain down below
             final OutputStream os;
             if (outputFile == null) {
                 os = System.out;

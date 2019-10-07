@@ -104,7 +104,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
 
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
 
-        <pmd.build-tools.version>3</pmd.build-tools.version>
+        <pmd.build-tools.version>4-SNAPSHOT</pmd.build-tools.version>
 
         <pmd-designer.version>6.17.0</pmd-designer.version>
     </properties>
@@ -363,12 +363,12 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>6.15.0</version>
+                            <version>6.18.0</version>
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>6.15.0</version>
+                            <version>6.18.0</version>
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>

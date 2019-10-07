@@ -85,7 +85,10 @@ public class XSLTRenderer extends XMLRenderer {
         if (xslt == null) {
             throw new FileNotFoundException("Can't find XSLT file: " + this.xsltFilename);
         }
-        this.prepareTransformer(xslt);
+
+        try (InputStream stream = xslt) {
+            this.prepareTransformer(stream);
+        }
         // Now we build the XML file
         super.start();
     }
@@ -115,11 +118,9 @@ public class XSLTRenderer extends XMLRenderer {
         // First we finish the XML report
         super.end();
         // Now we transform it using XSLT
-        Writer writer = super.getWriter();
         if (writer instanceof StringWriter) {
             StringWriter w = (StringWriter) writer;
-            StringBuffer buffer = w.getBuffer();
-            Document doc = this.getDocument(buffer.toString());
+            Document doc = this.getDocument(w.toString());
             this.transform(doc);
         } else {
             // Should not happen !

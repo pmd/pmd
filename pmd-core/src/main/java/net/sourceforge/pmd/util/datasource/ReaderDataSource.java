@@ -10,10 +10,12 @@ import java.io.Reader;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
+import net.sourceforge.pmd.util.datasource.internal.AbstractDataSource;
+
 /**
  * DataSource implementation to read data from a Reader.
  */
-public class ReaderDataSource implements DataSource {
+public class ReaderDataSource extends AbstractDataSource {
     /**
      * Reader
      */

@@ -2278,7 +2278,7 @@ Class c = String.class;{%endraw%}
 
 **Priority:** Low (5)
 
-Check for messages in slf4j loggers with non matching number of arguments and placeholders.
+Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/InvalidSlf4jMessageFormatRule.java)
 
@@ -2698,7 +2698,8 @@ public class Foo {
 
 **Priority:** Medium High (2)
 
-Normally only one logger is used in each class.
+Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
+log4j2 (since 6.19.0).
 
 **This rule is defined by the following Java class:** [net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/MoreThanOneLoggerRule.java)
 

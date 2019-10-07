@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -51,7 +50,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             useUTF8 = true;
         }
 
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         buf.append("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>").append(PMD.EOL);
         createVersionAttr(buf);
@@ -64,7 +62,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         String filename = null;
 
@@ -117,7 +114,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         // errors
         for (Report.ProcessingError pe : errors) {
