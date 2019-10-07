@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
  * {@linkplain ASTEnumDeclaration enum} declaration.
@@ -14,8 +16,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *                            {@link ASTTypeParameters TypeParameters}?
  *                            &lt;IDENTIFIER&gt;
  *                            {@link ASTFormalParameters FormalParameters}
- *                            ("throws" {@link ASTNameList NameList})?
- *                            {@link ASTBlock Block} TODO there's no Block here for now, just a list of statements
+ *                            ({@link ASTThrowsList ThrowsList})?
+ *                            {@link ASTBlock Block}
  *
  *
  * ConstructorModifier ::= "public" | "private"  | "protected"
@@ -26,8 +28,6 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public final class ASTConstructorDeclaration extends AbstractMethodOrConstructorDeclaration {
 
-    private boolean containsComment;
-
     ASTConstructorDeclaration(int id) {
         super(id);
     }
@@ -36,6 +36,10 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
         super(p, id);
     }
 
+    @Override
+    public String getName() {
+        return getImage();
+    }
 
     @Override
     public MethodLikeKind getKind() {
@@ -55,39 +59,12 @@ public final class ASTConstructorDeclaration extends AbstractMethodOrConstructor
 
 
     public boolean containsComment() {
-        return this.containsComment;
+        return getBody().containsComment();
     }
 
-    void setContainsComment() {
-        this.containsComment = true;
+    @Override
+    public @NonNull ASTBlock getBody() {
+        return (ASTBlock) getLastChild();
     }
 
-    /**
-     * @deprecated to be removed with PMD 7.0.0 - use getFormalParameters() instead
-     */
-    @Deprecated
-    public ASTFormalParameters getParameters() {
-        return getFormalParameters();
-    }
-
-    /**
-     * @deprecated Use {@link #getArity()}
-     */
-    @Deprecated
-    public int getParameterCount() {
-        return getArity();
-    }
-
-    /**
-     * Returns the number of formal parameters expected by this constructor
-     * (excluding any receiver parameter). A varargs parameter counts as one.
-     */
-    public int getArity() {
-        return getFormalParameters().getParameterCount();
-    }
-
-    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
-    public ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTFormalParameters.class);
-    }
 }

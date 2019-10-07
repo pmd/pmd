@@ -4,23 +4,35 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DFAGraphMethod;
 
 
 /**
- * A method declaration, in a class or interface declaration. This cannot
- * be found in {@linkplain ASTAnnotationTypeDeclaration annotation types},
- * which instead have {@linkplain ASTAnnotationMethodDeclaration annotation methods}.
+ * A method declaration, in a class or interface declaration. Since 7.0,
+ * this also represents annotation methods. Annotation methods have a
+ * much more restricted grammar though, in particular:
+ * <ul>
+ * <li>They can't declare a {@linkplain #getThrowsList() throws clause}
+ * <li>They can't declare {@linkplain #getTypeParameters() type parameters}
+ * <li>Their {@linkplain #getFormalParameters() formal parameters} must be empty
+ * <li>They can't be declared void
+ * <li>They must be abstract
+ * </ul>
+ * They can however declare a {@link #getDefaultClause() default value}.
  *
  * <pre class="grammar">
  *
  * MethodDeclaration ::= MethodModifier*
  *                       {@link ASTTypeParameters TypeParameters}?
  *                       {@link ASTResultType ResultType}
- *                       {@link ASTMethodDeclarator MethodDeclarator}
- *                       ("throws" {@link ASTNameList NameList})?
+ *                       &lt;IDENTIFIER&gt;
+ *                       {@link ASTFormalParameters FormalParameters}
+ *                       ( "[" "]" )*
+ *                       ({@link ASTThrowsList ThrowsList})?
  *                       ({@link ASTBlock Block} | ";" )
  *
  *
@@ -65,10 +77,11 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         return getName();
     }
 
+
     /** Returns the simple name of the method. */
     @Override
     public String getName() {
-        return getFirstChildOfType(ASTMethodDeclarator.class).getImage();
+        return getImage();
     }
 
 
@@ -126,7 +139,8 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
         Node potentialTypeDeclaration = getNthParent(3);
 
         return potentialTypeDeclaration instanceof ASTClassOrInterfaceDeclaration
-            && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface();
+            && ((ASTClassOrInterfaceDeclaration) potentialTypeDeclaration).isInterface()
+            || potentialTypeDeclaration instanceof ASTAnnotationTypeDeclaration;
     }
 
 
@@ -139,72 +153,25 @@ public final class ASTMethodDeclaration extends AbstractMethodOrConstructorDecla
 
 
     /**
+     * Returns the default clause, if this is an annotation method declaration
+     * that features one. Otherwise returns null.
+     */
+    @Nullable
+    public ASTDefaultValue getDefaultClause() {
+        return AstImplUtil.getChildAs(this, jjtGetNumChildren() - 1, ASTDefaultValue.class);
+    }
+
+    /**
      * Returns the result type node of the method.
      */
     public ASTResultType getResultType() {
         return getFirstChildOfType(ASTResultType.class);
     }
 
-
-    /**
-     * Returns the block defined by this method, or
-     * null if the method is abstract.
-     *
-     * @deprecated Use {@link #getBody()}
-     */
-    @Deprecated
-    public ASTBlock getBlock() {
-        return getBody();
-    }
-
-    /**
-     * Returns the block defined by this method, or
-     * null if the method is abstract.
-     */
-    public ASTBlock getBody() {
-        return getFirstChildOfType(ASTBlock.class);
-    }
-
-    /**
-     * Returns the number of formal parameters expected by this method
-     * (excluding any receiver parameter). A varargs parameter counts as one.
-     */
-    public int getArity() {
-        return getFormalParameters().getParameterCount();
-    }
-
-
-    /**
-     * Returns the exception names listed in the {@code throws} clause
-     * of this method declaration, or null if there are none.
-     */
-    public ASTNameList getThrows() {
-        return getFirstChildOfType(ASTNameList.class);
-    }
-
-
     @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.METHOD;
     }
 
-    public ASTTypeParameters getTypeParameters() {
-        return getFirstChildOfType(ASTTypeParameters.class);
-    }
 
-    //@Override // enable this with PMD 7.0.0 - see interface ASTMethodOrConstructorDeclaration
-    public ASTFormalParameters getFormalParameters() {
-        return getFirstChildOfType(ASTMethodDeclarator.class).getFirstChildOfType(ASTFormalParameters.class);
-    }
-
-
-    /**
-     * Returns the method declarator. Never null.
-     *
-     * @deprecated Method declarator nodes will be removed with 7.0.0
-     */
-    @Deprecated
-    public ASTMethodDeclarator getMethodDeclarator() {
-        return getFirstChildOfType(ASTMethodDeclarator.class);
-    }
 }

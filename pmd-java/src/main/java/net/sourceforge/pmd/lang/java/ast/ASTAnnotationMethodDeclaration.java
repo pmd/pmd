@@ -4,7 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstructorDeclaration {
+import net.sourceforge.pmd.lang.java.ast.MethodLikeNode.MethodLikeKind;
+
+/**
+ * @deprecated Represented directly by {@link ASTMethodDeclaration MethodDeclaration}.
+ *     An annotation method is just {@link ASTMethodDeclaration MethodDeclaration} whose
+ *     enclosing type is an annotation.
+ */
+@Deprecated
+public final class ASTAnnotationMethodDeclaration extends AbstractJavaAccessNode {
 
     ASTAnnotationMethodDeclaration(int id) {
         super(id);
@@ -13,6 +21,7 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
     ASTAnnotationMethodDeclaration(JavaParser p, int id) {
         super(p, id);
     }
+
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -25,8 +34,6 @@ public final class ASTAnnotationMethodDeclaration extends AbstractMethodOrConstr
         visitor.visit(this, data);
     }
 
-
-    @Override
     public MethodLikeKind getKind() {
         return MethodLikeKind.METHOD;
     }

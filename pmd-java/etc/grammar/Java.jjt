@@ -1995,24 +1995,21 @@ void ArrayInitializer() :
 void MethodDeclaration(int modifiers) :
 {
     jjtThis.setModifiers(modifiers);
-    { checkForBadPrivateInterfaceMethod(jjtThis); }
+    checkForBadPrivateInterfaceMethod(jjtThis);
 }
 {
   [ TypeParameters() ]
-  ResultType() MethodDeclarator() [ "throws" NameList() ]
-  ( Block() | ";" )
-}
-
-void MethodDeclarator() :
-{Token t;}
-{
-  t=<IDENTIFIER>
-  {
-    checkForBadAssertUsage(t.image, "a method name");
-    checkForBadEnumUsage(t.image, "a method name");
-    jjtThis.setImage( t.image );
+  ResultType()
+  <IDENTIFIER> {
+    String image = getToken(0).getImage();
+    jjtThis.setImage(image);
+    checkForBadAssertUsage(image, "a method name");
+    checkForBadEnumUsage(image, "a method name");
   }
-  FormalParameters() ( "[" "]" )* // TODO use ArrayDimensions
+  FormalParameters()
+  ( "[" "]" )* // TODO use ArrayDimensions
+  [ ThrowsList() ]
+  ( Block() | ";" )
 }
 
 
@@ -2040,11 +2037,11 @@ void ConstructorDeclaration(int modifiers) :
 Token t;}
 {
     [ TypeParameters() ]
-   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ "throws" NameList() ]
-  "{"
+   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ ThrowsList() ]
+  ("{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
-  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
+  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } } ) #Block
 }
 
 void ExplicitConstructorInvocation() :
@@ -2328,13 +2325,10 @@ void ResultType() :
 }
 
 
-// TODO rename to ThrowsClause, stop using Name
-void NameList() :
+void ThrowsList() :
 {}
 {
-  (TypeAnnotation())* Name()
-  ( "," (TypeAnnotation())* Name()
-  )*
+  "throws" AnnotatedClassOrInterfaceType() ( "," AnnotatedClassOrInterfaceType())*
 }
 
 
@@ -3373,13 +3367,17 @@ void AnnotationTypeMemberDeclaration():
    ";" #EmptyDeclaration
 }
 
-void AnnotationMethodDeclaration(int modifiers):
+void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
 {
   Token t;
   jjtThis.setModifiers(modifiers);
 }
 {
-  Type() t=<IDENTIFIER> "(" ")"  [ DefaultValue() ] ";"
+  Type() #ResultType
+  t=<IDENTIFIER>
+  ("(" ")") #FormalParameters(true)
+  ( "[" "]" )* // TODO use ArrayTypeDims
+  [ DefaultValue() ] ";"
   {
     jjtThis.setImage(t.image);
   }

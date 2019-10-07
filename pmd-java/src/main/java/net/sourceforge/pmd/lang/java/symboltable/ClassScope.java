@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
@@ -301,15 +300,12 @@ public class ClassScope extends AbstractJavaScope {
         InternalApiBridge.setModifier(methodDeclaration, AccessNode.PUBLIC);
         InternalApiBridge.setScope(methodDeclaration, this);
 
-        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(JavaParserTreeConstants.JJTMETHODDECLARATOR);
-        methodDeclarator.setImage(methodName);
+        methodDeclaration.setImage(methodName);
 
         ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
 
-        methodDeclaration.jjtAddChild(methodDeclarator, 0);
-        methodDeclarator.jjtSetParent(methodDeclaration);
-        methodDeclarator.jjtAddChild(formalParameters, 0);
-        formalParameters.jjtSetParent(methodDeclarator);
+        methodDeclaration.jjtAddChild(formalParameters, 0);
+        formalParameters.jjtSetParent(methodDeclaration);
 
         /*
          * jjtAddChild resizes it's child node list according to known indexes.
@@ -338,7 +334,7 @@ public class ClassScope extends AbstractJavaScope {
 
         }
 
-        return new MethodNameDeclaration(methodDeclarator);
+        return new MethodNameDeclaration(methodDeclaration);
     }
 
 
@@ -351,8 +347,9 @@ public class ClassScope extends AbstractJavaScope {
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode()
-                .findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = mnd.getDeclarator()
+                                                 .getFormalParameters()
+                                                 .findChildrenOfType(ASTFormalParameter.class);
         if (parameters.isEmpty()) {
             return Collections.emptyList();
         }

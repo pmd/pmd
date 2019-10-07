@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * @deprecated Replaced with {@link ASTThrowsList}
+ */
+@Deprecated
 public final class ASTNameList extends AbstractJavaNode {
 
     ASTNameList(int id) {

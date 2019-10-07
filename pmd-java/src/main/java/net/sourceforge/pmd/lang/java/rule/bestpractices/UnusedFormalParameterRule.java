@@ -11,15 +11,18 @@ import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTNameList;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowsList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -71,9 +74,9 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     }
 
     private boolean throwsOneException(ASTMethodDeclaration node, Class<? extends Throwable> exception) {
-        ASTNameList throwsList = node.getThrows();
+        @Nullable ASTThrowsList throwsList = node.getThrowsList();
         if (throwsList != null && throwsList.jjtGetNumChildren() == 1) {
-            ASTName n = (ASTName) throwsList.jjtGetChild(0);
+            ASTClassOrInterfaceType n = throwsList.jjtGetChild(0);
             if (n.getType() == exception || exception.getSimpleName().equals(n.getImage())
                     || exception.getName().equals(n.getImage())) {
                 return true;

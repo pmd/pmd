@@ -240,19 +240,6 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
-        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
-        if (node.isPublic()) {
-            unnecessary.add(Modifier.PUBLIC);
-        }
-        if (node.isAbstract()) {
-            unnecessary.add(Modifier.ABSTRACT);
-        }
-        checkDeclarationInInterfaceType(data, node, unnecessary);
-        return data;
-    }
-
-    @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         if (node.getNthParent(2) instanceof ASTEnumBody) {
             if (node.isPrivate()) {
