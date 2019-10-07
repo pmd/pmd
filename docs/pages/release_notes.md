@@ -31,8 +31,10 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...
+*   java-bestpractices
+    *   [#2025](https://github.com/pmd/pmd/issues/2025): \[java] UnusedImports when @see / @link pattern includes a FQCN
 *   java-codestyle
-    *    [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
+    *   [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
 *   java-design
     *   [#1912](https://github.com/pmd/pmd/issues/1912): \[java] Metrics not computed correctly with annotations
 *   java-errorprone

@@ -68,10 +68,10 @@ public class ImportWrapper {
         }
         if (other instanceof ImportWrapper) {
             ImportWrapper i = (ImportWrapper) other;
-            if (name == null && i.getName() == null) {
-                return i.getFullName().equals(fullname);
+            if (name == null) {
+                return fullname.equals(i.getFullName());
             }
-            return i.getName().equals(name);
+            return name.equals(i.getName());
         }
         return false;
     }
