@@ -2063,7 +2063,7 @@ Class c = String.class;
           class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidslf4jmessageformat">
         <description>
-Check for messages in slf4j loggers with non matching number of arguments and placeholders.
+Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
         </description>
         <priority>5</priority>
         <example>
@@ -2476,7 +2476,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#morethanonelogger">
         <description>
-Normally only one logger is used in each class.
+Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
+log4j2 (since 6.19.0).
         </description>
         <priority>2</priority>
         <example>

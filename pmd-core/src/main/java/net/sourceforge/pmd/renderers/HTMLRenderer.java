@@ -78,7 +78,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void start() throws IOException {
-        Writer writer = getWriter();
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
@@ -88,13 +87,11 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         glomRuleViolations(writer, violations);
     }
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         writer.write("</table>");
         glomProcessingErrors(writer, errors);
         if (showSuppressedViolations) {
