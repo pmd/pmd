@@ -2,10 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-/*
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-
 package net.sourceforge.pmd.lang.java.ast.internal;
 
 
@@ -32,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
@@ -49,7 +46,10 @@ import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 
 /**
  * Checks that an AST conforms to some language level. The reporting
- * behaviour is left to be completed by implementations.
+ * behaviour is left to be completed by implementations. For example,
+ * {@link #checkerThatThrows(int, boolean)} produces a checker that
+ * throws a parse exception. It would be trivial to make eg a checker
+ * that collects several warnings and just ignores violations.
  */
 public abstract class LanguageLevelChecker<T> {
 
@@ -93,15 +93,12 @@ public abstract class LanguageLevelChecker<T> {
     protected abstract void report(Node node, String message, T acc);
 
 
-    private boolean check(Node node, LanguageFeature message, T acc) {
-        if (message.isAvailable(this.jdkVersion, this.preview)) {
-            return true;
-        }
-
-        report(node, message.whenUnavailableMessage(), acc);
-        return false;
-    }
-
+    /**
+     * Creates a checker that throws a {@link ParseException} when an error is reported.
+     *
+     * @param languageLevel  Version number
+     * @param previewEnabled Whether preview is enabled or not
+     */
     public static LanguageLevelChecker<Void> checkerThatThrows(int languageLevel, boolean previewEnabled) {
         return new LanguageLevelChecker<Void>(languageLevel, previewEnabled) {
 
@@ -123,7 +120,17 @@ public abstract class LanguageLevelChecker<T> {
         };
     }
 
-    class CheckVisitor extends SideEffectingVisitorAdapter<T> {
+
+    private boolean check(Node node, LanguageFeature message, T acc) {
+        if (message.isAvailable(this.jdkVersion, this.preview)) {
+            return true;
+        }
+
+        report(node, message.whenUnavailableMessage(), acc);
+        return false;
+    }
+
+    private class CheckVisitor extends SideEffectingVisitorAdapter<T> {
 
         @Override
         public void visit(ASTStringLiteral node, T data) {
@@ -165,7 +172,7 @@ public abstract class LanguageLevelChecker<T> {
 
         @Override
         public void visit(ASTConstructorCall node, T data) {
-            if (node.isDiamond()) {
+            if (node.usesDiamondTypeArgs()) {
                 if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
                     check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
                 }
@@ -189,10 +196,13 @@ public abstract class LanguageLevelChecker<T> {
         public void visit(ASTFormalParameter node, T data) {
             if (node.isVarargs()) {
                 check(node, RegularLanguageFeature.VARARGS_PARAMETERS, data);
-            } else if (node.isExplicitReceiverParameter()) {
-                check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
             }
             visitChildren(node, data);
+        }
+
+        @Override
+        public void visit(ASTReceiverParameter node, T data) {
+            check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
         }
 
         @Override
@@ -420,8 +430,9 @@ public abstract class LanguageLevelChecker<T> {
         @Override
         public String whenUnavailableMessage() {
             String s = displayNameLower(name());
+            String usageType = s.substring(s.indexOf(' ') + 1); // eg "as an identifier"
             return "Since " + LanguageLevelChecker.versionDisplayName(maxJdkVersion) + ", '" + reserved + "'"
-                + " is reserved and cannot be used " + s.substring(s.indexOf(' ') + 1);
+                + " is reserved and cannot be used " + usageType;
         }
     }
 

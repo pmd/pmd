@@ -1752,17 +1752,9 @@ void VariableDeclarator() :
 
 // TODO use ArrayDimensions
 void VariableDeclaratorId() :
+{}
 {
-  String image;
-}
-{
-  <IDENTIFIER> { image = getToken(0).getImage(); }  ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
-  {
-    checkForBadAssertUsage(image, "a variable name");
-    checkForBadEnumUsage(image, "a variable name");
-    checkForBadIdentifier(image);
-    jjtThis.setImage(image);
-  }
+  <IDENTIFIER> { setLastTokenImage(jjtThis); }  ( "[" "]"  { jjtThis.bumpArrayDepth(); })*
 }
 
 void ReceiverParameter():
