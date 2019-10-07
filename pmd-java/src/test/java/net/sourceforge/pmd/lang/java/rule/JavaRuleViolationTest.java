@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.ast.AstAnalysisConfiguration;
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.JavaProcessingStage;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -49,7 +49,7 @@ public class JavaRuleViolationTest {
                 new StringReader(code));
         // set scope of AST nodes
         ast.jjtAccept(new ScopeAndDeclarationFinder(), null);
-        JavaProcessingStage.QNAME_RESOLUTION.processAST(ast, new AstAnalysisConfiguration() {
+        JavaProcessingStage.QNAME_RESOLUTION.processAST(ast, new AstAnalysisContext() {
             @Override
             public ClassLoader getTypeResolutionClassLoader() {
                 return JavaRuleViolation.class.getClassLoader();
