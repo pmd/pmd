@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -148,17 +149,24 @@ public final class FileUtil {
      * @param pattern
      * @return
      */
-    public static boolean findPatternInFile(final File file, final String pattern) throws IOException {
+    public static boolean findPatternInFile(final File file, final String pattern) {
 
         Pattern regexp = Pattern.compile(pattern);
         Matcher matcher = regexp.matcher("");
 
-        for (String line : Files.readAllLines(file.toPath())) {
-            matcher.reset(line); // reset the input
-            if (matcher.find()) {
-                return true;
+        try {
+            for (String line : Files.readAllLines(file.toPath())) {
+                matcher.reset(line); // reset the input
+                if (matcher.find()) {
+                    return true;
+                }
             }
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
         return false;
     }
 
