@@ -89,6 +89,11 @@ public enum JavaProcessingStage implements AstProcessingStage<JavaProcessingStag
         this.dependencies = Collections.unmodifiableList(Arrays.asList(dependencies));
     }
 
+    @Override
+    public int compareTo(AstProcessingStage o) {
+        return o instanceof JavaProcessingStage ? compareTo((JavaProcessingStage) o)
+                                                : 0;
+    }
 
     @Override
     public List<JavaProcessingStage> getDependencies() {

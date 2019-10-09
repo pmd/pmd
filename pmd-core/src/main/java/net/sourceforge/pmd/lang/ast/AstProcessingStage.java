@@ -96,19 +96,6 @@ public interface AstProcessingStage<T extends AstProcessingStage<T>> extends Com
     void processAST(RootNode rootNode, AstAnalysisContext configuration);
 
 
-    /**
-     * Same contract as {@link Comparable#compareTo(Object)}, but we can't extend
-     * Comparable with that type argument if we implement processing stages within
-     * an enum.
-     *
-     * @param t the object to compare
-     *
-     * @return a negative integer, zero, or a positive integer as this object
-     * is less than, equal to, or greater than the specified object.
-     */
-    @SuppressWarnings("unchecked")
-    default int compare(AstProcessingStage<?> t) {
-        return this.compareTo((T) t);
-    }
-
+    @Override
+    int compareTo(AstProcessingStage o);
 }

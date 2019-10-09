@@ -262,7 +262,7 @@ public class RuleSet implements ChecksumAware {
          * @return The same builder, for a fluid programming interface
          */
         public RuleSetBuilder addRuleSet(final RuleSet ruleSet) {
-            rules.addAll(rules.size(), ruleSet.getRules());
+            rules.addAll(ruleSet.getRules());
             return this;
         }
 
@@ -686,66 +686,6 @@ public class RuleSet implements ChecksumAware {
         return includePatterns;
     }
 
-
-
-    /**
-     * Does any Rule for the given Language use the DFA layer?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses the DFA layer,
-     *         <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isDfa()}
-     */
-    @Deprecated
-    public boolean usesDFA(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isDfa()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Does any Rule for the given Language use Type Resolution?
-     *
-     * @param language
-     *            The Language.
-     * @return <code>true</code> if a Rule for the Language uses Type
-     *         Resolution, <code>false</code> otherwise.
-     * @deprecated See {@link Rule#isTypeResolution()}
-     */
-    @Deprecated
-    public boolean usesTypeResolution(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isTypeResolution()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Does any Rule for the given Language use multi-file analysis?
-     *
-     * @param language
-     *            The Language.
-     *
-     * @return {@code true} if a Rule for the Language uses multi file analysis,
-     *         {@code false} otherwise.
-     * @deprecated See {@link Rule#isMultifile()}
-     */
-    @Deprecated
-    public boolean usesMultifile(Language language) {
-        for (Rule r : rules) {
-            if (r.getLanguage().equals(language) && r.isMultifile()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Remove and collect any misconfigured rules.

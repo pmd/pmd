@@ -76,6 +76,12 @@ public enum PlsqlProcessingStage implements AstProcessingStage<PlsqlProcessingSt
         return displayName;
     }
 
+    @Override
+    public int compareTo(AstProcessingStage o) {
+        return o instanceof PlsqlProcessingStage ? compareTo((PlsqlProcessingStage) o)
+                                                 : 0;
+    }
+
 
 }
 
