@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.io.Reader;
-import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -42,10 +41,6 @@ public final class InternalApiBridge {
         ASTCompilationUnit acu = parser.CompilationUnit();
         acu.setNoPmdComments(parser.getSuppressMap());
         return acu;
-    }
-
-    public static Map<Integer, String> getSuppressMap(ASTCompilationUnit acu) {
-        return acu.getNoPmdComments();
     }
 
 }

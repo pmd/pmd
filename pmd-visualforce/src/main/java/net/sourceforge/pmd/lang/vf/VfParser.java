@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.vf;
 
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;

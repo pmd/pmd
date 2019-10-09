@@ -5,12 +5,10 @@
 package net.sourceforge.pmd.lang.ecmascript;
 
 import java.io.Reader;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTAstRoot;
 import net.sourceforge.pmd.lang.ecmascript5.Ecmascript5TokenManager;
