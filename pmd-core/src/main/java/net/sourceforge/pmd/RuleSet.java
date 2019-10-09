@@ -169,6 +169,7 @@ public class RuleSet implements ChecksumAware {
             for (final Iterator<Rule> it = rules.iterator(); it.hasNext();) {
                 final Rule r = it.next();
                 if (r.getName().equals(rule.getName()) && r.getLanguage() == rule.getLanguage()) {
+                    LOG.warning("The rule with name " + rule.getName() + " was duplicated and has been overwritten.");
                     it.remove();
                 }
             }
