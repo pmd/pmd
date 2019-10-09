@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -20,6 +21,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.datasource.ZipDataSource;
@@ -30,7 +32,10 @@ import net.sourceforge.pmd.util.filter.OrFilter;
 
 /**
  * This is a utility class for working with Files.
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public final class FileUtil {
 
     private FileUtil() {
@@ -143,13 +148,12 @@ public final class FileUtil {
      * @param pattern
      * @return
      */
-    public static boolean findPatternInFile(final File file, final String pattern) {
+    public static boolean findPatternInFile(final File file, final String pattern) throws IOException {
 
         Pattern regexp = Pattern.compile(pattern);
         Matcher matcher = regexp.matcher("");
 
-        FileIterable it = new FileIterable(file);
-        for (String line : it) {
+        for (String line : Files.readAllLines(file.toPath())) {
             matcher.reset(line); // reset the input
             if (matcher.find()) {
                 return true;
@@ -162,7 +166,7 @@ public final class FileUtil {
      * Reads the file, which contains the filelist. This is used for the
      * command line arguments --filelist/-filelist for both PMD and CPD.
      * The separator in the filelist is a command and/or newlines.
-     * 
+     *
      * @param filelist the file which contains the list of path names
      * @return a comma-separated list of file paths
      * @throws IOException if the file couldn't be read
