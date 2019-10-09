@@ -6,7 +6,6 @@ package net.sourceforge.pmd.util;
 
 import static net.sourceforge.pmd.internal.util.PredicateUtil.toFileFilter;
 import static net.sourceforge.pmd.internal.util.PredicateUtil.toFilenameFilter;
-import static net.sourceforge.pmd.internal.util.PredicateUtil.toNormalizedFileFilter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -131,8 +130,8 @@ public final class FileUtil {
             // FUTURE Make the excluded directories be some configurable option
             Predicate<File> filter =
                 toFileFilter(filenameFilter)
-                             .or(File::isDirectory)
-                             .and(toNormalizedFileFilter(name -> !"SCSS".equals(name)));
+                    // TODO what's this SCCS directory?
+                    .or(f -> f.isDirectory() && !"SCCS".equals(f.getName()));
 
 
             FileFinder finder = new FileFinder();

@@ -14,13 +14,6 @@ final class FileExtensionFilter implements Predicate<File> {
     private final boolean ignoreCase;
 
     /**
-     * Matches any files with the given extensions, ignoring case
-     */
-    FileExtensionFilter(String... extensions) {
-        this(true, extensions);
-    }
-
-    /**
      * Matches any files with the given extensions, optionally ignoring case.
      */
     FileExtensionFilter(boolean ignoreCase, String... extensions) {
