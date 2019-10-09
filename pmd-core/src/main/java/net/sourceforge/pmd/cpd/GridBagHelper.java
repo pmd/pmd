@@ -13,6 +13,13 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
+/**
+ * @deprecated Is internal API
+ */
+@Deprecated
+@InternalApi
 public class GridBagHelper {
 
     GridBagLayout gridbag;
