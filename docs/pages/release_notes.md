@@ -73,6 +73,13 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc apex::lang.apex.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc apex::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}
 
+##### Internal APIs
+
+* pmd-core
+  * All the package {% jdoc_package core::util %} and its subpackages,
+  except {% jdoc_package core::util.datasource %} and {% jdoc_package core::util.database %}.
+
+
 
 ### External Contributions
 
