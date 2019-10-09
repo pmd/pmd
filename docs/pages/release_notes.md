@@ -39,6 +39,9 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1912](https://github.com/pmd/pmd/issues/1912): \[java] Metrics not computed correctly with annotations
 *   java-errorprone
     *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
+*   doc
+    * [#2058](https://github.com/pmd/pmd/issues/2058): \[doc] CLI reference for `-norulesetcompatibility` shows a boolean default value
+
 
 ### API Changes
 

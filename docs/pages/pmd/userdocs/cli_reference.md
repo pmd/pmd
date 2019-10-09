@@ -96,7 +96,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                default="5"
     %}
     {% include custom/cli_option_row.html options="-norulesetcompatibility"
-               description='Disables the ruleset compatibility filter. The filter is active by default. It tries to automatically replace rule references that point to moved or renamed rules with the newer location. Disabling it is not recommended.'
+               description='Disable automatic fixing of invalid rule references. Without the switch, PMD tries to automatically replace rule references that point to moved or renamed rules with the newer location if possible. Disabling it is not recommended.'
     %}
     {% include custom/cli_option_row.html options="-no-cache"
                description="Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
