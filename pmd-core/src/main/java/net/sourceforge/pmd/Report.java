@@ -490,7 +490,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return the iterator
      */
     public Iterator<ProcessingError> errors() {
-        return errors == null ? Collections<ProcessingError>.emptyIterator() : errors.iterator();
+        return errors == null ? Collections.<ProcessingError>emptyIterator() : errors.iterator();
     }
 
     /**
@@ -499,7 +499,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return the iterator
      */
     public Iterator<ConfigurationError> configErrors() {
-        return configErrors == null ? Collections<ConfigurationError>.emptyIterator() : configErrors.iterator();
+        return configErrors == null ? Collections.<ConfigurationError>emptyIterator() : configErrors.iterator();
     }
 
     /**
