@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -155,7 +156,7 @@ public final class FileUtil {
         Matcher matcher = regexp.matcher("");
 
         try {
-            for (String line : Files.readAllLines(file.toPath())) {
+            for (String line : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)) {
                 matcher.reset(line); // reset the input
                 if (matcher.find()) {
                     return true;
