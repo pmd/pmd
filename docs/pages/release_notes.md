@@ -78,6 +78,8 @@ This is a {{ site.pmd.release_type }} release.
 * pmd-core
   * All the package {% jdoc_package core::util %} and its subpackages,
   except {% jdoc_package core::util.datasource %} and {% jdoc_package core::util.database %}.
+  * {% jdoc core::cpd.GridBagHelper %}
+  * {% jdoc core::renderers.ColumnDescriptor %}
 
 
 
