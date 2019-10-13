@@ -80,7 +80,7 @@ public class Foo {
 
     <test-code>
         <description>#1393 PMD hanging during DataflowAnomalyAnalysis</description>
-        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 6 problems are false positives!  -->
+        <!-- Note: due to https://sourceforge.net/p/pmd/bugs/1383/ the 3 problems are false positives!  -->
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 public class LoopTest {
