@@ -1305,6 +1305,11 @@ not assigned to a local variable, but just directly used within a method call ch
 the builder needs to end with “Builder”, e.g. <code class="highlighter-rouge">newBuilder()</code> or <code class="highlighter-rouge">initBuilder()</code> works. This change
 fixes a couple of false positives.</p>
   </li>
+  <li>
+    <p>The Java rule <a href="pmd_rules_java_errorprone.html#dataflowanomalyanalysis"><code class="highlighter-rouge">DataflowAnomalyAnalysis</code></a> (<code class="highlighter-rouge">java-errorprone</code>) doesn’t check for
+UR anomalies (undefined and then referenced) anymore. These checks were all false-positives, since actual
+UR occurrences would lead to compile errors.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1339,6 +1344,7 @@ fixes a couple of false positives.</p>
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/336">#336</a>: [java] InvalidSlf4jMessageFormat applies to log4j2</li>
+      <li><a href="https://github.com/pmd/pmd/issues/1636">#1636</a>: [java] Stop checking UR anomalies for DataflowAnomalyAnalysis</li>
     </ul>
   </li>
   <li>doc
@@ -1398,6 +1404,7 @@ fixes a couple of false positives.</p>
   <li><a href="https://github.com/pmd/pmd/pull/2012">#2012</a>: [java] Fixes 336, slf4j log4j2 support - <a href="https://github.com/markhall82">Mark Hall</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2032">#2032</a>: [core] Allow adding SourceCode directly into CPD - <a href="https://github.com/nbraun-Google">Nathan Braun</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2047">#2047</a>: [java] Fix computation of metrics with annotations - <a href="https://github.com/andipabst">Andi</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2065">#2065</a>: [java] Stop checking UR anomalies - <a href="https://github.com/l0s">Carlos Macasaet</a></li>
 </ul>
 
 
@@ -1416,7 +1423,7 @@ fixes a couple of false positives.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 11, 2019 <br />
+ Site last generated: Oct 13, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
