@@ -98,6 +98,7 @@ public interface JavaNode extends ScopedNode {
      * <p>This returns null for nodes that aren't enclosed in a type declaration.
      * This includes {@linkplain ASTPackageDeclaration PackageDeclaration},
      * This includes {@linkplain ASTImportDeclaration ImportDeclaration},
+     * {@linkplain ASTModuleDeclaration ModuleDeclaration},
      * {@linkplain ASTCompilationUnit CompilationUnit}, and top-level
      * {@linkplain ASTAnyTypeDeclaration AnyTypeDeclaration}s.
      */
