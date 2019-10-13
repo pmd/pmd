@@ -64,6 +64,7 @@ This is a {{ site.pmd.release_type }} release.
 * pmd-java
   * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
+  * {% jdoc java::lang.java.rule.AbstractJavaRule#getDeclaringType(Node) %}.
   * {% jdoc java::lang.java.rule.JavaRuleViolation#isSupressed(Node,Rule) %}
   * {% jdoc java::lang.java.ast.ASTMethodDeclarator %}
   * {% jdoc java::lang.java.ast.ASTMethodDeclaration#getMethodName() %}
