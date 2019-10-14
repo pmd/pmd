@@ -8,7 +8,9 @@ import java.io.File;
 
 /**
  * Directory filter.
+ * @deprecated See {@link Filter}
  */
+@Deprecated
 public final class DirectoryFilter implements Filter<File> {
     public static final DirectoryFilter INSTANCE = new DirectoryFilter();
 

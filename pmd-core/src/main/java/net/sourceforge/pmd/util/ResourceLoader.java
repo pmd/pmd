@@ -14,7 +14,13 @@ import java.nio.file.Files;
 import java.util.Objects;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.annotation.InternalApi;
 
+/**
+ * @deprecated Is internal API
+ */
+@Deprecated
+@InternalApi
 public class ResourceLoader {
 
     public static final int TIMEOUT;
@@ -79,7 +85,7 @@ public class ResourceLoader {
                 // We will throw our own exception, with a different message
             }
         }
-        
+
         throw new RuleSetNotFoundException("Can't find resource " + name
                 + ". Make sure the resource is a valid file or URL or is on the CLASSPATH");
     }
@@ -102,7 +108,7 @@ public class ResourceLoader {
             return connection.getInputStream();
         }
     }
-    
+
     public InputStream loadClassPathResourceAsStreamOrThrow(final String name) throws RuleSetNotFoundException {
         InputStream is = null;
         try {
@@ -110,12 +116,12 @@ public class ResourceLoader {
         } catch (final IOException ignored) {
             // ignored
         }
-        
+
         if (is == null) {
             throw new RuleSetNotFoundException("Can't find resource " + name
                     + ". Make sure the resource is on the CLASSPATH");
         }
-        
+
         return is;
     }
 }
