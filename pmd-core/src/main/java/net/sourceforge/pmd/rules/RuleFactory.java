@@ -31,6 +31,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 
 /**
@@ -121,16 +122,18 @@ public class RuleFactory {
      * with regards to the expected schema, while RuleBuilder validates the semantics.
      *
      * @param ruleElement The rule element to parse
+     * @param resourceLoader The resource loader to load the rule from jar
      *
      * @return A new instance of the rule described by this element
      * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
-    public Rule buildRule(Element ruleElement) {
+    public Rule buildRule(Element ruleElement, final ResourceLoader resourceLoader) {
         checkRequiredAttributesArePresent(ruleElement);
 
         String name = ruleElement.getAttribute(NAME);
 
         RuleBuilder builder = new RuleBuilder(name,
+                resourceLoader,
                 ruleElement.getAttribute(CLASS),
                 ruleElement.getAttribute("language"));
 

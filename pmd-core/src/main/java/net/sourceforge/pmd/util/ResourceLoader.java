@@ -13,6 +13,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Objects;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 public class ResourceLoader {
@@ -117,5 +118,18 @@ public class ResourceLoader {
         }
         
         return is;
+    }
+
+    /**
+     * Load the rule from the classloader from resource loader, consistent with the ruleset
+     *
+     * @param clazz
+     * @return
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    public Rule loadRuleFromClassPath(final String clazz) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return (Rule) classLoader.loadClass(clazz).newInstance();
     }
 }

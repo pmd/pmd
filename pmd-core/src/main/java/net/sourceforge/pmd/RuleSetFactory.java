@@ -587,7 +587,7 @@ public class RuleSetFactory {
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-        Rule rule = new RuleFactory().buildRule(ruleElement);
+        Rule rule = new RuleFactory().buildRule(ruleElement, resourceLoader);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         ruleSetBuilder.addRule(rule);
