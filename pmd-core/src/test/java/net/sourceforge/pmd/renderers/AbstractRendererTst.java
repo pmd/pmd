@@ -53,7 +53,7 @@ public abstract class AbstractRendererTst {
     }
 
     protected String getSourceCodeFilename() {
-        return "n/a";
+        return "notAvailable.ext";
     }
 
     @Test(expected = NullPointerException.class)

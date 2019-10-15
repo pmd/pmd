@@ -15,7 +15,7 @@ public class EmacsRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpected() {
-        return "n/a:1: blah" + PMD.EOL;
+        return getSourceCodeFilename() + ":1: blah" + PMD.EOL;
     }
 
     @Override
@@ -25,6 +25,6 @@ public class EmacsRendererTest extends AbstractRendererTst {
 
     @Override
     public String getExpectedMultiple() {
-        return "n/a:1: blah" + PMD.EOL + "n/a:1: blah" + PMD.EOL;
+        return getSourceCodeFilename() + ":1: blah" + PMD.EOL + getSourceCodeFilename() + ":1: blah" + PMD.EOL;
     }
 }
