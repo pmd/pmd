@@ -212,8 +212,9 @@ public abstract class RuleTst {
 
         List<Integer> expected = test.getExpectedLineNumbers();
         if (report.size() != expected.size()) {
-            throw new RuntimeException("Test setup error: number of execpted line numbers doesn't match "
-                    + "number of violations for test case '" + test.getDescription() + "'");
+            throw new RuntimeException("Test setup error: number of expected line numbers " + expected.size()
+                    + " doesn't match number of violations " + report.size() + " for test case '"
+                    + test.getDescription() + "'");
         }
 
         Iterator<RuleViolation> it = report.iterator();
