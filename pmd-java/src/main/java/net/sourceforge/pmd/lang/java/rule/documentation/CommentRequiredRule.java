@@ -45,7 +45,8 @@ public class CommentRequiredRule extends AbstractCommentRule {
         = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
         .defaultValue(CommentRequirement.Ignored).build();
     private static final PropertyDescriptor<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
-        = requirementPropertyBuilder("headerCommentRequirement", "Header comments").build();
+        = requirementPropertyBuilder("headerCommentRequirement", "Header comments")
+        .defaultValue(CommentRequirement.Ignored).build();
     private static final PropertyDescriptor<CommentRequirement> CLASS_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("classCommentRequirement", "Class comments").build();
     private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR

@@ -512,33 +512,31 @@ public class CommentRequired {
 
     <test-code>
         <description>#1683 [java] CommentRequired property names are inconsistent</description>
+        <rule-property name="headerCommentRequirement">Required</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
-/** license */
 package test.my_package;
 /** The class comment */
-public class CommentRequired implements Serializable {
-    /** My list */
-    List next;
-    private final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
+public class CommentRequired {
 }
         ]]></code>
     </test-code>
 
     <test-code>
         <description>#1683 [java] CommentRequired property names are inconsistent - package with comment without new lines</description>
-        <expected-problems>2</expected-problems>
+        <rule-property name="headerCommentRequirement">Required</rule-property>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
-/** licence comment */ package test.my_package; /** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
+/** licence comment */ package test.my_package; public class Test { /** public method */ public void method() { } }
         ]]></code>
     </test-code>
 
     <test-code>
         <description>#1683 [java] CommentRequired property names are inconsistent - package without comment and without new lines</description>
-        <expected-problems>3</expected-problems>
+        <rule-property name="headerCommentRequirement">Required</rule-property>
+        <expected-problems>2</expected-problems>
         <code><![CDATA[
-package test.my_package; /** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
+package test.my_package; public class Test { /** public method */ public void method() { } }
         ]]></code>
     </test-code>
 </test-data>
