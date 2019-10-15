@@ -12,7 +12,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class PapariTextRendererTest extends AbstractRendererTst {
+public class PapariTextRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

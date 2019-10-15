@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
-public class CodeClimateRendererTest extends AbstractRendererTst {
+public class CodeClimateRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

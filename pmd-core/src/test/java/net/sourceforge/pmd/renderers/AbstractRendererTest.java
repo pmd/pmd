@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public abstract class AbstractRendererTst {
+public abstract class AbstractRendererTest {
 
     public abstract Renderer getRenderer();
 

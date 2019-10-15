@@ -8,7 +8,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class VBHTMLRendererTest extends AbstractRendererTst {
+public class VBHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

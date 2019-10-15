@@ -21,7 +21,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class SummaryHTMLRendererTest extends AbstractRendererTst {
+public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 
-public class TextPadRendererTest extends AbstractRendererTst {
+public class TextPadRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {

@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class XMLRendererTest extends AbstractRendererTst {
+public class XMLRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
