@@ -51,6 +51,7 @@ public class Foo {
     <test-code>
         <description>Missing comments - only class level required.</description>
         <rule-property name="headerCommentRequirement">Required</rule-property>
+        <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Ignored</rule-property>
@@ -62,6 +63,7 @@ public class Foo {
     <test-code>
         <description>Too many comments - all comments are unwanted.</description>
         <rule-property name="headerCommentRequirement">Unwanted</rule-property>
+        <rule-property name="classCommentRequirement">Unwanted</rule-property>
         <rule-property name="fieldCommentRequirement">Unwanted</rule-property>
         <rule-property name="publicMethodCommentRequirement">Unwanted</rule-property>
         <rule-property name="protectedMethodCommentRequirement">Unwanted</rule-property>
@@ -240,6 +242,9 @@ public class CommentRequired implements Serializable {
         <description>#1522 [java] CommentRequired: false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+        /**
+          * Kommentar zu de.konsens.biene.ka.client
+          */
 package de.konsens.biene.ka.client;
 
 /**
@@ -505,5 +510,35 @@ public class CommentRequired {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#1683 [java] CommentRequired property names are inconsistent</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+/** license */
+package test.my_package;
+/** The class comment */
+public class CommentRequired implements Serializable {
+    /** My list */
+    List next;
+    private final ObjectStreamField[] serialPersistentFields = {new ObjectStreamField("next", List.class)};
+}
+        ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>#1683 [java] CommentRequired property names are inconsistent - package with comment without new lines</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+/** licence comment */ package test.my_package; /** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1683 [java] CommentRequired property names are inconsistent - package without comment and without new lines</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+package test.my_package; /** Test class */ public class Test { public void method1() { /** comment here */ } public void method2() { } }
+        ]]></code>
+    </test-code>
 </test-data>

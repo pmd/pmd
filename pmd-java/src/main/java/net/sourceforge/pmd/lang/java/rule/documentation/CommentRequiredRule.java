@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMarkerAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
 import net.sourceforge.pmd.lang.java.ast.AbstractJavaNode;
 import net.sourceforge.pmd.lang.java.multifile.signature.JavaOperationSignature;
@@ -45,6 +46,8 @@ public class CommentRequiredRule extends AbstractCommentRule {
         .defaultValue(CommentRequirement.Ignored).build();
     private static final PropertyDescriptor<CommentRequirement> HEADER_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("headerCommentRequirement", "Header comments").build();
+    private static final PropertyDescriptor<CommentRequirement> CLASS_CMT_REQUIREMENT_DESCRIPTOR
+        = requirementPropertyBuilder("classCommentRequirement", "Class comments").build();
     private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("fieldCommentRequirement", "Field comments").build();
     private static final PropertyDescriptor<CommentRequirement> PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR
@@ -64,6 +67,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
     public CommentRequiredRule() {
         definePropertyDescriptor(OVERRIDE_CMT_DESCRIPTOR);
         definePropertyDescriptor(ACCESSOR_CMT_DESCRIPTOR);
+        definePropertyDescriptor(CLASS_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(FIELD_CMT_REQUIREMENT_DESCRIPTOR);
         definePropertyDescriptor(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR);
@@ -109,6 +113,13 @@ public class CommentRequiredRule extends AbstractCommentRule {
 
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
+        checkCommentMeetsRequirement(data, decl, CLASS_CMT_REQUIREMENT_DESCRIPTOR);
+        return super.visit(decl, data);
+    }
+
+
+    @Override
+    public Object visit(ASTPackageDeclaration decl, Object data) {
         checkCommentMeetsRequirement(data, decl, HEADER_CMT_REQUIREMENT_DESCRIPTOR);
         return super.visit(decl, data);
     }
@@ -212,6 +223,7 @@ public class CommentRequiredRule extends AbstractCommentRule {
         return getProperty(OVERRIDE_CMT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(ACCESSOR_CMT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(HEADER_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
+                && getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
                 && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
