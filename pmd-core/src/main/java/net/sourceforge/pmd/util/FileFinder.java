@@ -12,9 +12,14 @@ import java.util.List;
 
 import org.apache.commons.io.comparator.PathFileComparator;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * A utility class for finding files within a directory.
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public class FileFinder {
 
     private FilenameFilter filter;

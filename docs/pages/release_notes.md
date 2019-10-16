@@ -29,6 +29,10 @@ This is a {{ site.pmd.release_type }} release.
     the builder needs to end with "Builder", e.g. `newBuilder()` or `initBuilder()` works. This change
     fixes a couple of false positives.
 
+*   The Java rule {% rule "java/errorprone/DataflowAnomalyAnalysis" %} (`java-errorprone`) doesn't check for
+    UR anomalies (undefined and then referenced) anymore. These checks were all false-positives, since actual
+    UR occurrences would lead to compile errors.
+
 ### Fixed Issues
 
 *   core
@@ -36,12 +40,18 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...
+*   java-bestpractices
+    *   [#2025](https://github.com/pmd/pmd/issues/2025): \[java] UnusedImports when @see / @link pattern includes a FQCN
 *   java-codestyle
-    *    [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
+    *   [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
 *   java-design
     *   [#1912](https://github.com/pmd/pmd/issues/1912): \[java] Metrics not computed correctly with annotations
 *   java-errorprone
     *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
+    *   [#1636](https://github.com/pmd/pmd/issues/1636): \[java] Stop checking UR anomalies for DataflowAnomalyAnalysis
+*   doc
+    * [#2058](https://github.com/pmd/pmd/issues/2058): \[doc] CLI reference for `-norulesetcompatibility` shows a boolean default value
+
 
 ### API Changes
 
@@ -73,6 +83,15 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc apex::lang.apex.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc apex::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}
 
+##### Internal APIs
+
+* pmd-core
+  * All the package {% jdoc_package core::util %} and its subpackages,
+  except {% jdoc_package core::util.datasource %} and {% jdoc_package core::util.database %}.
+  * {% jdoc core::cpd.GridBagHelper %}
+  * {% jdoc core::renderers.ColumnDescriptor %}
+
+
 
 ### External Contributions
 
@@ -80,6 +99,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2012](https://github.com/pmd/pmd/pull/2012): \[java] Fixes 336, slf4j log4j2 support - [Mark Hall](https://github.com/markhall82)
 *   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
 *   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
+*   [#2065](https://github.com/pmd/pmd/pull/2065): \[java] Stop checking UR anomalies - [Carlos Macasaet](https://github.com/l0s)
 
 {% endtocmaker %}
 

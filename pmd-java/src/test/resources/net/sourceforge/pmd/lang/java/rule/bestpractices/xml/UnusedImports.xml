@@ -503,4 +503,32 @@ public class Derived extends FileInputStream {
 }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#2025 False Positive in UnusedImports for params when using @see with FQCN</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import spark.Response; // flaged, should not
+
+/**
+ * @see foo.bar.MyController#startTransaction(Response)
+ */
+public class VendingV2PaymentRequest {
+}	
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#2025 False Positive in UnusedImports for params when using @link with FQCN</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import spark.Request; // flaged, should not
+
+/**
+ * {@link foo.bar.MyController#startTransaction(Request)}
+ */
+public class VendingV2PaymentRequest {
+}	
+        ]]></code>
+    </test-code>
 </test-data>
