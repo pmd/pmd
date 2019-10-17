@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public abstract class AbstractRendererTst {
+public abstract class AbstractRendererTest {
 
     public abstract Renderer getRenderer();
 
@@ -53,7 +53,7 @@ public abstract class AbstractRendererTst {
     }
 
     protected String getSourceCodeFilename() {
-        return "n/a";
+        return "notAvailable.ext";
     }
 
     @Test(expected = NullPointerException.class)
