@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#2014](https://github.com/pmd/pmd/issues/2014): \[core] Making add(SourceCode sourceCode) public for alternative file systems
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
+    *   [#2072](https://github.com/pmd/pmd/issues/2072): \[test]\[core] Not enough info in "test setup error" when numbers of lines do not match
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...
 *   java-bestpractices
@@ -95,6 +96,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
 *   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
 *   [#2065](https://github.com/pmd/pmd/pull/2065): \[java] Stop checking UR anomalies - [Carlos Macasaet](https://github.com/l0s)
+*   [#2073](https://github.com/pmd/pmd/pull/2073): \[test]\[core] Add expected and actual line of numbers to message wording - [snuyanzin](https://github.com/snuyanzin)
 
 {% endtocmaker %}
 
