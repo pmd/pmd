@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+source .travis/logger.sh
+source .travis/common-functions.sh
+
+travis_debug
+
+bash .travis/setup-secrets.sh
+bash .travis/configure-maven.sh
+bash .travis/install-openjdk.sh
+
+
+if travis_isLinux; then
+    rvm install 2.4.1
+    rvm use 2.4.1
+    gem install bundler
+    bundle install --with=release_notes_preprocessing --path=vendor/bundle
+else
+    log_info "Not setting up ruby for ${TRAVIS_OS_NAME}."
+    exit 0
+fi

@@ -55,6 +55,11 @@ if travis_isOSX; then
     log_info "The build is running on OSX"
     ./mvnw verify $MVN_BUILD_FLAGS
 
+elif travis_isWindows; then
+
+    log_info "The build is running on Windows"
+    ./mvnw verify $MVN_BUILD_FLAGS
+
 elif travis_isPullRequest; then
 
     log_info "This is a pull-request build"
