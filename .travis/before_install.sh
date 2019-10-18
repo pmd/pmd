@@ -14,8 +14,6 @@ bash .travis/install-openjdk.sh $OPENJDK_VERSION
 
 
 if travis_isLinux; then
-    rvm install 2.4.1
-    rvm use 2.4.1
     gem install bundler
     bundle install --with=release_notes_preprocessing --path=vendor/bundle
 else
