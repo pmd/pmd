@@ -6,9 +6,11 @@ source .travis/common-functions.sh
 
 travis_debug
 
+OPENJDK_VERSION=$1
+
 bash .travis/setup-secrets.sh
 bash .travis/configure-maven.sh
-bash .travis/install-openjdk.sh
+bash .travis/install-openjdk.sh $OPENJDK_VERSION
 
 
 if travis_isLinux; then
