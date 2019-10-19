@@ -46,8 +46,8 @@ public class Foo { // total 8
     public Double number = 0.0; // from java.lang -> does not count by default
     public int[] intArray = new int[3]; // primitive -> does not count
 
-    @Deprecated // +1
-    @Override // +1
+    @Deprecated // from java.lang -> does not count by default
+    @Override // from java.lang -> does not count by default
     public void foo(List list) throws Exception { // +1 (Exception is from java.lang)
         throw new IOException(); // +1
     }
