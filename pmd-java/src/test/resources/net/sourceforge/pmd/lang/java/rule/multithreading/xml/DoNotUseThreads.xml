@@ -43,9 +43,7 @@ extending threads is not allowed
         </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-        Extending AbstractExecutorService is not allowed
-     ]]></description>
+        <description>Extending AbstractExecutorService is not allowed</description>
         <expected-problems>1</expected-problems>
         <code>
             <![CDATA[
@@ -56,9 +54,7 @@ extending threads is not allowed
         </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-        Using ExecutorService is not allowed
-        ]]></description>
+        <description>Using ExecutorService is not allowed</description>
         <expected-problems>2</expected-problems>
         <code>
             <![CDATA[
@@ -79,9 +75,7 @@ extending threads is not allowed
         </code>
     </test-code>
     <test-code>
-        <description><![CDATA[
-        Using Executors directly is not allowed
-        ]]></description>
+        <description>Using Executors directly is not allowed</description>
         <expected-problems>2</expected-problems>
         <code>
             <![CDATA[
@@ -103,6 +97,39 @@ extending threads is not allowed
                 }
             }
         ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+        Implementing Runnable is not forbidden
+        see https://github.com/pmd/pmd/issues/1627
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class OtherThread implements Runnable {}
+            ]]>
+        </code>
+    </test-code>
+    <test-code>
+        <description>
+        Use of Runnable is also not forbidden
+        see https://github.com/pmd/pmd/issues/1627
+        </description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class Violation {
+                public void methode() {
+                        Runnable runnable = new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        };
+                }
+            }
+            ]]>
         </code>
     </test-code>
 </test-data>
