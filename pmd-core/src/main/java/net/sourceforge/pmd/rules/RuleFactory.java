@@ -60,6 +60,20 @@ public class RuleFactory {
     
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
 
+    private final ResourceLoader resourceLoader;
+
+    @Deprecated
+    public RuleFactory() {
+        this(new ResourceLoader());
+    }
+
+    /**
+     * @param resourceLoader The resource loader to load the rule from jar
+     */
+    public RuleFactory(final ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
+
     /**
      * Decorates a referenced rule with the metadata that are overridden in the given rule element.
      *
@@ -122,12 +136,11 @@ public class RuleFactory {
      * with regards to the expected schema, while RuleBuilder validates the semantics.
      *
      * @param ruleElement The rule element to parse
-     * @param resourceLoader The resource loader to load the rule from jar
      *
      * @return A new instance of the rule described by this element
      * @throws IllegalArgumentException if the element doesn't describe a valid rule.
      */
-    public Rule buildRule(Element ruleElement, final ResourceLoader resourceLoader) {
+    public Rule buildRule(Element ruleElement) {
         checkRequiredAttributesArePresent(ruleElement);
 
         String name = ruleElement.getAttribute(NAME);

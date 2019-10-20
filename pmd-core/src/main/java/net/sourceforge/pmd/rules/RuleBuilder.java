@@ -47,6 +47,14 @@ public class RuleBuilder {
     private boolean isUsesMultifile;
     private boolean isUsesTyperesolution;
 
+    @Deprecated
+    public RuleBuilder(String name, String clazz, String language) {
+        this.name = name;
+        this.resourceLoader = new ResourceLoader();
+        language(language);
+        className(clazz);
+    }
+
     public RuleBuilder(String name, ResourceLoader resourceLoader, String clazz, String language) {
         this.name = name;
         this.resourceLoader = resourceLoader;
