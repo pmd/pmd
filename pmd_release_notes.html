@@ -1310,6 +1310,13 @@ fixes a couple of false positives.</p>
 UR anomalies (undefined and then referenced) anymore. These checks were all false-positives, since actual
 UR occurrences would lead to compile errors.</p>
   </li>
+  <li>
+    <p>The java rule <a href="pmd_rules_java_multithreading.html#donotusethreads"><code class="highlighter-rouge">DoNotUseThreads</code></a> (<code class="highlighter-rouge">java-multithreading</code>) has been changed
+to not report usages of <code class="highlighter-rouge">java.lang.Runnable</code> anymore. Just using <code class="highlighter-rouge">Runnable</code> does not automatically create
+a new thread. While the check for <code class="highlighter-rouge">Runnable</code> has been removed, the rule now additionally checks for
+usages of <code class="highlighter-rouge">Executors</code> and <code class="highlighter-rouge">ExecutorService</code>. Both create new threads, which are not managed by a J2EE
+server.</p>
+  </li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1347,6 +1354,11 @@ UR occurrences would lead to compile errors.</p>
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/336">#336</a>: [java] InvalidSlf4jMessageFormat applies to log4j2</li>
       <li><a href="https://github.com/pmd/pmd/issues/1636">#1636</a>: [java] Stop checking UR anomalies for DataflowAnomalyAnalysis</li>
+    </ul>
+  </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1627">#1627</a>: [java] DoNotUseThreads should not warn on Runnable</li>
     </ul>
   </li>
   <li>doc
@@ -1422,6 +1434,7 @@ except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/
   <li><a href="https://github.com/pmd/pmd/pull/2065">#2065</a>: [java] Stop checking UR anomalies - <a href="https://github.com/l0s">Carlos Macasaet</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2070">#2070</a>: [core] Fix renderer tests for windows builds - <a href="https://github.com/Saladoc">Saladoc</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2073">#2073</a>: [test][core] Add expected and actual line of numbers to message wording - <a href="https://github.com/snuyanzin">snuyanzin</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2078">#2078</a>: [java] DoNotUseThreads should not warn on Runnable #1627 - <a href="https://github.com/mclay">Michael Clay</a></li>
 </ul>
 
 
@@ -1440,7 +1453,7 @@ except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 18, 2019 <br />
+ Site last generated: Oct 21, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

@@ -1391,10 +1391,14 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>The J2EE specification explicitly forbids the use of threads.</p>
+<p>The J2EE specification explicitly forbids the use of threads. Threads are resources, that should be managed and monitored by the J2EE server.
+If the application creates threads on its own or uses own custom thread pools, then these threads are not managed, which could lead to resource exhaustion.
+Also EJB’s might be moved between machines in a cluster and only managed resources can be moved along.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Thread'</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="na">@Image</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'Runnable'</span><span class="p">]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassOrInterfaceType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
+</span><span class="p">|</span><span class="w">
+</span><span class="o">//</span><span class="nt">StatementExpression</span><span class="o">/</span><span class="nt">PrimaryExpression</span><span class="o">/</span><span class="nt">PrimaryPrefix</span><span class="o">/</span><span class="nt">Name</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.Executors'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.concurrent.ExecutorService'</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -1770,7 +1774,7 @@ one is chosen.  The thread chosen is arbitrary; thus its usually safer to call n
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 18, 2019 <br />
+ Site last generated: Oct 21, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
