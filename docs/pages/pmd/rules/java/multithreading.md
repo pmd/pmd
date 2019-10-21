@@ -122,11 +122,15 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 **Priority:** Medium (3)
 
-The J2EE specification explicitly forbids the use of threads.
+The J2EE specification explicitly forbids the use of threads. Threads are resources, that should be managed and monitored by the J2EE server.
+If the application creates threads on its own or uses own custom thread pools, then these threads are not managed, which could lead to resource exhaustion.
+Also EJB's might be moved between machines in a cluster and only managed resources can be moved along.
 
 **This rule is defined by the following XPath expression:**
 ``` xpath
-//ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
+//ClassOrInterfaceType[pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
+|
+//StatementExpression/PrimaryExpression/PrimaryPrefix/Name[pmd-java:typeIs('java.util.concurrent.Executors') or pmd-java:typeIs('java.util.concurrent.ExecutorService')]
 ```
 
 **Example(s):**
