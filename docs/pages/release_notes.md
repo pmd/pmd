@@ -28,6 +28,12 @@ This is a {{ site.pmd.release_type }} release.
     UR anomalies (undefined and then referenced) anymore. These checks were all false-positives, since actual
     UR occurrences would lead to compile errors.
 
+*   The java rule {% rule "java/multithreading/DoNotUseThreads" %} (`java-multithreading`) has been changed
+    to not report usages of `java.lang.Runnable` anymore. Just using `Runnable` does not automatically create
+    a new thread. While the check for `Runnable` has been removed, the rule now additionally checks for
+    usages of `Executors` and `ExecutorService`. Both create new threads, which are not managed by a J2EE
+    server.
+
 ### Fixed Issues
 
 *   core
@@ -46,6 +52,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java-errorprone
     *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
     *   [#1636](https://github.com/pmd/pmd/issues/1636): \[java] Stop checking UR anomalies for DataflowAnomalyAnalysis
+*   java-multithreading
+    *   [#1627](https://github.com/pmd/pmd/issues/1627): \[java] DoNotUseThreads should not warn on Runnable
 *   doc
     * [#2058](https://github.com/pmd/pmd/issues/2058): \[doc] CLI reference for `-norulesetcompatibility` shows a boolean default value
 
@@ -99,6 +107,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2065](https://github.com/pmd/pmd/pull/2065): \[java] Stop checking UR anomalies - [Carlos Macasaet](https://github.com/l0s)
 *   [#2070](https://github.com/pmd/pmd/pull/2070): \[core] Fix renderer tests for windows builds - [Saladoc](https://github.com/Saladoc)
 *   [#2073](https://github.com/pmd/pmd/pull/2073): \[test]\[core] Add expected and actual line of numbers to message wording - [snuyanzin](https://github.com/snuyanzin)
+*   [#2078](https://github.com/pmd/pmd/pull/2078): \[java] DoNotUseThreads should not warn on Runnable #1627 - [Michael Clay](https://github.com/mclay)
 
 {% endtocmaker %}
 
