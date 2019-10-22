@@ -49,10 +49,7 @@ public class RuleBuilder {
 
     @Deprecated
     public RuleBuilder(String name, String clazz, String language) {
-        this.name = name;
-        this.resourceLoader = new ResourceLoader();
-        language(language);
-        className(clazz);
+        this(name, new ResourceLoader(), clazz, language)
     }
 
     public RuleBuilder(String name, ResourceLoader resourceLoader, String clazz, String language) {
