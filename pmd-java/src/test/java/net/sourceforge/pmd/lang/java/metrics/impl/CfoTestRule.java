@@ -18,7 +18,7 @@ public class CfoTestRule extends AbstractMetricTestRule {
 
     @Override
     protected JavaClassMetricKey getClassKey() {
-        return JavaClassMetricKey.CFO;
+        return JavaClassMetricKey.CLASS_FAN_OUT;
     }
 
 

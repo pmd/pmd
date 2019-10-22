@@ -82,7 +82,7 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
      *
      * @see ClassFanOutClassMetric
      */
-    CFO(new ClassFanOutClassMetric());
+    CLASS_FAN_OUT(new ClassFanOutClassMetric());
 
 
     private final JavaClassMetric calculator;

@@ -11,26 +11,26 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.AbstractJavaTypeNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.metrics.impl.ClassFanOutMetric.ClassFanOutOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
 
 /**
- * Visitor for the Cfo metric.
+ * Visitor for the ClassFanOut metric.
  *
  * @author Andreas Pabst
  */
-public class CfoVisitor extends JavaParserVisitorAdapter {
+public class ClassFanOutVisitor extends JavaParserVisitorAdapter {
 
     private static final String JAVA_LANG_PACKAGE_NAME = "java.lang";
     protected Set<Class> classes = new HashSet<>();
     private final boolean includeJavaLang;
 
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    public CfoVisitor(MetricOptions options, JavaNode topNode) {
+    public ClassFanOutVisitor(MetricOptions options, JavaNode topNode) {
         includeJavaLang = options.getOptions().contains(ClassFanOutOption.INCLUDE_JAVA_LANG);
         // topNode is unused, but we'll need it if we want to discount lambdas
         // if we add it later, we break binary compatibility
@@ -48,7 +48,7 @@ public class CfoVisitor extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private void check(AbstractJavaTypeNode node, MutableInt counter) {
+    private void check(TypeNode node, MutableInt counter) {
         if (!classes.contains(node.getType()) && shouldBeIncluded(node.getType())) {
             classes.add(node.getType());
             counter.increment();

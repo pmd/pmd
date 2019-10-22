@@ -9,7 +9,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
-import net.sourceforge.pmd.lang.java.metrics.impl.internal.CfoVisitor;
+import net.sourceforge.pmd.lang.java.metrics.impl.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public final class ClassFanOutMetric {
 
     public enum ClassFanOutOption implements MetricOption {
-        /** Weather to include Classes in the java.lang package. */
+        /** Whether to include Classes in the java.lang package. */
         INCLUDE_JAVA_LANG("includeJavaLang");
 
         private final String vName;
@@ -42,7 +42,7 @@ public final class ClassFanOutMetric {
 
         @Override
         public double computeFor(ASTAnyTypeDeclaration node, MetricOptions options) {
-            MutableInt cfo = (MutableInt) node.jjtAccept(new CfoVisitor(options, node), new MutableInt(0));
+            MutableInt cfo = (MutableInt) node.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));
             return (double) cfo.getValue();
         }
     }
@@ -60,9 +60,9 @@ public final class ClassFanOutMetric {
             // look at the parent to catch annotations
             if (node.jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
                 ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.jjtGetParent();
-                cfo = (MutableInt) parent.jjtAccept(new CfoVisitor(options, node), new MutableInt(0));
+                cfo = (MutableInt) parent.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));
             } else {
-                cfo = (MutableInt) node.jjtAccept(new CfoVisitor(options, node), new MutableInt(0));
+                cfo = (MutableInt) node.jjtAccept(new ClassFanOutVisitor(options, node), new MutableInt(0));
             }
 
             return (double) cfo.getValue();
