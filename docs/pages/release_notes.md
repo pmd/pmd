@@ -44,6 +44,7 @@ This is a {{ site.pmd.release_type }} release.
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...
 *   java-bestpractices
+    *   [#1531](https://github.com/pmd/pmd/issues/1531): \[java] UnusedPrivateMethod false-positive with method result
     *   [#2025](https://github.com/pmd/pmd/issues/2025): \[java] UnusedImports when @see / @link pattern includes a FQCN
 *   java-codestyle
     *   [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
