@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
@@ -115,8 +116,16 @@ public interface JavaNode extends ScopedNode {
 
     /**
      * Returns the root of the file in which this node is declared.
+     *
      * @since PMD 7.0.0
      */
     ASTCompilationUnit getRoot();
 
+    /**
+     * Returns the symbol table for the program point represented by
+     * this node.
+     *
+     * TODO
+     */
+    JSymbolTable getSymbolTable();
 }

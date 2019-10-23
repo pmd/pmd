@@ -721,6 +721,7 @@ public class ClassTypeResolverTest {
     }
 
 
+
     @Test
     public void testSuperExpression() throws JaxenException {
         List<TypeNode> expressions = selectNodes(SuperExpression.class, TypeNode.class,

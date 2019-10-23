@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,6 +39,15 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
     JavaTypeQualifiedName getQualifiedName();
 
 
+    default List<ASTTypeParameter> getTypeParameters() {
+        ASTTypeParameters parameters = getFirstChildOfType(ASTTypeParameters.class);
+        if (parameters == null) {
+            return Collections.emptyList();
+        }
+
+        return parameters.asList();
+    }
+
     /**
      * Returns true if this type declaration is nested inside an interface, class or annotation.
      */
@@ -52,6 +62,21 @@ public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, Ac
 
         public String getPrintableName() {
             return name().toLowerCase(Locale.ROOT);
+        }
+
+
+        public static TypeKind ofClass(Class<?> clazz) {
+
+            if (clazz.isInterface()) {
+                return INTERFACE;
+            } else if (clazz.isEnum()) {
+                return ENUM;
+            } else if (clazz.isAnnotation()) {
+                return ANNOTATION;
+            } else {
+                return CLASS;
+            }
+
         }
     }
 
