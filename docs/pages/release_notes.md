@@ -24,6 +24,11 @@ This is a {{ site.pmd.release_type }} release.
     the builder needs to end with "Builder", e.g. `newBuilder()` or `initBuilder()` works. This change
     fixes a couple of false positives.
 
+#### Java Metrics
+
+*   The new metric "Class Fan Out Complexity" has been added. See
+    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
+
 ### Fixed Issues
 
 *   core
@@ -41,7 +46,6 @@ This is a {{ site.pmd.release_type }} release.
     *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
 
 ### API Changes
-
 
 #### Deprecated APIs
 
@@ -76,7 +80,8 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2010](https://github.com/pmd/pmd/pull/2010): \[java] LawOfDemeter to support inner builder pattern - [Gregor Riegler](https://github.com/gregorriegler)
 *   [#2012](https://github.com/pmd/pmd/pull/2012): \[java] Fixes 336, slf4j log4j2 support - [Mark Hall](https://github.com/markhall82)
 *   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
-*   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
+*   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi Pabst](https://github.com/andipabst)
+*   [#2076](https://github.com/pmd/pmd/pull/2076): \[java] Add Metric ClassFanOutComplexity - [Andi Pabst](https://github.com/andipabst)
 
 {% endtocmaker %}
 
