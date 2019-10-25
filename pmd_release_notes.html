@@ -1334,6 +1334,7 @@ server.</p>
       <li><a href="https://github.com/pmd/pmd/issues/2014">#2014</a>: [core] Making add(SourceCode sourceCode) public for alternative file systems</li>
       <li><a href="https://github.com/pmd/pmd/issues/2036">#2036</a>: [core] Wrong include/exclude patterns are silently ignored</li>
       <li><a href="https://github.com/pmd/pmd/issues/2067">#2067</a>: [core] Build issue on Windows</li>
+      <li><a href="https://github.com/pmd/pmd/pull/2068">#2068</a>: [core] Rule loader should use the same resources loader for the ruleset</li>
       <li><a href="https://github.com/pmd/pmd/issues/2072">#2072</a>: [test][core] Not enough info in “test setup error” when numbers of lines do not match</li>
     </ul>
   </li>
@@ -1398,6 +1399,8 @@ server.</p>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getExcludePatterns()"><code class="highlighter-rouge">RuleSet#getExcludePatterns</code></a>. Use the new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileExclusions()"><code class="highlighter-rouge">getFileExclusions</code></a> instead.</li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getIncludePatterns()"><code class="highlighter-rouge">RuleSet#getIncludePatterns</code></a>. Use the new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileInclusions()"><code class="highlighter-rouge">getFileInclusions</code></a> instead.</li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/Parser.html#canParse()"><code class="highlighter-rouge">Parser#canParse</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/rules/RuleBuilder.html#RuleBuilder(String,String,String)"><code class="highlighter-rouge">RuleBuilder#RuleBuilder</code></a>. Use the new constructor with the correct ResourceLoader instead.</li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/rules/RuleFactory.html#RuleFactory()"><code class="highlighter-rouge">RuleFactory#RuleFactory</code></a>. Use the new constructor with the correct ResourceLoader instead.</li>
     </ul>
   </li>
   <li>pmd-java
@@ -1440,6 +1443,7 @@ except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/
   <li><a href="https://github.com/pmd/pmd/pull/2032">#2032</a>: [core] Allow adding SourceCode directly into CPD - <a href="https://github.com/nbraun-Google">Nathan Braun</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2047">#2047</a>: [java] Fix computation of metrics with annotations - <a href="https://github.com/andipabst">Andi Pabst</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2065">#2065</a>: [java] Stop checking UR anomalies - <a href="https://github.com/l0s">Carlos Macasaet</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2068">#2068</a>: [core] Rule loader should use the same resources loader for the ruleset - <a href="https://github.com/willamette">Chen Yang</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2070">#2070</a>: [core] Fix renderer tests for windows builds - <a href="https://github.com/Saladoc">Saladoc</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2073">#2073</a>: [test][core] Add expected and actual line of numbers to message wording - <a href="https://github.com/snuyanzin">snuyanzin</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2076">#2076</a>: [java] Add Metric ClassFanOutComplexity - <a href="https://github.com/andipabst">Andi Pabst</a></li>
