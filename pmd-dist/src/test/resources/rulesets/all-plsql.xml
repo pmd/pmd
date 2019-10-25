@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All PLSQL Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every PLSQL Rule in PMD</description>
+
+    <rule ref="category/plsql/bestpractices.xml" />
+    <rule ref="category/plsql/codestyle.xml" />
+    <rule ref="category/plsql/design.xml" />
+    <rule ref="category/plsql/documentation.xml" />
+    <rule ref="category/plsql/errorprone.xml" />
+    <rule ref="category/plsql/multithreading.xml" />
+    <rule ref="category/plsql/performance.xml" />
+    <rule ref="category/plsql/security.xml" />
+
+</ruleset>

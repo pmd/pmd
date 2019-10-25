@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<ruleset name="All Maven POM Rules" 
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every Maven POM Rule in PMD</description>
+
+    <rule ref="category/pom/bestpractices.xml" />
+    <rule ref="category/pom/codestyle.xml" />
+    <rule ref="category/pom/design.xml" />
+    <rule ref="category/pom/documentation.xml" />
+    <rule ref="category/pom/errorprone.xml" />
+    <rule ref="category/pom/multithreading.xml" />
+    <rule ref="category/pom/performance.xml" />
+    <rule ref="category/pom/security.xml" />
+
+</ruleset>
