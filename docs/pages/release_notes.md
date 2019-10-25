@@ -46,6 +46,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
     *   [#2067](https://github.com/pmd/pmd/issues/2067): \[core] Build issue on Windows
     *   [#2068](https://github.com/pmd/pmd/pull/2068): \[core] Rule loader should use the same resources loader for the ruleset
+    *   [#2071](https://github.com/pmd/pmd/issues/2071): \[ci] Add travis build on windows
     *   [#2072](https://github.com/pmd/pmd/issues/2072): \[test]\[core] Not enough info in "test setup error" when numbers of lines do not match
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...

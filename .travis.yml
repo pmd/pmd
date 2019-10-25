@@ -33,16 +33,15 @@ matrix:
     - name: "macosx - mvn verify"
       os: osx
       env: BUILD=deploy
+    - name: "windows - mvn verify"
+      os: windows
+      env: BUILD=deploy
+      language: shell
 
 before_install:
-  - bash .travis/setup-secrets.sh
-  - bash .travis/configure-maven.sh
-  - rvm install 2.4.1
-  - rvm use 2.4.1
-install:
-  - . .travis/install-openjdk.sh
-  - gem install bundler
-  - bundle install --with=release_notes_preprocessing --path=vendor/bundle
+  - bash .travis/before_install.sh "11.0.5+10"
+  - source ${HOME}/java.env
+install: true
 before_script: true
 script: source .travis/build-$BUILD.sh
 after_success: true
