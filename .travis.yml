@@ -43,7 +43,7 @@ matrix:
       language: shell
 
 before_install:
-  - bash .travis/before_install.sh "11.0.4+11"
+  - bash .travis/before_install.sh "11.0.5+10"
   - source ${HOME}/java.env
 install: true
 before_script: true
