@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
 *   core
     *   [#2014](https://github.com/pmd/pmd/issues/2014): \[core] Making add(SourceCode sourceCode) public for alternative file systems
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
+    *   [#2068](https://github.com/pmd/pmd/pull/2068): \[core] Rule loader should use the same resources loader for the ruleset
 *   java
     *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...
 *   java-bestpractices
@@ -66,6 +67,8 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc !!core::RuleSet#getExcludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileExclusions() %} instead.
   * {% jdoc !!core::RuleSet#getIncludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileInclusions() %} instead.
   * {% jdoc !!core::lang.Parser#canParse() %}
+  * {% jdoc !!core::rules.RuleBuilder#RuleBuilder(String,String,String) %}. Use the new constructor with the correct ResourceLoader instead.
+  * {% jdoc !!core::rules.RuleFactory#RuleFactory() %}. Use the new constructor with the correct ResourceLoader instead.
 * pmd-java
   * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
   * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
@@ -86,6 +89,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
 *   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
 *   [#2065](https://github.com/pmd/pmd/pull/2065): \[java] Stop checking UR anomalies - [Carlos Macasaet](https://github.com/l0s)
+*   [#2068](https://github.com/pmd/pmd/pull/2068): \[core] Rule loader should use the same resources loader for the ruleset - [Chen Yang](https://github.com/willamette)
 
 {% endtocmaker %}
 
