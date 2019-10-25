@@ -23,7 +23,7 @@ it uses instead of the services they provide.
  
 ATFD can be used to detect God Classes and Feature Envy. \[[Lanza05](#Lanza05)\]
 
-## Class Fan Out Complexity (CFO)
+## Class Fan Out Complexity (CLASS_FAN_OUT)
 
 *Operation metric, class metric.* Can be computed on classes, enums and 
 concrete operations.

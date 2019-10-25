@@ -61,7 +61,7 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
      *
      * @see ClassFanOutOperationMetric
      */
-    CFO(new ClassFanOutOperationMetric());
+    CLASS_FAN_OUT(new ClassFanOutOperationMetric());
 
 
     private final JavaOperationMetric calculator;

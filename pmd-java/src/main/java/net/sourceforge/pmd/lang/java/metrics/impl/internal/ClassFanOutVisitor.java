@@ -26,7 +26,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 public class ClassFanOutVisitor extends JavaParserVisitorAdapter {
 
     private static final String JAVA_LANG_PACKAGE_NAME = "java.lang";
-    protected Set<Class> classes = new HashSet<>();
+    protected Set<Class<?>> classes = new HashSet<>();
     private final boolean includeJavaLang;
 
     @SuppressWarnings("PMD.UnusedFormalParameter")
@@ -55,7 +55,7 @@ public class ClassFanOutVisitor extends JavaParserVisitorAdapter {
         }
     }
 
-    private boolean shouldBeIncluded(Class classToCheck) {
+    private boolean shouldBeIncluded(Class<?> classToCheck) {
         if (includeJavaLang || classToCheck == null) {
             // include all packages
             return true;
