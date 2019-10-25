@@ -62,6 +62,9 @@ public class RuleFactory {
 
     private final ResourceLoader resourceLoader;
 
+    /**
+     * @deprecated Use {@link #RuleFactory(ResourceLoader)} instead.
+     */
     @Deprecated
     public RuleFactory() {
         this(new ResourceLoader());

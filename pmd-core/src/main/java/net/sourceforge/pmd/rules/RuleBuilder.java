@@ -47,6 +47,11 @@ public class RuleBuilder {
     private boolean isUsesMultifile;
     private boolean isUsesTyperesolution;
 
+    /**
+     * @deprecated Use {@link #RuleBuilder(String, ResourceLoader, String, String)} with the
+     * proper {@link ResourceLoader} instead. The resource loader is used to load the
+     * rule implementation class from the class path.
+     */
     @Deprecated
     public RuleBuilder(String name, String clazz, String language) {
         this(name, new ResourceLoader(), clazz, language);
