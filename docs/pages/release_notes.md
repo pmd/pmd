@@ -34,6 +34,11 @@ This is a {{ site.pmd.release_type }} release.
     usages of `Executors` and `ExecutorService`. Both create new threads, which are not managed by a J2EE
     server.
 
+#### Java Metrics
+
+*   The new metric "Class Fan Out Complexity" has been added. See
+    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
+
 ### Fixed Issues
 
 *   core
@@ -60,7 +65,6 @@ This is a {{ site.pmd.release_type }} release.
 
 
 ### API Changes
-
 
 #### Deprecated APIs
 
@@ -104,10 +108,11 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2010](https://github.com/pmd/pmd/pull/2010): \[java] LawOfDemeter to support inner builder pattern - [Gregor Riegler](https://github.com/gregorriegler)
 *   [#2012](https://github.com/pmd/pmd/pull/2012): \[java] Fixes 336, slf4j log4j2 support - [Mark Hall](https://github.com/markhall82)
 *   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
-*   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi](https://github.com/andipabst)
+*   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi Pabst](https://github.com/andipabst)
 *   [#2065](https://github.com/pmd/pmd/pull/2065): \[java] Stop checking UR anomalies - [Carlos Macasaet](https://github.com/l0s)
 *   [#2070](https://github.com/pmd/pmd/pull/2070): \[core] Fix renderer tests for windows builds - [Saladoc](https://github.com/Saladoc)
 *   [#2073](https://github.com/pmd/pmd/pull/2073): \[test]\[core] Add expected and actual line of numbers to message wording - [snuyanzin](https://github.com/snuyanzin)
+*   [#2076](https://github.com/pmd/pmd/pull/2076): \[java] Add Metric ClassFanOutComplexity - [Andi Pabst](https://github.com/andipabst)
 *   [#2078](https://github.com/pmd/pmd/pull/2078): \[java] DoNotUseThreads should not warn on Runnable #1627 - [Michael Clay](https://github.com/mclay)
 
 {% endtocmaker %}
