@@ -1319,6 +1319,13 @@ server.</p>
   </li>
 </ul>
 
+<h4 id="java-metrics">Java Metrics</h4>
+
+<ul>
+  <li>The new metric “Class Fan Out Complexity” has been added. See
+<a href="pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out">Java Metrics Documentation</a> for details.</li>
+</ul>
+
 <h3 id="fixed-issues">Fixed Issues</h3>
 
 <ul>
@@ -1337,6 +1344,7 @@ server.</p>
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/1531">#1531</a>: [java] UnusedPrivateMethod false-positive with method result</li>
       <li><a href="https://github.com/pmd/pmd/issues/2025">#2025</a>: [java] UnusedImports when @see / @link pattern includes a FQCN</li>
     </ul>
   </li>
@@ -1430,10 +1438,11 @@ except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/
   <li><a href="https://github.com/pmd/pmd/pull/2010">#2010</a>: [java] LawOfDemeter to support inner builder pattern - <a href="https://github.com/gregorriegler">Gregor Riegler</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2012">#2012</a>: [java] Fixes 336, slf4j log4j2 support - <a href="https://github.com/markhall82">Mark Hall</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2032">#2032</a>: [core] Allow adding SourceCode directly into CPD - <a href="https://github.com/nbraun-Google">Nathan Braun</a></li>
-  <li><a href="https://github.com/pmd/pmd/pull/2047">#2047</a>: [java] Fix computation of metrics with annotations - <a href="https://github.com/andipabst">Andi</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2047">#2047</a>: [java] Fix computation of metrics with annotations - <a href="https://github.com/andipabst">Andi Pabst</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2065">#2065</a>: [java] Stop checking UR anomalies - <a href="https://github.com/l0s">Carlos Macasaet</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2070">#2070</a>: [core] Fix renderer tests for windows builds - <a href="https://github.com/Saladoc">Saladoc</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2073">#2073</a>: [test][core] Add expected and actual line of numbers to message wording - <a href="https://github.com/snuyanzin">snuyanzin</a></li>
+  <li><a href="https://github.com/pmd/pmd/pull/2076">#2076</a>: [java] Add Metric ClassFanOutComplexity - <a href="https://github.com/andipabst">Andi Pabst</a></li>
   <li><a href="https://github.com/pmd/pmd/pull/2078">#2078</a>: [java] DoNotUseThreads should not warn on Runnable #1627 - <a href="https://github.com/mclay">Michael Clay</a></li>
 </ul>
 
@@ -1453,7 +1462,7 @@ except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 21, 2019 <br />
+ Site last generated: Oct 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

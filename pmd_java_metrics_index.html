@@ -1302,11 +1302,51 @@ it uses instead of the services they provide.</p>
 
 <p>ATFD can be used to detect God Classes and Feature Envy. [<a href="#Lanza05">Lanza05</a>]</p>
 
+<h2 id="class-fan-out-complexity-class_fan_out">Class Fan Out Complexity (CLASS_FAN_OUT)</h2>
+
+<p><em>Operation metric, class metric.</em> Can be computed on classes, enums and 
+concrete operations.</p>
+
+<h3 id="description-1">Description</h3>
+<p>This counts the number of other classes a given class or operation relies on.
+Classes from the package <code class="highlighter-rouge">java.lang</code> are ignored by default (can be changed via options).
+Also primitives are not included into the count.</p>
+
+<h3 id="code-example">Code example</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span> <span class="c1">// total 8</span>
+    <span class="kd">public</span> <span class="n">Set</span> <span class="n">set</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">();</span> <span class="c1">// +2</span>
+    <span class="kd">public</span> <span class="n">Map</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span> <span class="c1">// +2</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">string</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="n">Double</span> <span class="n">number</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">intArray</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span> <span class="c1">// primitive -&gt; does not count</span>
+
+    <span class="nd">@Deprecated</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="nd">@Override</span> <span class="c1">// from java.lang -&gt; does not count by default</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">List</span> <span class="n">list</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span> <span class="c1">// +1 (Exception is from java.lang)</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IOException</span><span class="o">();</span> <span class="c1">// +1</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMapSize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="c1">// +1 because it uses the Class from the 'map' field</span>
+    <span class="o">}</span>   
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="options">Options</h3>
+
+<ul>
+  <li>Option <code class="highlighter-rouge">includeJavaLang</code>: Also include classes from the package <code class="highlighter-rouge">java.lang</code></li>
+</ul>
+
 <h2 id="cyclomatic-complexity-cyclo">Cyclomatic Complexity (CYCLO)</h2>
 
 <p><em>Operation metric.</em> Can be calculated on any non-abstract operation.</p>
 
-<h3 id="description-1">Description</h3>
+<h3 id="description-2">Description</h3>
 
 <p>Number of independent paths through a block of code [<a href="#Lanza05">Lanza05</a>]. 
 Formally, given that the control flow graph of the block has <code class="highlighter-rouge">n</code> vertices, <code class="highlighter-rouge">e</code> 
@@ -1358,7 +1398,7 @@ statement in itself.</li>
   <span class="o">}</span>     
 <span class="o">}</span>
 </code></pre></div></div>
-<h3 id="options">Options</h3>
+<h3 id="options-1">Options</h3>
 
 <ul>
   <li>Option <code class="highlighter-rouge">CycloVersion#IGNORE_BOOLEAN_PATHS</code>: Boolean operators are not counted,
@@ -1374,7 +1414,7 @@ they were <code class="highlighter-rouge">if (..) throw new AssertionError(..)</
 
 <p><em>Operation metric, class metric.</em> Can be calculated on any of those nodes.</p>
 
-<h3 id="description-2">Description</h3>
+<h3 id="description-3">Description</h3>
 
 <p>Simply counts the number of lines of code the operation or class takes up in 
 the source. This metric doesn’t discount comments or blank lines. See also 
@@ -1384,7 +1424,7 @@ the source. This metric doesn’t discount comments or blank lines. See also
 
 <p><em>Operation metric, class metric.</em> Can be calculated on any of those nodes.</p>
 
-<h3 id="description-3">Description</h3>
+<h3 id="description-4">Description</h3>
 
 <p>Number of statements in a class or operation. That’s roughly equivalent to 
 counting the number of semicolons and opening braces in the program. Comments 
@@ -1411,7 +1451,7 @@ actually represent the size of the class and not of the file. If you don’t
 like that behaviour, use the <code class="highlighter-rouge">COUNT_IMPORTS</code> option.</li>
 </ul>
 
-<h3 id="code-example">Code example</h3>
+<h3 id="code-example-1">Code example</h3>
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>       <span class="c1">// +0</span>
 <span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>         <span class="c1">// +0</span>
 
@@ -1439,7 +1479,7 @@ like that behaviour, use the <code class="highlighter-rouge">COUNT_IMPORTS</code
 <span class="o">}</span>
 </code></pre></div></div>
 
-<h3 id="options-1">Options</h3>
+<h3 id="options-2">Options</h3>
 
 <ul>
   <li>Option <code class="highlighter-rouge">NcssVersion#COUNT_IMPORTS</code>: Import and package statements are counted 
@@ -1450,7 +1490,7 @@ as well. This version fully complies with JavaNCSS.</li>
 
 <p><em>Operation metric.</em> Can be computed on any non-abstract operation.</p>
 
-<h3 id="description-4">Description</h3>
+<h3 id="description-5">Description</h3>
 
 <p>Number of acyclic execution paths through a piece of code. This is related to 
 cyclomatic complexity, but the two metrics don’t count the same thing: NPath 
@@ -1491,7 +1531,7 @@ block, plus the complexity of each catch block.</li>
   </li>
 </ul>
 
-<h3 id="code-example-1">Code example</h3>
+<h3 id="code-example-2">Code example</h3>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">fun</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">a</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">b</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// NPath = 6</span>
     
@@ -1530,7 +1570,7 @@ choices, the second offers 3, so the cyclomatic complexity of this method is
 
 <p><em>Class metric.</em> Can be computed on classes and enums.</p>
 
-<h3 id="description-5">Description</h3>
+<h3 id="description-6">Description</h3>
 
 <p>The relative number of method pairs of a class that access in common at
 least one attribute of the measured class. TCC only counts
@@ -1548,13 +1588,13 @@ defines several unrelated services, which is undesirable.</p>
 
 <p><em>Class metric.</em> Can be computed on classes and enums.</p>
 
-<h3 id="description-6">Description</h3>
+<h3 id="description-7">Description</h3>
 
 <p>Sum of the statistical complexity of the operations in the class. We use 
 <a href="#cyclomatic-complexity-cyclo">CYCLO</a> to quantify the complexity of an operation 
 [<a href="#Lanza05">Lanza05</a>].</p>
 
-<h3 id="options-2">Options</h3>
+<h3 id="options-3">Options</h3>
 
 <p>WMC uses the same options as CYCLO, which are provided to CYCLO when 
 computing it.</p>
@@ -1563,7 +1603,7 @@ computing it.</p>
 
 <p><em>Class metric.</em> Can be computed on classes.</p>
 
-<h3 id="description-7">Description</h3>
+<h3 id="description-8">Description</h3>
 
 <p>Number of “functional” public methods divided by the total number of
 public methods. Our definition of “functional method” excludes
@@ -1616,7 +1656,7 @@ In Proceedings ACM Symposium on Software Reusability, 1995.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
-<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Oct 21, 2019 <br />
+<span>Page last updated:</span> July 20, 2017<br/> Site last generated: Oct 25, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>
