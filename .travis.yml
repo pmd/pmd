@@ -1,7 +1,3 @@
-addons:
-  ssh_known_hosts:
-    - web.sourceforge.net
-
 language: java
 
 env:
