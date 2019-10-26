@@ -7,17 +7,17 @@ source .travis/common-functions.sh
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
 
-if ! travis_isPush; then
-    log_info "Not building site, since this is not a push!"
-    exit 0
-fi
-
-
 #
 # First step: build pmd with profile "generate-rule-docs"
 # The docs should appear under "docs/pages/rules/..." for each language
 #
 ./mvnw clean verify -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -P generate-rule-docs
+
+
+if ! travis_isPush; then
+    log_info "Not publishing site, since this is not a push!"
+    exit 0
+fi
 
 
 
