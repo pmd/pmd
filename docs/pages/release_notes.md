@@ -83,6 +83,7 @@ This is a {{ site.pmd.release_type }} release.
   * {% jdoc !!core::RuleSet#getExcludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileExclusions() %} instead.
   * {% jdoc !!core::RuleSet#getIncludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileInclusions() %} instead.
   * {% jdoc !!core::lang.Parser#canParse() %}
+  * {% jdoc !!core::lang.Parser#getSuppressMap() %}
   * {% jdoc !!core::rules.RuleBuilder#RuleBuilder(String,String,String) %}. Use the new constructor with the correct ResourceLoader instead.
   * {% jdoc !!core::rules.RuleFactory#RuleFactory() %}. Use the new constructor with the correct ResourceLoader instead.
 * pmd-java
