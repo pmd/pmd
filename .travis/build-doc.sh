@@ -14,6 +14,13 @@ log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
 ./mvnw clean verify -Dmaven.test.skip=true -Dmaven.javadoc.skip=true -P generate-rule-docs
 
 
+# in order to prevent that this documentation job is deploying the binary distributions to github releases
+# we delete it here
+
+rm -f pmd-dist/target/pmd-*.zip
+
+
+
 if ! travis_isPush; then
     log_info "Not publishing site, since this is not a push!"
     exit 0
