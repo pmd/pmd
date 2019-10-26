@@ -18,19 +18,19 @@ matrix:
   include:
     - name: "linux - mvn deploy"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=deploy
     - name: "linux - build documentation"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=doc
     - name: "linux - run sonar"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=sonar
     - name: "linux - run coveralls"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=coveralls
     - name: "macosx - mvn verify"
       os: osx
