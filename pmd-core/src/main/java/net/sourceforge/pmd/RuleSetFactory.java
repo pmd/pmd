@@ -560,7 +560,7 @@ public class RuleSetFactory {
 
                 if (warnDeprecated && r.getRule().isDeprecated()) {
                     if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.warning("Discontinue using Rule " + otherRuleSet.getFileName() + "/" + r.getRule().getName()
+                        LOG.warning("Discontinue using Rule " + ref + "/" + r.getRule().getName()
                                 + " as it is scheduled for removal from PMD."
                                 + " PMD " + PMDVersion.getNextMajorRelease()
                                 + " will remove support for this Rule.");
@@ -570,8 +570,11 @@ public class RuleSetFactory {
         }
 
         if (!excludedRulesCheck.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Unable to exclude rules " + excludedRulesCheck + "; perhaps the rule name is mispelled?");
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.warning(
+                    "Unable to exclude rules " + excludedRulesCheck + " from ruleset reference " + ref
+                    + "; perhaps the rule name is mispelled or the rule doesn't exist anymore?");
+            }
         }
     }
 

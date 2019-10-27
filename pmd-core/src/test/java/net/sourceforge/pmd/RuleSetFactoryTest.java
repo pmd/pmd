@@ -320,6 +320,36 @@ public class RuleSetFactoryTest {
         assertTrue(logging.getLog().isEmpty());
     }
 
+    /**
+     * This is an example of a custom user ruleset, that references a complete (e.g. category) ruleset,
+     * that contains a renamed (deprecated) rule and two normal rules and one deprecated rule.
+     * There is a exclusion of a rule, that no longer exists.
+     *
+     * <p>
+     * The user should not get a deprecation warning for the whole ruleset,
+     * since not all rules are deprecated in the referenced ruleset. Since the deprecated rule is not excluded,
+     * there should be a warning about this rule. Since the rule to be excluded doesn't exist, there should
+     * be warning about that as well.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRuleSetReferencesRulesetWithAExcludedNonExistingRule() throws Exception {
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule ref=\"rulesets/dummy/basic.xml\"><exclude name=\"NonExistingRule\"/></rule>" + "</ruleset>");
+        assertEquals(3, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(rs.getRuleByName("SampleXPathRule"));
+        assertNotNull(rs.getRuleByName("DeprecatedRule"));
+
+        assertEquals(1,
+                StringUtils.countMatches(logging.getLog(),
+                    "WARNING: Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
+        assertEquals(1,
+                StringUtils.countMatches(logging.getLog(),
+                    "WARNING: Unable to exclude rules [NonExistingRule] from ruleset reference rulesets/dummy/basic.xml; perhaps the rule name is mispelled or the rule doesn't exist anymore?"));
+    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -731,10 +761,12 @@ public class RuleSetFactoryTest {
     /**
      * See https://sourceforge.net/p/pmd/bugs/1231/
      *
+     * <p>See https://github.com/pmd/pmd/issues/1978 - with that, it should not be an error anymore.
+     *
      * @throws Exception
      *             any error
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testWrongRuleNameExcluded() throws Exception {
         RuleSetReferenceId ref = createRuleSetReferenceId(
                 "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
@@ -745,7 +777,8 @@ public class RuleSetFactoryTest {
                         + "  <rule ref=\"net/sourceforge/pmd/TestRuleset1.xml\">\n"
                         + "    <exclude name=\"ThisRuleDoesNotExist\"/>\n" + "  </rule>\n" + "</ruleset>\n");
         RuleSetFactory ruleSetFactory = new RuleSetFactory();
-        ruleSetFactory.createRuleSet(ref);
+        RuleSet ruleset = ruleSetFactory.createRuleSet(ref);
+        assertEquals(4, ruleset.getRules().size());
     }
 
     /**
