@@ -95,7 +95,8 @@ public class BinaryDistributionIT {
         ExecutionResult result;
 
         result = PMDExecutor.runPMD(tempDir, "-h");
-        result.assertExecutionResult(0, "apex, ecmascript, java, jsp, plsql, pom, scala, vf, vm, wsdl, xml, xsl");
+        // note: the language "text" is provided by pmd-designer
+        result.assertExecutionResult(0, "apex, ecmascript, java, jsp, plsql, pom, scala, text, vf, vm, wsdl, xml, xsl");
 
         result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
         result.assertExecutionResult(4, "JumbledIncrementer.java:8:");

@@ -14,6 +14,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### New and noteworthy
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.19.0).
+
+#### Java Metrics
+
+*   The new metric "Class Fan Out Complexity" has been added. See
+    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
+
+
 #### Modified Rules
 
 *   The Java rules {% rule "java/errorprone/InvalidSlf4jMessageFormat" %} and {% rule "java/errorprone/MoreThanOneLogger" %}
@@ -33,11 +44,6 @@ This is a {{ site.pmd.release_type }} release.
     a new thread. While the check for `Runnable` has been removed, the rule now additionally checks for
     usages of `Executors` and `ExecutorService`. Both create new threads, which are not managed by a J2EE
     server.
-
-#### Java Metrics
-
-*   The new metric "Class Fan Out Complexity" has been added. See
-    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
 
 ### Fixed Issues
 
