@@ -552,11 +552,20 @@ public class RuleSetFactory {
         }
 
         for (RuleReference r : potentialRules) {
-            if (rulesetDeprecated || !r.getRule().isDeprecated()) {
+            if (rulesetDeprecated || isNotDeprecatedRuleReference(r.getRule())) {
                 // add the rule, if either the ruleset itself is deprecated (then we add all rules)
                 // or if the rule is not deprecated (in that case, the ruleset might contain deprecated as well
-                // as valid references to rules)
+                // as valid rules)
                 ruleSetBuilder.addRuleIfNotExists(r);
+
+                if (warnDeprecated && r.getRule().isDeprecated()) {
+                    if (LOG.isLoggable(Level.WARNING)) {
+                        LOG.warning("Discontinue using Rule " + otherRuleSet.getFileName() + "/" + r.getRule().getName()
+                                + " as it is scheduled for removal from PMD."
+                                + " PMD " + PMDVersion.getNextMajorRelease()
+                                + " will remove support for this Rule.");
+                    }
+                }
             }
         }
 
@@ -564,6 +573,17 @@ public class RuleSetFactory {
             throw new IllegalArgumentException(
                     "Unable to exclude rules " + excludedRulesCheck + "; perhaps the rule name is mispelled?");
         }
+    }
+
+    /**
+     * Checks whether the given rule is itself not a rule reference (means a "rule definition"), that
+     * is deprecated. Such deprecated rule references are used to rename rules.
+     *
+     * @param rule
+     * @return
+     */
+    private boolean isNotDeprecatedRuleReference(Rule rule) {
+        return !(rule instanceof RuleReference && rule.isDeprecated());
     }
 
     /**
@@ -624,7 +644,7 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, this.compatibilityFilter != null);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -672,7 +692,7 @@ public class RuleSetFactory {
 
         RuleReference ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleElement);
 
-        if (warnDeprecated && ruleReference.isDeprecated()) {
+        if (warnDeprecated && ruleReference.isDeprecated() && !isSameRuleSet) {
             if (LOG.isLoggable(Level.WARNING)) {
                 LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
                         + ruleReference.getOriginalName() + " instead of the deprecated Rule name "

@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -213,9 +214,20 @@ public class RuleSetFactoryTest {
         assertNotNull(rule);
     }
 
+    /**
+     * This is an example of a category (built-in) ruleset, which contains a rule, that has been renamed.
+     * This means: a rule definition for "NewName" and a rule reference "OldName", that is deprecated
+     * and exists for backwards compatibility.
+     *
+     * <p>When loading this ruleset at a whole, we shouldn't get a deprecation warning. The deprecated
+     * rule reference should be ignored, so at the end, we only have the new rule name in the ruleset.
+     * This is because the deprecated reference points to a rule in the same ruleset.
+     *
+     * @throws Exception
+     */
     @Test
     public void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                 + "  <description>ruleset desc</description>\n"
                 + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
                 + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.XPathRule\" language=\"dummy\">"
@@ -225,17 +237,89 @@ public class RuleSetFactoryTest {
         Rule rule = rs.getRuleByName("NewName");
         assertNotNull(rule);
         assertNull(rs.getRuleByName("OldName"));
+
+        assertTrue(logging.getLog().isEmpty());
     }
 
+    /**
+     * This is an example of a custom user ruleset, that references a rule, that has been renamed.
+     * The user should get a deprecation warning.
+     *
+     * @throws Exception
+     */
     @Test
     public void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
-        RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
                 + "  <description>ruleset desc</description>\n"
                 + "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>" + "</ruleset>");
         assertEquals(1, rs.getRules().size());
         Rule rule = rs.getRuleByName("OldNameOfDummyBasicMockRule");
         assertNotNull(rule);
+
+        assertEquals(1,
+            StringUtils.countMatches(logging.getLog(),
+                "WARNING: Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule."));
     }
+
+    /**
+     * This is an example of a custom user ruleset, that references a complete (e.g. category) ruleset,
+     * that contains a renamed (deprecated) rule and two normal rules and one deprecated rule.
+     *
+     * <p>
+     * The user should not get a deprecation warning for the whole ruleset,
+     * since not all rules are deprecated in the referenced ruleset. But the referenced ruleset contains
+     * a deprecated rule, which should be warned about.
+     *
+     * <p>
+     * In the end, we should get all non-renamed (non-reference, non-deprecated) rules of the referenced ruleset.
+     * These are: all non-deprecated rules, all non-deprecated rule references, and all deprecated rules.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRuleSetReferencesRulesetWithADeprecatedRenamedRule() throws Exception {
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule ref=\"rulesets/dummy/basic.xml\"/>" + "</ruleset>");
+        assertEquals(3, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(rs.getRuleByName("SampleXPathRule"));
+        assertNotNull(rs.getRuleByName("DeprecatedRule"));
+
+        assertEquals(1,
+                StringUtils.countMatches(logging.getLog(),
+                    "WARNING: Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule as it is scheduled for removal from PMD."));
+    }
+
+    /**
+     * This is an example of a custom user ruleset, that references a complete (e.g. category) ruleset,
+     * that contains a renamed (deprecated) rule and two normal rules and one deprecated rule. The deprecated
+     * rule is excluded.
+     *
+     * <p>
+     * The user should not get a deprecation warning for the whole ruleset,
+     * since not all rules are deprecated in the referenced ruleset. Since the deprecated rule is excluded,
+     * there should be no deprecation warning at all.
+     *
+     * <p>
+     * In the end, we should get all non-renamed (non-reference, non-deprecated) rules of the referenced ruleset.
+     * These are: all non-deprecated rules, all non-deprecated rule references, and all deprecated rules minus
+     * the excluded rules.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRuleSetReferencesRulesetWithAExcludedDeprecatedRule() throws Exception {
+        RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule ref=\"rulesets/dummy/basic.xml\"><exclude name=\"DeprecatedRule\"/></rule>" + "</ruleset>");
+        assertEquals(2, rs.getRules().size());
+        assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
+        assertNotNull(rs.getRuleByName("SampleXPathRule"));
+
+        assertTrue(logging.getLog().isEmpty());
+    }
+
 
     @Test
     @SuppressWarnings("unchecked")
@@ -376,19 +460,20 @@ public class RuleSetFactoryTest {
     public void testOverridePriorityLoadWithMinimum() throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory(new ResourceLoader(), RulePriority.MEDIUM_LOW, true, true);
         RuleSet ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
-        // only one rule should remain, since we filter out the other rules by minimum priority
-        assertEquals("Number of Rules", 1, ruleset.getRules().size());
+        // only two rules should remain, since we filter out the other rule by minimum priority
+        assertEquals("Number of Rules", 2, ruleset.getRules().size());
 
         // Priority is overridden and applied, rule is missing
         assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
 
-        // that's the remaining rule
+        // these are remaining rules
         assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+        assertNotNull(ruleset.getRuleByName("DeprecatedRule"));
 
         // now, load with default minimum priority
         rsf = new RuleSetFactory();
         ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
-        assertEquals("Number of Rules", 2, ruleset.getRules().size());
+        assertEquals("Number of Rules", 3, ruleset.getRules().size());
         Rule dummyBasicMockRule = ruleset.getRuleByName("DummyBasicMockRule");
         assertEquals("Wrong Priority", RulePriority.LOW, dummyBasicMockRule.getPriority());
     }
@@ -403,12 +488,13 @@ public class RuleSetFactoryTest {
         // now, load with default minimum priority
         rsf = new RuleSetFactory();
         ruleset = rsf.createRuleSet("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
-        // only one rule, we have excluded one...
-        assertEquals("Number of Rules", 1, ruleset.getRules().size());
+        // only two rules, we have excluded one...
+        assertEquals("Number of Rules", 2, ruleset.getRules().size());
         // rule is excluded
         assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
-        // that's the remaining rule
+        // these are the remaining rules
         assertNotNull(ruleset.getRuleByName("SampleXPathRule"));
+        assertNotNull(ruleset.getRuleByName("DeprecatedRule"));
     }
 
     @Test
@@ -945,6 +1031,11 @@ public class RuleSetFactoryTest {
 
     private RuleSet loadRuleSet(String ruleSetXml) throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory();
+        return rsf.createRuleSet(createRuleSetReferenceId(ruleSetXml));
+    }
+
+    private RuleSet loadRuleSetWithDeprecationWarnings(String ruleSetXml) throws RuleSetNotFoundException {
+        RuleSetFactory rsf = new RuleSetFactory(new ResourceLoader(), RulePriority.LOW, true, false);
         return rsf.createRuleSet(createRuleSetReferenceId(ruleSetXml));
     }
 
