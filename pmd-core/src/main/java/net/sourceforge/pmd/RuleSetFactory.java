@@ -127,9 +127,13 @@ public class RuleSetFactory {
                 rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
                 try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                     props.load(inputStream);
+                    String rulesetFilenames = props.getProperty("rulesets.filenames");
+                    if (rulesetFilenames != null) {
+                        ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
+                    }
+                } catch (RuleSetNotFoundException e) {
+                    LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
                 }
-                String rulesetFilenames = props.getProperty("rulesets.filenames");
-                ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
             }
             return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
         } catch (IOException ioe) {
