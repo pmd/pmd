@@ -33,6 +33,22 @@ public abstract class BaseLanguageModule implements Language {
         this.extensions = Arrays.asList(extensions);
     }
 
+    protected void addVersions(LanguageVersionHandler languageVersionHandler, boolean isDefault, String ... languageVersions) {
+        if (versions == null) {
+            versions = new HashMap<>();
+        }
+
+        LanguageVersion languageVersion = new LanguageVersion(this, languageVersions[0], languageVersionHandler);
+
+        for (String version : languageVersions) {
+            versions.put(version, languageVersion);
+        }
+
+        if (isDefault) {
+            defaultVersion = languageVersion;
+        }
+    }
+
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {
         if (versions == null) {
             versions = new HashMap<>();
