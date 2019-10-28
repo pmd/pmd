@@ -91,8 +91,10 @@ Here, the `ref` attribute references a whole category. You can also use a file s
 {% include note.html content="Path separators in the source file path are normalized to be the `/` character within PMD, so the same ruleset can be used on multiple platforms transparently." %}
 
 {% include note.html content="Referencing a complete category or ruleset means, you'll also get automatically any
-changes for this ruleset. If new rules are added, then these are automatically activated for you. This might or
-not might be, what you want. This can happen, if a new version of PMD provides a new rule. If you want to have
+changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
+are deprecated, then these rules are automatically deactivated. This might or
+not might be, what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
+existing rules. If you want to have
 complete control over the rules, that you are using, then it is recommended to add each rule separately via
 a single rule reference." %}
 
