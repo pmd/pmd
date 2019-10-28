@@ -552,20 +552,11 @@ public class RuleSetFactory {
         }
 
         for (RuleReference r : potentialRules) {
-            if (rulesetDeprecated || isNotDeprecatedRuleReference(r.getRule())) {
+            if (rulesetDeprecated || !r.getRule().isDeprecated()) {
                 // add the rule, if either the ruleset itself is deprecated (then we add all rules)
                 // or if the rule is not deprecated (in that case, the ruleset might contain deprecated as well
                 // as valid rules)
                 ruleSetBuilder.addRuleIfNotExists(r);
-
-                if (warnDeprecated && r.getRule().isDeprecated()) {
-                    if (LOG.isLoggable(Level.WARNING)) {
-                        LOG.warning("Discontinue using Rule " + ref + "/" + r.getRule().getName()
-                                + " as it is scheduled for removal from PMD."
-                                + " PMD " + PMDVersion.getNextMajorRelease()
-                                + " will remove support for this Rule.");
-                    }
-                }
             }
         }
 
@@ -576,17 +567,6 @@ public class RuleSetFactory {
                     + "; perhaps the rule name is mispelled or the rule doesn't exist anymore?");
             }
         }
-    }
-
-    /**
-     * Checks whether the given rule is itself not a rule reference (means a "rule definition"), that
-     * is deprecated. Such deprecated rule references are used to rename rules.
-     *
-     * @param rule
-     * @return
-     */
-    private boolean isNotDeprecatedRuleReference(Rule rule) {
-        return !(rule instanceof RuleReference && rule.isDeprecated());
     }
 
     /**
