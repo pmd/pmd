@@ -1557,11 +1557,11 @@ complexity and find a way to have more fine grained objects.
                                 something like this:
                                     not (
                                             (
-                                                starts-with(@Image,'get')
+                                                starts-with(@Name,'get')
                                                 or
-                                                starts-with(@Image,'set')
+                                                starts-with(@Name,'set')
                                                 or
-                                                starts-with(@Image,'is')
+                                                starts-with(@Name,'is')
                                             )
                                             and (
                                                     (
@@ -1571,18 +1571,18 @@ complexity and find a way to have more fine grained objects.
                                                     ) <= 3
                                             )
                                         )
-                                This will avoid discarding 'real' method...
+                                This will avoid discarding 'real' methods...
                      -->
 <![CDATA[
  //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
      [
-      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration/MethodDeclarator[
+      count(./ClassOrInterfaceBodyDeclaration/MethodDeclaration[
          not (
-                starts-with(@Image,'get')
+                starts-with(@Name,'get')
                 or
-                starts-with(@Image,'set')
+                starts-with(@Name,'set')
                 or
-                starts-with(@Image,'is')
+                starts-with(@Name,'is')
             )
       ]) > $maxmethods
    ]

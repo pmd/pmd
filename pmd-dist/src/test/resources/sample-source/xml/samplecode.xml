@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<deployment-plan xmlns="http://xmlns.oracle.com/weblogic/deployment-plan"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.oracle.com/weblogic/deployment-plan http://xmlns.oracle.com/weblogic/deployment-plan/1.0/deployment-plan.xsd"
+    global-variables="false">
+    <application-name>app</application-name>
+    <variable-definition>
+        <variable>
+            <name>Application_Module_Web_ContextRoot</name>
+            <value xsi:nil="false">ikb.adf.kreda.abw.webapp-Abnahmetest-ohne-SSO</value>
+        </variable>
+    </variable-definition>
+    <module-override>
+        <module-name>ikb.adf.kreda.abw.ear</module-name>
+        <module-type>ear</module-type>
+        <module-descriptor external="false">
+            <root-element>application</root-element>
+            <uri>META-INF/application.xml</uri>
+            <variable-assignment>
+                <name>Application_Module_Web_ContextRoot</name>
+                <xpath>/application/module/web/[context-root="ikb.adf.kreda.abw.webapp-Local-ohne-SSO"]</xpath>
+                <operation>replace</operation>
+            </variable-assignment>
+        </module-descriptor>
+    </module-override>
+
+   <root>
+   <child>
+      <![CDATA[
+         some text data
+      ]]]>
+   </child>
+   </root>
+
+</deployment-plan>
