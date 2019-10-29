@@ -1350,6 +1350,8 @@ category, then PMD would fail before starting the analysis.</li>
 
 <h4 id="configuring-individual-rules"><a href="pmd_userdocs_configuring_rules.html">Configuring individual rules</a></h4>
 
+<p>How you can configure individual rules is described on <a href="pmd_userdocs_configuring_rules.html">Configuring Rules</a>.</p>
+
 <h3 id="bulk-adding-rules">Bulk-adding rules</h3>
 
 <p>You can also reference rules in bulk by referencing a complete category or ruleset, possibly excluding certain rules, like in the following:</p>
@@ -1363,6 +1365,14 @@ category, then PMD would fail before starting the analysis.</li>
 <p>Here, the <code class="highlighter-rouge">ref</code> attribute references a whole category. You can also use a file system path or classpath relative path. In any case, the path must address an accessible ruleset XML file.</p>
 
 <div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Path separators in the source file path are normalized to be the <code class="highlighter-rouge">/</code> character within PMD, so the same ruleset can be used on multiple platforms transparently.</div>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Referencing a complete category or ruleset means, you’ll also get automatically any
+changes for this ruleset. If new rules are added, then these are automatically activated for you. If rules
+are deprecated, then these rules are automatically deactivated. This might or
+not might be, what you want. This can happen, if a new version of PMD provides a new rule and or deprecates
+existing rules. If you want to have
+complete control over the rules, that you are using, then it is recommended to add each rule separately via
+a single rule reference.</div>
 
 <h3 id="filtering-the-processed-files">Filtering the processed files</h3>
 
