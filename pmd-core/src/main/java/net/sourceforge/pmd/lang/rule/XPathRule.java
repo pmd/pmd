@@ -67,6 +67,8 @@ public class XPathRule extends AbstractRule {
     public XPathRule() {
         definePropertyDescriptor(XPATH_DESCRIPTOR);
         definePropertyDescriptor(VERSION_DESCRIPTOR);
+        // Enable Type Resolution on XPath Rules by default - see issue #2048
+        super.setTypeResolution(true);
     }
 
     /**

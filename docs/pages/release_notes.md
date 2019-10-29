@@ -52,6 +52,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
     *   [#2014](https://github.com/pmd/pmd/issues/2014): \[core] Making add(SourceCode sourceCode) public for alternative file systems
     *   [#2020](https://github.com/pmd/pmd/issues/2020): \[core] Wrong deprecation warnings for unused XPath attributes
     *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
+    *   [#2048](https://github.com/pmd/pmd/issues/2048): \[core] Enable type resolution by default for XPath rules
     *   [#2067](https://github.com/pmd/pmd/issues/2067): \[core] Build issue on Windows
     *   [#2068](https://github.com/pmd/pmd/pull/2068): \[core] Rule loader should use the same resources loader for the ruleset
     *   [#2071](https://github.com/pmd/pmd/issues/2071): \[ci] Add travis build on windows
