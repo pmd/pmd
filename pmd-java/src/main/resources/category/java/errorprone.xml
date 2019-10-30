@@ -2053,11 +2053,15 @@ Class c = String.class;
     </rule>
 
     <rule name="InvalidSlf4jMessageFormat"
+          ref="category/java/errorprone.xml/InvalidLogMessageFormat"
+          deprecated="true" />
+
+    <rule name="InvalidLogMessageFormat"
           language="java"
           since="5.5.0"
           message="Invalid message format"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidslf4jmessageformat">
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidlogmessageformat">
         <description>
 Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
         </description>
