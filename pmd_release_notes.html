@@ -1308,8 +1308,10 @@ For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/6
 
 <ul>
   <li>
-    <p>The Java rules <a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat"><code class="highlighter-rouge">InvalidSlf4jMessageFormat</code></a> and <a href="pmd_rules_java_errorprone.html#morethanonelogger"><code class="highlighter-rouge">MoreThanOneLogger</code></a>
-(<code class="highlighter-rouge">java-errorprone</code>) now both support <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a>.</p>
+    <p>The Java rules <a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="highlighter-rouge">InvalidLogMessageFormat</code></a> and <a href="pmd_rules_java_errorprone.html#morethanonelogger"><code class="highlighter-rouge">MoreThanOneLogger</code></a>
+(<code class="highlighter-rouge">java-errorprone</code>) now both support <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a>. Note that the
+rule “InvalidSlf4jMessageFormat” has been renamed to “InvalidLogMessageFormat” to reflect the fact, that it now
+supports more than slf4j.</p>
   </li>
   <li>
     <p>The Java rule <a href="pmd_rules_java_design.html#lawofdemeter"><code class="highlighter-rouge">LawOfDemeter</code></a> (<code class="highlighter-rouge">java-design</code>) ignores now also Builders, that are
@@ -1329,6 +1331,14 @@ a new thread. While the check for <code class="highlighter-rouge">Runnable</code
 usages of <code class="highlighter-rouge">Executors</code> and <code class="highlighter-rouge">ExecutorService</code>. Both create new threads, which are not managed by a J2EE
 server.</p>
   </li>
+</ul>
+
+<h4 id="renamed-rules">Renamed Rules</h4>
+
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_errorprone.html#invalidslf4jmessageformat"><code class="highlighter-rouge">InvalidSlf4jMessageFormat</code></a> has been renamed to
+<a href="pmd_rules_java_errorprone.html#invalidlogmessageformat"><code class="highlighter-rouge">InvalidLogMessageFormat</code></a> since it supports now both slf4j and log4j2
+message formats.</li>
 </ul>
 
 <h3 id="fixed-issues">Fixed Issues</h3>
@@ -1409,6 +1419,7 @@ server.</p>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getExcludePatterns()"><code class="highlighter-rouge">RuleSet#getExcludePatterns</code></a>. Use the new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileExclusions()"><code class="highlighter-rouge">getFileExclusions</code></a> instead.</li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getIncludePatterns()"><code class="highlighter-rouge">RuleSet#getIncludePatterns</code></a>. Use the new method <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileInclusions()"><code class="highlighter-rouge">getFileInclusions</code></a> instead.</li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/Parser.html#canParse()"><code class="highlighter-rouge">Parser#canParse</code></a></li>
+      <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/Parser.html#getSuppressMap()"><code class="highlighter-rouge">Parser#getSuppressMap</code></a></li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/rules/RuleBuilder.html#RuleBuilder(String,String,String)"><code class="highlighter-rouge">RuleBuilder#RuleBuilder</code></a>. Use the new constructor with the correct ResourceLoader instead.</li>
       <li><a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/rules/RuleFactory.html#RuleFactory()"><code class="highlighter-rouge">RuleFactory#RuleFactory</code></a>. Use the new constructor with the correct ResourceLoader instead.</li>
     </ul>
@@ -1477,7 +1488,7 @@ except <a href="https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2019 PMD Open Source Project. All rights reserved. <br />
- Site last generated: Oct 29, 2019 <br />
+ Site last generated: Oct 30, 2019 <br />
 <p><img src="images/pmd-logo-small.png" alt="Company logo"/></p>
                 </div>
             </div>

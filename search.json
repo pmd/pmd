@@ -3602,6 +3602,15 @@
 ,
 
 {
+"title": "InvalidLogMessageFormat (Java, Error Prone)",
+"tags": "",
+"keywords": "InvalidLogMessageFormat",
+"url": "pmd_rules_java_errorprone.html#invalidlogmessageformat",
+"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
+}
+,
+
+{
 "title": "JumbledIncrementer (Java, Error Prone)",
 "tags": "",
 "keywords": "JumbledIncrementer",
