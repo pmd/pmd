@@ -110,11 +110,11 @@ public abstract class AbstractPMDProcessor {
     // this is done manually without a try-with-resources
     public void processFiles(RuleSetFactory ruleSetFactory, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers) {
-        RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
+        final RuleSets rs = createRuleSets(ruleSetFactory, ctx.getReport());
         configuration.getAnalysisCache().checkValidity(rs, configuration.getClassLoader());
-        SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
+        final SourceCodeProcessor processor = new SourceCodeProcessor(configuration);
 
-        for (DataSource dataSource : files) {
+        for (final DataSource dataSource : files) {
             // this is the real, canonical and absolute filename (not shortened)
             String realFileName = dataSource.getNiceFileName(false, null);
 
