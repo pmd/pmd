@@ -8,7 +8,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class VBHTMLRendererTest extends AbstractRendererTst {
+public class VBHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
@@ -26,7 +26,7 @@ public class VBHTMLRendererTest extends AbstractRendererTst {
                 + PMD.EOL + "#TableHeader { background-color: #003366; }" + PMD.EOL
                 + "#RowColor1 { background-color: #eeeeee; }" + PMD.EOL + "#RowColor2 { background-color: white; }"
                 + PMD.EOL
-                + "--></style><body><center><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;n/a</font></tr>"
+                + "--></style><body><center><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;" + getSourceCodeFilename() + "</font></tr>"
                 + PMD.EOL
                 + "<tr id=RowColor2><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>blah</font></td></tr>"
                 + PMD.EOL + "</table><br></center></body></html>" + PMD.EOL;
@@ -56,7 +56,7 @@ public class VBHTMLRendererTest extends AbstractRendererTst {
                 + PMD.EOL + "#TableHeader { background-color: #003366; }" + PMD.EOL
                 + "#RowColor1 { background-color: #eeeeee; }" + PMD.EOL + "#RowColor2 { background-color: white; }"
                 + PMD.EOL
-                + "--></style><body><center><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;n/a</font></tr>"
+                + "--></style><body><center><table border=\"0\" width=\"80%\"><tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;" + getSourceCodeFilename() + "</font></tr>"
                 + PMD.EOL
                 + "<tr id=RowColor2><td width=\"50\" align=\"right\"><font class=body>1&nbsp;&nbsp;&nbsp;</font></td><td><font class=body>blah</font></td></tr>"
                 + PMD.EOL

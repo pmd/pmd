@@ -127,9 +127,13 @@ public class RuleSetFactory {
                 rulesetsProperties = "category/" + language.getTerseName() + "/categories.properties";
                 try (InputStream inputStream = resourceLoader.loadClassPathResourceAsStreamOrThrow(rulesetsProperties)) {
                     props.load(inputStream);
+                    String rulesetFilenames = props.getProperty("rulesets.filenames");
+                    if (rulesetFilenames != null) {
+                        ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
+                    }
+                } catch (RuleSetNotFoundException e) {
+                    LOG.warning("The language " + language.getTerseName() + " provides no " + rulesetsProperties + ".");
                 }
-                String rulesetFilenames = props.getProperty("rulesets.filenames");
-                ruleSetReferenceIds.addAll(RuleSetReferenceId.parse(rulesetFilenames));
             }
             return createRuleSets(ruleSetReferenceIds).getRuleSetsIterator();
         } catch (IOException ioe) {
@@ -555,14 +559,17 @@ public class RuleSetFactory {
             if (rulesetDeprecated || !r.getRule().isDeprecated()) {
                 // add the rule, if either the ruleset itself is deprecated (then we add all rules)
                 // or if the rule is not deprecated (in that case, the ruleset might contain deprecated as well
-                // as valid references to rules)
+                // as valid rules)
                 ruleSetBuilder.addRuleIfNotExists(r);
             }
         }
 
         if (!excludedRulesCheck.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Unable to exclude rules " + excludedRulesCheck + "; perhaps the rule name is mispelled?");
+            if (LOG.isLoggable(Level.WARNING)) {
+                LOG.warning(
+                    "Unable to exclude rules " + excludedRulesCheck + " from ruleset reference " + ref
+                    + "; perhaps the rule name is mispelled or the rule doesn't exist anymore?");
+            }
         }
     }
 
@@ -587,7 +594,7 @@ public class RuleSetFactory {
                 && !isRuleName(ruleElement, ruleSetReferenceId.getRuleName())) {
             return;
         }
-        Rule rule = new RuleFactory().buildRule(ruleElement);
+        Rule rule = new RuleFactory(resourceLoader).buildRule(ruleElement);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         ruleSetBuilder.addRule(rule);
@@ -624,7 +631,7 @@ public class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, warnDeprecated, this.compatibilityFilter != null);
+        RuleSetFactory ruleSetFactory = new RuleSetFactory(resourceLoader, RulePriority.LOW, false, this.compatibilityFilter != null);
 
         boolean isSameRuleSet = false;
         RuleSetReferenceId otherRuleSetReferenceId = RuleSetReferenceId.parse(ref).get(0);
@@ -670,9 +677,9 @@ public class RuleSetFactory {
 
         RuleSetReference ruleSetReference = new RuleSetReference(otherRuleSetReferenceId.getRuleSetFileName(), false);
 
-        RuleReference ruleReference = new RuleFactory().decorateRule(referencedRule, ruleSetReference, ruleElement);
+        RuleReference ruleReference = new RuleFactory(resourceLoader).decorateRule(referencedRule, ruleSetReference, ruleElement);
 
-        if (warnDeprecated && ruleReference.isDeprecated()) {
+        if (warnDeprecated && ruleReference.isDeprecated() && !isSameRuleSet) {
             if (LOG.isLoggable(Level.WARNING)) {
                 LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
                         + ruleReference.getOriginalName() + " instead of the deprecated Rule name "

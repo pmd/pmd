@@ -225,7 +225,7 @@
     <rule ref="category/java/errorprone.xml/IdempotentOperations"/>
     <rule ref="category/java/errorprone.xml/ImportFromSamePackage"/>
     <rule ref="category/java/errorprone.xml/InstantiationToGetClass"/>
-    <!-- <rule ref="category/java/errorprone.xml/InvalidSlf4jMessageFormat" /> -->
+    <!-- <rule ref="category/java/errorprone.xml/InvalidLogMessageFormat" /> -->
     <rule ref="category/java/errorprone.xml/JumbledIncrementer"/>
     <!-- <rule ref="category/java/errorprone.xml/JUnitSpelling" /> -->
     <!-- <rule ref="category/java/errorprone.xml/JUnitStaticSuite" /> -->

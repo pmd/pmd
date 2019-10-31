@@ -112,11 +112,13 @@ fi
 
 git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 (
-    echo "Committing current changes (pmd.github.io)"
     cd ../pmd.github.io
     git add ${RELEASE_NOTES_POST}
-    git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
-    git push
+    changes=$(git status --porcelain 2>/dev/null| egrep "^[AMDRC]" | wc -l)
+    if [ $changes -gt 0 ]; then
+        echo "Committing current changes (pmd.github.io)"
+        git commit -a -m "Prepare pmd release ${RELEASE_VERSION}" && git push
+    fi
 )
 
 ./mvnw -B release:clean release:prepare \

@@ -21,7 +21,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 
-public class SummaryHTMLRendererTest extends AbstractRendererTst {
+public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
@@ -29,6 +29,11 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         result.setProperty(HTMLRenderer.LINK_PREFIX, "link_prefix");
         result.setProperty(HTMLRenderer.LINE_PREFIX, "line_prefix");
         return result;
+    }
+
+    @Override
+    protected String getSourceCodeFilename() {
+        return "notAvailable";
     }
 
     @Override
@@ -42,7 +47,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL
                 + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL
-                + "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL
+                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + PMD.EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>"
                 + PMD.EOL + "</table></tr></table></body></html>" + PMD.EOL;
 
@@ -71,10 +76,10 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL
                 + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"center\">1</td>" + PMD.EOL
-                + "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL
+                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + PMD.EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>"
                 + PMD.EOL + "<tr> " + PMD.EOL + "<td align=\"center\">2</td>" + PMD.EOL
-                + "<td width=\"*%\"><a href=\"link_prefixn/a.html#line_prefix1\">n/a</a></td>" + PMD.EOL
+                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + PMD.EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + PMD.EOL + "<td width=\"*\">blah</td>" + PMD.EOL + "</tr>"
                 + PMD.EOL + "</table></tr></table></body></html>" + PMD.EOL;
     }

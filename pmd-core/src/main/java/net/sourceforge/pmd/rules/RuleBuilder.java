@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 
 /**
@@ -31,6 +32,7 @@ public class RuleBuilder {
 
     private List<PropertyDescriptor<?>> definedProperties = new ArrayList<>();
     private String name;
+    private ResourceLoader resourceLoader;
     private String clazz;
     private Language language;
     private String minimumVersion;
@@ -46,8 +48,19 @@ public class RuleBuilder {
     private boolean isUsesMultifile;
     private boolean isUsesTyperesolution;
 
+    /**
+     * @deprecated Use {@link #RuleBuilder(String, ResourceLoader, String, String)} with the
+     * proper {@link ResourceLoader} instead. The resource loader is used to load the
+     * rule implementation class from the class path.
+     */
+    @Deprecated
     public RuleBuilder(String name, String clazz, String language) {
+        this(name, new ResourceLoader(), clazz, language);
+    }
+
+    public RuleBuilder(String name, ResourceLoader resourceLoader, String clazz, String language) {
         this.name = name;
+        this.resourceLoader = resourceLoader;
         language(language);
         className(clazz);
     }
@@ -179,7 +192,7 @@ public class RuleBuilder {
     }
 
     public Rule build() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Rule rule = (Rule) RuleBuilder.class.getClassLoader().loadClass(clazz).newInstance();
+        Rule rule = resourceLoader.loadRuleFromClassPath(clazz);
 
         rule.setName(name);
         rule.setRuleClass(clazz);

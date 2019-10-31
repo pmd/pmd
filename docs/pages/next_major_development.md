@@ -73,6 +73,48 @@ the breaking API changes will be performed in 7.0.0.
 an API is tagged as `@Deprecated` or not in the latest minor release. During the development of 7.0.0,
 we may decide to remove some APIs that were not tagged as deprecated, though we'll try to avoid it." %}
 
+#### 6.19.0
+
+##### Deprecated APIs
+
+###### For removal
+
+* pmd-core
+  * All the package {% jdoc_package core::dcd %} and its subpackages. See {% jdoc core::dcd.DCD %}.
+  * In {% jdoc core::lang.LanguageRegistry %}:
+    * {% jdoc core::lang.LanguageRegistry#commaSeparatedTerseNamesForLanguageVersion(List) %}
+    * {% jdoc core::lang.LanguageRegistry#commaSeparatedTerseNamesForLanguage(List) %}
+    * {% jdoc core::lang.LanguageRegistry#findAllVersions() %}
+    * {% jdoc core::lang.LanguageRegistry#findLanguageVersionByTerseName(String) %}
+    * {% jdoc core::lang.LanguageRegistry#getInstance() %}
+  * {% jdoc !!core::RuleSet#getExcludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileExclusions() %} instead.
+  * {% jdoc !!core::RuleSet#getIncludePatterns() %}. Use the new method {% jdoc core::RuleSet#getFileInclusions() %} instead.
+  * {% jdoc !!core::lang.Parser#canParse() %}
+  * {% jdoc !!core::lang.Parser#getSuppressMap() %}
+  * {% jdoc !!core::rules.RuleBuilder#RuleBuilder(String,String,String) %}. Use the new constructor with the correct ResourceLoader instead.
+  * {% jdoc !!core::rules.RuleFactory#RuleFactory() %}. Use the new constructor with the correct ResourceLoader instead.
+* pmd-java
+  * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
+  * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
+  * {% jdoc java::lang.java.rule.AbstractJavaRule#getDeclaringType(Node) %}.
+  * {% jdoc java::lang.java.rule.JavaRuleViolation#isSupressed(Node,Rule) %}
+  * {% jdoc java::lang.java.ast.ASTMethodDeclarator %}
+  * {% jdoc java::lang.java.ast.ASTMethodDeclaration#getMethodName() %}
+  * {% jdoc java::lang.java.ast.ASTMethodDeclaration#getBlock() %}
+  * {% jdoc java::lang.java.ast.ASTConstructorDeclaration#getParameterCount() %}
+* pmd-apex
+  * {% jdoc apex::lang.apex.ast.CanSuppressWarnings %} and its implementations
+  * {% jdoc apex::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}
+
+###### Internal APIs
+
+* pmd-core
+  * All the package {% jdoc_package core::util %} and its subpackages,
+  except {% jdoc_package core::util.datasource %} and {% jdoc_package core::util.database %}.
+  * {% jdoc core::cpd.GridBagHelper %}
+  * {% jdoc core::renderers.ColumnDescriptor %}
+
+
 #### 6.18.0
 
 ##### Changes to Renderer

@@ -31,6 +31,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyDescriptorField;
 import net.sourceforge.pmd.properties.PropertyTypeId;
 import net.sourceforge.pmd.properties.builders.PropertyDescriptorExternalBuilder;
+import net.sourceforge.pmd.util.ResourceLoader;
 
 
 /**
@@ -58,6 +59,23 @@ public class RuleFactory {
     private static final String CLASS = "class";
     
     private static final List<String> REQUIRED_ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(NAME, CLASS));
+
+    private final ResourceLoader resourceLoader;
+
+    /**
+     * @deprecated Use {@link #RuleFactory(ResourceLoader)} instead.
+     */
+    @Deprecated
+    public RuleFactory() {
+        this(new ResourceLoader());
+    }
+
+    /**
+     * @param resourceLoader The resource loader to load the rule from jar
+     */
+    public RuleFactory(final ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
     /**
      * Decorates a referenced rule with the metadata that are overridden in the given rule element.
@@ -131,6 +149,7 @@ public class RuleFactory {
         String name = ruleElement.getAttribute(NAME);
 
         RuleBuilder builder = new RuleBuilder(name,
+                resourceLoader,
                 ruleElement.getAttribute(CLASS),
                 ruleElement.getAttribute("language"));
 
