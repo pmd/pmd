@@ -41,6 +41,7 @@ public class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "WocTest");
         addRule(RULESET, "TccTest");
         addRule(RULESET, "AtfdTest");
+        addRule(RULESET, "CfoTest");
     }
 
 }

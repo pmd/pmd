@@ -8,7 +8,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 
-public class CSVRendererTest extends AbstractRendererTst {
+public class CSVRendererTest extends AbstractRendererTest {
 
     @Override
     public Renderer getRenderer() {
@@ -18,7 +18,7 @@ public class CSVRendererTest extends AbstractRendererTst {
     @Override
     public String getExpected() {
         return getHeader()
-                + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     @Override
@@ -29,8 +29,8 @@ public class CSVRendererTest extends AbstractRendererTst {
     @Override
     public String getExpectedMultiple() {
         return getHeader()
-                + "\"1\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
-                + "\"2\",\"\",\"n/a\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
+                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL
+                + "\"2\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + PMD.EOL;
     }
 
     @Override

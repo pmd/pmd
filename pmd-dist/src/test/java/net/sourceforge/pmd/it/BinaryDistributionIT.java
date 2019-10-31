@@ -9,48 +9,18 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMDVersion;
 
-public class BinaryDistributionIT {
-
-    private static File getBinaryDistribution() {
-        return new File(".", "target/pmd-bin-" + PMDVersion.VERSION + ".zip");
-    }
-
-    /**
-     * The temporary directory, to which the binary distribution will be extracted.
-     * It will be deleted again after the test.
-     */
-    private static Path tempDir;
-
-    @BeforeClass
-    public static void setupTempDirectory() throws Exception {
-        tempDir = Files.createTempDirectory("pmd-it-test-");
-        if (getBinaryDistribution().exists()) {
-            ZipFileExtractor.extractZipFile(getBinaryDistribution().toPath(), tempDir);
-        }
-    }
-
-    @AfterClass
-    public static void cleanupTempDirectory() throws IOException {
-        if (tempDir != null && tempDir.toFile().exists()) {
-            FileUtils.forceDelete(tempDir.toFile());
-        }
-    }
+public class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     @Test
     public void testFileExistence() {
@@ -92,15 +62,17 @@ public class BinaryDistributionIT {
     @Test
     @Ignore("Java rules have not been updated yet")
     public void runPMD() throws Exception {
-        String srcDir = new File(".", "src/test/resources/sample-source/").getAbsolutePath();
+        String srcDir = new File(".", "src/test/resources/sample-source/java/").getAbsolutePath();
 
         ExecutionResult result;
 
         result = PMDExecutor.runPMD(tempDir, "-h");
-        result.assertExecutionResult(0, "apex, ecmascript, java, jsp, plsql, pom, scala, swift, vf, vm, wsdl, xml, xsl");
+
+        // note: the language "text" is provided by pmd-designer
+        result.assertExecutionResult(0, "apex, ecmascript, java, jsp, plsql, pom, scala, swift, text, vf, vm, wsdl, xml, xsl");
 
         result = PMDExecutor.runPMDRules(tempDir, srcDir, "src/test/resources/rulesets/sample-ruleset.xml");
-        result.assertExecutionResult(4, "JumbledIncrementer.java:8:");
+        result.assertExecutionResult(4, "", "JumbledIncrementer.java:8:");
 
         result = PMDExecutor.runPMDRules(tempDir, srcDir, "rulesets/java/quickstart.xml");
         result.assertExecutionResult(4, "");
