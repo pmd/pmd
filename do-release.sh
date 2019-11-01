@@ -124,7 +124,8 @@ git commit -a -m "Prepare pmd release ${RELEASE_VERSION}"
 ./mvnw -B release:clean release:prepare \
     -Dtag=pmd_releases/${RELEASE_VERSION} \
     -DreleaseVersion=${RELEASE_VERSION} \
-    -DdevelopmentVersion=${DEVELOPMENT_VERSION}
+    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
+    -Pgenerate-rule-docs
 
 
 echo
