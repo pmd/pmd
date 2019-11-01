@@ -130,6 +130,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
 *   [#2073](https://github.com/pmd/pmd/pull/2073): \[test]\[core] Add expected and actual line of numbers to message wording - [snuyanzin](https://github.com/snuyanzin)
 *   [#2076](https://github.com/pmd/pmd/pull/2076): \[java] Add Metric ClassFanOutComplexity - [Andi Pabst](https://github.com/andipabst)
 *   [#2078](https://github.com/pmd/pmd/pull/2078): \[java] DoNotUseThreads should not warn on Runnable #1627 - [Michael Clay](https://github.com/mclay)
+*   [#2089](https://github.com/pmd/pmd/pull/2089): \[core] Minor unrelated improvements to code - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
 
 {% endtocmaker %}
 
