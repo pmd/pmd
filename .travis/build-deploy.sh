@@ -54,11 +54,6 @@ elif travis_isPullRequest; then
 
 elif travis_isPush; then
 
-    # avoid error like "gpg: signing failed: Inappropriate ioctl for device"
-    # see https://unix.stackexchange.com/questions/257061/gentoo-linux-gpg-encrypts-properly-a-file-passed-through-parameter-but-throws-i/257065#257065
-    GPG_TTY=$(tty)
-    export GPG_TTY
-
     if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
         echo -e "\n\n"
         log_info "This is a release build for tag ${TRAVIS_TAG}"
