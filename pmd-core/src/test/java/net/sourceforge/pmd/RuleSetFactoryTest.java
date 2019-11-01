@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import net.sourceforge.pmd.junit.JavaUtilLoggingRule;
+import net.sourceforge.pmd.junit.LocaleRule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.MockRule;
@@ -32,10 +33,13 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 public class RuleSetFactoryTest {
-    
+
     @org.junit.Rule
     public ExpectedException ex = ExpectedException.none();
-    
+
+    @org.junit.Rule
+    public LocaleRule localeRule = LocaleRule.en();
+
     @Test
     public void testRuleSetFileName() throws RuleSetNotFoundException {
         RuleSet rs = loadRuleSet(EMPTY_RULESET);
