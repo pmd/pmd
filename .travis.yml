@@ -14,7 +14,8 @@ env:
 matrix:
   fast_finish: true
   include:
-    - name: "linux - mvn deploy"
+    - stage: build
+      name: "linux - mvn deploy"
       os: linux
       dist: bionic
       env: BUILD=deploy
@@ -37,6 +38,12 @@ matrix:
       os: windows
       env: BUILD=deploy
       language: shell
+    - stage: publish
+      name: "Release Build - Publish"
+      os: linux
+      dist: bionic
+      if: "type = push && repo = pmd/pmd && fork = false && tag is present"
+      env: BUILD=publish
 
 before_install:
   - bash .travis/before_install.sh "11.0.5+10"

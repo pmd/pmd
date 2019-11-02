@@ -81,11 +81,11 @@ EOF
     RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
     RELEASE_BODY="${RELEASE_BODY//'"'/\\\"}"
     cat > release-edit-request.json <<EOF
-    {
-      "name": "$RELEASE_NAME",
-      "body": "$RELEASE_BODY"
-    }
-    EOF
+{
+  "name": "$RELEASE_NAME",
+  "body": "$RELEASE_BODY"
+}
+EOF
     echo -e "\n\n"
     log_info "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
     
