@@ -42,5 +42,8 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
         result.assertNoError("Use of deprecated attribute");
         result.assertNoErrorInReport("Error while processing");
         result.assertNoErrorInReport("Error while parsing");
+
+        // See bug #2092: [apex] ApexLexer logs visible when Apex is the selected language upon starting the designer 
+        result.assertNoError("Deduped array ApexLexer");
     }
 }
