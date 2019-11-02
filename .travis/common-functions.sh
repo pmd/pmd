@@ -53,14 +53,3 @@ function travis_isWindows() {
         return 1
     fi
 }
-
-
-function has_docs_change() {
-    if [[ $(git diff --name-only ${TRAVIS_COMMIT_RANGE}) = *"docs/"* ]]; then
-        log_info "Checking for changes in docs/ (TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}): changes found"
-        return 0
-    else
-        log_info "Checking for changes in docs/ (TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}): no changes"
-        return 1
-    fi
-}
