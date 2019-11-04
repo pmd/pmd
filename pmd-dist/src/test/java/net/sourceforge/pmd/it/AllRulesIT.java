@@ -40,6 +40,7 @@ public class AllRulesIT extends AbstractBinaryDistributionTest {
         result.assertNoError("Exception applying rule");
         result.assertNoError("Ruleset not found");
         result.assertNoError("Use of deprecated attribute");
+        result.assertNoError("instead of the deprecated"); // rule deprecations
         result.assertNoErrorInReport("Error while processing");
         result.assertNoErrorInReport("Error while parsing");
 
