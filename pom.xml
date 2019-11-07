@@ -948,6 +948,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
             <id>sonar</id>
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>pmd</sonar.organization>
             </properties>
             <build>
                 <pluginManagement>
