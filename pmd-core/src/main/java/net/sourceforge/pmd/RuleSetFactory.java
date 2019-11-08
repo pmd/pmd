@@ -639,6 +639,10 @@ public class RuleSetFactory {
                 && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
             isSameRuleSet = true;
+        } else if (otherRuleSetReferenceId.isExternal()
+                && otherRuleSetReferenceId.getRuleSetFileName().equals(ruleSetReferenceId.getRuleSetFileName())) {
+            otherRuleSetReferenceId = new RuleSetReferenceId(otherRuleSetReferenceId.getRuleName(), ruleSetReferenceId);
+            isSameRuleSet = true;
         }
         // do not ignore deprecated rule references
         Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId, true);

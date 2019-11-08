@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.processor.AbstractPMDProcessor;
 import net.sourceforge.pmd.processor.MonoThreadProcessor;
 import net.sourceforge.pmd.processor.MultiThreadProcessor;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -205,7 +206,7 @@ public class PMD {
         final RuleSets ruleSets =
             RulesetsFactoryUtils.getRuleSetsWithBenchmark(configuration.getRuleSets(), ruleSetFactory);
         if (ruleSets == null) {
-            return 0;
+            return PMDCommandLineInterface.NO_ERRORS_STATUS;
         }
 
         final Set<Language> languages = getApplicableLanguages(configuration, ruleSets);
@@ -250,7 +251,7 @@ public class PMD {
             }
             LOG.log(Level.FINE, "Exception during processing", e);
             LOG.info(PMDCommandLineInterface.buildUsageText());
-            return 0;
+            return PMDCommandLineInterface.NO_ERRORS_STATUS;
         } finally {
             /*
              * Make sure it's our own classloader before attempting to close it....
@@ -297,34 +298,13 @@ public class PMD {
      */
     public static void processFiles(final PMDConfiguration configuration, final RuleSetFactory ruleSetFactory,
             final List<DataSource> files, final RuleContext ctx, final List<Renderer> renderers) {
-
-        if (!configuration.isIgnoreIncrementalAnalysis()
-                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
-                && LOG.isLoggable(Level.WARNING)) {
-            final String version = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
-            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
-                                + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
-        }
-
+        encourageToUseIncrementalAnalysis(configuration);
         sortFiles(configuration, files);
-
         // Make sure the cache is listening for analysis results
         ctx.getReport().addListener(configuration.getAnalysisCache());
 
         final RuleSetFactory silentFactory = new RuleSetFactory(ruleSetFactory, false);
-
-        /*
-         * Check if multithreaded support is available. ExecutorService can also
-         * be disabled if threadCount is not positive, e.g. using the
-         * "-threads 0" command line option.
-         */
-        if (configuration.getThreads() > 0) {
-            new MultiThreadProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
-        } else {
-            new MonoThreadProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
-        }
-
-        // Persist the analysis cache
+        newFileProcessor(configuration).processFiles(silentFactory, files, ctx, renderers);
         configuration.getAnalysisCache().persist();
     }
 
@@ -344,6 +324,26 @@ public class PMD {
                 }
             });
         }
+    }
+
+    private static void encourageToUseIncrementalAnalysis(final PMDConfiguration configuration) {
+        if (!configuration.isIgnoreIncrementalAnalysis()
+                && configuration.getAnalysisCache() instanceof NoopAnalysisCache
+                && LOG.isLoggable(Level.WARNING)) {
+            final String version =
+                    PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-" + PMDVersion.VERSION;
+            LOG.warning("This analysis could be faster, please consider using Incremental Analysis: "
+                    + "https://pmd.github.io/" + version + "/pmd_userdocs_incremental_analysis.html");
+        }
+    }
+
+    /*
+     * Check if multithreaded support is available. ExecutorService can also
+     * be disabled if threadCount is not positive, e.g. using the
+     * "-threads 0" command line option.
+     */
+    private static AbstractPMDProcessor newFileProcessor(final PMDConfiguration configuration) {
+        return configuration.getThreads() > 0 ? new MultiThreadProcessor(configuration) : new MonoThreadProcessor(configuration);
     }
 
     /**
@@ -420,20 +420,19 @@ public class PMD {
         return files;
     }
 
-    private static Set<Language> getApplicableLanguages(PMDConfiguration configuration, RuleSets ruleSets) {
-        Set<Language> languages = new HashSet<>();
-        LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
+    private static Set<Language> getApplicableLanguages(final PMDConfiguration configuration, final RuleSets ruleSets) {
+        final Set<Language> languages = new HashSet<>();
+        final LanguageVersionDiscoverer discoverer = configuration.getLanguageVersionDiscoverer();
 
-        for (Rule rule : ruleSets.getAllRules()) {
-            Language language = rule.getLanguage();
-            if (languages.contains(language)) {
-                continue;
-            }
-            LanguageVersion version = discoverer.getDefaultLanguageVersion(language);
-            if (RuleSet.applies(rule, version)) {
-                languages.add(language);
-                if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine("Using " + language.getShortName() + " version: " + version.getShortName());
+        for (final Rule rule : ruleSets.getAllRules()) {
+            final Language ruleLanguage = rule.getLanguage();
+            if (!languages.contains(ruleLanguage)) {
+                final LanguageVersion version = discoverer.getDefaultLanguageVersion(ruleLanguage);
+                if (RuleSet.applies(rule, version)) {
+                    languages.add(ruleLanguage);
+                    if (LOG.isLoggable(Level.FINE)) {
+                        LOG.fine("Using " + ruleLanguage.getShortName() + " version: " + version.getShortName());
+                    }
                 }
             }
         }
@@ -466,7 +465,7 @@ public class PMD {
             TimeTracker.startGlobalTracking();
         }
         
-        int status;
+        int status = PMDCommandLineInterface.NO_ERRORS_STATUS;
         final PMDConfiguration configuration = params.toConfiguration();
 
         final Level logLevel = params.isDebug() ? Level.FINER : Level.INFO;
@@ -481,7 +480,7 @@ public class PMD {
             if (violations > 0 && configuration.isFailOnViolation()) {
                 status = PMDCommandLineInterface.VIOLATIONS_FOUND;
             } else {
-                status = 0;
+                status = PMDCommandLineInterface.NO_ERRORS_STATUS;
             }
         } catch (Exception e) {
             System.out.println(PMDCommandLineInterface.buildUsageText());
