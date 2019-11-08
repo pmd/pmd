@@ -209,20 +209,33 @@ nested element. Possible values are:
     <sourceLanguage name="java" version="1.3"/>
     <sourceLanguage name="java" version="1.4"/>
     <sourceLanguage name="java" version="1.5"/>
+    <sourceLanguage name="java" version="5"/> <!-- alias for 1.5 -->
     <sourceLanguage name="java" version="1.6"/>
+    <sourceLanguage name="java" version="6"/> <!-- alias for 1.6 -->
     <sourceLanguage name="java" version="1.7"/>
+    <sourceLanguage name="java" version="7"/> <!-- alias for 1.7 -->
     <sourceLanguage name="java" version="1.8"/>
+    <sourceLanguage name="java" version="8"/> <!-- alias for 1.8 -->
     <sourceLanguage name="java" version="9"/>
+    <sourceLanguage name="java" version="1.9"/> <!-- alias for 9 -->
     <sourceLanguage name="java" version="10"/>
+    <sourceLanguage name="java" version="1.10"/> <!-- alias for 10 -->
     <sourceLanguage name="java" version="11"/>
-    <sourceLanguage name="java" version="12"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="12"/>
+    <sourceLanguage name="java" version="13"/> <!-- this is the default -->
+    <sourceLanguage name="java" version="13-preview"/>
     <sourceLanguage name="jsp" version=""/>
     <sourceLanguage name="pom" version=""/>
     <sourceLanguage name="plsql" version=""/>
-    <sourceLanguage name="xsl" version=""/>
-    <sourceLanguage name="xml" version=""/>
+    <sourceLanguage name="scala" version="2.10"/>
+    <sourceLanguage name="scala" version="2.11"/>
+    <sourceLanguage name="scala" version="2.12"/>
+    <sourceLanguage name="scala" version="2.13"/> <!-- this is the default -->
     <sourceLanguage name="vf" version=""/>
     <sourceLanguage name="vm" version=""/>
+    <sourceLanguage name="wsdl" version=""/>
+    <sourceLanguage name="xml" version=""/>
+    <sourceLanguage name="xsl" version=""/>
 
 ### Postprocessing the report file with XSLT
 
