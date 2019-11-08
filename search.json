@@ -3434,15 +3434,6 @@
 ,
 
 {
-"title": "InvalidSlf4jMessageFormat (Java, Error Prone)",
-"tags": "",
-"keywords": "InvalidSlf4jMessageFormat",
-"url": "pmd_rules_java_errorprone.html#invalidslf4jmessageformat",
-"summary": "Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors."
-}
-,
-
-{
 "title": "InvalidLogMessageFormat (Java, Error Prone)",
 "tags": "",
 "keywords": "InvalidLogMessageFormat",
