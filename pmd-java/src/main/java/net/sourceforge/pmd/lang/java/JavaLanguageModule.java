@@ -19,12 +19,12 @@ public class JavaLanguageModule extends BaseLanguageModule {
         super(NAME, null, TERSE_NAME, JavaRuleChainVisitor.class, "java");
         addVersion("1.3", new JavaLanguageHandler(3), false);
         addVersion("1.4", new JavaLanguageHandler(4), false);
-        addVersion("1.5", new JavaLanguageHandler(5), false);
-        addVersion("1.6", new JavaLanguageHandler(6), false);
-        addVersion("1.7", new JavaLanguageHandler(7), false);
-        addVersion("1.8", new JavaLanguageHandler(8), false);
-        addVersion("9", new JavaLanguageHandler(9), false);
-        addVersion("10", new JavaLanguageHandler(10), false);
+        addVersions(new JavaLanguageHandler(5), false, "1.5", "5");
+        addVersions(new JavaLanguageHandler(6), false, "1.6", "6");
+        addVersions(new JavaLanguageHandler(7), false, "1.7", "7");
+        addVersions(new JavaLanguageHandler(8), false, "1.8", "8");
+        addVersions(new JavaLanguageHandler(9), false, "9", "1.9");
+        addVersions(new JavaLanguageHandler(10), false, "10", "1.10");
         addVersion("11", new JavaLanguageHandler(11), false);
         addVersion("12", new JavaLanguageHandler(12), false);
         addVersion("12-preview", new JavaLanguageHandler(12, true), false);
