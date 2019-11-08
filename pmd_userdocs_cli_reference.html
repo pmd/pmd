@@ -1594,7 +1594,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="language"><code>-language&nbsp;&lt;lang&gt;</code><br /><code>-l&nbsp;&lt;lang&gt;</code></a></td>
-    <td>Specify the language PMD should use.</td>
+    <td>Specify the language PMD should use. Used together with <code>-version</code>. See also <a href="#supported-languages">Supported Languages</a>.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1860,7 +1860,7 @@ $('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="version"><code>-version&nbsp;&lt;version&gt;</code><br /><code>-v&nbsp;&lt;version&gt;</code></a></td>
-    <td>Specify the version of a language PMD should use.</td>
+    <td>Specify the version of a language PMD should use. Used together with <code>-language</code>. See also <a href="#supported-languages">Supported Languages</a>.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -1891,13 +1891,34 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 <h2 id="supported-languages">Supported Languages</h2>
 
+<p>The language is determined automatically by PMD from the file extensions. Some languages such as “Java”
+however support multiple versions. The default version will be used, which is usually the latest supported
+version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
+that are not available yet, won’t be executed, you need to specify a specific version via the <code class="highlighter-rouge">-language</code>
+and <code class="highlighter-rouge">-version</code> parameter.</p>
+
+<p>These parameters are irrelevant for languages that don’t support different versions.</p>
+
+<p>Example:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./run.sh pmd <span class="nt">-d</span> src/main/java <span class="nt">-f</span> text <span class="nt">-R</span> rulesets/java/quickstart.xml <span class="nt">-language</span> java <span class="nt">-version</span> 8
+</code></pre></div></div>
+
 <ul>
   <li><a href="pmd_rules_apex.html">apex</a> (Salesforce Apex)</li>
-  <li><a href="pmd_rules_java.html">java</a></li>
+  <li><a href="pmd_rules_java.html">java</a>
+    <ul>
+      <li>Supported Versions: 1.3, 1.4, 1.5, 5, 1.6, 6, 1.7, 7, 1.8, 8, 9, 1.9, 10, 1.10, 11, 12, 13 (default), 13-preview</li>
+    </ul>
+  </li>
   <li><a href="pmd_rules_ecmascript.html">ecmascript</a> (JavaScript)</li>
   <li><a href="pmd_rules_jsp.html">jsp</a></li>
   <li><a href="pmd_rules_plsql.html">plsql</a></li>
-  <li><a href="pmd_rules_scala.html">scala</a></li>
+  <li><a href="pmd_rules_scala.html">scala</a>
+    <ul>
+      <li>Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)</li>
+    </ul>
+  </li>
   <li><a href="pmd_rules_vf.html">vf</a> (Salesforce VisualForce)</li>
   <li><a href="pmd_rules_vm.html">vm</a> (Apache Velocity)</li>
   <li><a href="pmd_rules_xml.html">xml and xsl</a></li>
