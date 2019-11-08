@@ -643,21 +643,24 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
 
     <test-code>
         <description>False-Negative when referencing inner class</description>
-        <expected-problems>5</expected-problems>
-        <expected-linenumbers>3,4,7,8,11</expected-linenumbers>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>3,4,6,7,8,9,12</expected-linenumbers>
         <code><![CDATA[
 package com.example;
 
 public class ClassOne extends com.example.ClassTwo {
     com.example.ClassTwo.Builder builder = null;
 
-    public void run() {
+    public void run() throws com.example.ClassOne.MyException {
         com.example.ClassOne.Builder builder = null;
         com.example.ClassTwo.Builder builder2 = null;
+        throw new com.example.ClassOne.MyException();
     }
 
     public class Builder extends com.example.ClassTwo.Builder {
     }
+
+    public static class MyException extends Exception { }
 }
         ]]></code>
     </test-code>
