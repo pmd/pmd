@@ -18,6 +18,8 @@ This is a {{ site.pmd.release_type }} release.
 
 *   apex
     *   [#2092](https://github.com/pmd/pmd/issues/2092): \[apex] ApexLexer logs visible when Apex is the selected language upon starting the designer
+*   core
+    *   [#2096](https://github.com/pmd/pmd/issues/2096): \[core] Referencing category errorprone.xml produces deprecation warnings for InvalidSlf4jMessageFormat
 
 ### API Changes
 
