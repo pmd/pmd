@@ -22,6 +22,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2096](https://github.com/pmd/pmd/issues/2096): \[core] Referencing category errorprone.xml produces deprecation warnings for InvalidSlf4jMessageFormat
 *   java
     *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
+*   java-codestyle
+    *   [#2098](https://github.com/pmd/pmd/issues/2098): \[java] UnnecessaryFullyQualifiedName: regression / false positive
 
 ### API Changes
 

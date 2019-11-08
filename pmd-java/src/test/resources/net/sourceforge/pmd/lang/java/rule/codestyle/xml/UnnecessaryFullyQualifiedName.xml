@@ -540,6 +540,10 @@ class length {
     <test-code>
         <description>False negative when name refers to static field</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'threads.length.foo' due to existing same package import 'threads.*'</message>
+        </expected-messages>
         <code><![CDATA[
 package threads;
 
@@ -616,6 +620,24 @@ public class UnnecessaryFullyQualifiedName {
         System.out.println(UnnecessaryFullyQualifiedNameTest.ENUM1.A);
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2098 false positive with annotated package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@com.example.subpackage.ExampleAnnotation
+package com.example;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2098 false positive with annotated package - with type-resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyAnnotation
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
         ]]></code>
     </test-code>
 </test-data>
