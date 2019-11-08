@@ -640,4 +640,25 @@ package com.example;
 package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>False-Negative when referencing inner class</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3,4,7,8,11</expected-linenumbers>
+        <code><![CDATA[
+package com.example;
+
+public class ClassOne extends com.example.ClassTwo {
+    com.example.ClassTwo.Builder builder = null;
+
+    public void run() {
+        com.example.ClassOne.Builder builder = null;
+        com.example.ClassTwo.Builder builder2 = null;
+    }
+
+    public class Builder extends com.example.ClassTwo.Builder {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

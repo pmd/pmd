@@ -268,7 +268,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         // package a;
         // name: a.b.c.d(); -> we assume, b is a class, c is a field, d is a method.
         // but it could very well be, that: a.b is a package and c is a class, d is a (static) method.
-        if (node.jjtGetParent() instanceof ASTPrimaryPrefix) {
+        if (node.jjtGetParent() instanceof ASTPrimaryPrefix || node instanceof ASTClassOrInterfaceType) {
             return currentPackage != null && name.startsWith(currentPackage);
         }
 
