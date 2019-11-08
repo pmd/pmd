@@ -90,13 +90,7 @@ public class RuleSetWriter {
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.transform(new DOMSource(document), new StreamResult(outputStream));
-        } catch (DOMException e) {
-            throw new RuntimeException(e);
-        } catch (FactoryConfigurationError e) {
-            throw new RuntimeException(e);
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (TransformerException e) {
+        } catch (DOMException | FactoryConfigurationError | ParserConfigurationException | TransformerException e) {
             throw new RuntimeException(e);
         }
     }
