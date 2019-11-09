@@ -3,6 +3,7 @@ set -e
 
 source .travis/logger.sh
 source .travis/common-functions.sh
+source .travis/github-releases-api.sh
 
 function upload_baseline() {
     log_info "Generating and uploading baseline for pmdtester..."
@@ -58,42 +59,19 @@ elif travis_isPush; then
         echo -e "\n\n"
         log_info "This is a release build for tag ${TRAVIS_TAG}"
         echo -e "\n\n"
+
+        # create a draft github release
+        gh_releases_createDraftRelease "${TRAVIS_TAG}" "$(git show-ref --hash HEAD)"
+        GH_RELEASE="$RESULT"
+
         ./mvnw deploy -Possrh,sign,pmd-release $MVN_BUILD_FLAGS
         echo -e "\n\n"
 
         # Deploy to ossrh has already been done with the usual maven build
 
         # Deploy to github releases
-        RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" 'https://api.github.com/repos/pmd/pmd/releases?per_page=1'|jq ".[0].id")
-        RELEASE_DATA=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" "https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}")
-        DRAFT=$(echo "$RELEASE_DATA"|jq ".draft")
-        if [ "$DRAFT" != "true" ]; then
-            REQUEST=$(cat <<EOF
-{
-    "tag_name": "${TRAVIS_TAG}",
-    "target_commitish": "$(git show-ref --hash HEAD)",
-    "name": "${TRAVIS_TAG}",
-    "draft": true
-}
-EOF
-            )
-            RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" \
-                --data "${REQUEST}" -X POST https://api.github.com/repos/pmd/pmd/releases | jq ".id")
-            echo $RELEASE_ID
-            log_info "Created draft release with id ${RELEASE_ID}"
-        else
-            log_info "Using draft release with id "${RELEASE_ID}"
-        fi
-        UPLOAD_URL=$(echo "$RELEASE_DATA" | jq --raw-output ".upload_url")
-        UPLOAD_URL=${UPLOAD_URL%%\{\?name,label\}}
-        echo "Uploading pmd-bin-${VERSION}.zip ..."
-        curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/zip" \
-            --data-binary "@pmd-dist/target/pmd-bin-${VERSION}.zip" \
-            -X POST "${UPLOAD_URL}?name=pmd-bin-${VERSION}.zip"
-        echo "Uploading pmd-src-${VERSION}.zip ..."
-        curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/zip" \
-            --data-binary "@pmd-dist/target/pmd-src-${VERSION}.zip" \
-            -X POST "${UPLOAD_URL}?name=pmd-src-${VERSION}.zip"
+        gh_release_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-bin-${VERSION}.zip"
+        gh_release_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-src-${VERSION}.zip"
 
 
         # Deploy to sourceforge files

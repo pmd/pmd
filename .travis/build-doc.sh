@@ -3,6 +3,7 @@ set -e
 
 source .travis/logger.sh
 source .travis/common-functions.sh
+source .travis/github-releases-api.sh
 
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
@@ -42,66 +43,17 @@ popd
 
 if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
     # Deploy to github releases
-    RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" 'https://api.github.com/repos/pmd/pmd/releases?per_page=1'|jq ".[0].id")
-    RELEASE_DATA=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" "https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}")
-    DRAFT=$(echo "$RELEASE_DATA"|jq ".draft")
-    if [ "$DRAFT" != "true" ]; then
-        REQUEST=$(cat <<EOF
-{
-    "tag_name": "${TRAVIS_TAG}",
-    "target_commitish": "$(git show-ref --hash HEAD)",
-    "name": "${TRAVIS_TAG}",
-    "draft": true
-}
-EOF
-        )
-        RELEASE_ID=$(curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" \
-            --data "${REQUEST}" -X POST https://api.github.com/repos/pmd/pmd/releases | jq ".id")
-        echo $RELEASE_ID
-        log_info "Created draft release with id ${RELEASE_ID}"
-    else
-        log_info "Using draft release with id "${RELEASE_ID}"
-    fi
-    UPLOAD_URL=$(echo "$RELEASE_DATA" | jq --raw-output ".upload_url")
-    UPLOAD_URL=${UPLOAD_URL%%\{\?name,label\}}
-    echo "Uploading docs/pmd-doc-${VERSION}.zip ..."
-    curl -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/zip" \
-        --data-binary "@docs/pmd-doc-${VERSION}.zip" \
-        -X POST "${UPLOAD_URL}?name=pmd-doc-${VERSION}.zip"
-    
+    gh_releases_getLatestDraftRelease
+    GH_RELEASE="$RESULT"
+
+    gh_release_uploadAsset "$GH_RELEASE" "docs/pmd-doc-${VERSION}.zip"
+
     # updating github release text
     # renders, and skips the first 6 lines - the Jekyll front-matter
     RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
-    
-    # Assumes, the release has already been created by travis github releases provider
     RELEASE_NAME="PMD ${VERSION} ($(date -u +%d-%B-%Y))"
-    RELEASE_BODY="$RENDERED_RELEASE_NOTES"
-    RELEASE_BODY="${RELEASE_BODY//'\'/\\\\}"
-    RELEASE_BODY="${RELEASE_BODY//$'\r'/}"
-    RELEASE_BODY="${RELEASE_BODY//$'\n'/\\r\\n}"
-    RELEASE_BODY="${RELEASE_BODY//'"'/\\\"}"
-    cat > release-edit-request.json <<EOF
-{
-  "name": "$RELEASE_NAME",
-  "body": "$RELEASE_BODY"
-}
-EOF
-    echo -e "\n\n"
-    log_info "Updating release at https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID}..."
-    
-    
-    RESPONSE=$(curl -i -s -H "Authorization: token ${GITHUB_OAUTH_TOKEN}" -H "Content-Type: application/json" --data "@release-edit-request.json" -X PATCH https://api.github.com/repos/pmd/pmd/releases/${RELEASE_ID})
-    if [[ "$RESPONSE" != *"HTTP/1.1 200"* ]]; then
-        log_error "Github Request failed!"
-        echo "Request:"
-        cat release-edit-request.json
-        echo
-        echo "Response:"
-        echo "$RESPONSE"
-    else
-        log_success "Update OK"
-    fi
-    
+    gh_release_updateRelease "$GH_RELEASE" "$RELEASE_NAME" "$RENDERED_RELEASE_NOTES"
+
     echo -e "\n\n"
     log_info "Adding the new doc to pmd.github.io..."
     # clone pmd.github.io. Note: This uses the ssh key setup earlier
