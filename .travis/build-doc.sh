@@ -98,58 +98,16 @@ if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
         git push origin master
     )
 
-
-    (
-        # disable fast fail, exit immediately, in this subshell
-        set +e
-
-        echo -e "\n\n"
-        log_info "Uploading the new release to pmd.sourceforge.net which serves as an archive..."
-    
-        .travis/travis_wait "rsync -ah --stats docs/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${VERSION}/"
-
-        if [ $? -ne 0 ]; then
-            log_error "Uploading documentation to pmd.sourceforge.net failed..."
-            log_error "Please upload manually (PMD Version: ${VERSION})"
-        else
-            log_success "The documentation is now available under http://pmd.sourceforge.net/pmd-${VERSION}/"
-        fi
-        true
-    )
+    sourceforge_rsyncSnapshotDocumentation "${VERSION}" "pmd-${VERSION}"
 fi
 
 
 # Deploy to sourceforge files
-(
-    # disable fast fail, exit immediately, in this subshell
-    set +e
-
-    if [[ "${TRAVIS_TAG}" != "" || "${VERSION}" == *-SNAPSHOT ]]; then
-        echo -e "\n\n"
-        log_info "Uploading pmd doc distribution to sourceforge..."
-        .travis/travis_wait "rsync -avh docs/pmd-doc-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/"
-        if [ $? -ne 0 ]; then
-            log_error "Couldn't upload docs/pmd-doc-${VERSION}.zip!"
-            log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
-        else
-            log_success "Successfully uploaded pmd-doc-${VERSION}.zip to sourceforge"
-        fi
-    fi
-
-    # rsync site to pmd.sourceforge.net/snapshot
-    if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
-        echo -e "\n\n"
-        log_info "Uploading snapshot site to pmd.sourceforge.net/snapshot..."
-        .travis/travis_wait "rsync -ah --stats --delete docs/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/"
-        if [ $? -ne 0 ]; then
-            log_error "Couldn't upload the snapshot documentation. It won't be current on http://pmd.sourceforge.net/snapshot/"
-        else
-            log_success "Successfully uploaded snapshot documentation: http://pmd.sourceforge.net/snapshot/"
-        fi
-    fi
-
-    true
-)
+sourceforge_uploadFile "${VERSION}" "docs/pmd-doc-${VERSION}.zip"
+# rsync site to https://pmd.sourceforge.io/snapshot
+if [[ "${VERSION}" == *-SNAPSHOT && "${TRAVIS_BRANCH}" == "master" ]]; then
+    sourceforge_rsyncSnapshotDocumentation "${VERSION}" "snapshot"
+fi
 
 
 

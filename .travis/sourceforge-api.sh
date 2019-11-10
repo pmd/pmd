@@ -131,3 +131,36 @@ function sourceforge_selectDefault() {
     # restore errexit state
     eval "$errexitstate"
 }
+
+#
+# Rsyncs the complete documentation to sourceforge.
+#
+# Note: This function always succeeds, even if the upload fails.
+# In that case, just a error logging is provided.
+#
+function sourceforge_rsyncSnapshotDocumentation() {
+    local pmdVersion="$1"
+    local targetPath="$2"
+
+    log_debug "$FUNCNAME pmdVersion=$pmdVersion targetPath=$targetPath"
+    local targetUrl="https://pmd.sourceforge.io/${targetPath}/"
+
+    local errexitstate="$(shopt -po errexit)"
+    set +e # disable errexit
+    (
+        # This handler is called if any command fails
+        function upload_failed() {
+            log_error "Couldn't upload the documentation. It won't be current on ${targetUrl}"
+        }
+
+        # exit subshell after trap
+        set -e
+        trap upload_failed ERR
+
+        log_info "Uploading documentation to ${targetUrl}..."
+        .travis/travis_wait "rsync -ah --stats --delete docs/pmd-doc-${VERSION}/ ${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/snapshot/"
+        log_success "Successfully uploaded documentation: ${targetUrl}"
+    )
+    # restore errexit state
+    eval "$errexitstate"
+}

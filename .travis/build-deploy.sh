@@ -51,7 +51,6 @@ elif travis_isPush; then
         # Deploy to sourceforge files
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
-        sourceforge_selectDefault "${VERSION}"
 
         regression-tester_uploadBaseline
 
