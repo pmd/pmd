@@ -1,4 +1,10 @@
-
+#
+# The functions here require the following scripts:
+# .travis/logger.sh
+#
+# The functions here require the following environment variables:
+# GITHUB_OAUTH_TOKEN
+#
 
 #
 # Creates a new release on github with the given tag and target_commit.

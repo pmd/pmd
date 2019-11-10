@@ -4,6 +4,7 @@ set -e
 source .travis/logger.sh
 source .travis/common-functions.sh
 source .travis/github-releases-api.sh
+source .travis/sourceforge-api.sh
 
 function upload_baseline() {
     log_info "Generating and uploading baseline for pmdtester..."
@@ -64,39 +65,27 @@ elif travis_isPush; then
         gh_releases_createDraftRelease "${TRAVIS_TAG}" "$(git show-ref --hash HEAD)"
         GH_RELEASE="$RESULT"
 
+        # Build and deploy to ossrh / maven-central
         ./mvnw deploy -Possrh,sign,pmd-release $MVN_BUILD_FLAGS
         echo -e "\n\n"
-
-        # Deploy to ossrh has already been done with the usual maven build
 
         # Deploy to github releases
         gh_release_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-bin-${VERSION}.zip"
         gh_release_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-src-${VERSION}.zip"
 
-
         # Deploy to sourceforge files
-        (
-            # disable fast fail, exit immediately, in this subshell
-            set +e
-
-            echo -e "\n\n"
-            log_info "Uploading pmd distribution to sourceforge..."
-            .travis/travis_wait "rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/"
-            if [ $? -ne 0 ]; then
-                log_error "Error while uploading pmd-*-${VERSION}.zip to sourceforge!"
-                log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
-                exit 1
-            else
-                log_success "Successfully uploaded pmd-*-${VERSION}.zip to sourceforge"
-            fi
-
-            true
-        )
-
+        sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
+        sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
+        sourceforge_selectDefault "${VERSION}"
 
     elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         log_info "This is a snapshot build"
         ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS
+        
+        # Deploy to sourceforge files
+        sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
+        sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
+
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
         log_info "This is some other build, probably during release: commit with a non-snapshot version on branch master..."
@@ -104,57 +93,6 @@ elif travis_isPush; then
         # we stop here - no need to execute further steps
         exit 0
     fi
-
-    # Deploy to sourceforge files
-    (
-        # disable fast fail, exit immediately, in this subshell
-        set +e
-
-        echo -e "\n\n"
-        log_info "Uploading pmd distribution to sourceforge..."
-        .travis/travis_wait "rsync -avh pmd-dist/target/pmd-*-${VERSION}.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/"
-        if [ $? -ne 0 ]; then
-            log_error "Error while uploading pmd-*-${VERSION}.zip to sourceforge!"
-            log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
-            exit 1
-        else
-            log_success "Successfully uploaded pmd-*-${VERSION}.zip to sourceforge"
-        fi
-
-        if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
-            # Since this is a release, making the binary the new default file...
-            log_info "Selecting pmd-bin-${VERSION} as default on sourceforge.net..."
-            curl -H "Accept: application/json" -X PUT -d "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others" \
-                 -d "api_key=${PMD_SF_APIKEY}" https://sourceforge.net/projects/pmd/files/pmd/${VERSION}/pmd-bin-${VERSION}.zip
-            if [ $? -ne 0 ]; then
-                log_error "Couldn't select latest binary as default on sourceforge.net"
-            else
-                log_info "pmd-bin-${VERSION} is now the default download option."
-            fi
-        fi
-    )
-    (   # UPLOAD RELEASE NOTES TO SOURCEFORGE
-
-        # This handler is called if any command fails
-        function release_notes_fail() {
-            log_error "Error while uploading release_notes.md as ReadMe.md to sourceforge!"
-            log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd/"
-        }
-
-        # exit subshell after trap
-        set -e
-        trap release_notes_fail ERR
-
-        RELEASE_NOTES_TMP=$(mktemp -t)
-
-        bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6 > "$RELEASE_NOTES_TMP"
-
-        rsync -avh "$RELEASE_NOTES_TMP" ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd/${VERSION}/ReadMe.md
-
-        log_success "Successfully uploaded release_notes.md as ReadMe.md to sourceforge"
-
-    )
-
 
     (
         # disable fast fail, exit immediately, in this subshell

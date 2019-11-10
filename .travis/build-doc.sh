@@ -4,6 +4,7 @@ set -e
 source .travis/logger.sh
 source .travis/common-functions.sh
 source .travis/github-releases-api.sh
+source .travis/sourceforge-api.sh
 
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 log_info "Building PMD Documentation ${VERSION} on branch ${TRAVIS_BRANCH}"
@@ -53,6 +54,7 @@ if [[ "${VERSION}" != *-SNAPSHOT && "${TRAVIS_TAG}" != "" ]]; then
     RENDERED_RELEASE_NOTES=$(bundle exec .travis/render_release_notes.rb docs/pages/release_notes.md | tail -n +6)
     RELEASE_NAME="PMD ${VERSION} ($(date -u +%d-%B-%Y))"
     gh_release_updateRelease "$GH_RELEASE" "$RELEASE_NAME" "$RENDERED_RELEASE_NOTES"
+    sourceforge_uploadReleaseNotes "${VERSION}" "${RENDERED_RELEASE_NOTES}"
 
     echo -e "\n\n"
     log_info "Adding the new doc to pmd.github.io..."
