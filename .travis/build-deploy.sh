@@ -5,24 +5,7 @@ source .travis/logger.sh
 source .travis/common-functions.sh
 source .travis/github-releases-api.sh
 source .travis/sourceforge-api.sh
-
-function upload_baseline() {
-    log_info "Generating and uploading baseline for pmdtester..."
-    cd ..
-    bundle config --local gemfile pmd/Gemfile
-    pmd/.travis/travis_wait "bundle exec pmdtester -m single -r ./pmd -p ${TRAVIS_BRANCH} -pc ./pmd/.travis/all-java.xml -l ./pmd/.travis/project-list.xml -f"
-    cd target/reports
-    BRANCH_FILENAME="${TRAVIS_BRANCH/\//_}"
-    zip -q -r ${BRANCH_FILENAME}-baseline.zip ${BRANCH_FILENAME}/
-    ../../pmd/.travis/travis_wait "rsync -avh ${BRANCH_FILENAME}-baseline.zip ${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
-    if [ $? -ne 0 ]; then
-        log_error "Error while uploading ${BRANCH_FILENAME}-baseline.zip to sourceforge!"
-        log_error "Please upload manually: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/"
-        exit 1
-    else
-        log_success "Successfully uploaded ${BRANCH_FILENAME}-baseline.zip to sourceforge"
-    fi
-}
+source .travis/regression-tester.sh
 
 VERSION=$(./mvnw -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:1.5.0:exec)
 log_info "Building PMD ${VERSION} on branch ${TRAVIS_BRANCH}"
@@ -43,16 +26,8 @@ elif travis_isPullRequest; then
 
     log_info "This is a pull-request build"
     ./mvnw verify $MVN_BUILD_FLAGS
-	(
-            set +e
-            # Create a corresponding remote branch locally
-            if ! git show-ref --verify --quiet refs/heads/${TRAVIS_BRANCH}; then
-                git fetch --no-tags origin +refs/heads/${TRAVIS_BRANCH}:refs/remotes/origin/${TRAVIS_BRANCH}
-                git branch ${TRAVIS_BRANCH} origin/${TRAVIS_BRANCH}
-            fi
-            log_info "Running danger"
-            bundle exec danger --verbose
-	)
+
+    regression-tester_executeDanger
 
 elif travis_isPush; then
 
@@ -78,6 +53,8 @@ elif travis_isPush; then
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
         sourceforge_selectDefault "${VERSION}"
 
+        regression-tester_uploadBaseline
+
     elif [[ "${VERSION}" == *-SNAPSHOT ]]; then
         log_info "This is a snapshot build"
         ./mvnw deploy -Possrh,sign $MVN_BUILD_FLAGS
@@ -86,6 +63,8 @@ elif travis_isPush; then
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-bin-${VERSION}.zip"
         sourceforge_uploadFile "${VERSION}" "pmd-dist/target/pmd-src-${VERSION}.zip"
 
+        regression-tester_uploadBaseline
+
     else
         # other build. Can happen during release: the commit with a non snapshot version is built, but not from the tag.
         log_info "This is some other build, probably during release: commit with a non-snapshot version on branch master..."
@@ -93,13 +72,6 @@ elif travis_isPush; then
         # we stop here - no need to execute further steps
         exit 0
     fi
-
-    (
-        # disable fast fail, exit immediately, in this subshell
-        set +e
-
-        upload_baseline
-    )
 
 else
     log_info "This is neither a pull request nor a push. Not executing any build."
