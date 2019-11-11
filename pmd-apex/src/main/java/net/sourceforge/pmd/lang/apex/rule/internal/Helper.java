@@ -2,12 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.rule.security;
+package net.sourceforge.pmd.lang.apex.rule.internal;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -41,17 +42,16 @@ import apex.jorje.semantic.ast.statement.VariableDeclaration;
  * 
  * @author sergey.gorbaty
  *
- * @deprecated Use {@link net.sourceforge.pmd.lang.apex.rule.internal.Helper} instead.
  */
-@Deprecated
+@InternalApi
 public final class Helper {
-    static final String ANY_METHOD = "*";
+    public static final String ANY_METHOD = "*";
 
     private Helper() {
         throw new AssertionError("Can't instantiate helper classes");
     }
 
-    static boolean isTestMethodOrClass(final ApexNode<?> node) {
+    public static boolean isTestMethodOrClass(final ApexNode<?> node) {
         final List<ASTModifierNode> modifierNode = node.findChildrenOfType(ASTModifierNode.class);
         for (final ASTModifierNode m : modifierNode) {
             if (m.isTest()) {
@@ -63,7 +63,7 @@ public final class Helper {
         return className.endsWith("Test");
     }
 
-    static boolean foundAnySOQLorSOSL(final ApexNode<?> node) {
+    public static boolean foundAnySOQLorSOSL(final ApexNode<?> node) {
         final List<ASTSoqlExpression> dmlSoqlExpression = node.findDescendantsOfType(ASTSoqlExpression.class);
         final List<ASTSoslExpression> dmlSoslExpression = node.findDescendantsOfType(ASTSoslExpression.class);
 
@@ -77,7 +77,7 @@ public final class Helper {
      * 
      * @return true if found DML operations in node descendants
      */
-    static boolean foundAnyDML(final ApexNode<?> node) {
+    public static boolean foundAnyDML(final ApexNode<?> node) {
 
         final List<ASTDmlUpsertStatement> dmlUpsertStatement = node.findDescendantsOfType(ASTDmlUpsertStatement.class);
         final List<ASTDmlUpdateStatement> dmlUpdateStatement = node.findDescendantsOfType(ASTDmlUpdateStatement.class);
@@ -91,7 +91,7 @@ public final class Helper {
                 || !dmlMergeStatement.isEmpty() || !dmlInsertStatement.isEmpty() || !dmlDeleteStatement.isEmpty();
     }
 
-    static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
+    public static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
             final String methodName) {
         final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
 
@@ -100,7 +100,7 @@ public final class Helper {
                 && (methodName.equals(ANY_METHOD) || isMethodName(methodNode, methodName));
     }
 
-    static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {
+    public static boolean isMethodName(final ASTMethodCallExpression m, final String methodName) {
         return isMethodName(m.getNode(), methodName);
     }
 
@@ -108,7 +108,7 @@ public final class Helper {
         return m.getMethodName().equalsIgnoreCase(methodName);
     }
 
-    static boolean isMethodCallChain(final ASTMethodCallExpression methodNode, final String... methodNames) {
+    public static boolean isMethodCallChain(final ASTMethodCallExpression methodNode, final String... methodNames) {
         String methodName = methodNames[methodNames.length - 1];
         if (Helper.isMethodName(methodNode, methodName)) {
             final ASTReferenceExpression reference = methodNode.getFirstChildOfType(ASTReferenceExpression.class);
@@ -130,7 +130,7 @@ public final class Helper {
         return false;
     }
 
-    static String getFQVariableName(final ASTVariableExpression variable) {
+    public static String getFQVariableName(final ASTVariableExpression variable) {
         final ASTReferenceExpression ref = variable.getFirstChildOfType(ASTReferenceExpression.class);
         String objectName = "";
         if (ref != null) {
@@ -145,14 +145,14 @@ public final class Helper {
         return sb.toString();
     }
 
-    static String getFQVariableName(final ASTVariableDeclaration variable) {
+    public static String getFQVariableName(final ASTVariableDeclaration variable) {
         VariableDeclaration n = variable.getNode();
         StringBuilder sb = new StringBuilder().append(n.getDefiningType().getApexName()).append(":")
                 .append(n.getLocalInfo().getName());
         return sb.toString();
     }
 
-    static String getFQVariableName(final ASTField variable) {
+    public static String getFQVariableName(final ASTField variable) {
         Field n = variable.getNode();
         StringBuilder sb = new StringBuilder()
                 .append(n.getDefiningType().getApexName()).append(":")
@@ -167,21 +167,21 @@ public final class Helper {
         return sb.toString();
     }
     
-    static String getFQVariableName(final ASTFieldDeclaration variable) {
+    public static String getFQVariableName(final ASTFieldDeclaration variable) {
         StringBuilder sb = new StringBuilder()
                 .append(variable.getNode().getDefiningType().getApexName()).append(":")
                 .append(variable.getImage());
         return sb.toString();
     }
 
-    static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
+    public static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
         StringBuilder sb = new StringBuilder()
                 .append(variable.getNode().getDefiningType().getApexName()).append(":")
                 .append(variable.getType());
         return sb.toString();
     }
 
-    static boolean isSystemLevelClass(ASTUserClass node) {
+    public static boolean isSystemLevelClass(ASTUserClass node) {
         List<TypeRef> interfaces = node.getNode().getDefiningType().getCodeUnitDetails().getInterfaceTypeRefs();
 
         for (TypeRef intObject : interfaces) {
@@ -221,7 +221,7 @@ public final class Helper {
         return sb.toString();
     }
 
-    static String getFQVariableName(ASTParameter p) {
+    public static String getFQVariableName(ASTParameter p) {
         StringBuffer sb = new StringBuffer();
         sb.append(p.getNode().getDefiningType()).append(":").append(p.getImage());
         return sb.toString();
