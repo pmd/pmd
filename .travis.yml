@@ -27,10 +27,12 @@ matrix:
       os: linux
       dist: bionic
       env: BUILD=sonar
+      if: "type = push && repo = pmd/pmd && fork = false"
     - name: "linux - run coveralls"
       os: linux
       dist: bionic
       env: BUILD=coveralls
+      if: "type = push && repo = pmd/pmd && fork = false"
     - name: "macosx - mvn verify"
       os: osx
       env: BUILD=deploy
