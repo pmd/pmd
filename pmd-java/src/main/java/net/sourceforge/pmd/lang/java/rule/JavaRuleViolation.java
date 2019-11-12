@@ -101,6 +101,11 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
     private void setClassNameFrom(JavaNode node) {
         String qualifiedName = null;
+
+        if (node.getScope() instanceof ClassScope) {
+            qualifiedName = ((ClassScope) node.getScope()).getClassName();
+        }
+
         for (AbstractAnyTypeDeclaration parent : node.getParentsOfType(AbstractAnyTypeDeclaration.class)) {
             String clsName = parent.getScope().getEnclosingScope(ClassScope.class).getClassName();
             if (qualifiedName == null) {

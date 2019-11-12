@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -129,5 +131,21 @@ public class JavaRuleViolationTest {
         JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
+    }
+
+    /**
+     * Test that the name of the inner class is taken correctly.
+     */
+    @Test
+    public void testInnerClass() {
+        ASTCompilationUnit ast = parse("class Foo { class Bar { } }");
+        List<ASTClassOrInterfaceDeclaration> classes = ast.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
+        assertEquals(2, classes.size());
+
+        JavaRuleViolation fooViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(0), null);
+        assertEquals("Foo", fooViolation.getClassName());
+        
+        JavaRuleViolation barViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(1), null);
+        assertEquals("Foo$Bar", barViolation.getClassName());
     }
 }
