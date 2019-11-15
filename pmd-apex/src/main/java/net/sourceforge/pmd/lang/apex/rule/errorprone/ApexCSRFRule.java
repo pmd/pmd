@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
+import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
@@ -18,6 +19,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  */
 public class ApexCSRFRule extends AbstractApexRule {
     public static final String INIT = "init";
+    private static final String STATIC_INITIALIZER = "<clinit>";
 
     public ApexCSRFRule() {
         setProperty(CODECLIMATE_CATEGORIES, "Security");
@@ -42,6 +44,17 @@ public class ApexCSRFRule extends AbstractApexRule {
         return data;
     }
 
+    @Override
+    public Object visit(ASTBlockStatement node, Object data) {
+        if (node.jjtGetParent() instanceof ASTUserClass) {
+            // initializer block
+            if (Helper.foundAnyDML(node)) {
+                addViolation(data, node);
+            }
+        }
+        return data;
+    }
+
     /**
      * @param node
      * @param data
@@ -55,7 +68,7 @@ public class ApexCSRFRule extends AbstractApexRule {
         }
 
         String name = node.getImage();
-        if (name.equalsIgnoreCase(INIT)) {
+        if (INIT.equalsIgnoreCase(name) || STATIC_INITIALIZER.equals(name)) {
             if (Helper.foundAnyDML(node)) {
                 addViolation(data, node);
             }
