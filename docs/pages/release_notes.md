@@ -23,6 +23,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java
     *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
     *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
+*   java-codestyle
+    *   [#2029](https://github.com/pmd/pmd/issues/2029): \[java] UnnecessaryFullyQualifiedName false-positive for non-static nested classes
 
 ### API Changes
 
