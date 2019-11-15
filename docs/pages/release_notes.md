@@ -23,6 +23,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java
     *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
     *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
+*   java-design
+    *   [#2075](https://github.com/pmd/pmd/issues/2075): \[java] ImmutableField false positive with inner class
 
 ### API Changes
 
