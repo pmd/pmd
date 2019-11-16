@@ -20,8 +20,7 @@ Just for test
 
     <!-- variant 1 of a renamed rule. This is definitively within the same ruleset. -->
     <rule deprecated="true" name="OldNameOfDummyBasicMockRule" ref="DummyBasicMockRule"/>
-    <!-- variant 2 of a renamed and/or moved rule. This could also keep the rule name but
-         move the rule into a different rule or do any combination of both -->
+    <!-- variant 2 of a renamed rule. This explicitly mentions the new ruleset which happens to be this (the same) ruleset. -->
     <rule deprecated="true" name="OldNameOfDummyBasicMockRule2" ref="rulesets/dummy/basic.xml/DummyBasicMockRule"/>
 
     <rule name="SampleXPathRule" language="dummy" since="1.1" message="Test Rule 2" class="net.sourceforge.pmd.lang.rule.XPathRule"
