@@ -285,6 +285,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
                                 <version>${ant.version}</version>
                             </additionalDependency>
                         </additionalDependencies>
+                        <detectOfflineLinks>false</detectOfflineLinks>
                     </configuration>
                 </plugin>
                 <plugin>
