@@ -13,7 +13,7 @@
         <fileSet>
             <useDefaultExcludes>false</useDefaultExcludes>
             <directory>${project.basedir}/..</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory></outputDirectory>
             <excludes>
                 <exclude>.git/**</exclude>
                 <exclude>**/target/**</exclude>
