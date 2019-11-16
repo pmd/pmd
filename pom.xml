@@ -95,7 +95,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
         <checkstyle.version>3.0.0</checkstyle.version>
         <pmd.plugin.version>3.12.0</pmd.plugin.version>
         <ant.version>1.10.1</ant.version>
-        <javadoc.plugin.version>3.0.1</javadoc.plugin.version>
+        <javadoc.plugin.version>3.1.1</javadoc.plugin.version>
         <antlr.version>4.7</antlr.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
