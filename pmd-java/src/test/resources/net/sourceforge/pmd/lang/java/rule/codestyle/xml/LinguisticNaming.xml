@@ -576,4 +576,13 @@ public class Bar extends Foo {
 }
         ]]></code>
     </test-code>
+    <!--test-code>
+        <description>Predicates are treated like booleans</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class ClassWithPredicates {
+    public Predicate<String> isNotEmpty = string -> !string.isEmpty();
+}
+        ]]></code>
+    </test-code-->
 </test-data>
