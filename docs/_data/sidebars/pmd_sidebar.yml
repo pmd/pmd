@@ -337,6 +337,9 @@ entries:
     - title: Pmdtester
       url: /pmd_devdocs_pmdtester.html
       output: web, pdf
+    - title: Rule Deprecation Policy
+      url: /pmd_devdocs_rule_deprecation_policy.html
+      output: web, pdf
     - title: null
       output: web, pdf
       subfolders:
