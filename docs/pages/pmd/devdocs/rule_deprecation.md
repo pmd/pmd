@@ -1,13 +1,11 @@
 ---
 title: Rule deprecation policy
-tags: [extending, userdocs]
+tags: [devdocs]
 summary: Describes when and how rules are deprecated
 last_updated: November 15, 2019
-permalink: pmd_userdocs_extending_rule_deprecation_policy.html
+permalink: pmd_devdocs_rule_deprecation_policy.html
 author: Andreas Dangel
 ---
-
-# Rule Deprecation Policy
 
 When improving PMD over time, some rules might become obsolete. This could be because the underlying
 technology a specific rule is checking (such as a specific JVM version) is not relevant anymore or a rule
