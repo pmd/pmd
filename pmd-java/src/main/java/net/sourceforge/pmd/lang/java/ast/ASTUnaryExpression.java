@@ -18,17 +18,13 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public interface ASTUnaryExpression extends ASTExpression {
 
-    /**
-     * Returns the expression nested within this expression.
-     */
+    /** Returns the expression nested within this expression. */
     default ASTExpression getOperand() {
         return (ASTExpression) jjtGetChild(0);
     }
 
 
-    /**
-     * Returns the constant representing the operator.
-     */
+    /** Returns the constant representing the operator. */
     UnaryOp getOperator();
 
 

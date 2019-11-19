@@ -110,11 +110,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private static final Map<String, Class<?>> PRIMITIVE_TYPES;
     private static final Map<String, String> JAVA_LANG;
-    private final PMDASMClassLoader pmdClassLoader;
     private Map<String, JavaTypeDefinition> staticFieldImageToTypeDef;
     private Map<String, List<JavaTypeDefinition>> staticNamesToClasses;
     private List<JavaTypeDefinition> importOnDemandStaticClasses;
     private ASTCompilationUnit currentAcu;
+
+    private final PMDASMClassLoader pmdClassLoader;
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
 
@@ -369,8 +370,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // TODO: remove this if branch, it's only purpose is to make JUnitAssertionsShouldIncludeMessage's tests pass
         //       as the code is not compiled there and symbol table works on uncompiled code
         if (node.getNameDeclaration() != null
-            && previousType == null // if it's not null, then let other code handle things
-            && node.getNameDeclaration().getNode() instanceof TypeNode) {
+                && previousType == null // if it's not null, then let other code handle things
+                && node.getNameDeclaration().getNode() instanceof TypeNode) {
             // Carry over the type (including generics) from the declaration
             JavaTypeDefinition nodeType = ((TypeNode) node.getNameDeclaration().getNode()).getTypeDefinition();
             if (nodeType != null) {
@@ -470,7 +471,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         Node prefix = node.jjtGetParent();
 
         if (prefix instanceof ASTPrimaryPrefix
-            && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
+                && prefix.jjtGetParent().jjtGetNumChildren() >= 2) {
             return prefix.jjtGetParent().jjtGetChild(1).getFirstChildOfType(ASTArguments.class);
         }
 
@@ -488,8 +489,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @return JavaTypeDefinition of the resolved field or null if it could not be found.
      */
-    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?>
-        accessingClass) {
+    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?> accessingClass) {
         while (typeToSearch != null && typeToSearch.getType() != Object.class) {
             try {
                 final Field field = typeToSearch.getType().getDeclaredField(fieldImage);
@@ -501,7 +501,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             } catch (final LinkageError e) {
                 if (LOG.isLoggable(Level.WARNING)) {
                     String message = "Error during type resolution of field '" + fieldImage + "' in "
-                        + typeToSearch.getType() + " due to: " + e;
+                            + typeToSearch.getType() + " due to: " + e;
                     LOG.log(Level.WARNING, message);
                 }
                 // TODO : report a missing class once we start doing that...
@@ -525,8 +525,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @return Type def. of the field, or null if it could not be resolved.
      */
-    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
-        accessingClass) {
+    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?> accessingClass) {
         if (accessingClass == null) {
             return null;
         }
@@ -912,8 +911,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 return (TypeNode) node;
                 // anonymous class declaration
             } else if (node instanceof ASTAllocationExpression // is anonymous class declaration
-                && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant be anonymous
-                && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // array cant be anonymous
+                    && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
                 return (TypeNode) node;
             }
 
@@ -949,8 +948,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         Node previousNode = null;
         for (; node != null; previousNode = node, node = node.jjtGetParent()) {
             if (node instanceof ASTClassOrInterfaceDeclaration // class declaration
-                // is the class we are looking for or caller requested first class
-                && (((TypeNode) node).getType() == clazz || clazz == null)) {
+                    // is the class we are looking for or caller requested first class
+                    && (((TypeNode) node).getType() == clazz || clazz == null)) {
 
                 ASTExtendsList extendsList = node.getFirstChildOfType(ASTExtendsList.class);
 
@@ -962,9 +961,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // anonymous class declaration
 
             } else if (clazz == null // callers requested any class scope
-                && node instanceof ASTAllocationExpression // is anonymous class decl
-                && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // arrays can't be anonymous
-                && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
+                    && node instanceof ASTAllocationExpression // is anonymous class decl
+                    && node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null // arrays can't be anonymous
+                    && !(previousNode instanceof ASTArguments)) { // we might come out of the constructor
                 return node.getFirstChildOfType(ASTClassOrInterfaceType.class).getTypeDefinition();
             }
         }
@@ -1266,7 +1265,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     // Yeah, String is not numeric, but easiest place to handle
                     // it, only affects ASTAdditiveExpression
                     if (type1 != null && "java.lang.String".equals(type1.getName())
-                        || type2 != null && "java.lang.String".equals(type2.getName())) {
+                            || type2 != null && "java.lang.String".equals(type2.getName())) {
                         populateType(typeNode, "java.lang.String");
                     }
                 }
@@ -1302,7 +1301,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                     // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/1131)
                     if (LOG.isLoggable(Level.FINE)) {
                         LOG.log(Level.FINE, "Tried to load class " + qualifiedName + " from on demand import, "
-                            + "with an incomplete classpath.", e);
+                                + "with an incomplete classpath.", e);
                     }
                     return;
                 }
@@ -1311,7 +1310,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if (myType == null && qualifiedName != null && qualifiedName.contains(".")) {
             // try if the last part defines a inner class
             String qualifiedNameInner = qualifiedName.substring(0, qualifiedName.lastIndexOf('.')) + "$"
-                + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
+                    + qualifiedName.substring(qualifiedName.lastIndexOf('.') + 1);
             try {
                 myType = pmdClassLoader.loadClass(qualifiedNameInner);
             } catch (ClassNotFoundException ignored) {
@@ -1320,7 +1319,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 // we found the class, but there is a problem with it (see https://github.com/pmd/pmd/issues/1131)
                 if (LOG.isLoggable(Level.FINE)) {
                     LOG.log(Level.FINE, "Tried to load class " + qualifiedNameInner + " from on demand import, "
-                        + "with an incomplete classpath.", e);
+                            + "with an incomplete classpath.", e);
                 }
                 return;
             }
@@ -1356,8 +1355,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             if (parent instanceof ASTTypeParameters) { // if type parameter defined in the same < >
                 typeParameters = (ASTTypeParameters) parent;
             } else if (parent instanceof ASTConstructorDeclaration
-                || parent instanceof ASTMethodDeclaration
-                || parent instanceof ASTClassOrInterfaceDeclaration) {
+                    || parent instanceof ASTMethodDeclaration
+                    || parent instanceof ASTClassOrInterfaceDeclaration) {
                 typeParameters = parent.getFirstChildOfType(ASTTypeParameters.class);
             }
 
@@ -1397,7 +1396,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         } catch (LinkageError e2) {
             if (LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, "Tried to load class " + fullyQualifiedClassName + " from on demand import, "
-                    + "with an incomplete classpath.", e2);
+                        + "with an incomplete classpath.", e2);
             }
             return null;
         }
@@ -1413,7 +1412,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             } catch (LinkageError e) {
                 if (LOG.isLoggable(Level.FINE)) {
                     LOG.log(Level.FINE, "Tried to load class " + fullClassName + " from on demand import, "
-                        + "with an incomplete classpath.", e);
+                            + "with an incomplete classpath.", e);
                 }
             }
         }
