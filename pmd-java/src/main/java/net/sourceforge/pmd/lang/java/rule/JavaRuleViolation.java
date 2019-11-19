@@ -64,7 +64,8 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
     @Nullable
     private static String getClassName(JavaNode node) {
-        ASTAnyTypeDeclaration enclosing = node.getEnclosingType();
+        ASTAnyTypeDeclaration enclosing = node instanceof ASTAnyTypeDeclaration ? (ASTAnyTypeDeclaration) node
+                                                                                : node.getEnclosingType();
 
         if (enclosing == null) {
             List<ASTAnyTypeDeclaration> tds = node.getRoot().getTypeDeclarations();

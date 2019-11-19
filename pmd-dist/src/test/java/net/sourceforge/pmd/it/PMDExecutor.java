@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +37,10 @@ public class PMDExecutor {
 
     private static ExecutionResult runPMDUnix(Path tempDir, Path reportFile, String ... arguments) throws Exception {
         String cmd = tempDir.resolve(PMD_BIN_PREFIX + PMDVersion.VERSION + "/bin/run.sh").toAbsolutePath().toString();
-        return runPMD(cmd, Arrays.asList(arguments), reportFile);
+        List<String> args = new ArrayList<>();
+        args.add("pmd");
+        args.addAll(Arrays.asList(arguments));
+        return runPMD(cmd, args, reportFile);
     }
 
     private static ExecutionResult runPMDWindows(Path tempDir, Path reportFile, String ... arguments) throws Exception {
@@ -45,7 +49,7 @@ public class PMDExecutor {
     }
 
     private static ExecutionResult runPMD(String cmd, List<String> arguments, Path reportFile) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder(cmd, "pmd");
+        ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.command().addAll(arguments);
         pb.redirectErrorStream(false);
         final Process process = pb.start();
