@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.PMD;
@@ -30,7 +29,6 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder();
 
         while (violations.hasNext()) {
@@ -45,7 +43,6 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         
         for (Report.ProcessingError error : errors) {

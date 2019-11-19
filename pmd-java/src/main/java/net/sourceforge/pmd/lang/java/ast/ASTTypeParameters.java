@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -36,6 +38,13 @@ public final class ASTTypeParameters extends AbstractJavaNode implements Iterabl
     @Override
     public <T> void jjtAccept(SideEffectingVisitor<T> visitor, T data) {
         visitor.visit(this, data);
+    }
+
+
+    // quite sloppy but safe at runtime
+    @SuppressWarnings("unchecked")
+    public List<ASTTypeParameter> asList() {
+        return (List<ASTTypeParameter>) (Object) Arrays.asList(children);
     }
 
 

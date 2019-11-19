@@ -21,6 +21,12 @@
                     <include>**/testdata/**/*.java</include>
                 </includes>
             </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/kotlin</directory>
+                <includes>
+                    <include>**/testdata/**/*.java</include>
+                </includes>
+            </testResource>
         </testResources>
         <resources>
             <resource>
@@ -154,6 +160,18 @@
             <artifactId>slf4j-api</artifactId>
             <scope>test</scope>
         </dependency>
+	   <dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-api</artifactId>
+		<version>2.12.1</version>
+		<scope>test</scope>
+	  </dependency>
+	  <dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-core</artifactId>
+		<version>2.12.1</version>
+		<scope>test</scope>
+	  </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

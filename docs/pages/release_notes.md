@@ -21,26 +21,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### Fixed Issues
 
-*   java-codestyle
-    *    [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
+*   apex
+    *   [#2092](https://github.com/pmd/pmd/issues/2092): \[apex] ApexLexer logs visible when Apex is the selected language upon starting the designer
+*   core
+    *   [#2096](https://github.com/pmd/pmd/issues/2096): \[core] Referencing category errorprone.xml produces deprecation warnings for InvalidSlf4jMessageFormat
+*   java
+    *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
+    *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
 
 ### API Changes
 
-
-#### Deprecated APIs
-
-##### For removal
-
-* pmd-java
-  * {% jdoc java::lang.java.ast.CanSuppressWarnings %} and its implementations
-  * {% jdoc java::lang.java.rule.AbstractJavaRule#isSuppressed(Node) %}
-  * {% jdoc java::lang.java.rule.JavaRuleViolation#isSupressed(Node,Rule) %}
-* pmd-apex
-  * {% jdoc java::lang.apex.ast.CanSuppressWarnings %} and its implementations
-  * {% jdoc java::lang.apex.rule.ApexRuleViolation#isSupressed(Node,Rule) %}
-
-
 ### External Contributions
+
+*   [#2088](https://github.com/pmd/pmd/pull/2088): \[java] Add more version shortcuts for older java - [Henning Schmiedehausen](https://github.com/hgschmie)
+*   [#2089](https://github.com/pmd/pmd/pull/2089): \[core] Minor unrelated improvements to code - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
+*   [#2091](https://github.com/pmd/pmd/pull/2091): \[core] Fix pmd warnings (IdenticalCatchCases) - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
+*   [#2106](https://github.com/pmd/pmd/pull/2106): \[java] Wrong name for inner classes - [Andi Pabst](https://github.com/andipabst)
 
 {% endtocmaker %}
 

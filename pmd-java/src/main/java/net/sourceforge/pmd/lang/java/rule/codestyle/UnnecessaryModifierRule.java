@@ -69,7 +69,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
     private String getNodeName(Node node) {
         // constructors are differentiated by their parameters, while we only use method name for methods
         if (node instanceof ASTMethodDeclaration) {
-            return ((ASTMethodDeclaration) node).getMethodName();
+            return ((ASTMethodDeclaration) node).getName();
         } else if (node instanceof ASTMethodOrConstructorDeclaration) {
             // constructors are differentiated by their parameters, while we only use method name for methods
             return ((ASTConstructorDeclaration) node).getQualifiedName().getOperation();
@@ -235,19 +235,6 @@ public class UnnecessaryModifierRule extends AbstractJavaRule {
             unnecessary.add(Modifier.FINAL);
         }
 
-        checkDeclarationInInterfaceType(data, node, unnecessary);
-        return data;
-    }
-
-    @Override
-    public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
-        Set<Modifier> unnecessary = EnumSet.noneOf(Modifier.class);
-        if (node.isPublic()) {
-            unnecessary.add(Modifier.PUBLIC);
-        }
-        if (node.isAbstract()) {
-            unnecessary.add(Modifier.ABSTRACT);
-        }
         checkDeclarationInInterfaceType(data, node, unnecessary);
         return data;
     }

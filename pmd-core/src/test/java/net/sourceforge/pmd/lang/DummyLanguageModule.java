@@ -11,20 +11,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jaxen.Navigator;
-
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
-
-import net.sf.saxon.sxpath.IndependentContext;
 
 /**
  * Dummy language used for testing PMD.
@@ -41,10 +38,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.2", new Handler(), false);
         addVersion("1.3", new Handler(), false);
         addVersion("1.4", new Handler(), false);
-        addVersion("1.5", new Handler(), false);
-        addVersion("1.6", new Handler(), false);
-        addVersion("1.7", new Handler(), true);
-        addVersion("1.8", new Handler(), false);
+        addVersions(new Handler(), false, "1.5", "5");
+        addVersions(new Handler(), false, "1.6", "6");
+        addVersions(new Handler(), true, "1.7", "7");
+        addVersions(new Handler(), false, "1.8", "8");
     }
 
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {
@@ -67,22 +64,9 @@ public class DummyLanguageModule extends BaseLanguageModule {
     }
 
     public static class Handler extends AbstractPmdLanguageVersionHandler {
-        @Override
-        public XPathHandler getXPathHandler() {
-            return new XPathHandler() {
-                @Override
-                public void initialize(IndependentContext context) {
-                }
 
-                @Override
-                public void initialize() {
-                }
-
-                @Override
-                public Navigator getNavigator() {
-                    return new DocumentNavigator();
-                }
-            };
+        public Handler() {
+            super(DummyAstStages.class);
         }
 
         @Override
@@ -90,12 +74,13 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new RuleViolationFactory();
         }
 
+
         @Override
         public Parser getParser(ParserOptions parserOptions) {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyNode(1);
+                    DummyNode node = new DummyRootNode(1);
                     node.testingOnlySetBeginLine(1);
                     node.testingOnlySetBeginColumn(1);
                     node.setImage("Foo");
@@ -108,16 +93,19 @@ public class DummyLanguageModule extends BaseLanguageModule {
                 }
 
                 @Override
-                public boolean canParse() {
-                    return true;
-                }
-
-                @Override
                 protected TokenManager createTokenManager(Reader source) {
                     return null;
                 }
             };
         }
+    }
+
+    private static class DummyRootNode extends DummyNode implements RootNode {
+
+        DummyRootNode(int id) {
+            super(id);
+        }
+
     }
 
     public static class RuleViolationFactory extends AbstractRuleViolationFactory {

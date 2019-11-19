@@ -13,3 +13,6 @@ bin/
 pmd-core/dependency-reduced-pom.xml
 .bundle
 vendor
+
+# rule docs are generated
+docs/pages/pmd/rules

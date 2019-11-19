@@ -72,17 +72,13 @@ public class RuleChain {
     private RuleChainVisitor getRuleChainVisitor(Language language) {
         RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
         if (visitor == null) {
-            if (language.getRuleChainVisitorClass() != null) {
-                try {
-                    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().getConstructor().newInstance();
-                } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
-                    throw new IllegalStateException(
-                            "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
-                }
-                languageToRuleChainVisitor.put(language, visitor);
-            } else {
-                throw new IllegalArgumentException("Language does not have a RuleChainVisitor: " + language);
+            try {
+                visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().getConstructor().newInstance();
+            } catch (ReflectiveOperationException | SecurityException | IllegalArgumentException e) {
+                throw new IllegalStateException(
+                        "Failure to created RuleChainVisitor: " + language.getRuleChainVisitorClass(), e);
             }
+            languageToRuleChainVisitor.put(language, visitor);
         }
         return visitor;
     }

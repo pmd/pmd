@@ -12,7 +12,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * @see UnaryOp
  * @see AssignmentOp
  */
-public enum BinaryOp {
+public enum BinaryOp implements InternalInterfaces.OperatorLike {
 
     // shortcut boolean ops
 
@@ -47,6 +47,8 @@ public enum BinaryOp {
     GT(">"),
     /** Lower-than {@code "<"} operator. */
     LT("<"),
+    /** Type test {@code "instanceof"} operator. */
+    INSTANCEOF("instanceof"),
 
     // shift
 
@@ -82,6 +84,11 @@ public enum BinaryOp {
     }
 
 
+    @Override
+    public String getToken() {
+        return code;
+    }
+
     /**
      * Returns true if this is an equality operator, ie one of
      * {@link #EQ}, or {@link #NE}.
@@ -98,7 +105,7 @@ public enum BinaryOp {
 
     /**
      * Returns true if this is a relational operator, ie one of
-     * {@link #LE}, {@link #GE}, {@link #GT}, or {@link #LT}.
+     * {@link #LE}, {@link #GE}, {@link #GT}, {@link #LT}, or {@link #INSTANCEOF}.
      */
     public boolean isRelational() {
         switch (this) {
@@ -106,6 +113,7 @@ public enum BinaryOp {
         case GE:
         case GT:
         case LT:
+        case INSTANCEOF:
             return true;
         default:
             return false;

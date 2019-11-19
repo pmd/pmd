@@ -4,19 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
 
 /**
  * A field access expression.
  *
  * <pre class="grammar">
  *
- * FieldAccess ::=  {@link ASTPrimaryExpression PrimaryExpression} "." &lt;IDENTIFIER&gt;
- *               |  {@link ASTClassOrInterfaceType TypeName} "." &lt;IDENTIFIER&gt;
- *               |  {@link ASTAmbiguousName AmbiguousName} "." &lt;IDENTIFIER&gt;
+ * FieldAccess ::= {@link ASTExpression Expression} "." &lt;IDENTIFIER&gt;
+ *
  * </pre>
  */
-public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssignableExpr, QualifierOwner, LeftRecursiveNode {
     ASTFieldAccess(int id) {
         super(id);
     }
@@ -36,21 +35,8 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTAssigna
         this.setImage(fieldName);
     }
 
-    /**
-     * Returns the type to the left of the "." if it exists.
-     * That may be an {@linkplain ASTAmbiguousName ambiguous name}.
-     * May return empty if this call is not qualified (no "."),
-     * or if the qualifier is an expression instead of a type.
-     */
-    @Nullable
-    public ASTClassOrInterfaceType getLhsType() {
-        return AstImplUtil.getChildAs(this, 0, ASTClassOrInterfaceType.class);
-    }
 
-
-    /**
-     * Returns the name of the field.
-     */
+    /** Returns the name of the field. */
     public String getFieldName() {
         return getImage();
     }

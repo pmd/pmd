@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
 
 
@@ -89,6 +90,24 @@ public interface JavaNode extends ScopedNode {
 
     GenericToken jjtGetLastToken();
 
+
+    /**
+     * Returns the node representing the type declaration this node is
+     * found in. The type of that node is the type of the {@code this}
+     * expression.
+     *
+     * <p>This returns null for nodes that aren't enclosed in a type declaration.
+     * This includes {@linkplain ASTPackageDeclaration PackageDeclaration},
+     * This includes {@linkplain ASTImportDeclaration ImportDeclaration},
+     * {@linkplain ASTModuleDeclaration ModuleDeclaration},
+     * {@linkplain ASTCompilationUnit CompilationUnit}, and top-level
+     * {@linkplain ASTAnyTypeDeclaration AnyTypeDeclaration}s.
+     */
+    default ASTAnyTypeDeclaration getEnclosingType() {
+        return getFirstParentOfType(ASTAnyTypeDeclaration.class);
+    }
+
+
     /**
      * FIXME figure that out
      */
@@ -97,8 +116,16 @@ public interface JavaNode extends ScopedNode {
 
     /**
      * Returns the root of the file in which this node is declared.
+     *
      * @since PMD 7.0.0
      */
     ASTCompilationUnit getRoot();
 
+    /**
+     * Returns the symbol table for the program point represented by
+     * this node.
+     *
+     * TODO
+     */
+    JSymbolTable getSymbolTable();
 }

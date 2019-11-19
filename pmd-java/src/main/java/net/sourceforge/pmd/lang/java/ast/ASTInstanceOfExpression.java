@@ -5,20 +5,18 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a type test on an object. This has a precedence greater than {@link ASTEqualityExpression},
- * and lower than {@link ASTShiftExpression}. This has the same precedence as a {@link ASTRelationalExpression}.
- *
- * <p>Note that the children of this node are not necessarily {@link ASTRelationalExpression},
- * rather, they are expressions with an operator precedence greater or equal to RelationalExpression.
- *
+ * Represents a type test on an object.
  *
  * <pre class="grammar">
  *
- * InstanceOfExpression ::=  {@linkplain ASTRelationalExpression RelationalExpression} "instanceof" {@linkplain ASTType Type}
+ * InstanceOfExpression ::= {@linkplain ASTExpression Expression} "instanceof" {@linkplain ASTTypeExpression TypeExpression}
  *
  * </pre>
+ *
+ * @deprecated Replaced with {@link ASTInfixExpression}
  */
-public final class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpression {
+@Deprecated
+public class ASTInstanceOfExpression extends AbstractJavaExpr implements ASTExpression {
 
     ASTInstanceOfExpression(int id) {
         super(id);
@@ -29,6 +27,9 @@ public final class ASTInstanceOfExpression extends AbstractJavaExpr implements A
         super(p, id);
     }
 
+    public BinaryOp getOperator() {
+        return BinaryOp.INSTANCEOF;
+    }
 
     @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
@@ -41,12 +42,13 @@ public final class ASTInstanceOfExpression extends AbstractJavaExpr implements A
         visitor.visit(this, data);
     }
 
+    public ASTTypeExpression getRightOperand() {
+        return (ASTTypeExpression) jjtGetChild(1);
+    }
 
-    /**
-     * Gets the type against which the expression is tested.
-     */
+    /** Gets the wrapped type node. */
     public ASTType getTypeNode() {
-        return (ASTType) jjtGetChild(1);
+        return getRightOperand().getTypeNode();
     }
 
 }

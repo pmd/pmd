@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
-import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
@@ -29,6 +28,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -78,21 +78,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         }
     }
 
-    /**
-     * Gets the Image of the first parent node of type
-     * ASTClassOrInterfaceDeclaration or <code>null</code>
-     *
-     * @param node
-     *            the node which will be searched
-     */
-    protected final String getDeclaringType(Node node) {
-        ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (c != null) {
-            return c.getImage();
-        }
-        return null;
-    }
-
     public static boolean isQualifiedName(@Nullable String node) {
         return node != null && node.indexOf('.') != -1;
     }
@@ -122,7 +107,8 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         if (!(stage instanceof JavaProcessingStage)) {
             throw new IllegalArgumentException("Processing stage wasn't a Java one: " + stage);
         }
-        return ((JavaProcessingStage) stage).ruleDependsOnThisStage(this);
+
+        return stage != JavaProcessingStage.DFA || isDfa();
     }
 
     // FIXME those are not in sync with JavaParserVisitorAdapter
@@ -143,6 +129,9 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
     public Object visit(ASTUnaryExpression node, Object data) {
         return visit((ASTExpression) node, data);
     }
+
+    // REMOVE ME
+    // deprecated stuff kept for compatibility with existing visitors, not matched by anything
 
     @Deprecated
     public Object visit(ASTConditionalOrExpression node, Object data) {
@@ -228,6 +217,11 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
 
     @Deprecated
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
+        return null;
+    }
+
+    @Deprecated
+    public Object visit(ASTMethodDeclarator node, Object data) {
         return null;
     }
 

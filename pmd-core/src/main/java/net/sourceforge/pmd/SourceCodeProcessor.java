@@ -14,21 +14,23 @@ import java.util.List;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.internal.RulesetStageDependencyHelper;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.xpath.Initializer;
 
 public class SourceCodeProcessor {
 
     private final PMDConfiguration configuration;
+    private final RulesetStageDependencyHelper dependencyHelper;
+
 
     public SourceCodeProcessor(PMDConfiguration configuration) {
         this.configuration = configuration;
+        dependencyHelper = new RulesetStageDependencyHelper(configuration);
     }
 
     /**
@@ -83,26 +85,36 @@ public class SourceCodeProcessor {
 
         // Coarse check to see if any RuleSet applies to file, will need to do a finer RuleSet specific check later
         if (ruleSets.applies(ctx.getSourceCodeFile())) {
-            // Is the cache up to date?
-            if (configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile())) {
-                for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
-                    ctx.getReport().addRuleViolation(rv);
-                }
-                return;
+            if (isCacheUpToDate(ctx)) {
+                reportCachedRuleViolations(ctx);
+            } else {
+                processSourceCodeWithoutCache(sourceCode, ruleSets, ctx);
             }
+        }
+    }
 
-            try {
-                ruleSets.start(ctx);
-                processSource(sourceCode, ruleSets, ctx);
-            } catch (ParseException pe) {
-                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
-                throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
-            } catch (Exception e) {
-                configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
-                throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
-            } finally {
-                ruleSets.end(ctx);
-            }
+    private boolean isCacheUpToDate(final RuleContext ctx) {
+        return configuration.getAnalysisCache().isUpToDate(ctx.getSourceCodeFile());
+    }
+
+    private void reportCachedRuleViolations(final RuleContext ctx) {
+        for (final RuleViolation rv : configuration.getAnalysisCache().getCachedViolations(ctx.getSourceCodeFile())) {
+            ctx.getReport().addRuleViolation(rv);
+        }
+    }
+
+    private void processSourceCodeWithoutCache(final Reader sourceCode, final RuleSets ruleSets, final RuleContext ctx) throws PMDException {
+        try {
+            ruleSets.start(ctx);
+            processSource(sourceCode, ruleSets, ctx);
+        } catch (ParseException pe) {
+            configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
+            throw new PMDException("Error while parsing " + ctx.getSourceCodeFile(), pe);
+        } catch (Exception e) {
+            configuration.getAnalysisCache().analysisFailed(ctx.getSourceCodeFile());
+            throw new PMDException("Error while processing " + ctx.getSourceCodeFile(), e);
+        } finally {
+            ruleSets.end(ctx);
         }
     }
 
@@ -114,65 +126,10 @@ public class SourceCodeProcessor {
         }
     }
 
-    private void symbolFacade(Node rootNode, LanguageVersionHandler languageVersionHandler) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.SYMBOL_TABLE)) {
-            languageVersionHandler.getSymbolFacade(configuration.getClassLoader()).start(rootNode);
-        }
-    }
-
-    private void resolveQualifiedNames(Node rootNode, LanguageVersionHandler handler) {
-        try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.QUALIFIED_NAME_RESOLUTION)) {
-            handler.getQualifiedNameResolutionFacade(configuration.getClassLoader()).start(rootNode);
-        }
-    }
-
-    // private ParserOptions getParserOptions(final LanguageVersionHandler
-    // languageVersionHandler) {
-    // // TODO Handle Rules having different parser options.
-    // ParserOptions parserOptions =
-    // languageVersionHandler.getDefaultParserOptions();
-    // parserOptions.setSuppressMarker(configuration.getSuppressMarker());
-    // return parserOptions;
-    // }
-
-    private void usesDFA(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets, Language language) {
-        if (ruleSets.usesDFA(language)) {
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.DFA)) {
-                VisitorStarter dataFlowFacade = languageVersion.getLanguageVersionHandler().getDataFlowFacade();
-                dataFlowFacade.start(rootNode);
-            }
-        }
-    }
-
-    private void usesTypeResolution(LanguageVersion languageVersion, Node rootNode, RuleSets ruleSets,
-            Language language) {
-
-        if (ruleSets.usesTypeResolution(language)) {
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.TYPE_RESOLUTION)) {
-                languageVersion.getLanguageVersionHandler().getTypeResolutionFacade(configuration.getClassLoader())
-                        .start(rootNode);
-            }
-        }
-    }
-
-
-    private void usesMultifile(Node rootNode, LanguageVersionHandler languageVersionHandler, RuleSets ruleSets,
-                               Language language) {
-
-        if (ruleSets.usesMultifile(language)) {
-            try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.MULTIFILE_ANALYSIS)) {
-                languageVersionHandler.getMultifileFacade().start(rootNode);
-            }
-        }
-    }
 
 
     private void processSource(Reader sourceCode, RuleSets ruleSets, RuleContext ctx) {
-        LanguageVersion languageVersion = ctx.getLanguageVersion();
-        LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-        Parser parser = PMD.parserFor(languageVersion, configuration);
 
-        Node rootNode = parse(ctx, sourceCode, parser);
         // basically:
         // 1. make the union of all stage dependencies of each rule, by language, for the Rulesets
         // 2. order them by dependency
@@ -183,9 +140,8 @@ public class SourceCodeProcessor {
         // they'll be done on each file! Btw currently the "usesDfa" and such are nested loops testing
         // all rules of all rulesets, but they're run on each file too!
 
-        // Also, the benchmarking framework needs a small refactor. TimedOperationCategory needs to be
-        // made extensible -> probably should be turned to a class with static constants + factory methods
-        // and not an enum.
+        // FIXME - this implementation is a hack to wire-in stages without
+        //  needing to change RuleSet immediately
 
         // With mutable RuleSets, caching of the value can't be guaranteed to be accurate...
         // The approach I'd like to take is either
@@ -201,16 +157,20 @@ public class SourceCodeProcessor {
         // * grouping rules by language/ file extension
         // * etc.
 
-        resolveQualifiedNames(rootNode, languageVersionHandler);
-        symbolFacade(rootNode, languageVersionHandler);
-        Language language = languageVersion.getLanguage();
-        usesDFA(languageVersion, rootNode, ruleSets, language);
-        usesTypeResolution(languageVersion, rootNode, ruleSets, language);
-        usesMultifile(rootNode, languageVersionHandler, ruleSets, language);
+        LanguageVersion languageVersion = ctx.getLanguageVersion();
+
+        Parser parser = PMD.parserFor(languageVersion, configuration);
+
+        RootNode rootNode = (RootNode) parse(ctx, sourceCode, parser);
+
+        dependencyHelper.runLanguageSpecificStages(ruleSets, languageVersion, rootNode);
 
         List<Node> acus = Collections.singletonList(rootNode);
-        ruleSets.apply(acus, ctx, language);
+        ruleSets.apply(acus, ctx, languageVersion.getLanguage());
     }
+
+
+
 
     private void determineLanguage(RuleContext ctx) {
         // If LanguageVersion of the source file is not known, make a

@@ -80,7 +80,7 @@ public class UseUtilityClassRule extends AbstractLombokAwareRule {
                     }
 
                     // TODO use symbol table
-                    if (m.getMethodName().equals("suite")) {
+                    if (m.getName().equals("suite")) {
                         ASTResultType res = m.getResultType();
                         ASTClassOrInterfaceType c = res.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
                         if (c != null && c.hasImageEqualTo("Test")) {

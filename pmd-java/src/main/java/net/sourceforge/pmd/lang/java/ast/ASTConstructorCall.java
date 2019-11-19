@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.QualifierOwner;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -14,14 +16,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * <pre class="grammar">
  *
  * ConstructorCall   ::= UnqualifiedAlloc
- *                     | {@link ASTPrimaryExpression PrimaryExpression} "." UnqualifiedAlloc
+ *                     | {@link ASTExpression Expression} "." UnqualifiedAlloc
  *
  * UnqualifiedAlloc                  ::=
  *      "new" {@link ASTTypeArguments TypeArguments}? {@link ASTClassOrInterfaceType ClassOrInterfaceType} {@link ASTArgumentList ArgumentList} {@link ASTAnonymousClassDeclaration AnonymousClassDeclaration}?
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, ASTQualifiableExpression, LeftRecursiveNode {
+public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPrimaryExpression, QualifierOwner, LeftRecursiveNode {
 
     ASTConstructorCall(int id) {
         super(id);
@@ -56,6 +58,16 @@ public final class ASTConstructorCall extends AbstractJavaExpr implements ASTPri
         return jjtGetChild(0) instanceof ASTPrimaryExpression;
     }
 
+    /**
+     * Returns the outer instance expression, if this is a {@linkplain #isQualifiedInstanceCreation() qualified}
+     * constructor call. Otherwise returns null. This can never be a
+     * {@linkplain ASTTypeExpression type expression}, and is never
+     * {@linkplain ASTAmbiguousName ambiguous}.
+     */
+    @Override
+    public @Nullable ASTExpression getQualifier() {
+        return QualifierOwner.super.getQualifier();
+    }
 
     @Nullable
     public ASTTypeArguments getExplicitTypeArguments() {

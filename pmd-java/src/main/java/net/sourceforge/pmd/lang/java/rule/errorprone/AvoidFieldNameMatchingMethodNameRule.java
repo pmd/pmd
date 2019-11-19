@@ -41,7 +41,7 @@ public class AvoidFieldNameMatchingMethodNameRule extends AbstractJavaRule {
             if (child instanceof ASTFieldDeclaration) {
                 fields.add((ASTFieldDeclaration) child);
             } else if (child instanceof ASTMethodDeclaration) {
-                methodNames.add(((ASTMethodDeclaration) child).getMethodName().toLowerCase(Locale.ROOT));
+                methodNames.add(((ASTMethodDeclaration) child).getName().toLowerCase(Locale.ROOT));
             }
         }
         for (ASTFieldDeclaration field : fields) {

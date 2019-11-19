@@ -232,7 +232,7 @@ options {
   STATIC = false;
   USER_CHAR_STREAM = true;
   JDK_VERSION = "1.5";
-  
+
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
@@ -323,25 +323,25 @@ public class JavaParser {
       throwParseException("Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
     }
   }
-  
+
   private void checkForBadNumericalLiteralslUsage(Token token) {
     if (jdkVersion < 7) {
       if (token.image.contains("_")) {
         throwParseException("Can't use underscores in numerical literals when running in JDK inferior to 1.7 mode!");
       }
-      	
+
       if (token.image.startsWith("0b") || token.image.startsWith("0B")) {
-        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");	
+        throwParseException("Can't use binary numerical literals when running in JDK inferior to 1.7 mode!");
       }
     }
   }
-  
+
   private void checkForBadDiamondUsage() {
   	if (jdkVersion < 7) {
       throwParseException("Cannot use the diamond generic notation when running in JDK inferior to 1.7 mode!");
   	}
   }
-  
+
   private void checkForBadTryWithResourcesUsage() {
   	if (jdkVersion < 7) {
       throwParseException("Cannot use the try-with-resources notation when running in JDK inferior to 1.7 mode!");
@@ -484,7 +484,7 @@ public class JavaParser {
     if (jdkVersion <= 3) {
       return false;
     }
-    
+
     return getToken(1).image.equals("assert");
   }
 
@@ -1995,24 +1995,21 @@ void ArrayInitializer() :
 void MethodDeclaration(int modifiers) :
 {
     jjtThis.setModifiers(modifiers);
-    { checkForBadPrivateInterfaceMethod(jjtThis); }
+    checkForBadPrivateInterfaceMethod(jjtThis);
 }
 {
   [ TypeParameters() ]
-  ResultType() MethodDeclarator() [ "throws" NameList() ]
-  ( Block() | ";" )
-}
-
-void MethodDeclarator() :
-{Token t;}
-{
-  t=<IDENTIFIER>
-  {
-    checkForBadAssertUsage(t.image, "a method name");
-    checkForBadEnumUsage(t.image, "a method name");
-    jjtThis.setImage( t.image );
+  ResultType()
+  <IDENTIFIER> {
+    String image = getToken(0).getImage();
+    jjtThis.setImage(image);
+    checkForBadAssertUsage(image, "a method name");
+    checkForBadEnumUsage(image, "a method name");
   }
-  FormalParameters() ( "[" "]" )* // TODO use ArrayDimensions
+  FormalParameters()
+  ( "[" "]" )* // TODO use ArrayDimensions
+  [ ThrowsList() ]
+  ( Block() | ";" )
 }
 
 
@@ -2040,11 +2037,11 @@ void ConstructorDeclaration(int modifiers) :
 Token t;}
 {
     [ TypeParameters() ]
-   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ "throws" NameList() ]
-  "{"
+   <IDENTIFIER>  {jjtThis.setImage(getToken(0).getImage());} FormalParameters() [ ThrowsList() ]
+  ("{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
-  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
+  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } } ) #Block
 }
 
 void ExplicitConstructorInvocation() :
@@ -2328,13 +2325,10 @@ void ResultType() :
 }
 
 
-// TODO rename to ThrowsClause, stop using Name
-void NameList() :
+void ThrowsList() :
 {}
 {
-  (TypeAnnotation())* Name()
-  ( "," (TypeAnnotation())* Name()
-  )*
+  "throws" AnnotatedClassOrInterfaceType() ( "," AnnotatedClassOrInterfaceType())*
 }
 
 
@@ -2363,8 +2357,18 @@ void Expression() #AssignmentExpression(>1):
 AssignmentOp AssignmentOperator() #void:
 {}
 {
-    ( "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | ">>>=" | "&=" | "^=" | "|=" )
-    {return AssignmentOp.fromImage(getToken(0).getImage());}
+      "="    { return AssignmentOp.ASSIGN; }
+    | "*="   { return AssignmentOp.MUL_ASSIGN; }
+    | "/="   { return AssignmentOp.DIV_ASSIGN; }
+    | "%="   { return AssignmentOp.MOD_ASSIGN; }
+    | "+="   { return AssignmentOp.ADD_ASSIGN; }
+    | "-="   { return AssignmentOp.SUB_ASSIGN; }
+    | "<<="  { return AssignmentOp.LEFT_SHIFT_ASSIGN; }
+    | ">>="  { return AssignmentOp.RIGHT_SHIFT_ASSIGN; }
+    | ">>>=" { return AssignmentOp.UNSIGNED_RIGHT_SHIFT_ASSIGN; }
+    | "&="   { return AssignmentOp.AND_ASSIGN; }
+    | "^="   { return AssignmentOp.XOR_ASSIGN; }
+    | "|="   { return AssignmentOp.OR_ASSIGN; }
 }
 
 void ConditionalExpression() #ConditionalExpression(>1) :
@@ -2417,10 +2421,16 @@ void EqualityExpression() #void:
   )*
 }
 
-void InstanceOfExpression() #InstanceOfExpression(>1):
+void InstanceOfExpression() #void:
 {}
 {
-  RelationalExpression() [ LOOKAHEAD(1) "instanceof" AnnotatedRefType() ]
+  RelationalExpression() [
+    LOOKAHEAD(1)
+    ("instanceof"
+        AnnotatedRefType() #TypeExpression
+        {jjtThis.setOp(BinaryOp.INSTANCEOF);}
+    ) #InfixExpression(2)
+  ]
 }
 
 void RelationalExpression() #void:
@@ -2922,7 +2932,7 @@ void Block() :
 {Token t;}
 {
       "{"
-       
+
       ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
 }
 
@@ -3364,13 +3374,17 @@ void AnnotationTypeMemberDeclaration():
    ";" #EmptyDeclaration
 }
 
-void AnnotationMethodDeclaration(int modifiers):
+void AnnotationMethodDeclaration(int modifiers) #MethodDeclaration:
 {
   Token t;
   jjtThis.setModifiers(modifiers);
 }
 {
-  Type() t=<IDENTIFIER> "(" ")"  [ DefaultValue() ] ";"
+  Type() #ResultType
+  t=<IDENTIFIER>
+  ("(" ")") #FormalParameters(true)
+  ( "[" "]" )* // TODO use ArrayTypeDims
+  [ DefaultValue() ] ";"
   {
     jjtThis.setImage(t.image);
   }

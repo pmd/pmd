@@ -4,6 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+/**
+ * Represents the {@code default} clause of an {@linkplain ASTMethodDeclaration annotation method}.
+ *
+ * <pre class="grammar">
+ *
+ * DefaultValue ::= "default" {@link ASTMemberValue MemberValue}
+ *
+ * </pre>
+ */
 public final class ASTDefaultValue extends AbstractJavaNode {
 
     ASTDefaultValue(int id) {
@@ -12,6 +21,13 @@ public final class ASTDefaultValue extends AbstractJavaNode {
 
     ASTDefaultValue(JavaParser p, int id) {
         super(p, id);
+    }
+
+    /**
+     * Returns the constant value nested in this node.
+     */
+    public ASTMemberValue getConstant() {
+        return (ASTMemberValue) jjtGetChild(0);
     }
 
     @Override

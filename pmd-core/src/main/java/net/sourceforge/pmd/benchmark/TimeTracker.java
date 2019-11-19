@@ -39,12 +39,7 @@ public final class TimeTracker {
     };
     
     static {
-        TIMER_ENTRIES = new ThreadLocal<Queue<TimerEntry>>() {
-            @Override
-            protected Queue<TimerEntry> initialValue() {
-                return Collections.asLifoQueue(new LinkedList<TimerEntry>());
-            }
-        };
+        TIMER_ENTRIES = ThreadLocal.withInitial(() -> Collections.asLifoQueue(new LinkedList<>()));
     }
     
     private TimeTracker() {

@@ -10,6 +10,7 @@ public class Foo {
   private double speed;
   private MutableInt mutX;
   private boolean bool;
+  private String words;
 
   public int getValue() {
         return value;
@@ -34,6 +35,12 @@ public class Foo {
   private int value() {
     return value;
   }
+
+  @Override
+  @TestAnnotation
+  public String getWords() {
+    return words;
+  }
 }
      ]]></code-fragment>
 
@@ -42,7 +49,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 3.</message>
+            <message>'Foo' has value 4.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

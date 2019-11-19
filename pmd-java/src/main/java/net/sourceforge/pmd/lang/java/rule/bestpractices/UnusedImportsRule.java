@@ -41,10 +41,10 @@ public class UnusedImportsRule extends AbstractJavaRule {
      * @throws package.class label
      */
     private static final Pattern SEE_PATTERN = Pattern
-            .compile("@see\\s+(\\p{Alpha}?+\\w*)(?:#\\w*(?:\\(([\\w\\s,\\[\\]]*)\\))?)?");
+            .compile("@see\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?");
 
     private static final Pattern LINK_PATTERNS = Pattern
-            .compile("\\{@link(?:plain)?\\s+(\\p{Alpha}\\w*)(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
+            .compile("\\{@link(?:plain)?\\s+((?:\\p{Alpha}\\w*\\.)*(?:\\p{Alpha}\\w*))?(?:#\\w*(?:\\(([.\\w\\s,\\[\\]]*)\\))?)?[\\s\\}]");
 
     private static final Pattern VALUE_PATTERN = Pattern.compile("\\{@value\\s+(\\p{Alpha}\\w*)[\\s#\\}]");
 
@@ -84,7 +84,10 @@ public class UnusedImportsRule extends AbstractJavaRule {
                 Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);
-                    imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
+                    
+                    if (s != null) { // may be null for "@see #" and "@link #"
+                        imports.remove(new ImportWrapper(s, s, new DummyJavaNode(-1)));
+                    }
 
                     if (m.groupCount() > 1) {
                         s = m.group(2);

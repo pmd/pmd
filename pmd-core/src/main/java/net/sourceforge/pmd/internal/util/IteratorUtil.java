@@ -21,7 +21,6 @@ public final class IteratorUtil {
 
     }
 
-
     public static <T> Iterator<T> reverse(Iterator<T> it) {
         List<T> tmp = toList(it);
         Collections.reverse(tmp);

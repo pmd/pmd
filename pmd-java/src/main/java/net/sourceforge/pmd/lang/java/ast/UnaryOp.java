@@ -15,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  */
-public interface UnaryOp {
+public interface UnaryOp extends InternalInterfaces.OperatorLike {
 
     /**
      * Returns true if this operator is pure, ie the evaluation of
@@ -72,6 +72,11 @@ public interface UnaryOp {
         }
 
         @Override
+        public String getToken() {
+            return code;
+        }
+
+        @Override
         public String toString() {
             return this.code;
         }
@@ -105,6 +110,11 @@ public interface UnaryOp {
         @Override
         public boolean isPure() {
             return false;
+        }
+
+        @Override
+        public String getToken() {
+            return code;
         }
 
         @Override

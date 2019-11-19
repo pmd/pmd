@@ -694,16 +694,16 @@ public String bar(String string) {
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[MethodDeclarator[
-  @Image='onCreate' or
-  @Image='onConfigurationChanged' or
-  @Image='onPostCreate' or
-  @Image='onPostResume' or
-  @Image='onRestart' or
-  @Image='onRestoreInstanceState' or
-  @Image='onResume' or
-  @Image='onStart'
-  ]]
+//MethodDeclaration[
+  @Name='onCreate' or
+  @Name='onConfigurationChanged' or
+  @Name='onPostCreate' or
+  @Name='onPostResume' or
+  @Name='onRestart' or
+  @Name='onRestoreInstanceState' or
+  @Name='onResume' or
+  @Name='onStart'
+  ]
     /Block[not(
       (BlockStatement[1]/Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image]))]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
@@ -741,14 +741,14 @@ Super should be called at the end of the method
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[MethodDeclarator[
-  @Image='finish' or
-  @Image='onDestroy' or
-  @Image='onPause' or
-  @Image='onSaveInstanceState' or
-  @Image='onStop' or
-  @Image='onTerminate'
-  ]]
+//MethodDeclaration[
+  @Name='finish' or
+  @Name='onDestroy' or
+  @Name='onPause' or
+  @Name='onSaveInstanceState' or
+  @Name='onStop' or
+  @Name='onTerminate'
+  ]
    /Block/BlockStatement[last()]
     [not(Statement/StatementExpression/PrimaryExpression[./PrimaryPrefix[@SuperModifier='true']]/PrimarySuffix[@Image= ancestor::MethodDeclaration/MethodDeclarator/@Image])]
 [ancestor::ClassOrInterfaceDeclaration[ExtendsList/ClassOrInterfaceType[
@@ -864,8 +864,8 @@ Object.clone (which is protected) with a public method."
                 <value>
 <![CDATA[
 //MethodDeclaration[@Public='false']
-  [MethodDeclarator/@Image = 'clone']
-  [MethodDeclarator/FormalParameters/@ParameterCount = 0]
+  [@Name = 'clone']
+  [@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -937,8 +937,8 @@ Note: This is only possible with Java 1.5 or higher.
 <![CDATA[
 //MethodDeclaration
 [
-MethodDeclarator/@Image = 'clone'
-and MethodDeclarator/FormalParameters/@ParameterCount = 0
+@Name = 'clone'
+and @Arity = 0
 and not (ResultType//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration[1]/@Image)
 ]
 ]]>
@@ -978,8 +978,8 @@ The method clone() should throw a CloneNotSupportedException.
 <![CDATA[
 //MethodDeclaration
 [
-MethodDeclarator/@Image = 'clone'
-and count(MethodDeclarator/FormalParameters/*) = 0
+@Name = 'clone'
+and @Arity = 0
 and count(NameList/Name[contains
 (@Image,'CloneNotSupportedException')]) = 0
 ]
@@ -1120,9 +1120,8 @@ public class JuniorClass extends SeniorClass {
         <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
 From those informations there can be found various problems.
 
-1. UR - Anomaly: There is a reference to a variable that was not defined before. This is a bug and leads to an error.
-2. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
-3. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
+1. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
+2. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
         </description>
         <priority>5</priority>
         <example>
@@ -1484,7 +1483,7 @@ Empty finalize methods serve no purpose and should be removed. Note that Oracle 
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+//MethodDeclaration[@Name='finalize'][@Arity = 0]
   /Block[count(*)=0]
 ]]>
                 </value>
@@ -1850,7 +1849,7 @@ If the finalize() is implemented, its last action should be to call super.finali
 <!-- in English: a method declaration of finalize(), with no arguments, containing
 a block whose last statement is NOT a call to super.finalize -->
 <![CDATA[
-//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+//MethodDeclaration[@Name='finalize'][@Arity = 0]
    /Block
       /BlockStatement[last()]
       [not(Statement/StatementExpression/PrimaryExpression
@@ -1892,7 +1891,7 @@ If the finalize() is implemented, it should do something besides just calling su
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
+//MethodDeclaration[@Name='finalize'][@Arity = 0]
    /Block[count(BlockStatement)=1]
      /BlockStatement[
        Statement/StatementExpression/PrimaryExpression
@@ -1929,8 +1928,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration
- /MethodDeclarator[@Image='finalize'][FormalParameters[count(*)>0]]
+//MethodDeclaration[@Name='finalize'][@Arity > 0]
 ]]>
                 </value>
             </property>
@@ -1963,9 +1961,7 @@ Note that Oracle has declared Object.finalize() as deprecated since JDK 9.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Protected="false"]
-  /MethodDeclarator[@Image="finalize"]
-  [not(FormalParameters/*)]
+//MethodDeclaration[@Protected="false"][@Name='finalize'][@Arity = 0]
 ]]>
                 </value>
             </property>
@@ -2057,13 +2053,17 @@ Class c = String.class;
     </rule>
 
     <rule name="InvalidSlf4jMessageFormat"
+          ref="category/java/errorprone.xml/InvalidLogMessageFormat"
+          deprecated="true" />
+
+    <rule name="InvalidLogMessageFormat"
           language="java"
           since="5.5.0"
           message="Invalid message format"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidSlf4jMessageFormatRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidslf4jmessageformat">
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#invalidlogmessageformat">
         <description>
-Check for messages in slf4j loggers with non matching number of arguments and placeholders.
+Check for messages in slf4j and log4j2 (since 6.19.0) loggers with non matching number of arguments and placeholders.
         </description>
         <priority>5</priority>
         <example>
@@ -2127,11 +2127,11 @@ Some JUnit framework methods are easy to misspell.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclarator[(not(@Image = 'setUp')
- and translate(@Image, 'SETuP', 'setUp') = 'setUp')
- or (not(@Image = 'tearDown')
- and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')]
- [FormalParameters[count(*) = 0]]
+//MethodDeclaration[(not(@Name = 'setUp')
+ and translate(@Name, 'SETuP', 'setUp') = 'setUp')
+ or (not(@Name = 'tearDown')
+ and translate(@Name, 'TEARdOWN', 'tearDown') = 'tearDown')]
+ [@Arity = 0]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
     or //MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -2171,8 +2171,8 @@ The suite() method in a JUnit test needs to be both public and static.
                 <value>
 <![CDATA[
 //MethodDeclaration[not(@Static='true') or not(@Public='true')]
-[MethodDeclarator/@Image='suite']
-[MethodDeclarator/FormalParameters/@ParameterCount=0]
+[@Name='suite']
+[@Arity = 0]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[pmd-java:typeIs('junit.framework.TestCase')]
     or //MarkerAnnotation/Name[
         pmd-java:typeIs('org.junit.Test')
@@ -2476,7 +2476,8 @@ public class Foo {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.MoreThanOneLoggerRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#morethanonelogger">
         <description>
-Normally only one logger is used in each class.
+Normally only one logger is used in each class. This rule supports slf4j, log4j, Java Util Logging and
+log4j2 (since 6.19.0).
         </description>
         <priority>2</priority>
         <example>
@@ -2635,10 +2636,10 @@ Object clone() should be implemented with super.clone().
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclarator
-[@Image = 'clone']
-[count(FormalParameters/*) = 0]
-[count(../Block//*[
+//MethodDeclaration
+[@Name = 'clone']
+[@Arity = 0]
+[count(./Block//*[
     (self::AllocationExpression) and
     (./ClassOrInterfaceType/@Image = ancestor::
 ClassOrInterfaceDeclaration[1]/@Image)
@@ -3008,23 +3009,23 @@ intention to override the equals(Object) method.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclarator[@Image = 'equals']
+//MethodDeclaration[@Name = 'equals']
 [   
-    (count(FormalParameters/*) = 1
-    and not (FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+    (@Arity = 1
+    and not (MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
         [@Image = 'Object' or @Image = 'java.lang.Object'])
-    or not (../ResultType/Type/PrimitiveType[@Image = 'boolean'])
+    or not (ResultType/Type/PrimitiveType[@Image = 'boolean'])
     )  or  (
-    count(FormalParameters/*) = 2
-    and ../ResultType/Type/PrimitiveType[@Image = 'boolean']
-    and FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
-    and not(../../Annotation/MarkerAnnotation/Name[@Image='Override'])
+    @Arity = 2
+    and ResultType/Type/PrimitiveType[@Image = 'boolean']
+    and MethodDeclarator/FormalParameters//ClassOrInterfaceType[@Image = 'Object' or @Image = 'java.lang.Object']
+    and not(../Annotation/MarkerAnnotation/Name[@Image='Override'])
     )
 ]
-| //MethodDeclarator[@Image = 'equal']
+| //MethodDeclaration[@Name = 'equal']
 [
-    count(FormalParameters/*) = 1
-    and FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
+    @Arity = 1
+    and MethodDeclarator/FormalParameters/FormalParameter/Type/ReferenceType/ClassOrInterfaceType
         [@Image = 'Object' or @Image = 'java.lang.Object']
 ]
 ]]>

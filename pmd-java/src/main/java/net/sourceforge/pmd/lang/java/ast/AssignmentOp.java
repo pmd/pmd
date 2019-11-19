@@ -8,17 +8,14 @@ import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.AND;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.DIV;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.LEFT_SHIFT;
+import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MOD;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.MUL;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.OR;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.RIGHT_SHIFT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.SUB;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.UNSIGNED_RIGHT_SHIFT;
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.XOR;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
+import static net.sourceforge.pmd.lang.java.ast.InternalInterfaces.OperatorLike;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -35,22 +32,19 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see BinaryOp
  * @see UnaryOp
  */
-public enum AssignmentOp {
-    EQ("=", null),
-    AND_EQ("&=", AND),
-    OR_EQ("|=", OR),
-    XOR_EQ("^=", XOR),
-    ADD_EQ("+=", ADD),
-    SUB_EQ("-=", SUB),
-    MUL_EQ("*=", MUL),
-    DIV_EQ("/=", DIV),
-    LEFT_SHIFT_EQ("<<=", LEFT_SHIFT),
-    RIGHT_SHIFT_EQ(">>=", RIGHT_SHIFT),
-    UNSIGNED_RIGHT_SHIFT_EQ(">>>=", UNSIGNED_RIGHT_SHIFT);
-
-    private static final Map<String, AssignmentOp> LOOKUP = Collections.unmodifiableMap(
-        Arrays.stream(values()).collect(Collectors.toMap(Object::toString, op -> op))
-    );
+public enum AssignmentOp implements OperatorLike {
+    ASSIGN("=", null),
+    AND_ASSIGN("&=", AND),
+    OR_ASSIGN("|=", OR),
+    XOR_ASSIGN("^=", XOR),
+    ADD_ASSIGN("+=", ADD),
+    SUB_ASSIGN("-=", SUB),
+    MUL_ASSIGN("*=", MUL),
+    DIV_ASSIGN("/=", DIV),
+    MOD_ASSIGN("%=", MOD),
+    LEFT_SHIFT_ASSIGN("<<=", LEFT_SHIFT),
+    RIGHT_SHIFT_ASSIGN(">>=", RIGHT_SHIFT),
+    UNSIGNED_RIGHT_SHIFT_ASSIGN(">>>=", UNSIGNED_RIGHT_SHIFT);
 
     private final String code;
     private final BinaryOp binaryOp;
@@ -62,6 +56,10 @@ public enum AssignmentOp {
         this.binaryOp = binaryOp;
     }
 
+    @Override
+    public String getToken() {
+        return code;
+    }
 
     @Override
     public String toString() {
@@ -74,7 +72,7 @@ public enum AssignmentOp {
      * a binary operator with the assignment.
      */
     public boolean isCompound() {
-        return this != EQ;
+        return this != ASSIGN;
     }
 
 
@@ -89,8 +87,4 @@ public enum AssignmentOp {
     }
 
 
-    // parser only for now
-    static AssignmentOp fromImage(String image) {
-        return LOOKUP.get(image);
-    }
 }

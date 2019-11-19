@@ -7,14 +7,19 @@ package net.sourceforge.pmd.lang.java.rule;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
+import java.util.List;
 
 import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
+import net.sourceforge.pmd.lang.ast.AstAnalysisContext;
 import net.sourceforge.pmd.lang.java.JavaLanguageModule;
+import net.sourceforge.pmd.lang.java.JavaProcessingStage;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -39,19 +44,30 @@ public class JavaRuleViolationTest {
     }
 
     private ASTCompilationUnit parse(final String code) {
-        final LanguageVersionHandler languageVersionHandler = LanguageRegistry.getLanguage(JavaLanguageModule.NAME)
-                .getDefaultVersion().getLanguageVersionHandler();
+        LanguageVersion version = LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion();
+        final LanguageVersionHandler languageVersionHandler = version.getLanguageVersionHandler();
         final ParserOptions options = languageVersionHandler.getDefaultParserOptions();
         final ASTCompilationUnit ast = (ASTCompilationUnit) languageVersionHandler.getParser(options).parse(null,
                 new StringReader(code));
         // set scope of AST nodes
         ast.jjtAccept(new ScopeAndDeclarationFinder(), null);
+        JavaProcessingStage.QNAME_RESOLUTION.processAST(ast, new AstAnalysisContext() {
+            @Override
+            public ClassLoader getTypeResolutionClassLoader() {
+                return JavaRuleViolation.class.getClassLoader();
+            }
+
+            @Override
+            public LanguageVersion getLanguageVersion() {
+                return version;
+            }
+        });
         return ast;
     }
 
     /**
      * Tests that the method name is taken correctly from the given node.
-     * 
+     *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1250/">#1250</a>
      */
     @Test
@@ -78,7 +94,7 @@ public class JavaRuleViolationTest {
     /**
      * Tests that the class name is taken correctly, even if the node is outside
      * of a class scope, e.g. a import declaration.
-     * 
+     *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1529/">#1529</a>
      */
     @Test
@@ -120,7 +136,7 @@ public class JavaRuleViolationTest {
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Bar", violation.getClassName());
     }
-    
+
     @Test
     public void testPackageAndPackagePrivateClassesName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { }");
@@ -129,5 +145,21 @@ public class JavaRuleViolationTest {
         JavaRuleViolation violation = new JavaRuleViolation(null, new RuleContext(), importNode, null);
         assertEquals("pkg", violation.getPackageName());
         assertEquals("Foo", violation.getClassName());
+    }
+
+    /**
+     * Test that the name of the inner class is taken correctly.
+     */
+    @Test
+    public void testInnerClass() {
+        ASTCompilationUnit ast = parse("class Foo { class Bar { } }");
+        List<ASTClassOrInterfaceDeclaration> classes = ast.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class);
+        assertEquals(2, classes.size());
+
+        JavaRuleViolation fooViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(0), null);
+        assertEquals("Foo", fooViolation.getClassName());
+
+        JavaRuleViolation barViolation = new JavaRuleViolation(null, new RuleContext(), classes.get(1), null);
+        assertEquals("Foo$Bar", barViolation.getClassName());
     }
 }

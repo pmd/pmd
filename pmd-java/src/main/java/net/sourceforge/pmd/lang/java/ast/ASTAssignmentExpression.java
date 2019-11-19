@@ -13,7 +13,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTAssignmentExpression extends AbstractJavaExpr implements ASTExpression {
+public final class ASTAssignmentExpression extends AbstractJavaExpr implements InternalInterfaces.BinaryExpressionLike {
 
     private AssignmentOp operator;
 
@@ -32,14 +32,10 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements A
         this.operator = op;
     }
 
-
-    public ASTAssignableExpr getLeftHandSide() {
+    /** Returns the left-hand side, ie the expression being assigned to. */
+    @Override
+    public ASTAssignableExpr getLeftOperand() {
         return (ASTAssignableExpr) jjtGetChild(0);
-    }
-
-
-    public ASTExpression getRightHandSide() {
-        return (ASTExpression) jjtGetChild(1);
     }
 
 
@@ -51,10 +47,8 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements A
     }
 
 
-    /**
-     * Returns the assignment operator.
-     */
-    public AssignmentOp getOp() {
+    @Override
+    public AssignmentOp getOperator() {
         return operator;
     }
 

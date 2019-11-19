@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 /**
@@ -19,8 +20,9 @@ import java.util.Iterator;
  * </p>
  *
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
- *
+ * @deprecated Just use {@link Files#readAllLines(Path, Charset)} or {@code lines} on Java 8
  */
+@Deprecated
 public class FileIterable implements Iterable<String> {
 
     private LineNumberReader lineReader = null;

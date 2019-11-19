@@ -25,7 +25,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
@@ -301,15 +300,12 @@ public class ClassScope extends AbstractJavaScope {
         InternalApiBridge.setModifier(methodDeclaration, AccessNode.PUBLIC);
         InternalApiBridge.setScope(methodDeclaration, this);
 
-        ASTMethodDeclarator methodDeclarator = new ASTMethodDeclarator(JavaParserTreeConstants.JJTMETHODDECLARATOR);
-        methodDeclarator.setImage(methodName);
+        methodDeclaration.setImage(methodName);
 
         ASTFormalParameters formalParameters = new ASTFormalParameters(JavaParserTreeConstants.JJTFORMALPARAMETERS);
 
-        methodDeclaration.jjtAddChild(methodDeclarator, 0);
-        methodDeclarator.jjtSetParent(methodDeclaration);
-        methodDeclarator.jjtAddChild(formalParameters, 0);
-        formalParameters.jjtSetParent(methodDeclarator);
+        methodDeclaration.jjtAddChild(formalParameters, 0);
+        formalParameters.jjtSetParent(methodDeclaration);
 
         /*
          * jjtAddChild resizes it's child node list according to known indexes.
@@ -338,7 +334,7 @@ public class ClassScope extends AbstractJavaScope {
 
         }
 
-        return new MethodNameDeclaration(methodDeclarator);
+        return new MethodNameDeclaration(methodDeclaration);
     }
 
 
@@ -351,8 +347,9 @@ public class ClassScope extends AbstractJavaScope {
      * @return List of types
      */
     private List<TypedNameDeclaration> determineParameterTypes(MethodNameDeclaration mnd) {
-        List<ASTFormalParameter> parameters = mnd.getMethodNameDeclaratorNode()
-                .findDescendantsOfType(ASTFormalParameter.class);
+        List<ASTFormalParameter> parameters = mnd.getDeclarator()
+                                                 .getFormalParameters()
+                                                 .findChildrenOfType(ASTFormalParameter.class);
         if (parameters.isEmpty()) {
             return Collections.emptyList();
         }
@@ -467,55 +464,57 @@ public class ClassScope extends AbstractJavaScope {
                 isMethodCall = argument.jjtGetChild(0).jjtGetNumChildren() > 1;
             }
             TypedNameDeclaration type = null;
-            if (child instanceof ASTName && !isMethodCall) {
-                ASTName name = (ASTName) child;
-                Scope s = name.getScope();
-                final JavaNameOccurrence nameOccurrence = new JavaNameOccurrence(name, name.getImage());
-                while (s != null) {
-                    if (s.contains(nameOccurrence)) {
-                        break;
-                    }
-                    s = s.getParent();
-                }
-                if (s != null) {
-                    Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
-                            .getDeclarations(VariableNameDeclaration.class);
-                    for (VariableNameDeclaration d : vars.keySet()) {
-                        // in case of simple lambda expression, the type
-                        // might be unknown
-                        if (d.getImage().equals(name.getImage()) && d.getTypeImage() != null) {
-                            String typeName = d.getTypeImage();
-                            typeName = qualifyTypeName(typeName);
-                            Node declaringNode = qualifiedTypeNames.get(typeName);
-                            type = new SimpleTypedNameDeclaration(typeName,
-                                    this.getEnclosingScope(SourceFileScope.class).resolveType(typeName),
-                                    determineSuper(declaringNode));
+            if (!isMethodCall) {
+                if (child instanceof ASTName) {
+                    ASTName name = (ASTName) child;
+                    Scope s = name.getScope();
+                    final JavaNameOccurrence nameOccurrence = new JavaNameOccurrence(name, name.getImage());
+                    while (s != null) {
+                        if (s.contains(nameOccurrence)) {
                             break;
                         }
+                        s = s.getParent();
                     }
+                    if (s != null) {
+                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = s
+                                .getDeclarations(VariableNameDeclaration.class);
+                        for (VariableNameDeclaration d : vars.keySet()) {
+                            // in case of simple lambda expression, the type
+                            // might be unknown
+                            if (d.getImage().equals(name.getImage()) && d.getTypeImage() != null) {
+                                String typeName = d.getTypeImage();
+                                typeName = qualifyTypeName(typeName);
+                                Node declaringNode = qualifiedTypeNames.get(typeName);
+                                type = new SimpleTypedNameDeclaration(typeName,
+                                        this.getEnclosingScope(SourceFileScope.class).resolveType(typeName),
+                                        determineSuper(declaringNode));
+                                break;
+                            }
+                        }
+                    }
+                } else if (child instanceof ASTLiteral) {
+                    ASTLiteral literal = (ASTLiteral) child;
+                    if (literal.isCharLiteral()) {
+                        type = new SimpleTypedNameDeclaration("char", literal.getType());
+                    } else if (literal.isStringLiteral()) {
+                        type = new SimpleTypedNameDeclaration("String", literal.getType());
+                    } else if (literal.isFloatLiteral()) {
+                        type = new SimpleTypedNameDeclaration("float", literal.getType());
+                    } else if (literal.isDoubleLiteral()) {
+                        type = new SimpleTypedNameDeclaration("double", literal.getType());
+                    } else if (literal.isIntLiteral()) {
+                        type = new SimpleTypedNameDeclaration("int", literal.getType());
+                    } else if (literal.isLongLiteral()) {
+                        type = new SimpleTypedNameDeclaration("long", literal.getType());
+                    } else if (literal.jjtGetNumChildren() == 1
+                            && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
+                        type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
+                    }
+                } else if (child instanceof ASTAllocationExpression
+                        && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
+                    ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.jjtGetChild(0);
+                    type = convertToSimpleType(classInterface);
                 }
-            } else if (child instanceof ASTLiteral) {
-                ASTLiteral literal = (ASTLiteral) child;
-                if (literal.isCharLiteral()) {
-                    type = new SimpleTypedNameDeclaration("char", literal.getType());
-                } else if (literal.isStringLiteral()) {
-                    type = new SimpleTypedNameDeclaration("String", literal.getType());
-                } else if (literal.isFloatLiteral()) {
-                    type = new SimpleTypedNameDeclaration("float", literal.getType());
-                } else if (literal.isDoubleLiteral()) {
-                    type = new SimpleTypedNameDeclaration("double", literal.getType());
-                } else if (literal.isIntLiteral()) {
-                    type = new SimpleTypedNameDeclaration("int", literal.getType());
-                } else if (literal.isLongLiteral()) {
-                    type = new SimpleTypedNameDeclaration("long", literal.getType());
-                } else if (literal.jjtGetNumChildren() == 1
-                        && literal.jjtGetChild(0) instanceof ASTBooleanLiteral) {
-                    type = new SimpleTypedNameDeclaration("boolean", Boolean.TYPE);
-                }
-            } else if (child instanceof ASTAllocationExpression
-                    && child.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                ASTClassOrInterfaceType classInterface = (ASTClassOrInterfaceType) child.jjtGetChild(0);
-                type = convertToSimpleType(classInterface);
             }
             if (type == null && !parameterTypes.isEmpty()) {
                 // replace the unknown type with the correct parameter type

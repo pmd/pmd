@@ -19,12 +19,17 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.XmlLogger;
 import org.apache.tools.ant.taskdefs.RecorderEntry;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * AntLogHandler sends log messages to an Ant Task, so the regular Ant logging
  * is used.
  *
  * @author Wouter Zelle
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public class AntLogHandler extends Handler {
     private Project project;
 

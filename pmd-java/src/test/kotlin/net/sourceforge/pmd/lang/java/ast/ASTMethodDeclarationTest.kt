@@ -6,6 +6,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
+import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.EnclosedDeclarationParsingCtx
 
 class ASTMethodDeclarationTest : ParserTestSpec({
 
@@ -83,22 +84,107 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
+            it::getArity shouldBe 0
 
-            it::getResultType shouldBe child {
-                it::getTypeNode shouldBe null
-                it::isVoid shouldBe true
-            }
+            it::getResultType shouldBe voidResult()
 
-            it::getMethodDeclarator shouldBe child {
-                it::getFormalParameters shouldBe child {
-                    it::getParameterCount shouldBe 0
+
+            it::getFormalParameters shouldBe formalsList(0)
+
+            it::getThrowsList shouldBe throwsList {
+                classType("IOException")
+                classType("Bar") {
+                    ambiguousName("java.io")
                 }
             }
 
-            it::getThrows shouldBe child(ignoreChildren = true) {} //TODO
-
-            it::getBlock shouldBe block()
+            it::getBody shouldBe block()
         }
+    }
+
+    parserTest("Throws list can be annotated") {
+
+        "void bar() throws @Oha IOException, @Aha java.io.@Oha Bar { }" should matchDeclaration<ASTMethodDeclaration> {
+
+            it::getResultType shouldBe voidResult()
+
+            it::getFormalParameters shouldBe formalsList(0)
+
+            it::getThrowsList shouldBe throwsList {
+                classType("IOException") {
+                    annotation("Oha")
+                }
+
+                classType("Bar") {
+                    classType("io") {
+                        classType("java") {
+                            annotation("Aha")
+                        }
+                    }
+                    annotation("Oha")
+                }
+            }
+
+            it::getBody shouldBe block()
+        }
+    }
+
+    parserTest("Annotation methods") {
+
+        genClassHeader = "@interface Foo"
+
+        inContext(EnclosedDeclarationParsingCtx) {
+
+            "Bar bar() throws IOException;" shouldNot parse()
+            "void bar();" shouldNot parse()
+            "default int bar() { return 1; }" shouldNot parse()
+            "int bar(Foo f);" shouldNot parse()
+            "public int bar();" should parseAs {
+                annotationMethod {
+                    resultType {
+                        primitiveType(PrimitiveType.INT)
+                    }
+                    formalsList(0)
+                }
+            }
+            "int bar() default 2;" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        primitiveType(PrimitiveType.INT)
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe defaultValue { int(2) }
+                }
+            }
+
+            "Override bar() default @Override;" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        classType("Override")
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe defaultValue { annotation("Override") }
+                }
+            }
+
+            "Override bar()[] default { @Override };" should parseAs {
+                annotationMethod {
+                    it::getResultType shouldBe resultType {
+                        classType("Override")
+                    }
+                    it::getFormalParameters shouldBe formalsList(0)
+
+                    it::getDefaultClause shouldBe defaultValue {
+                        memberValueArray {
+                            annotation("Override")
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     parserTest("Receiver parameters") {
@@ -112,29 +198,25 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
+            // notice that arity is zero
+            it::getArity shouldBe 0
 
-            it::getResultType shouldBe child {
-                it::getTypeNode shouldBe null
-                it::isVoid shouldBe true
-            }
+            it::getResultType shouldBe voidResult()
 
-            it::getMethodDeclarator shouldBe child {
+            it::getFormalParameters shouldBe child {
                 it::getParameterCount shouldBe 0
+                it::toList shouldBe emptyList()
 
-                it::getFormalParameters shouldBe child {
-                    it::getParameterCount shouldBe 0
-                    it::toList shouldBe emptyList()
-
-                    it::getReceiverParameter shouldBe child {
-                        classType("Foo") {
-                            annotation("A")
-                        }
+                it::getReceiverParameter shouldBe child {
+                    classType("Foo") {
+                        annotation("A")
                     }
                 }
+
             }
 
-            it::getThrows shouldBe null
-            it::getBlock shouldBe null
+            it::getThrowsList shouldBe null
+            it::getBody shouldBe null
         }
 
         "void bar(@A Foo this, int other);" should matchDeclaration<ASTMethodDeclaration> {
@@ -142,37 +224,31 @@ class ASTMethodDeclarationTest : ParserTestSpec({
             it::getMethodName shouldBe "bar"
             it::getTypeParameters shouldBe null
             it::isVoid shouldBe true
+            it::getArity shouldBe 1
 
-            it::getResultType shouldBe child {
-                it::getTypeNode shouldBe null
-                it::isVoid shouldBe true
-            }
+            it::getResultType shouldBe voidResult()
 
-            it::getMethodDeclarator shouldBe child {
+            it::getFormalParameters shouldBe child {
                 it::getParameterCount shouldBe 1
 
-                it::getFormalParameters shouldBe child {
-                    it::getParameterCount shouldBe 1
-
-                    it::getReceiverParameter shouldBe child {
-                        classType("Foo") {
-                            annotation("A")
-                        }
+                it::getReceiverParameter shouldBe child {
+                    classType("Foo") {
+                        annotation("A")
                     }
-
-                    it::toList shouldBe listOf(
-                            child {
-                                primitiveType(PrimitiveType.INT)
-                                variableId("other")
-                            }
-                    )
-
-
                 }
+
+                it::toList shouldBe listOf(
+                        child {
+                            primitiveType(PrimitiveType.INT)
+                            variableId("other")
+                        }
+                )
+
+
             }
 
-            it::getThrows shouldBe null
-            it::getBlock shouldBe null
+            it::getThrowsList shouldBe null
+            it::getBody shouldBe null
         }
     }
 
@@ -180,26 +256,23 @@ class ASTMethodDeclarationTest : ParserTestSpec({
 
         "@OnDecl <T extends K> @OnType Ret bar() { return; }" should matchDeclaration<ASTMethodDeclaration> {
 
+            it::getName shouldBe "bar"
+
             annotation("OnDecl")
 
-            typeParamList {
+            it::getTypeParameters shouldBe typeParamList {
                 typeParam("T") {
                     classType("K")
                 }
             }
 
-            child<ASTResultType> {
-                it::isVoid shouldBe false
-
+            it::getResultType shouldBe resultType {
                 classType("Ret") {
                     annotation("OnType")
                 }
             }
 
-            child<ASTMethodDeclarator>(ignoreChildren = true) {
-
-            }
-
+            formalsList(0)
             block()
         }
     }

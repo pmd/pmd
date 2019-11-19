@@ -20,6 +20,7 @@ public class JavaLanguageHandler extends AbstractJavaHandler {
         this.preview = preview;
     }
 
+
     @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new JavaLanguageParser(jdkVersion, preview, parserOptions);

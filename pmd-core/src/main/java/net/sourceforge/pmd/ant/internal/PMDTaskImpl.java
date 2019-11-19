@@ -35,6 +35,7 @@ import net.sourceforge.pmd.RulesetsFactoryUtils;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
@@ -82,8 +83,8 @@ public class PMDTaskImpl {
 
         SourceLanguage version = task.getSourceLanguage();
         if (version != null) {
-            LanguageVersion languageVersion = LanguageRegistry
-                    .findLanguageVersionByTerseName(version.getName() + ' ' + version.getVersion());
+            Language lang = LanguageRegistry.findLanguageByTerseName(version.getName());
+            LanguageVersion languageVersion = lang == null ? null : lang.getVersion(version.getVersion());
             if (languageVersion == null) {
                 throw new BuildException("The following language is not supported:" + version + '.');
             }
@@ -101,7 +102,7 @@ public class PMDTaskImpl {
 
     private void doTask() {
         setupClassLoader();
-        
+
         // Setup RuleSetFactory and validate RuleSets
         final ResourceLoader rl = setupResourceLoader();
         RuleSetFactory ruleSetFactory = RulesetsFactoryUtils.getRulesetFactory(configuration, rl);
