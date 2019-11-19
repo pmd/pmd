@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 import net.sourceforge.pmd.lang.java.qname.JavaOperationQualifiedName;
 import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;

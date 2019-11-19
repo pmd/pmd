@@ -41,25 +41,25 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.lang.java.ast.SideEffectingVisitorAdapter;
 
 /**
  * Checks that an AST conforms to some language level. The reporting
- * behaviour is left to be completed by implementations. For example,
- * {@link #checkerThatThrows(int, boolean)} produces a checker that
- * throws a parse exception. It would be trivial to make eg a checker
- * that collects several warnings and just ignores violations.
+ * behaviour is parameterized with a {@link ReportingStrategy}.
+ *
+ * @param <T> Type of object accumulating violations
  */
-public abstract class LanguageLevelChecker<T> {
+public class LanguageLevelChecker<T> {
 
     private final int jdkVersion;
     private final boolean preview;
     private final CheckVisitor visitor = new CheckVisitor();
+    private final ReportingStrategy<T> reportingStrategy;
 
-    public LanguageLevelChecker(int jdkVersion, boolean preview) {
+    public LanguageLevelChecker(int jdkVersion, boolean preview, ReportingStrategy<T> reportingStrategy) {
         this.jdkVersion = jdkVersion;
         this.preview = preview;
+        this.reportingStrategy = reportingStrategy;
     }
 
     public int getJdkVersion() {
@@ -72,63 +72,20 @@ public abstract class LanguageLevelChecker<T> {
 
 
     public void check(JavaNode node) {
-        T accumulator = createAccumulator();
+        T accumulator = reportingStrategy.createAccumulator();
         node.jjtAccept(visitor, accumulator);
-        done(accumulator);
+        reportingStrategy.done(accumulator);
     }
-
-    /** Create a blank accumulator before performing the check. */
-    protected abstract T createAccumulator();
-
-
-    /** Consume the accumulator, after all violations have been reported. */
-    protected abstract void done(T accumulator);
-
-
-    /**
-     * Report that a node violates a language feature. This doesn't have
-     * to throw an exception, we could also just warn, or accumulate into
-     * the parameter.
-     */
-    protected abstract void report(Node node, String message, T acc);
-
-
-    /**
-     * Creates a checker that throws a {@link ParseException} when an error is reported.
-     *
-     * @param languageLevel  Version number
-     * @param previewEnabled Whether preview is enabled or not
-     */
-    public static LanguageLevelChecker<Void> checkerThatThrows(int languageLevel, boolean previewEnabled) {
-        return new LanguageLevelChecker<Void>(languageLevel, previewEnabled) {
-
-            @Override
-            public Void createAccumulator() {
-                return null;
-            }
-
-            @Override
-            protected void done(Void accumulator) {
-                // do nothing
-            }
-
-            @Override
-            protected void report(Node node, String message, Void acc) {
-                throw new ParseException(
-                    "Line " + node.getBeginLine() + ", Column " + node.getBeginColumn() + ": " + message);
-            }
-        };
-    }
-
 
     private boolean check(Node node, LanguageFeature message, T acc) {
         if (message.isAvailable(this.jdkVersion, this.preview)) {
             return true;
         }
 
-        report(node, message.whenUnavailableMessage(), acc);
+        reportingStrategy.report(node, message.whenUnavailableMessage(), acc);
         return false;
     }
+
 
     private class CheckVisitor extends SideEffectingVisitorAdapter<T> {
 
