@@ -7630,5 +7630,3 @@ The binary package still contains all languages and can be used as usual. Have a
 ## June 25 2002 - 0.1:
 
     Initial release
-
-The PMD book - $20 - http://pmdapplied.com/

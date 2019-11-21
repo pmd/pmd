@@ -324,8 +324,7 @@ I’ve found that my rules usually don’t work the first time, and so I have to
 
 As an acceptance test of sorts, I usually run a rule on the JDK 1.4 source code and make sure that a random sampling of the problems found are in fact legitimate rule violations. This also ensures that the rule doesn’t get confused by nested inner classes or any of the other oddities that appear at various points in the JDK source.
 
-You’re rolling now. If you think a rule would benefit the Java development community as a whole, post a message to [the forum](http://sourceforge.net/p/pmd/discussion/188192) so we can get the rule moved into one of the core rulesets.
+You’re rolling now. If you think a rule would benefit the (Java) development community as a whole,
+create a [issue on github](https://github.com/pmd/pmd/issues) so we can get the rule moved into one of the core rulesets.
 
 Or, if you can improve one of the existing rules, that’d be great too! Thanks!
-
-Finally, for many more details on writing rules, pick up [PMD Applied](http://pmdapplied.com/)!
