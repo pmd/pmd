@@ -23,6 +23,8 @@ This is a {{ site.pmd.release_type }} release.
 *   java
     *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
     *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
+*   java-codestyle
+    *   [#1362](https://github.com/pmd/pmd/issues/1362): \[java] LinguisticNaming flags Predicates with boolean-style names
 
 ### API Changes
 
@@ -32,6 +34,7 @@ This is a {{ site.pmd.release_type }} release.
 *   [#2089](https://github.com/pmd/pmd/pull/2089): \[core] Minor unrelated improvements to code - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
 *   [#2091](https://github.com/pmd/pmd/pull/2091): \[core] Fix pmd warnings (IdenticalCatchCases) - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
 *   [#2106](https://github.com/pmd/pmd/pull/2106): \[java] Wrong name for inner classes - [Andi Pabst](https://github.com/andipabst)
+*   [#2121](https://github.com/pmd/pmd/pull/2121): \[java] Predicates treated like booleans - [Ozan Gulle](https://github.com/ozangulle)
 
 {% endtocmaker %}
 
