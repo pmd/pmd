@@ -27,6 +27,8 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
 *   java-codestyle
     *   [#2098](https://github.com/pmd/pmd/issues/2098): \[java] UnnecessaryFullyQualifiedName: regression / false positive
+*   java-design
+    *   [#2075](https://github.com/pmd/pmd/issues/2075): \[java] ImmutableField false positive with inner class
 *   java-errorprone
     *   [#2102](https://github.com/pmd/pmd/issues/2102): \[java] False positive MissingStaticMethodInNonInstantiatableClass when inheritors are instantiable
 
