@@ -148,8 +148,12 @@ public class PMDTaskImpl {
                 files.add(new FileDataSource(file));
             }
 
-            final String inputPaths = ds.getBasedir().getPath();
-            configuration.setInputPaths(inputPaths);
+            final String commonInputPath = ds.getBasedir().getPath();
+            configuration.setInputPaths(commonInputPath);
+            final List<String> reportShortNamesPaths = new ArrayList<>();
+            if (configuration.isReportShortNames()) {
+                reportShortNamesPaths.add(commonInputPath);
+            }
 
             Renderer logRenderer = new AbstractRenderer("log", "Logging renderer") {
                 @Override
@@ -159,7 +163,7 @@ public class PMDTaskImpl {
 
                 @Override
                 public void startFileAnalysis(DataSource dataSource) {
-                    project.log("Processing file " + dataSource.getNiceFileName(false, inputPaths),
+                    project.log("Processing file " + dataSource.getNiceFileName(false, commonInputPath),
                             Project.MSG_VERBOSE);
                 }
 
@@ -184,7 +188,9 @@ public class PMDTaskImpl {
             List<Renderer> renderers = new ArrayList<>(formatters.size() + 1);
             renderers.add(logRenderer);
             for (Formatter formatter : formatters) {
-                renderers.add(formatter.getRenderer());
+                Renderer renderer = formatter.getRenderer();
+                renderer.setUseShortNames(reportShortNamesPaths);
+                renderers.add(renderer);
             }
             try {
                 PMD.processFiles(configuration, ruleSetFactory, files, ctx, renderers);
