@@ -17,6 +17,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNameList;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
@@ -256,12 +257,22 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         }
 
         int i = name.lastIndexOf('.');
-        while (i > 0) {
+        if (i > 0) {
             name = name.substring(0, i);
             if (name.equals(currentPackage)) {
                 return true;
             }
-            i = name.lastIndexOf('.');
+        }
+        // if it is a name used inside a primary prefix, then it is ambiguous, whether it references
+        // a type or a field or a type inside a subpackage
+        // we assume here, it won't be a subpackage the name references a field, e.g.
+        // package a;
+        // name: a.b.c.d(); -> we assume, b is a class, c is a field, d is a method.
+        // but it could very well be, that: a.b is a package and c is a class, d is a (static) method.
+        if (node.jjtGetParent() instanceof ASTPrimaryPrefix
+                || node.jjtGetParent() instanceof ASTNameList
+                || node instanceof ASTClassOrInterfaceType) {
+            return currentPackage != null && name.startsWith(currentPackage);
         }
 
         return false;
