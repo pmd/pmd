@@ -8,4 +8,9 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
 
 public class TestClass {
 
+    protected class SomeInnerClass {
+        public void alsoDoSomething() {
+            System.out.println("alsoDoSomething");
+        }
+    }
 }

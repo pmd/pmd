@@ -664,4 +664,25 @@ public class ClassOne extends com.example.ClassTwo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2029 [java] UnnecessaryFullyQualifiedName false-positive for non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass.*;
+
+public class SomeClass {
+
+    public void theMethod() {
+        someMethod();
+        Object someObject = new Object();
+        if(someObject instanceof TestClass.SomeInnerClass) {
+            System.out.println("");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

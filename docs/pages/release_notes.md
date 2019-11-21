@@ -26,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
     *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
     *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
 *   java-codestyle
+    *   [#2029](https://github.com/pmd/pmd/issues/2029): \[java] UnnecessaryFullyQualifiedName false-positive for non-static nested classes
     *   [#2098](https://github.com/pmd/pmd/issues/2098): \[java] UnnecessaryFullyQualifiedName: regression / false positive
 *   java-design
     *   [#2075](https://github.com/pmd/pmd/issues/2075): \[java] ImmutableField false positive with inner class
