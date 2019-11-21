@@ -5020,6 +5020,22 @@
 
 
 {
+"title": "Rule deprecation policy",
+"tags": "devdocs",
+"keywords": "",
+"url": "pmd_devdocs_rule_deprecation_policy.html",
+"summary": "Describes when and how rules are deprecated"
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Rule guidelines",
 "tags": "extendinguserdocs",
 "keywords": "",
