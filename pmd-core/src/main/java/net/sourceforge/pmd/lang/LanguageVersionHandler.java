@@ -11,6 +11,8 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
 /**
  * Interface for obtaining the classes necessary for checking source files of a
@@ -149,5 +151,16 @@ public interface LanguageVersionHandler {
      */
     @Experimental
     LanguageMetricsProvider<?, ?> getLanguageMetricsProvider();
+
+
+    /**
+     * Returns the designer bindings for this language version.
+     * Null is not an acceptable result, use {@link DefaultDesignerBindings#getInstance()}
+     * instead.
+     *
+     * @since 6.20.0
+     */
+    @Experimental
+    DesignerBindings getDesignerBindings();
 
 }

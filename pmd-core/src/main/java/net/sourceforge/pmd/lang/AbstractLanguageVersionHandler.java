@@ -8,6 +8,7 @@ import java.io.Writer;
 
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 
 /**
@@ -79,5 +80,10 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
     @Override
     public LanguageMetricsProvider<?, ?> getLanguageMetricsProvider() {
         return null;
+    }
+
+    @Override
+    public DesignerBindings getDesignerBindings() {
+        return DesignerBindings.DefaultDesignerBindings.getInstance();
     }
 }
