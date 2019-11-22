@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.lang.rule.ImportWrapper;
 
 public class UnusedImportsRule extends AbstractJavaRule {
