@@ -143,6 +143,23 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTName node, Object data) {
+        if (isMethodCall(node) && isQualifiedName(node)) {
+            String name = node.getImage().substring(0, node.getImage().lastIndexOf('.'));
+            // try to resolve with on demand imports...
+            ClassTypeResolver classTypeResolver = node.getFirstParentOfType(ASTCompilationUnit.class).getClassTypeResolver();
+            Iterator<ImportWrapper> it = imports.iterator();
+            while (it.hasNext()) {
+                ImportWrapper i = it.next();
+                if (i.getName() == null) {
+                    String fullName = i.getFullName() + "." + name;
+                    if (classTypeResolver.loadClass(fullName) != null) {
+                        // found a match
+                        it.remove();
+                        return data;
+                    }
+                }
+            }
+        }
         check(node);
         return data;
     }
