@@ -368,8 +368,7 @@ public class LanguageLevelChecker<T> {
         ASSERT_AS_AN_IDENTIFIER(4, "assert"),
         ENUM_AS_AN_IDENTIFIER(5, "enum"),
         UNDERSCORE_AS_AN_IDENTIFIER(9, "_"),
-        VAR_AS_A_TYPE_NAME(10, "var"),
-        ;
+        VAR_AS_A_TYPE_NAME(10, "var");
 
         private final int maxJdkVersion;
         private final String reserved;
@@ -422,8 +421,7 @@ public class LanguageLevelChecker<T> {
         MODULE_DECLARATIONS(9),
         DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9),
         PRIVATE_METHODS_IN_INTERFACES(9),
-        CONCISE_RESOURCE_SYNTAX(9),
-        ;
+        CONCISE_RESOURCE_SYNTAX(9);
 
         private final int minJdkLevel;
 
