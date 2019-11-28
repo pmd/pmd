@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+source .travis/logger.sh
+source .travis/common-functions.sh
+
 if [ "${TRAVIS_REPO_SLUG}" != "pmd/pmd" ] || [ "${TRAVIS_PULL_REQUEST}" != "false" ] || [ "${TRAVIS_SECURE_ENV_VARS}" != "true" ] || [ "${encrypted_5630fbebf057_iv}" = "" ]; then
     echo "Not setting up secrets:"
     echo "  TRAVIS_REPO_SLUG=${TRAVIS_REPO_SLUG}"
