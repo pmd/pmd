@@ -103,7 +103,6 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
                 checkTransformMethods(node, data, nameOfMethod);
             }
         }
-
         return data;
     }
 
@@ -150,7 +149,9 @@ public class LinguisticNamingRule extends AbstractIgnoredAnnotationRule {
     }
 
     private boolean isBooleanType(ASTType node) {
-        return "boolean".equalsIgnoreCase(node.getTypeImage()) || TypeHelper.isA(node, "java.util.concurrent.atomic.AtomicBoolean");
+        return "boolean".equalsIgnoreCase(node.getTypeImage())
+                || TypeHelper.isA(node, "java.util.concurrent.atomic.AtomicBoolean")
+                || TypeHelper.isA(node, "java.util.function.Predicate");
     }
 
     private void checkBooleanMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {

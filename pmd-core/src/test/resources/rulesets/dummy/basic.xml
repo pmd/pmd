@@ -32,7 +32,7 @@ Just for test
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//DummyNode
+//dummyNode
                 ]]></value>
             </property>
         </properties>

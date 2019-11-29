@@ -1,4 +1,4 @@
-<project name="pmdtasktest" default="all">
+<project name="pmdtasktest">
 
     <property name="pmd.home" value="${user.dir}" />
     <property name="src" value="src/main/java" />
@@ -23,5 +23,15 @@
 
     <target name="testNoRuleSets">
         <pmd />
+    </target>
+
+    <target name="testWithShortFilenames">
+        <pmd noCache="true" shortFilenames="true">
+            <ruleset>${pmd.home}/src/test/resources/rulesets/dummy/basic.xml</ruleset>
+            <formatter type="text" toFile="${pmd.home}/target/pmd-ant-test.txt" />
+            <fileset dir="${pmd.home}/src/test/resources/net/sourceforge/pmd/ant/src">
+                <include name="**/*dummy"/>
+            </fileset>
+        </pmd>
     </target>
 </project>

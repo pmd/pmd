@@ -2435,20 +2435,28 @@ See the property `annotations`.
             ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs($x)]))
   )
   and
+  (: no static methods :)
   not(.//MethodDeclaration[@Static=true()])
   and
+  (: no (public, package-private, protected) static fields :)
   not(.//FieldDeclaration[@Private=false()][@Static=true()])
   and
+  (: no nested classes, that are public and static, and have no constructors at all or a public constructor :)
+  (: and have a method returning the outer class type :)
+  (: or the inner class extends the outer class :)
   not(.//ClassOrInterfaceDeclaration[@Nested=true()]
            [@Public=true()]
            [@Static=true()]
-           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public=true()]]
-           [./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
+           [not(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
+               or ./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public=true()]]
+           [(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration
                 [@Public=true()]
                 [./ResultType/Type/ReferenceType/ClassOrInterfaceType
                     [@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
                 ]
-            ]
+            ) or (
+                ./ExtendsList/ClassOrInterfaceType[@Image = //ClassOrInterfaceDeclaration[@Nested=false()]/@Image]
+            )]
         )
 ]
 ]]>
