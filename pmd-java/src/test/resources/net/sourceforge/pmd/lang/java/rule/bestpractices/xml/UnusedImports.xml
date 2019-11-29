@@ -538,6 +538,7 @@ public class VendingV2PaymentRequest {
         <code><![CDATA[
 package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
+// star import is important here for the test case!!
 import java.util.*;
 
 /**

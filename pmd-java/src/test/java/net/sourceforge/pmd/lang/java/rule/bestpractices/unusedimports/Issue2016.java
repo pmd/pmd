@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedimports;
 
-import java.util.*;
+import java.util.Objects;
 
 /**
  * Note: In order for this test case to work, the class "Issue2016" must also be compiled and available
