@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -297,18 +296,22 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
     }
 
     private boolean isReferencingInnerNonStaticClass(final String name, final ASTImportDeclaration firstMatch) {
-        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() && firstMatch.getType() != null) {
+        if (firstMatch.isImportOnDemand() && firstMatch.isStatic() /* && firstMatch.getType() != null */) {
             String[] nameParts = name.split("\\.");
             String[] importParts = firstMatch.getImportedName().split("\\.");
 
             if (nameParts.length == 2 && importParts[importParts.length - 1].equals(nameParts[0])) {
-                Class<?>[] declaredClasses = firstMatch.getType().getDeclaredClasses();
-                for (Class<?> innerClass : declaredClasses) {
-                    if (nameParts[1].equals(innerClass.getSimpleName()) && (innerClass.getModifiers() & Modifier.STATIC) != Modifier.STATIC) {
-                        // the referenced inner class is not static, therefore the static import on demand doesn't match
-                        return true;
-                    }
-                }
+                // Class<?>[] declaredClasses =
+                // firstMatch.getType().getDeclaredClasses();
+                // for (Class<?> innerClass : declaredClasses) {
+                // if (nameParts[1].equals(innerClass.getSimpleName()) &&
+                // (innerClass.getModifiers() & Modifier.STATIC) !=
+                // Modifier.STATIC) {
+                // // the referenced inner class is not static, therefore the
+                // static import on demand doesn't match
+                // return true;
+                // }
+                // }
             }
         }
         return false;
