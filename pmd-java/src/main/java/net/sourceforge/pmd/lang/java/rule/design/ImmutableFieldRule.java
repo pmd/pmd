@@ -87,6 +87,7 @@ public class ImmutableFieldRule extends AbstractLombokAwareRule {
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null && isSameClass(field, constructor)) {
                     if (inLoopOrTry(node)) {
+                        methodInitCount++;
                         continue;
                     }
                     // Check for assigns in if-statements, which can depend on

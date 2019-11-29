@@ -528,4 +528,27 @@ public class Stack {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField: False positive when variable is updated in conditional loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+import java.util.Random;
+import java.math.BigInteger;
+
+public class TestFinal {
+  private BigInteger e;
+
+  public TestFinal() {
+    Random random = new Random();
+    e = BigInteger.probablePrime(Integer.MAX_VALUE / 2, random);
+
+    while (random.nextBoolean())
+      e = e.add(BigInteger.ONE);
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
