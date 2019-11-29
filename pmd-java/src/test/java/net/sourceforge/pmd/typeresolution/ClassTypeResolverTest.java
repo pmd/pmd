@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -100,6 +101,7 @@ import net.sourceforge.pmd.typeresolution.testdata.JavaTypeDefinitionToStringNPE
 import net.sourceforge.pmd.typeresolution.testdata.Literals;
 import net.sourceforge.pmd.typeresolution.testdata.LocalGenericClass;
 import net.sourceforge.pmd.typeresolution.testdata.MethodAccessibility;
+import net.sourceforge.pmd.typeresolution.testdata.MethodCallExpressionTypes;
 import net.sourceforge.pmd.typeresolution.testdata.MethodFirstPhase;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericExplicit;
 import net.sourceforge.pmd.typeresolution.testdata.MethodGenericParam;
@@ -1552,13 +1554,13 @@ public class ClassTypeResolverTest {
 
         // int c = StaticMembers.primitiveStaticMethod();
         assertEquals(int.class, expressions.get(index).getType());
-        assertEquals(int.class, getChildType(expressions.get(index), 0));
-        assertEquals(int.class, getChildType(expressions.get(index++), 1));
+        assertEquals(StaticMembers.class, getChildType(expressions.get(index), 0)); // PrimaryPrefix
+        assertEquals(int.class, getChildType(expressions.get(index++), 1)); // PrimarySuffix
 
         // String c = MethodStaticAccess.Nested.primitiveStaticMethod();
         assertEquals(String.class, expressions.get(index).getType());
-        assertEquals(String.class, getChildType(expressions.get(index), 0));
-        assertEquals(String.class, getChildType(expressions.get(index++), 1));
+        assertEquals(MethodStaticAccess.Nested.class, getChildType(expressions.get(index), 0)); // PrimaryPrefix
+        assertEquals(String.class, getChildType(expressions.get(index++), 1)); // PrimarySuffix
 
         // Make sure we got them all
         assertEquals("All expressions not tested", index, expressions.size());
@@ -1837,6 +1839,14 @@ public class ClassTypeResolverTest {
     @Test
     public void testLocalGenericClass() throws Exception {
         parseAndTypeResolveForClass(LocalGenericClass.class, "9");
+    }
+
+    @Test
+    public void testMethodCallExpressionTypes() throws Exception {
+        ASTCompilationUnit cu = parseAndTypeResolveForClass(MethodCallExpressionTypes.class, "11");
+        ASTPrimaryExpression expr = cu.getFirstDescendantOfType(ASTPrimaryExpression.class);
+        assertEquals(forClass(String.class), expr.getTypeDefinition());
+        assertEquals(forClass(Objects.class), expr.getFirstChildOfType(ASTPrimaryPrefix.class).getTypeDefinition());
     }
 
     private JavaTypeDefinition getChildTypeDef(Node node, int childIndex) {
