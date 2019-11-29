@@ -12,8 +12,6 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### New and noteworthy
-
 ### Fixed Issues
 
 *   apex
@@ -38,8 +36,6 @@ This is a {{ site.pmd.release_type }} release.
     *   [#2125](https://github.com/pmd/pmd/issues/2125): \[java] ImmutableField: False positive when variable is updated in conditional loop
 *   java-errorprone
     *   [#2102](https://github.com/pmd/pmd/issues/2102): \[java] False positive MissingStaticMethodInNonInstantiatableClass when inheritors are instantiable
-
-### API Changes
 
 ### External Contributions
 
