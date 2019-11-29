@@ -499,4 +499,56 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2075 [java] ImmutableField false positive with inner class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Stack {
+    private Node first;
+    private int n;   // can't be made final
+
+    public void insert(int x) {
+        first = new Node(first, x);
+    }
+
+    public int size() {
+        return n;
+    }
+
+    private class Node {
+        Node next;
+        int x;
+        private Node(Node next, int x) {
+            this.next = next;
+            this.x = x;
+            n++;  // inner class updates instance variable in outer class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] ImmutableField: False positive when variable is updated in conditional loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package pmdtests;
+
+import java.util.Random;
+import java.math.BigInteger;
+
+public class TestFinal {
+  private BigInteger e;
+
+  public TestFinal() {
+    Random random = new Random();
+    e = BigInteger.probablePrime(Integer.MAX_VALUE / 2, random);
+
+    while (random.nextBoolean())
+      e = e.add(BigInteger.ONE);
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -540,6 +540,10 @@ class length {
     <test-code>
         <description>False negative when name refers to static field</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary use of fully qualified name 'threads.length.foo' due to existing same package import 'threads.*'</message>
+        </expected-messages>
         <code><![CDATA[
 package threads;
 
@@ -614,6 +618,69 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 public class UnnecessaryFullyQualifiedName {
     public static void main(String[] args) {
         System.out.println(UnnecessaryFullyQualifiedNameTest.ENUM1.A);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2098 false positive with annotated package</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@com.example.subpackage.ExampleAnnotation
+package com.example;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2098 false positive with annotated package - with type-resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.subpackage.MyAnnotation
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>False-Negative when referencing inner class</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>3,4,6,7,8,9,12</expected-linenumbers>
+        <code><![CDATA[
+package com.example;
+
+public class ClassOne extends com.example.ClassTwo {
+    com.example.ClassTwo.Builder builder = null;
+
+    public void run() throws com.example.ClassOne.MyException {
+        com.example.ClassOne.Builder builder = null;
+        com.example.ClassTwo.Builder builder2 = null;
+        throw new com.example.ClassOne.MyException();
+    }
+
+    public class Builder extends com.example.ClassTwo.Builder {
+    }
+
+    public static class MyException extends Exception { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2029 [java] UnnecessaryFullyQualifiedName false-positive for non-static nested classes</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname;
+
+import static net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.TestClass.*;
+
+public class SomeClass {
+
+    public void theMethod() {
+        someMethod();
+        Object someObject = new Object();
+        if(someObject instanceof TestClass.SomeInnerClass) {
+            System.out.println("");
+        }
     }
 }
         ]]></code>
