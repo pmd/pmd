@@ -10,7 +10,7 @@ usage() {
 }
 
 valid_app_options () {
-    echo "pmd, cpd, cpdgui, designer, bgastviewer, designerold"
+    echo "pmd, cpd, cpdgui, scm, designer, bgastviewer, designerold"
 }
 
 is_cygwin() {
@@ -183,6 +183,9 @@ case "${APPNAME}" in
     ;;
   "designer")
     readonly CLASSNAME="net.sourceforge.pmd.util.fxdesigner.DesignerStarter"
+    ;;
+  "scm")
+    readonly CLASSNAME="net.sourceforge.pmd.scm.SCM"
     ;;
   "designerold")
     readonly CLASSNAME="net.sourceforge.pmd.util.designer.Designer"

@@ -158,9 +158,14 @@ public class DocumentFile implements Document, Closeable {
 
     private void writeUntilEOF() throws IOException {
         String line;
+        boolean addEOL = false;
 
         while ((line = reader.readLine()) != null) {
+            if (addEOL) {
+                writer.write('\n');
+            }
             writer.write(line);
+            addEOL = true;
         }
     }
 
