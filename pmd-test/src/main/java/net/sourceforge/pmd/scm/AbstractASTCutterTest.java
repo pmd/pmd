@@ -16,23 +16,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractASTCutterTest {
-    private final Path tempFile;
+    protected Path tempFile;
     private final Parser parser;
     private final Charset charset;
 
     private Node originalRoot;
     private ASTCutter cutter;
 
-    protected AbstractASTCutterTest(Parser parser, Charset charset, String extension) throws IOException {
-        tempFile = Files.createTempFile("pmd-test-", "." + extension);
+    protected AbstractASTCutterTest(Parser parser, Charset charset) {
         this.parser = parser;
         this.charset = charset;
+    }
+
+    @Before
+    public void setUp() throws IOException {
+        tempFile = Files.createTempFile("pmd-test-", ".tmp");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        Files.delete(tempFile);
+        cutter.close();
     }
 
     private void assertEqualsAfterRemoval(Node expected, Set<Node> nodesToRemove, Node actual) {
@@ -53,14 +65,6 @@ public abstract class AbstractASTCutterTest {
         for (int i = 0; i < filteredReferenceChildren.size(); ++i) {
             assertEqualsAfterRemoval(filteredReferenceChildren.get(i), nodesToRemove, actual.jjtGetChild(i));
         }
-    }
-
-    protected void assertResultedSourceEquals(Charset charset, URL expected) throws IOException {
-        byte[] data = new byte[65536];
-        int length = expected.openStream().read(data);
-        String expectedContents = new String(data, 0, length, charset);
-        String actualContents = new String(Files.readAllBytes(tempFile), charset);
-        Assert.assertEquals(expectedContents, actualContents);
     }
 
     private Node load(Path file) throws IOException {

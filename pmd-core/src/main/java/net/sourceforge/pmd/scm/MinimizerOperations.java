@@ -10,14 +10,16 @@ import net.sourceforge.pmd.lang.ast.Node;
 
 public interface MinimizerOperations {
     /**
-     * Trim the specified nodes with all their descendants
+     * Get current language implementation
      */
-    void removeNodes(Collection<Node> nodesToRemove) throws Exception;
+    Language getLanguage();
 
     /**
-     * Check whether the requested invariant is satisfied
+     * Trim the specified nodes with all their descendants
      */
-    boolean testInvariant() throws Exception;
+    void tryRemoveNodes(Collection<Node> nodesToRemove) throws Exception;
+
+    void forceRemoveNodesAndExit(Collection<Node> nodesToRemove) throws Exception;
 
     /**
      * Get the parsed root node of the <b>input</b> file specified on the command line

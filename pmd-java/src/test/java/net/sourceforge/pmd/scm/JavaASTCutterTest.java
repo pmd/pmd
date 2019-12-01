@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 
 public class JavaASTCutterTest extends AbstractASTCutterTest {
     public JavaASTCutterTest() throws IOException {
-        super(new JavaMinimizerModule().getParser(), Charset.defaultCharset(), "java");
+        super(new JavaMinimizerModule().getParser(), Charset.defaultCharset());
     }
 
     @Test
@@ -26,6 +26,6 @@ public class JavaASTCutterTest extends AbstractASTCutterTest {
         List<Node> list = new ArrayList<>();
         list.add(root.getFirstDescendantOfType(ASTClassOrInterfaceBodyDeclaration.class));
         testExactRemoval(list);
-        assertResultedSourceEquals(StandardCharsets.UTF_8, getClass().getResource("cutter-test-output.txt"));
+        Helper.assertResultedSourceEquals(StandardCharsets.UTF_8, getClass().getResource("cutter-test-output.txt"), tempFile);
     }
 }

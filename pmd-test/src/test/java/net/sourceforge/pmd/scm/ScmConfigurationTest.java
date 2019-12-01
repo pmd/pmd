@@ -58,6 +58,8 @@ public class ScmConfigurationTest {
         + "  Options:\n"
         + "  * --xpath-expression\n"
         + "      XPath 2.0 expression to drop matched subtrees\n"
+        + "--- Parameters specific to strategy: greedy\n"
+        + "Usage:\n"
         + "--- Parameters specific to invariant: dummy\n"
         + "Usage:\n"
         + "--- Parameters specific to invariant: exitcode\n"

@@ -39,13 +39,14 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Please note, that this operation is <b>not required</b> to somehow retain formatting or create
  * nicely formatted files.
  */
-public class ASTCutter {
+public class ASTCutter implements AutoCloseable {
     private final Path tempInputCopy = Files.createTempFile("pmd-", ".tmp");
     private final Parser parser;
     private final Charset charset;
 
     private final Path file;
     private Node currentRoot;
+    private final Set<Node> currentDocumentNodes = new HashSet<>();
 
     /**
      * Create ASTCutter instance
@@ -57,6 +58,10 @@ public class ASTCutter {
         this.parser = parser;
         this.charset = charset;
         this.file = file;
+    }
+
+    public Path getScratchFile() {
+        return file;
     }
 
     /**
@@ -87,6 +92,19 @@ public class ASTCutter {
         }
     }
 
+    private void collectNodes(Node subtree) {
+        currentDocumentNodes.add(subtree);
+        for (int i = 0; i < subtree.jjtGetNumChildren(); ++i) {
+            collectNodes(subtree.jjtGetChild(i));
+        }
+    }
+
+    Node load(Path from) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(from, charset)) {
+            return parser.parse(from.toString(), reader);
+        }
+    }
+
     /**
      * Accepts the last written file state as a new intermediate state.
      *
@@ -95,11 +113,12 @@ public class ASTCutter {
      * @return The root node of the "new current" source state
      */
     public Node commitChange() throws IOException {
+        currentRoot = load(file);
+        // if not thrown, then ...
         Files.copy(file, tempInputCopy, StandardCopyOption.REPLACE_EXISTING);
 
-        try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
-            currentRoot = parser.parse(file.toString(), reader);
-        }
+        currentDocumentNodes.clear();
+        collectNodes(currentRoot);
 
         return currentRoot;
     }
@@ -119,6 +138,9 @@ public class ASTCutter {
      */
     public void writeTrimmedSource(Collection<Node> nodesToRemove) throws IOException {
         rollbackChange();
+
+        assert currentDocumentNodes.containsAll(nodesToRemove);
+
         try (DocumentFile document = new DocumentFile(file.toFile(), charset)) {
             DocumentOperationsApplierForNonOverlappingRegions applier = new DocumentOperationsApplierForNonOverlappingRegions(document);
             List<DeleteDocumentOperation> operations = calculateTreeCutting(currentRoot, nodesToRemove);
@@ -127,5 +149,10 @@ public class ASTCutter {
             }
             applier.apply();
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        Files.delete(tempInputCopy);
     }
 }

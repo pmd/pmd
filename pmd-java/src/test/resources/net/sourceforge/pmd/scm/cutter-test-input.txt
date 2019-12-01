@@ -20,21 +20,17 @@ import org.junit.Assert;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 
-///////////////////////////////
-////// NOT A REAL SOURCE //////
-///////////////////////////////
-
 public abstract class AbstractASTCutterTest {
 
-    /**/protected AbstractASTCutterTest(Parser parser, Charset charset, String extension) throws IOException {
-        tempFile = Files.createTempFile("pmd-test-", "." + extension);
-        this.parser = parser;
-        this.charset = charset;
-    }
+protected AbstractASTCutterTest(Parser parser, Charset charset, String extension) throws IOException {
+tempFile = Files.createTempFile("pmd-test-", "." + extension);
+this.parser = parser;
+this.charset = charset;
+}
 
-    protected void testRemoval(List<Node> nodesToRemove) throws IOException {
-        cutter.writeTrimmedSource(nodesToRemove);
-        Node trimmedRoot = load(tempFile);
-        assertEqualsAfterRemoval(originalRoot, new HashSet<Node>(nodesToRemove), trimmedRoot);
-    }
+protected void testRemoval(List<Node> nodesToRemove) throws IOException {
+cutter.writeTrimmedSource(nodesToRemove);
+Node trimmedRoot = load(tempFile);
+assertEqualsAfterRemoval(originalRoot, new HashSet<Node>(nodesToRemove), trimmedRoot);
+}
 }

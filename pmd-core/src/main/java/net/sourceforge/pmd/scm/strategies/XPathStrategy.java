@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.scm.MinimizerOperations;
 
 import com.beust.jcommander.Parameter;
 
@@ -50,9 +49,8 @@ public class XPathStrategy extends AbstractMinimizationStrategy {
     }
 
     @Override
-    public PassResult performSinglePass(MinimizerOperations ops, Node currentRoot) throws Exception {
+    public void performSinglePass(Node currentRoot) throws Exception {
         List<Node> nodesToRemove = query.evaluate(currentRoot, null);
-        ops.removeNodes(nodesToRemove);
-        return PassResult.COMMIT_AND_EXIT;
+        ops.forceRemoveNodesAndExit(nodesToRemove);
     }
 }

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.scm.strategies;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.scm.MinimizerOperations;
 
 public abstract class AbstractMinimizationStrategy implements MinimizationStrategy {
     public abstract static class AbstractConfiguration implements MinimizationStrategyConfiguration {
@@ -23,12 +24,14 @@ public abstract class AbstractMinimizationStrategy implements MinimizationStrate
         }
     }
 
+    protected MinimizerOperations ops;
+
     protected AbstractMinimizationStrategy(AbstractConfiguration configuration) { // NOPMD
         // do nothing for now
     }
 
     @Override
-    public void initialize(Node rootNode) {
-        // do nothing by default
+    public void initialize(MinimizerOperations ops, Node rootNode) {
+        this.ops = ops;
     }
 }
