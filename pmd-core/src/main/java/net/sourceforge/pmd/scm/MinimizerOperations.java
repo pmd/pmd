@@ -15,6 +15,14 @@ public interface MinimizerOperations {
     Language getLanguage();
 
     /**
+     * Try cleaning up source code.
+     *
+     * <b>Tries</b> to not change the AST.
+     * <b>Does not</b> commit broken invariants.
+     */
+    void tryCleanup() throws Exception;
+
+    /**
      * Trim the specified nodes with all their descendants
      */
     void tryRemoveNodes(Collection<Node> nodesToRemove) throws Exception;

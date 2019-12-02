@@ -40,7 +40,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * nicely formatted files.
  */
 public class ASTCutter implements AutoCloseable {
-    private final Path tempInputCopy = Files.createTempFile("pmd-", ".tmp");
+    private static final String WHITESPACE = " \t";
+
+    private final Path lastCommitted = Files.createTempFile("pmd-", ".tmp");
     private final Parser parser;
     private final Charset charset;
 
@@ -92,6 +94,64 @@ public class ASTCutter implements AutoCloseable {
         }
     }
 
+    private List<DeleteDocumentOperation> calculateWhitespaceCleanup() throws IOException {
+        List<DeleteDocumentOperation> result = new ArrayList<>();
+        List<String> lines = Files.readAllLines(lastCommitted, charset);
+        Node rootNode = load(lastCommitted);
+        calculateWhitespaceCleanup(result, lines, rootNode, -1, 0, false);
+        return result;
+    }
+
+    private void calculateWhitespaceCleanup(List<DeleteDocumentOperation> result, List<String> lines, Node node, final int prevEndLine, final int prevEndColumn, final boolean wasJustTrimmed) {
+        final int curBeginLine = node.getBeginLine() - 1;
+        final int curBeginColumn = node.getBeginColumn() - 1;
+
+        boolean wasTrimmedHere = false;
+
+        if (!wasJustTrimmed && prevEndLine < curBeginLine - 1) {
+            // retain whitespace indentation to the left
+            String curLine = lines.get(curBeginLine);
+            int endDeleteLine = curBeginLine;
+            int endDeleteColumn = curBeginColumn - 1;
+            for (; endDeleteColumn >= 0 && WHITESPACE.indexOf(curLine.charAt(endDeleteColumn)) != -1; --endDeleteColumn) {
+                // nothing else
+            }
+            // are we retaining the whole current line (it is likely)
+            if (endDeleteColumn == -1 && endDeleteLine > 0) {
+                endDeleteLine -= 1;
+                endDeleteColumn = lines.get(endDeleteLine).length();
+            } else {
+                endDeleteColumn += 1;
+            }
+
+            // check that end line of previous Node does not contain non-whitespace after end column
+            boolean okToTrim = true;
+            String prevLine = prevEndLine == -1 ? "" : lines.get(prevEndLine);
+            for (int ind = prevEndColumn + 1; ind < prevLine.length(); ++ind) {
+                if (WHITESPACE.indexOf(prevLine.charAt(ind)) == -1) {
+                    okToTrim = false;
+                    break;
+                }
+            }
+            if (okToTrim) {
+                result.add(new DeleteDocumentOperation(prevEndLine + 1, endDeleteLine, 0, endDeleteColumn));
+                wasTrimmedHere = true;
+            }
+        }
+
+        int prevChildEndLine = prevEndLine;
+        int prevChildEndColumn = prevEndColumn;
+
+        for (int childInd = 0; childInd < node.jjtGetNumChildren(); ++childInd) {
+            final Node child = node.jjtGetChild(childInd);
+
+            calculateWhitespaceCleanup(result, lines, child, prevChildEndLine, prevChildEndColumn, childInd == 0 && (wasTrimmedHere || wasJustTrimmed));
+
+            prevChildEndLine = child.getEndLine() - 1;
+            prevChildEndColumn = child.getEndColumn() - 1;
+        }
+    }
+
     private void collectNodes(Node subtree) {
         currentDocumentNodes.add(subtree);
         for (int i = 0; i < subtree.jjtGetNumChildren(); ++i) {
@@ -115,7 +175,7 @@ public class ASTCutter implements AutoCloseable {
     public Node commitChange() throws IOException {
         currentRoot = load(file);
         // if not thrown, then ...
-        Files.copy(file, tempInputCopy, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file, lastCommitted, StandardCopyOption.REPLACE_EXISTING);
 
         currentDocumentNodes.clear();
         collectNodes(currentRoot);
@@ -127,7 +187,17 @@ public class ASTCutter implements AutoCloseable {
      * Rolls back intermediate file to the last <i>committed</i> state.
      */
     public void rollbackChange() throws IOException {
-        Files.copy(tempInputCopy, file, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(lastCommitted, file, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private void deleteRegions(List<DeleteDocumentOperation> operations) throws IOException {
+        try (DocumentFile document = new DocumentFile(file.toFile(), charset)) {
+            DocumentOperationsApplierForNonOverlappingRegions applier = new DocumentOperationsApplierForNonOverlappingRegions(document);
+            for (DeleteDocumentOperation operation : operations) {
+                applier.addDocumentOperation(operation);
+            }
+            applier.apply();
+        }
     }
 
     /**
@@ -141,18 +211,17 @@ public class ASTCutter implements AutoCloseable {
 
         assert currentDocumentNodes.containsAll(nodesToRemove);
 
-        try (DocumentFile document = new DocumentFile(file.toFile(), charset)) {
-            DocumentOperationsApplierForNonOverlappingRegions applier = new DocumentOperationsApplierForNonOverlappingRegions(document);
-            List<DeleteDocumentOperation> operations = calculateTreeCutting(currentRoot, nodesToRemove);
-            for (DeleteDocumentOperation operation : operations) {
-                applier.addDocumentOperation(operation);
-            }
-            applier.apply();
-        }
+        deleteRegions(calculateTreeCutting(currentRoot, nodesToRemove));
+    }
+
+    public void writeCleanedUpSource() throws IOException {
+        rollbackChange();
+
+        deleteRegions(calculateWhitespaceCleanup());
     }
 
     @Override
     public void close() throws Exception {
-        Files.delete(tempInputCopy);
+        Files.delete(lastCommitted);
     }
 }

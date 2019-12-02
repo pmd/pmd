@@ -50,6 +50,19 @@ public class SourceCodeMinimizer implements MinimizerOperations {
     }
 
     @Override
+    public void tryCleanup() throws Exception {
+        cutter.writeCleanedUpSource();
+        if (invariant.checkIsSatisfied()) {
+            try {
+                currentRootNode = cutter.commitChange();
+            } catch (ParseException ex) {
+                return /* unsuccessful */;
+            }
+            throw new ContinueException();
+        }
+    }
+
+    @Override
     public void tryRemoveNodes(Collection<Node> nodesToRemove) throws Exception {
         cutter.writeTrimmedSource(nodesToRemove);
         if (invariant.checkIsSatisfied()) {
@@ -86,6 +99,17 @@ public class SourceCodeMinimizer implements MinimizerOperations {
         return result;
     }
 
+    private void printStats(String when, int originalSize, int originalNodeCount) {
+        int currentSize = getCurrentFileSize();
+        int currentNodeCount = getNodeCount(currentRootNode);
+        int pcSize = currentSize * 100 / originalSize;
+        int pcNodes = currentNodeCount * 100 / originalNodeCount;
+        System.out.println(when + ": size "
+                + currentSize + " bytes (" + pcSize + "%), "
+                + currentNodeCount + " nodes (" + pcNodes + "%)");
+        System.out.flush();
+    }
+
     public void runMinimization() throws Exception {
         strategy.initialize(this, originalRootNode);
 
@@ -94,29 +118,42 @@ public class SourceCodeMinimizer implements MinimizerOperations {
         System.out.println("Original file: " + originalSize + " bytes, " + originalNodeCount + " nodes.");
         System.out.flush();
 
+        try {
+            tryCleanup();
+        } catch (ContinueException ex) {
+            printStats("After initial white-space cleanup", originalSize, originalNodeCount);
+        }
+
         int passNumber = 0;
         boolean shouldContinue = true;
         while (shouldContinue) {
             passNumber += 1;
+            boolean performCleanup = passNumber % 10 == 0;
             try {
-                strategy.performSinglePass(currentRootNode);
-                shouldContinue = false;
+                if (performCleanup) {
+                    tryCleanup();
+                } else {
+                    strategy.performSinglePass(currentRootNode);
+                    shouldContinue = false;
+                }
             } catch (ContinueException ex) {
                 shouldContinue = true;
             } catch (ExitException ex) {
                 shouldContinue = false;
             }
 
-            int currentSize = getCurrentFileSize();
-            int currentNodeCount = getNodeCount(currentRootNode);
-            int pcSize = currentSize * 100 / originalSize;
-            int pcNodes = currentNodeCount * 100 / originalNodeCount;
-            System.out.println("After pass #" + passNumber + ": size "
-                    + currentSize + " bytes (" + pcSize + "%), "
-                    + currentNodeCount + " nodes (" + pcNodes + "%)");
-            System.out.flush();
+            String cleanupLabel = performCleanup ? " (white-space cleanup)" : "";
+
+            printStats("After pass #" + passNumber + cleanupLabel, originalSize, originalNodeCount);
         }
-        cutter.rollbackChange();
+
+        try {
+            tryCleanup();
+        } catch (ContinueException ex) {
+            printStats("After final white-space cleanup", originalSize, originalNodeCount);
+        }
+
+        cutter.rollbackChange(); // to the last committed state
         cutter.close();
     }
 }
