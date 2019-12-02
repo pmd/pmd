@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.scm;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,9 +17,11 @@ import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.scm.invariants.Invariant;
+import net.sourceforge.pmd.scm.invariants.InvariantOperations;
 import net.sourceforge.pmd.scm.strategies.MinimizationStrategy;
+import net.sourceforge.pmd.scm.strategies.MinimizerOperations;
 
-public class SourceCodeMinimizer implements MinimizerOperations {
+public class SourceCodeMinimizer implements InvariantOperations, MinimizerOperations {
     private static final class ContinueException extends Exception { }
 
     private static final class ExitException extends Exception { }
@@ -25,6 +29,8 @@ public class SourceCodeMinimizer implements MinimizerOperations {
     private final Language language;
     private final Invariant invariant;
     private final MinimizationStrategy strategy;
+    private final Parser parser;
+    private final Charset sourceCharset;
     private final ASTCutter cutter;
     private final Node originalRootNode;
 
@@ -32,16 +38,27 @@ public class SourceCodeMinimizer implements MinimizerOperations {
 
     public SourceCodeMinimizer(SCMConfiguration configuration) throws IOException {
         language = configuration.getLanguageHandler();
-        Parser parser = language.getParser();
+        parser = language.getParser();
         invariant = configuration.getInvariantCheckerConfig().createChecker();
         strategy = configuration.getStrategyConfig().createStrategy();
 
         Path inputFile = Paths.get(configuration.getInputFileName());
         Path outputFile = Paths.get(configuration.getOutputFileName());
         Files.copy(inputFile, outputFile, StandardCopyOption.REPLACE_EXISTING);
-        cutter = new ASTCutter(parser, configuration.getSourceCharset(), outputFile);
+        sourceCharset = configuration.getSourceCharset();
+        cutter = new ASTCutter(parser, sourceCharset, outputFile);
         originalRootNode = cutter.commitChange();
         currentRootNode = originalRootNode;
+    }
+
+    @Override
+    public BufferedReader getScratchReader() throws IOException {
+        return Files.newBufferedReader(cutter.getScratchFile(), sourceCharset);
+    }
+
+    @Override
+    public Parser getParser() {
+        return parser;
     }
 
     @Override
@@ -112,6 +129,7 @@ public class SourceCodeMinimizer implements MinimizerOperations {
 
     public void runMinimization() throws Exception {
         strategy.initialize(this, originalRootNode);
+        invariant.initialize(this, originalRootNode);
 
         final int originalSize = getCurrentFileSize();
         final int originalNodeCount = getNodeCount(originalRootNode);

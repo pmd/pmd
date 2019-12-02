@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.scm.strategies;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.scm.MinimizerOperations;
 
 /**
  * What steps to perform to minimize the source.

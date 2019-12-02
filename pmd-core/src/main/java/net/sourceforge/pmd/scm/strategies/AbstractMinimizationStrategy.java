@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.scm.strategies;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.scm.MinimizerOperations;
 
 public abstract class AbstractMinimizationStrategy implements MinimizationStrategy {
     public abstract static class AbstractConfiguration implements MinimizationStrategyConfiguration {

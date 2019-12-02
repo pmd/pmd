@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.scm.invariants;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * Dummy invariant that is always satisfied.
  */
@@ -23,6 +25,11 @@ public class DummyInvariant implements Invariant {
             return new Configuration();
         }
     };
+
+    @Override
+    public void initialize(InvariantOperations ops, Node rootNode) {
+        // do nothing
+    }
 
     @Override
     public boolean checkIsSatisfied() throws Exception {

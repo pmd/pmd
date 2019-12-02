@@ -2,11 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.scm;
+package net.sourceforge.pmd.scm.strategies;
 
 import java.util.Collection;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.scm.Language;
 
 public interface MinimizerOperations {
     /**

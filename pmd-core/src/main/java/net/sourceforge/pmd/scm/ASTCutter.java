@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.scm;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -152,6 +153,27 @@ public class ASTCutter implements AutoCloseable {
         }
     }
 
+    private boolean allCharsFrom(String text, String chars) {
+        for (int i = 0; i < text.length(); ++i) {
+            if (chars.indexOf(text.charAt(i)) == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void trimEmptyLinesInPlace(Path trimmedFile) throws IOException {
+        List<String> lines = Files.readAllLines(trimmedFile, charset);
+        try (BufferedWriter writer = Files.newBufferedWriter(trimmedFile, charset)) {
+            for (String line : lines) {
+                if (!allCharsFrom(line, WHITESPACE)) {
+                    writer.write(line);
+                    writer.write('\n');
+                }
+            }
+        }
+    }
+
     private void collectNodes(Node subtree) {
         currentDocumentNodes.add(subtree);
         for (int i = 0; i < subtree.jjtGetNumChildren(); ++i) {
@@ -218,6 +240,7 @@ public class ASTCutter implements AutoCloseable {
         rollbackChange();
 
         deleteRegions(calculateWhitespaceCleanup());
+        trimEmptyLinesInPlace(file);
     }
 
     @Override

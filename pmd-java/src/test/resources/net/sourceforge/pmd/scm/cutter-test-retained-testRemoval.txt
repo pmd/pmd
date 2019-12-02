@@ -1,11 +1,4 @@
-
 public abstract class AbstractASTCutterTest {
-
-
-
 protected  testRemoval() throws IOException {
-
-
-
 }
 }

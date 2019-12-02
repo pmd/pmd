@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.scm.invariants;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
@@ -56,10 +55,8 @@ public class PrintedMessageInvariant extends AbstractInvariant {
     }
 
     @Override
-    public boolean checkIsSatisfied() throws IOException {
-        Process process = getProcessBuilder()
-                .redirectErrorStream(true)
-                .start();
+    protected boolean testSatisfied(ProcessBuilder pb) throws Exception {
+        Process process = pb.redirectErrorStream(true).start();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), charset))) {
             while (true) {

@@ -61,8 +61,8 @@ public class ExitCodeInvariant extends AbstractInvariant {
     }
 
     @Override
-    public boolean checkIsSatisfied() throws Exception {
-        Process process = getProcessBuilder().start();
+    protected boolean testSatisfied(ProcessBuilder pb) throws Exception {
+        Process process = pb.start();
 
         int returnCode = process.waitFor();
 
