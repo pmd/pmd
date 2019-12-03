@@ -17,14 +17,14 @@ public class GreedyStrategyTest {
     @Test
     public void textRetentionTest() throws Exception {
         SCMConfiguration configuration = new SCMConfiguration();
-        Path inputFile = Files.createTempFile("pmd-test-", ".tmp");
-        Path outputFile = Files.createTempFile("pmd-test", ".tmp");
+        Path inputFile = Files.createTempFile("pmd-test-", ".in");
+        Path outputFile = Files.createTempFile("pmd-test-", ".out");
         Files.copy(getClass().getResourceAsStream("cutter-test-input.txt"), inputFile, StandardCopyOption.REPLACE_EXISTING);
         String cmdline;
         if (SystemUtils.IS_OS_WINDOWS) {
             cmdline = "type " + outputFile.toString();
         } else {
-            cmdline = "/bin/cat " + outputFile.toString();
+            cmdline = "cat " + outputFile.toString();
         }
         String[] args = {
             "--language", "java", "--input-file", inputFile.toString(), "--output-file", outputFile.toString(),

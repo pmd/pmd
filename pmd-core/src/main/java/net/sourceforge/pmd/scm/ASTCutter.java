@@ -257,10 +257,11 @@ public class ASTCutter implements AutoCloseable {
 
     public void writeCleanedUpSource() throws IOException {
         rollbackChange();
-
-        // remove holes
         deleteRegions(calculateTreeHolesTrimming());
-        // remove blank lines
+    }
+
+    public void writeWithoutEmptyLines() throws IOException {
+        rollbackChange();
         trimEmptyLinesInPlace(scratchFile);
     }
 

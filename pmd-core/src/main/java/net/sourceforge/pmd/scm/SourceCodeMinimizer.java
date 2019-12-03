@@ -66,30 +66,41 @@ public class SourceCodeMinimizer implements InvariantOperations, MinimizerOperat
         return language.getNodeInformationProvider();
     }
 
+    /**
+     * Check invariant and commit if succesful.
+     *
+     * @param throwOnSuccess If successfully committed, unwind stack with {@link ContinueException}
+     * @return <code>false</code> if unsuccessful, <code>true</code> if successful and <code>throwOnSuccess == false</code>
+     * @throws ContinueException If successful and <code>throwOnSuccess == true</code>
+     */
+    private boolean tryCommit(boolean throwOnSuccess) throws Exception {
+        if (!invariant.checkIsSatisfied()) {
+            return false;
+        }
+        // now, invariant is satisfied
+        try {
+            currentRootNode = cutter.commitChange();
+        } catch (ParseException ex) {
+            return false;
+        }
+        // and parsed OK, so unwinding
+        if (throwOnSuccess) {
+            throw new ContinueException();
+        }
+        // or just returning
+        return true;
+    }
+
     @Override
     public void tryCleanup() throws Exception {
         cutter.writeCleanedUpSource();
-        if (invariant.checkIsSatisfied()) {
-            try {
-                currentRootNode = cutter.commitChange();
-            } catch (ParseException ex) {
-                return /* unsuccessful */;
-            }
-            throw new ContinueException();
-        }
+        tryCommit(true);
     }
 
     @Override
     public void tryRemoveNodes(Collection<Node> nodesToRemove) throws Exception {
         cutter.writeTrimmedSource(nodesToRemove);
-        if (invariant.checkIsSatisfied()) {
-            try {
-                currentRootNode = cutter.commitChange();
-            } catch (ParseException ex) {
-                return /* unsuccessful */;
-            }
-            throw new ContinueException();
-        }
+        tryCommit(true);
     }
 
     @Override
@@ -136,9 +147,8 @@ public class SourceCodeMinimizer implements InvariantOperations, MinimizerOperat
         System.out.println("Original file: " + originalSize + " bytes, " + originalNodeCount + " nodes.");
         System.out.flush();
 
-        try {
-            tryCleanup();
-        } catch (ContinueException ex) {
+        cutter.writeCleanedUpSource();
+        if (tryCommit(false)) {
             printStats("After initial white-space cleanup", originalSize, originalNodeCount);
         }
 
@@ -165,10 +175,13 @@ public class SourceCodeMinimizer implements InvariantOperations, MinimizerOperat
             printStats("After pass #" + passNumber + cleanupLabel, originalSize, originalNodeCount);
         }
 
-        try {
-            tryCleanup();
-        } catch (ContinueException ex) {
+        cutter.writeCleanedUpSource();
+        if (tryCommit(false)) {
             printStats("After final white-space cleanup", originalSize, originalNodeCount);
+        }
+        cutter.writeWithoutEmptyLines();
+        if (tryCommit(false)) {
+            printStats("After blank line clean up", originalSize, originalNodeCount);
         }
 
         cutter.rollbackChange(); // to the last committed state

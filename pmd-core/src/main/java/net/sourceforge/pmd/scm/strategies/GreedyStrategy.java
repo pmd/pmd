@@ -113,7 +113,12 @@ public class GreedyStrategy extends AbstractMinimizationStrategy {
     private void findNodeToRemove(Node currentNode) throws Exception {
         previousPosition += 1;
         positionCountdown -= 1;
-        if (positionCountdown < 0) {
+        // It is supposed to be balanced, so that restarted right from the next node.
+        // It was observed that off-by-one error here ("<" vs. "<=") can make minimizing Java source
+        // take 3x times more/less! But this can depend on the particular source
+        // or programming language...
+        // TODO will be mis-positioned if some dependent nodes are before the node itself
+        if (positionCountdown <= 0) {
             Set<Node> toBeRemoved = new HashSet<>();
             collectNodesToRemove(toBeRemoved, currentNode);
             ops.tryRemoveNodes(toBeRemoved);
