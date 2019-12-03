@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.scm.invariants.DummyInvariant;
 import net.sourceforge.pmd.scm.invariants.ExitCodeInvariant;
@@ -22,13 +25,13 @@ import net.sourceforge.pmd.scm.strategies.MinimizationStrategyConfiguration;
 import net.sourceforge.pmd.scm.strategies.MinimizationStrategyConfigurationFactory;
 import net.sourceforge.pmd.scm.strategies.XPathStrategy;
 
-public abstract class BaseMinimizerLanguageModule implements Language {
-    private final String terseName;
+public abstract class BaseMinimizerLanguageModule implements Language, NodeInformationProvider {
+    private final net.sourceforge.pmd.lang.Language pmdLanguage;
     private final Map<String, MinimizationStrategyConfigurationFactory> strategies = new LinkedHashMap<>();
     private final Map<String, InvariantConfigurationFactory> invariantCheckers = new LinkedHashMap<>();
 
-    BaseMinimizerLanguageModule(String name) {
-        terseName = name;
+    BaseMinimizerLanguageModule(net.sourceforge.pmd.lang.Language pmdLanguage) {
+        this.pmdLanguage = pmdLanguage;
         addInvariant(DummyInvariant.FACTORY);
         addInvariant(ExitCodeInvariant.FACTORY);
         addInvariant(PrintedMessageInvariant.FACTORY);
@@ -46,7 +49,7 @@ public abstract class BaseMinimizerLanguageModule implements Language {
 
     @Override
     public String getTerseName() {
-        return terseName;
+        return pmdLanguage.getTerseName();
     }
 
     @Override
@@ -72,7 +75,41 @@ public abstract class BaseMinimizerLanguageModule implements Language {
     }
 
     @Override
-    public Set<Node> getDirectlyDependencies(Node node) {
+    public List<String> getLanguageVersions() {
+        List<String> result = new ArrayList<>();
+        for (LanguageVersion version : pmdLanguage.getVersions()) {
+            result.add(version.getVersion());
+        }
+        return result;
+    }
+
+    @Override
+    public String getDefaultLanguageVersion() {
+        return pmdLanguage.getDefaultVersion().getVersion();
+    }
+
+    @Override
+    public NodeInformationProvider getNodeInformationProvider() {
+        return this;
+    }
+
+    @Override
+    public Parser getParser(String languageVersion) {
+        for (LanguageVersion version : pmdLanguage.getVersions()) {
+            if (version.getVersion().equals(languageVersion)) {
+                ParserOptions opts = version.getLanguageVersionHandler().getDefaultParserOptions();
+                return version.getLanguageVersionHandler().getParser(opts);
+            }
+        }
+        return null;
+    }
+
+    public Parser getDefaultParser() {
+        return getParser(getDefaultLanguageVersion());
+    }
+
+    @Override
+    public Set<Node> getDirectDependencies(Node node) {
         // no need to calculate dependencies since there are no dependencies implemented at all, by default
         return Collections.EMPTY_SET;
     }

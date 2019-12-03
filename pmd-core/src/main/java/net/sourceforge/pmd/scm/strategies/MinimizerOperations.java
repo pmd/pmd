@@ -7,13 +7,17 @@ package net.sourceforge.pmd.scm.strategies;
 import java.util.Collection;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.scm.Language;
+import net.sourceforge.pmd.scm.NodeInformationProvider;
 
+/**
+ * A public interface provided be {@link net.sourceforge.pmd.scm.SourceCodeMinimizer} to
+ * {@link MinimizationStrategy}.
+ */
 public interface MinimizerOperations {
     /**
-     * Get current language implementation
+     * Get object that can be queried for relations between nodes.
      */
-    Language getLanguage();
+    NodeInformationProvider getNodeInformationProvider();
 
     /**
      * Try cleaning up source code.
@@ -24,14 +28,17 @@ public interface MinimizerOperations {
     void tryCleanup() throws Exception;
 
     /**
-     * Trim the specified nodes with all their descendants
+     * Trim the specified nodes with all their descendants.
      */
     void tryRemoveNodes(Collection<Node> nodesToRemove) throws Exception;
 
+    /**
+     * Removes the specified nodes (even if producing source code that cannot be re-parsed), then exits.
+     */
     void forceRemoveNodesAndExit(Collection<Node> nodesToRemove) throws Exception;
 
     /**
-     * Get the parsed root node of the <b>input</b> file specified on the command line
+     * Get the parsed root node of the <b>input</b> file specified on the command line.
      */
     Node getOriginalRoot();
 }

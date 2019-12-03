@@ -9,7 +9,7 @@ import com.beust.jcommander.Parameter;
 /**
  * Checks that compiler exits with code from the specified range.
  */
-public class ExitCodeInvariant extends AbstractInvariant {
+public class ExitCodeInvariant extends AbstractExternalProcessInvariant {
     public static final class Configuration extends AbstractConfiguration {
         @Parameter(names = "--min-return", description = "Minimum exit code value (inclusive)")
         private int min = 1;

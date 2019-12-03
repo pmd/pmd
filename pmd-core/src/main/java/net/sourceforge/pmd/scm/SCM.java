@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.scm;
 
+/**
+ * Entry point for the Source Code Minimizer command line tool.
+ */
 public final class SCM {
     private SCM() {
     }

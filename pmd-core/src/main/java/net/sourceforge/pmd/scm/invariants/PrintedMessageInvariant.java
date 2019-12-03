@@ -15,7 +15,7 @@ import com.beust.jcommander.Parameter;
 /**
  * Checks that the compiler printed the specified message to its stdout or stderr during execution.
  */
-public class PrintedMessageInvariant extends AbstractInvariant {
+public class PrintedMessageInvariant extends AbstractExternalProcessInvariant {
     public static final class Configuration extends AbstractConfiguration {
         @Parameter(names = "--printed-message", description = "Message that should be printed by the compiler", required = true)
         private String message;

@@ -4,17 +4,10 @@
 
 package net.sourceforge.pmd.scm;
 
-import net.sourceforge.pmd.lang.Parser;
-import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.java.JavaLanguageParser;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 
 public class JavaMinimizerModule extends BaseMinimizerLanguageModule {
     public JavaMinimizerModule() {
-        super("java");
-    }
-
-    @Override
-    public Parser getParser() {
-        return new JavaLanguageParser(13, new ParserOptions());
+        super(new JavaLanguageModule());
     }
 }

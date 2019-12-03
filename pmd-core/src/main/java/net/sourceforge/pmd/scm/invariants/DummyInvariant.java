@@ -19,7 +19,7 @@ public class DummyInvariant implements Invariant {
         }
     }
 
-    public static final InvariantConfigurationFactory FACTORY = new AbstractInvariant.AbstractFactory("dummy") {
+    public static final InvariantConfigurationFactory FACTORY = new AbstractExternalProcessInvariant.AbstractFactory("dummy") {
         @Override
         public InvariantConfiguration createConfiguration() {
             return new Configuration();

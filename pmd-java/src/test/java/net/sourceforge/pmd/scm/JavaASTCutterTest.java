@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 
 public class JavaASTCutterTest extends AbstractASTCutterTest {
     public JavaASTCutterTest() throws IOException {
-        super(new JavaMinimizerModule().getParser(), Charset.defaultCharset());
+        super(new JavaMinimizerModule().getDefaultParser(), Charset.defaultCharset());
     }
 
     @Test

@@ -4,15 +4,10 @@
 
 package net.sourceforge.pmd.scm;
 
-import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.test.lang.DummyLanguageModule;
 
 public class DummyLanguage extends BaseMinimizerLanguageModule {
     public DummyLanguage() {
-        super("dummy");
-    }
-
-    @Override
-    public Parser getParser() {
-        return null;
+        super(new DummyLanguageModule());
     }
 }

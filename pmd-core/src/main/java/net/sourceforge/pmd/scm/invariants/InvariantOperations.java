@@ -9,8 +9,18 @@ import java.io.IOException;
 
 import net.sourceforge.pmd.lang.Parser;
 
+/**
+ * A public interface provided by the {@link net.sourceforge.pmd.scm.SourceCodeMinimizer} to
+ * {@link Invariant}.
+ */
 public interface InvariantOperations {
+    /**
+     * Get a freshly initialized reader attached to the current scratch file.
+     */
     BufferedReader getScratchReader() throws IOException;
 
-    Parser getParser();
+    /**
+     * Get the current parser being used.
+     */
+    Parser getCurrentParser();
 }

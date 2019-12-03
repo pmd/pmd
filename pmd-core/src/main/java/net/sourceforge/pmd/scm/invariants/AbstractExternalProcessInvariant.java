@@ -6,19 +6,18 @@ package net.sourceforge.pmd.scm.invariants;
 
 import java.io.BufferedReader;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
 import com.beust.jcommander.Parameter;
 
 /**
- * Abstract implementation for invariant checkers that run some external compiler process
+ * Abstract implementation of invariant checkers that run some external compiler process.
  */
-public abstract class AbstractInvariant implements Invariant {
+public abstract class AbstractExternalProcessInvariant implements Invariant {
     protected abstract static class AbstractConfiguration implements InvariantConfiguration {
-        @Parameter(names = "--no-require-parseable", description = "Try to test invariant even if cannot parse trimmed source")
-        private boolean dontRequireParseableInput;
-
         @Parameter(names = "--command-line",
                 description = "Command line for running a compiler on a source to be minimized",
                 required = true)
@@ -39,16 +38,18 @@ public abstract class AbstractInvariant implements Invariant {
     }
 
     private InvariantOperations ops;
-    private boolean parseBeforeChecking;
     private String[] commandArgs;
 
-    private static String[] parseArgs(String commandLine) {
-        return commandLine.split(" "); // TODO improve
+    private static String[] createCommandLine(AbstractConfiguration configuration) {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return new String[] { "cmd.exe", "/C", configuration.compilerCommandLine };
+        } else {
+            return new String[] { "/bin/sh", "-c", configuration.compilerCommandLine };
+        }
     }
 
-    protected AbstractInvariant(AbstractConfiguration configuration) {
-        parseBeforeChecking = !configuration.dontRequireParseableInput;
-        commandArgs = parseArgs(configuration.compilerCommandLine);
+    protected AbstractExternalProcessInvariant(AbstractConfiguration configuration) {
+        commandArgs = createCommandLine(configuration);
     }
 
     @Override
@@ -60,16 +61,14 @@ public abstract class AbstractInvariant implements Invariant {
 
     @Override
     public boolean checkIsSatisfied() throws Exception {
-        if (parseBeforeChecking) {
-            try (BufferedReader reader = ops.getScratchReader()) {
-                try {
-                    Node root = ops.getParser().parse("", reader);
-                    if (root == null) {
-                        return false;
-                    }
-                } catch (ParseException ex) {
+        try (BufferedReader reader = ops.getScratchReader()) {
+            try {
+                Node root = ops.getCurrentParser().parse("", reader);
+                if (root == null) {
                     return false;
                 }
+            } catch (ParseException ex) {
+                return false;
             }
         }
         return testSatisfied(new ProcessBuilder().command(commandArgs));

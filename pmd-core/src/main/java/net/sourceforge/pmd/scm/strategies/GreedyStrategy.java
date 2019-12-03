@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.scm.strategies;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +12,10 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 
+/**
+ * A simple interactive (in a sense, compiler-driven) greedy strategy that tries to cut off
+ * different AST subtrees with depending nodes until it cannot make any step.
+ */
 public class GreedyStrategy extends AbstractMinimizationStrategy {
     public static class Configuration extends AbstractConfiguration {
         @Override
@@ -31,34 +36,27 @@ public class GreedyStrategy extends AbstractMinimizationStrategy {
     }
 
     private final Map<Node, HashSet<Node>> directlyDependingNodes = new HashMap<>();
-    private final Map<Node, HashSet<Node>> transitivelyDependingNodes = new HashMap<>();
+    private final Map<Node, Set<Node>> transitivelyDependingNodes = new HashMap<>();
 
-    private void startFetchingDirect(Node currentNode) {
-        while (currentNode.jjtGetParent() != null) {
-            currentNode = currentNode.jjtGetParent();
-        }
-        fetchDirectDependentsFrom(currentNode);
-    }
-
-    private void fetchDirectDependentsFrom(Node currentNode) {
+    private void fetchDirectDependentsFromSubtree(Node node) {
         // process depending nodes
-        if (!directlyDependingNodes.containsKey(currentNode)) {
-            directlyDependingNodes.put(currentNode, new HashSet<Node>());
+        if (!directlyDependingNodes.containsKey(node)) {
+            directlyDependingNodes.put(node, new HashSet<Node>());
         }
-        directlyDependingNodes.get(currentNode).addAll(ops.getLanguage().getDirectlyDependingNodes(currentNode));
+        directlyDependingNodes.get(node).addAll(ops.getNodeInformationProvider().getDirectlyDependingNodes(node));
 
         // process dependencies
-        Set<Node> dependencies = ops.getLanguage().getDirectlyDependencies(currentNode);
+        Set<Node> dependencies = ops.getNodeInformationProvider().getDirectDependencies(node);
         for (Node dependency: dependencies) {
             if (!directlyDependingNodes.containsKey(dependency)) {
                 directlyDependingNodes.put(dependency, new HashSet<Node>());
             }
-            directlyDependingNodes.get(dependency).add(currentNode);
+            directlyDependingNodes.get(dependency).add(node);
         }
 
         // recurse
-        for (int i = 0; i < currentNode.jjtGetNumChildren(); ++i) {
-            fetchDirectDependentsFrom(currentNode.jjtGetChild(i));
+        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            fetchDirectDependentsFromSubtree(node.jjtGetChild(i));
         }
     }
 
@@ -72,18 +70,24 @@ public class GreedyStrategy extends AbstractMinimizationStrategy {
      *     <li>non-empty set means this vertex is fully processed</li>
      * </ul>
      */
-    private Set<Node> ensuringIndirectlyDependentNodesCalculatedFor(Node currentNode) {
+    private Set<Node> indirectlyDependentNodesFor(Node currentNode) {
         final Set<Node> oldValue = transitivelyDependingNodes.get(currentNode);
         if (oldValue == null) {
+            // mark this node as entered
             transitivelyDependingNodes.put(currentNode, new HashSet<Node>());
+
+            // create separate set for ongoing calculation, see vertex state
             final HashSet<Node> calculated = new HashSet<>();
+            // recurse
             final HashSet<Node> directlyDepending = directlyDependingNodes.get(currentNode);
             for (Node dependingNode: directlyDepending) {
-                calculated.addAll(ensuringIndirectlyDependentNodesCalculatedFor(dependingNode));
+                calculated.addAll(indirectlyDependentNodesFor(dependingNode));
             }
             calculated.add(currentNode);
-            // not updating in-place, see vertex state description
-            transitivelyDependingNodes.put(currentNode, calculated);
+
+            // finally, put real result to map
+            transitivelyDependingNodes.put(currentNode, Collections.unmodifiableSet(calculated));
+
             return calculated;
         } else {
             // in other two cases no need to do anything
@@ -91,31 +95,29 @@ public class GreedyStrategy extends AbstractMinimizationStrategy {
         }
     }
 
-    private Set<Node> getNodesToRemove(Node node) {
-        // first, check if information is already fetched
-        if (!transitivelyDependingNodes.isEmpty()) {
-            return ensuringIndirectlyDependentNodesCalculatedFor(node);
+    private void collectNodesToRemove(Set<Node> result, Node node) {
+        result.addAll(indirectlyDependentNodesFor(node));
+        for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
+            collectNodesToRemove(result, node.jjtGetChild(i));
         }
-        // then, check if node has definitely empty set of directly depending nodes
-        Set<Node> directlyDependingNodes = ops.getLanguage().getDirectlyDependingNodes(node);
-        if (directlyDependingNodes != null && directlyDependingNodes.isEmpty()) {
-            HashSet<Node> result = new HashSet<>();
-            result.add(node);
-            return result;
-        }
-        // finally, perform full calculation
-        startFetchingDirect(node);
-        return ensuringIndirectlyDependentNodesCalculatedFor(node);
     }
 
     private int previousPosition = 0;
     private int positionCountdown;
 
+    /**
+     * Traverse the passed subtree until successfully removing something.
+     *
+     * @see net.sourceforge.pmd.scm.SourceCodeMinimizer.ContinueException
+     */
     private void findNodeToRemove(Node currentNode) throws Exception {
         previousPosition += 1;
         positionCountdown -= 1;
         if (positionCountdown < 0) {
-            ops.tryRemoveNodes(getNodesToRemove(currentNode));
+            Set<Node> toBeRemoved = new HashSet<>();
+            collectNodesToRemove(toBeRemoved, currentNode);
+            ops.tryRemoveNodes(toBeRemoved);
+            // if exception was not thrown, then removal was not successful
         }
 
         for (int i = 0; i < currentNode.jjtGetNumChildren(); ++i) {
@@ -128,6 +130,9 @@ public class GreedyStrategy extends AbstractMinimizationStrategy {
         positionCountdown = previousPosition;
         previousPosition = 0;
         directlyDependingNodes.clear();
+        transitivelyDependingNodes.clear();
+        fetchDirectDependentsFromSubtree(currentRoot);
+        // cannot remove root
         for (int i = 0; i < currentRoot.jjtGetNumChildren(); ++i) {
             findNodeToRemove(currentRoot.jjtGetChild(i));
         }

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +20,12 @@ public class GreedyStrategyTest {
         Path inputFile = Files.createTempFile("pmd-test-", ".tmp");
         Path outputFile = Files.createTempFile("pmd-test", ".tmp");
         Files.copy(getClass().getResourceAsStream("cutter-test-input.txt"), inputFile, StandardCopyOption.REPLACE_EXISTING);
-        String cmdline = "/bin/cat " + outputFile.toString();
+        String cmdline;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            cmdline = "type " + outputFile.toString();
+        } else {
+            cmdline = "/bin/cat " + outputFile.toString();
+        }
         String[] args = {
             "--language", "java", "--input-file", inputFile.toString(), "--output-file", outputFile.toString(),
             "--invariant", "message", "--printed-message", "testRemoval", "--command-line", cmdline,

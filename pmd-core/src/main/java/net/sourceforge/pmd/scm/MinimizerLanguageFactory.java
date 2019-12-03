@@ -18,7 +18,29 @@ public final class MinimizerLanguageFactory {
 
     private final Map<String, Language> languages = new LinkedHashMap<>();
 
-    private final List<String> supportedLanguageNames;
+    private final String supportedLanguageNames;
+
+    private String createLanguageHelp(List<Language> handlers) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < handlers.size(); ++i) {
+            Language lang = handlers.get(i);
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(lang.getTerseName());
+            if (lang.getLanguageVersions().size() > 1) {
+                sb.append(" (");
+                for (int j = 0; j < lang.getLanguageVersions().size(); ++j) {
+                    if (j > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(lang.getLanguageVersions().get(j));
+                }
+                sb.append(")");
+            }
+        }
+        return sb.toString();
+    }
 
     private MinimizerLanguageFactory() {
         List<Language> handlers = new ArrayList<>();
@@ -39,10 +61,11 @@ public final class MinimizerLanguageFactory {
             languages.put(handler.getTerseName().toLowerCase(Locale.ROOT), handler);
         }
 
-        supportedLanguageNames = Collections.unmodifiableList(new ArrayList<>(languages.keySet()));
+
+        supportedLanguageNames = createLanguageHelp(handlers);
     }
 
-    public List<String> getSupportedLanguages() {
+    public String getSupportedLanguagesWithVersions() {
         return supportedLanguageNames;
     }
 

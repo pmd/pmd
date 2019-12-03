@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.scm;
 
 import java.nio.charset.Charset;
-import java.util.List;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.scm.invariants.InvariantConfiguration;
@@ -37,6 +36,9 @@ public class SCMConfiguration extends AbstractConfiguration {
             required = true, converter = LanguageConverter.class)
     private Language language;
 
+    @Parameter(names = "--language-version", description = "Specific language version")
+    private String languageVersion;
+
     @Parameter(names = "--strategy", description = "Minimization strategy", required = true)
     private String strategy;
 
@@ -62,6 +64,10 @@ public class SCMConfiguration extends AbstractConfiguration {
 
     Language getLanguageHandler() {
         return language;
+    }
+
+    public String getLanguageVersion() {
+        return languageVersion == null ? language.getDefaultLanguageVersion() : languageVersion;
     }
 
     boolean isHelpRequested() {
@@ -127,13 +133,7 @@ public class SCMConfiguration extends AbstractConfiguration {
 
         // list available languages
         sb.append("Available languages: ");
-        List<String> langNames = MinimizerLanguageFactory.INSTANCE.getSupportedLanguages();
-        for (int i = 0; i < langNames.size(); ++i) {
-            if (i != 0) {
-                sb.append(", ");
-            }
-            sb.append(langNames.get(i));
-        }
+        sb.append(MinimizerLanguageFactory.INSTANCE.getSupportedLanguagesWithVersions());
         sb.append('\n');
 
         // list options of all invariants and strategies available for the specified language, if any

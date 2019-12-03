@@ -38,7 +38,7 @@ public class SourceCodeMinimizer implements InvariantOperations, MinimizerOperat
 
     public SourceCodeMinimizer(SCMConfiguration configuration) throws IOException {
         language = configuration.getLanguageHandler();
-        parser = language.getParser();
+        parser = language.getParser(configuration.getLanguageVersion());
         invariant = configuration.getInvariantCheckerConfig().createChecker();
         strategy = configuration.getStrategyConfig().createStrategy();
 
@@ -57,13 +57,13 @@ public class SourceCodeMinimizer implements InvariantOperations, MinimizerOperat
     }
 
     @Override
-    public Parser getParser() {
+    public Parser getCurrentParser() {
         return parser;
     }
 
     @Override
-    public Language getLanguage() {
-        return language;
+    public NodeInformationProvider getNodeInformationProvider() {
+        return language.getNodeInformationProvider();
     }
 
     @Override

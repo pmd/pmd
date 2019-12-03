@@ -41,30 +41,30 @@ import net.sourceforge.pmd.lang.ast.Node;
  * nicely formatted files.
  */
 public class ASTCutter implements AutoCloseable {
-    private static final String WHITESPACE = " \t";
+    private static final String WHITESPACE_CHARS = " \t";
 
     private final Path lastCommitted = Files.createTempFile("pmd-", ".tmp");
     private final Parser parser;
     private final Charset charset;
 
-    private final Path file;
+    private final Path scratchFile;
     private Node currentRoot;
     private final Set<Node> currentDocumentNodes = new HashSet<>();
 
     /**
      * Create ASTCutter instance
-     * @param parser  parser for the original and intermediate source files
-     * @param charset charset of source to be cut
-     * @param file    file to be modified in-place
+     * @param parser      parser for the original and intermediate source files
+     * @param charset     charset of source to be cut
+     * @param scratchFile file to be modified in-place
      */
-    public ASTCutter(Parser parser, Charset charset, Path file) throws IOException {
+    public ASTCutter(Parser parser, Charset charset, Path scratchFile) throws IOException {
         this.parser = parser;
         this.charset = charset;
-        this.file = file;
+        this.scratchFile = scratchFile;
     }
 
     public Path getScratchFile() {
-        return file;
+        return scratchFile;
     }
 
     /**
@@ -95,15 +95,19 @@ public class ASTCutter implements AutoCloseable {
         }
     }
 
-    private List<DeleteDocumentOperation> calculateWhitespaceCleanup() throws IOException {
+    /**
+     * Performs some conservative trimming of large parts of source code
+     * not belonging to the AST (such as block comments).
+     */
+    private List<DeleteDocumentOperation> calculateTreeHolesTrimming() throws IOException {
         List<DeleteDocumentOperation> result = new ArrayList<>();
         List<String> lines = Files.readAllLines(lastCommitted, charset);
         Node rootNode = load(lastCommitted);
-        calculateWhitespaceCleanup(result, lines, rootNode, -1, 0, false);
+        calculateTreeHolesTrimming(result, lines, rootNode, -1, 0, false);
         return result;
     }
 
-    private void calculateWhitespaceCleanup(List<DeleteDocumentOperation> result, List<String> lines, Node node, final int prevEndLine, final int prevEndColumn, final boolean wasJustTrimmed) {
+    private void calculateTreeHolesTrimming(List<DeleteDocumentOperation> result, List<String> lines, Node node, final int prevEndLine, final int prevEndColumn, final boolean wasJustTrimmed) {
         final int curBeginLine = node.getBeginLine() - 1;
         final int curBeginColumn = node.getBeginColumn() - 1;
 
@@ -114,7 +118,7 @@ public class ASTCutter implements AutoCloseable {
             String curLine = lines.get(curBeginLine);
             int endDeleteLine = curBeginLine;
             int endDeleteColumn = curBeginColumn - 1;
-            for (; endDeleteColumn >= 0 && WHITESPACE.indexOf(curLine.charAt(endDeleteColumn)) != -1; --endDeleteColumn) {
+            for (; endDeleteColumn >= 0 && WHITESPACE_CHARS.indexOf(curLine.charAt(endDeleteColumn)) != -1; --endDeleteColumn) {
                 // nothing else
             }
             // are we retaining the whole current line (it is likely)
@@ -129,7 +133,7 @@ public class ASTCutter implements AutoCloseable {
             boolean okToTrim = true;
             String prevLine = prevEndLine == -1 ? "" : lines.get(prevEndLine);
             for (int ind = prevEndColumn + 1; ind < prevLine.length(); ++ind) {
-                if (WHITESPACE.indexOf(prevLine.charAt(ind)) == -1) {
+                if (WHITESPACE_CHARS.indexOf(prevLine.charAt(ind)) == -1) {
                     okToTrim = false;
                     break;
                 }
@@ -146,13 +150,19 @@ public class ASTCutter implements AutoCloseable {
         for (int childInd = 0; childInd < node.jjtGetNumChildren(); ++childInd) {
             final Node child = node.jjtGetChild(childInd);
 
-            calculateWhitespaceCleanup(result, lines, child, prevChildEndLine, prevChildEndColumn, childInd == 0 && (wasTrimmedHere || wasJustTrimmed));
+            calculateTreeHolesTrimming(result, lines, child, prevChildEndLine, prevChildEndColumn, childInd == 0 && (wasTrimmedHere || wasJustTrimmed));
 
             prevChildEndLine = child.getEndLine() - 1;
             prevChildEndColumn = child.getEndColumn() - 1;
         }
     }
 
+    /**
+     * Checks that the input string contains only "allowed" chars
+     *
+     * @param text  A string to check
+     * @param chars A string containing chars the checked string should be comprised of
+     */
     private boolean allCharsFrom(String text, String chars) {
         for (int i = 0; i < text.length(); ++i) {
             if (chars.indexOf(text.charAt(i)) == -1) {
@@ -162,11 +172,14 @@ public class ASTCutter implements AutoCloseable {
         return true;
     }
 
+    /**
+     * Trims lines of scratch file that contain only whitespace characters.
+     */
     private void trimEmptyLinesInPlace(Path trimmedFile) throws IOException {
         List<String> lines = Files.readAllLines(trimmedFile, charset);
         try (BufferedWriter writer = Files.newBufferedWriter(trimmedFile, charset)) {
             for (String line : lines) {
-                if (!allCharsFrom(line, WHITESPACE)) {
+                if (!allCharsFrom(line, WHITESPACE_CHARS)) {
                     writer.write(line);
                     writer.write('\n');
                 }
@@ -174,14 +187,20 @@ public class ASTCutter implements AutoCloseable {
         }
     }
 
-    private void collectNodes(Node subtree) {
+    /**
+     * Populates set of nodes of current document with nodes from this subtree.
+     */
+    private void collectAllNodes(Node subtree) {
         currentDocumentNodes.add(subtree);
         for (int i = 0; i < subtree.jjtGetNumChildren(); ++i) {
-            collectNodes(subtree.jjtGetChild(i));
+            collectAllNodes(subtree.jjtGetChild(i));
         }
     }
 
-    Node load(Path from) throws IOException {
+    /**
+     * Loads the specified file with the parser, does not change ASTCutter state.
+     */
+    private Node load(Path from) throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(from, charset)) {
             return parser.parse(from.toString(), reader);
         }
@@ -195,12 +214,12 @@ public class ASTCutter implements AutoCloseable {
      * @return The root node of the "new current" source state
      */
     public Node commitChange() throws IOException {
-        currentRoot = load(file);
+        currentRoot = load(scratchFile);
         // if not thrown, then ...
-        Files.copy(file, lastCommitted, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(scratchFile, lastCommitted, StandardCopyOption.REPLACE_EXISTING);
 
         currentDocumentNodes.clear();
-        collectNodes(currentRoot);
+        collectAllNodes(currentRoot);
 
         return currentRoot;
     }
@@ -209,11 +228,11 @@ public class ASTCutter implements AutoCloseable {
      * Rolls back intermediate file to the last <i>committed</i> state.
      */
     public void rollbackChange() throws IOException {
-        Files.copy(lastCommitted, file, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(lastCommitted, scratchFile, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void deleteRegions(List<DeleteDocumentOperation> operations) throws IOException {
-        try (DocumentFile document = new DocumentFile(file.toFile(), charset)) {
+        try (DocumentFile document = new DocumentFile(scratchFile.toFile(), charset)) {
             DocumentOperationsApplierForNonOverlappingRegions applier = new DocumentOperationsApplierForNonOverlappingRegions(document);
             for (DeleteDocumentOperation operation : operations) {
                 applier.addDocumentOperation(operation);
@@ -239,8 +258,10 @@ public class ASTCutter implements AutoCloseable {
     public void writeCleanedUpSource() throws IOException {
         rollbackChange();
 
-        deleteRegions(calculateWhitespaceCleanup());
-        trimEmptyLinesInPlace(file);
+        // remove holes
+        deleteRegions(calculateTreeHolesTrimming());
+        // remove blank lines
+        trimEmptyLinesInPlace(scratchFile);
     }
 
     @Override
