@@ -11,7 +11,7 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 final class MonoidImplUtils {
 
     private MonoidImplUtils() {

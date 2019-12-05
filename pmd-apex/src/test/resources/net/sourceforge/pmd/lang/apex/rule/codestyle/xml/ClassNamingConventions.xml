@@ -3,7 +3,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests ../../../../../../../../../../../../pmd-test/src/main/resources/rule-tests_7_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
         <description>class names should not start with lowercase character</description>
@@ -12,7 +12,7 @@
 public class foo {}
 		]]></code>
     </test-code>
-
+    
     <test-code>
         <description>all is well</description>
         <expected-problems>0</expected-problems>
@@ -109,7 +109,7 @@ public interface fooInterface { }
         ]]></code>
     </test-code>
 
-    <test-code focused="true">
+    <test-code>
         <description>enum default is title case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
@@ -158,5 +158,5 @@ public class FOO_CLASS { }
 public interface FOO_INTERFACE { }
         ]]></code>
     </test-code>
-
+    
 </test-data>

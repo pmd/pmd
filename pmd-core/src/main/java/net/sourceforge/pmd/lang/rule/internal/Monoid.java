@@ -36,7 +36,7 @@ interface Monoid<U> extends BinaryOperator<U> {
     U zero();
 
 
-    /** Produce a new set, the union of both arguments. */
+    /** Produces a new set, the union of both arguments. */
     static <T> Monoid<Set<T>> forSet() {
         return (Monoid<Set<T>>) MonoidImplUtils.PSET_MONOID;
     }
