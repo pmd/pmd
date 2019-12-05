@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
- * A RuleViolationFactory for Scala.
+ * @deprecated See {@link RuleViolationFactory}
  */
 @Deprecated
 @InternalApi

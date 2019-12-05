@@ -12,7 +12,11 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
+/**
+ * @deprecated See {@link RuleViolationFactory}
+ */
 @Deprecated
 @InternalApi
 public final class EcmascriptRuleViolationFactory extends AbstractRuleViolationFactory {

@@ -13,6 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
+/**
+ * @deprecated See {@link RuleViolationFactory}
+ */
 @Deprecated
 @InternalApi
 public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory {

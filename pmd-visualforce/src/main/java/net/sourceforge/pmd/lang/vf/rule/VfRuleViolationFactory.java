@@ -14,6 +14,9 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.vf.ast.VfNode;
 
+/**
+ * @deprecated See {@link RuleViolationFactory}
+ */
 @Deprecated
 @InternalApi
 public final class VfRuleViolationFactory extends AbstractRuleViolationFactory {

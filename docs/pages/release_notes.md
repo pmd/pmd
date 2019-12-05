@@ -18,6 +18,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+#### Deprecated APIs
+
+* Implementations of {% jdoc core::lang.rule.RuleViolationFactory %} in each language module, eg {% jdoc java::lang.java.rule.JavaRuleViolationFactory %}. 
+
+
+
 ### External Contributions
 
 {% endtocmaker %}

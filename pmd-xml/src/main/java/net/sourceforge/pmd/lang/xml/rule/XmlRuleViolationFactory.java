@@ -14,6 +14,9 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
+/**
+ * @deprecated See {@link RuleViolationFactory}
+ */
 @Deprecated
 @InternalApi
 public final class XmlRuleViolationFactory extends AbstractRuleViolationFactory {
