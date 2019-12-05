@@ -8,20 +8,8 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 
 /**
- * Describes a particular binary operation on a type {@code <U>}. That
- * operation must satisfy the following requirements, where {@code ==}
- * represents {@code equals}, and {@code u + v} represents {@code apply(u, v)}:
- * <pre>
- *  Identity element:
- *  u, z : U,
- *  z == zero() =>
- *      u + z == u
- *      z + u == u
- *
- *  Associativity:
- *  u, v, w : U =>
- *      (u + v) + w == u + (v + w)
- * </pre>
+ * Describes an associative binary operation on a type {@code <U>},
+ * that has an identity element.
  *
  * @param <U> Domain of the operation
  */

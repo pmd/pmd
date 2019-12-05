@@ -111,7 +111,7 @@ public class RuleApplicator {
             byName.clear();
         }
 
-        // TODO this could definitely be parameterized by a DataKey and extensible
+        // TODO this could be parameterized by a DataKey and extensible
         Stream<Node> getByName(String n) {
             return byName.getOrDefault(n, Collections.emptyList()).stream();
         }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.testframework;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 import org.junit.Ignore;
@@ -29,9 +28,8 @@ public class TestDescriptor {
     private LanguageVersion languageVersion;
     // default, avoids unintentional mixing of state between test cases
     private boolean reinitializeRule = true;
-    private boolean ignored = true;
+    private boolean isRegressionTest = true;
     private boolean useAuxClasspath = true;
-    private boolean isFocused = false;
     private int numberInDocument = -1;
 
     public TestDescriptor() {
@@ -113,22 +111,34 @@ public class TestDescriptor {
         this.reinitializeRule = reinitializeRule;
     }
 
-    /** If true, the test should never be executed. Replaces the previous weird isRegressionTest. */
-    public boolean isIgnored() {
-        return ignored;
+    /**
+     * Checks whether we are testing for regression problems only. Return value
+     * is based on the system property "pmd.regress".
+     *
+     * @return <code>false</code> if system property "pmd.regress" is set to
+     *         <code>false</code>, <code>true</code> otherwise
+     */
+    public static boolean inRegressionTestMode() {
+        boolean inRegressionMode = true; // default
+        try {
+            // get the "pmd.regress" System property
+            String property = System.getProperty("pmd.regress");
+            if (property != null) {
+                inRegressionMode = Boolean.parseBoolean(property);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid system property 'pmd.regress'", e);
+        }
+
+        return inRegressionMode;
     }
 
-    /** The latest test in file order (if any) which is focused gets executed alone. */
-    public boolean isFocused() {
-        return isFocused;
+    public boolean isRegressionTest() {
+        return isRegressionTest;
     }
 
-    public void setIgnored(boolean isIgnored) {
-        this.ignored = isIgnored;
-    }
-
-    public void setFocus(boolean isFocused) {
-        this.isFocused = isFocused;
+    public void setRegressionTest(boolean isRegressionTest) {
+        this.isRegressionTest = isRegressionTest;
     }
 
     public void setUseAuxClasspath(boolean useAuxClasspath) {
@@ -137,28 +147,5 @@ public class TestDescriptor {
 
     public boolean isUseAuxClasspath() {
         return useAuxClasspath;
-    }
-
-    @Override
-    public String toString() {
-        return getDescription();
-    }
-
-    @Override
-    public boolean equals(Object data) {
-        if (this == data) {
-            return true;
-        }
-        if (data == null || getClass() != data.getClass()) {
-            return false;
-        }
-        TestDescriptor that = (TestDescriptor) data;
-        return Objects.equals(rule, that.rule) &&
-            Objects.equals(description, that.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(rule, description);
     }
 }

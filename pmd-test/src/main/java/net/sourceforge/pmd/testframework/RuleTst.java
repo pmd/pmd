@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,14 +57,12 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 public abstract class RuleTst {
     private final DocumentBuilder documentBuilder;
 
-    private static final Logger LOG = Logger.getLogger(RuleTst.class.getName());
-
     public RuleTst() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema;
         try {
-            schema = schemaFactory.newSchema(RuleTst.class.getResource("/rule-tests_7_0_0.xsd"));
+            schema = schemaFactory.newSchema(RuleTst.class.getResource("/rule-tests_1_0_0.xsd"));
             dbf.setSchema(schema);
             dbf.setNamespaceAware(true);
             DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -370,26 +367,8 @@ public abstract class RuleTst {
      * Run a set of tests of a certain sourceType.
      */
     public void runTests(TestDescriptor[] tests) {
-        TestDescriptor focused = null;
-        for (TestDescriptor test : tests) {
-            if (test.isFocused()) {
-                if (focused != null) {
-                    LOG.warning("Focused test '"
-                                    + focused.getDescription()
-                                    + "' will not be executed because '"
-                                    + test.getDescription() + "' takes precedence");
-                }
-                focused = test;
-            }
-        }
-
-        if (focused != null) {
-            runTest(focused);
-            return;
-        }
-
-        for (TestDescriptor test : tests) {
-            runTest(test);
+        for (int i = 0; i < tests.length; i++) {
+            runTest(tests[i]);
         }
     }
 
@@ -410,15 +389,23 @@ public abstract class RuleTst {
                 }
             }
 
-            // default false
-            boolean isIgnored = StringUtils.equalsIgnoreCase("true", testCode.getAttribute("ignored"));
-            // default true
-            if (StringUtils.equalsIgnoreCase("false", testCode.getAttribute("focus"))) {
-                isIgnored = false;
+            boolean isRegressionTest = true;
+            Node regressionTestAttribute = testCode.getAttributes().getNamedItem("regressionTest");
+            if (regressionTestAttribute != null) {
+                String reinitializeRuleValue = regressionTestAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(reinitializeRuleValue)) {
+                    isRegressionTest = false;
+                }
             }
 
-            boolean isFocused = StringUtils.equalsIgnoreCase("true", testCode.getAttribute("focused"));
-            boolean isUseAuxClasspath = !StringUtils.equalsIgnoreCase("false", testCode.getAttribute("useAuxClasspath"));
+            boolean isUseAuxClasspath = true;
+            Node useAuxClasspathAttribute = testCode.getAttributes().getNamedItem("useAuxClasspath");
+            if (useAuxClasspathAttribute != null) {
+                String useAuxClasspathValue = useAuxClasspathAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(useAuxClasspathValue)) {
+                    isUseAuxClasspath = false;
+                }
+            }
 
             NodeList ruleProperties = testCode.getElementsByTagName("rule-property");
             Properties properties = new Properties();
@@ -487,8 +474,7 @@ public abstract class RuleTst {
                 }
             }
             tests[i].setReinitializeRule(reinitializeRule);
-            tests[i].setIgnored(isIgnored);
-            tests[i].setFocus(isFocused);
+            tests[i].setRegressionTest(isRegressionTest);
             tests[i].setUseAuxClasspath(isUseAuxClasspath);
             tests[i].setExpectedMessages(messages);
             tests[i].setExpectedLineNumbers(expectedLineNumbers);
