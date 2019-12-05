@@ -20,7 +20,12 @@ This is a {{ site.pmd.release_type }} release.
 
 #### Deprecated APIs
 
-* Implementations of {% jdoc core::lang.rule.RuleViolationFactory %} in each language module, eg {% jdoc java::lang.java.rule.JavaRuleViolationFactory %}. 
+* Implementations of {% jdoc core::lang.rule.RuleViolationFactory %} in each
+  language module, eg {% jdoc java::lang.java.rule.JavaRuleViolationFactory %}.
+  See javadoc of {% jdoc core::lang.rule.RuleViolationFactory %}.
+* Implementations of {% jdoc core::RuleViolation %} in each language module,
+  eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
+  {% jdoc core::RuleViolation %}.
 
 
 
