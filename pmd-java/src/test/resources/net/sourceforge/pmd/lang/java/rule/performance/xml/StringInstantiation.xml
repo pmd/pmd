@@ -99,4 +99,20 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2141 [java] StringInstatiation: False negative with String-array access</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        String[] arr = getArray();
+        String s = new String(arr[0]);
+        // better
+        String s2 = arr[0];
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
