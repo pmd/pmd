@@ -102,8 +102,8 @@ public class Foo {
 
     <test-code>
         <description>#2141 [java] StringInstatiation: False negative with String-array access</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,10</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -111,6 +111,10 @@ public class Foo {
         String s = new String(arr[0]);
         // better
         String s2 = arr[0];
+    }
+    public void bar2() {
+        String[][] arr = getArray2();
+        String s = new String(arr[0][0]);
     }
 }
         ]]></code>

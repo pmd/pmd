@@ -16,12 +16,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.TypedNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 
 public class StringInstantiationRule extends AbstractJavaRule {
@@ -40,9 +38,13 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return data;
         }
 
-        boolean arrayAccess = isArrayAccess(node);
+        if (isArrayAccess(node)) {
+            addViolation(data, node);
+            return data;
+        }
+
         List<ASTExpression> exp = node.findDescendantsOfType(ASTExpression.class);
-        if (exp.size() >= 2 && !arrayAccess) {
+        if (exp.size() >= 2) {
             return data;
         }
 
@@ -62,7 +64,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
             return data;
         }
 
-        if (nd instanceof TypedNameDeclaration && TypeHelper.isExactlyAny((TypedNameDeclaration) nd, String.class) || arrayAccess) {
+        if (nd instanceof TypedNameDeclaration && TypeHelper.isExactlyAny((TypedNameDeclaration) nd, String.class)) {
             addViolation(data, node);
         }
         return data;
@@ -76,23 +78,11 @@ public class StringInstantiationRule extends AbstractJavaRule {
 
         Node firstArg = arguments.getFirstChildOfType(ASTArgumentList.class).jjtGetChild(0);
         ASTPrimaryExpression primary = firstArg.getFirstChildOfType(ASTPrimaryExpression.class);
-        if (primary == null) {
-            return false;
-        }
-
-        ASTPrimaryPrefix prefix = primary.getFirstChildOfType(ASTPrimaryPrefix.class);
-        if (prefix == null || !isStringArrayTypeDefinition(prefix.getTypeDefinition())) {
+        if (primary == null || primary.getType() != String.class) {
             return false;
         }
 
         ASTPrimarySuffix suffix = primary.getFirstChildOfType(ASTPrimarySuffix.class);
         return suffix != null && suffix.isArrayDereference();
-    }
-
-    private boolean isStringArrayTypeDefinition(JavaTypeDefinition typeDefinition) {
-        if (typeDefinition == null || !typeDefinition.isArrayType() || typeDefinition.getElementType() == null) {
-            return false;
-        }
-        return typeDefinition.getElementType().getType() == String.class;
     }
 }
