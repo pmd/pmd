@@ -18,6 +18,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+
+#### Deprecated APIs
+
+##### Internal API
+
+* {% jdoc java::lang.java.JavaLanguageHandler %}
+* {% jdoc java::lang.java.JavaLanguageParser %}
+* {% jdoc java::lang.java.JavaDataFlowHandler %}
+
+
+##### For removal
+
+* {% jdoc java::lang.java.AbstractJavaParser %}
+* {% jdoc java::lang.java.AbstractJavaHandler %}
+
+
 ### External Contributions
 
 {% endtocmaker %}
