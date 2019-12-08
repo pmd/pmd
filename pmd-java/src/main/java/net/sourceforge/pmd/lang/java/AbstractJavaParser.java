@@ -23,7 +23,10 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  *
  * @see AbstractParser
  * @see JavaParser
+ *
+ * @deprecated For removal, the abstraction is not useful.
  */
+@Deprecated
 public abstract class AbstractJavaParser extends AbstractParser {
     private JavaParser parser;
 
