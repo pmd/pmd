@@ -470,18 +470,16 @@ More exceptions can be defined with the property "ignoreMagicNumbers".
             <property name="xpath">
                 <value>
 <![CDATA[
-//IfStatement[Expression//*[local-name() != 'UnaryExpression' or @Operator != '-']/PrimaryExpression/PrimaryPrefix/Literal
+//IfStatement/Expression//*[local-name() != 'UnaryExpression' or @Operator != '-']/PrimaryExpression/PrimaryPrefix/Literal
     [not(NullLiteral)]
     [not(BooleanLiteral)]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), @Image))]
-]
 |
 (: consider negative literals :)
-//IfStatement[Expression//UnaryExpression[@Operator = '-']/PrimaryExpression/PrimaryPrefix/Literal
+//IfStatement/Expression//UnaryExpression[@Operator = '-']/PrimaryExpression/PrimaryPrefix/Literal
     [not(NullLiteral)]
     [not(BooleanLiteral)]
     [empty(index-of(tokenize($ignoreMagicNumbers, '\s*,\s*'), concat('-', @Image)))]
-]
 ]]>
                 </value>
             </property>

@@ -93,8 +93,8 @@ public class Foo {
 
   <test-code>
     <description>#2140 [java] AvoidLiteralsInIfCondition: false negative for expressions</description>
-    <expected-problems>3</expected-problems>
-    <expected-linenumbers>3,4,5</expected-linenumbers>
+    <expected-problems>4</expected-problems>
+    <expected-linenumbers>3,3,4,5</expected-linenumbers>
     <code><![CDATA[
 public class Foo {
     public void bar(int a) {
