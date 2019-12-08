@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java;
+package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,11 +10,14 @@ import java.util.List;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
@@ -41,23 +44,27 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
-/**
- * Implementation of LanguageVersionHandler for the Java AST. It uses anonymous
- * classes as adapters of the visitors to the VisitorStarter interface.
- *
- * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
- *
- * @deprecated For removal, the abstraction is not useful.
- */
-@Deprecated
-public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHandler {
+public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
-    AbstractJavaHandler() {
-        super(JavaProcessingStage.class);
+    private final int jdkVersion;
+    private final boolean preview;
+    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+
+    public JavaLanguageHandler(int jdkVersion) {
+        this(jdkVersion, false);
+    }
+
+    public JavaLanguageHandler(int jdkVersion, boolean preview) {
+        this.jdkVersion = jdkVersion;
+        this.preview = preview;
     }
 
 
-    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+    @Override
+    public Parser getParser(ParserOptions parserOptions) {
+        return new JavaLanguageParser(jdkVersion, preview, parserOptions);
+    }
+
 
     @Override
     public DataFlowHandler getDataFlowHandler() {
