@@ -1,8 +1,9 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java;
+
+package net.sourceforge.pmd.lang.java.internal;
 
 import java.io.Reader;
 import java.util.Map;
@@ -13,25 +14,26 @@ import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaTokenManager;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 /**
- * This is a generic Java specific implementation of the Parser interface. It
- * creates a JavaParser instance, and sets the exclude marker. It also exposes
- * the exclude map from the JavaParser instance.
+ * Adapter for the JavaParser, using the specified grammar version.
  *
- * @see AbstractParser
- * @see JavaParser
- *
- * @deprecated For removal, the abstraction is not useful.
+ * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
+ * @author Andreas Dangel
  */
-@Deprecated
-public abstract class AbstractJavaParser extends AbstractParser {
-    private JavaParser parser;
+public class JavaLanguageParser extends AbstractParser {
 
-    public AbstractJavaParser(ParserOptions parserOptions) {
+    private final int jdkVersion;
+    private final boolean preview;
+    private JavaParser javaParser;
+
+    public JavaLanguageParser(int jdkVersion, boolean preview, ParserOptions parserOptions) {
         super(parserOptions);
+        this.jdkVersion = jdkVersion;
+        this.preview = preview;
     }
 
     @Override
@@ -39,17 +41,17 @@ public abstract class AbstractJavaParser extends AbstractParser {
         return new JavaTokenManager(source);
     }
 
-    /**
-     * Subclass should override this method to modify the JavaParser as needed.
-     */
-    protected JavaParser createJavaParser(Reader source) throws ParseException {
-        parser = new JavaParser(new JavaCharStream(source));
+    private JavaParser createJavaParser(Reader source) throws ParseException {
+        javaParser = new JavaParser(new JavaCharStream(source));
+        javaParser.setJdkVersion(jdkVersion);
+        javaParser.setPreview(preview);
         String suppressMarker = getParserOptions().getSuppressMarker();
         if (suppressMarker != null) {
-            parser.setSuppressMarker(suppressMarker);
+            javaParser.setSuppressMarker(suppressMarker);
         }
-        return parser;
+        return javaParser;
     }
+
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
@@ -59,6 +61,6 @@ public abstract class AbstractJavaParser extends AbstractParser {
 
     @Override
     public Map<Integer, String> getSuppressMap() {
-        return parser.getSuppressMap();
+        return javaParser.getSuppressMap();
     }
 }

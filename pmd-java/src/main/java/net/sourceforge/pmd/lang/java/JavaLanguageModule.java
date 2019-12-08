@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java;
 
 import net.sourceforge.pmd.lang.BaseLanguageModule;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
 
 /**

@@ -53,7 +53,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
         currentPackage = node.getPackageNameImage();
         return data;
     }
-    
+
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         imports.add(node);
@@ -245,13 +245,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRule {
             // with type resolution we can do an exact package match
             Package packageOfType = node.getType().getPackage();
             if (packageOfType != null) {
-                
+
                 // get "package" candidate from name
                 int i = name.lastIndexOf('.');
                 if (i > 0) {
                     name = name.substring(0, i);
                 }
-                
+
                 return node.getType().getPackage().getName().equals(currentPackage)
                         && name.equals(currentPackage);
             }
