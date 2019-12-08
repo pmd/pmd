@@ -37,7 +37,7 @@ elif travis_isPush; then
         echo -e "\n\n"
 
         # create a draft github release
-        gh_releases_createDraftRelease "${TRAVIS_TAG}" "$(git show-ref --hash HEAD)"
+        gh_releases_createDraftRelease "${TRAVIS_TAG}" "$(git show-ref --hash ${TRAVIS_TAG})"
         GH_RELEASE="$RESULT"
 
         # Build and deploy to ossrh / maven-central

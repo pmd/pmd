@@ -46,7 +46,10 @@ import net.sf.saxon.sxpath.IndependentContext;
  * classes as adapters of the visitors to the VisitorStarter interface.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
+ *
+ * @deprecated For removal, the abstraction is not useful.
  */
+@Deprecated
 public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHandler {
 
     AbstractJavaHandler() {
