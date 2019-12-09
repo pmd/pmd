@@ -18,8 +18,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### API Changes
 
+
 #### Deprecated APIs
 
+##### Internal API
+
+* {% jdoc java::lang.java.JavaLanguageHandler %}
+* {% jdoc java::lang.java.JavaLanguageParser %}
+* {% jdoc java::lang.java.JavaDataFlowHandler %}
 * Implementations of {% jdoc core::lang.rule.RuleViolationFactory %} in each
   language module, eg {% jdoc java::lang.java.rule.JavaRuleViolationFactory %}.
   See javadoc of {% jdoc core::lang.rule.RuleViolationFactory %}.
@@ -27,6 +33,10 @@ This is a {{ site.pmd.release_type }} release.
   eg {% jdoc java::lang.java.rule.JavaRuleViolation %}. See javadoc of
   {% jdoc core::RuleViolation %}.
 
+##### For removal
+
+* {% jdoc java::lang.java.AbstractJavaParser %}
+* {% jdoc java::lang.java.AbstractJavaHandler %}
 
 
 ### External Contributions
