@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.util.DateTimeUtil;
-import net.sourceforge.pmd.util.EmptyIterator;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -401,7 +400,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return the iterator
      */
     public Iterator<ProcessingError> errors() {
-        return errors == null ? EmptyIterator.<ProcessingError>instance() : errors.iterator();
+        return errors == null ? Collections.<ProcessingError>emptyIterator() : errors.iterator();
     }
 
     /**
@@ -410,7 +409,7 @@ public class Report implements Iterable<RuleViolation> {
      * @return the iterator
      */
     public Iterator<ConfigurationError> configErrors() {
-        return configErrors == null ? EmptyIterator.<ConfigurationError>instance() : configErrors.iterator();
+        return configErrors == null ? Collections.<ConfigurationError>emptyIterator() : configErrors.iterator();
     }
 
     /**

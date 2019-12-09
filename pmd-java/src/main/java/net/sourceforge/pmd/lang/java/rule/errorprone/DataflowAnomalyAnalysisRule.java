@@ -131,8 +131,6 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
         if (va.accessTypeMatches(u.accessType) && va.isDefinition()) { // DD
             addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
-        } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
-            addDaaViolation(rc, lastNode, "UR", va.getVariableName(), startLine, endLine);
         } else if (u.accessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
             addDaaViolation(rc, firstNode, "DU", va.getVariableName(), startLine, endLine);
         }

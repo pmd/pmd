@@ -18,4 +18,29 @@ public class LanguageRegistryTest {
         Assert.assertSame(DummyLanguageModule.class, defaultLanguage.getClass());
     }
 
+    @Test
+    public void getDefaultVersionLanguageTest() {
+        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+        LanguageVersion dummy12 = dummy.getVersion("1.2");
+        Assert.assertNotNull(dummy12);
+
+        LanguageVersion dummyDefault = dummy.getDefaultVersion();
+        Assert.assertNotNull(dummyDefault);
+
+        Assert.assertNotSame(dummy12, dummyDefault);
+    }
+
+    @Test
+    public void getLanguageVersionByAliasTest() {
+        Language dummy = LanguageRegistry.findLanguageByTerseName("dummy");
+
+        LanguageVersion dummy17 = dummy.getVersion("1.7");
+        Assert.assertNotNull(dummy17);
+        Assert.assertEquals("1.7", dummy17.getVersion());
+
+        LanguageVersion dummy7 = dummy.getVersion("7");
+        Assert.assertNotNull(dummy7);
+        Assert.assertEquals("1.7", dummy17.getVersion());
+        Assert.assertSame(dummy17, dummy7);
+    }
 }

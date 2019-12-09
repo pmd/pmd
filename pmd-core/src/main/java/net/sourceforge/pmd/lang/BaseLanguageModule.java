@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.annotation.Experimental;
+
 /**
  * Created by christoferdutz on 21.09.14.
  */
@@ -33,6 +35,23 @@ public abstract class BaseLanguageModule implements Language {
         this.terseName = terseName;
         this.ruleChainVisitorClass = ruleChainVisitorClass;
         this.extensions = Arrays.asList(extensions);
+    }
+
+    @Experimental
+    protected void addVersions(LanguageVersionHandler languageVersionHandler, boolean isDefault, String ... languageVersions) {
+        if (versions == null) {
+            versions = new HashMap<>();
+        }
+
+        LanguageVersion languageVersion = new LanguageVersion(this, languageVersions[0], languageVersionHandler);
+
+        for (String version : languageVersions) {
+            versions.put(version, languageVersion);
+        }
+
+        if (isDefault) {
+            defaultVersion = languageVersion;
+        }
     }
 
     protected void addVersion(String version, LanguageVersionHandler languageVersionHandler, boolean isDefault) {

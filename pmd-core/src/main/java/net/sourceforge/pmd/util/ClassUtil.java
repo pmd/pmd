@@ -17,7 +17,9 @@ import java.util.Map;
  * UIs without the package prefixes.
  *
  * @author Brian Remedios
+ * @deprecated Is internal API
  */
+@Deprecated
 public final class ClassUtil {
 
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];

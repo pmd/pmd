@@ -36,10 +36,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
         addVersion("1.2", new Handler(), false);
         addVersion("1.3", new Handler(), false);
         addVersion("1.4", new Handler(), false);
-        addVersion("1.5", new Handler(), false);
-        addVersion("1.6", new Handler(), false);
-        addVersion("1.7", new Handler(), true);
-        addVersion("1.8", new Handler(), false);
+        addVersions(new Handler(), false, "1.5", "5");
+        addVersions(new Handler(), false, "1.6", "6");
+        addVersions(new Handler(), true, "1.7", "7");
+        addVersions(new Handler(), false, "1.8", "8");
     }
 
     public static class DummyRuleChainVisitor extends AbstractRuleChainVisitor {

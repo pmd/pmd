@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.junit;
 
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
@@ -54,7 +55,7 @@ public class JavaUtilLoggingRule extends ExternalResource {
      */
     public String getLog() {
         customLogHandler.flush();
-        return stream.toString();
+        return stream.toString(StandardCharsets.UTF_8);
     }
 
     /**

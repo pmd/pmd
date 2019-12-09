@@ -88,7 +88,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-language,-l"
                option_arg="lang"
-               description="Specify the language PMD should use."
+               description="Specify the language PMD should use. Used together with `-version`. See also [Supported Languages](#supported-languages)."
     %}
     {% include custom/cli_option_row.html options="-minimumpriority,-min"
                option_arg="num"
@@ -96,7 +96,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
                default="5"
     %}
     {% include custom/cli_option_row.html options="-norulesetcompatibility"
-               description='Disables the ruleset compatibility filter. The filter is active by default. It tries to automatically replace rule references that point to moved or renamed rules with the newer location. Disabling it is not recommended.'
+               description='Disable automatic fixing of invalid rule references. Without the switch, PMD tries to automatically replace rule references that point to moved or renamed rules with the newer location if possible. Disabling it is not recommended.'
     %}
     {% include custom/cli_option_row.html options="-no-cache"
                description="Explicitly disables incremental analysis. This switch turns off suggestions to use Incremental Analysis,
@@ -138,7 +138,7 @@ The tool comes with a rather extensive help text, simply running with `-help`!
     %}
     {% include custom/cli_option_row.html options="-version,-v"
                option_arg="version"
-               description="Specify the version of a language PMD should use."
+               description="Specify the version of a language PMD should use. Used together with `-language`. See also [Supported Languages](#supported-languages)."
     %}
 </table>
 
@@ -166,12 +166,28 @@ This behavior has been introduced to ease PMD integration into scripts or hooks,
 
 ## Supported Languages
 
+The language is determined automatically by PMD from the file extensions. Some languages such as "Java"
+however support multiple versions. The default version will be used, which is usually the latest supported
+version. If you want to use an older version, so that e.g. rules, that suggest usage of language features,
+that are not available yet, won't be executed, you need to specify a specific version via the `-language`
+and `-version` parameter.
+
+These parameters are irrelevant for languages that don't support different versions.
+
+Example:
+
+``` shell
+./run.sh pmd -d src/main/java -f text -R rulesets/java/quickstart.xml -language java -version 8
+```
+
 *   [apex](pmd_rules_apex.html) (Salesforce Apex)
 *   [java](pmd_rules_java.html)
+    *   Supported Versions: 1.3, 1.4, 1.5, 5, 1.6, 6, 1.7, 7, 1.8, 8, 9, 1.9, 10, 1.10, 11, 12, 13 (default), 13-preview
 *   [ecmascript](pmd_rules_ecmascript.html) (JavaScript)
 *   [jsp](pmd_rules_jsp.html)
 *   [plsql](pmd_rules_plsql.html)
 *   [scala](pmd_rules_scala.html)
+    *   Supported Versions: 2.10, 2.11, 2.12, 2.13 (default)
 *   [vf](pmd_rules_vf.html) (Salesforce VisualForce)
 *   [vm](pmd_rules_vm.html) (Apache Velocity)
 *   [xml and xsl](pmd_rules_xml.html)

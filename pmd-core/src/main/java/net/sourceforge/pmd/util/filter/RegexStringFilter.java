@@ -16,7 +16,9 @@ import java.util.regex.PatternSyntaxException;
  * some sort of relative file path, the regular expression is checked to see if
  * it can be evaluated using much faster calls to
  * {@link String#endsWith(String)}.
+ * @deprecated See {@link Filter}
  */
+@Deprecated
 public class RegexStringFilter implements Filter<String> {
     /**
      * Matches regular expressions begin with an optional {@code ^}, then

@@ -196,6 +196,3 @@ public class ExampleCode {
 </ruleset>
 ```
 
-
-
-Finally, for many more details on writing XPath rules, pick up [PMD Applied](http://pmdapplied.com/)!

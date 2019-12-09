@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.java.internal.JavaLanguageHandler;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
@@ -208,12 +209,12 @@ public class ParserTstUtil {
     }
 
 
-    public static AbstractJavaHandler getLanguageVersionHandler(String version) {
-        return (AbstractJavaHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
+    public static JavaLanguageHandler getLanguageVersionHandler(String version) {
+        return (JavaLanguageHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getVersion(version).getLanguageVersionHandler();
     }
 
-    public static AbstractJavaHandler getDefaultLanguageVersionHandler() {
-        return (AbstractJavaHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
+    public static JavaLanguageHandler getDefaultLanguageVersionHandler() {
+        return (JavaLanguageHandler) LanguageRegistry.getLanguage(JavaLanguageModule.NAME).getDefaultVersion().getLanguageVersionHandler();
     }
 
 

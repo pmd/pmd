@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+source .travis/logger.sh
+source .travis/common-functions.sh
+
 if [ "${TRAVIS_REPO_SLUG}" != "pmd/pmd" ] || [ "${TRAVIS_PULL_REQUEST}" != "false" ] || [ "${TRAVIS_SECURE_ENV_VARS}" != "true" ] || [ "${encrypted_5630fbebf057_iv}" = "" ]; then
     echo "Not setting up secrets:"
     echo "  TRAVIS_REPO_SLUG=${TRAVIS_REPO_SLUG}"
@@ -18,7 +21,39 @@ mkdir -p "$HOME/.ssh"
 chmod 700 "$HOME/.ssh"
 mv .travis/id_rsa "$HOME/.ssh/id_rsa"
 chmod 600 "$HOME/.ssh/id_rsa"
-mkdir -p "$HOME/.gpg"
-gpg --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
+
+if travis_isLinux; then
+    mkdir -p "$HOME/.gpg"
+    gpg --batch --import .travis/release-signing-key-82DE7BE82166E84E.gpg
+else
+    log_info "Not setting up gpg for ${TRAVIS_OS_NAME}."
+    # Note: importing keys into gpg will start gpg-agent. This background task then
+    # prevents travis-ci from terminating the build job under Windows.
+    # Alternatively "gpgconf --kill gpg-agent" can be executed to stop the
+    # gpg-agent at the end, if the gpg keys are needed.
+fi
 rm .travis/secrets.tar
 rm .travis/release-signing-key-82DE7BE82166E84E.gpg
+
+echo "Setting up .ssh/known_hosts..."
+#
+# https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/
+#
+# run locally:
+# ssh-keyscan web.sourceforge.net | tee -a known_hosts
+#
+# verify fingerprints:
+# ssh-keygen -F web.sourceforge.net -l -f known_hosts 
+# # Host web.sourceforge.net found: line 1 
+# web.sourceforge.net RSA SHA256:xB2rnn0NUjZ/E0IXQp4gyPqc7U7gjcw7G26RhkDyk90 
+# # Host web.sourceforge.net found: line 2 
+# web.sourceforge.net ECDSA SHA256:QAAxYkf0iI/tc9oGa0xSsVOAzJBZstcO8HqGKfjpxcY 
+# # Host web.sourceforge.net found: line 3 
+# web.sourceforge.net ED25519 SHA256:209BDmH3jsRyO9UeGPPgLWPSegKmYCBIya0nR/AWWCY 
+#
+# then add output of `ssh-keygen -F web.sourceforge.net -f known_hosts`
+#
+echo 'web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw==' >> "$HOME/.ssh/known_hosts"
+echo 'web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo=' >> "$HOME/.ssh/known_hosts"
+echo 'web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC' >> "$HOME/.ssh/known_hosts"
+
