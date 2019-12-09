@@ -43,6 +43,9 @@ public final class LanguageRegistry {
                 // Some languages require java8 and are therefore only available
                 // if java8 or later is used as runtime.
                 System.err.println("Ignoring language for PMD: " + e.toString());
+            } catch (LinkageError ignored) {
+                // FIXME the designer still uses AbstractRuleViolationFactory,
+                //   which disappears in 7.0.0, causing failure in integration tests
             }
         }
 
