@@ -20,7 +20,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public class ASTUnaryExpression extends AbstractJavaExpr implements LeftRecursiveNode {
+public final class ASTUnaryExpression extends AbstractJavaExpr implements LeftRecursiveNode {
 
     private UnaryOp operator;
 
@@ -50,10 +50,6 @@ public class ASTUnaryExpression extends AbstractJavaExpr implements LeftRecursiv
         return (ASTExpression) jjtGetChild(0);
     }
 
-    /** Returns the constant representing the operator. */
-    public UnaryOp getOperator() {
-        return operator;
-    }
 
     /**
      * Returns true if this is a prefix expression.
@@ -63,6 +59,11 @@ public class ASTUnaryExpression extends AbstractJavaExpr implements LeftRecursiv
     @Deprecated
     public boolean isPrefix() {
         return getOperator().isPrefix();
+    }
+
+    /** Returns the constant representing the operator of this expression. */
+    public UnaryOp getOperator() {
+        return operator;
     }
 
     void setOp(UnaryOp op) {

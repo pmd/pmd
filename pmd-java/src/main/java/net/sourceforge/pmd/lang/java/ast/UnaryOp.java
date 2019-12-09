@@ -17,6 +17,9 @@ package net.sourceforge.pmd.lang.java.ast;
  * PostfixOp ::= "++" | "--"
  *
  *  </pre>
+ *
+ * @see BinaryOp
+ * @see AssignmentOp
  */
 public enum UnaryOp implements InternalInterfaces.OperatorLike {
     /** Unary numeric promotion operator {@code "+"}. */

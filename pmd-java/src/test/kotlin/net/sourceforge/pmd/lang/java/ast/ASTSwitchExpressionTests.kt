@@ -146,7 +146,7 @@ class ASTSwitchExpressionTests : ParserTestSpec({
                 }
             }
             "-switch (day) {default -> 6;}" should parseAs {
-                prefixExpr(UNARY_MINUS) {
+                unaryExpr(UNARY_MINUS) {
                     switchExpr()
                 }
             }

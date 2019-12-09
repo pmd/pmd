@@ -106,6 +106,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
         return visit((ASTExpression) node, data);
     }
 
+
     @Override
     public Object visit(ASTUnaryExpression node, Object data) {
         return visit((ASTExpression) node, data);

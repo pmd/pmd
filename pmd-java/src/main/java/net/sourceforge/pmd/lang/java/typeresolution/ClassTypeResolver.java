@@ -110,15 +110,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private static final Map<String, Class<?>> PRIMITIVE_TYPES;
     private static final Map<String, String> JAVA_LANG;
+
     private Map<String, JavaTypeDefinition> staticFieldImageToTypeDef;
     private Map<String, List<JavaTypeDefinition>> staticNamesToClasses;
     private List<JavaTypeDefinition> importOnDemandStaticClasses;
     private ASTCompilationUnit currentAcu;
-
-    private final PMDASMClassLoader pmdClassLoader;
-    private Map<String, String> importedClasses;
-    private List<String> importedOnDemand;
-
 
     static {
         // Note: Assumption here that primitives come from same parent
@@ -172,6 +168,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         theJavaLang.put("Void", "java.lang.Void");
         JAVA_LANG = Collections.unmodifiableMap(theJavaLang);
     }
+
+    private final PMDASMClassLoader pmdClassLoader;
+    private Map<String, String> importedClasses;
+    private List<String> importedOnDemand;
 
 
     public ClassTypeResolver() {
@@ -283,7 +283,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      * @param node
      *
      * @return The index in the array produced by splitting the node's name by '.', which is not part of the
-     *     class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
+     * class name found. Example: com.package.SomeClass.staticField.otherField, return would be 3
      */
     private int searchNodeNameForClass(TypeNode node) {
         // this is the index from which field/method names start in the dotSplitImage array
@@ -293,7 +293,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         // First try: com.package.SomeClass.staticField.otherField
         // Second try: com.package.SomeClass.staticField
         // Third try: com.package.SomeClass <- found a class!
-        for (String reducedImage = node.getImage(); ;) {
+        for (String reducedImage = node.getImage();;) {
             populateType(node, reducedImage);
             if (node.getType() != null) {
                 break; // we found a class!
@@ -489,7 +489,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @return JavaTypeDefinition of the resolved field or null if it could not be found.
      */
-    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?> accessingClass) {
+    private JavaTypeDefinition getFieldType(JavaTypeDefinition typeToSearch, String fieldImage, Class<?>
+            accessingClass) {
         while (typeToSearch != null && typeToSearch.getType() != Object.class) {
             try {
                 final Field field = typeToSearch.getType().getDeclaredField(fieldImage);
@@ -525,7 +526,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
      *
      * @return Type def. of the field, or null if it could not be resolved.
      */
-    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?> accessingClass) {
+    private JavaTypeDefinition getTypeDefinitionOfVariableFromScope(Scope scope, String image, Class<?>
+            accessingClass) {
         if (accessingClass == null) {
             return null;
         }
@@ -533,7 +535,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         for (/* empty */; scope != null; scope = scope.getParent()) {
             // search each enclosing scope one by one
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry
-                : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
+                    : scope.getDeclarations(VariableNameDeclaration.class).entrySet()) {
                 if (entry.getKey().getImage().equals(image)) {
                     ASTType typeNode = entry.getKey().getDeclaratorId().getTypeNode();
 
@@ -555,8 +557,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 try {
                     // get the superclass type def. ot the Class the ClassScope belongs to
                     JavaTypeDefinition superClass
-                        = getSuperClassTypeDefinition(((ClassScope) scope).getClassDeclaration().getNode(),
-                                                      null);
+                            = getSuperClassTypeDefinition(((ClassScope) scope).getClassDeclaration().getNode(),
+                                                          null);
                     // TODO: check if anonymous classes are class scope
 
                     // try searching this type def.
@@ -1223,7 +1225,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
                 Class<?> type = ((TypeNode) child).getType();
                 if (type != null) {
                     if ("byte".equals(type.getName()) || "short".equals(type.getName())
-                        || "char".equals(type.getName())) {
+                            || "char".equals(type.getName())) {
                         populateType(typeNode, "int");
                     } else {
                         InternalApiBridge.setTypeDefinition(typeNode, ((TypeNode) child).getTypeDefinition());

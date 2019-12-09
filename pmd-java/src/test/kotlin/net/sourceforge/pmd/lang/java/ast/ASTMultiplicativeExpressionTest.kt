@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-import net.sourceforge.pmd.lang.java.ast.UnaryOp.PrefixOp.UNARY_MINUS
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 
 class ASTMultiplicativeExpressionTest : ParserTestSpec({
@@ -30,7 +30,7 @@ class ASTMultiplicativeExpressionTest : ParserTestSpec({
                         int(1)
                         int(2)
                     }
-                    prefixExpr(UNARY_MINUS) {
+                    unaryExpr(UNARY_MINUS) {
                         int(4)
                     }
                 }

@@ -362,7 +362,7 @@ $delim
             "0x0_0__0F" should parseAs(hex15i)
 
             "-0X0000_000f" should parseAs {
-                prefixExpr(UNARY_MINUS) {
+                unaryExpr(UNARY_MINUS) {
                     hex15i()
                 }
             }

@@ -36,7 +36,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTShiftExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArgument;
-import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.java.ast.ASTWildcardBounds;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
@@ -126,9 +125,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaParse
         return JavaParserVisitor.super.visit(node, data);
     }
 
-    public Object visit(ASTUnaryExpression node, Object data) {
-        return visit((ASTExpression) node, data);
-    }
 
     // REMOVE ME
     // deprecated stuff kept for compatibility with existing visitors, not matched by anything
