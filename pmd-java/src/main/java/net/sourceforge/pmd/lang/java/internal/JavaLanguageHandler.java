@@ -55,6 +55,7 @@ public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
     }
 
     public JavaLanguageHandler(int jdkVersion, boolean preview) {
+        super(JavaProcessingStage.class);
         this.jdkVersion = jdkVersion;
         this.preview = preview;
     }
