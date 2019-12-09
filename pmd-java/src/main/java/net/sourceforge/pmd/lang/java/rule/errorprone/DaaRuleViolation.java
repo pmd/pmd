@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
@@ -16,7 +17,9 @@ import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
  *
  * @author Sven Jacob
  * @author Brian Remedios
+ * @deprecated See {@link RuleViolation}
  */
+@Deprecated
 public class DaaRuleViolation extends JavaRuleViolation {
 
     private final String variableName;

@@ -7,14 +7,17 @@ package net.sourceforge.pmd.lang.scala.rule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
- * A RuleViolationFactory for Scala.
+ * @deprecated See {@link RuleViolationFactory}
  */
+@Deprecated
+@InternalApi
 public class ScalaRuleViolationFactory extends AbstractRuleViolationFactory {
     /**
      * The shared singleton of this RuleViolationFactory.

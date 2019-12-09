@@ -7,11 +7,17 @@ package net.sourceforge.pmd.lang.java.rule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
+/**
+ * @deprecated See {@link RuleViolationFactory}
+ */
+@Deprecated
+@InternalApi
 public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory {
 
     public static final RuleViolationFactory INSTANCE = new JavaRuleViolationFactory();
