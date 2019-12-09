@@ -27,8 +27,8 @@ package net.sourceforge.pmd.lang.java.ast;
  *              | {@link ASTAssignmentExpression AssignmentExpression}
  *              | {@link ASTConditionalExpression ConditionalExpression}
  *              | {@link ASTInfixExpression InfixExpression}
- *              | {@link ASTPrefixExpression PrefixExpression} | {@link ASTCastExpression CastExpression}
- *              | {@link ASTPostfixExpression PostfixExpression}
+ *              | {@link ASTUnaryExpression PrefixExpression} | {@link ASTCastExpression CastExpression}
+ *              | {@link ASTUnaryExpression PostfixExpression}
  *              | {@link ASTSwitchExpression SwitchExpression}
  *              | {@link ASTPrimaryExpression PrimaryExpression}
  *

@@ -10,12 +10,40 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * <pre class="grammar">
  *
- * UnaryOp ::= {@link PrefixOp} | {@link PostfixOp}
+ * UnaryOp ::= PrefixOp | PostfixOp
  *
- * </pre>
+ * PrefixOp ::= "+" | "-" | "~" | "!" | "++" | "--"
  *
+ * PostfixOp ::= "++" | "--"
+ *
+ *  </pre>
  */
-public interface UnaryOp extends InternalInterfaces.OperatorLike {
+public enum UnaryOp implements InternalInterfaces.OperatorLike {
+    /** Unary numeric promotion operator {@code "+"}. */
+    UNARY_PLUS("+"),
+    /** Arithmetic negation operation {@code "-"}. */
+    UNARY_MINUS("-"),
+    /** Bitwise complement operator {@code "~"}. */
+    COMPLEMENT("~"),
+    /** Logical complement operator {@code "!"}. */
+    NEGATION("!"),
+
+    /** Prefix increment operator {@code "++"}. */
+    PRE_INCREMENT("++"),
+    /** Prefix decrement operator {@code "--"}. */
+    PRE_DECREMENT("--"),
+
+    /** Postfix increment operator {@code "++"}. */
+    POST_INCREMENT("++"),
+    /** Postfix decrement operator {@code "--"}. */
+    POST_DECREMENT("--");
+
+
+    private final String code;
+
+    UnaryOp(String code) {
+        this.code = code;
+    }
 
     /**
      * Returns true if this operator is pure, ie the evaluation of
@@ -30,96 +58,29 @@ public interface UnaryOp extends InternalInterfaces.OperatorLike {
      *
      * TODO update example for node streams
      */
-    boolean isPure();
-
-
-    /**
-     * A prefix operator for {@link ASTPrefixExpression}.
-     *
-     * <pre class="grammar">
-     *
-     * PrefixOp ::= "+" | "-" | "~" | "!" | "++" | "--"
-     *
-     * </pre>
-     *
-     * @see BinaryOp
-     * @see AssignmentOp
-     */
-    enum PrefixOp implements UnaryOp {
-        /** Unary numeric promotion operator {@code "+"}. */
-        UNARY_PLUS("+"),
-        /** Arithmetic negation operation {@code "-"}. */
-        UNARY_MINUS("-"),
-        /** Bitwise complement operator {@code "~"}. */
-        COMPLEMENT("~"),
-        /** Logical complement operator {@code "!"}. */
-        NEGATION("!"),
-
-        /** Prefix increment operator {@code "++"}. */
-        PRE_INCREMENT("++"),
-        /** Prefix decrement operator {@code "--"}. */
-        PRE_DECREMENT("--");
-
-        private final String code;
-
-        PrefixOp(String code) {
-            this.code = code;
-        }
-
-        @Override
-        public boolean isPure() {
-            return this != PRE_INCREMENT && this != PRE_DECREMENT;
-        }
-
-        @Override
-        public String getToken() {
-            return code;
-        }
-
-        @Override
-        public String toString() {
-            return this.code;
-        }
-
+    public boolean isPure() {
+        return this.ordinal() < PRE_INCREMENT.ordinal();
     }
 
-    /**
-     * A postfix operator for {@link ASTPostfixExpression}.
-     *
-     * <pre class="grammar">
-     *
-     * PostfixOp ::= "++" | "--"
-     *
-     * </pre>
-     *
-     * @see BinaryOp
-     * @see AssignmentOp
-     */
-    enum PostfixOp implements UnaryOp {
-        /** Postfix increment operator {@code "++"}. */
-        POST_INCREMENT("++"),
-        /** Postfix decrement operator {@code "--"}. */
-        POST_DECREMENT("--");
-
-        private final String code;
-
-        PostfixOp(String code) {
-            this.code = code;
-        }
-
-        @Override
-        public boolean isPure() {
-            return false;
-        }
-
-        @Override
-        public String getToken() {
-            return code;
-        }
-
-        @Override
-        public String toString() {
-            return this.code;
-        }
+    /** Returns true if this is a prefix operator. */
+    public boolean isPrefix() {
+        return this.ordinal() < POST_INCREMENT.ordinal();
     }
+
+    /** Returns true if this is a postfix operator. */
+    public boolean isPostfix() {
+        return !isPrefix();
+    }
+
+
+    @Override
+    public String getToken() {
+        return code;
+    }
+
+    @Override
+    public String toString() {
+        return this.code;
+    }
+
 }

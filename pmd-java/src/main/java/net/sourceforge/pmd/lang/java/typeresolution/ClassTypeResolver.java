@@ -88,7 +88,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTYieldStatement;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.lang.java.ast.UnaryOp.PrefixOp;
+import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.typedefinition.JavaTypeDefinition;
@@ -782,9 +782,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     public Object visit(ASTUnaryExpression node, Object data) {
         super.visit(node, data);
 
-        if (node.getOperator() == PrefixOp.NEGATION) {
+        if (node.getOperator() == UnaryOp.NEGATION) {
             populateType(node, "boolean");
-        } else if (node.getOperator() == PrefixOp.COMPLEMENT) {
+        } else if (node.getOperator() == UnaryOp.COMPLEMENT) {
             rollupTypeUnary(node);
         } else {
             rollupTypeUnaryNumericPromotion(node);

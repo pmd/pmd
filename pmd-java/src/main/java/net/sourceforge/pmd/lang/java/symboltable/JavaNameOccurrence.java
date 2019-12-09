@@ -9,7 +9,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
-import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -121,13 +120,20 @@ public class JavaNameOccurrence implements NameOccurrence {
     }
 
     private boolean isStandAlonePostfix(Node primaryExpression) {
-        if (!(primaryExpression instanceof ASTPostfixExpression && !((ASTPostfixExpression) primaryExpression).getOperator().isPure())
-                || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
+        if (!(primaryExpression instanceof ASTUnaryExpression)) {
+            return false;
+        }
+
+        ASTUnaryExpression unaryExpr = (ASTUnaryExpression) primaryExpression;
+
+        if (unaryExpr.getOperator().isPure()
+            || unaryExpr.getOperator().isPrefix()
+            || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
             return false;
         }
 
         ASTPrimaryPrefix pf = (ASTPrimaryPrefix) ((ASTPrimaryExpression) primaryExpression.jjtGetChild(0))
-                .jjtGetChild(0);
+            .jjtGetChild(0);
         if (pf.usesThisModifier()) {
             return true;
         }

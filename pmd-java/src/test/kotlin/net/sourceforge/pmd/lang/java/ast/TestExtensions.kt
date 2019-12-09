@@ -123,14 +123,14 @@ fun TreeNodeWrapper<Node, *>.methodCall(inside: NodeSpec<ASTMethodCall>) =
         }
 
 
-fun TreeNodeWrapper<Node, *>.prefixExpr(op: UnaryOp.PrefixOp, baseExpr: TreeNodeWrapper<Node, ASTPrefixExpression>.() -> ASTExpression) =
-        child<ASTPrefixExpression> {
+fun TreeNodeWrapper<Node, *>.prefixExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, ASTUnaryExpression>.() -> ASTExpression) =
+        child<ASTUnaryExpression> {
             it::getOperator shouldBe op
             it::getOperand shouldBe baseExpr()
         }
 
-fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp.PostfixOp, baseExpr: TreeNodeWrapper<Node, ASTPostfixExpression>.() -> ASTExpression) =
-        child<ASTPostfixExpression> {
+fun TreeNodeWrapper<Node, *>.postfixExpr(op: UnaryOp, baseExpr: TreeNodeWrapper<Node, ASTUnaryExpression>.() -> ASTExpression) =
+        child<ASTUnaryExpression> {
             it::getOperator shouldBe op
             it::getOperand shouldBe baseExpr()
         }

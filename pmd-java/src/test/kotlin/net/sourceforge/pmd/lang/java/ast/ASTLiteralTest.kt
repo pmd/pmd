@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.ExpressionParsingCtx
-import net.sourceforge.pmd.lang.java.ast.UnaryOp.PrefixOp.UNARY_MINUS
+import net.sourceforge.pmd.lang.java.ast.UnaryOp.UNARY_MINUS
 
 /**
  * @author Clément Fournier
@@ -233,7 +233,7 @@ $delim
             it::getImage shouldBe "0b0000_0010"
         }
 
-        "-0X0000_000f" should matchExpr<ASTPrefixExpression> {
+        "-0X0000_000f" should matchExpr<ASTUnaryExpression> {
             it::getOperator shouldBe UNARY_MINUS
             it::getOperand shouldBe number(INT) {
                 it::getImage shouldBe "0X0000_000f"
@@ -283,7 +283,7 @@ $delim
             it::getImage shouldBe "12f"
         }
 
-        "-3_456.123_456" should matchExpr<ASTPrefixExpression> {
+        "-3_456.123_456" should matchExpr<ASTUnaryExpression> {
             it::getOperator shouldBe UNARY_MINUS
 
             it::getOperand shouldBe number(DOUBLE) {
