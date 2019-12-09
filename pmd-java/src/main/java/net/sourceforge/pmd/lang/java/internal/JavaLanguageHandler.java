@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java;
+package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,14 +10,19 @@ import java.util.List;
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
+import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
+import net.sourceforge.pmd.lang.java.ast.internal.ReportingStrategy;
 import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.dfa.JavaDFAGraphRule;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetricsComputer;
@@ -41,20 +46,25 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 import net.sf.saxon.sxpath.IndependentContext;
 
-/**
- * Implementation of LanguageVersionHandler for the Java AST. It uses anonymous
- * classes as adapters of the visitors to the VisitorStarter interface.
- *
- * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
- */
-public abstract class AbstractJavaHandler extends AbstractPmdLanguageVersionHandler {
+public class JavaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
-    AbstractJavaHandler() {
-        super(JavaProcessingStage.class);
+    private final LanguageLevelChecker<?> levelChecker;
+    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+
+    public JavaLanguageHandler(int jdkVersion) {
+        this(jdkVersion, false);
+    }
+
+    public JavaLanguageHandler(int jdkVersion, boolean preview) {
+        this.levelChecker = new LanguageLevelChecker<>(jdkVersion, preview, ReportingStrategy.reporterThatThrows());
     }
 
 
-    private final LanguageMetricsProvider<ASTAnyTypeDeclaration, MethodLikeNode> myMetricsProvider = new JavaMetricsProvider();
+    @Override
+    public Parser getParser(ParserOptions parserOptions) {
+        return new JavaLanguageParser(levelChecker, parserOptions);
+    }
+
 
     @Override
     public DataFlowHandler getDataFlowHandler() {

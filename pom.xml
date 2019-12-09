@@ -87,7 +87,7 @@ Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex, Scala, Swift a
 
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.3.0</kotlin.version>
-        <dokka.version>0.9.18</dokka.version>
+        <dokka.version>0.10.0</dokka.version>
 
 
         <javacc.version>5.0</javacc.version>
