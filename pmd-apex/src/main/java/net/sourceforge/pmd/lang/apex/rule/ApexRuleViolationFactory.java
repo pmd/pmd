@@ -16,7 +16,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.apex.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public final class ApexRuleViolationFactory extends DefaultRuleViolationFactory {
 

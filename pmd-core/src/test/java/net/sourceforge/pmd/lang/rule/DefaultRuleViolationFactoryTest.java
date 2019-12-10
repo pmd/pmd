@@ -13,6 +13,7 @@ import org.junit.Test;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public class DefaultRuleViolationFactoryTest {
     private RuleContext ruleContext;

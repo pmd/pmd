@@ -19,7 +19,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.DummyRoot;
-import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
 

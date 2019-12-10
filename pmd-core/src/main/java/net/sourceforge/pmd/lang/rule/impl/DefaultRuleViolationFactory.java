@@ -1,8 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule;
+package net.sourceforge.pmd.lang.rule.impl;
 
 import java.text.MessageFormat;
 import java.util.Collections;
@@ -19,6 +19,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * This is a functional implementation of {@link RuleViolationFactory}.

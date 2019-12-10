@@ -17,7 +17,7 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ViolationSuppressor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.rule.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 public final class JavaRuleViolationFactory extends DefaultRuleViolationFactory {
