@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.ast.test.shouldBe
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_3
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.AnnotationParsingCtx
 
 /**
@@ -12,6 +14,15 @@ import net.sourceforge.pmd.lang.java.ast.ParserTestCtx.Companion.AnnotationParsi
  * @since 7.0.0
  */
 class ASTAnnotationTest : ParserTestSpec({
+
+
+    parserTest("Test annot fails before JDK 1.4", javaVersions = Earliest..J1_3) {
+
+        inContext(AnnotationParsingCtx) {
+            "@F" shouldNot parse()
+            "@F(a=1)" shouldNot parse()
+        }
+    }
 
     parserTest("Marker annotations") {
 

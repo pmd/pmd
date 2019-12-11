@@ -156,7 +156,7 @@ public class ParserCornersTest {
             fail("Expected exception");
         } catch (ParseException e) {
             assertEquals(
-                    "Line 1, Column 94: Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode!",
+                    "Line 1, Column 70: Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly",
                     e.getMessage());
         }
 

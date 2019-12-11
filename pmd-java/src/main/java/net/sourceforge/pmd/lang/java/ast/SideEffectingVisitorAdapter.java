@@ -13,4 +13,35 @@ package net.sourceforge.pmd.lang.java.ast;
  * @since 7.0.0
  */
 public class SideEffectingVisitorAdapter<T> implements SideEffectingVisitor<T> {
+
+
+    public void visit(ASTAnnotation node, T data) {
+        visit((JavaNode) node, data);
+    }
+
+    @Override
+    public void visit(ASTSingleMemberAnnotation node, T data) {
+        visit((ASTAnnotation) node, data);
+    }
+
+    @Override
+    public void visit(ASTNormalAnnotation node, T data) {
+        visit((ASTAnnotation) node, data);
+    }
+
+    @Override
+    public void visit(ASTMarkerAnnotation node, T data) {
+        visit((ASTAnnotation) node, data);
+    }
+
+    // TODO delegation
+
+
+    public void visit(ASTSwitchLabeledRule node, T data) {
+        visit((JavaNode) node, data);
+    }
+
+    public void visit(ASTAnyTypeDeclaration node, T data) {
+        visit((JavaNode) node, data);
+    }
 }

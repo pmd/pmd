@@ -12,7 +12,7 @@ class ASTCatchStatementTest : ParserTestSpec({
 
     parserTest("Test crash on multicatch", javaVersions = Earliest..J1_6) {
 
-        expectParseException("Cannot catch multiple exceptions when running in JDK inferior to 1.7 mode") {
+        expectParseException("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly") {
             parseAstStatement("try { } catch (IOException | AssertionError e) { }")
         }
 

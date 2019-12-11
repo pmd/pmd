@@ -130,7 +130,19 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         return getImage().replaceAll("_++", "");
     }
 
-    private int getIntBase() {
+    /**
+     * Returns true if this is an integral literal, ie either a long or
+     * an integer literal. Otherwise, this is a floating point literal.
+     */
+    public boolean isIntegral() {
+        return isIntegral;
+    }
+
+    /**
+     * Returns the base of the literal, eg 8 for an octal literal,
+     * 10 for a decimal literal, etc.
+     */
+    public int getBase() {
         final String image = getImage().toLowerCase(Locale.ROOT);
         if (image.startsWith("0x")) {
             return 16;
@@ -161,7 +173,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     public long getValueAsLong() {
         if (isIntegral) {
             // Using BigInteger to allow parsing 0x8000000000000000+ numbers as negative instead of a NumberFormatException
-            BigInteger bigInt = new BigInteger(stripIntValue(), getIntBase());
+            BigInteger bigInt = new BigInteger(stripIntValue(), getBase());
             return bigInt.longValue();
         } else {
             return (long) getValueAsDouble();

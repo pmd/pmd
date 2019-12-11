@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.internal;
 
 import java.io.Reader;
@@ -14,6 +13,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaTokenManager;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.java.ast.internal.LanguageLevelChecker;
 
 /**
  * Adapter for the JavaParser, using the specified grammar version.
@@ -23,13 +23,11 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  */
 public class JavaLanguageParser extends AbstractParser {
 
-    private final int jdkVersion;
-    private final boolean preview;
+    private final LanguageLevelChecker<?> checker;
 
-    public JavaLanguageParser(int jdkVersion, boolean preview, ParserOptions parserOptions) {
+    JavaLanguageParser(LanguageLevelChecker<?> checker, ParserOptions parserOptions) {
         super(parserOptions);
-        this.jdkVersion = jdkVersion;
-        this.preview = preview;
+        this.checker = checker;
     }
 
     @Override
@@ -40,6 +38,6 @@ public class JavaLanguageParser extends AbstractParser {
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        return InternalApiBridge.parseInternal(fileName, source, jdkVersion, preview, getParserOptions());
+        return InternalApiBridge.parseInternal(fileName, source, checker, getParserOptions());
     }
 }

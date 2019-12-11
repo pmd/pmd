@@ -18,6 +18,11 @@ import net.sourceforge.pmd.lang.java.qname.JavaTypeQualifiedName;
  */
 public interface ASTAnyTypeDeclaration extends TypeNode, JavaQualifiableNode, AccessNode, JavaNode {
 
+
+    default String getSimpleName() {
+        return getImage();
+    }
+
     /**
      * Finds the type kind of this declaration.
      *
