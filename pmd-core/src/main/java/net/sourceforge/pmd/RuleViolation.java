@@ -6,7 +6,11 @@ package net.sourceforge.pmd;
 
 /**
  * A RuleViolation is created by a Rule when it identifies a violation of the
- * Rule constraints.
+ * Rule constraints. RuleViolations are simple data holders that are collected
+ * into a {@link Report}.
+ *
+ * <p>Since PMD 6.21.0, implementations of this interface are considered internal
+ * API and hence deprecated. Clients should exclusively use this interface.
  *
  * @see Rule
  */
