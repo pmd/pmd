@@ -2,7 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule;
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
+package net.sourceforge.pmd.lang.java.rule.internal;
 
 import java.util.Arrays;
 import java.util.HashSet;

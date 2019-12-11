@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -129,6 +130,7 @@ abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
     }
 
     @Override
+    @NonNull
     public ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
         // at most once.

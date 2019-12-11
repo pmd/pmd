@@ -400,6 +400,7 @@ public interface Node {
     }
 
 
+    /** Returns the root node for the file in which this node is declared. */
     @NonNull
     default RootNode getRoot() {
         Node r = this;
