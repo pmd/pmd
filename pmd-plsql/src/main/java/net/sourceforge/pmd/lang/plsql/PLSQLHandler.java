@@ -9,16 +9,12 @@ import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.dfa.DFAPLSQLGraphRule;
 import net.sourceforge.pmd.lang.plsql.dfa.DataFlowFacade;
-import net.sourceforge.pmd.lang.plsql.rule.PLSQLRuleViolationFactory;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Implementation of LanguageVersionHandler for the PLSQL AST. It uses anonymous
@@ -36,11 +32,6 @@ public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
     @Override
     public Parser getParser(ParserOptions parserOptions) {
         return new PLSQLParser(parserOptions);
-    }
-
-    @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return PLSQLRuleViolationFactory.INSTANCE;
     }
 
     @Override
@@ -73,11 +64,4 @@ public class PLSQLHandler extends AbstractPmdLanguageVersionHandler {
         };
     }
 
-    /**
-     * Return minimal XPathHandler to cope with Jaxen XPath Rules.
-     */
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
-    }
 }

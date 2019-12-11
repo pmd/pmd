@@ -18,8 +18,8 @@ import net.sourceforge.pmd.Report.ConfigurationError;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ReportTest;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 public class SummaryHTMLRendererTest extends AbstractRendererTest {
 
@@ -98,7 +98,7 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + "<td>file</td>" + PMD.EOL + "<td><pre>" + error.getDetail() + "</pre></td>" + PMD.EOL + "</tr>" + PMD.EOL
                 + "</table></tr></table></body></html>" + PMD.EOL;
     }
-    
+
     @Override
     public String getExpectedError(ConfigurationError error) {
         return "<html><head><title>PMD</title></head><body>" + PMD.EOL + "<center><h2>Summary</h2></center>" + PMD.EOL
@@ -131,7 +131,8 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
                 + PMD.EOL + "<tr bgcolor=\"lightgrey\"> " + PMD.EOL + "<td align=\"left\"></td>" + PMD.EOL
                 + "<td align=\"center\">1</td>" + PMD.EOL + "<td align=\"center\">Foo</td>" + PMD.EOL
-                + "<td align=\"center\">NOPMD</td>" + PMD.EOL + "<td align=\"center\">test</td>" + PMD.EOL + "</tr>"
+                         + "<td align=\"center\">//NOPMD</td>" + PMD.EOL + "<td align=\"center\">test</td>" + PMD.EOL
+                         + "</tr>"
                 + PMD.EOL + "</table></tr></table></body></html>" + PMD.EOL, actual);
     }
 
@@ -145,15 +146,12 @@ public class SummaryHTMLRendererTest extends AbstractRendererTest {
     }
 
     private Report createEmptyReportWithSuppression() {
-        Report rep = new Report();
         Map<Integer, String> suppressions = new HashMap<>();
         suppressions.put(1, "test");
-        rep.suppress(suppressions);
         RuleContext ctx = new RuleContext();
-        ParametricRuleViolation<Node> violation = new ParametricRuleViolation<>(new FooRule(), ctx, null,
-                "suppress test");
-        violation.setLines(1, 1);
-        rep.addRuleViolation(violation);
-        return rep;
+        DummyRoot root = new DummyRoot(suppressions);
+        root.setCoords(1, 10, 4, 5);
+        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, new FooRule(), root, "suppress test", 1, 1, new Object[0]);
+        return ctx.getReport();
     }
 }

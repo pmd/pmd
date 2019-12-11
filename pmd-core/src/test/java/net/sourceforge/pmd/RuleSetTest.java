@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -501,9 +502,8 @@ public class RuleSetTest {
 
     private List<Node> makeCompilationUnits() {
         List<Node> nodes = new ArrayList<>();
-        DummyNode node = new DummyNode(1);
-        node.testingOnlySetBeginLine(1);
-        node.testingOnlySetBeginColumn(1);
+        DummyNode node = new DummyRoot();
+        node.setCoords(1, 1, 10, 1);
         node.setImage("Foo");
         nodes.add(node);
         return nodes;

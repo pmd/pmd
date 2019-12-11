@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang;
 
-import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
@@ -20,11 +19,6 @@ public abstract class AbstractLanguageVersionHandler implements LanguageVersionH
     @Override
     public DataFlowHandler getDataFlowHandler() {
         return DataFlowHandler.DUMMY;
-    }
-
-    @Override
-    public XPathHandler getXPathHandler() {
-        return new DefaultASTXPathHandler();
     }
 
     @Override

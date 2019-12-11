@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.antlr.v4.runtime.Lexer;
 
@@ -49,11 +47,6 @@ public abstract class AntlrBaseParser<T extends org.antlr.v4.runtime.Parser> imp
         } catch (final IOException e) {
             throw new ParseException(e);
         }
-    }
-
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>();
     }
 
     protected abstract AntlrBaseNode getRootNode(T parser);

@@ -35,7 +35,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             RuleViolation rv = violations.next();
             buf.append(determineFileName(rv.getFilename()));
-            buf.append(':').append(Integer.toString(rv.getBeginLine()));
+            buf.append(':').append(rv.getBeginLine());
             buf.append(":\t").append(rv.getDescription()).append(PMD.EOL);
             writer.write(buf.toString());
         }
@@ -44,7 +44,7 @@ public class TextRenderer extends AbstractIncrementingRenderer {
     @Override
     public void end() throws IOException {
         StringBuilder buf = new StringBuilder(500);
-        
+
         for (Report.ProcessingError error : errors) {
             buf.setLength(0);
             buf.append(determineFileName(error.getFile()));
@@ -54,13 +54,15 @@ public class TextRenderer extends AbstractIncrementingRenderer {
 
         for (Report.SuppressedViolation excluded : suppressed) {
             buf.setLength(0);
-            buf.append(excluded.getRuleViolation().getRule().getName());
-            buf.append(" rule violation suppressed by ");
-            buf.append(excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation");
-            buf.append(" in ").append(determineFileName(excluded.getRuleViolation().getFilename())).append(PMD.EOL);
+            buf.append(excluded.getRuleViolation().getRule().getName())
+               .append(" rule violation suppressed by ")
+               .append(excluded.getSuppressor().getId())
+               .append(" in ")
+               .append(determineFileName(excluded.getRuleViolation().getFilename()))
+                .append(PMD.EOL);
             writer.write(buf.toString());
         }
-        
+
         for (Report.ConfigurationError error : configErrors) {
             buf.setLength(0);
             buf.append(error.rule().getName());

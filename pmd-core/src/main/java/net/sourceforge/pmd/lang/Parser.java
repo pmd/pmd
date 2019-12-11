@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.Reader;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
@@ -47,21 +46,5 @@ public interface Parser {
      */
     Node parse(String fileName, Reader source) throws ParseException;
 
-    /**
-     * Returns the map of line numbers to suppression / review comments.
-     * Only single line comments are considered, that start with the configured
-     * "suppressMarker", which by default is "PMD". The text after the
-     * suppressMarker is used as a "review comment" and included in this map.
-     *
-     * <p>
-     * This map is later used to determine, if a violation is being suppressed.
-     * It is suppressed, if the line of the violation is contained in this suppress map.
-     *
-     * @return map of the suppress lines with the corresponding review comments.
-     *
-     * @deprecated With 7.0.0, this method will be removed. To support
-     *    suppressing with suppress markers, this method is still needed in PMD 6.
-     */
-    @Deprecated
-    Map<Integer, String> getSuppressMap();
+
 }

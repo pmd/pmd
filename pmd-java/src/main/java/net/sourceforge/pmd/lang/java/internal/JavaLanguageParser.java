@@ -6,16 +6,13 @@
 package net.sourceforge.pmd.lang.java.internal;
 
 import java.io.Reader;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
-import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaTokenManager;
-import net.sourceforge.pmd.lang.java.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 /**
@@ -28,7 +25,6 @@ public class JavaLanguageParser extends AbstractParser {
 
     private final int jdkVersion;
     private final boolean preview;
-    private JavaParser javaParser;
 
     public JavaLanguageParser(int jdkVersion, boolean preview, ParserOptions parserOptions) {
         super(parserOptions);
@@ -41,26 +37,9 @@ public class JavaLanguageParser extends AbstractParser {
         return new JavaTokenManager(source);
     }
 
-    private JavaParser createJavaParser(Reader source) throws ParseException {
-        javaParser = new JavaParser(new JavaCharStream(source));
-        javaParser.setJdkVersion(jdkVersion);
-        javaParser.setPreview(preview);
-        String suppressMarker = getParserOptions().getSuppressMarker();
-        if (suppressMarker != null) {
-            javaParser.setSuppressMarker(suppressMarker);
-        }
-        return javaParser;
-    }
-
 
     @Override
     public Node parse(String fileName, Reader source) throws ParseException {
-        AbstractTokenManager.setFileName(fileName);
-        return createJavaParser(source).CompilationUnit();
-    }
-
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return javaParser.getSuppressMap();
+        return InternalApiBridge.parseInternal(fileName, source, jdkVersion, preview, getParserOptions());
     }
 }

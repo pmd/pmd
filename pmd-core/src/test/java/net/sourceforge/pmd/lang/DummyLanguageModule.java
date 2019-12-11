@@ -7,21 +7,19 @@ package net.sourceforge.pmd.lang;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.DummyAstStages;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
-import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 
 /**
  * Dummy language used for testing PMD.
@@ -80,16 +78,10 @@ public class DummyLanguageModule extends BaseLanguageModule {
             return new AbstractParser(parserOptions) {
                 @Override
                 public Node parse(String fileName, Reader source) throws ParseException {
-                    DummyNode node = new DummyRootNode(1);
-                    node.testingOnlySetBeginLine(1);
-                    node.testingOnlySetBeginColumn(1);
+                    DummyNode node = new DummyRoot();
+                    node.setCoords(1, 1, 2, 10);
                     node.setImage("Foo");
                     return node;
-                }
-
-                @Override
-                public Map<Integer, String> getSuppressMap() {
-                    return Collections.emptyMap();
                 }
 
                 @Override
@@ -100,15 +92,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         }
     }
 
-    private static class DummyRootNode extends DummyNode implements RootNode {
-
-        DummyRootNode(int id) {
-            super(id);
-        }
-
-    }
-
-    public static class RuleViolationFactory extends AbstractRuleViolationFactory {
+    public static class RuleViolationFactory extends DefaultRuleViolationFactory {
         @Override
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message) {
             return createRuleViolation(rule, ruleContext, node, message, 0, 0);
@@ -118,6 +102,7 @@ public class DummyLanguageModule extends BaseLanguageModule {
         protected RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node, String message,
                 int beginLine, int endLine) {
             ParametricRuleViolation<Node> rv = new ParametricRuleViolation<Node>(rule, ruleContext, node, message) {
+                @Override
                 public String getPackageName() {
                     this.packageName = "foo"; // just for testing variable expansion
                     return super.getPackageName();

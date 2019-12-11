@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,6 +18,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
 
     private ClassTypeResolver classTypeResolver;
     private List<Comment> comments;
+    private Map<Integer, String> noPmdComments = Collections.emptyMap();
 
     @InternalApi
     @Deprecated
@@ -73,5 +76,14 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     @Deprecated
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
         this.classTypeResolver = classTypeResolver;
+    }
+
+    @Override
+    public Map<Integer, String> getNoPmdComments() {
+        return noPmdComments;
+    }
+
+    void setNoPmdComments(Map<Integer, String> noPmdComments) {
+        this.noPmdComments = noPmdComments;
     }
 }

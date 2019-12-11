@@ -30,13 +30,6 @@ public interface RuleViolation {
      */
     String getDescription();
 
-    /**
-     * Indicates whether this violation has been suppressed.
-     *
-     * @return <code>true</code> if this violation is suppressed,
-     *         <code>false</code> otherwise.
-     */
-    boolean isSuppressed();
 
     /**
      * Get the source file name in which this violation was identified.
