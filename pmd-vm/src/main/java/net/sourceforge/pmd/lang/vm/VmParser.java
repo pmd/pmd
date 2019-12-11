@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.vm;
 
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -36,8 +34,4 @@ public class VmParser extends AbstractParser {
         return new net.sourceforge.pmd.lang.vm.ast.VmParser(new VelocityCharStream(source, 1, 1)).process();
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }

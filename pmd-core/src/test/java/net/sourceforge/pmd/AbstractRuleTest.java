@@ -19,9 +19,11 @@ import org.junit.Test;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -110,9 +112,8 @@ public class AbstractRuleTest {
         ctx.setLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getDefaultVersion());
         ctx.setReport(new Report());
         ctx.setSourceCodeFile(new File("filename"));
-        DummyNode s = new DummyNode(1);
-        s.testingOnlySetBeginColumn(5);
-        s.testingOnlySetBeginLine(5);
+        DummyNode s = new DummyRoot();
+        s.setCoords(5, 1, 6, 0);
         s.setImage("TestImage");
         r.addViolation(ctx, s);
         RuleViolation rv = ctx.getReport().getViolationTree().iterator().next();
@@ -124,15 +125,12 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         Map<Integer, String> m = new HashMap<>();
-        m.put(Integer.valueOf(5), "");
-        ctx.setReport(new Report());
-        ctx.getReport().suppress(m);
+        m.put(5, "");
         ctx.setSourceCodeFile(new File("filename"));
-        DummyNode n = new DummyNode(1);
-        n.testingOnlySetBeginColumn(5);
-        n.testingOnlySetBeginLine(5);
-        RuleViolation rv = new ParametricRuleViolation<>(r, ctx, n, "specificdescription");
-        ctx.getReport().addRuleViolation(rv);
+        DummyRoot n = new DummyRoot(m);
+        n.setCoords(5, 1, 6, 0);
+        DefaultRuleViolationFactory.defaultInstance().addViolation(ctx, r, n, "specificdescription", new Object[0]);
+
         assertTrue(ctx.getReport().isEmpty());
     }
 
@@ -210,7 +208,7 @@ public class AbstractRuleTest {
         assertEquals("Rules with different messages are still equal", r1, r2);
         assertEquals("Rules that are equal must have the an equal hashcode", r1.hashCode(), r2.hashCode());
     }
-    
+
     @Test
     public void testDeepCopyRule() {
         MyRule r1 = new MyRule();

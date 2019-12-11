@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
@@ -396,5 +397,18 @@ public interface Node {
      */
     default Iterator<Attribute> getXPathAttributesIterator() {
         return new AttributeAxisIterator(this);
+    }
+
+
+    @NonNull
+    default RootNode getRoot() {
+        Node r = this;
+        while (r != null && !(r instanceof RootNode)) {
+            r = r.jjtGetParent();
+        }
+        if (r == null) {
+            throw new IllegalStateException("No root node in tree ?");
+        }
+        return (RootNode) r;
     }
 }

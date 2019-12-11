@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -34,7 +35,9 @@ import net.sourceforge.pmd.lang.rule.ParametricRuleViolation;
  * <li>Variable name</li>
  * <li>Suppression indicator</li>
  * </ul>
+ * @deprecated See {@link RuleViolation}
  */
+@Deprecated
 public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
 
     public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String message, int beginLine, int endLine) {
@@ -54,10 +57,6 @@ public class JavaRuleViolation extends ParametricRuleViolation<JavaNode> {
             className = getClassName(node);
             methodName = getMethodName(node);
             variableName = getVariableNameIfExists(node);
-
-            if (!suppressed) {
-                suppressed = AnnotationSuppressionUtil.contextSuppresses(node, getRule());
-            }
         }
     }
 

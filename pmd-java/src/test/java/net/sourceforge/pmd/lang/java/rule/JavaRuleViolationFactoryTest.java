@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.rule.codestyle.DuplicateImportsRule;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**

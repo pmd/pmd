@@ -120,9 +120,7 @@ public class SourceCodeProcessor {
 
     private Node parse(RuleContext ctx, Reader sourceCode, Parser parser) {
         try (TimedOperation to = TimeTracker.startOperation(TimedOperationCategory.PARSER)) {
-            Node rootNode = parser.parse(String.valueOf(ctx.getSourceCodeFile()), sourceCode);
-            ctx.getReport().suppress(parser.getSuppressMap());
-            return rootNode;
+            return parser.parse(String.valueOf(ctx.getSourceCodeFile()), sourceCode);
         }
     }
 

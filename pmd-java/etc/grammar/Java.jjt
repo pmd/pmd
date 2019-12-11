@@ -253,7 +253,7 @@ import net.sourceforge.pmd.lang.ast.CharStream;
 import net.sourceforge.pmd.lang.ast.TokenMgrError;
 import net.sourceforge.pmd.lang.ast.Node;
 
-public class JavaParser {
+class JavaParser {
 
   private int jdkVersion = 0;
   private boolean preview = false;

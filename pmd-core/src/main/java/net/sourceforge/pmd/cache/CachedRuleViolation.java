@@ -70,11 +70,6 @@ public final class CachedRuleViolation implements RuleViolation {
     }
 
     @Override
-    public boolean isSuppressed() {
-        return false; // By definition, if cached, it was not suppressed
-    }
-
-    @Override
     public String getFilename() {
         return fileName;
     }

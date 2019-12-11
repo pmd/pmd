@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.xml;
 
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -34,8 +32,4 @@ public class XmlParser extends AbstractParser {
         return new XmlParserImpl((XmlParserOptions) parserOptions).parse(source);
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }

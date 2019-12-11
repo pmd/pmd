@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.java.metrics.api.JavaClassMetricKey;
 import net.sourceforge.pmd.lang.java.metrics.api.JavaOperationMetricKey;
 import net.sourceforge.pmd.lang.java.multifile.MultifileVisitorFacade;
 import net.sourceforge.pmd.lang.java.qname.QualifiedNameResolver;
-import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
+import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 import net.sourceforge.pmd.lang.java.xpath.GetCommentOnFunction;
