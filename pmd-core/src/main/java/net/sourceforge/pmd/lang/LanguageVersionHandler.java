@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -45,7 +46,9 @@ public interface LanguageVersionHandler {
      * @return A list of all optional processing stages.
      */
     @Experimental
-    List<? extends AstProcessingStage<?>> getProcessingStages();
+    default List<? extends AstProcessingStage<?>> getProcessingStages() {
+        return Collections.emptyList();
+    }
 
 
     /**
@@ -174,6 +177,8 @@ public interface LanguageVersionHandler {
      * @since 6.20.0
      */
     @Experimental
-    DesignerBindings getDesignerBindings();
+    default DesignerBindings getDesignerBindings() {
+        return DefaultDesignerBindings.getInstance();
+    }
 
 }
