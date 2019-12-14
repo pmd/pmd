@@ -168,7 +168,8 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
         private boolean isNotBuilder() {
             return baseType != StringBuffer.class && baseType != StringBuilder.class
-                    && !"StringBuilder".equals(baseTypeName) && !"StringBuffer".equals(baseTypeName);
+                    && !"StringBuilder".equals(baseTypeName) && !"StringBuffer".equals(baseTypeName)
+                    && !methodName.endsWith("Builder");
         }
 
         private static List<ASTPrimarySuffix> findSuffixesWithoutArguments(ASTPrimaryExpression expr) {

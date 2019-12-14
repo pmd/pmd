@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -496,5 +497,17 @@ public interface Node {
      */
     default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
         return StreamImpl.ancestors(this, rClass);
+    }
+
+    @NonNull
+    default RootNode getRoot() {
+        Node r = this;
+        while (r != null && !(r instanceof RootNode)) {
+            r = r.jjtGetParent();
+        }
+        if (r == null) {
+            throw new IllegalStateException("No root node in tree ?");
+        }
+        return (RootNode) r;
     }
 }

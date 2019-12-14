@@ -19,7 +19,7 @@ All you need to do is follow this few steps:
 1. Create a new module for your language, you can take [GO as an example](https://github.com/pmd/pmd/tree/master/pmd-go)    
 2. Create a Tokenizer
     
-    - For Antlr grammars you can take the grammar from [here](https://github.com/antlr/grammars-v4)  and extend [AntlrTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/AntlrTokenizer.java)  taking Go as an example
+    - For Antlr grammars you can take the grammar from [here](https://github.com/antlr/grammars-v4)  and extend [AntlrTokenizer](https://github.com/pmd/pmd/blob/master/pmd-core/src/main/java/net/sourceforge/pmd/cpd/internal/AntlrTokenizer.java)  taking Go as an example
     
     
     ```java 

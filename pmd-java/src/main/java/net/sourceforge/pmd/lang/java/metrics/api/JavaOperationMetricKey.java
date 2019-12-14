@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodOrConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.MethodLikeNode;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric.AtfdOperationMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutMetric.ClassFanOutOperationMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric.LocOperationMetric;
@@ -56,7 +57,14 @@ public enum JavaOperationMetricKey implements MetricKey<MethodLikeNode> {
      *
      * @see NpathMetric
      */
-    NPATH(new NpathMetric());
+    NPATH(new NpathMetric()),
+
+    /**
+     * ClassFanOut Complexity
+     *
+     * @see ClassFanOutOperationMetric
+     */
+    CLASS_FAN_OUT(new ClassFanOutOperationMetric());
 
 
     private final JavaOperationMetric calculator;

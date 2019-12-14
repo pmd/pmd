@@ -82,7 +82,7 @@ import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
  * <h1>Details</h1>
  *
  * <p>NodeStreams are not necessarily implemented with {@link Stream}, but
- * when there a method has an equivalent in the {@link Stream} API, their
+ * when a method has an equivalent in the {@link Stream} API, their
  * contract is identical. The same guidelines about statefulness and
  * side-effects apply.
  *

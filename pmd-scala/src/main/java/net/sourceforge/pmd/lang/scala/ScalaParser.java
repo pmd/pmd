@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.scala;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
@@ -44,11 +42,6 @@ public class ScalaParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public ASTSource parse(String fileName, Reader source) throws ParseException {
         Input.VirtualFile virtualFile;
         try {
@@ -59,11 +52,6 @@ public class ScalaParser extends AbstractParser {
         }
         Source src = new ScalametaParser(virtualFile, dialect).parseSource();
         return (ASTSource) new ScalaTreeBuilder().build(src);
-    }
-
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME;
     }
 
     @Override

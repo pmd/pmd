@@ -12,12 +12,17 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * A number of String-specific utility methods for use by PMD or its IDE
  * plugins.
  *
  * @author BrianRemedios
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public final class StringUtil {
 
     private static final String[] EMPTY_STRINGS = new String[0];

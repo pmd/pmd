@@ -7,8 +7,6 @@ package net.sourceforge.pmd.lang.plsql;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
@@ -43,11 +41,6 @@ public class PLSQLParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         try {
             String sourcecode = IOUtils.toString(source);
@@ -58,8 +51,4 @@ public class PLSQLParser extends AbstractParser {
         }
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }

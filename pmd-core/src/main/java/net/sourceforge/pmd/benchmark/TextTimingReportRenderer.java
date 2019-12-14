@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,13 +93,7 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         renderHeader(category.displayName(), writer);
         
         final TimedResult grandTotal = new TimedResult();
-        final TreeSet<Map.Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(
-            new Comparator<Map.Entry<String, TimedResult>>() {
-                @Override
-                public int compare(final Entry<String, TimedResult> o1, final Entry<String, TimedResult> o2) {
-                    return Long.compare(o1.getValue().selfTimeNanos.get(), o2.getValue().selfTimeNanos.get());
-                }
-            });
+        final Set<Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(Comparator.comparingLong(o -> o.getValue().selfTimeNanos.get()));
         sortedKeySet.addAll(labeledMeasurements.entrySet());
         
         for (final Map.Entry<String, TimedResult> entry : sortedKeySet) {

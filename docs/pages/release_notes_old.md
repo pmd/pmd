@@ -5,6 +5,198 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: https://github.com/pmd/pmd/releases
 
+## 29-November-2019 - 6.20.0
+
+The PMD team is pleased to announce PMD 6.20.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [Fixed Issues](#fixed-issues)
+* [External Contributions](#external-contributions)
+
+### Fixed Issues
+
+*   apex
+    *   [#2092](https://github.com/pmd/pmd/issues/2092): \[apex] ApexLexer logs visible when Apex is the selected language upon starting the designer
+    *   [#2136](https://github.com/pmd/pmd/issues/2136): \[apex] Provide access to underlying query of SoqlExpression
+*   core
+    *   [#2002](https://github.com/pmd/pmd/issues/2002): \[doc] Issue with http://pmdapplied.com/ linking to a gambling Web site
+    *   [#2062](https://github.com/pmd/pmd/issues/2062): \[core] Shortnames parameter does not work with Ant
+    *   [#2090](https://github.com/pmd/pmd/issues/2090): \[ci] Release notes and draft releases
+    *   [#2096](https://github.com/pmd/pmd/issues/2096): \[core] Referencing category errorprone.xml produces deprecation warnings for InvalidSlf4jMessageFormat
+*   java
+    *   [#1861](https://github.com/pmd/pmd/issues/1861): \[java] Be more lenient with version numbers
+    *   [#2105](https://github.com/pmd/pmd/issues/2105): \[java] Wrong name for inner classes in violations
+*   java-bestpractices
+    *   [#2016](https://github.com/pmd/pmd/issues/2016): \[java] UnusedImports: False positive if wildcard is used and only static methods
+*   java-codestyle
+    *   [#1362](https://github.com/pmd/pmd/issues/1362): \[java] LinguisticNaming flags Predicates with boolean-style names
+    *   [#2029](https://github.com/pmd/pmd/issues/2029): \[java] UnnecessaryFullyQualifiedName false-positive for non-static nested classes
+    *   [#2098](https://github.com/pmd/pmd/issues/2098): \[java] UnnecessaryFullyQualifiedName: regression / false positive
+*   java-design
+    *   [#2075](https://github.com/pmd/pmd/issues/2075): \[java] ImmutableField false positive with inner class
+    *   [#2125](https://github.com/pmd/pmd/issues/2125): \[java] ImmutableField: False positive when variable is updated in conditional loop
+*   java-errorprone
+    *   [#2102](https://github.com/pmd/pmd/issues/2102): \[java] False positive MissingStaticMethodInNonInstantiatableClass when inheritors are instantiable
+
+### External Contributions
+
+*   [#2088](https://github.com/pmd/pmd/pull/2088): \[java] Add more version shortcuts for older java - [Henning Schmiedehausen](https://github.com/hgschmie)
+*   [#2089](https://github.com/pmd/pmd/pull/2089): \[core] Minor unrelated improvements to code - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
+*   [#2091](https://github.com/pmd/pmd/pull/2091): \[core] Fix pmd warnings (IdenticalCatchCases) - [Gonzalo Exequiel Ibars Ingman](https://github.com/gibarsin)
+*   [#2106](https://github.com/pmd/pmd/pull/2106): \[java] Wrong name for inner classes - [Andi Pabst](https://github.com/andipabst)
+*   [#2121](https://github.com/pmd/pmd/pull/2121): \[java] Predicates treated like booleans - [Ozan Gulle](https://github.com/ozangulle)
+
+## 31-October-2019 - 6.19.0
+
+The PMD team is pleased to announce PMD 6.19.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [New and noteworthy](#new-and-noteworthy)
+    * [Updated PMD Designer](#updated-pmd-designer)
+    * [Java Metrics](#java-metrics)
+    * [Modified Rules](#modified-rules)
+    * [Renamed Rules](#renamed-rules)
+* [Fixed Issues](#fixed-issues)
+* [API Changes](#api-changes)
+    * [Deprecated APIs](#deprecated-apis)
+        * [For removal](#for-removal)
+        * [Internal APIs](#internal-apis)
+* [External Contributions](#external-contributions)
+
+### New and noteworthy
+
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designer/releases/tag/6.19.0).
+
+#### Java Metrics
+
+*   The new metric "Class Fan Out Complexity" has been added. See
+    [Java Metrics Documentation](pmd_java_metrics_index.html#class-fan-out-complexity-class_fan_out) for details.
+
+
+#### Modified Rules
+
+*   The Java rules [`InvalidLogMessageFormat`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_errorprone.html#invalidlogmessageformat) and [`MoreThanOneLogger`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_errorprone.html#morethanonelogger)
+    (`java-errorprone`) now both support [Log4j2](https://logging.apache.org/log4j/2.x/). Note that the
+    rule "InvalidSlf4jMessageFormat" has been renamed to "InvalidLogMessageFormat" to reflect the fact, that it now
+    supports more than slf4j.
+
+*   The Java rule [`LawOfDemeter`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_design.html#lawofdemeter) (`java-design`) ignores now also Builders, that are
+    not assigned to a local variable, but just directly used within a method call chain. The method, that creates
+    the builder needs to end with "Builder", e.g. `newBuilder()` or `initBuilder()` works. This change
+    fixes a couple of false positives.
+
+*   The Java rule [`DataflowAnomalyAnalysis`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_errorprone.html#dataflowanomalyanalysis) (`java-errorprone`) doesn't check for
+    UR anomalies (undefined and then referenced) anymore. These checks were all false-positives, since actual
+    UR occurrences would lead to compile errors.
+
+*   The java rule [`DoNotUseThreads`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_multithreading.html#donotusethreads) (`java-multithreading`) has been changed
+    to not report usages of `java.lang.Runnable` anymore. Just using `Runnable` does not automatically create
+    a new thread. While the check for `Runnable` has been removed, the rule now additionally checks for
+    usages of `Executors` and `ExecutorService`. Both create new threads, which are not managed by a J2EE
+    server.
+
+#### Renamed Rules
+
+*   The Java rule [`InvalidSlf4jMessageFormat`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_errorprone.html#invalidslf4jmessageformat) has been renamed to
+    [`InvalidLogMessageFormat`](https://pmd.github.io/pmd-6.19.0/pmd_rules_java_errorprone.html#invalidlogmessageformat) since it supports now both slf4j and log4j2
+    message formats.
+
+### Fixed Issues
+
+*   core
+    *   [#1978](https://github.com/pmd/pmd/issues/1978): \[core] PMD fails on excluding unknown rules
+    *   [#2014](https://github.com/pmd/pmd/issues/2014): \[core] Making add(SourceCode sourceCode) public for alternative file systems
+    *   [#2020](https://github.com/pmd/pmd/issues/2020): \[core] Wrong deprecation warnings for unused XPath attributes
+    *   [#2036](https://github.com/pmd/pmd/issues/2036): \[core] Wrong include/exclude patterns are silently ignored
+    *   [#2048](https://github.com/pmd/pmd/issues/2048): \[core] Enable type resolution by default for XPath rules
+    *   [#2067](https://github.com/pmd/pmd/issues/2067): \[core] Build issue on Windows
+    *   [#2068](https://github.com/pmd/pmd/pull/2068): \[core] Rule loader should use the same resources loader for the ruleset
+    *   [#2071](https://github.com/pmd/pmd/issues/2071): \[ci] Add travis build on windows
+    *   [#2072](https://github.com/pmd/pmd/issues/2072): \[test]\[core] Not enough info in "test setup error" when numbers of lines do not match
+    *   [#2082](https://github.com/pmd/pmd/issues/2082): \[core] Incorrect logging of deprecated/renamed rules
+*   java
+    *   [#2042](https://github.com/pmd/pmd/issues/2042): \[java] PMD crashes with ClassFormatError: Absent Code attribute...
+*   java-bestpractices
+    *   [#1531](https://github.com/pmd/pmd/issues/1531): \[java] UnusedPrivateMethod false-positive with method result
+    *   [#2025](https://github.com/pmd/pmd/issues/2025): \[java] UnusedImports when @see / @link pattern includes a FQCN
+*   java-codestyle
+    *   [#2017](https://github.com/pmd/pmd/issues/2017): \[java] UnnecessaryFullyQualifiedName triggered for inner class
+*   java-design
+    *   [#1912](https://github.com/pmd/pmd/issues/1912): \[java] Metrics not computed correctly with annotations
+*   java-errorprone
+    *   [#336](https://github.com/pmd/pmd/issues/336): \[java] InvalidSlf4jMessageFormat applies to log4j2
+    *   [#1636](https://github.com/pmd/pmd/issues/1636): \[java] Stop checking UR anomalies for DataflowAnomalyAnalysis
+*   java-multithreading
+    *   [#1627](https://github.com/pmd/pmd/issues/1627): \[java] DoNotUseThreads should not warn on Runnable
+*   doc
+    * [#2058](https://github.com/pmd/pmd/issues/2058): \[doc] CLI reference for `-norulesetcompatibility` shows a boolean default value
+
+
+### API Changes
+
+#### Deprecated APIs
+
+##### For removal
+
+* pmd-core
+  * All the package [`net.sourceforge.pmd.dcd`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/dcd/package-summary.html#) and its subpackages. See [`DCD`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/dcd/DCD.html#).
+  * In [`LanguageRegistry`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#):
+    * [`commaSeparatedTerseNamesForLanguageVersion`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#commaSeparatedTerseNamesForLanguageVersion(List))
+    * [`commaSeparatedTerseNamesForLanguage`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#commaSeparatedTerseNamesForLanguage(List))
+    * [`findAllVersions`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#findAllVersions())
+    * [`findLanguageVersionByTerseName`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#findLanguageVersionByTerseName(String))
+    * [`getInstance`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/LanguageRegistry.html#getInstance())
+  * [`RuleSet#getExcludePatterns`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getExcludePatterns()). Use the new method [`getFileExclusions`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileExclusions()) instead.
+  * [`RuleSet#getIncludePatterns`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getIncludePatterns()). Use the new method [`getFileInclusions`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/RuleSet.html#getFileInclusions()) instead.
+  * [`Parser#canParse`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/Parser.html#canParse())
+  * [`Parser#getSuppressMap`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/lang/Parser.html#getSuppressMap())
+  * [`RuleBuilder#RuleBuilder`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/rules/RuleBuilder.html#RuleBuilder(String,String,String)). Use the new constructor with the correct ResourceLoader instead.
+  * [`RuleFactory#RuleFactory`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/rules/RuleFactory.html#RuleFactory()). Use the new constructor with the correct ResourceLoader instead.
+* pmd-java
+  * [`CanSuppressWarnings`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/ast/CanSuppressWarnings.html#) and its implementations
+  * [`isSuppressed`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#isSuppressed(Node))
+  * [`getDeclaringType`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/rule/AbstractJavaRule.html#getDeclaringType(Node)).
+  * [`isSupressed`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/rule/JavaRuleViolation.html#isSupressed(Node,Rule))
+  * [`ASTMethodDeclarator`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclarator.html#)
+  * [`getMethodName`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getMethodName())
+  * [`getBlock`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/ast/ASTMethodDeclaration.html#getBlock())
+  * [`getParameterCount`](https://javadoc.io/page/net.sourceforge.pmd/pmd-java/6.19.0/net/sourceforge/pmd/lang/java/ast/ASTConstructorDeclaration.html#getParameterCount())
+* pmd-apex
+  * [`CanSuppressWarnings`](https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.19.0/net/sourceforge/pmd/lang/apex/ast/CanSuppressWarnings.html#) and its implementations
+  * [`isSupressed`](https://javadoc.io/page/net.sourceforge.pmd/pmd-apex/6.19.0/net/sourceforge/pmd/lang/apex/rule/ApexRuleViolation.html#isSupressed(Node,Rule))
+
+##### Internal APIs
+
+* pmd-core
+  * All the package [`net.sourceforge.pmd.util`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/util/package-summary.html#) and its subpackages,
+  except [`net.sourceforge.pmd.util.datasource`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/util/datasource/package-summary.html#) and [`net.sourceforge.pmd.util.database`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/util/database/package-summary.html#).
+  * [`GridBagHelper`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/cpd/GridBagHelper.html#)
+  * [`ColumnDescriptor`](https://javadoc.io/page/net.sourceforge.pmd/pmd-core/6.19.0/net/sourceforge/pmd/renderers/ColumnDescriptor.html#)
+
+
+
+### External Contributions
+
+*   [#2010](https://github.com/pmd/pmd/pull/2010): \[java] LawOfDemeter to support inner builder pattern - [Gregor Riegler](https://github.com/gregorriegler)
+*   [#2012](https://github.com/pmd/pmd/pull/2012): \[java] Fixes 336, slf4j log4j2 support - [Mark Hall](https://github.com/markhall82)
+*   [#2032](https://github.com/pmd/pmd/pull/2032): \[core] Allow adding SourceCode directly into CPD - [Nathan Braun](https://github.com/nbraun-Google)
+*   [#2047](https://github.com/pmd/pmd/pull/2047): \[java] Fix computation of metrics with annotations - [Andi Pabst](https://github.com/andipabst)
+*   [#2065](https://github.com/pmd/pmd/pull/2065): \[java] Stop checking UR anomalies - [Carlos Macasaet](https://github.com/l0s)
+*   [#2068](https://github.com/pmd/pmd/pull/2068): \[core] Rule loader should use the same resources loader for the ruleset - [Chen Yang](https://github.com/willamette)
+*   [#2070](https://github.com/pmd/pmd/pull/2070): \[core] Fix renderer tests for windows builds - [Saladoc](https://github.com/Saladoc)
+*   [#2073](https://github.com/pmd/pmd/pull/2073): \[test]\[core] Add expected and actual line of numbers to message wording - [snuyanzin](https://github.com/snuyanzin)
+*   [#2076](https://github.com/pmd/pmd/pull/2076): \[java] Add Metric ClassFanOutComplexity - [Andi Pabst](https://github.com/andipabst)
+*   [#2078](https://github.com/pmd/pmd/pull/2078): \[java] DoNotUseThreads should not warn on Runnable #1627 - [Michael Clay](https://github.com/mclay)
+
 ## 15-September-2019 - 6.18.0
 
 The PMD team is pleased to announce PMD 6.18.0.
@@ -7482,5 +7674,3 @@ The binary package still contains all languages and can be used as usual. Have a
 ## June 25 2002 - 0.1:
 
     Initial release
-
-The PMD book - $20 - http://pmdapplied.com/

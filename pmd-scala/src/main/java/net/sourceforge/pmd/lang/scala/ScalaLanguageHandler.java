@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.scala;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
 import net.sourceforge.pmd.lang.ParserOptions;
-import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.lang.scala.rule.ScalaRuleViolationFactory;
 
 import scala.meta.Dialect;
 
@@ -20,7 +18,7 @@ public class ScalaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     /**
      * Create the Language Handler using the given Scala Dialect.
-     * 
+     *
      * @param scalaDialect
      *            the language version to use while parsing etc
      */
@@ -30,17 +28,13 @@ public class ScalaLanguageHandler extends AbstractPmdLanguageVersionHandler {
 
     /**
      * Get the Scala Dialect used in this language version choice.
-     * 
+     *
      * @return the Scala Dialect for this handler
      */
     public Dialect getDialect() {
         return this.dialect;
     }
 
-    @Override
-    public RuleViolationFactory getRuleViolationFactory() {
-        return ScalaRuleViolationFactory.INSTANCE;
-    }
 
     @Override
     public ScalaParser getParser(ParserOptions parserOptions) {

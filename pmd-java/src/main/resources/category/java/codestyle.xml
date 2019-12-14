@@ -249,7 +249,7 @@ visibility cannot be reduced). Clarify your intent by using private or package a
 <![CDATA[
 //ClassOrInterfaceDeclaration[@Final='true' and not(ExtendsList)]
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
-/MethodDeclaration[@Protected='true'][MethodDeclarator/@Image != 'finalize']
+/MethodDeclaration[@Protected='true' and @Name != 'finalize']
  ]]>
                 </value>
             </property>
@@ -316,13 +316,13 @@ prefix for these methods.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[
-MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
-                [starts-with(@Image, 'get')]
-and
-ResultType/Type/PrimitiveType[@Image = 'boolean']
-and not(../Annotation//Name[@Image = 'Override'])
-]
+//MethodDeclaration
+    [starts-with(@Name, 'get')]
+    [@Arity = 0 or $checkParameterizedMethods = 'true']
+    [
+        ResultType/Type/PrimitiveType[@Image = 'boolean']
+        and not(../Annotation//Name[@Image = 'Override'])
+    ]
 ]]>
                 </value>
             </property>
@@ -1647,7 +1647,7 @@ Method names that are very short are not helpful to the reader.
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclarator[string-length(@Image) < $minimum]
+//MethodDeclaration[string-length(@Name) < $minimum]
 ]]>
                 </value>
             </property>

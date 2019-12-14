@@ -22,6 +22,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
     private static final String LOG4J_LOGGER_NAME = "org.apache.log4j.Logger";
+    private static final String LOG4J2_LOGGER_NAME = "org.apache.logging.log4j.Logger";
     private static final String JAVA_LOGGER_NAME = "java.util.logging.Logger";
     private static final String SLF4J_LOGGER_NAME = "org.slf4j.Logger";
 
@@ -72,7 +73,8 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
                     Class<?> clazzType = ((ASTClassOrInterfaceType) classOrIntType).getType();
                     if (clazzType != null
                             && (TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, LOG4J_LOGGER_NAME)
-                                || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, JAVA_LOGGER_NAME)
+                            || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, LOG4J2_LOGGER_NAME)
+                            || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, JAVA_LOGGER_NAME)
                                 || TypeHelper.isA((ASTClassOrInterfaceType) classOrIntType, SLF4J_LOGGER_NAME))
                             || clazzType == null && "Logger".equals(classOrIntType.getImage())) {
                         ++count;

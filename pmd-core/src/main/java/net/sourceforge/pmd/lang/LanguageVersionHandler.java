@@ -4,14 +4,19 @@
 
 package net.sourceforge.pmd.lang;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.AstProcessingStage;
+import net.sourceforge.pmd.lang.ast.xpath.DefaultASTXPathHandler;
 import net.sourceforge.pmd.lang.dfa.DFAGraphRule;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.impl.DefaultRuleViolationFactory;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
+import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 
 
 /**
@@ -30,7 +35,9 @@ public interface LanguageVersionHandler {
     /**
      * Get the XPathHandler.
      */
-    XPathHandler getXPathHandler();
+    default XPathHandler getXPathHandler() {
+        return new DefaultASTXPathHandler();
+    }
 
 
     /**
@@ -39,7 +46,9 @@ public interface LanguageVersionHandler {
      * @return A list of all optional processing stages.
      */
     @Experimental
-    List<? extends AstProcessingStage<?>> getProcessingStages();
+    default List<? extends AstProcessingStage<?>> getProcessingStages() {
+        return Collections.emptyList();
+    }
 
 
     /**
@@ -61,7 +70,9 @@ public interface LanguageVersionHandler {
     /**
      * Get the RuleViolationFactory.
      */
-    RuleViolationFactory getRuleViolationFactory();
+    default RuleViolationFactory getRuleViolationFactory() {
+        return DefaultRuleViolationFactory.defaultInstance();
+    }
 
 
     /**
@@ -156,5 +167,18 @@ public interface LanguageVersionHandler {
      */
     @Experimental
     LanguageMetricsProvider<?, ?> getLanguageMetricsProvider();
+
+
+    /**
+     * Returns the designer bindings for this language version.
+     * Null is not an acceptable result, use {@link DefaultDesignerBindings#getInstance()}
+     * instead.
+     *
+     * @since 6.20.0
+     */
+    @Experimental
+    default DesignerBindings getDesignerBindings() {
+        return DefaultDesignerBindings.getInstance();
+    }
 
 }

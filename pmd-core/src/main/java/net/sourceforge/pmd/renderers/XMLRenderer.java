@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDVersion;
@@ -51,7 +51,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             useUTF8 = true;
         }
 
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         buf.append("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>").append(PMD.EOL);
         createVersionAttr(buf);
@@ -64,7 +63,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         String filename = null;
 
@@ -117,7 +115,6 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     @Override
     public void end() throws IOException {
-        Writer writer = getWriter();
         StringBuilder buf = new StringBuilder(500);
         // errors
         for (Report.ProcessingError pe : errors) {
@@ -139,7 +136,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 buf.append("<suppressedviolation ").append("filename=\"");
                 StringUtil.appendXmlEscaped(buf, determineFileName(s.getRuleViolation().getFilename()), useUTF8);
                 buf.append("\" suppressiontype=\"");
-                StringUtil.appendXmlEscaped(buf, s.suppressedByNOPMD() ? "nopmd" : "annotation", useUTF8);
+                StringUtil.appendXmlEscaped(buf, s.getSuppressor().getId().toLowerCase(Locale.ROOT), useUTF8);
                 buf.append("\" msg=\"");
                 StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription(), useUTF8);
                 buf.append("\" usermsg=\"");
@@ -148,7 +145,7 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 writer.write(buf.toString());
             }
         }
-        
+
         // config errors
         for (final Report.ConfigurationError ce : configErrors) {
             buf.setLength(0);

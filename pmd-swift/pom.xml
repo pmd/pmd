@@ -27,7 +27,7 @@
                 <inherited>true</inherited>
                 <executions>
                     <execution>
-                        <id>antlr-generation</id>
+                        <id>antlr-cleanup</id>
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>

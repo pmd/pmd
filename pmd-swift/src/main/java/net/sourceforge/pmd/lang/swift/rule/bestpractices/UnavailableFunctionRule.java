@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.swift.rule.bestpractices;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.swift.AbstractSwiftRule;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.FunctionDeclarationContext;
-import net.sourceforge.pmd.lang.swift.antlr4.SwiftParser.InitializerDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.FunctionDeclarationContext;
+import net.sourceforge.pmd.lang.swift.ast.SwiftParser.InitializerDeclarationContext;
 
 public class UnavailableFunctionRule extends AbstractSwiftRule<Void> {
 

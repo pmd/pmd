@@ -1,7 +1,3 @@
-addons:
-  ssh_known_hosts:
-    - web.sourceforge.net
-
 language: java
 
 env:
@@ -18,54 +14,47 @@ env:
 matrix:
   fast_finish: true
   include:
-    - name: "linux - mvn deploy"
+    - stage: build
+      name: "linux - mvn deploy"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=deploy
     - name: "linux - build documentation"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=doc
     - name: "linux - run sonar"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=sonar
+      if: "type = push && repo = pmd/pmd && fork = false"
     - name: "linux - run coveralls"
       os: linux
-      dist: trusty
+      dist: bionic
       env: BUILD=coveralls
+      if: "type = push && repo = pmd/pmd && fork = false"
     - name: "macosx - mvn verify"
       os: osx
       env: BUILD=deploy
+    - name: "windows - mvn verify"
+      os: windows
+      env: BUILD=deploy
+      language: shell
+    - stage: publish
+      name: "Release Build - Publish"
+      os: linux
+      dist: bionic
+      if: "type = push && repo = pmd/pmd && fork = false && tag is present"
+      env: BUILD=publish
 
 before_install:
-  - bash .travis/setup-secrets.sh
-  - bash .travis/configure-maven.sh
-  - rvm install 2.4.1
-  - rvm use 2.4.1
-install:
-  - . .travis/install-openjdk.sh
-  - gem install bundler
-  - bundle install --with=release_notes_preprocessing --path=vendor/bundle
+  - bash .travis/before_install.sh "11.0.5+10"
+  - source ${HOME}/java.env
+install: true
 before_script: true
 script: source .travis/build-$BUILD.sh
 after_success: true
 
-
-before_deploy: true
-deploy:
-  provider: releases
-  api_key: ${GITHUB_OAUTH_TOKEN}
-  file_glob: true
-  file:
-  - pmd-dist/target/pmd-*.zip
-  - docs/pmd-doc-*.zip
-  skip_cleanup: true
-  on:
-    tags: true
-    repo: pmd/pmd
-    condition: "${TRAVIS_SECURE_ENV_VARS} = true && ${BUILD} != sonar && ${BUILD} != coveralls"
-after_deploy: bash .travis/release.sh
 
 notifications:
   webhooks:

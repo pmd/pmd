@@ -16,13 +16,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * Generic collection and array-related utility functions for java.util types.
  * See ClassUtil for comparable facilities for short name lookup.
  *
  * @author Brian Remedios
  * @version $Revision$
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public final class CollectionUtil {
 
     @SuppressWarnings("PMD.UnnecessaryFullyQualifiedName")

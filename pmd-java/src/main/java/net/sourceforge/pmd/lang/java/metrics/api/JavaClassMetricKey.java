@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.metrics.api;
 import net.sourceforge.pmd.lang.java.ast.ASTAnyTypeDeclaration;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdMetric.AtfdClassMetric;
+import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutMetric.ClassFanOutClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.LocMetric.LocClassMetric;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssMetric;
@@ -77,7 +78,14 @@ public enum JavaClassMetricKey implements MetricKey<ASTAnyTypeDeclaration> {
      *
      * @see TccMetric
      */
-    TCC(new TccMetric());
+    TCC(new TccMetric()),
+
+    /**
+     * ClassFanOut Complexity
+     *
+     * @see ClassFanOutClassMetric
+     */
+    CLASS_FAN_OUT(new ClassFanOutClassMetric());
 
 
     private final JavaClassMetric calculator;

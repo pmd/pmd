@@ -17,10 +17,15 @@ import java.nio.file.Files;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  *
  * @author Brian Remedios
+ * @deprecated Is internal API
  */
+@InternalApi
+@Deprecated
 public final class IOUtil {
 
     private IOUtil() {

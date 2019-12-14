@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.AstProcessingStage;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
 import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
@@ -67,6 +68,8 @@ public class XPathRule extends AbstractRule {
     public XPathRule() {
         definePropertyDescriptor(XPATH_DESCRIPTOR);
         definePropertyDescriptor(VERSION_DESCRIPTOR);
+        // Enable Type Resolution on XPath Rules by default - see issue #2048
+        super.setTypeResolution(true);
     }
 
     /**
@@ -164,5 +167,12 @@ public class XPathRule extends AbstractRule {
 
     private boolean hasXPathExpression() {
         return StringUtils.isNotBlank(getProperty(XPATH_DESCRIPTOR));
+    }
+
+
+    @Override
+    public boolean dependsOn(AstProcessingStage<?> stage) {
+        // FIXME must be made language-specific
+        return true;
     }
 }

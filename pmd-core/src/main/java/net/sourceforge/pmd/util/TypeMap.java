@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.sourceforge.pmd.annotation.InternalApi;
+
 /**
  * A specialized map that stores types by both their full and short (without
  * package prefixes) names. If an incoming type shares the same name (but
@@ -16,7 +18,10 @@ import java.util.Map;
  * said short name could be in error.
  *
  * @author Brian Remedios
+ * @deprecated Is internal API
  */
+@Deprecated
+@InternalApi
 public class TypeMap {
 
     private Map<String, Class<?>> typesByName;

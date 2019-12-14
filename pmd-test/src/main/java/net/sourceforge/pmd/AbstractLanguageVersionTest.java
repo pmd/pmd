@@ -24,7 +24,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>
  * Each language implementation should subclass this and provide a data method.
- * 
+ *
  * <pre>
  * &#64;Parameters
  *     public static Collection&lt;Object[]&gt; data() {
@@ -39,7 +39,7 @@ import net.sourceforge.pmd.util.ResourceLoader;
  *              null }
  *       });
  * </pre>
- * 
+ *
  * <p>For the parameters, see the constructor
  * {@link #AbstractLanguageVersionTest(String, String, String, LanguageVersion)}.</p>
  */
@@ -49,12 +49,11 @@ public class AbstractLanguageVersionTest {
     private String name;
     private String version;
     private String simpleTerseName;
-    private String terseName;
     private LanguageVersion expected;
 
     /**
      * Creates a new {@link AbstractLanguageVersionTest}
-     * 
+     *
      * @param name
      *            the name under which the language module is registered
      * @param terseName
@@ -68,20 +67,7 @@ public class AbstractLanguageVersionTest {
         this.name = name;
         this.version = version;
         this.simpleTerseName = terseName;
-        this.terseName = terseName;
-        if (version != null && !version.isEmpty()) {
-            this.terseName += " " + version;
-        }
         this.expected = expected;
-    }
-
-    /**
-     * Checks that the expected {@link LanguageVersion} can be found by the
-     * combination of {@link #terseName} and {@link #version}.
-     */
-    @Test
-    public void testGetLanguageVersionForTerseName() {
-        assertEquals(expected, LanguageRegistry.findLanguageVersionByTerseName(terseName));
     }
 
     /**
@@ -105,14 +91,13 @@ public class AbstractLanguageVersionTest {
 
     /**
      * Makes sure, that for each language a "categories.properties" file exists.
-     * 
+     *
      * @throws Exception
      *             any error
      */
     @Test
     public void testRegisteredRulesets() throws Exception {
-        // only check for languages, that support rules
-        if (expected == null || expected.getLanguage().getRuleChainVisitorClass() == null) {
+        if (expected == null) {
             return;
         }
 
@@ -127,7 +112,7 @@ public class AbstractLanguageVersionTest {
 
     /**
      * If a rulesets.properties file still exists, test it as well.
-     * 
+     *
      * @throws Exception
      *             any error
      */
@@ -164,9 +149,9 @@ public class AbstractLanguageVersionTest {
 
         String[] rulesets = rulesetFilenames.split(",");
         for (String r : rulesets) {
-            InputStream stream = rl.loadClassPathResourceAsStream(r);
-            assertNotNull(stream);
-            stream.close();
+            try (InputStream stream = rl.loadClassPathResourceAsStream(r)) {
+                assertNotNull(stream);
+            }
             RuleSet ruleset = factory.createRuleSet(r);
             assertNotNull(ruleset);
         }

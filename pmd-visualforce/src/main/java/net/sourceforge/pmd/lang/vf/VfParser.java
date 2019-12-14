@@ -5,8 +5,6 @@
 package net.sourceforge.pmd.lang.vf;
 
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.ParserOptions;
@@ -30,18 +28,9 @@ public class VfParser extends AbstractParser {
     }
 
     @Override
-    public boolean canParse() {
-        return true;
-    }
-
-    @Override
     public Node parse(String fileName, Reader source) throws ParseException {
         AbstractTokenManager.setFileName(fileName);
         return new net.sourceforge.pmd.lang.vf.ast.VfParser(new VfSimpleCharStream(source)).CompilationUnit();
     }
 
-    @Override
-    public Map<Integer, String> getSuppressMap() {
-        return new HashMap<>(); // FIXME
-    }
 }
