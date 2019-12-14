@@ -286,7 +286,7 @@ public class ParserCornersTest {
         ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("11", readAsString("SwitchWithFallthrough.java"));
         Assert.assertNotNull(compilationUnit);
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchFallthroughBranch.class).size());
     }
 
     @Test
@@ -294,7 +294,7 @@ public class ParserCornersTest {
         ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("11", readAsString("SwitchStatements.java"));
         Assert.assertNotNull(compilationUnit);
         ASTSwitchStatement switchStatement = compilationUnit.getFirstDescendantOfType(ASTSwitchStatement.class);
-        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchLabel.class).size());
+        Assert.assertEquals(2, switchStatement.findChildrenOfType(ASTSwitchBranch.class).size());
     }
 
 

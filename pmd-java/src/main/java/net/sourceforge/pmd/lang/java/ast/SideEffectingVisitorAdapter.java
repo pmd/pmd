@@ -37,10 +37,6 @@ public class SideEffectingVisitorAdapter<T> implements SideEffectingVisitor<T> {
     // TODO delegation
 
 
-    public void visit(ASTSwitchLabeledRule node, T data) {
-        visit((JavaNode) node, data);
-    }
-
     public void visit(ASTAnyTypeDeclaration node, T data) {
         visit((JavaNode) node, data);
     }

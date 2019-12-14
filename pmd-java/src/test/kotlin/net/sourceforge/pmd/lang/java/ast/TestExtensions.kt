@@ -235,6 +235,19 @@ fun TreeNodeWrapper<Node, *>.breakStatement(label: String? = null, contents: Nod
             contents()
         }
 
+fun TreeNodeWrapper<Node, *>.yieldStatement(contents: ValuedNodeSpec<ASTYieldStatement, ASTExpression?> = {null}) =
+        child<ASTYieldStatement> {
+            val e = contents()
+            if (e != null) it::getExpr shouldBe e
+            else unspecifiedChild()
+        }
+
+
+fun TreeNodeWrapper<Node, *>.throwStatement(contents: NodeSpec<ASTThrowStatement> = EmptyAssertions) =
+        child<ASTThrowStatement>(ignoreChildren = contents == EmptyAssertions) {
+            contents()
+        }
+
 fun TreeNodeWrapper<Node, *>.localVarDecl(contents: NodeSpec<ASTLocalVariableDeclaration> = EmptyAssertions) =
         child<ASTLocalVariableDeclaration>(ignoreChildren = contents == EmptyAssertions) {
             contents()
@@ -391,6 +404,34 @@ val EmptyAssertions: NodeSpec<out Node> = {}
 
 fun TreeNodeWrapper<Node, *>.switchExpr(assertions: NodeSpec<ASTSwitchExpression> = EmptyAssertions): ASTSwitchExpression =
         child(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }
+fun TreeNodeWrapper<Node, *>.switchStmt(assertions: NodeSpec<ASTSwitchStatement> = EmptyAssertions) =
+        child<ASTSwitchStatement>(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.switchArrow(rhs: ValuedNodeSpec<ASTSwitchArrowBranch, ASTSwitchArrowRHS?> = { null }) =
+        child<ASTSwitchArrowBranch> {
+            val rhs = rhs()
+            if (rhs != null) it::getRightHandSide shouldBe rhs
+            else unspecifiedChildren(2) // label + rhs
+        }
+
+fun TreeNodeWrapper<Node, *>.switchFallthrough(assertions: NodeSpec<ASTSwitchFallthroughBranch> = EmptyAssertions) =
+        child<ASTSwitchFallthroughBranch>(ignoreChildren = assertions == EmptyAssertions) {
+            assertions()
+        }
+fun TreeNodeWrapper<Node, *>.switchLabel(assertions: NodeSpec<ASTSwitchLabel> = EmptyAssertions) =
+        child<ASTSwitchLabel>(ignoreChildren = assertions == EmptyAssertions) {
+            it::isDefault shouldBe false
+            assertions()
+        }
+
+fun TreeNodeWrapper<Node, *>.switchDefaultLabel(assertions: NodeSpec<ASTSwitchLabel> = EmptyAssertions) =
+        child<ASTSwitchLabel>(ignoreChildren = assertions == EmptyAssertions) {
+            it::isDefault shouldBe true
+            it::getExprList shouldBe emptyList()
             assertions()
         }
 

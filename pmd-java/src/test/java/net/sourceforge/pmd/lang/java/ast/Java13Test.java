@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -25,44 +24,6 @@ public class Java13Test {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    public void testSwitchExpressions() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("SwitchExpressions.java"));
-        Assert.assertNotNull(compilationUnit);
-
-        ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(4, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
-        Assert.assertEquals(3, switchExpression.findChildrenOfType(ASTSwitchLabeledRule.class).size());
-        Assert.assertEquals(1, switchExpression.findChildrenOfType(ASTSwitchLabeledBlock.class).size());
-        Assert.assertEquals(1, switchExpression.findDescendantsOfType(ASTYieldStatement.class).size());
-        ASTYieldStatement yieldStatement = switchExpression.getFirstDescendantOfType(ASTYieldStatement.class);
-        Assert.assertEquals(Integer.TYPE, yieldStatement.getExpr().getType());
-    }
-
-    @Test
-    public void testSwitchExpressionsYield() {
-        ASTCompilationUnit compilationUnit = ParserTstUtil.parseAndTypeResolveJava("13-preview",
-                loadSource("SwitchExpressionsYield.java"));
-        Assert.assertNotNull(compilationUnit);
-
-        ASTSwitchExpression switchExpression = compilationUnit.getFirstDescendantOfType(ASTSwitchExpression.class);
-        Assert.assertEquals(11, switchExpression.jjtGetNumChildren());
-        Assert.assertTrue(switchExpression.jjtGetChild(0) instanceof ASTExpression);
-        Assert.assertEquals(5, switchExpression.findChildrenOfType(ASTSwitchLabel.class).size());
-
-        ASTYieldStatement yieldStatement = switchExpression.getFirstDescendantOfType(ASTYieldStatement.class);
-        Assert.assertEquals("SwitchExpressionsBreak.SIX", yieldStatement.getImage());
-        Assert.assertTrue(yieldStatement.jjtGetChild(0) instanceof ASTExpression);
-
-        ASTLocalVariableDeclaration localVar = compilationUnit.findDescendantsOfType(ASTLocalVariableDeclaration.class)
-                .get(1);
-        ASTVariableDeclarator localVarDecl = localVar.getFirstChildOfType(ASTVariableDeclarator.class);
-        Assert.assertEquals(Integer.TYPE, localVarDecl.getType());
-        Assert.assertEquals(Integer.TYPE, switchExpression.getType());
     }
 
 
