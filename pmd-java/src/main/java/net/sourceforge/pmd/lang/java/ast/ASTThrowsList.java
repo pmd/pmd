@@ -44,6 +44,6 @@ public final class ASTThrowsList extends AbstractJavaNode implements Iterable<AS
 
     @Override
     public Iterator<ASTClassOrInterfaceType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
+        return children(ASTClassOrInterfaceType.class).iterator();
     }
 }

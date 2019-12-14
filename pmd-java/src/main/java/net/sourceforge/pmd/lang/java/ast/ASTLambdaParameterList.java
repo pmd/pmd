@@ -54,6 +54,6 @@ public final class ASTLambdaParameterList extends AbstractJavaNode implements It
 
     @Override
     public Iterator<ASTLambdaParameter> iterator() {
-        return new NodeChildrenIterator<>(this, ASTLambdaParameter.class);
+        return children(ASTLambdaParameter.class).iterator();
     }
 }

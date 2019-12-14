@@ -46,7 +46,7 @@ public final class ASTArrayDimensions extends AbstractJavaTypeNode implements It
 
     @Override
     public Iterator<ASTArrayTypeDim> iterator() {
-        return new NodeChildrenIterator<>(this, ASTArrayTypeDim.class);
+        return children(ASTArrayTypeDim.class).iterator();
     }
 
 

@@ -41,6 +41,6 @@ public final class ASTMemberValueArrayInitializer extends AbstractJavaNode imple
 
     @Override
     public Iterator<ASTMemberValue> iterator() {
-        return new NodeChildrenIterator<>(this, ASTMemberValue.class);
+        return children(ASTMemberValue.class).iterator();
     }
 }

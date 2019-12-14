@@ -41,6 +41,6 @@ public final class ASTExtendsList extends AbstractJavaNode implements Iterable<A
 
     @Override    // TODO this doesn't preserve the annotations.
     public Iterator<ASTClassOrInterfaceType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTClassOrInterfaceType.class);
+        return children(ASTClassOrInterfaceType.class).iterator();
     }
 }

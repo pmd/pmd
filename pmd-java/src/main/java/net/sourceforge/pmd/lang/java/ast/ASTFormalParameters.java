@@ -69,6 +69,6 @@ public final class ASTFormalParameters extends AbstractJavaNode implements Itera
 
     @Override
     public Iterator<ASTFormalParameter> iterator() {
-        return new NodeChildrenIterator<>(this, ASTFormalParameter.class);
+        return children(ASTFormalParameter.class).iterator();
     }
 }

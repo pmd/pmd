@@ -46,6 +46,6 @@ public final class ASTArrayInitializer extends AbstractJavaExpr implements ASTEx
 
     @Override
     public Iterator<ASTExpression> iterator() {
-        return new NodeChildrenIterator<>(this, ASTExpression.class);
+        return children(ASTExpression.class).iterator();
     }
 }

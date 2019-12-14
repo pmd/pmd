@@ -56,6 +56,6 @@ public final class ASTIntersectionType extends AbstractJavaTypeNode implements A
 
     @Override
     public Iterator<ASTType> iterator() {
-        return new NodeChildrenIterator<>(this, ASTType.class);
+        return children(ASTType.class).iterator();
     }
 }
