@@ -86,7 +86,7 @@ public class ASTVariableDeclarator extends AbstractJavaTypeNode {
     /* only for LocalVarDeclaration and FieldDeclaration */
     static Iterator<ASTVariableDeclaratorId> iterateIds(Node parent) {
         // TODO this can be made clearer with iterator mapping (Java 8)
-        final Iterator<ASTVariableDeclarator> declarators = new NodeChildrenIterator<>(parent, ASTVariableDeclarator.class);
+        final Iterator<ASTVariableDeclarator> declarators = parent.children(ASTVariableDeclarator.class).iterator();
 
         return new Iterator<ASTVariableDeclaratorId>() {
             @Override

@@ -13,14 +13,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
+import net.sourceforge.pmd.lang.ast.internal.TraversalUtils;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+
 
 /**
  * All AST nodes must implement this interface. It provides basic machinery for constructing the parent and child
@@ -30,6 +34,7 @@ public interface Node {
 
     // COMMENT: is it ok to take the opportunity on PMD 7 to rename this API and take out of there the methods
     // that are only needed for javaCC implementations?
+
 
     /**
      * This method is called after the node has been made the current node. It indicates that child nodes can now be
@@ -54,6 +59,7 @@ public interface Node {
      *
      * @return The parent of the node
      */
+    @Nullable
     Node jjtGetParent();
 
     /**
@@ -136,22 +142,16 @@ public interface Node {
     /**
      * Returns the n-th parent or null if there are less than {@code n} ancestors.
      *
+     * <pre>{@code
+     *    getNthParent(1) == jjtGetParent
+     * }</pre>
+     *
      * @param n how many ancestors to iterate over.
      * @return the n-th parent or null.
      * @throws IllegalArgumentException if {@code n} is negative or zero.
      */
     default Node getNthParent(int n) {
-        if (n <= 0) {
-            throw new IllegalArgumentException();
-        }
-        Node result = this.jjtGetParent();
-        for (int i = 1; i < n; i++) {
-            if (result == null) {
-                return null;
-            }
-            result = result.jjtGetParent();
-        }
-        return result;
+        return ancestors().get(n - 1);
     }
 
     /**
@@ -161,12 +161,8 @@ public interface Node {
      * @param <T> The type you want to find
      * @return Node of type parentType. Returns null if none found.
      */
-    default <T> T getFirstParentOfType(Class<T> parentType) {
-        Node parentNode = jjtGetParent();
-        while (parentNode != null && !parentType.isInstance(parentNode)) {
-            parentNode = parentNode.jjtGetParent();
-        }
-        return parentType.cast(parentNode);
+    default <T extends Node> T getFirstParentOfType(Class<T> parentType) {
+        return ancestors(parentType).first();
     }
 
     /**
@@ -177,16 +173,8 @@ public interface Node {
      * @param <T> The type you want to find
      * @return List of parentType instances found.
      */
-    default <T> List<T> getParentsOfType(Class<T> parentType) {
-        final List<T> parents = new ArrayList<>();
-        Node parentNode = jjtGetParent();
-        while (parentNode != null) {
-            if (parentType.isInstance(parentNode)) {
-                parents.add(parentType.cast(parentNode));
-            }
-            parentNode = parentNode.jjtGetParent();
-        }
-        return parents;
+    default <T extends Node> List<T> getParentsOfType(Class<T> parentType) {
+        return ancestors(parentType).toList();
     }
 
     /**
@@ -196,17 +184,15 @@ public interface Node {
      * @param <T> Most specific common type of the parameters
      * @return The first parent with a matching type. Returns null if there is no such parent
      */
-    default <T> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
-        Node parentNode = jjtGetParent();
-        while (parentNode != null) {
+    default <T extends Node> T getFirstParentOfAnyType(Class<? extends T>... parentTypes) {
+        return ancestors().map(it -> {
             for (final Class<? extends T> c : parentTypes) {
-                if (c.isInstance(parentNode)) {
-                    return c.cast(parentNode);
+                if (c.isInstance(it)) {
+                    return c.cast(it);
                 }
             }
-            parentNode = parentNode.jjtGetParent();
-        }
-        return null;
+            return null;
+        }).first();
     }
 
     /**
@@ -216,16 +202,10 @@ public interface Node {
      * @return List of all children of type childType. Returns an empty list if none found.
      * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
      */
-    default <T> List<T> findChildrenOfType(Class<T> childType) {
-        final List<T> list = new ArrayList<>();
-        for (int i = 0; i < jjtGetNumChildren(); i++) {
-            final Node child = jjtGetChild(i);
-            if (childType.isInstance(child)) {
-                list.add(childType.cast(child));
-            }
-        }
-        return list;
+    default <T extends Node> List<T> findChildrenOfType(Class<T> childType) {
+        return children(childType).toList();
     }
+
 
     /**
      * Traverses down the tree to find all the descendant instances of type descendantType without crossing find
@@ -234,8 +214,8 @@ public interface Node {
      * @param targetType class which you want to find.
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    default <T> List<T> findDescendantsOfType(Class<T> targetType) {
-        return findDescendantsOfType(targetType, false);
+    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType) {
+        return descendants(targetType).toList();
     }
 
     /**
@@ -246,7 +226,7 @@ public interface Node {
      * <code>true</code>
      * @return List of all children of type targetType. Returns an empty list if none found.
      */
-    default <T> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
+    default <T extends Node> List<T> findDescendantsOfType(Class<T> targetType, boolean crossBoundaries) {
         final List<T> list = new ArrayList<>();
         TraversalUtils.findDescendantsOfType(this, targetType, list, crossBoundaries);
         return list;
@@ -260,7 +240,7 @@ public interface Node {
      * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()}
      * is <code>true</code>
      */
-    default <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
+    default <T extends Node> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
         TraversalUtils.findDescendantsOfType(this, targetType, results, crossFindBoundaries);
     }
 
@@ -271,15 +251,8 @@ public interface Node {
      * @return Node of type childType. Returns <code>null</code> if none found.
      * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
      */
-    default <T> T getFirstChildOfType(Class<T> childType) {
-        int n = jjtGetNumChildren();
-        for (int i = 0; i < n; i++) {
-            final Node child = jjtGetChild(i);
-            if (childType.isInstance(child)) {
-                return childType.cast(child);
-            }
-        }
-        return null;
+    default <T extends Node> T getFirstChildOfType(Class<T> childType) {
+        return children().first(childType);
     }
 
     /**
@@ -289,8 +262,8 @@ public interface Node {
      * @param descendantType class which you want to find.
      * @return Node of type descendantType. Returns <code>null</code> if none found.
      */
-    default <T> T getFirstDescendantOfType(Class<T> descendantType) {
-        return TraversalUtils.getFirstDescendantOfType(descendantType, this);
+    default <T extends Node> T getFirstDescendantOfType(Class<T> descendantType) {
+        return descendants(descendantType).first();
     }
 
     /**
@@ -299,8 +272,8 @@ public interface Node {
      * @param type the node type to search
      * @return <code>true</code> if there is at least one descendant of the given type
      */
-    default <T> boolean hasDescendantOfType(Class<T> type) {
-        return getFirstDescendantOfType(type) != null;
+    default <T extends Node> boolean hasDescendantOfType(Class<T> type) {
+        return descendants(type).nonEmpty();
     }
 
     /**
@@ -398,6 +371,133 @@ public interface Node {
         return new AttributeAxisIterator(this);
     }
 
+
+    /**
+     * Returns a node stream containing only this node.
+     * {@link NodeStream#of(Node)} is a null-safe version
+     * of this method.
+     *
+     * @return A node stream containing only this node
+     *
+     * @see NodeStream#of(Node)
+     */
+    default NodeStream<Node> asStream() {
+        return StreamImpl.singleton(this);
+    }
+
+
+    /**
+     * Returns a node stream containing all the children of
+     * this node. This method does not provide much type safety,
+     * you'll probably want to use {@link #children(Class)}.
+     *
+     * @see NodeStream#children(Class)
+     */
+    default NodeStream<Node> children() {
+        return StreamImpl.children(this);
+    }
+
+
+    /**
+     * Returns a node stream containing all the descendants
+     * of this node, in depth-first order.
+     *
+     * @return A node stream of the descendants of this node
+     *
+     * @see NodeStream#descendants()
+     */
+    default NodeStream<Node> descendants() {
+        return StreamImpl.descendants(this);
+    }
+
+
+    /**
+     * Returns a node stream containing this node, then all its
+     * descendants in depth-first order.
+     *
+     * @return A node stream of the whole subtree topped by this node
+     *
+     * @see NodeStream#descendantsOrSelf()
+     */
+    default NodeStream<Node> descendantsOrSelf() {
+        return StreamImpl.descendantsOrSelf(this);
+    }
+
+
+    /**
+     * Returns a node stream containing all the strict ancestors of this node,
+     * in innermost to outermost order. The returned stream doesn't contain this
+     * node, and is empty if this node has no parent.
+     *
+     * @return A node stream of the ancestors of this node
+     *
+     * @see NodeStream#ancestors()
+     */
+    default NodeStream<Node> ancestors() {
+        return StreamImpl.ancestors(this);
+
+    }
+
+
+    /**
+     * Returns a node stream containing this node and its ancestors.
+     * The nodes of the returned stream are yielded in a depth-first fashion.
+     *
+     * @return A stream of ancestors
+     *
+     * @see NodeStream#ancestorsOrSelf()
+     */
+    default NodeStream<Node> ancestorsOrSelf() {
+        return StreamImpl.ancestorsOrSelf(this);
+    }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #children() children}
+     * of this node that are of the given type.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#children(Class)
+     */
+    default <R extends Node> NodeStream<R> children(Class<R> rClass) {
+        return StreamImpl.children(this, rClass);
+    }
+
+
+    /**
+     * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendants() descendants}
+     * of this node that are of the given type.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#descendants(Class)
+     */
+    default <R extends Node> NodeStream<R> descendants(Class<R> rClass) {
+        return StreamImpl.descendants(this, rClass);
+    }
+
+
+    /**
+     * Returns the {@linkplain #ancestors() ancestor stream} of each node
+     * in this stream, filtered by the given node type.
+     *
+     * @param rClass Type of node the returned stream should contain
+     * @param <R>    Type of node the returned stream should contain
+     *
+     * @return A new node stream
+     *
+     * @see NodeStream#ancestors(Class)
+     */
+    default <R extends Node> NodeStream<R> ancestors(Class<R> rClass) {
+        return StreamImpl.ancestors(this, rClass);
+    }
 
     @NonNull
     default RootNode getRoot() {

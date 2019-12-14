@@ -235,29 +235,29 @@ public class ParserTstUtil {
     }
 
 
-    public static <T> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(String source, Class<T> resultType, String xpath) throws JaxenException {
         return selectNodes(source, "1.5", resultType, xpath);
     }
 
 
     // This is the master overload, others just default the parameters
-    public static <T> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(String source, String version, Class<T> resultType, String xpath) throws JaxenException {
         ASTCompilationUnit acu = parseAndTypeResolveJava(version, source);
         return convertList(acu.findChildNodesWithXPath(xpath), resultType);
     }
 
 
-    public static <T> List<T> selectNodes(Class<?> source, Class<T> resultType) {
+    public static <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType) {
         return parseAndTypeResolveJava("1.5", getSourceFromClass(source)).findDescendantsOfType(resultType);
     }
 
 
-    public static <T> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(Class<?> source, Class<T> resultType, String xpath) throws JaxenException {
         return selectNodes(source, "1.5", resultType, xpath);
     }
 
 
-    public static <T> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
+    public static <T extends Node> List<T> selectNodes(Class<?> source, String version, Class<T> resultType, String xpath) throws JaxenException {
         return selectNodes(ParserTstUtil.getSourceFromClass(source), version, resultType, xpath);
     }
 
